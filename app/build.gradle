@@ -102,7 +102,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -147,6 +147,8 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
+    compile project(':photoPreview')
+    compile project(':simpleai')
 }
 
 apply plugin: 'com.google.gms.google-services'
