@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="about_app_title_size">30sp</dimen>
+    <dimen name="about_secondary_text_size">25sp</dimen>
+    <dimen name="wrapper_padding_right">25dp</dimen>
+    <dimen name="wrapper_padding_left">25dp</dimen>
+    <dimen name="view_margin_top">25dp</dimen>
+
+    <dimen name="widget_config_text_size">26sp</dimen>
+    <dimen name="widget_config_widget_size">80dp</dimen>
+    <dimen name="widget_config_margin">25dp</dimen>
+    <dimen name="widget_config_margin_top">20dp</dimen>
+
+    <dimen name="create_margin">30dp</dimen>
+    <dimen name="checkbox_text_size">30sp</dimen>
+    <dimen name="create_imagebutton_size">70dp</dimen>
+    <dimen name="create_text_size_normal">28sp</dimen>
+    <dimen name="create_text_size_primary">35sp</dimen>
+    <dimen name="create_text_size_secondary">30sp</dimen>
+
+    <dimen name="backup_manager_padding">40dp</dimen>
+    <dimen name="backup_card_height_normal">105dp</dimen>
+
+    <dimen name="settings_margin">25dp</dimen>
+    <dimen name="settings_text_size_primary">28sp</dimen>
+    <dimen name="settings_text_size_secondary">24sp</dimen>
+    <dimen name="settings_view_size">50dp</dimen>
+
+    <dimen name="category_margin">25dp</dimen>
+
+    <dimen name="clouds_padding">50dp</dimen>
+    <dimen name="clouds_text_size">30sp</dimen>
+    <dimen name="clouds_margin_top">35dp</dimen>
+
+    <dimen name="create_note_padding">30dp</dimen>
+    <dimen name="create_note_text_size">30sp</dimen>
+    <dimen name="create_note_image_button_size">50dp</dimen>
+    <dimen name="create_note_text_size_secondary">30sp</dimen>
+
+    <dimen name="follow_margin">25dp</dimen>
+    <dimen name="follow_text_size_primary">31sp</dimen>
+    <dimen name="follow_text_size_header">23sp</dimen>
+    <dimen name="follow_button_text_size">25sp</dimen>
+    <dimen name="follow_text_size_normal">28sp</dimen>
+    <dimen name="follow_margin_top">15dp</dimen>
+
+    <dimen name="reminder_margin_top">25dp</dimen>
+    <dimen name="reminder_text_size_normal">30sp</dimen>
+    <dimen name="reminder_photo_size">320dp</dimen>
+
+    <dimen name="times_margin">40dp</dimen>
+
+    <dimen name="create_text_size_small">25sp</dimen>
+    <dimen name="create_toggle_margin_left">15dp</dimen>
+    <dimen name="reminder_preview_container_padding">15dp</dimen>
+    <dimen name="reminder_preview_margin_top">15dp</dimen>
+    <dimen name="dimen_log_in_padding">60dp</dimen>
+    <dimen name="log_in_skip_text_size">28sp</dimen>
+    <dimen name="log_in_skip_margin_top">20dp</dimen>
+    <dimen name="log_in_check_margin_top">20dp</dimen>
+    <dimen name="log_in_button_height">64dp</dimen>
+    <dimen name="log_in_button_text_size">26sp</dimen>
+    <dimen name="log_in_button_margin_top">20dp</dimen>
+    <dimen name="log_in_button_corner_radius">15dp</dimen>
+    <dimen name="log_in_first_button_margin_top">45dp</dimen>
+    <dimen name="log_in_title_text_size">35sp</dimen>
+    <dimen name="toolbar_elevation">3dp</dimen>
+    <dimen name="dialog_toggle_size">32dp</dimen>
+    <dimen name="add_birthday_text_size_primary">30sp</dimen>
+    <dimen name="recycler_margin_l_r">64dp</dimen>
+</resources>
