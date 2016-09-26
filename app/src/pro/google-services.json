@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "257660336951",
+    "project_id": "future-graph-651"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257660336951:android:f98d5c2945a88583",
+        "android_client_info": {
+          "package_name": "com.cray.software.justreminderpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257660336951-urfa5m6oqiuqapa4rflaq6cahk9lsu3t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cray.software.justreminderpro",
+            "certificate_hash": "FAD7B7E2F4D256C9D797312DF745BACCCF325489"
+          }
+        },
+        {
+          "client_id": "257660336951-hmpoomki6j6v4ksvqa3t0ojuaije8db2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnBpyUuargHJdssv9rjDznoea3T1A8FPM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-72206185-3"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
