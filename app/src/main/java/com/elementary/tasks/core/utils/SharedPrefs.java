@@ -29,25 +29,26 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-public abstract class SharedPrefs {
+abstract class SharedPrefs extends PrefsConstants {
+
     private SharedPreferences prefs;
 
     private SharedPrefs() {
     }
 
-    public SharedPrefs(Context context){
+    SharedPrefs(Context context){
         prefs = context.getSharedPreferences("ui_settings", Context.MODE_PRIVATE);
     }
 
-    protected void putString(String stringToSave, String value){
+    void putString(String stringToSave, String value){
         prefs.edit().putString(stringToSave, value).apply();
     }
 
-    protected void putInt(String stringToSave, int value){
+    void putInt(String stringToSave, int value){
         prefs.edit().putInt(stringToSave, value).apply();
     }
 
-    protected int getInt(String stringToLoad){
+    int getInt(String stringToLoad){
         int x;
         try {
             x = prefs.getInt(stringToLoad, 0);
@@ -61,11 +62,11 @@ public abstract class SharedPrefs {
         return x;
     }
 
-    protected void putLong(String stringToSave, long value){
+    void putLong(String stringToSave, long value){
         prefs.edit().putLong(stringToSave, value).apply();
     }
 
-    protected long getLong(String stringToLoad){
+    long getLong(String stringToLoad){
         long x;
         try {
             x = prefs.getLong(stringToLoad, 1000);
@@ -75,12 +76,12 @@ public abstract class SharedPrefs {
         return x;
     }
 
-    protected void putObject(String key, Object obj) {
+    void putObject(String key, Object obj) {
         Gson gson = new Gson();
         putString(key, gson.toJson(obj));
     }
 
-    protected Object getObject(String key, Class<?> classOfT) {
+    Object getObject(String key, Class<?> classOfT) {
         String json = getString(key);
         Object value = new Gson().fromJson(json, classOfT);
         if (value == null)
@@ -88,7 +89,7 @@ public abstract class SharedPrefs {
         return value;
     }
 
-    protected String getString(String stringToLoad){
+    String getString(String stringToLoad){
         String res;
         try {
             res = prefs.getString(stringToLoad, "");
@@ -99,15 +100,15 @@ public abstract class SharedPrefs {
         return res;
     }
 
-    protected boolean hasKey(String checkString){
+    boolean hasKey(String checkString){
         return prefs.contains(checkString);
     }
 
-    protected void putBoolean(String stringToSave, boolean value){
+    void putBoolean(String stringToSave, boolean value){
         prefs.edit().putBoolean(stringToSave, value).apply();
     }
 
-    protected boolean getBoolean(String stringToLoad){
+    boolean getBoolean(String stringToLoad){
         boolean res;
         try {
             res = prefs.getBoolean(stringToLoad, false);
@@ -117,11 +118,11 @@ public abstract class SharedPrefs {
         return res;
     }
 
-    protected void saveVersionBoolean(String stringToSave){
+    void saveVersionBoolean(String stringToSave){
         prefs.edit().putBoolean(stringToSave, true).apply();
     }
 
-    protected boolean getVersion(String stringToLoad){
+    boolean getVersion(String stringToLoad){
         boolean res;
         try {
             res = prefs.getBoolean(stringToLoad, false);
@@ -131,7 +132,7 @@ public abstract class SharedPrefs {
         return res;
     }
 
-    protected void savePrefsBackup(String key){
+    void savePrefsBackup(String key){
         File dir = MemoryUtil.getPrefsDir();
         if (dir != null) {
             File prefsFile = new File(dir + "/prefs.xml");
@@ -157,7 +158,7 @@ public abstract class SharedPrefs {
         }
     }
 
-    protected void loadPrefsFromFile(){
+    void loadPrefsFromFile(){
         File dir = MemoryUtil.getPrefsDir();
         if (dir == null) return;
 

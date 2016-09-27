@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core.module;
+package com.elementary.tasks.core;
 
 import android.content.Context;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Prefs;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -67,7 +68,10 @@ public class Language {
      */
     public Locale getLocale(Context context, boolean birth){
         Locale res = null;
-        switch (SharedPrefs.getInstance(context).getString(birth ? Prefs.BIRTHDAY_TTS_LOCALE : Prefs.TTS_LOCALE)){
+        String locale;
+        if (birth) locale = Prefs.getInstance(context).getBirthdayTtsLocale();
+        else locale = Prefs.getInstance(context).getTtsLocale();
+        switch (locale){
             case ENGLISH:
                 res = Locale.ENGLISH;
                 break;

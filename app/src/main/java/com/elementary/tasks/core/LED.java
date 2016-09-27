@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core.module;
+package com.elementary.tasks.core;
 
 import android.content.Context;
 
