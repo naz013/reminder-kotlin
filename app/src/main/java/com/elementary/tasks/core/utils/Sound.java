@@ -103,12 +103,14 @@ public class Sound {
             e.printStackTrace();
         }
 
-        SharedPrefs prefs = SharedPrefs.getInstance(mContext);
-        boolean isSystem = prefs.getBoolean(Prefs.SYSTEM_VOLUME);
+        Prefs prefs = Prefs.getInstance(mContext);
+        boolean isSystem = prefs.isSystemVolume();
         if (isSystem) {
-            int stream = prefs.getInt(Prefs.SOUND_STREAM);
+            int stream = prefs.getSoundStream();
             mMediaPlayer.setAudioStreamType(stream);
-        } else mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        } else {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
 
         mMediaPlayer.setLooping(looping);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
@@ -129,10 +131,10 @@ public class Sound {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        SharedPrefs prefs = SharedPrefs.getInstance(mContext);
-        boolean isSystem = prefs.getBoolean(Prefs.SYSTEM_VOLUME);
+        Prefs prefs = Prefs.getInstance(mContext);
+        boolean isSystem = prefs.isSystemVolume();
         if (isSystem) {
-            int stream = prefs.getInt(Prefs.SOUND_STREAM);
+            int stream = prefs.getSoundStream();
             mMediaPlayer.setAudioStreamType(stream);
         } else mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setLooping(looping);
