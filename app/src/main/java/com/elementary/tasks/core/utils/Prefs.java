@@ -41,6 +41,10 @@ public class Prefs extends SharedPrefs {
         putInt(MARKER_STYLE, markerStyle);
     }
 
+    public boolean hasScreenOrientation() {
+        return hasKey(SCREEN);
+    }
+
     public int getScreenOrientation() {
         return getInt(SCREEN);
     }
@@ -87,6 +91,10 @@ public class Prefs extends SharedPrefs {
 
     public void setDarkModeEnabled(boolean value) {
         putBoolean(USE_DARK_THEME, value);
+    }
+
+    public boolean hasAppTheme() {
+        return hasKey(APP_THEME);
     }
 
     public int getAppTheme() {
