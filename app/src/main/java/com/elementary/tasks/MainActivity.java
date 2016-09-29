@@ -1,9 +1,10 @@
 package com.elementary.tasks;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.elementary.tasks.core.ThemedActivity;
+
+public class MainActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
