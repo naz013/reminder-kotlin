@@ -50,6 +50,18 @@ public class TimeUtil {
         else return fullDateTime12.format(calendar.getTime());
     }
 
+    public static String getFullDateTime(String dateTime, boolean is24){
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date date = timeStampFormat.parse(dateTime);
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (is24) return fullDateTime24.format(calendar.getTime());
+        else return fullDateTime12.format(calendar.getTime());
+    }
+
     public static String getSimpleDate(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
