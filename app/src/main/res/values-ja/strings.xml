@@ -539,6 +539,9 @@
     <string name="december">12月</string>
     <string name="download_failed">ダウンロードに失敗しました</string>
     <string name="google_play_services_not_installed">Google Play Services not installed</string>
+    <string name="close">Close</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

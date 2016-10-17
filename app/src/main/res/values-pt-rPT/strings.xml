@@ -538,6 +538,9 @@
     <string name="december">Dezembro</string>
     <string name="download_failed">O download falhou</string>
     <string name="google_play_services_not_installed">Google Play Services not installed</string>
+    <string name="close">Close</string>
+    <string name="map">Map</string>
+    <string name="settings">Settings</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

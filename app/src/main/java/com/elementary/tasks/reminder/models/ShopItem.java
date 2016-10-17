@@ -18,9 +18,7 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 
-import io.realm.RealmObject;
-
-public class ShopItem extends RealmObject {
+public class ShopItem {
 
     private String summary;
     private boolean visibility;
