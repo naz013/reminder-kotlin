@@ -1,4 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_current"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="@string/tasks" />
 
+        <item
+            android:id="@+id/nav_notes"
+            android:icon="@drawable/ic_note"
+            android:title="@string/notes" />
+
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/calendar" />
+
+        <item
+            android:id="@+id/nav_day_view"
+            android:icon="@drawable/ic_view_day"
+            android:title="@string/events" />
+
+        <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/ic_google"
+            android:title="@string/google_tasks" />
+
+        <item
+            android:id="@+id/nav_groups"
+            android:icon="@drawable/ic_tag_multiple"
+            android:title="@string/groups" />
+
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@drawable/ic_map"
+            android:title="@string/map" />
+
+        <item
+            android:id="@+id/nav_places"
+            android:icon="@drawable/ic_map_marker"
+            android:title="@string/places" />
+
+        <item
+            android:id="@+id/nav_templates"
+            android:icon="@drawable/ic_message"
+            android:title="@string/messages" />
+
+        <item
+            android:id="@+id/nav_backups"
+            android:icon="@drawable/ic_history"
+            android:title="@string/backup_files" />
+
+        <item
+            android:id="@+id/nav_archive"
+            android:icon="@drawable/ic_archive"
+            android:title="@string/trash" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+    </group>
+
+    <group
+        android:id="@+id/misc"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback_black_24px"
+            android:title="@string/feedback" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help"
+            android:title="@string/help" />
+    </group>
 </menu>

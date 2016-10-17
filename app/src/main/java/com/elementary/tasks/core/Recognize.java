@@ -112,7 +112,7 @@ public class Recognize {
 //
 //        JsonModel jsonModel = new JsonModel(summary, type, categoryId,
 //                SyncHelper.generateID(), startTime, startTime, jRecurrence, jAction, jExport);
-//        long remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
+//        long remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new Reminder(jsonModel));
 //        if (isCalendar || isStock) {
 //            ReminderUtils.exportToCalendar(mContext, summary, startTime, remId, isCalendar, isStock);
 //        }
@@ -147,7 +147,7 @@ public class Recognize {
 //            JRecurrence jRecurrence = new JRecurrence(0, 0, -1, null, after);
 //            JsonModel jsonModel = new JsonModel(note, Constants.TYPE_REMINDER, categoryId,
 //                    SyncHelper.generateID(), due, due, jRecurrence, null, null);
-//            remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
+//            remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new Reminder(jsonModel));
 //        }
 //        item.setLinkId(remId);
 //        NoteHelper.getInstance(mContext).saveNote(item);
