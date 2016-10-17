@@ -23,17 +23,17 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class EN extends RecUtils {
+class EnLocale extends RecUtils implements LocaleImpl {
 
     private final static String[] weekDays = {
             "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
     };
 
-    public static boolean hasCalendar(String input) {
+    public boolean hasCalendar(String input) {
         return input.matches(".*calendar.*");
     }
 
-    public static String clearCalendar(String input) {
+    public String clearCalendar(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (string.matches(".*calendar.*")) {
@@ -44,7 +44,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static ArrayList<Integer> getWeekDays(String input) {
+    public ArrayList<Integer> getWeekDays(String input) {
         int[] array = {0, 0, 0, 0, 0, 0, 0};
 
         String[] parts = input.split("\\s");
@@ -60,7 +60,7 @@ public class EN extends RecUtils {
         return list;
     }
 
-    public static String clearWeekDays(String input) {
+    public String clearWeekDays(String input) {
         String[] parts = input.split("\\s");
         for (String part : parts) {
             for (String day : weekDays) {
@@ -78,7 +78,7 @@ public class EN extends RecUtils {
         return sb.toString().trim();
     }
 
-    public static long getDaysRepeat(String input) {
+    public long getDaysRepeat(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -95,7 +95,7 @@ public class EN extends RecUtils {
         return 0;
     }
 
-    public static String clearDaysRepeat(String input) {
+    public String clearDaysRepeat(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -112,11 +112,11 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static boolean hasRepeat(String input) {
+    public boolean hasRepeat(String input) {
         return input.matches(".*every.*");
     }
 
-    public static String clearRepeat(String input) {
+    public String clearRepeat(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (string.matches(".*every.*")) {
@@ -127,11 +127,11 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static boolean hasTomorrow(String input) {
+    public boolean hasTomorrow(String input) {
         return input.matches(".*tomorrow.*");
     }
 
-    public static String clearTomorrow(String input) {
+    public String clearTomorrow(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (string.matches(".*tomorrow.*")) {
@@ -142,7 +142,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static String getMessage(String input) {
+    public String getMessage(String input) {
         String[] parts = input.split("\\s");
         StringBuilder sb = new StringBuilder();
         boolean isStart = false;
@@ -154,7 +154,7 @@ public class EN extends RecUtils {
         return sb.toString().trim();
     }
 
-    public static String clearMessage(String input) {
+    public String clearMessage(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -167,13 +167,13 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static int getType(String input) {
+    public int getType(String input) {
         if (input.matches(".*message.*")) return MESSAGE;
         if (input.matches(".*letter.*")) return MAIL;
         return -1;
     }
 
-    public static String clearType(String input) {
+    public String clearType(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -187,7 +187,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static int getAmpm(String input) {
+    public int getAmpm(String input) {
         if (input.matches(".*morning.*")) return MORNING;
         if (input.matches(".*evening.*")) return EVENING;
         if (input.matches(".*noon.*")) return NOON;
@@ -201,7 +201,7 @@ public class EN extends RecUtils {
         return -1;
     }
 
-    public static String clearAmpm(String input) {
+    public String clearAmpm(String input) {
         String[] parts = input.split("\\s");
         for (String part : parts) {
             int ampm = getAmpm(part);
@@ -213,7 +213,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static long getTime(String input, int ampm, String[] times) {
+    public long getTime(String input, int ampm, String[] times) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         String[] parts = input.split("\\s");
@@ -267,7 +267,7 @@ public class EN extends RecUtils {
         return calendar.getTimeInMillis();
     }
 
-    static Date getShortTime(String input) {
+    private Date getShortTime(String input) {
         Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)?(([0-5]?\\d?)?)");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
@@ -284,7 +284,7 @@ public class EN extends RecUtils {
         return null;
     }
 
-    public static String clearTime(String input) {
+    public String clearTime(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -320,7 +320,7 @@ public class EN extends RecUtils {
         return sb.toString().trim();
     }
 
-    public static long getDate(String input) {
+    public long getDate(String input) {
         long mills = 0;
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
@@ -344,7 +344,7 @@ public class EN extends RecUtils {
         return mills;
     }
 
-    public static String clearDate(String input) {
+    public String clearDate(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
@@ -362,7 +362,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    static int getMonth(String input){
+    private int getMonth(String input){
         int res = -1;
         if (input.contains("january")) res = 0;
         if (input.contains("february")) res = 1;
@@ -379,11 +379,11 @@ public class EN extends RecUtils {
         return res;
     }
 
-    public static boolean hasCall(String input) {
+    public boolean hasCall(String input) {
         return input.matches(".*call.*");
     }
 
-    public static String clearCall(String input) {
+    public String clearCall(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (hasCall(string)) {
@@ -394,11 +394,11 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static boolean isTimer(String input) {
+    public boolean isTimer(String input) {
         return input.matches(".*after.*");
     }
 
-    public static String cleanTimer(String input) {
+    public String cleanTimer(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (isTimer(string)) {
@@ -409,11 +409,11 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static boolean hasSender(String input) {
+    public boolean hasSender(String input) {
         return input.matches(".*send.*");
     }
 
-    public static String clearSender(String input) {
+    public String clearSender(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
             if (hasSender(string)) {
@@ -424,22 +424,22 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    public static boolean hasNote(String input) {
+    public boolean hasNote(String input) {
         return input.startsWith("note");
     }
 
-    public static String clearNote(String input) {
+    public String clearNote(String input) {
         input = input.replace("note", "");
         return input.trim();
     }
 
-    public static boolean hasAction(String input) {
+    public boolean hasAction(String input) {
         return input.startsWith("open") || input.matches(".*help.*")
                 || input.matches(".*adjust.*") || input.matches(".*report.*") ||
                 input.matches(".*change.*");
     }
 
-    public static int getAction(String input) {
+    public int getAction(String input) {
         if (input.matches(".*help.*"))
             return HELP;
         else if (input.matches(".*loudness.*") || input.matches(".*volume.*"))
@@ -451,17 +451,17 @@ public class EN extends RecUtils {
         else return APP;
     }
 
-    public static boolean hasEvent(String input) {
+    public boolean hasEvent(String input) {
         return input.startsWith("new") || input.startsWith("add");
     }
 
-    public static int getEvent(String input) {
+    public int getEvent(String input) {
         if (input.matches(".*birthday.*"))
             return BIRTHDAY;
         else return REMINDER;
     }
 
-    public static long getMultiplier(String input) {
+    public long getMultiplier(String input) {
         long result = 0;
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
@@ -511,7 +511,7 @@ public class EN extends RecUtils {
         return result;
     }
 
-    public static String clearMultiplier(String input) {
+    public String clearMultiplier(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
@@ -555,28 +555,28 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    static boolean hasHours(String input) {
+    private boolean hasHours(String input) {
         return input.matches(".*hour.*") || input.matches(".*o'clock.*")
                 || input.matches(".*am.*")  || input.matches(".*pm.*");
     }
 
-    static boolean hasMinutes(String input) {
+    private boolean hasMinutes(String input) {
         return input.matches(".*minute.*");
     }
 
-    static boolean hasSeconds(String input) {
+    private boolean hasSeconds(String input) {
         return input.matches(".*second.*");
     }
 
-    static boolean hasDays(String input) {
+    private boolean hasDays(String input) {
         return input.matches(".* day.*");
     }
 
-    static boolean hasWeeks(String input) {
+    private boolean hasWeeks(String input) {
         return input.matches(".*week.*");
     }
 
-    public static String replaceNumbers(String input) {
+    public String replaceNumbers(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             int number = getNumber(parts, i);
@@ -589,7 +589,7 @@ public class EN extends RecUtils {
         return input.trim();
     }
 
-    static int getNumber(String[] parts, int index) {
+    private int getNumber(String[] parts, int index) {
         int number = findNumber(parts[index]);
         if (number == -1) return -1;
         if (number >= 20) {
@@ -599,7 +599,7 @@ public class EN extends RecUtils {
         } else return number;
     }
 
-    static int findNumber(String input){
+    private static int findNumber(String input){
         int number = -1;
         if (input.matches("zero") || input.matches("nil")) number = 0;
         if (input.matches("one") || input.matches("first")) number = 1;

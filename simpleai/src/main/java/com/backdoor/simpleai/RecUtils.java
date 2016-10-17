@@ -48,7 +48,7 @@ public class RecUtils {
     public static SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     public static final SimpleDateFormat simpleDate = new SimpleDateFormat("d MMMM yyyy, HH:mm", Locale.getDefault());
 
-    public int getWeekday(ArrayList<Integer> days) {
+    public static int getWeekday(ArrayList<Integer> days) {
         for (int i = 0; i < days.size(); i++) {
             if (days.get(i) == 1) return i;
         }

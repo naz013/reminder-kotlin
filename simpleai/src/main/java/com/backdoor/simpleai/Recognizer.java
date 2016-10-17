@@ -41,14 +41,13 @@ public class Recognizer {
 
     public Model parseResults(String matches, String locale){
         String keyStr = matches.toLowerCase().trim();
-
         return parse(keyStr, locale);
     }
 
     private Model parse(String keyStr, String locale) {
-        //if (keyStr.startsWith("#")) return null;
         Log.d("-----BEFORE------", keyStr);
-        Wrapper wrapper = new Wrapper(locale);
+        LocaleImpl wrapper = LocaleFactory.Builder(locale);
+        if (wrapper == null) return null;
         keyStr = wrapper.replaceNumbers(keyStr);
         Log.d("-----AFTER------", keyStr);
         Model model = new Model();
@@ -166,7 +165,7 @@ public class Recognizer {
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
 
-            int day = wrapper.getWeekday(weekdays);
+            int day = RecUtils.getWeekday(weekdays);
             weekdays = null;
             type = REMINDER;
             if (day != -1) {

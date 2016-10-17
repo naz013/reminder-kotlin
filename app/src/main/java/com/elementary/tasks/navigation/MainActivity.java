@@ -85,8 +85,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         if (prevItem == item.getItemId()) return false;
-
         prevItem = item.getItemId();
         switch (item.getItemId()) {
             case R.id.nav_current:
