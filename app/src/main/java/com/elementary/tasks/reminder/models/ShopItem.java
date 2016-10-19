@@ -18,6 +18,8 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 
+import java.util.UUID;
+
 public class ShopItem {
 
     private String summary;
@@ -25,6 +27,10 @@ public class ShopItem {
     private boolean checked;
     private String uuId;
     private String createTime;
+
+    public ShopItem() {
+        this.uuId = UUID.randomUUID().toString();
+    }
 
     public ShopItem(String summary, boolean visibility, boolean checked, String uuId, String createTime) {
         this.summary = summary;

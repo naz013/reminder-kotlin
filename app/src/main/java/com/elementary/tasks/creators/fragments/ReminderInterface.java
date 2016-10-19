@@ -1,4 +1,6 @@
-package com.elementary.tasks.navigation;
+package com.elementary.tasks.creators.fragments;
+
+import com.elementary.tasks.reminder.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -16,6 +18,17 @@ package com.elementary.tasks.navigation;
  * limitations under the License.
  */
 
-public class ArchiveFragment extends BaseNavigationFragment {
-
+public interface ReminderInterface {
+    Reminder getReminder();
+    boolean getUseGlobal();
+    boolean getVoice();
+    boolean getVibration();
+    boolean getNotificationRepeat();
+    boolean getWake();
+    boolean getUnlock();
+    boolean getAuto();
+    int getVolume();
+    int getLedColor();
+    int getRepeats();
+    String getGroup();
 }

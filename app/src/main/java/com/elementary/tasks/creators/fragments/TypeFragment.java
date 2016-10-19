@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation;
+package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -20,10 +20,12 @@ import android.content.Context;
  * limitations under the License.
  */
 
-abstract class BaseNavigationFragment extends Fragment {
+public abstract class TypeFragment extends Fragment {
 
     protected Context mContext;
-    protected FragmentCallback mCallback;
+    protected ReminderInterface mInterface;
+
+    public abstract void save();
 
     @Override
     public void onAttach(Context context) {
@@ -31,8 +33,8 @@ abstract class BaseNavigationFragment extends Fragment {
         if (mContext == null) {
             mContext = context;
         }
-        if (mCallback == null) {
-            mCallback = (FragmentCallback) context;
+        if (mInterface == null) {
+            mInterface = (ReminderInterface) context;
         }
     }
 
@@ -42,8 +44,8 @@ abstract class BaseNavigationFragment extends Fragment {
         if (mContext == null) {
             mContext = activity;
         }
-        if (mCallback == null) {
-            mCallback = (FragmentCallback) activity;
+        if (mInterface == null) {
+            mInterface = (ReminderInterface) activity;
         }
     }
 }

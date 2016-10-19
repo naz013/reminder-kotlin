@@ -20,6 +20,7 @@ import com.elementary.tasks.core.RecyclerInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Reminder implements RecyclerInterface {
 
@@ -42,13 +43,16 @@ public class Reminder implements RecyclerInterface {
     private boolean unlock;
     private boolean exportToTasks;
     private boolean exportToCalendar;
+    private boolean useGlobal;
     private String from, to;
     private List<Integer> hours;
     private String fileName;
     private String melodyPath;
     private int volume;
     private int dayOfMonth;
-    private long repeatInterval, repeatLimit, after;
+    private long repeatInterval;
+    private int repeatLimit;
+    private long after;
     private List<Integer> weekdays = new ArrayList<>();
     private String type;
     private String target;
@@ -60,7 +64,16 @@ public class Reminder implements RecyclerInterface {
     private List<ShopItem> shoppings = new ArrayList<>();
 
     public Reminder() {
+        this.uuId = UUID.randomUUID().toString();
+    }
 
+    public boolean isUseGlobal() {
+        return useGlobal;
+    }
+
+    public Reminder setUseGlobal(boolean useGlobal) {
+        this.useGlobal = useGlobal;
+        return this;
     }
 
     public String getSummary() {
@@ -279,11 +292,11 @@ public class Reminder implements RecyclerInterface {
         return this;
     }
 
-    public long getRepeatLimit() {
+    public int getRepeatLimit() {
         return repeatLimit;
     }
 
-    public Reminder setRepeatLimit(long repeatLimit) {
+    public Reminder setRepeatLimit(int repeatLimit) {
         this.repeatLimit = repeatLimit;
         return this;
     }
