@@ -2,6 +2,7 @@ package com.elementary.tasks.navigation;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,11 +16,27 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.databinding.ActivityMainBinding;
+import com.elementary.tasks.navigation.fragments.ArchiveFragment;
+import com.elementary.tasks.navigation.fragments.BackupsFragment;
+import com.elementary.tasks.navigation.fragments.CalendarFragment;
+import com.elementary.tasks.navigation.fragments.DayViewFragment;
+import com.elementary.tasks.navigation.fragments.FragmentCallback;
+import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
+import com.elementary.tasks.navigation.fragments.GroupsFragment;
+import com.elementary.tasks.navigation.fragments.MapFragment;
+import com.elementary.tasks.navigation.fragments.MessagesFragment;
+import com.elementary.tasks.navigation.fragments.NotesFragment;
+import com.elementary.tasks.navigation.fragments.PlacesFragment;
+import com.elementary.tasks.navigation.fragments.RemindersFragment;
+import com.elementary.tasks.navigation.fragments.SettingsFragment;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
     private static final int PRESS_AGAIN_TIME = 2000;
 
+    private ActivityMainBinding binding;
     private Toolbar toolbar;
     private NavigationView mNavigationView;
     private Fragment fragment;
@@ -31,13 +48,18 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initActionBar();
         initNavigation();
+        binding.fab.setOnClickListener(v -> openCreator());
+    }
+
+    private void openCreator() {
+        startActivity(new Intent(this, CreateReminderActivity.class));
     }
 
     private void initActionBar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -54,17 +76,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void initNavigation() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = binding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = binding.drawerLayout;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -85,7 +107,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = binding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
         if (prevItem == item.getItemId()) return false;
         prevItem = item.getItemId();

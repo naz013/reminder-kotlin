@@ -49,9 +49,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/HomeDark.Cyan">
-        <activity android:name=".navigation.MainActivity">
 
-        </activity>
+        <activity android:name=".navigation.MainActivity" />
+
+        <activity android:name=".creators.CreateReminderActivity" />
 
         <activity
             android:name=".core.SplashScreen"

@@ -1,4 +1,4 @@
-package com.elementary.tasks.navigation;
+package com.elementary.tasks.navigation.fragments;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -16,6 +16,6 @@ package com.elementary.tasks.navigation;
  * limitations under the License.
  */
 
-public class CalendarFragment extends BaseNavigationFragment {
+public class RemindersFragment extends BaseNavigationFragment {
 
 }

@@ -541,6 +541,7 @@
     <string name="close">Close</string>
     <string name="map">Map</string>
     <string name="settings">Settings</string>
+    <string name="disable">Disable</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

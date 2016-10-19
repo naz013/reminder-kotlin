@@ -8,10 +8,12 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 
 public abstract class ThemedActivity extends AppCompatActivity {
 
+    protected ThemeUtil themeUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeUtil themeUtil = ThemeUtil.getInstance(this);
+        themeUtil = ThemeUtil.getInstance(this);
         setTheme(themeUtil.getStyle());
         setRequestedOrientation(themeUtil.getRequestOrientation());
         if (Module.isLollipop()) {

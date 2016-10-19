@@ -1,6 +1,4 @@
-package com.elementary.tasks.navigation;
-
-import android.app.Fragment;
+package com.elementary.tasks.navigation.fragments;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,6 +16,6 @@ import android.app.Fragment;
  * limitations under the License.
  */
 
-public interface FragmentCallback {
-    void replaceFragment(Fragment fragment, String title);
+public class MessagesFragment extends BaseNavigationFragment {
+
 }
