@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2016 Nazar Suhovich
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+            android:id="@+id/actionCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/action"
+            android:textSize="@dimen/checkbox_text_size"
+            app:check_font_style="roboto_light" />
+
+        <LinearLayout
+            android:id="@+id/actionBlock"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                    android:id="@+id/callAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/make_call"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:radio_font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                    android:id="@+id/messageAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="@string/sms"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:radio_font_style="roboto_regular" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/selectNumber"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_contacts" />
+
+                <com.elementary.tasks.core.views.roboto.RoboEditText
+                    android:id="@+id/numberView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:hint="@string/phone"
+                    android:inputType="text|phone"
+                    android:maxLines="1"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:edit_font_style="roboto_light" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</merge>

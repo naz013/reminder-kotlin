@@ -1,7 +1,5 @@
 package com.elementary.tasks.creators.fragments;
 
-import com.elementary.tasks.reminder.models.Reminder;
-
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -18,19 +16,10 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public interface ReminderInterface {
-    Reminder getReminder();
-    boolean getUseGlobal();
-    boolean getVoice();
-    boolean getVibration();
-    boolean getNotificationRepeat();
-    boolean getWake();
-    boolean getUnlock();
-    boolean getAuto();
-    int getVolume();
-    int getLedColor();
-    int getRepeatLimit();
-    String getGroup();
-    void setRepeatLimit(int repeatLimit);
-    void setEventHint(String hint);
+public class LocationTypeFragment extends TypeFragment {
+
+    @Override
+    public void save() {
+
+    }
 }

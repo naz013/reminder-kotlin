@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2015 Nazar Suhovich
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/red_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_red" />
+
+            <ImageButton
+                android:id="@+id/violet_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_purple" />
+
+            <ImageButton
+                android:id="@+id/light_green_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_green_light" />
+
+            <ImageButton
+                android:id="@+id/green_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_green" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/light_blue_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_blue_light" />
+
+            <ImageButton
+                android:id="@+id/blue_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_blue" />
+
+            <ImageButton
+                android:id="@+id/yellow_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_yellow" />
+
+            <ImageButton
+                android:id="@+id/orange_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_orange" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/grey_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_cyan" />
+
+            <ImageButton
+                android:id="@+id/pink_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_pink" />
+
+            <ImageButton
+                android:id="@+id/sand_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_teal" />
+
+            <ImageButton
+                android:id="@+id/brown_checkbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_amber" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/themeGroupPro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/deepPurple"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_deep_purple" />
+
+            <ImageButton
+                android:id="@+id/deepOrange"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_deep_orange" />
+
+            <ImageButton
+                android:id="@+id/limeCheckbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_lime" />
+
+            <ImageButton
+                android:id="@+id/indigoCheckbox"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="5dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/circle_drawable_indigo" />
+
+        </LinearLayout>
+    </LinearLayout>
+</merge>

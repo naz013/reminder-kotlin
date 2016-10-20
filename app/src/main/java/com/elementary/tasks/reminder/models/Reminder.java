@@ -27,8 +27,35 @@ public class Reminder implements RecyclerInterface {
     public static final int REMINDER = 0;
     public static final int SHOPPING = 1;
 
+    public static final int BY_DATE = 10;
+    public static final int BY_DATE_CALL = 11;
+    public static final int BY_DATE_SMS = 12;
+    public static final int BY_DATE_APP = 13;
+    public static final int BY_DATE_LINK = 14;
+    public static final int BY_DATE_SHOP = 15;
+    public static final int BY_DATE_EMAIL = 16;
+    public static final int BY_TIME = 20;
+    public static final int BY_WEEK = 30;
+    public static final int BY_WEEK_CALL = 31;
+    public static final int BY_WEEK_SMS = 32;
+    public static final int BY_LOCATION = 40;
+    public static final int BY_LOCATION_CALL = 41;
+    public static final int BY_LOCATION_SMS = 42;
+    public static final int BY_SKYPE = 50;
+    public static final int BY_SKYPE_CALL = 51;
+    public static final int BY_SKYPE_VIDEO = 52;
+    public static final int BY_MONTH = 60;
+    public static final int BY_MONTH_CALL = 61;
+    public static final int BY_MONTH_SMS = 62;
+    public static final int BY_OUT = 70;
+    public static final int BY_OUT_CALL = 71;
+    public static final int BY_OUT_SMS = 72;
+    public static final int BY_PLACES = 80;
+    public static final int BY_PLACES_CALL = 81;
+    public static final int BY_PLACES_SMS = 82;
+
     private String summary;
-    private String reminderType;
+    private int reminderType;
     private String groupUuId;
     private String uuId;
     private String eventTime;
@@ -85,11 +112,11 @@ public class Reminder implements RecyclerInterface {
         return this;
     }
 
-    public String getReminderType() {
+    public int getReminderType() {
         return reminderType;
     }
 
-    public Reminder setReminderType(String reminderType) {
+    public Reminder setReminderType(int reminderType) {
         this.reminderType = reminderType;
         return this;
     }

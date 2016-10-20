@@ -176,4 +176,12 @@ public class Prefs extends SharedPrefs {
     public void setSoundStream(int value) {
         putInt(SOUND_STREAM, value);
     }
+
+    public boolean is24HourFormatEnabled() {
+        return getBoolean(IS_24_TIME_FORMAT);
+    }
+
+    public void set24HourFormatEnabled(boolean value) {
+        putBoolean(IS_24_TIME_FORMAT, value);
+    }
 }
