@@ -29,6 +29,6 @@ public interface ReminderInterface {
     boolean getAuto();
     int getVolume();
     int getLedColor();
-    int getRepeats();
+    int getRepeatLimit();
     String getGroup();
 }

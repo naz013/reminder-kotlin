@@ -558,6 +558,8 @@
     <string name="map">Map</string>
     <string name="settings">Settings</string>
     <string name="disable">Disable</string>
+    <string name="once">Once</string>
+    <string name="times">times</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

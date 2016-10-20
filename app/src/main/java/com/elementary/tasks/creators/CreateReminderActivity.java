@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.elementary.tasks.R;
@@ -34,6 +35,7 @@ import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.TypeFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean wake;
     private boolean unlock;
     private boolean auto;
-    private int repeats = -1;
+    private int repeatLimit = -1;
     private int volume;
     private String groupId;
     private int ledColor = -1;
@@ -218,9 +220,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                             Permissions.READ_EXTERNAL);
                 }
                 return true;
-            case R.id.action_custom_radius:
-                selectRadius();
-                return true;
             case R.id.action_custom_color:
                 chooseLedColor();
                 return true;
@@ -245,11 +244,76 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void changeLimit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.repeat_limit);
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(getLayoutInflater());
+        b.seekBar.setMax(366);
+        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                setRepeatTitle(b.titleView, progress);
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        b.seekBar.setProgress(repeatLimit != -1 ? repeatLimit : 0);
+        setRepeatTitle(b.titleView, repeatLimit);
+        builder.setView(b.getRoot());
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> saveLimit(b.seekBar.getProgress()));
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void setRepeatTitle(RoboTextView textView, int progress) {
+        if (progress == 0) {
+            textView.setText(getString(R.string.no_limits));
+        } else if (progress == 1) {
+            textView.setText(R.string.once);
+        } else {
+            textView.setText(progress + " " + getString(R.string.times));
+        }
+    }
+
+    private void saveLimit(int progress) {
+        if (progress == 0) repeatLimit = -1;
+        else repeatLimit = progress;
     }
 
     private void selectVolume() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.loudness);
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(getLayoutInflater());
+        b.seekBar.setMax(25);
+        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                b.titleView.setText(String.valueOf(progress));
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        b.seekBar.setProgress(volume);
+        b.titleView.setText(String.valueOf(volume));
+        builder.setView(b.getRoot());
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> this.volume = b.seekBar.getProgress());
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     private void chooseLedColor() {
@@ -274,10 +338,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             dialog.dismiss();
         });
         builder.create().show();
-    }
-
-    private void selectRadius() {
-
     }
 
     private void save() {
@@ -393,9 +453,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         return ledColor;
     }
 
-    @Override
-    public int getRepeats() {
-        return repeats;
+    public int getRepeatLimit() {
+        return repeatLimit;
     }
 
     @Override
