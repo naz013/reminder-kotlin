@@ -1,0 +1,153 @@
+/**
+ * Copyright 2016 Nazar Suhovich
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.elementary.tasks.core.views;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.DatePicker;
+import android.widget.RelativeLayout;
+import android.widget.TimePicker;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.views.roboto.RoboTextView;
+
+import java.util.Calendar;
+
+public class DateTimeView extends RelativeLayout implements
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    private RoboTextView date;
+    private RoboTextView time;
+    private int mHour;
+    private int mMinute;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    private Context mContext;
+    private AttributeSet attrs;
+
+    public DateTimeView(Context context) {
+        super(context);
+        init(context, null);
+    }
+
+    public DateTimeView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
+
+    public DateTimeView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        if (isInEditMode()) return;
+        this.attrs = attrs;
+        View.inflate(context, R.layout.date_time_view_layout, this);
+        setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
+        date = (RoboTextView) findViewById(R.id.dateField);
+        time = (RoboTextView) findViewById(R.id.timeField);
+        if (ThemeUtil.getInstance(context).isDark()) {
+            date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_white, 0, 0, 0);
+            time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_white_24dp, 0, 0, 0);
+        } else {
+            date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
+            time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_black_24dp, 0, 0, 0);
+        }
+        date.setOnClickListener(v -> dateDialog());
+        time.setOnClickListener(v -> timeDialog());
+
+        this.mContext = context;
+        updateDateTime(0);
+    }
+
+    public long getDateTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    private void updateDateTime(long mills){
+        if (mills == 0) {
+            mills = System.currentTimeMillis();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(mills);
+            mYear = calendar.get(Calendar.YEAR);
+            mMonth = calendar.get(Calendar.MONTH);
+            mDay = calendar.get(Calendar.DAY_OF_MONTH);
+            mHour = calendar.get(Calendar.HOUR_OF_DAY);
+            mMinute = calendar.get(Calendar.MINUTE);
+        }
+        updateTime(mills);
+        updateDate(mills);
+    }
+
+    private void updateDate(long mills){
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(mills);
+        date.setText(TimeUtil.getDate(cal.getTime()));
+    }
+
+    private void updateTime(long mills){
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(mills);
+        time.setText(TimeUtil.getTime(cal.getTime(), Prefs.getInstance(mContext).is24HourFormatEnabled()));
+    }
+
+    private void dateDialog() {
+        new DatePickerDialog(mContext, this, mYear, mMonth, mDay).show();
+    }
+
+    private void timeDialog() {
+        new TimePickerDialog(mContext, this, mHour, mMinute, Prefs.getInstance(mContext).is24HourFormatEnabled()).show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        this.mYear = year;
+        this.mMonth = monthOfYear;
+        this.mDay = dayOfMonth;
+        final Calendar cal = Calendar.getInstance();
+        cal.set(year, monthOfYear, dayOfMonth);
+        updateDate(cal.getTimeInMillis());
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        this.mHour = hourOfDay;
+        this.mMinute = minute;
+        final Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        cal.set(Calendar.MINUTE, minute);
+        updateTime(cal.getTimeInMillis());
+    }
+
+    public interface OnSelectListener{
+        void onDateSelect(long mills, int day, int month, int year);
+        void onTimeSelect(long mills, int hour, int minute);
+    }
+}

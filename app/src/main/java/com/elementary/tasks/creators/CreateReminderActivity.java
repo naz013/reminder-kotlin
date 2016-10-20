@@ -31,7 +31,9 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.creators.fragments.TimerFragment;
 import com.elementary.tasks.creators.fragments.TypeFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
@@ -69,7 +71,14 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private AdapterView.OnItemSelectedListener mOnTypeSelectListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+            switch (position) {
+                case 0:
+                    replaceFragment(new DateFragment());
+                    break;
+                case 1:
+                    replaceFragment(new TimerFragment());
+                    break;
+            }
         }
 
         @Override
@@ -93,8 +102,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar_white));
             navSpinner.add(new SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white));
             navSpinner.add(new SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white));
-            navSpinner.add(new SpinnerItem(getString(R.string.make_call), R.drawable.ic_phone_white));
-            navSpinner.add(new SpinnerItem(getString(R.string.sms), R.drawable.ic_message_white));
             navSpinner.add(new SpinnerItem(getString(R.string.location), R.drawable.ic_map_white));
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white));
             navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application_white));
@@ -108,8 +115,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar));
             navSpinner.add(new SpinnerItem(getString(R.string.timer), R.drawable.ic_timer));
             navSpinner.add(new SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm));
-            navSpinner.add(new SpinnerItem(getString(R.string.make_call), R.drawable.ic_phone));
-            navSpinner.add(new SpinnerItem(getString(R.string.sms), R.drawable.ic_message));
             navSpinner.add(new SpinnerItem(getString(R.string.location), R.drawable.ic_map));
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype));
             navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application));
@@ -195,13 +200,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true);
     }
 
-    public void replaceFragment(TypeFragment fragment, String title) {
+    public void replaceFragment(TypeFragment fragment) {
         this.fragment = fragment;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.main_container, fragment, title);
+        ft.replace(R.id.main_container, fragment, null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
-        toolbar.setTitle(title);
     }
 
     @Override
@@ -226,9 +230,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case R.id.action_volume:
                 selectVolume();
                 return true;
-            case R.id.action_limit:
-                changeLimit();
-                return true;
             case MENU_ITEM_DELETE:
                 deleteReminder();
                 return true;
@@ -241,50 +242,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void deleteReminder() {
 
-    }
-
-    private void changeLimit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.repeat_limit);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(getLayoutInflater());
-        b.seekBar.setMax(366);
-        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                setRepeatTitle(b.titleView, progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        b.seekBar.setProgress(repeatLimit != -1 ? repeatLimit : 0);
-        setRepeatTitle(b.titleView, repeatLimit);
-        builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> saveLimit(b.seekBar.getProgress()));
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
-        builder.create().show();
-    }
-
-    private void setRepeatTitle(RoboTextView textView, int progress) {
-        if (progress == 0) {
-            textView.setText(getString(R.string.no_limits));
-        } else if (progress == 1) {
-            textView.setText(R.string.once);
-        } else {
-            textView.setText(progress + " " + getString(R.string.times));
-        }
-    }
-
-    private void saveLimit(int progress) {
-        if (progress == 0) repeatLimit = -1;
-        else repeatLimit = progress;
     }
 
     private void selectVolume() {
@@ -349,22 +306,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_create_reminder, menu);
-//        if (isLocationAttached()){
-//            menu.getItem(2).setVisible(true);
-//        } else {
-//            menu.getItem(2).setVisible(false);
-//        }
-//        if (isLocationAttached() || isLocationOutAttached()
-//                || isShoppingAttached() || isPlacesAttached()){
-//            menu.getItem(4).setVisible(false);
-//        } else {
-//            menu.getItem(4).setVisible(true);
-//        }
-//        if (Module.isPro() && SharedPrefs.getInstance(this).getBoolean(Prefs.LED_STATUS)){
-//            menu.getItem(3).setVisible(true);
-//        } else {
-//            menu.getItem(3).setVisible(false);
-//        }
         if (mReminder != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete));
         }
@@ -373,22 +314,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-//        if (isLocationAttached()){
-//            menu.getItem(2).setVisible(true);
-//        } else {
-//            menu.getItem(2).setVisible(false);
-//        }
-//        if (isLocationAttached() || isLocationOutAttached()
-//                || isShoppingAttached() || isPlacesAttached()){
-//            menu.getItem(4).setVisible(false);
-//        } else {
-//            menu.getItem(4).setVisible(true);
-//        }
-//        if (Module.isPro() && SharedPrefs.getInstance(this).getBoolean(Prefs.LED_STATUS)){
-//            menu.getItem(3).setVisible(true);
-//        } else {
-//            menu.getItem(3).setVisible(false);
-//        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -401,6 +326,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 taskField.setText(text);
             }
         }
+        fragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -460,6 +386,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public String getGroup() {
         return groupId;
+    }
+
+    @Override
+    public void setRepeatLimit(int repeatLimit) {
+        this.repeatLimit = repeatLimit;
+    }
+
+    @Override
+    public void setEventHint(String hint) {
+        taskField.setHint(hint);
     }
 
     private class SpinnerItem {
