@@ -1,4 +1,6 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.navigation.settings;
+
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 
 /**
  * Copyright 2016 Nazar Suhovich

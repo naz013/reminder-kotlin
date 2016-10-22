@@ -20,7 +20,7 @@ import android.content.Context;
  * limitations under the License.
  */
 
-abstract class BaseNavigationFragment extends Fragment {
+public abstract class BaseNavigationFragment extends Fragment {
 
     protected Context mContext;
     protected FragmentCallback mCallback;

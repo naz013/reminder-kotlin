@@ -33,4 +33,6 @@ public interface ReminderInterface {
     String getGroup();
     void setRepeatLimit(int repeatLimit);
     void setEventHint(String hint);
+    boolean isExportToCalendar();
+    boolean isExportToTasks();
 }
