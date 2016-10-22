@@ -1,6 +1,10 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.navigation.settings;
 
-import android.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,7 +22,11 @@ import android.app.Fragment;
  * limitations under the License.
  */
 
-public interface FragmentCallback {
-    void replaceFragment(Fragment fragment, String title);
-    void onTitleChange(String title);
+public class GeneralSettingsFragment extends SettingsFragment {
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 }

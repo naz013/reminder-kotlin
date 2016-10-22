@@ -30,7 +30,7 @@ import com.elementary.tasks.navigation.fragments.MessagesFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
-import com.elementary.tasks.navigation.settings.SettingsFragment;
+import com.elementary.tasks.navigation.settings.GeneralSettingsFragment;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
@@ -72,6 +72,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         ft.replace(R.id.main_container, fragment, title);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
+        toolbar.setTitle(title);
+    }
+
+    @Override
+    public void onTitleChange(String title) {
         toolbar.setTitle(title);
     }
 
@@ -146,7 +151,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
                 break;
             case R.id.nav_settings:
-                replaceFragment(new SettingsFragment(), getString(R.string.settings));
+                replaceFragment(new GeneralSettingsFragment(), getString(R.string.settings));
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new DayViewFragment(), getString(R.string.feedback));
