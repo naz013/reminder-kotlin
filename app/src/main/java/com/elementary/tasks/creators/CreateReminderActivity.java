@@ -28,6 +28,7 @@ import com.elementary.tasks.core.LED;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
@@ -396,6 +397,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public void setEventHint(String hint) {
         taskField.setHint(hint);
+    }
+
+    @Override
+    public boolean isExportToCalendar() {
+        return Prefs.getInstance(this).isCalendarEnabled() || Prefs.getInstance(this).isStockCalendarEnabled();
+    }
+
+    @Override
+    public boolean isExportToTasks() {
+        return false;
     }
 
     private class SpinnerItem {

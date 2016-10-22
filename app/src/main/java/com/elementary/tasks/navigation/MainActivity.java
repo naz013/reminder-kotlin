@@ -30,7 +30,7 @@ import com.elementary.tasks.navigation.fragments.MessagesFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
-import com.elementary.tasks.navigation.fragments.SettingsFragment;
+import com.elementary.tasks.navigation.settings.SettingsFragment;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 

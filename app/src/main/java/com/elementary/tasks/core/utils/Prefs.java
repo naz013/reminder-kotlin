@@ -184,4 +184,20 @@ public class Prefs extends SharedPrefs {
     public void set24HourFormatEnabled(boolean value) {
         putBoolean(IS_24_TIME_FORMAT, value);
     }
+
+    public boolean isCalendarEnabled() {
+        return getBoolean(EXPORT_TO_CALENDAR);
+    }
+
+    public void setCalendarEnabled(boolean value) {
+        putBoolean(EXPORT_TO_CALENDAR, value);
+    }
+
+    public boolean isStockCalendarEnabled() {
+        return getBoolean(EXPORT_TO_STOCK);
+    }
+
+    public void setStockCalendarEnabled(boolean value) {
+        putBoolean(EXPORT_TO_STOCK, value);
+    }
 }
