@@ -1,6 +1,13 @@
 package com.elementary.tasks.navigation.settings;
 
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.databinding.FragmentSettingsBinding;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,6 +25,15 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
  * limitations under the License.
  */
 
-public class SettingsFragment extends BaseNavigationFragment {
+public class SettingsFragment extends BaseSettingsFragment {
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentSettingsBinding binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        binding.generalSettings.setOnClickListener(view -> {
+            replaceFragment(new GeneralSettingsFragment(), getString(R.string.general));
+        });
+        return binding.getRoot();
+    }
 }
