@@ -54,6 +54,8 @@
 
         <activity android:name=".creators.CreateReminderActivity" />
 
+        <activity android:name=".navigation.settings.SettingsActivity" />
+
         <activity
             android:name=".core.SplashScreen"
             android:theme="@style/SplashTheme">

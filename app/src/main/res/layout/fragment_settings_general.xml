@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/themePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/theme"
+                app:prefs_type="view" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/darkPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/dark_mode"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/dayNightPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/day_night"
+                app:prefs_secondary_text="@string/enable_changing_theme_during_day"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/mainImagePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/main_image"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/smartFoldPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/smart_fold"
+                app:prefs_secondary_text="@string/enable_folding_reminder_window"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/wearPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/android_wear_notification"
+                app:prefs_type="check" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>

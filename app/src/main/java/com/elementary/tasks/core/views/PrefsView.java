@@ -60,7 +60,7 @@ public class PrefsView extends RelativeLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        if (isInEditMode()) return;
+//        if (isInEditMode()) return;
         View.inflate(context, R.layout.prefs_view_layout, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         title = (TextView) findViewById(R.id.prefsPrimaryText);
