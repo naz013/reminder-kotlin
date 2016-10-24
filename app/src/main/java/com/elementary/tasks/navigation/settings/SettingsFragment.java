@@ -36,4 +36,10 @@ public class SettingsFragment extends BaseSettingsFragment {
         });
         return binding.getRoot();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) mCallback.onTitleChange(getString(R.string.settings));
+    }
 }

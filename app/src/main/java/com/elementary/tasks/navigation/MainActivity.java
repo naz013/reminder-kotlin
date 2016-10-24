@@ -31,6 +31,7 @@ import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
 import com.elementary.tasks.navigation.settings.GeneralSettingsFragment;
+import com.elementary.tasks.navigation.settings.SettingsActivity;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
@@ -151,7 +152,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
                 break;
             case R.id.nav_settings:
-                replaceFragment(new GeneralSettingsFragment(), getString(R.string.settings));
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new DayViewFragment(), getString(R.string.feedback));
