@@ -27,21 +27,19 @@ import java.io.FileNotFoundException;
  */
 public class BitmapUtils {
 
-    private static final long MAX_ZISE = 1024500;
+    private static final double MAX_SIZE = 768500;
     private static final String TAG = "BitmapUtils";
 
     public static Bitmap compressBitmap(Bitmap bitmap) {
         if (bitmap != null) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-            byte[] byteArrayImage = byteArrayOutputStream.toByteArray();
-            long length = byteArrayImage.length;
+            int length = bitmap.getByteCount();
             Log.d(TAG, "compressBitmap: " + length);
-            if (length > MAX_ZISE) {
-                double scalar = (double) length / (double) MAX_ZISE;
+            if (length > MAX_SIZE) {
+                double scalar = (double) length / MAX_SIZE;
                 int coefficient = (int) ((double) 100 / scalar);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, coefficient, byteStream);
+                Log.d(TAG, "compressBitmap: " + byteStream.toByteArray().length);
                 return BitmapFactory.decodeStream(new ByteArrayInputStream(byteStream.toByteArray()));
             } else {
                 return bitmap;

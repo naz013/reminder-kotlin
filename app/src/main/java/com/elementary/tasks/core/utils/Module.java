@@ -38,6 +38,10 @@ public class Module {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
+    public static boolean isNougat(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     public static boolean isKitkat(){
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
