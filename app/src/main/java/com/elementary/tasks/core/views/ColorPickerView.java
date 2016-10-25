@@ -51,7 +51,6 @@ public class ColorPickerView extends LinearLayout {
 
     private void init(final Context context, AttributeSet attrs) {
         this.mContext = context;
-        if (isInEditMode()) return;
         View.inflate(context, R.layout.color_picker_view_layout, this);
         setOrientation(VERTICAL);
         red = (ImageButton) findViewById(R.id.red_checkbox);

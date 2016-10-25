@@ -200,4 +200,36 @@ public class Prefs extends SharedPrefs {
     public void setStockCalendarEnabled(boolean value) {
         putBoolean(EXPORT_TO_STOCK, value);
     }
+
+    public boolean isFoldingEnabled() {
+        return getBoolean(SMART_FOLD);
+    }
+
+    public void setFoldingEnabled(boolean value) {
+        putBoolean(SMART_FOLD, value);
+    }
+
+    public boolean isWearEnabled() {
+        return getBoolean(WEAR_NOTIFICATION);
+    }
+
+    public void setWearEnabled(boolean value) {
+        putBoolean(WEAR_NOTIFICATION, value);
+    }
+
+    public boolean isUiChanged() {
+        return getBoolean(UI_CHANGED);
+    }
+
+    public void setUiChanged(boolean value) {
+        putBoolean(UI_CHANGED, value);
+    }
+
+    public boolean isSBNotificationEnabled() {
+        return getBoolean(STATUS_BAR_NOTIFICATION);
+    }
+
+    public void setSBNotificationEnabled(boolean value) {
+        putBoolean(STATUS_BAR_NOTIFICATION, value);
+    }
 }
