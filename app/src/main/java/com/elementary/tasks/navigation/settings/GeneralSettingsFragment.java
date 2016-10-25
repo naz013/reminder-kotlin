@@ -11,6 +11,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
+import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity;
 
 /**
@@ -60,7 +61,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void selectMainImage() {
-
+        startActivity(new Intent(mContext, MainImageActivity.class));
     }
 
     private void initMainImage() {

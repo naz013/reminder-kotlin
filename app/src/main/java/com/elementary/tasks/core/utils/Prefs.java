@@ -18,6 +18,8 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 
+import com.elementary.tasks.navigation.settings.images.MonthImage;
+
 public class Prefs extends SharedPrefs {
 
     private static Prefs instance;
@@ -37,8 +39,8 @@ public class Prefs extends SharedPrefs {
         return getInt(MARKER_STYLE);
     }
 
-    public void setMarkerStyle(int markerStyle) {
-        putInt(MARKER_STYLE, markerStyle);
+    public void setMarkerStyle(int value) {
+        putInt(MARKER_STYLE, value);
     }
 
     public boolean hasScreenOrientation() {
@@ -49,32 +51,32 @@ public class Prefs extends SharedPrefs {
         return getInt(SCREEN);
     }
 
-    public void setScreenOrientation(int orientation) {
-        putInt(SCREEN, orientation);
+    public void setScreenOrientation(int value) {
+        putInt(SCREEN, value);
     }
 
     public int getTodayColor() {
         return getInt(TODAY_COLOR);
     }
 
-    public void setTodayColor(int color) {
-        putInt(TODAY_COLOR, color);
+    public void setTodayColor(int value) {
+        putInt(TODAY_COLOR, value);
     }
 
     public int getReminderColor() {
         return getInt(REMINDER_COLOR);
     }
 
-    public void setReminderColor(int color) {
-        putInt(REMINDER_COLOR, color);
+    public void setReminderColor(int value) {
+        putInt(REMINDER_COLOR, value);
     }
 
     public int getBirthdayColor() {
         return getInt(BIRTH_COLOR);
     }
 
-    public void setBirthdayColor(int color) {
-        putInt(BIRTH_COLOR, color);
+    public void setBirthdayColor(int value) {
+        putInt(BIRTH_COLOR, value);
     }
 
     public boolean isNightModeEnabled() {
@@ -101,64 +103,64 @@ public class Prefs extends SharedPrefs {
         return getInt(APP_THEME);
     }
 
-    public void setAppTheme(int theme) {
-        putInt(APP_THEME, theme);
+    public void setAppTheme(int value) {
+        putInt(APP_THEME, value);
     }
 
     public String getNightTime() {
         return getString(TIME_NIGHT);
     }
 
-    public void setNightTime(String time) {
-        putString(TIME_NIGHT, time);
+    public void setNightTime(String value) {
+        putString(TIME_NIGHT, value);
     }
 
     public String getEveningTime() {
         return getString(TIME_EVENING);
     }
 
-    public void setEveningTime(String time) {
-        putString(TIME_EVENING, time);
+    public void setEveningTime(String value) {
+        putString(TIME_EVENING, value);
     }
 
     public String getNoonTime() {
         return getString(TIME_DAY);
     }
 
-    public void setNoonTime(String time) {
-        putString(TIME_DAY, time);
+    public void setNoonTime(String value) {
+        putString(TIME_DAY, value);
     }
 
     public String getMorningTime() {
         return getString(TIME_MORNING);
     }
 
-    public void setMorningTime(String time) {
-        putString(TIME_MORNING, time);
+    public void setMorningTime(String value) {
+        putString(TIME_MORNING, value);
     }
 
     public int getVoiceLocale() {
         return getInt(VOICE_LOCALE);
     }
 
-    public void setVoiceLocale(int locale) {
-        putInt(VOICE_LOCALE, locale);
+    public void setVoiceLocale(int value) {
+        putInt(VOICE_LOCALE, value);
     }
 
     public String getTtsLocale() {
         return getString(TTS_LOCALE);
     }
 
-    public void setTtsLocale(String locale) {
-        putString(TTS_LOCALE, locale);
+    public void setTtsLocale(String value) {
+        putString(TTS_LOCALE, value);
     }
 
     public String getBirthdayTtsLocale() {
         return getString(BIRTHDAY_TTS_LOCALE);
     }
 
-    public void setBirthdayTtsLocale(String locale) {
-        putString(BIRTHDAY_TTS_LOCALE, locale);
+    public void setBirthdayTtsLocale(String value) {
+        putString(BIRTHDAY_TTS_LOCALE, value);
     }
 
     public boolean isSystemVolume() {
@@ -231,5 +233,37 @@ public class Prefs extends SharedPrefs {
 
     public void setSBNotificationEnabled(boolean value) {
         putBoolean(STATUS_BAR_NOTIFICATION, value);
+    }
+
+    public int getImageId() {
+        return getInt(MAIN_IMAGE_ID);
+    }
+
+    public void setImageId(int value) {
+        putInt(MAIN_IMAGE_ID, value);
+    }
+
+    public String getImagePath() {
+        return getString(MAIN_IMAGE_PATH);
+    }
+
+    public void setImagePath(String value) {
+        putString(MAIN_IMAGE_PATH, value);
+    }
+
+    public MonthImage getCalendarImages() {
+        return (MonthImage) getObject(CALENDAR_IMAGES, MonthImage.class);
+    }
+
+    public void setCalendarImages(MonthImage value) {
+        putObject(MAIN_IMAGE_PATH, value);
+    }
+
+    public boolean isCalendarImagesEnabled() {
+        return getBoolean(CALENDAR_IMAGE);
+    }
+
+    public void setCalendarImagesEnabled(boolean value) {
+        putBoolean(CALENDAR_IMAGE, value);
     }
 }

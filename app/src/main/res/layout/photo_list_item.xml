@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.elementary.tasks.navigation.settings.images.ImageItem" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/photoView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:loadPhoto='@{item.id}' />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:gravity="right"
+                android:padding="4dp"
+                android:text="@{@string/number + String.valueOf(item.id)}"
+                app:font_style="roboto_light_italic" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:padding="8dp"
+                android:text="@{item.author}"
+                app:font_style="roboto_light_italic" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/whitePrimary30"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_check_mark_green"
+                android:visibility="@{item.selected ? View.VISIBLE : View.GONE}" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>
