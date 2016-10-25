@@ -27,12 +27,11 @@ public abstract class BaseSettingsFragment extends BaseNavigationFragment {
     protected void replaceFragment(Fragment fragment, String title) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, title);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.addToBackStack(title);
         ft.commit();
         if (mCallback != null) {
             mCallback.onTitleChange(title);
         }
     }
-
 }

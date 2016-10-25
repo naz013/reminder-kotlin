@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
@@ -30,12 +32,12 @@ import com.elementary.tasks.navigation.fragments.MessagesFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
-import com.elementary.tasks.navigation.settings.GeneralSettingsFragment;
-import com.elementary.tasks.navigation.settings.SettingsActivity;
+import com.elementary.tasks.navigation.settings.SettingsFragment;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
     private static final int PRESS_AGAIN_TIME = 2000;
+    private static final String TAG = "MainActivity";
 
     private ActivityMainBinding binding;
     private Toolbar toolbar;
@@ -68,12 +70,23 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     public void replaceFragment(Fragment fragment, String title) {
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         this.fragment = fragment;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, title);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.addToBackStack(null);
         ft.commit();
         toolbar.setTitle(title);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Prefs.getInstance(this).isUiChanged()) {
+            Prefs.getInstance(this).setUiChanged(false);
+            recreate();
+        }
     }
 
     @Override
@@ -96,13 +109,15 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (!isBackPressed) {
+            if (getFragmentManager().getBackStackEntryCount() > 1 && fragment instanceof SettingsFragment) {
+                super.onBackPressed();
+            } else if (!isBackPressed) {
                 isBackPressed = true;
                 pressedTime = System.currentTimeMillis();
                 Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
             } else {
                 if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
-                    super.onBackPressed();
+                    finish();
                 } else {
                     isBackPressed = false;
                     onBackPressed();
@@ -115,8 +130,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = binding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
-        if (prevItem == item.getItemId()) return false;
-        prevItem = item.getItemId();
+        if (prevItem == item.getItemId() && (item.getItemId() != R.id.nav_feedback ||
+                item.getItemId() != R.id.nav_help)) {
+            return false;
+        }
+        if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help) {
+            prevItem = item.getItemId();
+        }
         switch (item.getItemId()) {
             case R.id.nav_current:
                 replaceFragment(new RemindersFragment(), getString(R.string.tasks));
@@ -152,7 +172,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
                 break;
             case R.id.nav_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                replaceFragment(new SettingsFragment(), getString(R.string.settings));
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new DayViewFragment(), getString(R.string.feedback));
