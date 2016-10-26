@@ -43,6 +43,11 @@ public class SettingsActivity extends ThemedActivity implements FragmentCallback
     }
 
     @Override
+    public void onFragmentSelect(Fragment fragment) {
+
+    }
+
+    @Override
     public void onTitleChange(String title) {
         toolbar.setTitle(title);
     }

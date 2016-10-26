@@ -40,6 +40,9 @@ public class SettingsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) mCallback.onTitleChange(getString(R.string.settings));
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.settings));
+            mCallback.onFragmentSelect(this);
+        }
     }
 }

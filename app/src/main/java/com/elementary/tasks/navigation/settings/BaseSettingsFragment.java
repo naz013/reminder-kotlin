@@ -32,6 +32,7 @@ public abstract class BaseSettingsFragment extends BaseNavigationFragment {
         ft.commit();
         if (mCallback != null) {
             mCallback.onTitleChange(title);
+            mCallback.onFragmentSelect(fragment);
         }
     }
 }

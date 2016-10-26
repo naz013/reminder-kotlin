@@ -21,4 +21,5 @@ import android.app.Fragment;
 public interface FragmentCallback {
     void replaceFragment(Fragment fragment, String title);
     void onTitleChange(String title);
+    void onFragmentSelect(Fragment fragment);
 }
