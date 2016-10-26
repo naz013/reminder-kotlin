@@ -31,9 +31,8 @@ public class SettingsFragment extends BaseSettingsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentSettingsBinding binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        binding.generalSettings.setOnClickListener(view -> {
-            replaceFragment(new GeneralSettingsFragment(), getString(R.string.general));
-        });
+        binding.generalSettings.setOnClickListener(view -> replaceFragment(new GeneralSettingsFragment(), getString(R.string.general)));
+        binding.otherSettings.setOnClickListener(view -> replaceFragment(new OtherSettingsFragment(), getString(R.string.other)));
         return binding.getRoot();
     }
 
