@@ -56,8 +56,6 @@ public class Recognize {
 //                    int action = model.getActivity();
 //                    if (action == RecUtils.APP)
 //                        mContext.startActivity(new Intent(mContext, SplashScreenActivity.class));
-//                    else if (action == RecUtils.SETTINGS)
-//                        mContext.startActivity(new Intent(mContext, SettingsActivity.class));
 //                    else if (action == RecUtils.REPORT)
 //                        mContext.startActivity(new Intent(mContext, SendReportActivity.class));
 //                    else if (action == RecUtils.HELP)

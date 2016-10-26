@@ -54,8 +54,6 @@
 
         <activity android:name=".creators.CreateReminderActivity" />
 
-        <activity android:name=".navigation.settings.SettingsActivity" />
-
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
 
         <activity android:name=".navigation.settings.images.MainImageActivity" />

@@ -11,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -114,7 +113,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            Log.d(TAG, "onBackPressed: " + fragment);
             if (isBackPressed) {
                 if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
                     finish();
