@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -32,6 +32,7 @@ import com.elementary.tasks.navigation.fragments.MessagesFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
@@ -70,12 +71,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     public void replaceFragment(Fragment fragment, String title) {
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         this.fragment = fragment;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, title);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.addToBackStack(null);
+        ft.addToBackStack(title);
         ft.commit();
         toolbar.setTitle(title);
     }
@@ -94,6 +94,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         toolbar.setTitle(title);
     }
 
+    @Override
+    public void onFragmentSelect(Fragment fragment) {
+        this.fragment = fragment;
+    }
+
     private void initNavigation() {
         DrawerLayout drawer = binding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
@@ -109,13 +114,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (getFragmentManager().getBackStackEntryCount() > 1 && fragment instanceof SettingsFragment) {
-                super.onBackPressed();
-            } else if (!isBackPressed) {
-                isBackPressed = true;
-                pressedTime = System.currentTimeMillis();
-                Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
-            } else {
+            Log.d(TAG, "onBackPressed: " + fragment);
+            if (isBackPressed) {
                 if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
                     finish();
                 } else {
@@ -123,7 +123,20 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                     onBackPressed();
                 }
             }
+            if (fragment instanceof SettingsFragment && !isBackPressed) {
+                firstBackPress();
+            } else if (fragment instanceof BaseSettingsFragment) {
+                super.onBackPressed();
+            } else if (!isBackPressed) {
+                firstBackPress();
+            }
         }
+    }
+
+    private void firstBackPress() {
+        isBackPressed = true;
+        pressedTime = System.currentTimeMillis();
+        Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
     }
 
     @Override

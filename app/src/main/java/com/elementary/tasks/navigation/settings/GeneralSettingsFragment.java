@@ -57,7 +57,10 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) mCallback.onTitleChange(getString(R.string.general));
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.general));
+            mCallback.onFragmentSelect(this);
+        }
     }
 
     private void selectMainImage() {
