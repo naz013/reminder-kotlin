@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.databinding.FragmentSettingsBinding;
+import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,15 +25,15 @@ import com.elementary.tasks.databinding.FragmentSettingsBinding;
  * limitations under the License.
  */
 
-public class SettingsFragment extends BaseSettingsFragment {
+public class VoiceSettingsFragment extends BaseSettingsFragment {
+
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsBinding binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        binding.generalSettings.setOnClickListener(view -> replaceFragment(new GeneralSettingsFragment(), getString(R.string.general)));
-        binding.otherSettings.setOnClickListener(view -> replaceFragment(new OtherSettingsFragment(), getString(R.string.other)));
-        binding.voiceSettings.setOnClickListener(view -> replaceFragment(new VoiceSettingsFragment(), getString(R.string.voice_control)));
+        FragmentSettingsVoiceBinding binding = FragmentSettingsVoiceBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
@@ -41,7 +41,7 @@ public class SettingsFragment extends BaseSettingsFragment {
     public void onResume() {
         super.onResume();
         if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.settings));
+            mCallback.onTitleChange(getString(R.string.voice_control));
             mCallback.onFragmentSelect(this);
         }
     }

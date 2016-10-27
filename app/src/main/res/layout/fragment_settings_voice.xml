@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/languagePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/language"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/timePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/time"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/helpPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/help"
+                app:prefs_type="none" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
