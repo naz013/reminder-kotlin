@@ -13,6 +13,9 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.databinding.DialogAboutLayoutBinding;
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding;
+import com.elementary.tasks.navigation.settings.other.ChangesFragment;
+import com.elementary.tasks.navigation.settings.other.OssFragment;
+import com.elementary.tasks.navigation.settings.other.PermissionsFragment;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,6 +36,41 @@ import com.elementary.tasks.databinding.FragmentSettingsOtherBinding;
 public class OtherSettingsFragment extends BaseSettingsFragment {
 
     private View.OnClickListener mAboutClick = view -> showAboutDialog();
+    private View.OnClickListener mOssClick = view -> openOssScreen();
+    private View.OnClickListener mPermissionsClick = view -> openPermissionsScreen();
+    private View.OnClickListener mChangesClick = view -> openChangesScreen();
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentSettingsOtherBinding binding = FragmentSettingsOtherBinding.inflate(inflater, container, false);
+        binding.aboutPrefs.setOnClickListener(mAboutClick);
+        binding.ossPrefs.setOnClickListener(mOssClick);
+        binding.permissionsPrefs.setOnClickListener(mPermissionsClick);
+        binding.changesPrefs.setOnClickListener(mChangesClick);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.other));
+            mCallback.onFragmentSelect(this);
+        }
+    }
+
+    private void openChangesScreen() {
+        replaceFragment(new ChangesFragment(), getString(R.string.changes));
+    }
+
+    private void openPermissionsScreen() {
+        replaceFragment(new PermissionsFragment(), getString(R.string.permissions));
+    }
+
+    private void openOssScreen() {
+        replaceFragment(new OssFragment(), getString(R.string.open_source_licenses));
+    }
 
     private void showAboutDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -50,22 +88,5 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
         }
         builder.setView(binding.getRoot());
         builder.create().show();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsOtherBinding binding = FragmentSettingsOtherBinding.inflate(inflater, container, false);
-        binding.aboutPrefs.setOnClickListener(mAboutClick);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.other));
-            mCallback.onFragmentSelect(this);
-        }
     }
 }
