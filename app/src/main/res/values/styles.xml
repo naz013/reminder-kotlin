@@ -12,6 +12,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/material_grey</item>
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
