@@ -16,7 +16,6 @@ package com.elementary.tasks.core.utils;
  * limitations under the License.
  */
 class PrefsConstants {
-    static final String TECH_ONE = "RanGuide";
 
     static final String EVENTS_CALENDAR = "events_cal";
     static final String AUTO_CHECK_FOR_EVENTS = "auto_events";
@@ -62,13 +61,9 @@ class PrefsConstants {
     static final String STATUS_BAR_NOTIFICATION = "status_notification";
     static final String TRACK_TIME = "tracking_time";
     static final String TRACK_DISTANCE = "tracking_distance";
-    static final String NOTE_ENCRYPT = "note_encrypt";
-    static final String TEXT_SIZE = "text_size";
+    static final String NOTE_TEXT_SIZE = "text_size";
     static final String QUICK_NOTE_REMINDER = "quick_note_reminder";
     static final String QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time";
-    static final String SYNC_NOTES = "sync_notes";
-    static final String SYNC_BIRTHDAYS = "sync_birthdays";
-    static final String DELETE_NOTE_FILE = "delete_note_file";
     static final String VOICE_LOCALE = "voice_locale";
     static final String TIME_MORNING = "time_morning";
     static final String TIME_DAY = "time_day";
@@ -93,8 +88,6 @@ class PrefsConstants {
     static final String TTS_LOCALE = "tts_locale";
     static final String LAST_USED_REMINDER = "last_reminder";
     static final String ITEM_PREVIEW = "item_preview";
-    static final String THANKS_SHOWN = "thanks_shown";
-    static final String LAST_CALENDAR_VIEW = "last_calendar_view";
     static final String UI_CHANGED = "ui_changed";
     static final String TASK_CHANGED = "task_changed";
     static final String LAST_FRAGMENT = "last_fragment";
@@ -140,5 +133,4 @@ class PrefsConstants {
     static final String IS_CREATE_SHOWN = "create_showcase";
     static final String IS_CALENDAR_SHOWN = "calendar_showcase";
     static final String IS_LIST_SHOWN = "list_showcase";
-    static final String IS_MIGRATION = "is_migrate";
 }

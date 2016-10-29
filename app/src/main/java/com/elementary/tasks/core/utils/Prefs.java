@@ -278,28 +278,51 @@ public class Prefs extends SharedPrefs {
         putBoolean(CALENDAR_IMAGE, value);
     }
 
+    public boolean isNoteReminderEnabled() {
+        return getBoolean(QUICK_NOTE_REMINDER);
+    }
+
+    public void setNoteReminderEnabled(boolean value) {
+        putBoolean(QUICK_NOTE_REMINDER, value);
+    }
+
+    public int getNoteReminderTime() {
+        return getInt(QUICK_NOTE_REMINDER_TIME);
+    }
+
+    public void setNoteReminderTime(int value) {
+        putInt(QUICK_NOTE_REMINDER_TIME, value);
+    }
+
+    public int getNoteTextSize() {
+        return getInt(NOTE_TEXT_SIZE);
+    }
+
+    public void setNoteTextSize(int value) {
+        putInt(NOTE_TEXT_SIZE, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {
             SharedPreferences appUISettings = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor uiEd = appUISettings.edit();
-            uiEd.putInt(Prefs.APP_THEME, 8);
-            uiEd.putInt(Prefs.TODAY_COLOR, 0);
-            uiEd.putInt(Prefs.BIRTH_COLOR, 2);
-            uiEd.putInt(Prefs.REMINDER_COLOR, 4);
-            uiEd.putInt(Prefs.MAP_TYPE, Constants.MAP_NORMAL);
-            uiEd.putString(Prefs.DRIVE_USER, DRIVE_USER_NONE);
-            uiEd.putString(Prefs.REMINDER_IMAGE, Constants.DEFAULT);
-            uiEd.putInt(Prefs.LED_COLOR, LED.BLUE);
-            uiEd.putInt(Prefs.BIRTHDAY_LED_COLOR, LED.BLUE);
-            uiEd.putInt(Prefs.LOCATION_RADIUS, 25);
-            uiEd.putInt(Prefs.MARKER_STYLE, 5);
-            uiEd.putInt(Prefs.TRACK_DISTANCE, 1);
-            uiEd.putInt(Prefs.TRACK_TIME, 1);
-            uiEd.putInt(Prefs.QUICK_NOTE_REMINDER_TIME, 10);
-            uiEd.putInt(Prefs.TEXT_SIZE, 4);
-            uiEd.putInt(Prefs.VOLUME, 25);
-            uiEd.putInt(Prefs.LAST_CALENDAR_VIEW, 1);
+            uiEd.putInt(APP_THEME, 8);
+            uiEd.putInt(TODAY_COLOR, 0);
+            uiEd.putInt(BIRTH_COLOR, 2);
+            uiEd.putInt(REMINDER_COLOR, 4);
+            uiEd.putInt(MAP_TYPE, Constants.MAP_NORMAL);
+            uiEd.putString(DRIVE_USER, DRIVE_USER_NONE);
+            uiEd.putString(REMINDER_IMAGE, Constants.DEFAULT);
+            uiEd.putInt(LED_COLOR, LED.BLUE);
+            uiEd.putInt(BIRTHDAY_LED_COLOR, LED.BLUE);
+            uiEd.putInt(LOCATION_RADIUS, 25);
+            uiEd.putInt(MARKER_STYLE, 5);
+            uiEd.putInt(TRACK_DISTANCE, 1);
+            uiEd.putInt(TRACK_TIME, 1);
+            uiEd.putInt(QUICK_NOTE_REMINDER_TIME, 10);
+            uiEd.putInt(NOTE_TEXT_SIZE, 4);
+            uiEd.putInt(VOLUME, 25);
             String localeCheck = Locale.getDefault().toString().toLowerCase();
             int locale;
             if (localeCheck.startsWith("uk")) {
@@ -307,316 +330,300 @@ public class Prefs extends SharedPrefs {
             } else if (localeCheck.startsWith("ru")) {
                 locale = 1;
             } else locale = 0;
-            uiEd.putInt(Prefs.VOICE_LOCALE, locale);
-            uiEd.putString(Prefs.TIME_MORNING, "7:0");
-            uiEd.putString(Prefs.TIME_DAY, "12:0");
-            uiEd.putString(Prefs.TIME_EVENING, "19:0");
-            uiEd.putString(Prefs.TIME_NIGHT, "23:0");
-            uiEd.putString(Prefs.TTS_LOCALE, Language.ENGLISH);
-            uiEd.putString(Prefs.MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
-            uiEd.putString(Prefs.CALENDAR_IMAGES, new Gson().toJson(new MonthImage()));
-            uiEd.putInt(Prefs.START_DAY, 1);
-            uiEd.putInt(Prefs.DAYS_TO_BIRTHDAY, 0);
-            uiEd.putInt(Prefs.NOTIFICATION_REPEAT_INTERVAL, 15);
-            uiEd.putInt(Prefs.APP_RUNS_COUNT, 0);
-            uiEd.putInt(Prefs.DELAY_TIME, 5);
-            uiEd.putInt(Prefs.EVENT_DURATION, 30);
-            uiEd.putInt(Prefs.MISSED_CALL_TIME, 10);
-            uiEd.putInt(Prefs.AUTO_BACKUP_INTERVAL, 6);
-            uiEd.putInt(Prefs.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
-            uiEd.putInt(Prefs.SOUND_STREAM, 5);
-            uiEd.putInt(Prefs.MAIN_IMAGE_ID, -1);
-            uiEd.putBoolean(Prefs.TRACKING_NOTIFICATION, true);
-            uiEd.putBoolean(Prefs.RATE_SHOW, false);
-            uiEd.putBoolean(Prefs.IS_CREATE_SHOWN, false);
-            uiEd.putBoolean(Prefs.IS_CALENDAR_SHOWN, false);
-            uiEd.putBoolean(Prefs.IS_LIST_SHOWN, false);
-            uiEd.putBoolean(Prefs.CONTACT_BIRTHDAYS, false);
-            uiEd.putBoolean(Prefs.BIRTHDAY_REMINDER, true);
-            uiEd.putBoolean(Prefs.CALENDAR_IMAGE, false);
-            uiEd.putBoolean(Prefs.USE_DARK_THEME, false);
-            uiEd.putBoolean(Prefs.EXPORT_TO_CALENDAR, false);
-            uiEd.putBoolean(Prefs.AUTO_CHECK_BIRTHDAYS, false);
-            uiEd.putBoolean(Prefs.INFINITE_VIBRATION, false);
-            uiEd.putBoolean(Prefs.NOTIFICATION_REPEAT, false);
-            uiEd.putBoolean(Prefs.WIDGET_BIRTHDAYS, false);
-            uiEd.putBoolean(Prefs.QUICK_NOTE_REMINDER, false);
-            uiEd.putBoolean(Prefs.NOTE_ENCRYPT, true);
-            uiEd.putBoolean(Prefs.SYNC_NOTES, true);
-            uiEd.putBoolean(Prefs.EXPORT_TO_STOCK, false);
-            uiEd.putBoolean(Prefs.REMINDERS_IN_CALENDAR, true);
-            uiEd.putBoolean(Prefs.IS_24_TIME_FORMAT, true);
-            uiEd.putBoolean(Prefs.UNLOCK_DEVICE, false);
-            uiEd.putBoolean(Prefs.CALENDAR_FEATURE_TASKS, true);
-            uiEd.putBoolean(Prefs.MISSED_CALL_REMINDER, false);
-            uiEd.putBoolean(Prefs.QUICK_SMS, false);
-            uiEd.putBoolean(Prefs.FOLLOW_REMINDER, false);
-            uiEd.putBoolean(Prefs.TTS, false);
-            uiEd.putBoolean(Prefs.ITEM_PREVIEW, true);
-            uiEd.putBoolean(Prefs.SYNC_BIRTHDAYS, true);
-            uiEd.putBoolean(Prefs.BIRTHDAY_PERMANENT, false);
-            uiEd.putBoolean(Prefs.REMINDER_CHANGED, false);
-            uiEd.putBoolean(Prefs.REMINDER_IMAGE_BLUR, false);
-            uiEd.putBoolean(Prefs.SYSTEM_VOLUME, false);
-            uiEd.putBoolean(Prefs.INCREASING_VOLUME, false);
-            uiEd.putBoolean(Prefs.DAY_NIGHT, false);
+            uiEd.putInt(VOICE_LOCALE, locale);
+            uiEd.putString(TIME_MORNING, "7:0");
+            uiEd.putString(TIME_DAY, "12:0");
+            uiEd.putString(TIME_EVENING, "19:0");
+            uiEd.putString(TIME_NIGHT, "23:0");
+            uiEd.putString(TTS_LOCALE, Language.ENGLISH);
+            uiEd.putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
+            uiEd.putString(CALENDAR_IMAGES, new Gson().toJson(new MonthImage()));
+            uiEd.putInt(START_DAY, 1);
+            uiEd.putInt(DAYS_TO_BIRTHDAY, 0);
+            uiEd.putInt(NOTIFICATION_REPEAT_INTERVAL, 15);
+            uiEd.putInt(APP_RUNS_COUNT, 0);
+            uiEd.putInt(DELAY_TIME, 5);
+            uiEd.putInt(EVENT_DURATION, 30);
+            uiEd.putInt(MISSED_CALL_TIME, 10);
+            uiEd.putInt(AUTO_BACKUP_INTERVAL, 6);
+            uiEd.putInt(AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
+            uiEd.putInt(SOUND_STREAM, 5);
+            uiEd.putInt(MAIN_IMAGE_ID, -1);
+            uiEd.putBoolean(TRACKING_NOTIFICATION, true);
+            uiEd.putBoolean(RATE_SHOW, false);
+            uiEd.putBoolean(IS_CREATE_SHOWN, false);
+            uiEd.putBoolean(IS_CALENDAR_SHOWN, false);
+            uiEd.putBoolean(IS_LIST_SHOWN, false);
+            uiEd.putBoolean(CONTACT_BIRTHDAYS, false);
+            uiEd.putBoolean(BIRTHDAY_REMINDER, true);
+            uiEd.putBoolean(CALENDAR_IMAGE, false);
+            uiEd.putBoolean(USE_DARK_THEME, false);
+            uiEd.putBoolean(EXPORT_TO_CALENDAR, false);
+            uiEd.putBoolean(AUTO_CHECK_BIRTHDAYS, false);
+            uiEd.putBoolean(INFINITE_VIBRATION, false);
+            uiEd.putBoolean(NOTIFICATION_REPEAT, false);
+            uiEd.putBoolean(WIDGET_BIRTHDAYS, false);
+            uiEd.putBoolean(QUICK_NOTE_REMINDER, false);
+            uiEd.putBoolean(EXPORT_TO_STOCK, false);
+            uiEd.putBoolean(REMINDERS_IN_CALENDAR, true);
+            uiEd.putBoolean(IS_24_TIME_FORMAT, true);
+            uiEd.putBoolean(UNLOCK_DEVICE, false);
+            uiEd.putBoolean(CALENDAR_FEATURE_TASKS, true);
+            uiEd.putBoolean(MISSED_CALL_REMINDER, false);
+            uiEd.putBoolean(QUICK_SMS, false);
+            uiEd.putBoolean(FOLLOW_REMINDER, false);
+            uiEd.putBoolean(TTS, false);
+            uiEd.putBoolean(BIRTHDAY_PERMANENT, false);
+            uiEd.putBoolean(REMINDER_CHANGED, false);
+            uiEd.putBoolean(REMINDER_IMAGE_BLUR, false);
+            uiEd.putBoolean(SYSTEM_VOLUME, false);
+            uiEd.putBoolean(INCREASING_VOLUME, false);
+            uiEd.putBoolean(DAY_NIGHT, false);
             if (Module.isPro()) {
-                uiEd.putBoolean(Prefs.BIRTHDAY_LED_STATUS, false);
-                uiEd.putBoolean(Prefs.LED_STATUS, true);
-                uiEd.putInt(Prefs.BIRTHDAY_LED_COLOR, 6);
-                uiEd.putInt(Prefs.LED_COLOR, 11);
-                uiEd.putBoolean(Prefs.BIRTHDAY_USE_GLOBAL, true);
-                uiEd.putBoolean(Prefs.BIRTHDAY_INFINITE_VIBRATION, false);
-                uiEd.putBoolean(Prefs.BIRTHDAY_VIBRATION_STATUS, false);
-                uiEd.putBoolean(Prefs.BIRTHDAY_WAKE_STATUS, false);
+                uiEd.putBoolean(BIRTHDAY_LED_STATUS, false);
+                uiEd.putBoolean(LED_STATUS, true);
+                uiEd.putInt(BIRTHDAY_LED_COLOR, 6);
+                uiEd.putInt(LED_COLOR, 11);
+                uiEd.putBoolean(BIRTHDAY_USE_GLOBAL, true);
+                uiEd.putBoolean(BIRTHDAY_INFINITE_VIBRATION, false);
+                uiEd.putBoolean(BIRTHDAY_VIBRATION_STATUS, false);
+                uiEd.putBoolean(BIRTHDAY_WAKE_STATUS, false);
             }
             uiEd.apply();
         }
     }
 
     public void checkPrefs(){
-        if (!hasKey(Prefs.TODAY_COLOR)){
-            putInt(Prefs.TODAY_COLOR, 4);
+        if (!hasKey(TODAY_COLOR)){
+            putInt(TODAY_COLOR, 4);
         }
-        if (!hasKey(Prefs.BIRTH_COLOR)){
-            putInt(Prefs.BIRTH_COLOR, 1);
+        if (!hasKey(BIRTH_COLOR)){
+            putInt(BIRTH_COLOR, 1);
         }
-        if (!hasKey(Prefs.REMINDER_COLOR)){
-            putInt(Prefs.REMINDER_COLOR, 6);
+        if (!hasKey(REMINDER_COLOR)){
+            putInt(REMINDER_COLOR, 6);
         }
-        if (!hasKey(Prefs.APP_THEME)){
-            putInt(Prefs.APP_THEME, 8);
+        if (!hasKey(APP_THEME)){
+            putInt(APP_THEME, 8);
         }
-        if (!hasKey(Prefs.DRIVE_USER)){
-            putString(Prefs.DRIVE_USER, DRIVE_USER_NONE);
+        if (!hasKey(DRIVE_USER)){
+            putString(DRIVE_USER, DRIVE_USER_NONE);
         }
-        if (!hasKey(Prefs.TTS_LOCALE)){
-            putString(Prefs.TTS_LOCALE, Language.ENGLISH);
+        if (!hasKey(TTS_LOCALE)){
+            putString(TTS_LOCALE, Language.ENGLISH);
         }
-        if (!hasKey(Prefs.REMINDER_IMAGE)){
-            putString(Prefs.REMINDER_IMAGE, Constants.DEFAULT);
-        }
-
-        if (!hasKey(Prefs.VOICE_LOCALE)){
-            putInt(Prefs.VOICE_LOCALE, 0);
-        }
-        if (!hasKey(Prefs.TIME_MORNING)){
-            putString(Prefs.TIME_MORNING, "7:0");
-        }
-        if (!hasKey(Prefs.TIME_DAY)){
-            putString(Prefs.TIME_DAY, "12:0");
-        }
-        if (!hasKey(Prefs.TIME_EVENING)){
-            putString(Prefs.TIME_EVENING, "19:0");
-        }
-        if (!hasKey(Prefs.TIME_NIGHT)){
-            putString(Prefs.TIME_NIGHT, "23:0");
-        }
-        if (!hasKey(Prefs.DAYS_TO_BIRTHDAY)){
-            putInt(Prefs.DAYS_TO_BIRTHDAY, 0);
-        }
-        if (!hasKey(Prefs.QUICK_NOTE_REMINDER_TIME)){
-            putInt(Prefs.QUICK_NOTE_REMINDER_TIME, 10);
-        }
-        if (!hasKey(Prefs.TEXT_SIZE)){
-            putInt(Prefs.TEXT_SIZE, 4);
-        }
-        if (!hasKey(Prefs.START_DAY)){
-            putInt(Prefs.START_DAY, 1);
-        }
-        if (!hasKey(Prefs.BIRTHDAY_REMINDER_HOUR)){
-            putInt(Prefs.BIRTHDAY_REMINDER_HOUR, 12);
-        }
-        if (!hasKey(Prefs.BIRTHDAY_REMINDER_MINUTE)){
-            putInt(Prefs.BIRTHDAY_REMINDER_MINUTE, 0);
-        }
-        if (!hasKey(Prefs.TRACK_DISTANCE)){
-            putInt(Prefs.TRACK_DISTANCE, 1);
-        }
-        if (!hasKey(Prefs.AUTO_BACKUP_INTERVAL)){
-            putInt(Prefs.AUTO_BACKUP_INTERVAL, 6);
-        }
-        if (!hasKey(Prefs.AUTO_CHECK_FOR_EVENTS_INTERVAL)){
-            putInt(Prefs.AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
-        }
-        if (!hasKey(Prefs.TRACK_TIME)){
-            putInt(Prefs.TRACK_TIME, 1);
-        }
-        if (!hasKey(Prefs.APP_RUNS_COUNT)){
-            putInt(Prefs.APP_RUNS_COUNT, 0);
-        }
-        if (!hasKey(Prefs.LAST_CALENDAR_VIEW)){
-            putInt(Prefs.LAST_CALENDAR_VIEW, 1);
-        }
-        if (!hasKey(Prefs.DELAY_TIME)){
-            putInt(Prefs.DELAY_TIME, 5);
-        }
-        if (!hasKey(Prefs.EVENT_DURATION)){
-            putInt(Prefs.EVENT_DURATION, 30);
-        }
-        if (!hasKey(Prefs.NOTIFICATION_REPEAT_INTERVAL)){
-            putInt(Prefs.NOTIFICATION_REPEAT_INTERVAL, 15);
-        }
-        if (!hasKey(Prefs.VOLUME)){
-            putInt(Prefs.VOLUME, 25);
-        }
-        if (!hasKey(Prefs.MAP_TYPE)){
-            putInt(Prefs.MAP_TYPE, Constants.MAP_NORMAL);
-        }
-        if (!hasKey(Prefs.MISSED_CALL_TIME)){
-            putInt(Prefs.MISSED_CALL_TIME, 10);
-        }
-        if (!hasKey(Prefs.SOUND_STREAM)){
-            putInt(Prefs.SOUND_STREAM, 5);
+        if (!hasKey(REMINDER_IMAGE)){
+            putString(REMINDER_IMAGE, Constants.DEFAULT);
         }
 
-        if (!hasKey(Prefs.DAY_NIGHT)){
-            putBoolean(Prefs.DAY_NIGHT, false);
+        if (!hasKey(VOICE_LOCALE)){
+            putInt(VOICE_LOCALE, 0);
         }
-        if (!hasKey(Prefs.RATE_SHOW)){
-            putBoolean(Prefs.RATE_SHOW, false);
+        if (!hasKey(TIME_MORNING)){
+            putString(TIME_MORNING, "7:0");
         }
-        if (!hasKey(Prefs.REMINDER_IMAGE_BLUR)){
-            putBoolean(Prefs.REMINDER_IMAGE_BLUR, false);
+        if (!hasKey(TIME_DAY)){
+            putString(TIME_DAY, "12:0");
         }
-        if (!hasKey(Prefs.QUICK_NOTE_REMINDER)){
-            putBoolean(Prefs.QUICK_NOTE_REMINDER, false);
+        if (!hasKey(TIME_EVENING)){
+            putString(TIME_EVENING, "19:0");
         }
-        if (!hasKey(Prefs.SYNC_NOTES)){
-            putBoolean(Prefs.SYNC_NOTES, true);
+        if (!hasKey(TIME_NIGHT)){
+            putString(TIME_NIGHT, "23:0");
         }
-        if (!hasKey(Prefs.REMINDERS_IN_CALENDAR)){
-            putBoolean(Prefs.REMINDERS_IN_CALENDAR, false);
+        if (!hasKey(DAYS_TO_BIRTHDAY)){
+            putInt(DAYS_TO_BIRTHDAY, 0);
         }
-        if (!hasKey(Prefs.TTS)){
-            putBoolean(Prefs.TTS, false);
+        if (!hasKey(QUICK_NOTE_REMINDER_TIME)){
+            putInt(QUICK_NOTE_REMINDER_TIME, 10);
         }
-        if (!hasKey(Prefs.SYNC_BIRTHDAYS)){
-            putBoolean(Prefs.SYNC_BIRTHDAYS, true);
+        if (!hasKey(NOTE_TEXT_SIZE)){
+            putInt(NOTE_TEXT_SIZE, 4);
         }
-        if (!hasKey(Prefs.NOTE_ENCRYPT)){
-            putBoolean(Prefs.NOTE_ENCRYPT, true);
+        if (!hasKey(START_DAY)){
+            putInt(START_DAY, 1);
         }
-        if (!hasKey(Prefs.CONTACTS_IMPORT_DIALOG)){
-            putBoolean(Prefs.CONTACTS_IMPORT_DIALOG, false);
+        if (!hasKey(BIRTHDAY_REMINDER_HOUR)){
+            putInt(BIRTHDAY_REMINDER_HOUR, 12);
         }
-        if (!hasKey(Prefs.CONTACT_BIRTHDAYS)){
-            putBoolean(Prefs.CONTACT_BIRTHDAYS, false);
+        if (!hasKey(BIRTHDAY_REMINDER_MINUTE)){
+            putInt(BIRTHDAY_REMINDER_MINUTE, 0);
         }
-        if (!hasKey(Prefs.BIRTHDAY_REMINDER)){
-            putBoolean(Prefs.BIRTHDAY_REMINDER, true);
+        if (!hasKey(TRACK_DISTANCE)){
+            putInt(TRACK_DISTANCE, 1);
         }
-        if (!hasKey(Prefs.CALENDAR_IMAGE)){
-            putBoolean(Prefs.CALENDAR_IMAGE, false);
+        if (!hasKey(AUTO_BACKUP_INTERVAL)){
+            putInt(AUTO_BACKUP_INTERVAL, 6);
         }
-        if (!hasKey(Prefs.SILENT_SMS)){
-            putBoolean(Prefs.SILENT_SMS, false);
+        if (!hasKey(AUTO_CHECK_FOR_EVENTS_INTERVAL)){
+            putInt(AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
         }
-        if (!hasKey(Prefs.ITEM_PREVIEW)){
-            putBoolean(Prefs.ITEM_PREVIEW, true);
+        if (!hasKey(TRACK_TIME)){
+            putInt(TRACK_TIME, 1);
         }
-        if (!hasKey(Prefs.WIDGET_BIRTHDAYS)){
-            putBoolean(Prefs.WIDGET_BIRTHDAYS, false);
+        if (!hasKey(APP_RUNS_COUNT)){
+            putInt(APP_RUNS_COUNT, 0);
         }
-        if (!hasKey(Prefs.WEAR_NOTIFICATION)){
-            putBoolean(Prefs.WEAR_NOTIFICATION, false);
+        if (!hasKey(DELAY_TIME)){
+            putInt(DELAY_TIME, 5);
         }
-        if (!hasKey(Prefs.EXPORT_TO_STOCK)){
-            putBoolean(Prefs.EXPORT_TO_STOCK, false);
+        if (!hasKey(EVENT_DURATION)){
+            putInt(EVENT_DURATION, 30);
         }
-        if (!hasKey(Prefs.USE_DARK_THEME)){
-            putBoolean(Prefs.USE_DARK_THEME, false);
+        if (!hasKey(NOTIFICATION_REPEAT_INTERVAL)){
+            putInt(NOTIFICATION_REPEAT_INTERVAL, 15);
         }
-        if (!hasKey(Prefs.EXPORT_TO_CALENDAR)){
-            putBoolean(Prefs.EXPORT_TO_CALENDAR, false);
+        if (!hasKey(VOLUME)){
+            putInt(VOLUME, 25);
         }
-        if (!hasKey(Prefs.AUTO_CHECK_BIRTHDAYS)){
-            putBoolean(Prefs.AUTO_CHECK_BIRTHDAYS, false);
+        if (!hasKey(MAP_TYPE)){
+            putInt(MAP_TYPE, Constants.MAP_NORMAL);
         }
-        if (!hasKey(Prefs.INFINITE_VIBRATION)){
-            putBoolean(Prefs.INFINITE_VIBRATION, false);
+        if (!hasKey(MISSED_CALL_TIME)){
+            putInt(MISSED_CALL_TIME, 10);
         }
-        if (!hasKey(Prefs.AUTO_BACKUP)){
-            putBoolean(Prefs.AUTO_BACKUP, false);
+        if (!hasKey(SOUND_STREAM)){
+            putInt(SOUND_STREAM, 5);
         }
-        if (!hasKey(Prefs.SMART_FOLD)){
-            putBoolean(Prefs.SMART_FOLD, false);
+
+        if (!hasKey(DAY_NIGHT)){
+            putBoolean(DAY_NIGHT, false);
         }
-        if (!hasKey(Prefs.NOTIFICATION_REPEAT)){
-            putBoolean(Prefs.NOTIFICATION_REPEAT, false);
+        if (!hasKey(RATE_SHOW)){
+            putBoolean(RATE_SHOW, false);
         }
-        if (!hasKey(Prefs.IS_24_TIME_FORMAT)){
-            putBoolean(Prefs.IS_24_TIME_FORMAT, true);
+        if (!hasKey(REMINDER_IMAGE_BLUR)){
+            putBoolean(REMINDER_IMAGE_BLUR, false);
         }
-        if (!hasKey(Prefs.UNLOCK_DEVICE)){
-            putBoolean(Prefs.UNLOCK_DEVICE, false);
+        if (!hasKey(QUICK_NOTE_REMINDER)){
+            putBoolean(QUICK_NOTE_REMINDER, false);
         }
-        if (!hasKey(Prefs.CALENDAR_FEATURE_TASKS)){
-            putBoolean(Prefs.CALENDAR_FEATURE_TASKS, false);
+        if (!hasKey(REMINDERS_IN_CALENDAR)){
+            putBoolean(REMINDERS_IN_CALENDAR, false);
         }
-        if (!hasKey(Prefs.MISSED_CALL_REMINDER)){
-            putBoolean(Prefs.MISSED_CALL_REMINDER, false);
+        if (!hasKey(TTS)){
+            putBoolean(TTS, false);
         }
-        if (!hasKey(Prefs.QUICK_SMS)){
-            putBoolean(Prefs.QUICK_SMS, false);
+        if (!hasKey(CONTACTS_IMPORT_DIALOG)){
+            putBoolean(CONTACTS_IMPORT_DIALOG, false);
         }
-        if (!hasKey(Prefs.FOLLOW_REMINDER)){
-            putBoolean(Prefs.FOLLOW_REMINDER, false);
+        if (!hasKey(CONTACT_BIRTHDAYS)){
+            putBoolean(CONTACT_BIRTHDAYS, false);
         }
-        if (!hasKey(Prefs.BIRTHDAY_PERMANENT)){
-            putBoolean(Prefs.BIRTHDAY_PERMANENT, false);
+        if (!hasKey(BIRTHDAY_REMINDER)){
+            putBoolean(BIRTHDAY_REMINDER, true);
         }
-        if (!hasKey(Prefs.REMINDER_CHANGED)){
-            putBoolean(Prefs.REMINDER_CHANGED, false);
+        if (!hasKey(CALENDAR_IMAGE)){
+            putBoolean(CALENDAR_IMAGE, false);
         }
-        if (!hasKey(Prefs.SYSTEM_VOLUME)){
-            putBoolean(Prefs.SYSTEM_VOLUME, false);
+        if (!hasKey(SILENT_SMS)){
+            putBoolean(SILENT_SMS, false);
         }
-        if (!hasKey(Prefs.INCREASING_VOLUME)){
-            putBoolean(Prefs.INCREASING_VOLUME, false);
+        if (!hasKey(ITEM_PREVIEW)){
+            putBoolean(ITEM_PREVIEW, true);
         }
-        if (!hasKey(Prefs.MAIN_IMAGE_ID)){
-            putInt(Prefs.MAIN_IMAGE_ID, -1);
+        if (!hasKey(WIDGET_BIRTHDAYS)){
+            putBoolean(WIDGET_BIRTHDAYS, false);
         }
-        if (!hasKey(Prefs.MAIN_IMAGE_PATH)){
-            putString(Prefs.MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
+        if (!hasKey(WEAR_NOTIFICATION)){
+            putBoolean(WEAR_NOTIFICATION, false);
         }
-        if (!hasKey(Prefs.CALENDAR_IMAGES)) {
-            putObject(Prefs.CALENDAR_IMAGES, new MonthImage());
+        if (!hasKey(EXPORT_TO_STOCK)){
+            putBoolean(EXPORT_TO_STOCK, false);
+        }
+        if (!hasKey(USE_DARK_THEME)){
+            putBoolean(USE_DARK_THEME, false);
+        }
+        if (!hasKey(EXPORT_TO_CALENDAR)){
+            putBoolean(EXPORT_TO_CALENDAR, false);
+        }
+        if (!hasKey(AUTO_CHECK_BIRTHDAYS)){
+            putBoolean(AUTO_CHECK_BIRTHDAYS, false);
+        }
+        if (!hasKey(INFINITE_VIBRATION)){
+            putBoolean(INFINITE_VIBRATION, false);
+        }
+        if (!hasKey(AUTO_BACKUP)){
+            putBoolean(AUTO_BACKUP, false);
+        }
+        if (!hasKey(SMART_FOLD)){
+            putBoolean(SMART_FOLD, false);
+        }
+        if (!hasKey(NOTIFICATION_REPEAT)){
+            putBoolean(NOTIFICATION_REPEAT, false);
+        }
+        if (!hasKey(IS_24_TIME_FORMAT)){
+            putBoolean(IS_24_TIME_FORMAT, true);
+        }
+        if (!hasKey(UNLOCK_DEVICE)){
+            putBoolean(UNLOCK_DEVICE, false);
+        }
+        if (!hasKey(CALENDAR_FEATURE_TASKS)){
+            putBoolean(CALENDAR_FEATURE_TASKS, false);
+        }
+        if (!hasKey(MISSED_CALL_REMINDER)){
+            putBoolean(MISSED_CALL_REMINDER, false);
+        }
+        if (!hasKey(QUICK_SMS)){
+            putBoolean(QUICK_SMS, false);
+        }
+        if (!hasKey(FOLLOW_REMINDER)){
+            putBoolean(FOLLOW_REMINDER, false);
+        }
+        if (!hasKey(BIRTHDAY_PERMANENT)){
+            putBoolean(BIRTHDAY_PERMANENT, false);
+        }
+        if (!hasKey(REMINDER_CHANGED)){
+            putBoolean(REMINDER_CHANGED, false);
+        }
+        if (!hasKey(SYSTEM_VOLUME)){
+            putBoolean(SYSTEM_VOLUME, false);
+        }
+        if (!hasKey(INCREASING_VOLUME)){
+            putBoolean(INCREASING_VOLUME, false);
+        }
+        if (!hasKey(MAIN_IMAGE_ID)){
+            putInt(MAIN_IMAGE_ID, -1);
+        }
+        if (!hasKey(MAIN_IMAGE_PATH)){
+            putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
+        }
+        if (!hasKey(CALENDAR_IMAGES)) {
+            putObject(CALENDAR_IMAGES, new MonthImage());
         }
         if (Module.isPro()) {
-            if (!hasKey(Prefs.LED_STATUS)) {
-                putBoolean(Prefs.LED_STATUS, true);
+            if (!hasKey(LED_STATUS)) {
+                putBoolean(LED_STATUS, true);
             }
-            if (!hasKey(Prefs.LED_COLOR)) {
-                putInt(Prefs.LED_COLOR, 11);
+            if (!hasKey(LED_COLOR)) {
+                putInt(LED_COLOR, 11);
             }
-            if (!hasKey(Prefs.BIRTHDAY_LED_STATUS)) {
-                putBoolean(Prefs.BIRTHDAY_LED_STATUS, false);
+            if (!hasKey(BIRTHDAY_LED_STATUS)) {
+                putBoolean(BIRTHDAY_LED_STATUS, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_LED_COLOR)) {
-                putInt(Prefs.BIRTHDAY_LED_COLOR, 6);
+            if (!hasKey(BIRTHDAY_LED_COLOR)) {
+                putInt(BIRTHDAY_LED_COLOR, 6);
             }
-            if (!hasKey(Prefs.BIRTHDAY_VIBRATION_STATUS)) {
-                putBoolean(Prefs.BIRTHDAY_VIBRATION_STATUS, false);
+            if (!hasKey(BIRTHDAY_VIBRATION_STATUS)) {
+                putBoolean(BIRTHDAY_VIBRATION_STATUS, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_SOUND_STATUS)) {
-                putBoolean(Prefs.BIRTHDAY_SOUND_STATUS, false);
+            if (!hasKey(BIRTHDAY_SOUND_STATUS)) {
+                putBoolean(BIRTHDAY_SOUND_STATUS, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_WAKE_STATUS)) {
-                putBoolean(Prefs.BIRTHDAY_WAKE_STATUS, false);
+            if (!hasKey(BIRTHDAY_WAKE_STATUS)) {
+                putBoolean(BIRTHDAY_WAKE_STATUS, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_INFINITE_SOUND)) {
-                putBoolean(Prefs.BIRTHDAY_INFINITE_SOUND, false);
+            if (!hasKey(BIRTHDAY_INFINITE_SOUND)) {
+                putBoolean(BIRTHDAY_INFINITE_SOUND, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_INFINITE_VIBRATION)) {
-                putBoolean(Prefs.BIRTHDAY_INFINITE_VIBRATION, false);
+            if (!hasKey(BIRTHDAY_INFINITE_VIBRATION)) {
+                putBoolean(BIRTHDAY_INFINITE_VIBRATION, false);
             }
-            if (!hasKey(Prefs.BIRTHDAY_USE_GLOBAL)) {
-                putBoolean(Prefs.BIRTHDAY_USE_GLOBAL, true);
+            if (!hasKey(BIRTHDAY_USE_GLOBAL)) {
+                putBoolean(BIRTHDAY_USE_GLOBAL, true);
             }
         } else {
-            putInt(Prefs.MARKER_STYLE, 5);
+            putInt(MARKER_STYLE, 5);
         }
     }
 }
