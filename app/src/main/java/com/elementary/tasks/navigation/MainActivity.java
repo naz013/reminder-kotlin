@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
@@ -27,7 +28,6 @@ import com.elementary.tasks.navigation.fragments.FragmentCallback;
 import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
 import com.elementary.tasks.navigation.fragments.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
-import com.elementary.tasks.navigation.fragments.MessagesFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
@@ -137,6 +137,18 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show();
     }
 
+    private void showFab() {
+        if (binding.fab.getVisibility() != View.VISIBLE) {
+            binding.fab.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideFab() {
+        if (binding.fab.getVisibility() != View.GONE) {
+            binding.fab.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = binding.drawerLayout;
@@ -151,45 +163,55 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         switch (item.getItemId()) {
             case R.id.nav_current:
                 replaceFragment(new RemindersFragment(), getString(R.string.tasks));
+                showFab();
                 break;
             case R.id.nav_notes:
                 replaceFragment(new NotesFragment(), getString(R.string.notes));
+                showFab();
                 break;
             case R.id.nav_calendar:
                 replaceFragment(new CalendarFragment(), getString(R.string.calendar));
+                showFab();
                 break;
             case R.id.nav_day_view:
                 replaceFragment(new DayViewFragment(), getString(R.string.events));
+                showFab();
                 break;
             case R.id.nav_tasks:
                 replaceFragment(new GoogleTasksFragment(), getString(R.string.google_tasks));
+                showFab();
                 break;
             case R.id.nav_groups:
                 replaceFragment(new GroupsFragment(), getString(R.string.groups));
+                showFab();
                 break;
             case R.id.nav_map:
                 replaceFragment(new MapFragment(), getString(R.string.map));
+                hideFab();
                 break;
             case R.id.nav_places:
                 replaceFragment(new PlacesFragment(), getString(R.string.places));
-                break;
-            case R.id.nav_templates:
-                replaceFragment(new MessagesFragment(), getString(R.string.messages));
+                showFab();
                 break;
             case R.id.nav_backups:
                 replaceFragment(new BackupsFragment(), getString(R.string.backup_files));
+                hideFab();
                 break;
             case R.id.nav_archive:
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
+                hideFab();
                 break;
             case R.id.nav_settings:
                 replaceFragment(new SettingsFragment(), getString(R.string.settings));
+                hideFab();
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new DayViewFragment(), getString(R.string.feedback));
+                hideFab();
                 break;
             case R.id.nav_help:
                 replaceFragment(new DayViewFragment(), getString(R.string.help));
+                hideFab();
                 break;
         }
         return true;
