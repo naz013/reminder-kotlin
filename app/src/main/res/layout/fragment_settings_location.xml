@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/notificationOptionPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/distance_notification"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/radiusPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/radius"
+                app:prefs_type="text" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/mapTypePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/map_type"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/markerStylePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/style_of_marker"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/trackerPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/tracking_settings"
+                app:prefs_type="none" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>

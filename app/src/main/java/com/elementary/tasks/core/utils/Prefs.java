@@ -302,6 +302,46 @@ public class Prefs extends SharedPrefs {
         putInt(NOTE_TEXT_SIZE, value);
     }
 
+    public int getRadius() {
+        return getInt(LOCATION_RADIUS);
+    }
+
+    public void setRadius(int value) {
+        putInt(LOCATION_RADIUS, value);
+    }
+
+    public boolean isDistanceNotificationEnabled() {
+        return getBoolean(TRACKING_NOTIFICATION);
+    }
+
+    public void setDistanceNotificationEnabled(boolean value) {
+        putBoolean(TRACKING_NOTIFICATION, value);
+    }
+
+    public int getMapType() {
+        return getInt(MAP_TYPE);
+    }
+
+    public void setMapType(int value) {
+        putInt(MAP_TYPE, value);
+    }
+
+    public int getTrackDistance() {
+        return getInt(TRACK_DISTANCE);
+    }
+
+    public void setTrackDistance(int value) {
+        putInt(TRACK_DISTANCE, value);
+    }
+
+    public int getTrackTime() {
+        return getInt(TRACK_TIME);
+    }
+
+    public void setTrackTime(int value) {
+        putInt(TRACK_TIME, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {
