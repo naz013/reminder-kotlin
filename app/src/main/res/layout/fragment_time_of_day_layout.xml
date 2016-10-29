@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/morningTime"
+                android:text="@string/morning"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/create_text_size_secondary"
+                app:font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/morningTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text="07:00"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/create_text_size_primary"
+                app:font_style="roboto_bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/dayTime"
+                android:text="@string/day"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/create_text_size_secondary"
+                app:font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/dayTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text="12:00"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/create_text_size_primary"
+                app:font_style="roboto_bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/eveningTime"
+                android:text="@string/evening"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/create_text_size_secondary"
+                app:font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/eveningTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text="18:00"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/create_text_size_primary"
+                app:font_style="roboto_bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/nightTime"
+                android:text="@string/night"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/create_text_size_secondary"
+                app:font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/nightTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:text="23:00"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/create_text_size_primary"
+                app:font_style="roboto_bold" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>
