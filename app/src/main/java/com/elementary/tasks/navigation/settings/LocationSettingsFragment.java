@@ -56,6 +56,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         binding.trackerPrefs.setOnClickListener(mTrackClick);
         mNotificationPrefs = binding.notificationOptionPrefs;
         mNotificationPrefs.setOnClickListener(mNotificationClick);
+        mNotificationPrefs.setChecked(Prefs.getInstance(mContext).isDistanceNotificationEnabled());
         mRadiusPrefs = binding.radiusPrefs;
         mRadiusPrefs.setOnClickListener(mRadiusClick);
         showRadius();

@@ -36,6 +36,7 @@ public class SettingsFragment extends BaseSettingsFragment {
         binding.voiceSettings.setOnClickListener(view -> replaceFragment(new VoiceSettingsFragment(), getString(R.string.voice_control)));
         binding.notesSettings.setOnClickListener(view -> replaceFragment(new NoteSettingsFragment(), getString(R.string.notes)));
         binding.locationSettings.setOnClickListener(view -> replaceFragment(new LocationSettingsFragment(), getString(R.string.location)));
+        binding.additionalSettings.setOnClickListener(view -> replaceFragment(new AdditionalSettingsFragment(), getString(R.string.additional)));
         return binding.getRoot();
     }
 

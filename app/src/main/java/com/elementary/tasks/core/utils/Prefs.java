@@ -342,6 +342,38 @@ public class Prefs extends SharedPrefs {
         putInt(TRACK_TIME, value);
     }
 
+    public boolean isMissedReminderEnabled() {
+        return getBoolean(MISSED_CALL_REMINDER);
+    }
+
+    public void setMissedReminderEnabled(boolean value) {
+        putBoolean(MISSED_CALL_REMINDER, value);
+    }
+
+    public int getMissedReminderTime() {
+        return getInt(MISSED_CALL_TIME);
+    }
+
+    public void setMissedReminderTime(int value) {
+        putInt(MISSED_CALL_TIME, value);
+    }
+
+    public boolean isQuickSmsEnabled() {
+        return getBoolean(QUICK_SMS);
+    }
+
+    public void setQuickSmsEnabled(boolean value) {
+        putBoolean(QUICK_SMS, value);
+    }
+
+    public boolean isFollowReminderEnabled() {
+        return getBoolean(FOLLOW_REMINDER);
+    }
+
+    public void setFollowReminderEnabled(boolean value) {
+        putBoolean(FOLLOW_REMINDER, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

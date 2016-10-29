@@ -43,8 +43,9 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentSettingsNotesLayoutBinding binding = FragmentSettingsNotesLayoutBinding.inflate(inflater, container, false);
         mNoteReminderPrefs = binding.noteReminderPrefs;
-        mNoteReminderTimePrefs = binding.noteReminderTime;
         mNoteReminderPrefs.setOnClickListener(mNoteReminderClick);
+        mNoteReminderPrefs.setChecked(Prefs.getInstance(mContext).isNoteReminderEnabled());
+        mNoteReminderTimePrefs = binding.noteReminderTime;
         mNoteReminderTimePrefs.setOnClickListener(mNoteTimeClick);
         binding.textSize.setOnClickListener(mNoteTextSizeClick);
         checkEnabling();
@@ -132,10 +133,6 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void checkEnabling() {
-        if (mNoteReminderPrefs.isChecked()) {
-            mNoteReminderTimePrefs.setEnabled(true);
-        } else {
-            mNoteReminderTimePrefs.setEnabled(false);
-        }
+        mNoteReminderTimePrefs.setEnabled(mNoteReminderPrefs.isChecked());
     }
 }
