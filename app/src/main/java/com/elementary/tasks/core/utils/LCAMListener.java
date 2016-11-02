@@ -15,13 +15,6 @@ package com.elementary.tasks.core.utils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class Constants {
-    public static final int MAP_NORMAL = 1;
-    public static final int MAP_SATELLITE = 2;
-    public static final int MAP_HYBRID = 4;
-    public static final int MAP_TERRAIN = 3;
-
-    public static final String DEFAULT = "default";
-
-    public static final String INTENT_ID = "item_id";
+public interface LCAMListener {
+    void onAction(int item);
 }

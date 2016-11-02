@@ -25,8 +25,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class TimeUtil {
+
+    public static final String GMT = "GMT";
 
     public static final SimpleDateFormat format24 = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
     public static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault());
@@ -41,7 +44,14 @@ public class TimeUtil {
     public static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault());
     public static final SimpleDateFormat simpleDateTime12 = new SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault());
 
+    public static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
+
     public TimeUtil(){}
+
+    public static String getGmtDateTime() {
+        gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
+        return gmtDateFormat.format(new Date());
+    }
 
     public static String getFullDateTime(long date, boolean is24){
         Calendar calendar = Calendar.getInstance();

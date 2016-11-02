@@ -18,6 +18,7 @@ package com.elementary.tasks.core.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,16 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.Language;
 
 public class SuperUtil {
+
+    public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(actions, (dialog, item) -> {
+            dialog.dismiss();
+            if (listener != null) listener.onAction(item);
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
