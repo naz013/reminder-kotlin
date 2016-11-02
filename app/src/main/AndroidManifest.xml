@@ -58,6 +58,8 @@
 
         <activity android:name=".navigation.settings.images.MainImageActivity" />
 
+        <activity android:name=".navigation.settings.additional.TemplateActivity" />
+
         <activity
             android:name=".core.SplashScreen"
             android:theme="@style/SplashTheme">

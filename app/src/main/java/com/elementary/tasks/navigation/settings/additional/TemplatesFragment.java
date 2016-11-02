@@ -1,13 +1,17 @@
 package com.elementary.tasks.navigation.settings.additional;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.databinding.FragmentTemplatesListBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 /**
@@ -28,12 +32,27 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 public class TemplatesFragment extends BaseSettingsFragment {
 
+    private FragmentTemplatesListBinding binding;
+    private TemplatesAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsWebViewLayoutBinding binding = FragmentSettingsWebViewLayoutBinding.inflate(inflater, container, false);
-
+        binding = FragmentTemplatesListBinding.inflate(inflater, container, false);
+        binding.fab.setOnClickListener(view -> openCreateScreen());
+        initTemplateList();
         return binding.getRoot();
+    }
+
+    private void openCreateScreen() {
+        startActivity(new Intent(mContext, TemplateActivity.class));
+    }
+
+    private void initTemplateList() {
+        RecyclerView recyclerView = binding.templatesList;
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        refreshView();
     }
 
     @Override
@@ -42,6 +61,23 @@ public class TemplatesFragment extends BaseSettingsFragment {
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.messages));
             mCallback.onFragmentSelect(this);
+        }
+        showTemplates();
+    }
+
+    private void showTemplates() {
+        adapter = new TemplatesAdapter(RealmDb.getInstance().getAllTemplates(), mContext);
+        binding.templatesList.setAdapter(adapter);
+        refreshView();
+    }
+
+    private void refreshView() {
+        if (adapter == null || adapter.getItemCount() == 0) {
+            binding.emptyItem.setVisibility(View.VISIBLE);
+            binding.templatesList.setVisibility(View.GONE);
+        } else {
+            binding.emptyItem.setVisibility(View.GONE);
+            binding.templatesList.setVisibility(View.VISIBLE);
         }
     }
 }
