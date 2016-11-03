@@ -60,6 +60,8 @@
 
         <activity android:name=".navigation.settings.additional.TemplateActivity" />
 
+        <activity android:name=".core.additional.QuickSmsActivity" />
+
         <activity
             android:name=".core.SplashScreen"
             android:theme="@style/SplashTheme">
@@ -68,6 +70,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".core.services.CallReceiver" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
@@ -109,7 +113,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
     </application>
 

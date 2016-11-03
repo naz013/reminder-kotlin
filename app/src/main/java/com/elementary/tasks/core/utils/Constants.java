@@ -24,4 +24,6 @@ public class Constants {
     public static final String DEFAULT = "default";
 
     public static final String INTENT_ID = "item_id";
+    public static final String SELECTED_CONTACT_NUMBER = "contact_number";
+    public static final String SELECTED_TIME = "call_time";
 }
