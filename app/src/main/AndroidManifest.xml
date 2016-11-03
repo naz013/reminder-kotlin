@@ -67,7 +67,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".core.services.CallReceiver" />
+        <receiver
+            android:name=".core.services.CallReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
