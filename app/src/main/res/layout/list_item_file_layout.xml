@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.elementary.tasks.core.file_explorer.FileDataItem" />
+
+        <variable
+            name="click"
+            type="com.elementary.tasks.core.file_explorer.AdapterListener" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0.5dp"
+        android:foreground="?attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{click.onClick}">
+
+            <ImageView
+                android:id="@+id/itemImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:loadImage='@{item.fileName}' />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/itemName"
+                android:layout_width="220.5dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="72dp"
+                android:text="@{item.fileName}"
+                android:textSize="16sp"
+                android:maxLines="1"
+                app:font_style="roboto_light" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</layout>

@@ -57,6 +57,7 @@
         <activity android:name=".navigation.settings.additional.TemplateActivity" />
         <activity android:name=".core.additional.QuickSmsActivity" />
         <activity android:name=".core.additional.FollowReminderActivity" />
+        <activity android:name=".core.file_explorer.FileExplorerActivity" />
 
         <activity
             android:name=".core.SplashScreen"
