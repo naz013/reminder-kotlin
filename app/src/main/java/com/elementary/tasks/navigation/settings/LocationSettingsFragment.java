@@ -79,6 +79,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
     private void showTrackerOptionsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.tracking_settings);
         DialogTrackingSettingsLayoutBinding b = DialogTrackingSettingsLayoutBinding.inflate(LayoutInflater.from(mContext));
         b.distanceBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -171,6 +172,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
     private void showRadiusPickerDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
         b.seekBar.setMax(5000);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
