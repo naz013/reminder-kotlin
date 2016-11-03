@@ -21,7 +21,8 @@ public class Constants {
     public static final int MAP_HYBRID = 4;
     public static final int MAP_TERRAIN = 3;
 
-    public static final String DEFAULT = "default";
+    public static final String NONE = "none";
+    public static final String DEFAULT = "defaut";
 
     public static final String INTENT_ID = "item_id";
     public static final String SELECTED_CONTACT_NUMBER = "contact_number";
@@ -30,4 +31,5 @@ public class Constants {
     public static final String FILE_TYPE = "file_type";
 
     public static final int REQUEST_CODE_SELECTED_MELODY = 500;
+    public static final int ACTION_REQUEST_GALLERY = 222;
 }

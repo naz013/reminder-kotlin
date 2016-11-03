@@ -62,13 +62,9 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void changeNoteReminder() {
-        if (mNoteReminderPrefs.isChecked()) {
-            mNoteReminderPrefs.setChecked(false);
-            Prefs.getInstance(mContext).setNoteReminderEnabled(false);
-        } else {
-            mNoteReminderPrefs.setChecked(true);
-            Prefs.getInstance(mContext).setNoteReminderEnabled(true);
-        }
+        boolean isChecked = mNoteReminderPrefs.isChecked();
+        mNoteReminderPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setNoteReminderEnabled(!isChecked);
         checkEnabling();
     }
 

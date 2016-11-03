@@ -76,13 +76,9 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
             Permissions.requestPermission(getActivity(), FOLLOW, Permissions.READ_PHONE_STATE);
             return;
         }
-        if (binding.followReminderPrefs.isChecked()) {
-            binding.followReminderPrefs.setChecked(false);
-            Prefs.getInstance(mContext).setFollowReminderEnabled(false);
-        } else {
-            binding.followReminderPrefs.setChecked(true);
-            Prefs.getInstance(mContext).setFollowReminderEnabled(true);
-        }
+        boolean isChecked = binding.followReminderPrefs.isChecked();
+        binding.followReminderPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setFollowReminderEnabled(!isChecked);
     }
 
     private void changeMissedPrefs() {
@@ -90,13 +86,9 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
             Permissions.requestPermission(getActivity(), MISSED, Permissions.READ_PHONE_STATE);
             return;
         }
-        if (mMissedPrefs.isChecked()) {
-            mMissedPrefs.setChecked(false);
-            Prefs.getInstance(mContext).setMissedReminderEnabled(false);
-        } else {
-            mMissedPrefs.setChecked(true);
-            Prefs.getInstance(mContext).setMissedReminderEnabled(true);
-        }
+        boolean isChecked = mMissedPrefs.isChecked();
+        mMissedPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setMissedReminderEnabled(!isChecked);
         checkTimeEnabling();
     }
 
@@ -105,13 +97,9 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
             Permissions.requestPermission(getActivity(), QUICK_SMS, Permissions.READ_PHONE_STATE);
             return;
         }
-        if (mQuickSmsPrefs.isChecked()) {
-            mQuickSmsPrefs.setChecked(false);
-            Prefs.getInstance(mContext).setQuickSmsEnabled(false);
-        } else {
-            mQuickSmsPrefs.setChecked(true);
-            Prefs.getInstance(mContext).setQuickSmsEnabled(true);
-        }
+        boolean isChecked = mQuickSmsPrefs.isChecked();
+        mQuickSmsPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setQuickSmsEnabled(!isChecked);
         checkMessagesEnabling();
     }
 

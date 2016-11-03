@@ -151,13 +151,9 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void changeNotificationPrefs() {
-        if (mNotificationPrefs.isChecked()) {
-            mNotificationPrefs.setChecked(false);
-            Prefs.getInstance(mContext).setDistanceNotificationEnabled(false);
-        } else {
-            mNotificationPrefs.setChecked(true);
-            Prefs.getInstance(mContext).setDistanceNotificationEnabled(true);
-        }
+        boolean isChecked = mNotificationPrefs.isChecked();
+        mNotificationPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setDistanceNotificationEnabled(!isChecked);
     }
 
     private void showRadius() {
