@@ -374,6 +374,14 @@ public class Prefs extends SharedPrefs {
         putBoolean(FOLLOW_REMINDER, value);
     }
 
+    public String getDriveUser() {
+        return getString(DRIVE_USER);
+    }
+
+    public void setDriveUser(String value) {
+        putString(DRIVE_USER, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

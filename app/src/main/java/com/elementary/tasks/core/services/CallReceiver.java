@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
+import com.elementary.tasks.core.additional.FollowReminderActivity;
 import com.elementary.tasks.core.additional.QuickSmsActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Prefs;
@@ -62,11 +63,11 @@ public class CallReceiver extends BroadcastReceiver {
                         prevState = state;
                         boolean isFollow = prefs.isFollowReminderEnabled();
                         if (mIncomingNumber != null && isFollow ) {
-//                            mContext.startActivity(new Intent(mContext, FollowReminderActivity.class)
-//                                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, mIncomingNumber)
-//                                    .putExtra(Constants.SELECTED_TIME, startCallTime)
-//                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-//                                            Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                            mContext.startActivity(new Intent(mContext, FollowReminderActivity.class)
+                                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, mIncomingNumber)
+                                    .putExtra(Constants.SELECTED_TIME, startCallTime)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_SINGLE_TOP));
                             break;
                         }
                     }
