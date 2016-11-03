@@ -26,6 +26,8 @@ import android.widget.Spinner;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.LED;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
@@ -216,10 +218,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 save();
                 return true;
             case R.id.action_custom_melody:
-                if(Permissions.checkPermission(this,
+                if (Permissions.checkPermission(this,
                         Permissions.READ_EXTERNAL)) {
-//                    startActivityForResult(new Intent(ReminderActivity.this, FileExploreActivity.class),
-//                            Constants.REQUEST_CODE_SELECTED_MELODY);
+                    startActivityForResult(new Intent(this, FileExplorerActivity.class),
+                            Constants.REQUEST_CODE_SELECTED_MELODY);
                 } else {
                     Permissions.requestPermission(this, 330,
                             Permissions.READ_EXTERNAL);
@@ -322,7 +324,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            if (matches != null){
+            if (matches != null) {
                 String text = matches.get(0).toString();
                 taskField.setText(text);
             }
