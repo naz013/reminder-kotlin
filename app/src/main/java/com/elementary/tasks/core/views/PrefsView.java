@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Module;
 
 public class PrefsView extends RelativeLayout {
 
@@ -42,6 +43,7 @@ public class PrefsView extends RelativeLayout {
     private View dividerTop, dividerBottom, prefsView;
 
     private boolean isChecked;
+    private boolean isForPro;
     private int viewType = check;
     
     public PrefsView(Context context) {
@@ -67,28 +69,25 @@ public class PrefsView extends RelativeLayout {
         detail = (TextView) findViewById(R.id.prefsSecondaryText);
         prefsValue = (TextView) findViewById(R.id.prefsValue);
         checkBox = (CheckBox) findViewById(R.id.prefsCheck);
-
         dividerTop = findViewById(R.id.dividerTop);
         dividerBottom = findViewById(R.id.dividerBottom);
         prefsView = findViewById(R.id.prefsView);
-
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(
                     attrs, R.styleable.PrefsView, 0, 0);
-
             String titleText = "";
             String detailText = "";
             String valueText = "";
             boolean divTop = false;
             boolean divBottom = false;
             int res = 0;
-            
             try {
                 titleText = a.getString(R.styleable.PrefsView_prefs_primary_text);
                 detailText = a.getString(R.styleable.PrefsView_prefs_secondary_text);
                 valueText = a.getString(R.styleable.PrefsView_prefs_value_text);
                 divTop = a.getBoolean(R.styleable.PrefsView_prefs_divider_top, false);
                 divBottom = a.getBoolean(R.styleable.PrefsView_prefs_divider_bottom, false);
+                isForPro = a.getBoolean(R.styleable.PrefsView_prefs_pro, false);
                 viewType = a.getInt(R.styleable.PrefsView_prefs_type, check);
                 res = a.getInt(R.styleable.PrefsView_prefs_view_resource, 0);
             } catch (Exception e) {
@@ -96,7 +95,6 @@ public class PrefsView extends RelativeLayout {
             } finally {
                 a.recycle();
             }
-
             setTitleText(titleText);
             setDetailText(detailText);
             setDividerTop(divTop);
@@ -106,6 +104,24 @@ public class PrefsView extends RelativeLayout {
             setViewResource(res);
         }
         setChecked(isChecked());
+        setVisible();
+    }
+
+    public void setForPro(boolean forPro) {
+        isForPro = forPro;
+        setVisible();
+    }
+
+    private void setVisible() {
+        if (isForPro) {
+            if (Module.isPro()) {
+                setVisibility(VISIBLE);
+            } else {
+                setVisibility(GONE);
+            }
+        } else {
+            setVisibility(VISIBLE);
+        }
     }
 
     private void setView() {

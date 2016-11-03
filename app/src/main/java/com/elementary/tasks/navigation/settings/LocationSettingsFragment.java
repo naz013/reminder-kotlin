@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.views.PrefsView;
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding;
@@ -60,11 +59,6 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         mRadiusPrefs = binding.radiusPrefs;
         mRadiusPrefs.setOnClickListener(mRadiusClick);
         showRadius();
-        if (Module.isPro()) {
-            binding.markerStylePrefs.setVisibility(View.VISIBLE);
-        } else {
-            binding.markerStylePrefs.setVisibility(View.GONE);
-        }
         return binding.getRoot();
     }
 
