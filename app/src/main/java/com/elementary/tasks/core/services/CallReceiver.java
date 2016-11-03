@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.elementary.tasks.core.additional.FollowReminderActivity;
 import com.elementary.tasks.core.additional.QuickSmsActivity;
@@ -30,6 +31,8 @@ import com.elementary.tasks.core.utils.RealmDb;
 
 public class CallReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "CallReceiver";
+
     private Context mContext;
     private String mIncomingNumber;
     private int prevState;
@@ -37,7 +40,7 @@ public class CallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        TelephonyManager telephony = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener();
         telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         mContext = context;
@@ -46,11 +49,12 @@ public class CallReceiver extends BroadcastReceiver {
     public class CustomPhoneStateListener extends PhoneStateListener {
 
         @Override
-        public void onCallStateChanged(int state, String incomingNumber){
+        public void onCallStateChanged(int state, String incomingNumber) {
             Prefs prefs = Prefs.getInstance(mContext);
-            if (incomingNumber != null && incomingNumber.length() > 0) mIncomingNumber = incomingNumber;
+            if (incomingNumber != null && incomingNumber.length() > 0)
+                mIncomingNumber = incomingNumber;
             else return;
-            switch(state){
+            switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
                     prevState = state;
                     startCallTime = System.currentTimeMillis();
@@ -59,10 +63,10 @@ public class CallReceiver extends BroadcastReceiver {
                     prevState = state;
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
-                    if((prevState == TelephonyManager.CALL_STATE_OFFHOOK)){
+                    if ((prevState == TelephonyManager.CALL_STATE_OFFHOOK)) {
                         prevState = state;
                         boolean isFollow = prefs.isFollowReminderEnabled();
-                        if (mIncomingNumber != null && isFollow ) {
+                        if (mIncomingNumber != null && isFollow) {
                             mContext.startActivity(new Intent(mContext, FollowReminderActivity.class)
                                     .putExtra(Constants.SELECTED_CONTACT_NUMBER, mIncomingNumber)
                                     .putExtra(Constants.SELECTED_TIME, startCallTime)
@@ -71,11 +75,11 @@ public class CallReceiver extends BroadcastReceiver {
                             break;
                         }
                     }
-                    if((prevState == TelephonyManager.CALL_STATE_RINGING)){
+                    if ((prevState == TelephonyManager.CALL_STATE_RINGING)) {
                         prevState = state;
                         long currTime = System.currentTimeMillis();
-                        if (currTime - startCallTime >= 1000 * 10){
-                            if (prefs.isMissedReminderEnabled() && mIncomingNumber != null){
+                        if (currTime - startCallTime >= 1000 * 10) {
+                            if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
 //                                DataBase db = new DataBase(mContext);
 //                                db.open();
 //                                Cursor c = db.getMissedCall(mIncomingNumber);
