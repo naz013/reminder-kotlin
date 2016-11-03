@@ -101,53 +101,33 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void changeWearNotification() {
-        if (Prefs.getInstance(mContext).isWearEnabled()) {
-            Prefs.getInstance(mContext).setWearEnabled(false);
-            binding.wearPrefs.setChecked(false);
-        } else {
-            Prefs.getInstance(mContext).setWearEnabled(true);
-            binding.wearPrefs.setChecked(true);
-        }
+        boolean isChecked = binding.wearPrefs.isChecked();
+        Prefs.getInstance(mContext).setWearEnabled(!isChecked);
+        binding.wearPrefs.setChecked(!isChecked);
     }
 
     private void changeSmartFoldMode() {
-        if (Prefs.getInstance(mContext).isFoldingEnabled()) {
-            Prefs.getInstance(mContext).setFoldingEnabled(false);
-            binding.smartFoldPrefs.setChecked(false);
-        } else {
-            Prefs.getInstance(mContext).setFoldingEnabled(true);
-            binding.smartFoldPrefs.setChecked(true);
-        }
+        boolean isChecked = binding.smartFoldPrefs.isChecked();
+        Prefs.getInstance(mContext).setFoldingEnabled(!isChecked);
+        binding.smartFoldPrefs.setChecked(!isChecked);
     }
 
     private void changeDayNightMode() {
-        if (Prefs.getInstance(mContext).isNightModeEnabled()) {
-            Prefs.getInstance(mContext).setNightModeEnabled(false);
-            binding.dayNightPrefs.setChecked(false);
-        } else {
-            Prefs.getInstance(mContext).setNightModeEnabled(true);
-            binding.dayNightPrefs.setChecked(true);
-        }
+        boolean isChecked = binding.dayNightPrefs.isChecked();
+        Prefs.getInstance(mContext).setNightModeEnabled(!isChecked);
+        binding.dayNightPrefs.setChecked(!isChecked);
         checkDayNight();
         getActivity().recreate();
     }
 
     private void changeNightMode() {
-        if (Prefs.getInstance(mContext).isDarkModeEnabled()) {
-            Prefs.getInstance(mContext).setDarkModeEnabled(false);
-            binding.darkPrefs.setChecked(false);
-        } else {
-            Prefs.getInstance(mContext).setDarkModeEnabled(true);
-            binding.darkPrefs.setChecked(true);
-        }
+        boolean isChecked = binding.darkPrefs.isChecked();
+        Prefs.getInstance(mContext).setDarkModeEnabled(!isChecked);
+        binding.darkPrefs.setChecked(!isChecked);
         getActivity().recreate();
     }
 
     private void checkDayNight() {
-        if (binding.dayNightPrefs.isChecked()) {
-            binding.darkPrefs.setEnabled(false);
-        } else {
-            binding.darkPrefs.setEnabled(true);
-        }
+        binding.darkPrefs.setEnabled(binding.dayNightPrefs.isChecked());
     }
 }

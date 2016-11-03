@@ -238,11 +238,11 @@ public class Prefs extends SharedPrefs {
         putBoolean(UI_CHANGED, value);
     }
 
-    public boolean isSBNotificationEnabled() {
+    public boolean isSbNotificationEnabled() {
         return getBoolean(STATUS_BAR_NOTIFICATION);
     }
 
-    public void setSBNotificationEnabled(boolean value) {
+    public void setSbNotificationEnabled(boolean value) {
         putBoolean(STATUS_BAR_NOTIFICATION, value);
     }
 
@@ -380,6 +380,54 @@ public class Prefs extends SharedPrefs {
 
     public void setDriveUser(String value) {
         putString(DRIVE_USER, value);
+    }
+
+    public String getReminderImage() {
+        return getString(REMINDER_IMAGE);
+    }
+
+    public void setReminderImage(String value) {
+        putString(REMINDER_IMAGE, value);
+    }
+
+    public boolean isBlurEnabled() {
+        return getBoolean(REMINDER_IMAGE_BLUR);
+    }
+
+    public void setBlurEnabled(boolean value) {
+        putBoolean(REMINDER_IMAGE_BLUR, value);
+    }
+
+    public boolean isManualRemoveEnabled() {
+        return getBoolean(NOTIFICATION_REMOVE);
+    }
+
+    public void setManualRemoveEnabled(boolean value) {
+        putBoolean(NOTIFICATION_REMOVE, value);
+    }
+
+    public boolean isSbIconEnabled() {
+        return getBoolean(STATUS_BAR_ICON);
+    }
+
+    public void setSbIconEnabled(boolean value) {
+        putBoolean(STATUS_BAR_ICON, value);
+    }
+
+    public boolean isVibrateEnabled() {
+        return getBoolean(VIBRATION_STATUS);
+    }
+
+    public void setVibrateEnabled(boolean value) {
+        putBoolean(VIBRATION_STATUS, value);
+    }
+
+    public boolean isInfiniteVibrateEnabled() {
+        return getBoolean(INFINITE_VIBRATION);
+    }
+
+    public void setInfiniteVibrateEnabled(boolean value) {
+        putBoolean(INFINITE_VIBRATION, value);
     }
 
     public void initPrefs(Context context) {

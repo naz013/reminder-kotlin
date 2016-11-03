@@ -150,6 +150,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (fragment != null) fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = binding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);

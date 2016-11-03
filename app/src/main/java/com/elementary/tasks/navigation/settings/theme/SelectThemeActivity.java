@@ -75,7 +75,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     }
 
     private void updateNotification() {
-        if (Prefs.getInstance(this).isSBNotificationEnabled()) {
+        if (Prefs.getInstance(this).isSbNotificationEnabled()) {
 //            new Notifier(ThemeActivity.this).recreatePermanent();
             // TODO: 25.10.2016 Add refreshing of permanent notification
         }
