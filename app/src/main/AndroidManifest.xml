@@ -51,16 +51,12 @@
         android:theme="@style/HomeDark.Cyan">
 
         <activity android:name=".navigation.MainActivity" />
-
         <activity android:name=".creators.CreateReminderActivity" />
-
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
-
         <activity android:name=".navigation.settings.images.MainImageActivity" />
-
         <activity android:name=".navigation.settings.additional.TemplateActivity" />
-
         <activity android:name=".core.additional.QuickSmsActivity" />
+        <activity android:name=".core.additional.FollowReminderActivity" />
 
         <activity
             android:name=".core.SplashScreen"

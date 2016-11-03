@@ -25,10 +25,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
+import android.util.Base64;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.Language;
+
+import java.io.UnsupportedEncodingException;
 
 public class SuperUtil {
 
@@ -121,5 +124,26 @@ public class SuperUtil {
             return (false);
         }
         return (true);
+    }
+
+    public static String decrypt(String string){
+        String result = "";
+        byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
+        try {
+            result = new String(byte_string, "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        return result;
+    }
+
+    public static String encrypt(String string){
+        byte[] string_byted = null;
+        try {
+            string_byted = string.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return Base64.encodeToString(string_byted, Base64.DEFAULT).trim();
     }
 }
