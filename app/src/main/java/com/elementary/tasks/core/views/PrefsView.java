@@ -45,6 +45,8 @@ public class PrefsView extends RelativeLayout {
     private boolean isChecked;
     private boolean isForPro;
     private int viewType = check;
+
+    private OnCheckedListener mOnCheckedListener;
     
     public PrefsView(Context context) {
         super(context);
@@ -107,9 +109,20 @@ public class PrefsView extends RelativeLayout {
         setVisible();
     }
 
+    public void setOnCheckedListener(OnCheckedListener listener) {
+        this.mOnCheckedListener = listener;
+    }
+
     public void setForPro(boolean forPro) {
         isForPro = forPro;
         setVisible();
+    }
+
+    public void setDependentView(PrefsView view) {
+        if (view != null) {
+            view.setOnCheckedListener(this::setEnabled);
+            setEnabled(view.isChecked());
+        }
     }
 
     private void setVisible() {
@@ -174,6 +187,9 @@ public class PrefsView extends RelativeLayout {
     public void setChecked(boolean checked) {
         this.isChecked = checked;
         checkBox.setChecked(checked);
+        if (mOnCheckedListener != null) {
+            mOnCheckedListener.onCheckedChange(checked);
+        }
     }
 
     @Override
@@ -204,5 +220,9 @@ public class PrefsView extends RelativeLayout {
         } else {
             dividerBottom.setVisibility(GONE);
         }
+    }
+
+    public interface OnCheckedListener {
+        void onCheckedChange(boolean checked);
     }
 }

@@ -41,9 +41,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
 
     private FragmentSettingsAdditionalBinding binding;
     private PrefsView mMissedPrefs;
-    private PrefsView mMissedTimePrefs;
     private PrefsView mQuickSmsPrefs;
-    private PrefsView mMessagesPrefs;
     private View.OnClickListener mMissedClick = view -> changeMissedPrefs();
     private View.OnClickListener mMissedTimeClick = view -> showTimePickerDialog();
     private View.OnClickListener mQuickSmsClick = view -> changeQuickSmsPrefs();
@@ -54,21 +52,37 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsAdditionalBinding.inflate(inflater, container, false);
-        mMissedPrefs = binding.missedPrefs;
-        mMissedPrefs.setOnClickListener(mMissedClick);
-        mMissedPrefs.setChecked(Prefs.getInstance(mContext).isMissedReminderEnabled());
-        mMissedTimePrefs = binding.missedTimePrefs;
-        mMissedTimePrefs.setOnClickListener(mMissedTimeClick);
+        initMissedPrefs();
+        initMissedTimePrefs();
+        initQuickSmsPrefs();
+        initMessagesPrefs();
+        binding.followReminderPrefs.setOnClickListener(mFollowClick);
+        binding.followReminderPrefs.setChecked(Prefs.getInstance(mContext).isFollowReminderEnabled());
+        return binding.getRoot();
+    }
+
+    private void initMessagesPrefs() {
+        PrefsView mMessagesPrefs = binding.templatesPrefs;
+        mMessagesPrefs.setOnClickListener(mMessagesClick);
+        mMessagesPrefs.setDependentView(mQuickSmsPrefs);
+    }
+
+    private void initQuickSmsPrefs() {
         mQuickSmsPrefs = binding.quickSMSPrefs;
         mQuickSmsPrefs.setOnClickListener(mQuickSmsClick);
         mQuickSmsPrefs.setChecked(Prefs.getInstance(mContext).isQuickSmsEnabled());
-        mMessagesPrefs = binding.templatesPrefs;
-        mMessagesPrefs.setOnClickListener(mMessagesClick);
-        binding.followReminderPrefs.setOnClickListener(mFollowClick);
-        binding.followReminderPrefs.setChecked(Prefs.getInstance(mContext).isFollowReminderEnabled());
-        checkTimeEnabling();
-        checkMessagesEnabling();
-        return binding.getRoot();
+    }
+
+    private void initMissedTimePrefs() {
+        PrefsView mMissedTimePrefs = binding.missedTimePrefs;
+        mMissedTimePrefs.setOnClickListener(mMissedTimeClick);
+        mMissedTimePrefs.setDependentView(mMissedPrefs);
+    }
+
+    private void initMissedPrefs() {
+        mMissedPrefs = binding.missedPrefs;
+        mMissedPrefs.setOnClickListener(mMissedClick);
+        mMissedPrefs.setChecked(Prefs.getInstance(mContext).isMissedReminderEnabled());
     }
 
     private void changeFollowPrefs() {
@@ -89,7 +103,6 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = mMissedPrefs.isChecked();
         mMissedPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setMissedReminderEnabled(!isChecked);
-        checkTimeEnabling();
     }
 
     private void changeQuickSmsPrefs() {
@@ -100,7 +113,6 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = mQuickSmsPrefs.isChecked();
         mQuickSmsPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setQuickSmsEnabled(!isChecked);
-        checkMessagesEnabling();
     }
 
     private void showTimePickerDialog(){
@@ -131,14 +143,6 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         builder.setPositiveButton(R.string.ok, (dialog, which) -> Prefs.getInstance(mContext).setMissedReminderTime(b.seekBar.getProgress()));
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
-    }
-
-    private void checkTimeEnabling() {
-        mMissedTimePrefs.setEnabled(mMissedPrefs.isChecked());
-    }
-
-    private void checkMessagesEnabling() {
-        mMessagesPrefs.setEnabled(mQuickSmsPrefs.isChecked());
     }
 
     @Override
