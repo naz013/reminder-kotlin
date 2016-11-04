@@ -33,7 +33,6 @@ import com.elementary.tasks.databinding.FragmentSettingsNotesLayoutBinding;
 public class NoteSettingsFragment extends BaseSettingsFragment {
 
     private PrefsView mNoteReminderPrefs;
-    private PrefsView mNoteReminderTimePrefs;
     private View.OnClickListener mNoteReminderClick = view -> changeNoteReminder();
     private View.OnClickListener mNoteTimeClick = view -> showTimePickerDialog();
     private View.OnClickListener mNoteTextSizeClick = view -> showTextSizePickerDialog();
@@ -45,10 +44,10 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
         mNoteReminderPrefs = binding.noteReminderPrefs;
         mNoteReminderPrefs.setOnClickListener(mNoteReminderClick);
         mNoteReminderPrefs.setChecked(Prefs.getInstance(mContext).isNoteReminderEnabled());
-        mNoteReminderTimePrefs = binding.noteReminderTime;
+        PrefsView mNoteReminderTimePrefs = binding.noteReminderTime;
         mNoteReminderTimePrefs.setOnClickListener(mNoteTimeClick);
+        mNoteReminderTimePrefs.setDependentView(mNoteReminderPrefs);
         binding.textSize.setOnClickListener(mNoteTextSizeClick);
-        checkEnabling();
         return binding.getRoot();
     }
 
@@ -65,7 +64,6 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = mNoteReminderPrefs.isChecked();
         mNoteReminderPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setNoteReminderEnabled(!isChecked);
-        checkEnabling();
     }
 
     private void showTextSizePickerDialog(){
@@ -126,9 +124,5 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
         builder.setPositiveButton(R.string.ok, (dialog, which) -> Prefs.getInstance(mContext).setNoteReminderTime(b.seekBar.getProgress()));
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
-    }
-
-    private void checkEnabling() {
-        mNoteReminderTimePrefs.setEnabled(mNoteReminderPrefs.isChecked());
     }
 }

@@ -78,18 +78,13 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         mInfiniteVibratePrefs = binding.infiniteVibrateOptionPrefs;
         mInfiniteVibratePrefs.setOnClickListener(mInfiniteVibrateClick);
         mInfiniteVibratePrefs.setChecked(Prefs.getInstance(mContext).isInfiniteVibrateEnabled());
-        checkVibrateEnabling();
+        mInfiniteVibratePrefs.setDependentView(mVibratePrefs);
     }
 
     private void changeVibratePrefs() {
         boolean isChecked = mVibratePrefs.isChecked();
         mVibratePrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setVibrateEnabled(!isChecked);
-        checkVibrateEnabling();
-    }
-
-    private void checkVibrateEnabling() {
-        mInfiniteVibratePrefs.setEnabled(mVibratePrefs.isChecked());
     }
 
     private void initVibratePrefs() {
@@ -108,23 +103,18 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void initSbIconPrefs() {
         mSbIconPrefs = binding.statusIconPrefs;
         mSbIconPrefs.setOnClickListener(mSbIconClick);
-        checkSbIconEnabling();
+        mSbIconPrefs.setDependentView(mSbPrefs);
     }
 
     private void changeSbPrefs() {
         boolean isChecked = mSbPrefs.isChecked();
         mSbPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setSbNotificationEnabled(!isChecked);
-        checkSbIconEnabling();
         if (Prefs.getInstance(mContext).isSbNotificationEnabled()) {
             new Notifier(mContext).showPermanent();
         } else {
             new Notifier(mContext).hidePermanent();
         }
-    }
-
-    private void checkSbIconEnabling() {
-        mSbIconPrefs.setEnabled(mSbPrefs.isChecked());
     }
 
     private void initSbPrefs() {
