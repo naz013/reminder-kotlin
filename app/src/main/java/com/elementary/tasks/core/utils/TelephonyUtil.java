@@ -22,9 +22,9 @@ import android.net.Uri;
 
 import java.io.File;
 
-public class Telephony {
+public class TelephonyUtil {
 
-    public Telephony(){}
+    public TelephonyUtil(){}
 
     public static void sendNote(File file, Context context, String message){
         Intent intent = new Intent(Intent.ACTION_SEND);

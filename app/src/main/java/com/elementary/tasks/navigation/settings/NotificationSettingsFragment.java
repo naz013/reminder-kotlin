@@ -172,8 +172,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            dialog.dismiss();
             Prefs.getInstance(mContext).setLedColor(mItemSelect);
+            dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
@@ -297,8 +297,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            dialog.dismiss();
             saveTtsLocalePrefs();
+            dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
@@ -413,8 +413,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             }
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            dialog.dismiss();
             Prefs.getInstance(mContext).setSoundStream(mItemSelect + 3);
+            dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
@@ -475,7 +475,6 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            dialog.dismiss();
             if (mItemSelect == 0) {
                 Prefs.getInstance(mContext).setMelodyFile(Constants.DEFAULT);
                 showMelody();
@@ -483,6 +482,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 dialog.dismiss();
                 startActivityForResult(new Intent(mContext, FileExplorerActivity.class), MELODY_CODE);
             }
+            dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
         dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);

@@ -32,4 +32,20 @@ public class Constants {
 
     public static final int REQUEST_CODE_SELECTED_MELODY = 500;
     public static final int ACTION_REQUEST_GALLERY = 222;
+
+    public final static String DIR_SD = "backup";
+    public final static String DIR_IMAGE_CACHE = "img";
+    public final static String DIR_PREFS = "preferences";
+    public final static String DIR_NOTES_SD = "notes";
+    public final static String DIR_GROUP_SD = "groups";
+    public final static String DIR_BIRTHDAY_SD = "birthdays";
+    public final static String DIR_MAIL_SD = "mail_attachments";
+    public final static String DIR_SD_DBX_TMP = "tmp_dropbox";
+    public final static String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
+    public final static String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
+    public final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
+    public final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
+    public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
+    public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
+    public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
 }

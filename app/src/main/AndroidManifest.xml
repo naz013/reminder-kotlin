@@ -76,6 +76,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".core.services.AutoSyncAlarm" />
+
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
