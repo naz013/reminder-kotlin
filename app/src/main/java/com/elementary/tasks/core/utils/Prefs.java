@@ -550,6 +550,46 @@ public class Prefs extends SharedPrefs {
         putInt(LED_COLOR, value);
     }
 
+    public boolean isSettingsBackupEnabled() {
+        return getBoolean(EXPORT_SETTINGS);
+    }
+
+    public void setSettingsBackupEnabled(boolean value) {
+        putBoolean(EXPORT_SETTINGS, value);
+    }
+
+    public boolean isAutoBackupEnabled() {
+        return getBoolean(AUTO_BACKUP);
+    }
+
+    public void setAutoBackupEnabled(boolean value) {
+        putBoolean(AUTO_BACKUP, value);
+    }
+
+    public int getAutoBackupInterval() {
+        return getInt(AUTO_BACKUP_INTERVAL);
+    }
+
+    public void setAutoBackupInterval(int value) {
+        putInt(AUTO_BACKUP_INTERVAL, value);
+    }
+
+    public int getCalendarEventDuration() {
+        return getInt(EVENT_DURATION);
+    }
+
+    public void setCalendarEventDuration(int value) {
+        putInt(EVENT_DURATION, value);
+    }
+
+    public int getCalendaId() {
+        return getInt(CALENDAR_ID);
+    }
+
+    public void setCalendaId(int value) {
+        putInt(CALENDAR_ID, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

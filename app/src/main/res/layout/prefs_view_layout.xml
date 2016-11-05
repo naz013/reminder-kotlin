@@ -46,9 +46,9 @@
             android:layout_toLeftOf="@+id/viewContainer"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingBottom="16dp"
+            android:paddingBottom="12dp"
             android:paddingLeft="16dp"
-            android:paddingTop="16dp">
+            android:paddingTop="12dp">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/prefsPrimaryText"

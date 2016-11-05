@@ -19,21 +19,48 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.Language;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.UnsupportedEncodingException;
 
 public class SuperUtil {
+
+    public static boolean checkGooglePlayServicesAvailability(Activity a) {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, a, 69);
+            dialog.setCancelable(false);
+            dialog.setOnDismissListener(DialogInterface::dismiss);
+            dialog.show();
+            return false;
+        } else {
+            Log.d("GooglePlayServicesUtil", "Result is: " + resultCode);
+            return true;
+        }
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

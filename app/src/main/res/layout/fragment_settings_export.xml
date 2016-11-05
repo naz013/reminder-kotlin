@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/exportToCalendarPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/export_to_google_calendar"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/eventDurationPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/event_duration"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/selectCalendarPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/choose_calendar"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/exportToStockPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/export_to_stock_calendar"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoBackupPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/automatically_backup"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/syncIntervalPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/interval"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/cloudsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/cloud_services"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/cleanPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/clean"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/syncSettingsPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/backup_settings"
+                app:prefs_type="check" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
