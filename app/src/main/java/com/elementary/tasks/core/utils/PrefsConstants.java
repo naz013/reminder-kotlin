@@ -94,7 +94,6 @@ class PrefsConstants {
     static final String CALENDAR_IMAGE = "calendar_image";
     static final String EXPORT_SETTINGS = "export_settings";
     static final String CUSTOM_SOUND = "custom_sound";
-    static final String CUSTOM_SOUND_FILE = "sound_file";
     static final String BIRTHDAY_PERMANENT = "birthday_permanent";
     static final String REMINDER_IMAGE = "reminder_image";
     static final String REMINDER_IMAGE_BLUR = "reminder_image_blur";

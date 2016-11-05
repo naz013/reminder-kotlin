@@ -174,11 +174,11 @@ public class Prefs extends SharedPrefs {
         putString(BIRTHDAY_TTS_LOCALE, value);
     }
 
-    public boolean isSystemVolume() {
+    public boolean isSystemLoudnessEnabled() {
         return getBoolean(SYSTEM_VOLUME);
     }
 
-    public void setSystemVolume(boolean value) {
+    public void setSystemLoudnessEnabled(boolean value) {
         putBoolean(SYSTEM_VOLUME, value);
     }
 
@@ -430,6 +430,126 @@ public class Prefs extends SharedPrefs {
         putBoolean(INFINITE_VIBRATION, value);
     }
 
+    public boolean isSoundInSilentModeEnabled() {
+        return getBoolean(SILENT_SOUND);
+    }
+
+    public void setSoundInSilentModeEnabled(boolean value) {
+        putBoolean(SILENT_SOUND, value);
+    }
+
+    public boolean isInfiniteSoundEnabled() {
+        return getBoolean(INFINITE_SOUND);
+    }
+
+    public void setInfiniteSoundEnabled(boolean value) {
+        putBoolean(INFINITE_SOUND, value);
+    }
+
+    public String getMelodyFile() {
+        return getString(CUSTOM_SOUND);
+    }
+
+    public void setMelodyFile(String value) {
+        putString(CUSTOM_SOUND, value);
+    }
+
+    public int getLoudness() {
+        return getInt(VOLUME);
+    }
+
+    public void setLoudness(int value) {
+        putInt(VOLUME, value);
+    }
+
+    public boolean isIncreasingLoudnessEnabled() {
+        return getBoolean(INCREASING_VOLUME);
+    }
+
+    public void setIncreasingLoudnessEnabled(boolean value) {
+        putBoolean(INCREASING_VOLUME, value);
+    }
+
+    public boolean isTtsEnabled() {
+        return getBoolean(TTS);
+    }
+
+    public void setTtsEnabled(boolean value) {
+        putBoolean(TTS, value);
+    }
+
+    public boolean isDeviceAwakeEnabled() {
+        return getBoolean(WAKE_STATUS);
+    }
+
+    public void setDeviceAwakeEnabled(boolean value) {
+        putBoolean(WAKE_STATUS, value);
+    }
+
+    public boolean isDeviceUnlockEnabled() {
+        return getBoolean(UNLOCK_DEVICE);
+    }
+
+    public void setDeviceUnlockEnabled(boolean value) {
+        putBoolean(UNLOCK_DEVICE, value);
+    }
+
+    public boolean isAutoSmsEnabled() {
+        return getBoolean(SILENT_SMS);
+    }
+
+    public void setAutoSmsEnabled(boolean value) {
+        putBoolean(SILENT_SMS, value);
+    }
+
+    public boolean isAutoLaunchEnabled() {
+        return getBoolean(APPLICATION_AUTO_LAUNCH);
+    }
+
+    public void setAutoLaunchEnabled(boolean value) {
+        putBoolean(APPLICATION_AUTO_LAUNCH, value);
+    }
+
+    public int getSnoozeTime() {
+        return getInt(DELAY_TIME);
+    }
+
+    public void setSnoozeTime(int value) {
+        putInt(DELAY_TIME, value);
+    }
+
+    public boolean isNotificationRepeatEnabled() {
+        return getBoolean(NOTIFICATION_REPEAT);
+    }
+
+    public void setNotificationRepeatEnabled(boolean value) {
+        putBoolean(NOTIFICATION_REPEAT, value);
+    }
+
+    public int getNotificationRepeatTime() {
+        return getInt(NOTIFICATION_REPEAT_INTERVAL);
+    }
+
+    public void setNotificationRepeatTime(int value) {
+        putInt(NOTIFICATION_REPEAT_INTERVAL, value);
+    }
+
+    public boolean isLedEnabled() {
+        return getBoolean(LED_STATUS);
+    }
+
+    public void setLedEnabled(boolean value) {
+        putBoolean(LED_STATUS, value);
+    }
+
+    public int getLedColor() {
+        return getInt(LED_COLOR);
+    }
+
+    public void setLedColor(int value) {
+        putInt(LED_COLOR, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {
@@ -466,6 +586,7 @@ public class Prefs extends SharedPrefs {
             uiEd.putString(TTS_LOCALE, Language.ENGLISH);
             uiEd.putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
             uiEd.putString(CALENDAR_IMAGES, new Gson().toJson(new MonthImage()));
+            uiEd.putString(CUSTOM_SOUND, Constants.DEFAULT);
             uiEd.putInt(START_DAY, 1);
             uiEd.putInt(DAYS_TO_BIRTHDAY, 0);
             uiEd.putInt(NOTIFICATION_REPEAT_INTERVAL, 15);
@@ -496,6 +617,7 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(REMINDERS_IN_CALENDAR, true);
             uiEd.putBoolean(IS_24_TIME_FORMAT, true);
             uiEd.putBoolean(UNLOCK_DEVICE, false);
+            uiEd.putBoolean(WAKE_STATUS, false);
             uiEd.putBoolean(CALENDAR_FEATURE_TASKS, true);
             uiEd.putBoolean(MISSED_CALL_REMINDER, false);
             uiEd.putBoolean(QUICK_SMS, false);
@@ -710,11 +832,17 @@ public class Prefs extends SharedPrefs {
         if (!hasKey(INCREASING_VOLUME)){
             putBoolean(INCREASING_VOLUME, false);
         }
+        if (!hasKey(WAKE_STATUS)){
+            putBoolean(WAKE_STATUS, false);
+        }
         if (!hasKey(MAIN_IMAGE_ID)){
             putInt(MAIN_IMAGE_ID, -1);
         }
         if (!hasKey(MAIN_IMAGE_PATH)){
             putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
+        }
+        if (!hasKey(CUSTOM_SOUND)){
+            putString(CUSTOM_SOUND, Constants.DEFAULT);
         }
         if (!hasKey(CALENDAR_IMAGES)) {
             putObject(CALENDAR_IMAGES, new MonthImage());

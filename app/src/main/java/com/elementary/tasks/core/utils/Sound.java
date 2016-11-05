@@ -104,7 +104,7 @@ public class Sound {
         }
 
         Prefs prefs = Prefs.getInstance(mContext);
-        boolean isSystem = prefs.isSystemVolume();
+        boolean isSystem = prefs.isSystemLoudnessEnabled();
         if (isSystem) {
             int stream = prefs.getSoundStream();
             mMediaPlayer.setAudioStreamType(stream);
@@ -132,7 +132,7 @@ public class Sound {
             e.printStackTrace();
         }
         Prefs prefs = Prefs.getInstance(mContext);
-        boolean isSystem = prefs.isSystemVolume();
+        boolean isSystem = prefs.isSystemLoudnessEnabled();
         if (isSystem) {
             int stream = prefs.getSoundStream();
             mMediaPlayer.setAudioStreamType(stream);
