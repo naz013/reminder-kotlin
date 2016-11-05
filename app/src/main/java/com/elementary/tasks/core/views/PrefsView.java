@@ -29,6 +29,9 @@ import android.widget.TextView;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PrefsView extends RelativeLayout {
 
     private int check = 0;
@@ -46,7 +49,7 @@ public class PrefsView extends RelativeLayout {
     private boolean isForPro;
     private int viewType = check;
 
-    private OnCheckedListener mOnCheckedListener;
+    private List<OnCheckedListener> mOnCheckedListeners = new ArrayList<>();
     
     public PrefsView(Context context) {
         super(context);
@@ -110,7 +113,7 @@ public class PrefsView extends RelativeLayout {
     }
 
     public void setOnCheckedListener(OnCheckedListener listener) {
-        this.mOnCheckedListener = listener;
+        this.mOnCheckedListeners.add(listener);
     }
 
     public void setForPro(boolean forPro) {
@@ -122,6 +125,13 @@ public class PrefsView extends RelativeLayout {
         if (view != null) {
             view.setOnCheckedListener(this::setEnabled);
             setEnabled(view.isChecked());
+        }
+    }
+
+    public void setReverseDependentView(PrefsView view) {
+        if (view != null) {
+            view.setOnCheckedListener(checked -> setEnabled(!checked));
+            setEnabled(!view.isChecked());
         }
     }
 
@@ -187,8 +197,10 @@ public class PrefsView extends RelativeLayout {
     public void setChecked(boolean checked) {
         this.isChecked = checked;
         checkBox.setChecked(checked);
-        if (mOnCheckedListener != null) {
-            mOnCheckedListener.onCheckedChange(checked);
+        if (mOnCheckedListeners != null) {
+            for (OnCheckedListener listener : mOnCheckedListeners) {
+                listener.onCheckedChange(checked);
+            }
         }
     }
 
