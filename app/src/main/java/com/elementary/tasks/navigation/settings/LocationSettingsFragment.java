@@ -38,6 +38,8 @@ import java.util.Locale;
 
 public class LocationSettingsFragment extends BaseSettingsFragment {
 
+    private int mItemSelect;
+
     private PrefsView mRadiusPrefs;
     private PrefsView mNotificationPrefs;
     private View.OnClickListener mRadiusClick = view -> showRadiusPickerDialog();
@@ -129,25 +131,26 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext, R.array.map_types,
                 android.R.layout.simple_list_item_single_choice);
         int type = Prefs.getInstance(mContext).getMapType();
-        int position;
-        if (type == Constants.MAP_NORMAL){
-            position = 0;
-        } else if (type == Constants.MAP_SATELLITE){
-            position = 1;
+        if (type == Constants.MAP_SATELLITE){
+            mItemSelect = 1;
         } else if (type == Constants.MAP_TERRAIN){
-            position = 2;
+            mItemSelect = 2;
         } else if (type == Constants.MAP_HYBRID){
-            position = 3;
+            mItemSelect = 3;
         } else {
-            position = 0;
+            mItemSelect = 0;
         }
-        builder.setSingleChoiceItems(adapter, position, (dialog, which) -> {
-            if (which != -1) {
-                Prefs.getInstance(mContext).setMapType(which + 1);
-            }
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
+            mItemSelect = which;
         });
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+        builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
+            Prefs.getInstance(mContext).setMapType(mItemSelect + 1);
+            dialogInterface.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
+        dialog.show();
     }
 
     private void changeNotificationPrefs() {

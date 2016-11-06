@@ -582,12 +582,36 @@ public class Prefs extends SharedPrefs {
         putInt(EVENT_DURATION, value);
     }
 
-    public int getCalendaId() {
+    public int getCalendarId() {
         return getInt(CALENDAR_ID);
     }
 
-    public void setCalendaId(int value) {
+    public void setCalendarId(int value) {
         putInt(CALENDAR_ID, value);
+    }
+
+    public boolean isFutureEventEnabled() {
+        return getBoolean(CALENDAR_FEATURE_TASKS);
+    }
+
+    public void setFutureEventEnabled(boolean value) {
+        putBoolean(CALENDAR_FEATURE_TASKS, value);
+    }
+
+    public boolean isRemindersInCalendarEnabled() {
+        return getBoolean(REMINDERS_IN_CALENDAR);
+    }
+
+    public void setRemindersInCalendarEnabled(boolean value) {
+        putBoolean(REMINDERS_IN_CALENDAR, value);
+    }
+
+    public int getStartDay() {
+        return getInt(START_DAY);
+    }
+
+    public void setStartDay(int value) {
+        putInt(START_DAY, value);
     }
 
     public void initPrefs(Context context) {

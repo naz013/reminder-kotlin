@@ -39,6 +39,7 @@ public class SettingsFragment extends BaseSettingsFragment {
         binding.additionalSettings.setOnClickListener(view -> replaceFragment(new AdditionalSettingsFragment(), getString(R.string.additional)));
         binding.notificationSettings.setOnClickListener(view -> replaceFragment(new NotificationSettingsFragment(), getString(R.string.notification)));
         binding.exportSettings.setOnClickListener(view -> replaceFragment(new ExportSettingsFragment(), getString(R.string.export_and_sync)));
+        binding.calendarSettings.setOnClickListener(view -> replaceFragment(new CalendarSettingsFragment(), getString(R.string.calendar)));
         return binding.getRoot();
     }
 
