@@ -54,7 +54,7 @@ public class CalendarUtils {
      * @param id local reminder id.
      */
     public void addEvent(String summary, long startTime, long id){
-        int mId = Prefs.getInstance(mContext).getCalendaId();
+        int mId = Prefs.getInstance(mContext).getCalendarId();
         if (mId != 0){
             TimeZone tz = TimeZone.getDefault();
             String timeZone = tz.getDisplayName();

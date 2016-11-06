@@ -167,8 +167,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, colors);
-        int position = Prefs.getInstance(mContext).getLedColor();
-        builder.setSingleChoiceItems(adapter, position, (dialog, which) -> {
+        mItemSelect = Prefs.getInstance(mContext).getLedColor();
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {

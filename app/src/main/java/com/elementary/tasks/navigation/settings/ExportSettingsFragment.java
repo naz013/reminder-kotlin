@@ -177,6 +177,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
                 position = 0;
                 break;
         }
+        mItemSelect = position;
         return position;
     }
 
@@ -293,14 +294,14 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             }
         }, getCurrentPosition(), (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            Prefs.getInstance(mContext).setCalendaId(mDataList.get(i).getId());
+            Prefs.getInstance(mContext).setCalendarId(mDataList.get(i).getId());
         });
         builder.create().show();
     }
 
     private int getCurrentPosition() {
         int position = 0;
-        int id = Prefs.getInstance(mContext).getCalendaId();
+        int id = Prefs.getInstance(mContext).getCalendarId();
         for (int i = 0; i < mDataList.size(); i++) {
             CalendarUtils.CalendarItem item = mDataList.get(i);
             if (item.getId() == id) {
