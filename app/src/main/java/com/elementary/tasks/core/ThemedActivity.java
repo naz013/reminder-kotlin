@@ -15,7 +15,6 @@ public abstract class ThemedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         themeUtil = ThemeUtil.getInstance(this);
         setTheme(themeUtil.getStyle());
-        setRequestedOrientation(themeUtil.getRequestOrientation());
         if (Module.isLollipop()) {
             getWindow().setStatusBarColor(themeUtil.getColor(themeUtil.colorPrimaryDark()));
         }

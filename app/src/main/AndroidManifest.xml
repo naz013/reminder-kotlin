@@ -78,6 +78,7 @@
 
         <receiver android:name=".core.services.AutoSyncAlarm" />
         <receiver android:name=".core.services.EventsCheckAlarm" />
+        <receiver android:name=".core.services.BirthdayAlarm" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"

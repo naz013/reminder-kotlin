@@ -638,6 +638,38 @@ public class Prefs extends SharedPrefs {
         putInt(EVENTS_CALENDAR, value);
     }
 
+    public boolean isBirthdayReminderEnabled() {
+        return getBoolean(BIRTHDAY_REMINDER);
+    }
+
+    public void setBirthdayReminderEnabled(boolean value) {
+        putBoolean(BIRTHDAY_REMINDER, value);
+    }
+
+    public String getBirthdayTime() {
+        return getString(BIRTHDAY_REMINDER_TIME);
+    }
+
+    public void setBirthdayTime(String value) {
+        putString(BIRTHDAY_REMINDER_TIME, value);
+    }
+
+    public boolean isBirthdayInWidgetEnabled() {
+        return getBoolean(WIDGET_BIRTHDAYS);
+    }
+
+    public void setBirthdayInWidgetEnabled(boolean value) {
+        putBoolean(WIDGET_BIRTHDAYS, value);
+    }
+
+    public boolean isBirthdayPermanentEnabled() {
+        return getBoolean(BIRTHDAY_PERMANENT);
+    }
+
+    public void setBirthdayPermanentEnabled(boolean value) {
+        putBoolean(BIRTHDAY_PERMANENT, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {
@@ -781,11 +813,8 @@ public class Prefs extends SharedPrefs {
         if (!hasKey(START_DAY)){
             putInt(START_DAY, 1);
         }
-        if (!hasKey(BIRTHDAY_REMINDER_HOUR)){
-            putInt(BIRTHDAY_REMINDER_HOUR, 12);
-        }
-        if (!hasKey(BIRTHDAY_REMINDER_MINUTE)){
-            putInt(BIRTHDAY_REMINDER_MINUTE, 0);
+        if (!hasKey(BIRTHDAY_REMINDER_TIME)){
+            putString(BIRTHDAY_REMINDER_TIME, "12:00");
         }
         if (!hasKey(TRACK_DISTANCE)){
             putInt(TRACK_DISTANCE, 1);
