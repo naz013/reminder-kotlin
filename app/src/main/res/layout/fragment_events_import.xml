@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="20dp">
+
+                        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                            android:id="@+id/eventsCheck"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|left"
+                            android:layout_weight="1"
+                            android:text="@string/birthdays"
+                            app:check_font_style="roboto_light" />
+
+                        <Spinner
+                            android:id="@+id/eventCalendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/material_divider" />
+
+                <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                    android:id="@+id/autoCheck"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="@string/check_automatically"
+                    app:check_font_style="roboto_light" />
+
+                <com.elementary.tasks.core.views.roboto.RoboButton
+                    android:id="@+id/syncInterval"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/interval"
+                    android:textSize="16sp"
+                    app:button_font_style="roboto_regular" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/material_divider" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/button"
+            android:background="@color/material_divider" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/button"
+            style="?android:borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:text="@string/import_string"
+            app:font_style="roboto_regular" />
+
+    </RelativeLayout>
+</layout>
