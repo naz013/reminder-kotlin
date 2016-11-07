@@ -16,6 +16,7 @@
 
 package com.elementary.tasks.core.utils;
 
+import android.app.AlarmManager;
 import android.content.Context;
 
 import com.elementary.tasks.R;
@@ -47,6 +48,31 @@ public class TimeUtil {
     public static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
 
     public TimeUtil(){}
+
+    public static String getBirthdayTime(long time) {
+        return time24.format(new Date(time));
+    }
+
+    public static long getBirthdayCalendar(String time) {
+        Calendar calendar = Calendar.getInstance();
+        if (time != null) {
+            try {
+                Date date = time24.parse(time);
+                calendar.setTime(date);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return calendar.getTimeInMillis();
+    }
 
     public static String getGmtDateTime() {
         gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));

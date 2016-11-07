@@ -40,7 +40,6 @@ class PrefsConstants {
     static final String DELAY_TIME = "delay_time";
     static final String EVENT_DURATION = "event_duration";
     static final String EXPORT_TO_CALENDAR = "export_to_calendar";
-    static final String CALENDAR_NAME = "cal_name";
     static final String CALENDAR_ID = "cal_id";
     static final String AUTO_CHECK_BIRTHDAYS = "birthdays_auto_scan";
     static final String LED_STATUS = "led_status";
@@ -124,8 +123,7 @@ class PrefsConstants {
     static final String CONTACTS_IMPORT_DIALOG = "contacts_imported";
     static final String RATE_SHOW = "show_rate";
     static final String APP_RUNS_COUNT = "app_runs";
-    static final String BIRTHDAY_REMINDER_HOUR = "reminder_hour";
-    static final String BIRTHDAY_REMINDER_MINUTE = "reminder_minute";
+    static final String BIRTHDAY_REMINDER_TIME = "reminder_hour";
     static final String BIRTHDAY_TTS = "birthday_tts";
     static final String BIRTHDAY_TTS_LOCALE = "birthday_tts_locale";
 
