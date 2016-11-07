@@ -614,6 +614,30 @@ public class Prefs extends SharedPrefs {
         putInt(START_DAY, value);
     }
 
+    public boolean isAutoEventsCheckEnabled() {
+        return getBoolean(AUTO_CHECK_FOR_EVENTS);
+    }
+
+    public void setAutoEventsCheckEnabled(boolean value) {
+        putBoolean(AUTO_CHECK_FOR_EVENTS, value);
+    }
+
+    public int getAutoCheckInterval() {
+        return getInt(AUTO_CHECK_FOR_EVENTS_INTERVAL);
+    }
+
+    public void setAutoCheckInterval(int value) {
+        putInt(AUTO_CHECK_FOR_EVENTS_INTERVAL, value);
+    }
+
+    public int getEventsCalendar() {
+        return getInt(EVENTS_CALENDAR);
+    }
+
+    public void setEventsCalendar(int value) {
+        putInt(EVENTS_CALENDAR, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

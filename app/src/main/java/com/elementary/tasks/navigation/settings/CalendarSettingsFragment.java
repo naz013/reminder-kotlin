@@ -13,6 +13,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentCalendarSettingsBinding;
 import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor;
+import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport;
 import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor;
 import com.elementary.tasks.navigation.settings.calendar.FragmentTodayColor;
 
@@ -45,6 +46,7 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
         initFuturePrefs();
         initRemindersPrefs();
         initFirstDayPrefs();
+        binding.eventsImportPrefs.setOnClickListener(view -> replaceFragment(new FragmentEventsImport(), getString(R.string.import_events)));
         return binding.getRoot();
     }
 
