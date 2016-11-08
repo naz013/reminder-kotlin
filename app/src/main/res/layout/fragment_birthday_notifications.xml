@@ -13,78 +13,95 @@
             android:orientation="vertical">
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/birthReminderPrefs"
+                android:id="@+id/globalOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/birthday_reminder"
+                app:prefs_primary_text="@string/global_settings"
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/widgetShowPrefs"
+                android:id="@+id/vibrationOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/show_in_home_screen"
+                app:prefs_primary_text="@string/vibrate"
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/birthdayPermanentPrefs"
+                android:id="@+id/infiniteVibrateOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/permanent_status_bar_notification"
+                app:prefs_primary_text="@string/infinite_vibrate"
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/daysToPrefs"
+                android:id="@+id/soundOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/days_to_birthday"
-                app:prefs_type="text" />
+                app:prefs_primary_text="@string/sound_in_silent_mode"
+                app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/reminderTimePrefs"
+                android:id="@+id/infiniteSoundOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/remind_at"
-                app:prefs_type="text" />
+                app:prefs_primary_text="@string/infinite_sound"
+                app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/birthdayNotificationPrefs"
+                android:id="@+id/wakeScreenOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/action_settings"
-                app:prefs_pro="true"
+                app:prefs_primary_text="@string/turn_on_screen"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/chooseSoundPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/melody"
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/useContactsPrefs"
+                android:id="@+id/ttsPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/contacts"
+                app:prefs_primary_text="@string/voice_notification"
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/autoScanPrefs"
+                android:id="@+id/localePrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/check_automatically"
+                app:prefs_primary_text="@string/language"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/ledPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/led_notification"
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/contactsScanPrefs"
+                android:id="@+id/chooseLedColorPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/scan"
+                app:prefs_primary_text="@string/led_color"
                 app:prefs_type="none" />
 
         </LinearLayout>
+
     </ScrollView>
+
 </layout>

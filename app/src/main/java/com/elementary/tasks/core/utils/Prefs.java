@@ -670,6 +670,110 @@ public class Prefs extends SharedPrefs {
         putBoolean(BIRTHDAY_PERMANENT, value);
     }
 
+    public int getDaysToBirthday() {
+        return getInt(DAYS_TO_BIRTHDAY);
+    }
+
+    public void setDaysToBirthday(int value) {
+        putInt(DAYS_TO_BIRTHDAY, value);
+    }
+
+    public boolean isContactBirthdaysEnabled() {
+        return getBoolean(CONTACT_BIRTHDAYS);
+    }
+
+    public void setContactBirthdaysEnabled(boolean value) {
+        putBoolean(CONTACT_BIRTHDAYS, value);
+    }
+
+    public boolean isContactAutoCheckEnabled() {
+        return getBoolean(AUTO_CHECK_BIRTHDAYS);
+    }
+
+    public void setContactAutoCheckEnabled(boolean value) {
+        putBoolean(AUTO_CHECK_BIRTHDAYS, value);
+    }
+
+    public boolean isBirthdayGlobalEnabled() {
+        return getBoolean(BIRTHDAY_USE_GLOBAL);
+    }
+
+    public void setBirthdayGlobalEnabled(boolean value) {
+        putBoolean(BIRTHDAY_USE_GLOBAL, value);
+    }
+
+    public boolean isBirthdayVibrationEnabled() {
+        return getBoolean(BIRTHDAY_VIBRATION_STATUS);
+    }
+
+    public void setBirthdayVibrationEnabled(boolean value) {
+        putBoolean(BIRTHDAY_VIBRATION_STATUS, value);
+    }
+
+    public boolean isBirthdayInfiniteVibrationEnabled() {
+        return getBoolean(BIRTHDAY_INFINITE_VIBRATION);
+    }
+
+    public void setBirthdayInfiniteVibrationEnabled(boolean value) {
+        putBoolean(BIRTHDAY_INFINITE_VIBRATION, value);
+    }
+
+    public boolean isBirthdaySilentEnabled() {
+        return getBoolean(BIRTHDAY_SILENT_STATUS);
+    }
+
+    public void setBirthdaySilentEnabled(boolean value) {
+        putBoolean(BIRTHDAY_SILENT_STATUS, value);
+    }
+
+    public boolean isBirthdayInfiniteSoundEnabled() {
+        return getBoolean(BIRTHDAY_INFINITE_SOUND);
+    }
+
+    public void setBirthdayInfiniteSoundEnabled(boolean value) {
+        putBoolean(BIRTHDAY_INFINITE_SOUND, value);
+    }
+
+    public boolean isBirthdayWakeEnabled() {
+        return getBoolean(BIRTHDAY_WAKE_STATUS);
+    }
+
+    public void setBirthdayWakeEnabled(boolean value) {
+        putBoolean(BIRTHDAY_WAKE_STATUS, value);
+    }
+
+    public boolean isBirthdayLedEnabled() {
+        return getBoolean(BIRTHDAY_LED_STATUS);
+    }
+
+    public void setBirthdayLedEnabled(boolean value) {
+        putBoolean(BIRTHDAY_LED_STATUS, value);
+    }
+
+    public boolean isBirthdayTtsEnabled() {
+        return getBoolean(BIRTHDAY_TTS);
+    }
+
+    public void setBirthdayTtsEnabled(boolean value) {
+        putBoolean(BIRTHDAY_TTS, value);
+    }
+
+    public int getBirthdayLedColor() {
+        return getInt(BIRTHDAY_LED_COLOR);
+    }
+
+    public void setBirthdayLedColor(int value) {
+        putInt(BIRTHDAY_LED_COLOR, value);
+    }
+
+    public String getBirthdayMelody() {
+        return getString(BIRTHDAY_SOUND_FILE);
+    }
+
+    public void setBirthdayMelody(String value) {
+        putString(BIRTHDAY_SOUND_FILE, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {
@@ -763,202 +867,199 @@ public class Prefs extends SharedPrefs {
         }
     }
 
-    public void checkPrefs(){
-        if (!hasKey(TODAY_COLOR)){
+    public void checkPrefs() {
+        if (!hasKey(TODAY_COLOR)) {
             putInt(TODAY_COLOR, 4);
         }
-        if (!hasKey(BIRTH_COLOR)){
+        if (!hasKey(BIRTH_COLOR)) {
             putInt(BIRTH_COLOR, 1);
         }
-        if (!hasKey(REMINDER_COLOR)){
+        if (!hasKey(REMINDER_COLOR)) {
             putInt(REMINDER_COLOR, 6);
         }
-        if (!hasKey(APP_THEME)){
+        if (!hasKey(APP_THEME)) {
             putInt(APP_THEME, 8);
         }
-        if (!hasKey(DRIVE_USER)){
+        if (!hasKey(DRIVE_USER)) {
             putString(DRIVE_USER, DRIVE_USER_NONE);
         }
-        if (!hasKey(TTS_LOCALE)){
+        if (!hasKey(TTS_LOCALE)) {
             putString(TTS_LOCALE, Language.ENGLISH);
         }
-        if (!hasKey(REMINDER_IMAGE)){
+        if (!hasKey(REMINDER_IMAGE)) {
             putString(REMINDER_IMAGE, Constants.DEFAULT);
         }
 
-        if (!hasKey(VOICE_LOCALE)){
+        if (!hasKey(VOICE_LOCALE)) {
             putInt(VOICE_LOCALE, 0);
         }
-        if (!hasKey(TIME_MORNING)){
+        if (!hasKey(TIME_MORNING)) {
             putString(TIME_MORNING, "7:0");
         }
-        if (!hasKey(TIME_DAY)){
+        if (!hasKey(TIME_DAY)) {
             putString(TIME_DAY, "12:0");
         }
-        if (!hasKey(TIME_EVENING)){
+        if (!hasKey(TIME_EVENING)) {
             putString(TIME_EVENING, "19:0");
         }
-        if (!hasKey(TIME_NIGHT)){
+        if (!hasKey(TIME_NIGHT)) {
             putString(TIME_NIGHT, "23:0");
         }
-        if (!hasKey(DAYS_TO_BIRTHDAY)){
+        if (!hasKey(DAYS_TO_BIRTHDAY)) {
             putInt(DAYS_TO_BIRTHDAY, 0);
         }
-        if (!hasKey(QUICK_NOTE_REMINDER_TIME)){
+        if (!hasKey(QUICK_NOTE_REMINDER_TIME)) {
             putInt(QUICK_NOTE_REMINDER_TIME, 10);
         }
-        if (!hasKey(NOTE_TEXT_SIZE)){
+        if (!hasKey(NOTE_TEXT_SIZE)) {
             putInt(NOTE_TEXT_SIZE, 4);
         }
-        if (!hasKey(START_DAY)){
+        if (!hasKey(START_DAY)) {
             putInt(START_DAY, 1);
         }
-        if (!hasKey(BIRTHDAY_REMINDER_TIME)){
+        if (!hasKey(BIRTHDAY_REMINDER_TIME)) {
             putString(BIRTHDAY_REMINDER_TIME, "12:00");
         }
-        if (!hasKey(TRACK_DISTANCE)){
+        if (!hasKey(TRACK_DISTANCE)) {
             putInt(TRACK_DISTANCE, 1);
         }
-        if (!hasKey(AUTO_BACKUP_INTERVAL)){
+        if (!hasKey(AUTO_BACKUP_INTERVAL)) {
             putInt(AUTO_BACKUP_INTERVAL, 6);
         }
-        if (!hasKey(AUTO_CHECK_FOR_EVENTS_INTERVAL)){
+        if (!hasKey(AUTO_CHECK_FOR_EVENTS_INTERVAL)) {
             putInt(AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
         }
-        if (!hasKey(TRACK_TIME)){
+        if (!hasKey(TRACK_TIME)) {
             putInt(TRACK_TIME, 1);
         }
-        if (!hasKey(APP_RUNS_COUNT)){
+        if (!hasKey(APP_RUNS_COUNT)) {
             putInt(APP_RUNS_COUNT, 0);
         }
-        if (!hasKey(DELAY_TIME)){
+        if (!hasKey(DELAY_TIME)) {
             putInt(DELAY_TIME, 5);
         }
-        if (!hasKey(EVENT_DURATION)){
+        if (!hasKey(EVENT_DURATION)) {
             putInt(EVENT_DURATION, 30);
         }
-        if (!hasKey(NOTIFICATION_REPEAT_INTERVAL)){
+        if (!hasKey(NOTIFICATION_REPEAT_INTERVAL)) {
             putInt(NOTIFICATION_REPEAT_INTERVAL, 15);
         }
-        if (!hasKey(VOLUME)){
+        if (!hasKey(VOLUME)) {
             putInt(VOLUME, 25);
         }
-        if (!hasKey(MAP_TYPE)){
+        if (!hasKey(MAP_TYPE)) {
             putInt(MAP_TYPE, Constants.MAP_NORMAL);
         }
-        if (!hasKey(MISSED_CALL_TIME)){
+        if (!hasKey(MISSED_CALL_TIME)) {
             putInt(MISSED_CALL_TIME, 10);
         }
-        if (!hasKey(SOUND_STREAM)){
+        if (!hasKey(SOUND_STREAM)) {
             putInt(SOUND_STREAM, 5);
         }
 
-        if (!hasKey(DAY_NIGHT)){
+        if (!hasKey(DAY_NIGHT)) {
             putBoolean(DAY_NIGHT, false);
         }
-        if (!hasKey(RATE_SHOW)){
+        if (!hasKey(RATE_SHOW)) {
             putBoolean(RATE_SHOW, false);
         }
-        if (!hasKey(REMINDER_IMAGE_BLUR)){
+        if (!hasKey(REMINDER_IMAGE_BLUR)) {
             putBoolean(REMINDER_IMAGE_BLUR, false);
         }
-        if (!hasKey(QUICK_NOTE_REMINDER)){
+        if (!hasKey(QUICK_NOTE_REMINDER)) {
             putBoolean(QUICK_NOTE_REMINDER, false);
         }
-        if (!hasKey(REMINDERS_IN_CALENDAR)){
+        if (!hasKey(REMINDERS_IN_CALENDAR)) {
             putBoolean(REMINDERS_IN_CALENDAR, false);
         }
-        if (!hasKey(TTS)){
+        if (!hasKey(TTS)) {
             putBoolean(TTS, false);
         }
-        if (!hasKey(CONTACTS_IMPORT_DIALOG)){
-            putBoolean(CONTACTS_IMPORT_DIALOG, false);
-        }
-        if (!hasKey(CONTACT_BIRTHDAYS)){
+        if (!hasKey(CONTACT_BIRTHDAYS)) {
             putBoolean(CONTACT_BIRTHDAYS, false);
         }
-        if (!hasKey(BIRTHDAY_REMINDER)){
+        if (!hasKey(BIRTHDAY_REMINDER)) {
             putBoolean(BIRTHDAY_REMINDER, true);
         }
-        if (!hasKey(CALENDAR_IMAGE)){
+        if (!hasKey(CALENDAR_IMAGE)) {
             putBoolean(CALENDAR_IMAGE, false);
         }
-        if (!hasKey(SILENT_SMS)){
+        if (!hasKey(SILENT_SMS)) {
             putBoolean(SILENT_SMS, false);
         }
-        if (!hasKey(ITEM_PREVIEW)){
+        if (!hasKey(ITEM_PREVIEW)) {
             putBoolean(ITEM_PREVIEW, true);
         }
-        if (!hasKey(WIDGET_BIRTHDAYS)){
+        if (!hasKey(WIDGET_BIRTHDAYS)) {
             putBoolean(WIDGET_BIRTHDAYS, false);
         }
-        if (!hasKey(WEAR_NOTIFICATION)){
+        if (!hasKey(WEAR_NOTIFICATION)) {
             putBoolean(WEAR_NOTIFICATION, false);
         }
-        if (!hasKey(EXPORT_TO_STOCK)){
+        if (!hasKey(EXPORT_TO_STOCK)) {
             putBoolean(EXPORT_TO_STOCK, false);
         }
-        if (!hasKey(USE_DARK_THEME)){
+        if (!hasKey(USE_DARK_THEME)) {
             putBoolean(USE_DARK_THEME, false);
         }
-        if (!hasKey(EXPORT_TO_CALENDAR)){
+        if (!hasKey(EXPORT_TO_CALENDAR)) {
             putBoolean(EXPORT_TO_CALENDAR, false);
         }
-        if (!hasKey(AUTO_CHECK_BIRTHDAYS)){
+        if (!hasKey(AUTO_CHECK_BIRTHDAYS)) {
             putBoolean(AUTO_CHECK_BIRTHDAYS, false);
         }
-        if (!hasKey(INFINITE_VIBRATION)){
+        if (!hasKey(INFINITE_VIBRATION)) {
             putBoolean(INFINITE_VIBRATION, false);
         }
-        if (!hasKey(AUTO_BACKUP)){
+        if (!hasKey(AUTO_BACKUP)) {
             putBoolean(AUTO_BACKUP, false);
         }
-        if (!hasKey(SMART_FOLD)){
+        if (!hasKey(SMART_FOLD)) {
             putBoolean(SMART_FOLD, false);
         }
-        if (!hasKey(NOTIFICATION_REPEAT)){
+        if (!hasKey(NOTIFICATION_REPEAT)) {
             putBoolean(NOTIFICATION_REPEAT, false);
         }
-        if (!hasKey(IS_24_TIME_FORMAT)){
+        if (!hasKey(IS_24_TIME_FORMAT)) {
             putBoolean(IS_24_TIME_FORMAT, true);
         }
-        if (!hasKey(UNLOCK_DEVICE)){
+        if (!hasKey(UNLOCK_DEVICE)) {
             putBoolean(UNLOCK_DEVICE, false);
         }
-        if (!hasKey(CALENDAR_FEATURE_TASKS)){
+        if (!hasKey(CALENDAR_FEATURE_TASKS)) {
             putBoolean(CALENDAR_FEATURE_TASKS, false);
         }
-        if (!hasKey(MISSED_CALL_REMINDER)){
+        if (!hasKey(MISSED_CALL_REMINDER)) {
             putBoolean(MISSED_CALL_REMINDER, false);
         }
-        if (!hasKey(QUICK_SMS)){
+        if (!hasKey(QUICK_SMS)) {
             putBoolean(QUICK_SMS, false);
         }
-        if (!hasKey(FOLLOW_REMINDER)){
+        if (!hasKey(FOLLOW_REMINDER)) {
             putBoolean(FOLLOW_REMINDER, false);
         }
-        if (!hasKey(BIRTHDAY_PERMANENT)){
+        if (!hasKey(BIRTHDAY_PERMANENT)) {
             putBoolean(BIRTHDAY_PERMANENT, false);
         }
-        if (!hasKey(REMINDER_CHANGED)){
+        if (!hasKey(REMINDER_CHANGED)) {
             putBoolean(REMINDER_CHANGED, false);
         }
-        if (!hasKey(SYSTEM_VOLUME)){
+        if (!hasKey(SYSTEM_VOLUME)) {
             putBoolean(SYSTEM_VOLUME, false);
         }
-        if (!hasKey(INCREASING_VOLUME)){
+        if (!hasKey(INCREASING_VOLUME)) {
             putBoolean(INCREASING_VOLUME, false);
         }
-        if (!hasKey(WAKE_STATUS)){
+        if (!hasKey(WAKE_STATUS)) {
             putBoolean(WAKE_STATUS, false);
         }
-        if (!hasKey(MAIN_IMAGE_ID)){
+        if (!hasKey(MAIN_IMAGE_ID)) {
             putInt(MAIN_IMAGE_ID, -1);
         }
-        if (!hasKey(MAIN_IMAGE_PATH)){
+        if (!hasKey(MAIN_IMAGE_PATH)) {
             putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
         }
-        if (!hasKey(CUSTOM_SOUND)){
+        if (!hasKey(CUSTOM_SOUND)) {
             putString(CUSTOM_SOUND, Constants.DEFAULT);
         }
         if (!hasKey(CALENDAR_IMAGES)) {
@@ -980,8 +1081,8 @@ public class Prefs extends SharedPrefs {
             if (!hasKey(BIRTHDAY_VIBRATION_STATUS)) {
                 putBoolean(BIRTHDAY_VIBRATION_STATUS, false);
             }
-            if (!hasKey(BIRTHDAY_SOUND_STATUS)) {
-                putBoolean(BIRTHDAY_SOUND_STATUS, false);
+            if (!hasKey(BIRTHDAY_SILENT_STATUS)) {
+                putBoolean(BIRTHDAY_SILENT_STATUS, false);
             }
             if (!hasKey(BIRTHDAY_WAKE_STATUS)) {
                 putBoolean(BIRTHDAY_WAKE_STATUS, false);

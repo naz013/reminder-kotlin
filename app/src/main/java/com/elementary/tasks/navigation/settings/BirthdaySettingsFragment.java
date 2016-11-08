@@ -1,16 +1,29 @@
 package com.elementary.tasks.navigation.settings;
 
+import android.app.AlertDialog;
+import android.app.TimePickerDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.async.CheckBirthdayAsync;
 import com.elementary.tasks.core.services.BirthdayAlarm;
+import com.elementary.tasks.core.services.BirthdayCheckAlarm;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding;
+
+import java.util.Calendar;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,7 +41,9 @@ import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding;
  * limitations under the License.
  */
 
-public class BirthdaySettingsFragment extends BaseSettingsFragment {
+public class BirthdaySettingsFragment extends BaseSettingsFragment implements TimePickerDialog.OnTimeSetListener {
+
+    private static final int CONTACTS_CODE = 302;
 
     private FragmentBirthdaysSettingsBinding binding;
 
@@ -39,7 +54,106 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment {
         initBirthdayReminderPrefs();
         initBirthdaysWidgetPrefs();
         initPermanentPrefs();
+        initDaysToPrefs();
+        initBirthdayTimePrefs();
+        initContactsPrefs();
+        initContactsAutoPrefs();
+        initScanPrefs();
+        binding.birthdayNotificationPrefs.setOnClickListener(view -> replaceFragment(new BirthdayNotificationFragment(), getString(R.string.birthday_notification)));
         return binding.getRoot();
+    }
+
+    private void initScanPrefs() {
+        binding.contactsScanPrefs.setDependentView(binding.useContactsPrefs);
+        binding.contactsScanPrefs.setOnClickListener(view -> scanForBirthdays());
+    }
+
+    private void scanForBirthdays() {
+        new CheckBirthdayAsync(getActivity(), true).execute();
+    }
+
+    private void initContactsAutoPrefs() {
+        binding.autoScanPrefs.setChecked(Prefs.getInstance(mContext).isContactAutoCheckEnabled());
+        binding.autoScanPrefs.setOnClickListener(view -> changeAutoPrefs());
+        binding.autoScanPrefs.setDependentView(binding.useContactsPrefs);
+    }
+
+    private void changeAutoPrefs() {
+        boolean isChecked = binding.autoScanPrefs.isChecked();
+        binding.autoScanPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setContactAutoCheckEnabled(!isChecked);
+        if (!isChecked) {
+            new BirthdayCheckAlarm().setAlarm(mContext);
+        } else {
+            new BirthdayCheckAlarm().cancelAlarm(mContext);
+        }
+    }
+
+    private void initContactsPrefs() {
+        binding.useContactsPrefs.setChecked(Prefs.getInstance(mContext).isContactBirthdaysEnabled());
+        binding.useContactsPrefs.setOnClickListener(view -> changeContactsPrefs());
+    }
+
+    private void changeContactsPrefs() {
+        if (!Permissions.checkPermission(getActivity(), Permissions.READ_CONTACTS)) {
+            Permissions.requestPermission(getActivity(), CONTACTS_CODE, Permissions.READ_CONTACTS);
+            return;
+        }
+        boolean isChecked = binding.useContactsPrefs.isChecked();
+        binding.useContactsPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setContactBirthdaysEnabled(!isChecked);
+    }
+
+    private void initBirthdayTimePrefs() {
+        binding.reminderTimePrefs.setOnClickListener(view -> showTimeDialog());
+        binding.reminderTimePrefs.setValueText(Prefs.getInstance(mContext).getBirthdayTime());
+    }
+
+    private void showTimeDialog() {
+        Calendar calendar = TimeUtil.getBirthdayCalendar(Prefs.getInstance(mContext).getBirthdayTime());
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        new TimePickerDialog(mContext, this, hour, minute, Prefs.getInstance(mContext).is24HourFormatEnabled()).show();
+    }
+
+    private void initDaysToPrefs() {
+        binding.daysToPrefs.setOnClickListener(view -> showDaysToDialog());
+        binding.daysToPrefs.setValue(Prefs.getInstance(mContext).getDaysToBirthday());
+    }
+
+    private void showDaysToDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(R.string.days_to_birthday);
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        b.seekBar.setMax(5);
+        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                b.titleView.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        int daysToBirthday = Prefs.getInstance(mContext).getDaysToBirthday();
+        b.seekBar.setProgress(daysToBirthday);
+        b.titleView.setText(String.valueOf(daysToBirthday));
+        builder.setView(b.getRoot());
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> saveDays(b.seekBar.getProgress()));
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void saveDays(int progress) {
+        Prefs.getInstance(mContext).setDaysToBirthday(progress);
+        initDaysToPrefs();
     }
 
     private void initPermanentPrefs() {
@@ -96,6 +210,23 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment {
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.birthdays));
             mCallback.onFragmentSelect(this);
+        }
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        Prefs.getInstance(mContext).setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
+        initBirthdayTimePrefs();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CONTACTS_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    changeContactsPrefs();
+                }
+                break;
         }
     }
 }

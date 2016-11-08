@@ -1,9 +1,11 @@
 package com.elementary.tasks.core.file_explorer;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -50,6 +53,7 @@ import java.util.List;
 public class FileExplorerActivity extends ThemedActivity {
 
     private static final String TAG = "FileExplorerActivity";
+    private static final int SD_CARD = 444;
 
     private ArrayList<String> str = new ArrayList<>();
     private Boolean firstLvl = true;
@@ -140,8 +144,12 @@ public class FileExplorerActivity extends ThemedActivity {
         initPlayer();
         initSearch();
         initButtons();
-        loadFileList();
-        loadList();
+        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+            loadFileList();
+            loadList();
+        } else {
+            Permissions.requestPermission(this, SD_CARD, Permissions.READ_EXTERNAL);
+        }
     }
 
     private void initPlayer() {
@@ -367,6 +375,21 @@ public class FileExplorerActivity extends ThemedActivity {
             sendFile();
         } else {
             Toast.makeText(this, getString(R.string.not_music_file), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case SD_CARD:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadFileList();
+                    loadList();
+                } else {
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+                break;
         }
     }
 }
