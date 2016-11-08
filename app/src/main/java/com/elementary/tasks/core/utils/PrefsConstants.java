@@ -70,8 +70,6 @@ class PrefsConstants {
     static final String TIME_NIGHT = "time_night";
     static final String EXPORT_TO_STOCK = "export_to_stock";
     static final String APPLICATION_AUTO_LAUNCH = "application_auto_launch";
-    static final String NOTES_ORDER = "notes_ordering";
-    static final String TASKS_ORDER = "tasks_ordering";
     static final String REMINDERS_IN_CALENDAR = "reminders_in_calendar";
     static final String REMINDER_COLOR = "reminder_color";
     static final String IS_24_TIME_FORMAT = "24_hour_format";
@@ -82,14 +80,10 @@ class PrefsConstants {
     static final String VOLUME = "reminder_volume";
     static final String QUICK_SMS = "quick_sms";
     static final String FOLLOW_REMINDER = "follow_reminder";
-    static final String LAST_LIST = "last_list";
     static final String TTS = "tts_enabled";
     static final String TTS_LOCALE = "tts_locale";
-    static final String LAST_USED_REMINDER = "last_reminder";
     static final String ITEM_PREVIEW = "item_preview";
     static final String UI_CHANGED = "ui_changed";
-    static final String TASK_CHANGED = "task_changed";
-    static final String LAST_FRAGMENT = "last_fragment";
     static final String CALENDAR_IMAGE = "calendar_image";
     static final String EXPORT_SETTINGS = "export_settings";
     static final String CUSTOM_SOUND = "custom_sound";
@@ -108,21 +102,25 @@ class PrefsConstants {
     static final String GROUP_CHANGED = "group_changed";
     static final String PLACE_CHANGED = "place_changed";
     static final String TEMPLATE_CHANGED = "template_changed";
+    static final String TASK_CHANGED = "task_changed";
+    static final String LAST_FRAGMENT = "last_fragment";
+    static final String LAST_USED_REMINDER = "last_reminder";
+    static final String LAST_LIST = "last_list";
+    static final String NOTES_ORDER = "notes_ordering";
+    static final String TASKS_ORDER = "tasks_ordering";
+    static final String RATE_SHOW = "show_rate";
+    static final String APP_RUNS_COUNT = "app_runs";
 
     // birthdays reminder notification constants
     static final String BIRTHDAY_USE_GLOBAL = "use_global";
     static final String BIRTHDAY_VIBRATION_STATUS = "birthday_vibration_status";
-    static final String BIRTHDAY_SOUND_STATUS = "birthday_sound_status";
+    static final String BIRTHDAY_SILENT_STATUS = "birthday_sound_status";
     static final String BIRTHDAY_WAKE_STATUS = "birthday_wake_status";
     static final String BIRTHDAY_INFINITE_SOUND = "birthday_infinite_sound";
     static final String BIRTHDAY_LED_STATUS = "birthday_led_status";
     static final String BIRTHDAY_LED_COLOR = "birthday_led_color";
     static final String BIRTHDAY_INFINITE_VIBRATION = "birthday_infinite_vibration";
-    static final String BIRTHDAY_CUSTOM_SOUND = "birthday_custom_sound";
-    static final String BIRTHDAY_CUSTOM_SOUND_FILE = "birthday_sound_file";
-    static final String CONTACTS_IMPORT_DIALOG = "contacts_imported";
-    static final String RATE_SHOW = "show_rate";
-    static final String APP_RUNS_COUNT = "app_runs";
+    static final String BIRTHDAY_SOUND_FILE = "birthday_sound_file";
     static final String BIRTHDAY_REMINDER_TIME = "reminder_hour";
     static final String BIRTHDAY_TTS = "birthday_tts";
     static final String BIRTHDAY_TTS_LOCALE = "birthday_tts_locale";

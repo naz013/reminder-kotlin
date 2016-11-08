@@ -49,9 +49,9 @@ public class BirthdayAlarm extends WakefulBroadcastReceiver {
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         String time = Prefs.getInstance(context).getBirthdayTime();
         if (Module.isMarshmallow()) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayCalendar(time), alarmIntent);
+            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayTime(time), alarmIntent);
         } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayCalendar(time), alarmIntent);
+            alarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayTime(time), alarmIntent);
         }
     }
 

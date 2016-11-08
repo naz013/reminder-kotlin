@@ -49,11 +49,15 @@ public class TimeUtil {
 
     public TimeUtil(){}
 
-    public static String getBirthdayTime(long time) {
-        return time24.format(new Date(time));
+    public static String getBirthdayTime(int hour, int minute) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        return time24.format(calendar.getTime());
     }
 
-    public static long getBirthdayCalendar(String time) {
+    public static long getBirthdayTime(String time) {
         Calendar calendar = Calendar.getInstance();
         if (time != null) {
             try {
@@ -72,6 +76,27 @@ public class TimeUtil {
             }
         }
         return calendar.getTimeInMillis();
+    }
+
+    public static Calendar getBirthdayCalendar(String time) {
+        Calendar calendar = Calendar.getInstance();
+        if (time != null) {
+            try {
+                Date date = time24.parse(time);
+                calendar.setTime(date);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return calendar;
     }
 
     public static String getGmtDateTime() {

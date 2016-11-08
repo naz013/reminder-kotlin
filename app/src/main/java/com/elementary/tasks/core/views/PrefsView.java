@@ -49,6 +49,8 @@ public class PrefsView extends RelativeLayout {
     private boolean isForPro;
     private int viewType = check;
 
+    private List<PrefsView> mDependencyViews = new ArrayList<>();
+    private List<PrefsView> mReverseDependencyViews = new ArrayList<>();
     private List<OnCheckedListener> mOnCheckedListeners = new ArrayList<>();
     
     public PrefsView(Context context) {
@@ -123,16 +125,40 @@ public class PrefsView extends RelativeLayout {
 
     public void setDependentView(PrefsView view) {
         if (view != null) {
-            view.setOnCheckedListener(this::setEnabled);
-            setEnabled(view.isChecked());
+            mDependencyViews.add(view);
+            view.setOnCheckedListener(checked -> checkDependency());
         }
+        checkDependency();
+    }
+
+    private void checkDependency() {
+        boolean enable = true;
+        for (PrefsView prefsView : mDependencyViews) {
+            if (!prefsView.isChecked()) {
+                enable = false;
+                break;
+            }
+        }
+        setEnabled(enable);
     }
 
     public void setReverseDependentView(PrefsView view) {
         if (view != null) {
-            view.setOnCheckedListener(checked -> setEnabled(!checked));
-            setEnabled(!view.isChecked());
+            mReverseDependencyViews.add(view);
+            view.setOnCheckedListener(checked -> checkReverseDependency());
         }
+        checkReverseDependency();
+    }
+
+    private void checkReverseDependency() {
+        boolean enable = true;
+        for (PrefsView prefsView : mReverseDependencyViews) {
+            if (prefsView.isChecked()) {
+                enable = false;
+                break;
+            }
+        }
+        setEnabled(enable);
     }
 
     private void setVisible() {
