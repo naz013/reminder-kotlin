@@ -12,8 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.LED;
-import com.elementary.tasks.core.Language;
+import com.elementary.tasks.core.utils.LED;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;

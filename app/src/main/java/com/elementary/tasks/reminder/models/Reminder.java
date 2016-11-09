@@ -16,7 +16,7 @@
 
 package com.elementary.tasks.reminder.models;
 
-import com.elementary.tasks.core.RecyclerInterface;
+import com.elementary.tasks.core.interfaces.RecyclerInterface;
 
 import java.util.ArrayList;
 import java.util.List;

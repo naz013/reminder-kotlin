@@ -24,7 +24,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.LED;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;

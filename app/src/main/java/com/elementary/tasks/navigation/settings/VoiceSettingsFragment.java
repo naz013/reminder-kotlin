@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.Language;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding;
 import com.elementary.tasks.navigation.settings.voice.HelpFragment;

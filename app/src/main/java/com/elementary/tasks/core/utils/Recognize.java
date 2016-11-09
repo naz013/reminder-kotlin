@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core;
+package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 
 import com.backdoor.simpleai.Model;
 import com.backdoor.simpleai.Recognizer;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Prefs;
 
 import java.util.ArrayList;
