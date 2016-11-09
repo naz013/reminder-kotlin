@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.elementary.tasks.places.PlaceItem" />
+
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/itemCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:clipChildren="false"
+        android:foreground="?attr/selectableItemBackground"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/markerImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                card_view:loadMarker="@{item.icon}"
+                android:src="@drawable/marker_blue" />
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="8dp"
+                android:layout_toLeftOf="@+id/markerImage"
+                android:textSize="21sp"
+                android:text="@{item.title}"
+                card_view:font_style="roboto_light" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>

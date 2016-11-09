@@ -110,6 +110,7 @@ class PrefsConstants {
     static final String TASKS_ORDER = "tasks_ordering";
     static final String RATE_SHOW = "show_rate";
     static final String APP_RUNS_COUNT = "app_runs";
+    static final String HAS_SHOWCASE = "has_showcase";
 
     // birthdays reminder notification constants
     static final String BIRTHDAY_USE_GLOBAL = "use_global";

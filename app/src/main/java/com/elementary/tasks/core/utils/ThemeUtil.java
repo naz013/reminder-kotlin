@@ -880,68 +880,66 @@ public class ThemeUtil {
             int loaded = Prefs.getInstance(mContext).getMarkerStyle();
             return getMarkerStyle(loaded);
         } else {
-            // TODO: 27.09.2016 Change default marker style
-            return 0;
+            return R.drawable.marker_blue;
         }
     }
 
     @DrawableRes
     public int getMarkerStyle(int code){
-        int color = 0;
-        // TODO: 27.09.2016 Add marker style selector
-//        switch (code) {
-//            case 0:
-//                color = R.drawable.marker_red;
-//                break;
-//            case 1:
-//                color = R.drawable.marker_violet;
-//                break;
-//            case 2:
-//                color = R.drawable.marker_green_light;
-//                break;
-//            case 3:
-//                color = R.drawable.marker_green;
-//                break;
-//            case 4:
-//                color = R.drawable.marker_blue_light;
-//                break;
-//            case 5:
-//                color = R.drawable.marker_blue;
-//                break;
-//            case 6:
-//                color = R.drawable.marker_yellow;
-//                break;
-//            case 7:
-//                color = R.drawable.marker_orange;
-//                break;
-//            case 8:
-//                color = R.drawable.marker_cyan;
-//                break;
-//            case 9:
-//                color = R.drawable.marker_pink;
-//                break;
-//            case 10:
-//                color = R.drawable.marker_teal;
-//                break;
-//            case 11:
-//                color = R.drawable.marker_amber;
-//                break;
-//            case 12:
-//                color = R.drawable.marker_deep_purple;
-//                break;
-//            case 13:
-//                color = R.drawable.marker_deep_orange;
-//                break;
-//            case 14:
-//                color = R.drawable.marker_indigo;
-//                break;
-//            case 15:
-//                color = R.drawable.marker_lime;
-//                break;
-//            default:
-//                color = R.drawable.marker_blue;
-//                break;
-//        }
+        int color;
+        switch (code) {
+            case 0:
+                color = R.drawable.marker_red;
+                break;
+            case 1:
+                color = R.drawable.marker_violet;
+                break;
+            case 2:
+                color = R.drawable.marker_green_light;
+                break;
+            case 3:
+                color = R.drawable.marker_green;
+                break;
+            case 4:
+                color = R.drawable.marker_blue_light;
+                break;
+            case 5:
+                color = R.drawable.marker_blue;
+                break;
+            case 6:
+                color = R.drawable.marker_yellow;
+                break;
+            case 7:
+                color = R.drawable.marker_orange;
+                break;
+            case 8:
+                color = R.drawable.marker_cyan;
+                break;
+            case 9:
+                color = R.drawable.marker_pink;
+                break;
+            case 10:
+                color = R.drawable.marker_teal;
+                break;
+            case 11:
+                color = R.drawable.marker_amber;
+                break;
+            case 12:
+                color = R.drawable.marker_deep_purple;
+                break;
+            case 13:
+                color = R.drawable.marker_deep_orange;
+                break;
+            case 14:
+                color = R.drawable.marker_indigo;
+                break;
+            case 15:
+                color = R.drawable.marker_lime;
+                break;
+            default:
+                color = R.drawable.marker_blue;
+                break;
+        }
         return color;
     }
 

@@ -772,6 +772,14 @@ public class Prefs extends SharedPrefs {
         putString(BIRTHDAY_SOUND_FILE, value);
     }
 
+    public boolean isMapShowcase() {
+        return getBoolean(HAS_SHOWCASE);
+    }
+
+    public void setMapShowcase(boolean value) {
+        putBoolean(HAS_SHOWCASE, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

@@ -4,6 +4,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.RealmGroup;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.places.PlaceItem;
+import com.elementary.tasks.places.RealmPlace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +114,41 @@ public class RealmDb {
         List<GroupItem> items = new ArrayList<>();
         for (RealmGroup object : list) {
             items.add(new GroupItem(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public void savePlace(PlaceItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmPlace(item));
+        realm.commitTransaction();
+    }
+
+    public void deletePlace(PlaceItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmPlace object = realm.where(RealmPlace.class).equalTo("key", item.getKey()).findFirst();
+        object.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public PlaceItem getPlace(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmPlace object = realm.where(RealmPlace.class).equalTo("key", id).findFirst();
+        realm.commitTransaction();
+        return new PlaceItem(object);
+    }
+
+    public List<PlaceItem> getAllPlaces() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmPlace> list = realm.where(RealmPlace.class).findAll();
+        List<PlaceItem> items = new ArrayList<>();
+        for (RealmPlace object : list) {
+            items.add(new PlaceItem(object));
         }
         realm.commitTransaction();
         return items;

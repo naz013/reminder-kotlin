@@ -38,8 +38,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 public class SuperUtil {
+
+    public static String getAddress(double currentLat, double currentLong){
+        return String.format(Locale.getDefault(), "%.5f, %.5f", currentLat, currentLong);
+    }
 
     public static boolean checkGooglePlayServicesAvailability(Activity a) {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
