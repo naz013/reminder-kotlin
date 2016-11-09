@@ -50,6 +50,7 @@ public class SettingsFragment extends BaseSettingsFragment {
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.settings));
             mCallback.onFragmentSelect(this);
+            mCallback.setClick(null);
         }
     }
 }

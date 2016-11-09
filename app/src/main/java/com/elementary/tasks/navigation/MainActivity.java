@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
@@ -54,11 +53,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initActionBar();
         initNavigation();
-        binding.fab.setOnClickListener(v -> openCreator());
-    }
-
-    private void openCreator() {
-        startActivity(new Intent(this, CreateReminderActivity.class));
     }
 
     private void initActionBar() {
@@ -96,6 +90,16 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     public void onFragmentSelect(Fragment fragment) {
         this.fragment = fragment;
+    }
+
+    @Override
+    public void setClick(View.OnClickListener listener) {
+        if (listener == null) {
+            hideFab();
+        } else {
+            showFab();
+            binding.fab.setOnClickListener(listener);
+        }
     }
 
     private void initNavigation() {
@@ -169,55 +173,42 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         switch (item.getItemId()) {
             case R.id.nav_current:
                 replaceFragment(new RemindersFragment(), getString(R.string.tasks));
-                showFab();
                 break;
             case R.id.nav_notes:
                 replaceFragment(new NotesFragment(), getString(R.string.notes));
-                showFab();
                 break;
             case R.id.nav_calendar:
                 replaceFragment(new CalendarFragment(), getString(R.string.calendar));
-                showFab();
                 break;
             case R.id.nav_day_view:
                 replaceFragment(new DayViewFragment(), getString(R.string.events));
-                showFab();
                 break;
             case R.id.nav_tasks:
                 replaceFragment(new GoogleTasksFragment(), getString(R.string.google_tasks));
-                showFab();
                 break;
             case R.id.nav_groups:
                 replaceFragment(new GroupsFragment(), getString(R.string.groups));
-                showFab();
                 break;
             case R.id.nav_map:
                 replaceFragment(new MapFragment(), getString(R.string.map));
-                hideFab();
                 break;
             case R.id.nav_places:
                 replaceFragment(new PlacesFragment(), getString(R.string.places));
-                showFab();
                 break;
             case R.id.nav_backups:
                 replaceFragment(new BackupsFragment(), getString(R.string.backup_files));
-                hideFab();
                 break;
             case R.id.nav_archive:
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
-                hideFab();
                 break;
             case R.id.nav_settings:
                 replaceFragment(new SettingsFragment(), getString(R.string.settings));
-                hideFab();
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new DayViewFragment(), getString(R.string.feedback));
-                hideFab();
                 break;
             case R.id.nav_help:
                 replaceFragment(new DayViewFragment(), getString(R.string.help));
-                hideFab();
                 break;
         }
         return true;

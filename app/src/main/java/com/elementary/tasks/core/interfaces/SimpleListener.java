@@ -1,9 +1,6 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.core.interfaces;
 
-import android.content.Intent;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import android.view.View;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,15 +18,7 @@ import com.elementary.tasks.creators.CreateReminderActivity;
  * limitations under the License.
  */
 
-public class RemindersFragment extends BaseNavigationFragment {
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.tasks));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, CreateReminderActivity.class)));
-        }
-    }
+public interface SimpleListener {
+    void onItemClicked(int position, View view);
+    void onItemLongClicked(int position, View view);
 }

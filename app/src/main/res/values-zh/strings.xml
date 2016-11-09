@@ -543,6 +543,7 @@
     <string name="disable">Disable</string>
     <string name="once">Once</string>
     <string name="times">times</string>
+    <string name="no_groups">No groups</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>
