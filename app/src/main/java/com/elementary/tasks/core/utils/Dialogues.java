@@ -1,9 +1,7 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.core.utils;
 
-import android.content.Intent;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import android.app.AlertDialog;
+import android.content.Context;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,15 +19,15 @@ import com.elementary.tasks.creators.CreateReminderActivity;
  * limitations under the License.
  */
 
-public class RemindersFragment extends BaseNavigationFragment {
+public class Dialogues {
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.tasks));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, CreateReminderActivity.class)));
-        }
+    public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(actions, (dialog, item) -> {
+            dialog.dismiss();
+            if (listener != null) listener.onAction(item);
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

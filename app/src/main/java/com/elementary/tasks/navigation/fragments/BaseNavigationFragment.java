@@ -46,4 +46,12 @@ public abstract class BaseNavigationFragment extends Fragment {
             mCallback = (FragmentCallback) activity;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) {
+            mCallback.setClick(null);
+        }
+    }
 }

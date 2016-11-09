@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.app.Fragment;
+import android.view.View;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,4 +23,5 @@ public interface FragmentCallback {
     void replaceFragment(Fragment fragment, String title);
     void onTitleChange(String title);
     void onFragmentSelect(Fragment fragment);
+    void setClick(View.OnClickListener listener);
 }
