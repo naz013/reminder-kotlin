@@ -60,6 +60,7 @@ public class GroupsFragment extends BaseNavigationFragment {
                         break;
                     case 2:
                         mAdapter.deleteItem(position);
+                        refreshView();
                         break;
                 }
             }, items);

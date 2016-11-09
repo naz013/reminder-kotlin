@@ -1,4 +1,4 @@
-package com.elementary.tasks.groups;
+package com.elementary.tasks.places;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.GroupListItemBinding;
+import com.elementary.tasks.databinding.PlaceListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,24 +35,24 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAdapter.ViewHolder> {
+public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder> {
 
-    private List<GroupItem> mDataList;
+    private List<PlaceItem> mDataList;
     private SimpleListener mEventListener;
     private Context mContext;
 
-    public GroupsRecyclerAdapter(Context context, List<GroupItem> list, SimpleListener listener) {
+    public PlacesRecyclerAdapter(Context context, List<PlaceItem> list, SimpleListener listener) {
         this.mDataList = new ArrayList<>(list);
         this.mContext = context;
         this.mEventListener = listener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        GroupListItemBinding binding;
+        PlaceListItemBinding binding;
         public ViewHolder(View v) {
             super(v);
             binding = DataBindingUtil.bind(v);
-            v.setOnClickListener(view -> openGroup(getAdapterPosition()));
+            v.setOnClickListener(view -> open(getAdapterPosition()));
             v.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), view);
@@ -62,28 +63,28 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
     }
 
     public void deleteItem(int position) {
-        RealmDb.getInstance().deleteGroup(mDataList.remove(position));
+        RealmDb.getInstance().deletePlace(mDataList.remove(position));
         notifyItemRemoved(position);
         notifyItemRangeChanged(0, mDataList.size());
     }
 
-    private void openGroup(int position) {
-        mContext.startActivity(new Intent(mContext, CreateGroupActivity.class).putExtra(Constants.INTENT_ID, mDataList.get(position).getUuId()));
+    private void open(int position) {
+        mContext.startActivity(new Intent(mContext, CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mDataList.get(position).getKey()));
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        GroupListItemBinding binding = GroupListItemBinding.inflate(LayoutInflater.from(mContext), parent, false);
+        PlaceListItemBinding binding = PlaceListItemBinding.inflate(LayoutInflater.from(mContext), parent, false);
         return new ViewHolder(binding.getRoot());
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        GroupItem item = mDataList.get(position);
+        PlaceItem item = mDataList.get(position);
         holder.binding.setItem(item);
     }
 
-    public GroupItem getItem(int position) {
+    public PlaceItem getItem(int position) {
         return mDataList.get(position);
     }
 
@@ -92,8 +93,8 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupsRecyclerAd
         return mDataList.size();
     }
 
-    @BindingAdapter({"loadIndicator"})
-    public static void loadIndicator(View view, int color) {
-        view.setBackgroundResource(ThemeUtil.getInstance(view.getContext()).getCategoryIndicator(color));
+    @BindingAdapter({"loadMarker"})
+    public static void loadMarker(ImageView view, int color) {
+        view.setImageResource(ThemeUtil.getInstance(view.getContext()).getMarkerStyle(color));
     }
 }

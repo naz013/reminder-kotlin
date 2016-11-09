@@ -59,6 +59,7 @@
         <activity android:name=".core.additional.FollowReminderActivity" />
         <activity android:name=".core.file_explorer.FileExplorerActivity" />
         <activity android:name=".groups.CreateGroupActivity" />
+        <activity android:name=".places.CreatePlaceActivity" />
 
         <activity
             android:name=".core.SplashScreen"
