@@ -34,7 +34,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.Language;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 

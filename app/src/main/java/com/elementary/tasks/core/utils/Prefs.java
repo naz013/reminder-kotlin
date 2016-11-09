@@ -19,8 +19,6 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.elementary.tasks.core.LED;
-import com.elementary.tasks.core.Language;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
 import com.google.gson.Gson;
