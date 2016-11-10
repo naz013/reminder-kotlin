@@ -46,6 +46,15 @@ public class SuperUtil {
         return String.format(Locale.getDefault(), "%.5f, %.5f", currentLat, currentLong);
     }
 
+    public static boolean isGooglePlayServicesAvailable(Activity a) {
+        try {
+            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
+            return resultCode == ConnectionResult.SUCCESS;
+        } catch (NoSuchMethodError e) {
+            return false;
+        }
+    }
+
     public static boolean checkGooglePlayServicesAvailability(Activity a) {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
         if (resultCode != ConnectionResult.SUCCESS) {

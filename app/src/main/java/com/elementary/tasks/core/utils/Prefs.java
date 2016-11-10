@@ -780,6 +780,22 @@ public class Prefs extends SharedPrefs {
         putBoolean(HAS_SHOWCASE, value);
     }
 
+    public String getNoteOrder() {
+        return getString(NOTES_ORDER);
+    }
+
+    public void setNoteOrder(String value) {
+        putString(NOTES_ORDER, value);
+    }
+
+    public boolean isNotesGridEnabled() {
+        return getBoolean(NOTES_LIST_STYLE);
+    }
+
+    public void setNotesGridEnabled(boolean value) {
+        putBoolean(NOTES_LIST_STYLE, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

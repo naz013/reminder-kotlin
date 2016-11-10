@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="80dp"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/task_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="5dp"
+                        android:hint="@string/note"
+                        android:textColor="@color/blackPrimary"
+                        android:textColorHint="@color/blackPrimary"
+                        android:textSize="@dimen/create_note_text_size" />
+
+                    <RelativeLayout
+                        android:id="@+id/imageContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/noteImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="500dp"
+                            android:minHeight="350dp"
+                            android:scaleType="centerCrop"
+                            android:visibility="visible" />
+
+                        <ImageButton
+                            android:id="@+id/deleteButton"
+                            android:layout_width="@dimen/create_note_image_button_size"
+                            android:layout_height="@dimen/create_note_image_button_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:background="@drawable/drawable_cyan"
+                            android:src="@drawable/ic_clear_white_24dp" />
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/remindContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="80dp"
+                        android:gravity="center|right"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <com.elementary.tasks.core.views.roboto.RoboTextView
+                            android:id="@+id/remindDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="27/11/2014"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="@dimen/create_note_text_size_secondary"
+                            app:font_style="roboto_medium" />
+
+                        <com.elementary.tasks.core.views.roboto.RoboTextView
+                            android:id="@+id/remindTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="25dp"
+                            android:gravity="center"
+                            android:text="20:00"
+                            android:textColor="@color/blackPrimary"
+                            android:textSize="@dimen/create_note_text_size_secondary"
+                            app:font_style="roboto_medium" />
+
+                        <ImageButton
+                            android:id="@+id/discardReminder"
+                            android:layout_width="@dimen/create_note_image_button_size"
+                            android:layout_height="@dimen/create_note_image_button_size"
+                            android:background="@null"
+                            android:src="@drawable/ic_clear_white_24dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

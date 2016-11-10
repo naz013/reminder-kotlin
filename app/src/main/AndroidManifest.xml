@@ -60,6 +60,8 @@
         <activity android:name=".core.file_explorer.FileExplorerActivity" />
         <activity android:name=".groups.CreateGroupActivity" />
         <activity android:name=".places.CreatePlaceActivity" />
+        <activity android:name=".notes.ActivityCreateNote" />
+        <activity android:name=".notes.ImagePreviewActivity" />
 
         <activity
             android:name=".core.SplashScreen"

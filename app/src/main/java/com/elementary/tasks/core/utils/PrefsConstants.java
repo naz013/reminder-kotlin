@@ -107,6 +107,7 @@ class PrefsConstants {
     static final String LAST_USED_REMINDER = "last_reminder";
     static final String LAST_LIST = "last_list";
     static final String NOTES_ORDER = "notes_ordering";
+    static final String NOTES_LIST_STYLE = "notes_style";
     static final String TASKS_ORDER = "tasks_ordering";
     static final String RATE_SHOW = "show_rate";
     static final String APP_RUNS_COUNT = "app_runs";

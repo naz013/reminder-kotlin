@@ -31,7 +31,23 @@ public class Constants {
     public static final String FILE_TYPE = "file_type";
 
     public static final int REQUEST_CODE_SELECTED_MELODY = 500;
-    public static final int ACTION_REQUEST_GALLERY = 222;
+
+    public final static int REQUEST_CODE_CONTACTS = 101;
+    public final static int REQUEST_CODE_THEME = 105;
+    public final static int REQUEST_CODE_FONT_STYLE = 106;
+    public final static int REQUEST_CODE_SELECTED_RADIUS = 116;
+    public final static int REQUEST_CODE_SELECTED_COLOR = 118;
+    public final static int REQUEST_CODE_APPLICATION = 117;
+
+    public static final int ACTION_REQUEST_GALLERY = 111;
+    public static final int ACTION_REQUEST_CAMERA = 112;
+    public static final String SELECTED_COLOR = "selected_color";
+
+    public final static String SELECTED_CONTACT_NAME = "selected_name";
+    public final static String SELECTED_FONT_STYLE = "selected_style";
+    public final static String SELECTED_RADIUS = "selected_radius";
+    public final static String SELECTED_LED_COLOR = "selected_led_color";
+    public final static String SELECTED_APPLICATION = "selected_application";
 
     public final static String DIR_SD = "backup";
     public final static String DIR_IMAGE_CACHE = "img";
@@ -48,4 +64,12 @@ public class Constants {
     public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
     public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
     public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
+
+    public static final String ORDER_DATE_A_Z = "date_az";
+    public static final String ORDER_DATE_Z_A = "date_za";
+    public static final String ORDER_COMPLETED_A_Z = "completed_az";
+    public static final String ORDER_COMPLETED_Z_A = "completed_za";
+    public static final String ORDER_DEFAULT = "default";
+    public static final String ORDER_NAME_A_Z = "name_az";
+    public static final String ORDER_NAME_Z_A = "name_za";
 }

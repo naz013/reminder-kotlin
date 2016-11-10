@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_add"
+        android:title="@string/save"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/action_color"
+        android:icon="@drawable/ic_palette_white_24dp"
+        android:title="@string/color"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_image"
+        android:icon="@drawable/ic_insert_photo_white_24dp"
+        android:title="@string/image"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_reminder"
+        android:icon="@drawable/ic_alarm_white"
+        android:title="@string/add_reminder_menu"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_font"
+        android:icon="@drawable/ic_text_format_white_24dp"
+        android:title="@string/font_style"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_white_24dp"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+</menu>
