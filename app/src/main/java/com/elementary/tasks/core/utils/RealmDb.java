@@ -4,13 +4,17 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.RealmGroup;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.RealmNote;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.RealmPlace;
+import com.google.android.gms.drive.query.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.Sort;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -149,6 +153,66 @@ public class RealmDb {
         List<PlaceItem> items = new ArrayList<>();
         for (RealmPlace object : list) {
             items.add(new PlaceItem(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public void saveNote(NoteItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmNote(item));
+        realm.commitTransaction();
+    }
+
+    public void deleteNote(NoteItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmNote object = realm.where(RealmNote.class).equalTo("key", item.getKey()).findFirst();
+        object.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public NoteItem getNote(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmNote object = realm.where(RealmNote.class).equalTo("key", id).findFirst();
+        realm.commitTransaction();
+        return new NoteItem(object);
+    }
+
+    public void changeNoteColor(String id, int color) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmNote object = realm.where(RealmNote.class).equalTo("key", id).findFirst();
+        object.setColor(color);
+        realm.commitTransaction();
+    }
+
+    public List<NoteItem> getAllNotes(String orderPrefs) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String field = "date";
+        Sort order = Sort.DESCENDING;
+        if (orderPrefs != null) {
+            if (orderPrefs.matches(Constants.ORDER_DATE_A_Z)) {
+                field = "date";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_DATE_Z_A)) {
+                field = "date";
+                order = Sort.DESCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_NAME_A_Z)) {
+                field = "summary";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_NAME_Z_A)) {
+                field = "summary";
+                order = Sort.DESCENDING;
+            }
+        }
+        List<RealmNote> list = realm.where(RealmNote.class).findAllSorted(field, order);
+        List<NoteItem> items = new ArrayList<>();
+        for (RealmNote object : list) {
+            items.add(new NoteItem(object));
         }
         realm.commitTransaction();
         return items;
