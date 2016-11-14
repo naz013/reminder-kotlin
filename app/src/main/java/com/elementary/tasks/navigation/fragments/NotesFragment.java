@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,9 +29,9 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
-import com.elementary.tasks.groups.CreateGroupActivity;
 import com.elementary.tasks.notes.ActivityCreateNote;
 import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -286,16 +287,14 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void previewNote(String id, View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Intent intent = new Intent(mContext, NotePreviewActivity.class);
-//            intent.putExtra(Constants.INTENT_ID, id);
-//            String transitionName = "image";
-//            ActivityOptionsCompat options =
-//                    ActivityOptionsCompat.makeSceneTransitionAnimation(mContext, view,
-//                            transitionName);
-//            mContext.startActivity(intent, options.toBundle());
+            Intent intent = new Intent(mContext, NotePreviewActivity.class);
+            intent.putExtra(Constants.INTENT_ID, id);
+            String transitionName = "image";
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
+            mContext.startActivity(intent, options.toBundle());
         } else {
-//            mContext.startActivity(new Intent(mContext, NotePreviewActivity.class)
-//                    .putExtra(Constants.INTENT_ID, id));
+            mContext.startActivity(new Intent(mContext, NotePreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, id));
         }
     }
 
