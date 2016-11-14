@@ -62,6 +62,7 @@
         <activity android:name=".places.CreatePlaceActivity" />
         <activity android:name=".notes.ActivityCreateNote" />
         <activity android:name=".notes.ImagePreviewActivity" />
+        <activity android:name=".notes.NotePreviewActivity" />
 
         <activity
             android:name=".core.SplashScreen"
