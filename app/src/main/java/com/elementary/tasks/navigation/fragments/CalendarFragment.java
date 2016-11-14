@@ -1,5 +1,14 @@
 package com.elementary.tasks.navigation.fragments;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.databinding.FragmentCalendarBinding;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -18,4 +27,23 @@ package com.elementary.tasks.navigation.fragments;
 
 public class CalendarFragment extends BaseNavigationFragment {
 
+    private FragmentCalendarBinding binding;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentCalendarBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.calendar));
+            mCallback.onFragmentSelect(this);
+            mCallback.setClick(null);
+        }
+    }
 }
