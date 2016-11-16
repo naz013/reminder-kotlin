@@ -5,14 +5,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
+import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import hirondelle.date4j.DateTime;
 
@@ -32,22 +36,42 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class MonthView extends View {
+public class MonthView extends View implements View.OnTouchListener {
 
     private static final String TAG = "MonthView";
     private static final int ROWS = 6;
     private static final int COLS = 7;
+    private static final long LONG_CLICK_TIME = 1500;
 
     private int mYear;
     private int mMonth;
+    private int mDay;
     private ArrayList<DateTime> mDateTimeList;
 
     private Context mContext;
 
     private Paint paint;
-    private Rect[][] mCells;
+    private List<Rect> mCells;
     private int mWidth;
     private int mHeight;
+    private int mDefaultColor;
+    private int mFillColor;
+    private int mTouchPosition = -1;
+    private Rect mTouchRect;
+
+    private Handler mLongClickHandler = new Handler();
+    private OnDateClick mDateClick;
+    private OnDateLongClick mDateLongClick;
+    private Runnable mLongRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mLongClickHandler.removeCallbacks(mLongRunnable);
+            if (mTouchRect != null && mDateLongClick != null) {
+                mDateLongClick.onLongClick(mDateTimeList.get(mTouchPosition));
+            }
+            cancelTouch();
+        }
+    };
 
     public MonthView(Context context) {
         super(context);
@@ -68,14 +92,32 @@ public class MonthView extends View {
         this.mContext = context;
         this.paint = new Paint();
         this.paint.setAntiAlias(true);
+        ThemeUtil themeUtil = ThemeUtil.getInstance(context);
+        if (themeUtil.isDark()) {
+            mDefaultColor = Color.WHITE;
+        } else {
+            mDefaultColor = Color.BLACK;
+        }
+        paint.setTypeface(AssetsUtil.getTypeface(context, 9));
+        mFillColor = themeUtil.getColor(themeUtil.colorAccent());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
+        setOnTouchListener(this);
+    }
+
+    public void setDateClick(OnDateClick dateClick) {
+        this.mDateClick = dateClick;
+    }
+
+    public void setDateLongClick(OnDateLongClick dateLongClick) {
+        this.mDateLongClick = dateLongClick;
     }
 
     public void setDate(int year, int month) {
         mDateTimeList = new ArrayList<>();
         mDateTimeList.clear();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
         mMonth = month;
         mYear = year;
         DateTime firstDateOfMonth = new DateTime(mYear, month + 1, 1, 0, 0, 0, 0);
@@ -128,36 +170,115 @@ public class MonthView extends View {
         super.onDraw(canvas);
         this.mWidth = getWidth();
         this.mHeight = getHeight();
-        Log.d(TAG, "onDraw: w " + mWidth + ", h " + mHeight);
         if (mCells == null) initCells();
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.STROKE);
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                Rect rect = mCells[i][j];
+        for (int i = 0; i < ROWS * COLS; i++) {
+            Rect rect = mCells.get(i);
+            if (mTouchPosition == i) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(mFillColor);
+                paint.setAlpha(50);
                 canvas.drawRect(rect, paint);
             }
+            int color = mDefaultColor;
+            DateTime dateTime = mDateTimeList.get(i);
+            if (dateTime.getMonth() != mMonth + 1) {
+                color = Color.GRAY;
+            } else if (dateTime.getDay() == mDay) {
+                color = Color.RED;
+            }
+            drawRectText(dateTime.getDay().toString(), canvas, rect, color);
         }
     }
 
     private void initCells() {
         Rect bounds = new Rect();
         getLocalVisibleRect(bounds);
-        int viewTop = bounds.top;
-        int viewLeft = bounds.left;
-        Log.d(TAG, "initCells: t " + viewTop + ", l " + viewLeft);
         int cellWidth = mWidth / COLS;
         int cellHeight = mHeight / ROWS;
-        Log.d(TAG, "initCells: cw " + cellWidth + ", ch " + cellHeight);
-        mCells = new Rect[ROWS][COLS];
+        mCells = new ArrayList<>();
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
                 int top = i * cellHeight;
                 int left = j * cellWidth;
                 Rect tmp = new Rect(left, top, left + cellWidth, top + cellHeight);
-                mCells[i][j] = tmp;
-//                Log.d(TAG, "initCells: t " + tmp.top + ", l " + tmp.left + ", r " + tmp.right + ", b " + tmp.bottom);
+                mCells.add(tmp);
             }
         }
+    }
+
+    private void drawRectText(String text, Canvas canvas, Rect r, int color) {
+        paint.setTextSize(25);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setAlpha(100);
+        paint.setColor(color);
+        int width = r.width();
+        int numOfChars = paint.breakText(text, true, width, null);
+        int start = (text.length() - numOfChars) / 2;
+        canvas.drawText(text, start, start + numOfChars, r.exactCenterX(), r.exactCenterY(), paint);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                performTouch(motionEvent);
+                break;
+            case MotionEvent.ACTION_UP:
+                performAction(motionEvent);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                cancelTouch();
+                break;
+            case MotionEvent.ACTION_HOVER_MOVE:
+                performMove(motionEvent);
+                break;
+        }
+        return true;
+    }
+
+    private void performAction(MotionEvent motionEvent) {
+        int x = (int) motionEvent.getX();
+        int y = (int) motionEvent.getY();
+        mLongClickHandler.removeCallbacks(mLongRunnable);
+        if (mTouchRect != null && mTouchRect.contains(x, y)) {
+            if (mDateClick != null) mDateClick.onClick(mDateTimeList.get(mTouchPosition));
+        }
+        cancelTouch();
+    }
+
+    private void performMove(MotionEvent motionEvent) {
+        int x = (int) motionEvent.getX();
+        int y = (int) motionEvent.getY();
+        if (mTouchRect != null && !mTouchRect.contains(x, y)) {
+            cancelTouch();
+        }
+    }
+
+    private void cancelTouch() {
+        mTouchPosition = -1;
+        mTouchRect = null;
+        invalidate();
+    }
+
+    private void performTouch(MotionEvent motionEvent) {
+        int x = (int) motionEvent.getX();
+        int y = (int) motionEvent.getY();
+        for (int i = 0; i < ROWS * COLS; i++) {
+            if (mCells.get(i).contains(x, y)) {
+                mTouchPosition = i;
+                mTouchRect = mCells.get(i);
+                mLongClickHandler.postDelayed(mLongRunnable, LONG_CLICK_TIME);
+                break;
+            }
+        }
+        invalidate();
+    }
+
+    public interface OnDateClick {
+        void onClick(DateTime dateTime);
+    }
+
+    public interface OnDateLongClick {
+        void onLongClick(DateTime dateTime);
     }
 }
