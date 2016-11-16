@@ -2,12 +2,16 @@ package com.elementary.tasks.navigation.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.views.MonthView;
 import com.elementary.tasks.databinding.FragmentCalendarBinding;
+
+import hirondelle.date4j.DateTime;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,13 +31,28 @@ import com.elementary.tasks.databinding.FragmentCalendarBinding;
 
 public class CalendarFragment extends BaseNavigationFragment {
 
+    private static final String TAG = "CalendarFragment";
+
     private FragmentCalendarBinding binding;
+    private MonthView.OnDateClick mDateClick = new MonthView.OnDateClick() {
+        @Override
+        public void onClick(DateTime dateTime) {
+            Log.d(TAG, "onClick: " + dateTime.getDay());
+        }
+    };
+    private MonthView.OnDateLongClick mDateLongClick = new MonthView.OnDateLongClick() {
+        @Override
+        public void onLongClick(DateTime dateTime) {
+            Log.d(TAG, "onLongClick: " + dateTime.getDay());
+        }
+    };
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCalendarBinding.inflate(inflater, container, false);
-
+        binding.calendarView.setDateClick(mDateClick);
+        binding.calendarView.setDateLongClick(mDateLongClick);
         return binding.getRoot();
     }
 
