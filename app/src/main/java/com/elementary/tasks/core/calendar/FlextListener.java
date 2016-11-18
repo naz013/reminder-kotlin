@@ -1,10 +1,6 @@
-package com.elementary.tasks.navigation.settings;
+package com.elementary.tasks.core.calendar;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
+import java.util.Date;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,6 +18,10 @@ import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
  * limitations under the License.
  */
 
-public abstract class BaseSettingsFragment extends BaseNavigationFragment {
-
+public interface FlextListener {
+    void onClickDate(Date date);
+    void onLongClickDate(Date date);
+    void onMonthChanged(int month, int year);
+    void onCaldroidViewCreated();
+    void onMonthSelected(int month);
 }

@@ -7,16 +7,20 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import hirondelle.date4j.DateTime;
 
@@ -41,21 +45,23 @@ public class MonthView extends View implements View.OnTouchListener {
     private static final String TAG = "MonthView";
     private static final int ROWS = 6;
     private static final int COLS = 7;
+    private static final int GRID_R_C = 4;
     private static final long LONG_CLICK_TIME = 1500;
 
     private int mYear;
     private int mMonth;
     private int mDay;
     private ArrayList<DateTime> mDateTimeList;
+    private HashMap<DateTime, Events> eventsMap = new HashMap<>();
 
     private Context mContext;
 
     private Paint paint;
     private List<Rect> mCells;
+    private Map<Rect, List<Rect>> circlesMap = new HashMap<>();
     private int mWidth;
     private int mHeight;
     private int mDefaultColor;
-    private int mFillColor;
     private int mTouchPosition = -1;
     private Rect mTouchRect;
 
@@ -99,7 +105,6 @@ public class MonthView extends View implements View.OnTouchListener {
             mDefaultColor = Color.BLACK;
         }
         paint.setTypeface(AssetsUtil.getTypeface(context, 9));
-        mFillColor = themeUtil.getColor(themeUtil.colorAccent());
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
@@ -113,6 +118,10 @@ public class MonthView extends View implements View.OnTouchListener {
 
     public void setDateLongClick(OnDateLongClick dateLongClick) {
         this.mDateLongClick = dateLongClick;
+    }
+
+    public void setEventsMap(HashMap<DateTime, Events> eventsMap) {
+        this.eventsMap = eventsMap;
     }
 
     public void setDate(int year, int month) {
@@ -133,7 +142,6 @@ public class MonthView extends View implements View.OnTouchListener {
             if (!dateTime.lt(firstDateOfMonth)) {
                 break;
             }
-
             mDateTimeList.add(dateTime);
             weekdayOfFirstDate--;
         }
@@ -162,31 +170,51 @@ public class MonthView extends View implements View.OnTouchListener {
             DateTime nextDateTime = lastDateTime.plusDays(i);
             mDateTimeList.add(nextDateTime);
         }
-        invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        long start = System.currentTimeMillis();
         this.mWidth = getWidth();
         this.mHeight = getHeight();
         if (mCells == null) initCells();
         for (int i = 0; i < ROWS * COLS; i++) {
             Rect rect = mCells.get(i);
-            if (mTouchPosition == i) {
-                paint.setStyle(Paint.Style.FILL);
-                paint.setColor(mFillColor);
-                paint.setAlpha(50);
-                canvas.drawRect(rect, paint);
-            }
             int color = mDefaultColor;
             DateTime dateTime = mDateTimeList.get(i);
-            if (dateTime.getMonth() != mMonth + 1) {
-                color = Color.GRAY;
-            } else if (dateTime.getDay() == mDay) {
+            Log.d(TAG, "onDraw: " + dateTime);
+            if (eventsMap.containsKey(dateTime)) {
+                drawEvents(canvas, eventsMap.get(dateTime), rect);
+            }
+            if (dateTime.getDay() == mDay && dateTime.getMonth() == mMonth + 1 && dateTime.getYear() == mYear) {
                 color = Color.RED;
             }
             drawRectText(dateTime.getDay().toString(), canvas, rect, color);
+        }
+        Log.d(TAG, "onDraw: " + (System.currentTimeMillis() - start));
+    }
+
+    private void drawEvents(Canvas canvas, Events events, Rect rect) {
+//        Log.d(TAG, "drawEvents: " + events);
+        List<Rect> rects = circlesMap.get(rect);
+        int index = 0;
+        events.moveToStart();
+        paint.setAlpha(50);
+        paint.setStyle(Paint.Style.FILL);
+        while (events.hasNext() && index < GRID_R_C * GRID_R_C) {
+            Events.Event event = events.getNext();
+            paint.setColor(event.getColor());
+            Rect r = rects.get(index);
+            canvas.drawCircle(r.centerX(), r.centerY(), r.width() / 4f, paint);
+            index++;
+        }
+        index--;
+        while (index > 0) {
+            Rect st = rects.get(index);
+            Rect end = rects.get(index - 1);
+            canvas.drawLine(st.centerX(), st.centerY(), end.centerX(), end.centerY(), paint);
+            index--;
         }
     }
 
@@ -202,8 +230,26 @@ public class MonthView extends View implements View.OnTouchListener {
                 int left = j * cellWidth;
                 Rect tmp = new Rect(left, top, left + cellWidth, top + cellHeight);
                 mCells.add(tmp);
+                generateCircles(tmp);
             }
         }
+    }
+
+    private void generateCircles(Rect rect) {
+        int circleWidth = rect.width() / GRID_R_C;
+        int circleHeight = rect.height() / GRID_R_C;
+        int rectTop = rect.top;
+        int rectLeft = rect.left;
+        List<Rect> rects = new ArrayList<>();
+        for (int i = 0; i < GRID_R_C; i++) {
+            for (int j = 0; j < GRID_R_C; j++) {
+                int top = i * circleHeight + rectTop;
+                int left = j * circleWidth + rectLeft;
+                Rect tmp = new Rect(left, top, left + circleWidth, top + circleHeight);
+                rects.add(tmp);
+            }
+        }
+        circlesMap.put(rect, rects);
     }
 
     private void drawRectText(String text, Canvas canvas, Rect r, int color) {
@@ -257,7 +303,6 @@ public class MonthView extends View implements View.OnTouchListener {
     private void cancelTouch() {
         mTouchPosition = -1;
         mTouchRect = null;
-        invalidate();
     }
 
     private void performTouch(MotionEvent motionEvent) {
@@ -271,7 +316,6 @@ public class MonthView extends View implements View.OnTouchListener {
                 break;
             }
         }
-        invalidate();
     }
 
     public interface OnDateClick {
