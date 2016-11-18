@@ -2,7 +2,10 @@ package com.elementary.tasks.navigation.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
+
+import com.elementary.tasks.R;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -52,6 +55,18 @@ public abstract class BaseNavigationFragment extends Fragment {
         super.onResume();
         if (mCallback != null) {
             mCallback.setClick(null);
+        }
+    }
+
+    protected void replaceFragment(Fragment fragment, String title) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.main_container, fragment, title);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.addToBackStack(title);
+        ft.commit();
+        if (mCallback != null) {
+            mCallback.onTitleChange(title);
+            mCallback.onFragmentSelect(fragment);
         }
     }
 }
