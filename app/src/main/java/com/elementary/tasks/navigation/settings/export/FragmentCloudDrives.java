@@ -24,11 +24,14 @@ import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.FragmentCloudDrivesBinding;
+import com.elementary.tasks.google_tasks.GetTaskListAsync;
+import com.elementary.tasks.google_tasks.TasksCallback;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -73,6 +76,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     private RoboTextView mGoogleDriveTitle, mDropboxTitle;
 
     private String mAccountName;
+    private ProgressDialog mDialog;
 
     @Nullable
     @Override
@@ -155,8 +159,8 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     private void disconnectFromGoogleServices() {
         mGoogleDrive.unlink();
         checkGoogleStatus();
-//        TasksHelper.getInstance(this).deleteTasks();
-//        TasksHelper.getInstance(this).deleteTaskLists();
+        RealmDb.getInstance().deleteTasks();
+        RealmDb.getInstance().deleteTaskLists();
     }
 
     @Override
@@ -315,6 +319,17 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void startSync(String accountName) {
         Prefs.getInstance(mContext).setDriveUser(SuperUtil.encrypt(accountName));
-//        new GetTasksListsAsync(CloudDrivesActivity.this, null).execute();
+        mDialog = ProgressDialog.show(mContext, null, getString(R.string.retrieving_tasks), false, true);
+        new GetTaskListAsync(mContext, new TasksCallback() {
+            @Override
+            public void onFailed() {
+                if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+            }
+
+            @Override
+            public void onComplete() {
+                if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+            }
+        }).execute();
     }
 }

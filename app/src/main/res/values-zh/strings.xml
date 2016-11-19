@@ -558,4 +558,8 @@
         <item>@string/november</item>
         <item>@string/december</item>
     </array>
+    <string name="retrieving_tasks">Retrieving tasks...</string>
+    <string name="saving">Saving...</string>
+    <string name="moving_task">Moving task...</string>
+    <string name="deleting_task">Deleting task...</string>
 </resources>

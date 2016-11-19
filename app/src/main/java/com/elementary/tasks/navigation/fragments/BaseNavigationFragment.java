@@ -55,6 +55,7 @@ public abstract class BaseNavigationFragment extends Fragment {
         super.onResume();
         if (mCallback != null) {
             mCallback.setClick(null);
+            mCallback.onThemeChange(0, 0, 0);
         }
     }
 

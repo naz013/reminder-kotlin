@@ -544,6 +544,10 @@
     <string name="once">Once</string>
     <string name="times">times</string>
     <string name="no_groups">No groups</string>
+    <string name="retrieving_tasks">Retrieving tasks...</string>
+    <string name="saving">Saving...</string>
+    <string name="moving_task">Moving task...</string>
+    <string name="deleting_task">Deleting task...</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

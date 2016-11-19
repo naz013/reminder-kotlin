@@ -50,6 +50,15 @@ public class ViewUtils {
         return new ColorStateList(states, colors);
     }
 
+    public static ColorStateList getFabState(@ColorInt int colorNormal, @ColorInt int colorPressed) {
+        int[][] states = {
+                new int[] {android.R.attr.state_pressed},
+                new int[] {android.R.attr.state_focused}, new int[] {}
+        };
+        int colors[] = {colorPressed, colorNormal, colorNormal};
+        return new ColorStateList(states, colors);
+    }
+
     public static Drawable getDrawable (Context context, @DrawableRes int resource){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             return context.getResources().getDrawable(resource, null);

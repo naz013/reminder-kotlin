@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
@@ -100,6 +103,16 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             showFab();
             binding.fab.setOnClickListener(listener);
         }
+    }
+
+    @Override
+    public void onThemeChange(@ColorInt int primary, @ColorInt int primaryDark, @ColorInt int accent) {
+        if (primary == 0) primary = themeUtil.getColor(themeUtil.colorPrimary());
+        if (primaryDark == 0) primaryDark = themeUtil.getColor(themeUtil.colorPrimaryDark());
+        if (accent == 0) accent = themeUtil.getColor(themeUtil.colorAccent());
+        toolbar.setBackgroundColor(primary);
+        if (Module.isLollipop()) getWindow().setStatusBarColor(primaryDark);
+        binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, primary));
     }
 
     private void initNavigation() {

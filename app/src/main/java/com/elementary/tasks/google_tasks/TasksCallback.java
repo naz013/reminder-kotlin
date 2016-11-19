@@ -1,7 +1,4 @@
-package com.elementary.tasks.navigation.fragments;
-
-import android.app.Fragment;
-import android.view.View;
+package com.elementary.tasks.google_tasks;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -19,10 +16,7 @@ import android.view.View;
  * limitations under the License.
  */
 
-public interface FragmentCallback {
-    void replaceFragment(Fragment fragment, String title);
-    void onTitleChange(String title);
-    void onFragmentSelect(Fragment fragment);
-    void setClick(View.OnClickListener listener);
-    void onThemeChange(int primary, int primaryDark, int accent);
+public interface TasksCallback {
+    void onFailed();
+    void onComplete();
 }
