@@ -413,7 +413,6 @@ public class TaskActivity extends ThemedActivity {
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
             deleteTask();
-            finish();
         });
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
