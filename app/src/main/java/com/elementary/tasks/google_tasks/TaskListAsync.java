@@ -31,7 +31,7 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
     private String title, listId, taskType;
     private int color;
 
-    public TaskListAsync(Context context, String title, int color, String listId, String taskType, TasksCallback mCallback){
+    public TaskListAsync(Context context, String title, int color, String listId, String taskType, TasksCallback mCallback) {
         this.mContext = context;
         this.title = title;
         this.color = color;
@@ -44,7 +44,7 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         GoogleTasks helper = new GoogleTasks(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
-        if (taskType.matches(TasksConstants.UPDATE_TASK_LIST)){
+        if (taskType.matches(TasksConstants.UPDATE_TASK_LIST)) {
             if (isConnected) {
                 try {
                     helper.updateTasksList(title, listId);
@@ -56,21 +56,21 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
             } else {
                 return false;
             }
-        } else if (taskType.matches(TasksConstants.INSERT_TASK_LIST)){
+        } else if (taskType.matches(TasksConstants.INSERT_TASK_LIST)) {
             if (isConnected) {
                 helper.insertTasksList(title, color);
                 return true;
             } else {
                 return false;
             }
-        } else if (taskType.matches(TasksConstants.DELETE_TASK_LIST)){
+        } else if (taskType.matches(TasksConstants.DELETE_TASK_LIST)) {
             if (isConnected) {
                 helper.deleteTaskList(listId);
                 return true;
             } else {
                 return false;
             }
-        } else if (taskType.matches(TasksConstants.CLEAR_TASK_LIST)){
+        } else if (taskType.matches(TasksConstants.CLEAR_TASK_LIST)) {
             if (isConnected) {
                 helper.clearTaskList(listId);
                 return true;

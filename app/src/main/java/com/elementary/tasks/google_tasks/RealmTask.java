@@ -39,7 +39,8 @@ public class RealmTask extends RealmObject {
     private String uuId;
     private int hidden;
 
-    public RealmTask() {}
+    public RealmTask() {
+    }
 
     public RealmTask(TaskItem item) {
         this.listId = item.getListId();

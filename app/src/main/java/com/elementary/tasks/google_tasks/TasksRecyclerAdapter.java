@@ -42,7 +42,7 @@ import java.util.Map;
  * limitations under the License.
  */
 
-public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.ViewHolder>  {
+public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.ViewHolder> {
 
     private List<TaskItem> mDataset;
     private Context mContext;
@@ -87,13 +87,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
         return mDataset.size();
     }
 
-    private void onItemClick(int position){
+    private void onItemClick(int position) {
         mContext.startActivity(new Intent(mContext, TaskActivity.class)
                 .putExtra(Constants.INTENT_ID, mDataset.get(position).getTaskId())
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT));
     }
 
-    private static void switchTask(Context context, boolean isDone, String listId, String taskId){
+    private static void switchTask(Context context, boolean isDone, String listId, String taskId) {
         RealmDb.getInstance().setStatus(taskId, isDone);
         new SwitchTaskAsync(context, listId, taskId, isDone, listener).execute();
     }
@@ -115,7 +115,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @BindingAdapter({"loadCheck"})
     public static void loadCheck(RoboCheckBox checkBox, TaskItem item) {
-        if (item.getStatus().matches(GoogleTasks.TASKS_COMPLETE)){
+        if (item.getStatus().matches(GoogleTasks.TASKS_COMPLETE)) {
             checkBox.setChecked(true);
         } else {
             checkBox.setChecked(false);

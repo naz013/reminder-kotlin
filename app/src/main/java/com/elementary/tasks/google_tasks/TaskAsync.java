@@ -32,7 +32,7 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
     private TasksCallback mCallback;
 
     public TaskAsync(Context context, String title, String listId, String taskId, String taskType,
-                     long time, String note, String oldList, TasksCallback callback){
+                     long time, String note, String oldList, TasksCallback callback) {
         this.mContext = context;
         this.title = title;
         this.time = time;
@@ -49,23 +49,23 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
         GoogleTasks helper = new GoogleTasks(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (isConnected) {
-            if (taskType.matches(TasksConstants.DELETE_TASK)){
+            if (taskType.matches(TasksConstants.DELETE_TASK)) {
                 try {
                     helper.deleteTask(listId, taskId);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (taskType.matches(TasksConstants.MOVE_TASK)){
+            } else if (taskType.matches(TasksConstants.MOVE_TASK)) {
                 return helper.moveTask(listId, taskId, oldList);
-            } else if (taskType.matches(TasksConstants.UPDATE_TASK)){
+            } else if (taskType.matches(TasksConstants.UPDATE_TASK)) {
                 try {
                     helper.updateTask(title, listId, taskId, note, time);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else if (taskType.matches(TasksConstants.INSERT_TASK)){
+            } else if (taskType.matches(TasksConstants.INSERT_TASK)) {
                 try {
                     return helper.insertTask(title, listId, time, note);
                 } catch (IOException e) {

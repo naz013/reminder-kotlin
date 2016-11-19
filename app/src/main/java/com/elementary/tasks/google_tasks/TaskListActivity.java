@@ -83,9 +83,9 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
         mItem = RealmDb.getInstance().getTaskList(id);
-        if (mItem != null){
+        if (mItem != null) {
             editField.setText(mItem.getTitle());
-            if (mItem.getDef() == 1){
+            if (mItem.getDef() == 1) {
                 defaultCheck.setChecked(true);
                 defaultCheck.setEnabled(false);
             }
@@ -109,7 +109,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         mItem.setTitle(listName);
         mItem.setColor(color);
         mItem.setUpdated(System.currentTimeMillis());
-        if (defaultCheck.isChecked()){
+        if (defaultCheck.isChecked()) {
             mItem.setDef(1);
             TaskListItem defList = RealmDb.getInstance().getDefaultTaskList();
             if (defList != null) {
@@ -161,7 +161,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
     }
 
     private void deleteList() {
-        if (mItem != null){
+        if (mItem != null) {
             String listId = mItem.getListId();
             int def = mItem.getDef();
             showProgressDialog(getString(R.string.deleting));
@@ -196,7 +196,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         return true;
     }
 
-    private void setColor(int i){
+    private void setColor(int i) {
         color = i;
         binding.appBar.setBackgroundColor(themeUtil.getNoteColor(i));
         if (Module.isLollipop()) {

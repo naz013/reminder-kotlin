@@ -18,5 +18,6 @@ package com.elementary.tasks.google_tasks;
 
 public interface TasksCallback {
     void onFailed();
+
     void onComplete();
 }

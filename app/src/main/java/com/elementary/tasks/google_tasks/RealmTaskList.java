@@ -32,7 +32,8 @@ public class RealmTaskList extends RealmObject {
     private int color;
     private int systemDefault;
 
-    public RealmTaskList() {}
+    public RealmTaskList() {
+    }
 
     public RealmTaskList(TaskListItem item) {
         setColor(item.getColor());

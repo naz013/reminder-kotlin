@@ -110,63 +110,75 @@ public class TaskActivity extends ThemedActivity {
         String tmp = intent.getStringExtra(Constants.INTENT_ID);
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION);
         if (action == null) action = TasksConstants.CREATE;
-        if (action.matches(TasksConstants.CREATE)){
-            binding.toolbar.setTitle(R.string.new_task);
-            if (tmp == null) {
-                TaskListItem listItem = RealmDb.getInstance().getDefaultTaskList();
-                if (listItem != null) {
-                    listId = listItem.getListId();
-                    listText.setText(listItem.getTitle());
-                    setColor(listItem.getColor());
-                }
-            } else {
-                TaskListItem listItem = RealmDb.getInstance().getTaskList(tmp);
-                if (listItem != null) {
-                    listId = listItem.getListId();
-                    listText.setText(listItem.getTitle());
-                    setColor(listItem.getColor());
-                }
-            }
+        if (action.matches(TasksConstants.CREATE)) {
+            initNewTask(tmp);
         } else {
-            binding.toolbar.setTitle(R.string.edit_task);
-            mItem = RealmDb.getInstance().getTask(tmp);
-            if (mItem != null) {
-                editField.setText(mItem.getTitle());
-                taskId = mItem.getTaskId();
-                listId = mItem.getListId();
-                String note = mItem.getNotes();
-                if (note != null) {
-                    noteField.setText(note);
-                    noteField.setSelection(noteField.getText().length());
-                }
-
-                long time = mItem.getDueDate();
-                if (time != 0) {
-                    calendar.setTimeInMillis(time);
-                    myHour = calendar.get(Calendar.HOUR_OF_DAY);
-                    myMinute = calendar.get(Calendar.MINUTE);
-                    myYear = calendar.get(Calendar.YEAR);
-                    myMonth = calendar.get(Calendar.MONTH);
-                    myDay = calendar.get(Calendar.DAY_OF_MONTH);
-                    isDate = true;
-                    dateField.setText(TimeUtil.getDate(calendar.getTime()));
-                }
-                TaskListItem listItem = RealmDb.getInstance().getTaskList(mItem.getListId());
-                if (listItem != null) {
-                    listText.setText(listItem.getTitle());
-                    setColor(listItem.getColor());
-                }
-//                ReminderItem item = ReminderHelper.getInstance(this).getReminder(remId);
-//                if (item != null){
-//                    long eventTime = item.getDateTime();
-//                    calendar.setTimeInMillis(eventTime);
-//                    timeField.setText(TimeUtil.getTime(calendar.getTime(),
-//                            SharedPrefs.getInstance(this).getBoolean(Prefs.IS_24_TIME_FORMAT)));
-//                    isReminder = true;
-//                }
-            }
+            initTaskEdit(tmp);
         }
         switchDate();
+    }
+
+    private void initTaskEdit(String id) {
+        binding.toolbar.setTitle(R.string.edit_task);
+        mItem = RealmDb.getInstance().getTask(id);
+        if (mItem != null) {
+            editField.setText(mItem.getTitle());
+            taskId = mItem.getTaskId();
+            listId = mItem.getListId();
+            String note = mItem.getNotes();
+            if (note != null) {
+                noteField.setText(note);
+                noteField.setSelection(noteField.getText().length());
+            }
+            long time = mItem.getDueDate();
+            if (time != 0) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(time);
+                myHour = calendar.get(Calendar.HOUR_OF_DAY);
+                myMinute = calendar.get(Calendar.MINUTE);
+                myYear = calendar.get(Calendar.YEAR);
+                myMonth = calendar.get(Calendar.MONTH);
+                myDay = calendar.get(Calendar.DAY_OF_MONTH);
+                isDate = true;
+                dateField.setText(TimeUtil.getDate(calendar.getTime()));
+            }
+            TaskListItem listItem = RealmDb.getInstance().getTaskList(mItem.getListId());
+            if (listItem != null) {
+                listText.setText(listItem.getTitle());
+                setColor(listItem.getColor());
+            }
+            showReminder();
+        }
+    }
+
+    private void showReminder() {
+//        ReminderItem item = ReminderHelper.getInstance(this).getReminder(remId);
+//        if (item != null){
+//            long eventTime = item.getDateTime();
+//            calendar.setTimeInMillis(eventTime);
+//            timeField.setText(TimeUtil.getTime(calendar.getTime(),
+//                    SharedPrefs.getInstance(this).getBoolean(Prefs.IS_24_TIME_FORMAT)));
+//            isReminder = true;
+//        }
+    }
+
+    private void initNewTask(String id) {
+        binding.toolbar.setTitle(R.string.new_task);
+        if (id == null) {
+            TaskListItem listItem = RealmDb.getInstance().getDefaultTaskList();
+            if (listItem != null) {
+                listId = listItem.getListId();
+                listText.setText(listItem.getTitle());
+                setColor(listItem.getColor());
+            }
+        } else {
+            TaskListItem listItem = RealmDb.getInstance().getTaskList(id);
+            if (listItem != null) {
+                listId = listItem.getListId();
+                listText.setText(listItem.getTitle());
+                setColor(listItem.getColor());
+            }
+        }
     }
 
     private void setIcons() {
@@ -174,7 +186,7 @@ public class TaskActivity extends ThemedActivity {
         ImageView dateIcon = binding.dateIcon;
         ImageView timeIcon = binding.timeIcon;
         ImageView listIcon = binding.listIcon;
-        if (themeUtil.isDark()){
+        if (themeUtil.isDark()) {
             noteIcon.setImageResource(R.drawable.ic_note_white);
             dateIcon.setImageResource(R.drawable.ic_calendar_white);
             timeIcon.setImageResource(R.drawable.ic_alarm_white);
@@ -212,25 +224,25 @@ public class TaskActivity extends ThemedActivity {
     private void selectDateAction(final int type) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] types = new String[]{getString(R.string.no_date), getString(R.string.select_date)};
-        if (type == 2){
+        if (type == 2) {
             types = new String[]{getString(R.string.no_reminder), getString(R.string.select_time)};
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_single_choice, types);
         int selection = 0;
-        if (type == 1){
+        if (type == 1) {
             if (isDate) selection = 1;
             else selection = 0;
         }
-        if (type == 2){
+        if (type == 2) {
             if (isReminder) selection = 1;
             else selection = 0;
         }
         builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> {
             if (which != -1) {
                 dialog.dismiss();
-                if (type == 1){
-                    switch (which){
+                if (type == 1) {
+                    switch (which) {
                         case 0:
                             isDate = false;
                             switchDate();
@@ -241,8 +253,8 @@ public class TaskActivity extends ThemedActivity {
                             break;
                     }
                 }
-                if (type == 2){
-                    switch (which){
+                if (type == 2) {
+                    switch (which) {
                         case 0:
                             isReminder = false;
                             switchDate();
@@ -384,7 +396,7 @@ public class TaskActivity extends ThemedActivity {
         }
     }
 
-    private void saveReminder(String task, String uuId){
+    private void saveReminder(String task, String uuId) {
         String categoryId = RealmDb.getInstance().getAllGroups().get(0).getUuId();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -409,7 +421,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void deleteTask() {
-        if (mItem != null){
+        if (mItem != null) {
             String taskId = mItem.getTaskId();
             showProgressDialog(getString(R.string.deleting_task));
             new TaskAsync(TaskActivity.this, null, mItem.getListId(), taskId, TasksConstants.DELETE_TASK,
@@ -429,7 +441,7 @@ public class TaskActivity extends ThemedActivity {
         }
     }
 
-    private void setColor(int i){
+    private void setColor(int i) {
         binding.appBar.setBackgroundColor(themeUtil.getNoteColor(i));
         if (Module.isLollipop()) {
             getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(i));
@@ -496,8 +508,7 @@ public class TaskActivity extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            timeField.setText(TimeUtil.getTime(c.getTime(),
-                    Prefs.getInstance(TaskActivity.this).is24HourFormatEnabled()));
+            timeField.setText(TimeUtil.getTime(c.getTime(), Prefs.getInstance(TaskActivity.this).is24HourFormatEnabled()));
         }
     };
 

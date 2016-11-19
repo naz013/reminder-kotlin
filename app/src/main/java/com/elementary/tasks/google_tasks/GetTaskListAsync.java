@@ -35,7 +35,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private TasksCallback mListener;
 
-    public GetTaskListAsync(Context context, TasksCallback listener){
+    public GetTaskListAsync(Context context, TasksCallback listener) {
         this.mContext = context;
         this.mListener = listener;
     }
@@ -49,11 +49,11 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (lists != null && lists.size() > 0){
-            for (TaskList item : lists.getItems()){
+        if (lists != null && lists.size() > 0) {
+            for (TaskList item : lists.getItems()) {
                 String listId = item.getId();
                 TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
-                if (taskList != null){
+                if (taskList != null) {
                     taskList.update(item);
                 } else {
                     Random r = new Random();
@@ -65,9 +65,9 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
                 RealmDb.getInstance().setDefault(listItem.getListId());
                 RealmDb.getInstance().setSystemDefault(listItem.getListId());
                 List<Task> tasks = helper.getTasks(listId);
-                for (Task task : tasks){
+                for (Task task : tasks) {
                     TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                    if (taskItem != null){
+                    if (taskItem != null) {
                         taskItem.update(task);
                         taskItem.setListId(task.getId());
                     } else {

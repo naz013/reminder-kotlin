@@ -85,7 +85,7 @@ public class GoogleTasks {
                     result = service.tasks().insert("@default", task).execute();
                 }
             }
-            if (result != null){
+            if (result != null) {
                 TaskItem taskItem = new TaskItem(result, listId);
                 RealmDb.getInstance().saveTask(taskItem);
                 return true;
