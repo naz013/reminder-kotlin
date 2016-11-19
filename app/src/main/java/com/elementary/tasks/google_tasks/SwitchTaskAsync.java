@@ -29,7 +29,7 @@ public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     private TasksCallback mListener;
     private boolean status;
 
-    public SwitchTaskAsync(Context context, String listId, String taskId, boolean status, TasksCallback listener){
+    public SwitchTaskAsync(Context context, String listId, String taskId, boolean status, TasksCallback listener) {
         this.mContext = context;
         this.listId = listId;
         this.taskId = taskId;

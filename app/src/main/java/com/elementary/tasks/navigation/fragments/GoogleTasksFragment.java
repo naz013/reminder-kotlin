@@ -106,7 +106,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
                 startActivity(new Intent(mContext, TaskListActivity.class));
                 return true;
             case MENU_ITEM_EDIT:
-                if (currentPos != 0){
+                if (currentPos != 0) {
                     startActivity(new Intent(mContext, TaskListActivity.class)
                             .putExtra(Constants.INTENT_ID, taskListDatum.get(currentPos).getTaskList().getListId()));
                 }
@@ -148,7 +148,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE));
     }
 
-    private void showDialog(){
+    private void showDialog() {
         final String[] items = {getString(R.string.default_string),
                 getString(R.string.by_date_az),
                 getString(R.string.by_date_za),
@@ -191,7 +191,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
 
     private void deleteList() {
         TaskListItem taskListItem = taskListDatum.get(currentPos).getTaskList();
-        if (taskListItem != null){
+        if (taskListItem != null) {
             String listId = taskListItem.getListId();
             int def = taskListItem.getDef();
             RealmDb.getInstance().deleteTaskList(taskListItem.getListId());
@@ -209,7 +209,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         List<TaskListItem> taskLists = getTaskLists();
         if (taskLists == null || taskLists.size() == 0) return;
         Map<String, Integer> colors = new HashMap<>();
-        for (int i = 0; i < taskLists.size(); i++){
+        for (int i = 0; i < taskLists.size(); i++) {
             TaskListItem item = taskLists.get(i);
             taskListDatum.add(new TaskListWrapperItem(item, getList(item.getListId()), i));
             if (i > 0) colors.put(item.getListId(), item.getColor());

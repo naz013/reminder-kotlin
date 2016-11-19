@@ -33,7 +33,7 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class TaskListFragment extends Fragment  {
+public class TaskListFragment extends Fragment {
 
     private RecyclerView currentList;
     private LinearLayout emptyItem;
@@ -51,7 +51,7 @@ public class TaskListFragment extends Fragment  {
         }
     };
 
-    public void setData(List<TaskItem> data, Map<String, Integer> colors){
+    public void setData(List<TaskItem> data, Map<String, Integer> colors) {
         this.data = data;
         this.colors = colors;
     }
@@ -73,7 +73,7 @@ public class TaskListFragment extends Fragment  {
         return binding.getRoot();
     }
 
-    public void loaderAdapter(){
+    public void loaderAdapter() {
         TasksRecyclerAdapter customAdapter = new TasksRecyclerAdapter(getActivity(), data, colors);
         customAdapter.setListener(mTasksCallback);
         currentList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -83,7 +83,7 @@ public class TaskListFragment extends Fragment  {
     }
 
     private void reloadView() {
-        if (data != null && data.size() > 0){
+        if (data != null && data.size() > 0) {
             currentList.setVisibility(View.VISIBLE);
             emptyItem.setVisibility(View.GONE);
         } else {

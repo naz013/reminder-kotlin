@@ -71,12 +71,12 @@ public class TaskItem {
         boolean isDeleted = false;
         try {
             isDeleted = task.getDeleted();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         boolean isHidden = false;
         try {
             isHidden = task.getHidden();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         this.selfLink = task.getSelfLink();
         this.kind = task.getKind();
@@ -113,12 +113,12 @@ public class TaskItem {
         boolean isDeleted = false;
         try {
             isDeleted = task.getDeleted();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         boolean isHidden = false;
         try {
             isHidden = task.getHidden();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         this.selfLink = task.getSelfLink();
         this.kind = task.getKind();

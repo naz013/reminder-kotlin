@@ -36,7 +36,7 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
     private Context mContext;
     private TasksCallback mListener;
 
-    public SyncGoogleTasksAsync(Context context, TasksCallback listener){
+    public SyncGoogleTasksAsync(Context context, TasksCallback listener) {
         Log.d(TAG, "SyncGoogleTasksAsync: ");
         this.mContext = context;
         this.mListener = listener;
@@ -51,11 +51,11 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (lists != null && lists.size() > 0){
-            for (TaskList item : lists.getItems()){
+        if (lists != null && lists.size() > 0) {
+            for (TaskList item : lists.getItems()) {
                 String listId = item.getId();
                 TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
-                if (taskList != null){
+                if (taskList != null) {
                     taskList.update(item);
                 } else {
                     Random r = new Random();
@@ -64,9 +64,9 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
                 }
                 RealmDb.getInstance().saveTaskList(taskList);
                 List<Task> tasks = helper.getTasks(listId);
-                for (Task task : tasks){
+                for (Task task : tasks) {
                     TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                    if (taskItem != null){
+                    if (taskItem != null) {
                         taskItem.setListId(listId);
                         taskItem.update(task);
                     } else {

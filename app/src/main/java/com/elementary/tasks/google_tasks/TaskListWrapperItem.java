@@ -25,21 +25,21 @@ public class TaskListWrapperItem {
     private int position;
 
     public TaskListWrapperItem(TaskListItem taskList, List<TaskItem> mData,
-                               int position){
+                               int position) {
         this.taskList = taskList;
         this.mData = new ArrayList<>(mData);
         this.position = position;
     }
 
-    public int getPosition(){
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(int position){
+    public void setPosition(int position) {
         this.position = position;
     }
 
-    public List<TaskItem> getmData(){
+    public List<TaskItem> getmData() {
         return mData;
     }
 
