@@ -796,6 +796,22 @@ public class Prefs extends SharedPrefs {
         putBoolean(NOTES_LIST_STYLE, value);
     }
 
+    public int getLastGoogleList() {
+        return getInt(LAST_LIST);
+    }
+
+    public void setLastGoogleList(int value) {
+        putInt(LAST_LIST, value);
+    }
+
+    public String getTasksOrder() {
+        return getString(TASKS_ORDER);
+    }
+
+    public void setTasksOrder(String value) {
+        putString(TASKS_ORDER, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
         if (!settingsUI.exists()) {

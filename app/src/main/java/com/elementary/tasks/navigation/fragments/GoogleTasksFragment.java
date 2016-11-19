@@ -1,5 +1,40 @@
 package com.elementary.tasks.navigation.fragments;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.databinding.FragmentGoogleTasksBinding;
+import com.elementary.tasks.google_tasks.SyncGoogleTasksAsync;
+import com.elementary.tasks.google_tasks.TaskActivity;
+import com.elementary.tasks.google_tasks.TaskItem;
+import com.elementary.tasks.google_tasks.TaskListActivity;
+import com.elementary.tasks.google_tasks.TaskListAsync;
+import com.elementary.tasks.google_tasks.TaskListItem;
+import com.elementary.tasks.google_tasks.TaskListWrapperItem;
+import com.elementary.tasks.google_tasks.TaskPagerAdapter;
+import com.elementary.tasks.google_tasks.TasksCallback;
+import com.elementary.tasks.google_tasks.TasksConstants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -18,4 +53,240 @@ package com.elementary.tasks.navigation.fragments;
 
 public class GoogleTasksFragment extends BaseNavigationFragment {
 
+    public static final int MENU_ITEM_EDIT = 12;
+    public static final int MENU_ITEM_DELETE = 13;
+    public static final int MENU_ITEM_CLEAR = 14;
+
+    private static final String TAG = "TasksFragment";
+    private ViewPager pager;
+    private ArrayList<TaskListWrapperItem> taskListDatum;
+    private int currentPos;
+    private TasksCallback mTasksCallback = new TasksCallback() {
+        @Override
+        public void onFailed() {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+    };
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.tasks_menu, menu);
+        if (currentPos != 0) {
+            menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list);
+            String listId = taskListDatum.get(currentPos).getTaskList().getListId();
+            TaskListItem listItem = RealmDb.getInstance().getTaskList(listId);
+            if (listItem != null) {
+                if (listItem.getDef() != 1) {
+                    menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete_list));
+                }
+            }
+            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sync:
+                new SyncGoogleTasksAsync(mContext, mTasksCallback).execute();
+                return true;
+            case R.id.action_add_list:
+                startActivity(new Intent(mContext, TaskListActivity.class));
+                return true;
+            case MENU_ITEM_EDIT:
+                if (currentPos != 0){
+                    startActivity(new Intent(mContext, TaskListActivity.class)
+                            .putExtra(Constants.INTENT_ID, taskListDatum.get(currentPos).getTaskList().getListId()));
+                }
+                return true;
+            case MENU_ITEM_DELETE:
+                deleteDialog();
+                return true;
+            case MENU_ITEM_CLEAR:
+                clearList();
+                return true;
+            case R.id.action_order:
+                showDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentGoogleTasksBinding binding = FragmentGoogleTasksBinding.inflate(inflater, container, false);
+        pager = binding.pager;
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.google_tasks));
+            mCallback.onFragmentSelect(this);
+            mCallback.setClick(view -> addNewTask());
+        }
+        loadData();
+    }
+
+    private void addNewTask() {
+        mContext.startActivity(new Intent(mContext, TaskActivity.class)
+                .putExtra(Constants.INTENT_ID, taskListDatum.get(currentPos).getTaskList().getListId())
+                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE));
+    }
+
+    private void showDialog(){
+        final String[] items = {getString(R.string.default_string),
+                getString(R.string.by_date_az),
+                getString(R.string.by_date_za),
+                getString(R.string.active_first),
+                getString(R.string.completed_first)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(getString(R.string.order));
+        builder.setItems(items, (dialog, which) -> {
+            Prefs prefs = Prefs.getInstance(mContext);
+            if (which == 0) {
+                prefs.setTasksOrder(Constants.ORDER_DEFAULT);
+            } else if (which == 1) {
+                prefs.setTasksOrder(Constants.ORDER_DATE_A_Z);
+            } else if (which == 2) {
+                prefs.setTasksOrder(Constants.ORDER_DATE_Z_A);
+            } else if (which == 3) {
+                prefs.setTasksOrder(Constants.ORDER_COMPLETED_Z_A);
+            } else if (which == 4) {
+                prefs.setTasksOrder(Constants.ORDER_COMPLETED_A_Z);
+            }
+            dialog.dismiss();
+            loadData();
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void deleteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setCancelable(true);
+        builder.setMessage(getString(R.string.delete_this_list));
+        builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
+            deleteList();
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteList() {
+        TaskListItem taskListItem = taskListDatum.get(currentPos).getTaskList();
+        if (taskListItem != null){
+            String listId = taskListItem.getListId();
+            int def = taskListItem.getDef();
+            RealmDb.getInstance().deleteTaskList(taskListItem.getListId());
+            RealmDb.getInstance().deleteTasks(listId);
+            new TaskListAsync(mContext, null, 0, listId, TasksConstants.DELETE_TASK_LIST, mTasksCallback).execute();
+            if (def == 1) {
+                TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
+                RealmDb.getInstance().setDefault(listItem.getListId());
+            }
+        }
+    }
+
+    private void loadData() {
+        taskListDatum = new ArrayList<>();
+        List<TaskListItem> taskLists = getTaskLists();
+        if (taskLists == null || taskLists.size() == 0) return;
+        Map<String, Integer> colors = new HashMap<>();
+        for (int i = 0; i < taskLists.size(); i++){
+            TaskListItem item = taskLists.get(i);
+            taskListDatum.add(new TaskListWrapperItem(item, getList(item.getListId()), i));
+            if (i > 0) colors.put(item.getListId(), item.getColor());
+        }
+        Log.d(TAG, "loadData: " + colors.toString());
+        int pos = Prefs.getInstance(mContext).getLastGoogleList();
+        final TaskPagerAdapter pagerAdapter = new TaskPagerAdapter(getFragmentManager(), taskListDatum, colors);
+        pager.setAdapter(pagerAdapter);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                updateScreen(i);
+                Prefs.getInstance(mContext).setLastGoogleList(i);
+                currentPos = i;
+                getActivity().invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+        pager.setCurrentItem(pos < taskListDatum.size() ? pos : 0);
+        updateScreen(pos);
+    }
+
+    private void updateScreen(int pos) {
+        if (mCallback != null) {
+            ThemeUtil mColor = ThemeUtil.getInstance(mContext);
+            if (pos == 0) {
+                mCallback.onTitleChange(getString(R.string.all));
+                mCallback.onThemeChange(ViewUtils.getColor(mContext, mColor.colorPrimary()),
+                        ViewUtils.getColor(mContext, mColor.colorPrimaryDark()),
+                        ViewUtils.getColor(mContext, mColor.colorAccent()));
+            } else {
+                TaskListItem taskList = taskListDatum.get(pos).getTaskList();
+                mCallback.onTitleChange(taskList.getTitle());
+                int tmp = taskList.getColor();
+                mCallback.onThemeChange(ViewUtils.getColor(mContext, mColor.colorPrimary(tmp)),
+                        ViewUtils.getColor(mContext, mColor.colorPrimaryDark(tmp)),
+                        ViewUtils.getColor(mContext, mColor.colorAccent(tmp)));
+            }
+        }
+    }
+
+    private ArrayList<TaskListItem> getTaskLists() {
+        ArrayList<TaskListItem> lists = new ArrayList<>();
+        TaskListItem zeroItem = new TaskListItem();
+        zeroItem.setTitle(getString(R.string.all));
+        zeroItem.setColor(25);
+        lists.add(zeroItem);
+        for (TaskListItem item : RealmDb.getInstance().getTaskLists()) lists.add(item);
+        return lists;
+    }
+
+    private List<TaskItem> getList(String listId) {
+        List<TaskItem> mData = new ArrayList<>();
+        Log.d(TAG, "getList: " + listId);
+        String orderPrefs = Prefs.getInstance(mContext).getTasksOrder();
+        if (listId == null) {
+            List<TaskItem> list = RealmDb.getInstance().getTasks(orderPrefs);
+            mData.addAll(list);
+        } else {
+            List<TaskItem> list = RealmDb.getInstance().getTasks(listId, orderPrefs);
+            mData.addAll(list);
+        }
+        return mData;
+    }
+
+    private void clearList() {
+        String listId = taskListDatum.get(currentPos).getTaskList().getListId();
+        RealmDb.getInstance().deleteCompletedTasks(listId);
+        new TaskListAsync(mContext, null, 0, listId, TasksConstants.CLEAR_TASK_LIST, mTasksCallback).execute();
+    }
 }

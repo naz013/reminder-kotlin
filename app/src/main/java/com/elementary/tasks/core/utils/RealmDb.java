@@ -1,5 +1,10 @@
 package com.elementary.tasks.core.utils;
 
+import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.google_tasks.RealmTask;
+import com.elementary.tasks.google_tasks.RealmTaskList;
+import com.elementary.tasks.google_tasks.TaskItem;
+import com.elementary.tasks.google_tasks.TaskListItem;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.RealmGroup;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
@@ -8,12 +13,12 @@ import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.RealmNote;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.RealmPlace;
-import com.google.android.gms.drive.query.SortOrder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -216,5 +221,209 @@ public class RealmDb {
         }
         realm.commitTransaction();
         return items;
+    }
+
+    public void saveTask(TaskItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmTask(item));
+        realm.commitTransaction();
+    }
+
+    public void deleteTask(TaskItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTask object = realm.where(RealmTask.class).equalTo("taskId", item.getTaskId()).findFirst();
+        object.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public TaskItem getTask(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTask object = realm.where(RealmTask.class).equalTo("taskId", id).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new TaskItem(object);
+    }
+
+    public List<TaskItem> getTasks(String orderPrefs) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String field = "position";
+        Sort order = Sort.ASCENDING;
+        if (orderPrefs != null) {
+            if (orderPrefs.matches(Constants.ORDER_DEFAULT)) {
+                field = "position";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_DATE_A_Z)) {
+                field = "dueDate";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_DATE_Z_A)) {
+                field = "dueDate";
+                order = Sort.DESCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_COMPLETED_A_Z)) {
+                field = "completeDate";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_COMPLETED_Z_A)) {
+                field = "completeDate";
+                order = Sort.DESCENDING;
+            }
+        }
+        List<RealmTask> list = realm.where(RealmTask.class).findAllSorted(field, order);
+        List<TaskItem> items = new ArrayList<>();
+        for (RealmTask object : list) {
+            items.add(new TaskItem(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<TaskItem> getTasks(String listId, String orderPrefs) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String field = "position";
+        Sort order = Sort.ASCENDING;
+        if (orderPrefs != null) {
+            if (orderPrefs.matches(Constants.ORDER_DEFAULT)) {
+                field = "position";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_DATE_A_Z)) {
+                field = "dueDate";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_DATE_Z_A)) {
+                field = "dueDate";
+                order = Sort.DESCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_COMPLETED_A_Z)) {
+                field = "completeDate";
+                order = Sort.ASCENDING;
+            } else if (orderPrefs.matches(Constants.ORDER_COMPLETED_Z_A)) {
+                field = "completeDate";
+                order = Sort.DESCENDING;
+            }
+        }
+        List<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).findAllSorted(field, order);
+        List<TaskItem> items = new ArrayList<>();
+        for (RealmTask object : list) {
+            items.add(new TaskItem(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public void deleteTasks(String listId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).findAll();
+            list.deleteAllFromRealm();
+        });
+    }
+
+    public void deleteTasks() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTask> list = realm.where(RealmTask.class).findAll();
+            list.deleteAllFromRealm();
+        });
+    }
+
+    public void deleteCompletedTasks(String listId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).equalTo("status", GoogleTasks.TASKS_COMPLETE).findAll();
+            list.deleteAllFromRealm();
+        });
+    }
+
+    public TaskListItem getTaskList(String listId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", listId).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new TaskListItem(object);
+    }
+
+    public TaskListItem getDefaultTaskList() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("def", 1).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new TaskListItem(object);
+    }
+
+    public List<TaskListItem> getTaskLists() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmTaskList> list = realm.where(RealmTaskList.class).findAll();
+        List<TaskListItem> items = new ArrayList<>();
+        for (RealmTaskList object : list) {
+            items.add(new TaskListItem(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public void deleteTaskLists() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(realm1 -> {
+            RealmResults<RealmTaskList> list = realm.where(RealmTaskList.class).findAll();
+            list.deleteAllFromRealm();
+        });
+    }
+
+    public boolean deleteTaskList(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
+        object.deleteFromRealm();
+        realm.commitTransaction();
+        return true;
+    }
+
+    public void saveTaskList(TaskListItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmTaskList(item));
+        realm.commitTransaction();
+    }
+
+    public void setDefault(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
+        object.setDef(1);
+        realm.commitTransaction();
+    }
+
+    public void setSystemDefault(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
+        object.setSystemDefault(1);
+        realm.commitTransaction();
+    }
+
+    public void setSimple(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
+        object.setDef(0);
+        realm.commitTransaction();
+    }
+
+    public void setStatus(String id, boolean status){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTask object = realm.where(RealmTask.class).equalTo("taskId", id).findFirst();
+        if (status) {
+            object.setStatus(GoogleTasks.TASKS_COMPLETE);
+            object.setCompleteDate(System.currentTimeMillis());
+        } else {
+            object.setStatus(GoogleTasks.TASKS_NEED_ACTION);
+            object.setCompleteDate(0);
+        }
+        realm.commitTransaction();
     }
 }
