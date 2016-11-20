@@ -353,41 +353,39 @@ public class TaskActivity extends ThemedActivity {
 //        if (action.matches(TasksConstants.CREATE)) {
 //            mItem = new TaskItem();
 //        }
-        String initListId = mItem.getListId();
-        mItem.setListId(listId);
-        mItem.setStatus(GoogleTasks.TASKS_NEED_ACTION);
-        mItem.setTitle(taskName);
-        mItem.setNotes(note);
-        mItem.setDueDate(due);
-        if (action.matches(TasksConstants.EDIT)) {
-            if (mItem != null) {
-                if (listId != null) {
-                    showProgressDialog(getString(R.string.saving));
-                    RealmDb.getInstance().saveTask(mItem);
-                    long finalDue = due;
-                    new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
-                            due, note, null, new TasksCallback() {
-                        @Override
-                        public void onFailed() {
+        if (action.matches(TasksConstants.EDIT) && mItem != null) {
+            String initListId = mItem.getListId();
+            mItem.setListId(listId);
+            mItem.setStatus(GoogleTasks.TASKS_NEED_ACTION);
+            mItem.setTitle(taskName);
+            mItem.setNotes(note);
+            mItem.setDueDate(due);
+            if (listId != null) {
+                showProgressDialog(getString(R.string.saving));
+                RealmDb.getInstance().saveTask(mItem);
+                long finalDue = due;
+                new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
+                        due, note, null, new TasksCallback() {
+                    @Override
+                    public void onFailed() {
+                        hideDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (!listId.matches(initListId)) {
+                            new TaskAsync(TaskActivity.this, taskName, listId, taskId, TasksConstants.MOVE_TASK,
+                                    finalDue, note, initListId, mSimpleCallback).execute();
+                        } else {
                             hideDialog();
                         }
-
-                        @Override
-                        public void onComplete() {
-                            if (!listId.matches(initListId)) {
-                                new TaskAsync(TaskActivity.this, taskName, listId, taskId, TasksConstants.MOVE_TASK,
-                                        finalDue, note, initListId, mSimpleCallback).execute();
-                            } else {
-                                hideDialog();
-                            }
-                        }
-                    }).execute();
-                } else {
-                    showProgressDialog(getString(R.string.saving));
-                    RealmDb.getInstance().saveTask(mItem);
-                    new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
-                            due, note, null, mSimpleCallback).execute();
-                }
+                    }
+                }).execute();
+            } else {
+                showProgressDialog(getString(R.string.saving));
+                RealmDb.getInstance().saveTask(mItem);
+                new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
+                        due, note, null, mSimpleCallback).execute();
             }
         } else {
             showProgressDialog(getString(R.string.saving));
