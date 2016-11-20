@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,13 +26,14 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
@@ -41,14 +44,19 @@ import com.elementary.tasks.creators.fragments.TypeFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
+import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.models.Reminder;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CreateReminderActivity extends ThemedActivity implements ReminderInterface {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
+    private static final String TAG = "CreateReminderActivity";
 
     private ActivityCreateReminderBinding mBinding;
     private Toolbar toolbar;
@@ -67,6 +75,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private int repeatLimit = -1;
     private int volume;
     private String groupId;
+    private String melodyPath;
     private int ledColor = -1;
 
     private Reminder mReminder;
@@ -93,6 +102,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String id = getIntent().getStringExtra(Constants.INTENT_ID);
+        mReminder = RealmDb.getInstance().getReminder(id);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
         initActionBar();
         initNavigation();
@@ -128,10 +139,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             if (Module.isPro())
                 navSpinner.add(new SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker));
         }
-
         TitleNavigationAdapter adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(mOnTypeSelectListener);
+        spinner.setSelection(0);
     }
 
     private void initActionBar() {
@@ -151,7 +162,21 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void changeGroup() {
-
+        List<GroupItem> list = new ArrayList<>();
+        Position position = new Position();
+        final List<String> categories = RealmDb.getInstance().getAllGroupsNames(list, groupId, position);
+        Log.d(TAG, "selectCategory: " + position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choose_group);
+        builder.setSingleChoiceItems(new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_single_choice, categories), position.i, (dialog, which) -> {
+            dialog.dismiss();
+            GroupItem item = list.get(which);
+            mBinding.groupButton.setText(item.getTitle());
+            groupId = item.getUuId();
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void openCustomizationDialog() {
@@ -244,7 +269,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void deleteReminder() {
-
+        if (mReminder != null) {
+            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+            finish();
+        }
     }
 
     private void selectVolume() {
@@ -271,7 +299,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         b.seekBar.setProgress(volume);
         b.titleView.setText(String.valueOf(volume));
         builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> this.volume = b.seekBar.getProgress());
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            volume = b.seekBar.getProgress();
+            String str = String.format(getString(R.string.selected_loudness_x_for_reminder), String.valueOf(volume));
+            showSnackbar(str, getString(R.string.cancel), v -> volume = -1);
+        });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
@@ -289,6 +321,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         builder.setSingleChoiceItems(adapter, ledColor, (dialog, which) -> {
             if (which != -1) {
                 ledColor = which;
+                String selColor = LED.getTitle(this, which);
+                String str = String.format(getString(R.string.led_color_x), selColor);
+                showSnackbar(str, getString(R.string.cancel), v -> ledColor = -1);
                 dialog.dismiss();
             }
         });
@@ -302,7 +337,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void save() {
         fragment.save();
-        finish();
+//        finish();
     }
 
     @Override
@@ -329,7 +364,35 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 taskField.setText(text);
             }
         }
+        if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == RESULT_OK) {
+            melodyPath = data.getStringExtra(Constants.FILE_PICKED);
+            if (melodyPath != null) {
+                File musicFile = new File(melodyPath);
+                showSnackbar(String.format(getString(R.string.melody_x), musicFile.getName()),
+                        getString(R.string.cancel), v -> melodyPath = null);
+            }
+        }
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public String getMelodyPath() {
+        return melodyPath;
+    }
+
+    @Override
+    public void showSnackbar(String title, String actionName, View.OnClickListener listener) {
+        Snackbar.make(mBinding.mainContainer, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show();
+    }
+
+    @Override
+    public void showSnackbar(String title) {
+        Snackbar.make(mBinding.mainContainer, title, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public String getSummary() {
+        return taskField.getText().toString().trim();
     }
 
     @Override

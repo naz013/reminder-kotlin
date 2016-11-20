@@ -34,6 +34,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -41,6 +42,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 public class SuperUtil {
+
+    public static void selectContact(final Activity activity, final int requestCode){
+        activity.startActivityForResult(new Intent(activity, ContactsActivity.class), requestCode);
+    }
 
     public static String getAddress(double currentLat, double currentLong){
         return String.format(Locale.getDefault(), "%.5f, %.5f", currentLat, currentLong);

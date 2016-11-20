@@ -147,6 +147,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.darwinsys:hirondelle-date4j:1.5.1'
     compile 'com.flaviofaria:kenburnsview:1.0.7'
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
     compile project(':photoPreview')
     compile project(':simpleai')
 }

@@ -1,5 +1,7 @@
 package com.elementary.tasks.creators.fragments;
 
+import android.view.View;
+
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -35,4 +37,8 @@ public interface ReminderInterface {
     void setEventHint(String hint);
     boolean isExportToCalendar();
     boolean isExportToTasks();
+    String getSummary();
+    String getMelodyPath();
+    void showSnackbar(String title);
+    void showSnackbar(String title, String actionName, View.OnClickListener listener);
 }
