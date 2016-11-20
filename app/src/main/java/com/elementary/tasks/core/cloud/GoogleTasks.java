@@ -67,14 +67,15 @@ public class GoogleTasks {
         return SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser()).matches(".*@.*");
     }
 
-    public boolean insertTask(String taskTitle, String listId, long time, String note) throws IOException {
+    public boolean insertTask(TaskItem item) throws IOException {
         if (isLinked()) {
             authorize();
             Task task = new Task();
-            task.setTitle(taskTitle);
-            if (note != null) task.setNotes(note);
-            if (time != 0) task.setDue(new DateTime(time));
+            task.setTitle(item.getTitle());
+            if (item.getNotes() != null) task.setNotes(item.getNotes());
+            if (item.getDueDate() != 0) task.setDue(new DateTime(item.getDueDate()));
             Task result;
+            String listId = item.getListId();
             if (listId != null && !listId.matches("")) {
                 result = service.tasks().insert(listId, task).execute();
             } else {
@@ -86,8 +87,8 @@ public class GoogleTasks {
                 }
             }
             if (result != null) {
-                TaskItem taskItem = new TaskItem(result, listId);
-                RealmDb.getInstance().saveTask(taskItem);
+                item.update(result);
+                RealmDb.getInstance().saveTask(item);
                 return true;
             }
         }
@@ -107,24 +108,24 @@ public class GoogleTasks {
         }
     }
 
-    public void deleteTask(String listId, String taskId) throws IOException {
-        if (isLinked() && taskId != null && listId != null) {
+    public void deleteTask(TaskItem item) throws IOException {
+        if (isLinked() && item != null) {
             authorize();
-            service.tasks().delete(listId, taskId).execute();
+            service.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
     }
 
-    public void updateTask(String text, String listId, String taskId, String note, long time) throws IOException {
-        if (isLinked() && taskId != null && listId != null) {
+    public void updateTask(TaskItem item) throws IOException {
+        if (isLinked() && item != null) {
             authorize();
-            Task task = service.tasks().get(listId, taskId).execute();
+            Task task = service.tasks().get(item.getListId(), item.getTaskId()).execute();
             task.setStatus(TASKS_NEED_ACTION);
-            task.setTitle(text);
+            task.setTitle(item.getTitle());
             task.setCompleted(Data.NULL_DATE_TIME);
-            if (time != 0) task.setDue(new DateTime(time));
-            if (note != null) task.setNotes(note);
+            if (item.getDueDate() != 0) task.setDue(new DateTime(item.getDueDate()));
+            if (item.getNotes() != null) task.setNotes(item.getNotes());
             task.setUpdated(new DateTime(System.currentTimeMillis()));
-            service.tasks().update(listId, task.getId(), task).execute();
+            service.tasks().update(item.getListId(), task.getId(), task).execute();
         }
     }
 
@@ -199,16 +200,16 @@ public class GoogleTasks {
         }
     }
 
-    public boolean moveTask(String listId, String taskId, String oldList) {
+    public boolean moveTask(TaskItem item, String oldList) {
         if (isLinked()) {
             authorize();
             try {
-                Task task = service.tasks().get(oldList, taskId).execute();
+                Task task = service.tasks().get(oldList, item.getTaskId()).execute();
                 if (task != null) {
-                    deleteTask(oldList, taskId);
-                    DateTime dateTime = task.getDue();
-                    long time = dateTime != null ? dateTime.getValue() : 0;
-                    return insertTask(task.getTitle(), listId, time, task.getNotes());
+                    TaskItem clone = new TaskItem(item);
+                    clone.setListId(oldList);
+                    deleteTask(clone);
+                    return insertTask(item);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

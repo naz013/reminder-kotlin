@@ -281,8 +281,7 @@ public class TaskActivity extends ThemedActivity {
         if (!listId.matches(initListId)) {
             mItem.setListId(listId);
             showProgressDialog(getString(R.string.moving_task));
-            new TaskAsync(TaskActivity.this, null, listId, taskId, TasksConstants.MOVE_TASK,
-                    0, null, initListId, new TasksCallback() {
+            new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, new TasksCallback() {
                 @Override
                 public void onFailed() {
                     hideDialog();
@@ -350,9 +349,6 @@ public class TaskActivity extends ThemedActivity {
         if (isDate) due = calendar.getTimeInMillis();
 //        long remId = 0;
 //        if (isReminder) remId = saveReminder(taskName);
-//        if (action.matches(TasksConstants.CREATE)) {
-//            mItem = new TaskItem();
-//        }
         if (action.matches(TasksConstants.EDIT) && mItem != null) {
             String initListId = mItem.getListId();
             mItem.setListId(listId);
@@ -363,9 +359,7 @@ public class TaskActivity extends ThemedActivity {
             if (listId != null) {
                 showProgressDialog(getString(R.string.saving));
                 RealmDb.getInstance().saveTask(mItem);
-                long finalDue = due;
-                new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
-                        due, note, null, new TasksCallback() {
+                new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, new TasksCallback() {
                     @Override
                     public void onFailed() {
                         hideDialog();
@@ -374,8 +368,7 @@ public class TaskActivity extends ThemedActivity {
                     @Override
                     public void onComplete() {
                         if (!listId.matches(initListId)) {
-                            new TaskAsync(TaskActivity.this, taskName, listId, taskId, TasksConstants.MOVE_TASK,
-                                    finalDue, note, initListId, mSimpleCallback).execute();
+                            new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, mSimpleCallback).execute();
                         } else {
                             hideDialog();
                         }
@@ -384,13 +377,17 @@ public class TaskActivity extends ThemedActivity {
             } else {
                 showProgressDialog(getString(R.string.saving));
                 RealmDb.getInstance().saveTask(mItem);
-                new TaskAsync(TaskActivity.this, taskName, initListId, taskId, TasksConstants.UPDATE_TASK,
-                        due, note, null, mSimpleCallback).execute();
+                new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, mSimpleCallback).execute();
             }
         } else {
+            mItem = new TaskItem();
+            mItem.setListId(listId);
+            mItem.setStatus(GoogleTasks.TASKS_NEED_ACTION);
+            mItem.setTitle(taskName);
+            mItem.setNotes(note);
+            mItem.setDueDate(due);
             showProgressDialog(getString(R.string.saving));
-            new TaskAsync(TaskActivity.this, taskName, listId, null, TasksConstants.INSERT_TASK,
-                    due, note, null, mSimpleCallback).execute();
+            new TaskAsync(TaskActivity.this, TasksConstants.INSERT_TASK, null, mItem, mSimpleCallback).execute();
         }
     }
 
@@ -419,10 +416,8 @@ public class TaskActivity extends ThemedActivity {
 
     private void deleteTask() {
         if (mItem != null) {
-            String taskId = mItem.getTaskId();
             showProgressDialog(getString(R.string.deleting_task));
-            new TaskAsync(TaskActivity.this, null, mItem.getListId(), taskId, TasksConstants.DELETE_TASK,
-                    0, null, null, new TasksCallback() {
+            new TaskAsync(TaskActivity.this, TasksConstants.DELETE_TASK, null, mItem, new TasksCallback() {
                 @Override
                 public void onFailed() {
                     hideDialog();

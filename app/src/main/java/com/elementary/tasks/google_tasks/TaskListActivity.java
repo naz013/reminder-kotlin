@@ -118,10 +118,10 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
             }
         }
         showProgressDialog(getString(R.string.saving));
-        RealmDb.getInstance().saveTaskList(mItem);
         if (isNew) {
             new TaskListAsync(TaskListActivity.this, listName, mItem.getColor(), null, TasksConstants.INSERT_TASK_LIST, mSaveCallback).execute();
         } else {
+            RealmDb.getInstance().saveTaskList(mItem);
             new TaskListAsync(TaskListActivity.this, listName, mItem.getColor(), mItem.getListId(), TasksConstants.UPDATE_TASK_LIST, mSaveCallback).execute();
         }
     }
