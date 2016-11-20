@@ -548,6 +548,7 @@
     <string name="saving">Saving...</string>
     <string name="moving_task">Moving task...</string>
     <string name="deleting_task">Deleting task...</string>
+    <string name="deleting_list">Deleting list...</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

@@ -161,6 +161,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
         checkGoogleStatus();
         RealmDb.getInstance().deleteTasks();
         RealmDb.getInstance().deleteTaskLists();
+        if (mCallback != null) mCallback.refreshMenu();
     }
 
     @Override
@@ -319,6 +320,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void startSync(String accountName) {
         Prefs.getInstance(mContext).setDriveUser(SuperUtil.encrypt(accountName));
+        if (mCallback != null) mCallback.refreshMenu();
         mDialog = ProgressDialog.show(mContext, null, getString(R.string.retrieving_tasks), false, true);
         new GetTaskListAsync(mContext, new TasksCallback() {
             @Override

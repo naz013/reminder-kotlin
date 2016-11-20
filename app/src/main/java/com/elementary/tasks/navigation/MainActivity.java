@@ -12,12 +12,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -115,6 +117,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, primary));
     }
 
+    @Override
+    public void refreshMenu() {
+        setMenuVisible();
+    }
+
     private void initNavigation() {
         DrawerLayout drawer = binding.drawerLayout;
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
@@ -122,6 +129,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         toggle.syncState();
         mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
+        setMenuVisible();
+    }
+
+    private void setMenuVisible() {
+        Menu menu = mNavigationView.getMenu();
+        menu.getItem(4).setVisible(new GoogleTasks(this).isLinked());
     }
 
     @Override

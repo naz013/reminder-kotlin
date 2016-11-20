@@ -27,19 +27,14 @@ import java.io.IOException;
 public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
-    private String title, listId, taskId, taskType, note, oldList;
-    private long time;
+    private String taskType, oldList;
+    private TaskItem mItem;
     private TasksCallback mCallback;
 
-    public TaskAsync(Context context, String title, String listId, String taskId, String taskType,
-                     long time, String note, String oldList, TasksCallback callback) {
+    public TaskAsync(Context context, String taskType, String oldList, TaskItem item, TasksCallback callback) {
         this.mContext = context;
-        this.title = title;
-        this.time = time;
-        this.listId = listId;
-        this.taskId = taskId;
+        this.mItem = item;
         this.taskType = taskType;
-        this.note = note;
         this.oldList = oldList;
         this.mCallback = callback;
     }
@@ -51,23 +46,23 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
         if (isConnected) {
             if (taskType.matches(TasksConstants.DELETE_TASK)) {
                 try {
-                    helper.deleteTask(listId, taskId);
+                    helper.deleteTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.MOVE_TASK)) {
-                return helper.moveTask(listId, taskId, oldList);
+                return helper.moveTask(mItem, oldList);
             } else if (taskType.matches(TasksConstants.UPDATE_TASK)) {
                 try {
-                    helper.updateTask(title, listId, taskId, note, time);
+                    helper.updateTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.INSERT_TASK)) {
                 try {
-                    return helper.insertTask(title, listId, time, note);
+                    return helper.insertTask(mItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

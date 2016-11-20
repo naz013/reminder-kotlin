@@ -40,6 +40,8 @@ public class TaskItem {
     private String uuId;
     private int hidden;
 
+    public TaskItem() {}
+
     public TaskItem(RealmTask item) {
         this.listId = item.getListId();
         this.selfLink = item.getSelfLink();
@@ -56,11 +58,30 @@ public class TaskItem {
         this.position = item.getPosition();
         this.updateDate = item.getUpdateDate();
         this.status = item.getStatus();
+        this.uuId = item.getUuId();
+    }
+
+    public TaskItem(TaskItem item) {
+        this.listId = item.getListId();
+        this.selfLink = item.getSelfLink();
+        this.kind = item.getKind();
+        this.eTag = item.geteTag();
+        this.title = item.getTitle();
+        this.taskId = item.getTaskId();
+        this.completeDate = item.getCompleteDate();
+        this.del = item.getDel();
+        this.hidden = item.getHidden();
+        this.dueDate = item.getDueDate();
+        this.notes = item.getNotes();
+        this.parent = item.getParent();
+        this.position = item.getPosition();
+        this.updateDate = item.getUpdateDate();
+        this.status = item.getStatus();
+        this.uuId = item.getUuId();
     }
 
     public TaskItem(Task task, String listId) {
         this.listId = listId;
-        this.uuId = UUID.randomUUID().toString();
         DateTime dueDate = task.getDue();
         long due = dueDate != null ? dueDate.getValue() : 0;
         DateTime completeDate = task.getCompleted();
@@ -236,8 +257,9 @@ public class TaskItem {
         return listId;
     }
 
-    public void setListId(String listId) {
+    public TaskItem setListId(String listId) {
         this.listId = listId;
+        return this;
     }
 
     public String getStatus() {

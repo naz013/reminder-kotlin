@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -61,6 +62,8 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     private ViewPager pager;
     private ArrayList<TaskListWrapperItem> taskListDatum;
     private int currentPos;
+    private ProgressDialog mDialog;
+
     private TasksCallback mTasksCallback = new TasksCallback() {
         @Override
         public void onFailed() {
@@ -131,6 +134,16 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         return binding.getRoot();
     }
 
+    private void showProgressDialog(String title) {
+        mDialog = ProgressDialog.show(mContext, null, title, true, false);
+    }
+
+    private void hideDialog() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -193,21 +206,35 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         TaskListItem taskListItem = taskListDatum.get(currentPos).getTaskList();
         if (taskListItem != null) {
             String listId = taskListItem.getListId();
-            int def = taskListItem.getDef();
-            RealmDb.getInstance().deleteTaskList(taskListItem.getListId());
-            RealmDb.getInstance().deleteTasks(listId);
-            new TaskListAsync(mContext, null, 0, listId, TasksConstants.DELETE_TASK_LIST, mTasksCallback).execute();
-            if (def == 1) {
-                TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
-                RealmDb.getInstance().setDefault(listItem.getListId());
-            }
+            showProgressDialog(getString(R.string.deleting_list));
+            new TaskListAsync(mContext, null, 0, listId, TasksConstants.DELETE_TASK_LIST, new TasksCallback() {
+                @Override
+                public void onFailed() {
+                    hideDialog();
+                }
+
+                @Override
+                public void onComplete() {
+                    RealmDb.getInstance().deleteTaskList(taskListItem.getListId());
+                    RealmDb.getInstance().deleteTasks(listId);
+                    int def = taskListItem.getDef();
+                    if (def == 1) {
+                        TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
+                        RealmDb.getInstance().setDefault(listItem.getListId());
+                    }
+                    Prefs.getInstance(mContext).setLastGoogleList(0);
+                    hideDialog();
+                    loadData();
+                }
+            }).execute();
         }
     }
 
     private void loadData() {
         taskListDatum = new ArrayList<>();
         List<TaskListItem> taskLists = getTaskLists();
-        if (taskLists == null || taskLists.size() == 0) return;
+        Log.d(TAG, "loadData: " + taskLists.size());
+        if (taskLists.size() == 0) return;
         Map<String, Integer> colors = new HashMap<>();
         for (int i = 0; i < taskLists.size(); i++) {
             TaskListItem item = taskLists.get(i);
@@ -238,7 +265,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
             }
         });
         pager.setCurrentItem(pos < taskListDatum.size() ? pos : 0);
-        updateScreen(pos);
+        updateScreen(pos < taskListDatum.size() ? pos : 0);
     }
 
     private void updateScreen(int pos) {
@@ -260,13 +287,13 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         }
     }
 
-    private ArrayList<TaskListItem> getTaskLists() {
+    private List<TaskListItem> getTaskLists() {
         ArrayList<TaskListItem> lists = new ArrayList<>();
         TaskListItem zeroItem = new TaskListItem();
         zeroItem.setTitle(getString(R.string.all));
         zeroItem.setColor(25);
         lists.add(zeroItem);
-        for (TaskListItem item : RealmDb.getInstance().getTaskLists()) lists.add(item);
+        lists.addAll(RealmDb.getInstance().getTaskLists());
         return lists;
     }
 

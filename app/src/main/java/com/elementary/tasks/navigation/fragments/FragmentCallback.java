@@ -25,4 +25,5 @@ public interface FragmentCallback {
     void onFragmentSelect(Fragment fragment);
     void setClick(View.OnClickListener listener);
     void onThemeChange(int primary, int primaryDark, int accent);
+    void refreshMenu();
 }
