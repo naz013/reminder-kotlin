@@ -16,17 +16,23 @@
 
 package com.elementary.tasks.reminder.models;
 
-public class Place {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class RealmPlace2 extends RealmObject {
 
     private int radius;
     private int marker;
     private double latitude;
     private double longitude;
     private String name;
+    @PrimaryKey
     private String id;
     private String address;
 
-    public Place(RealmPlace2 item) {
+    public RealmPlace2() {}
+
+    public RealmPlace2(Place item) {
         this.radius = item.getRadius();
         this.marker = item.getMarker();
         this.latitude = item.getLatitude();
@@ -34,16 +40,6 @@ public class Place {
         this.name = item.getName();
         this.id = item.getId();
         this.address = item.getAddress();
-    }
-
-    public Place(int radius, int marker, double latitude, double longitude, String name, String id, String address) {
-        this.radius = radius;
-        this.marker = marker;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.name = name;
-        this.id = id;
-        this.address = address;
     }
 
     public int getRadius() {
@@ -100,15 +96,5 @@ public class Place {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    @Override
-    public String toString(){
-        return "Place->Name: " + name +
-                "->Address: " + address +
-                "->Id: " + id +
-                "->radius: " + radius +
-                "->longitude: " + longitude +
-                "->latitude: " + latitude;
     }
 }

@@ -55,6 +55,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     private int year;
     private int hour;
     private int minute;
+    private int repeat;
 
     public RepeatView(Context context) {
         super(context);
@@ -199,8 +200,13 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         updatePrediction((int) progress);
     }
 
+    public int getRepeat() {
+        return repeat;
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        this.repeat = progress;
         repeatTitle.setText(String.valueOf(progress));
         if (listener != null){
             listener.onProgress(progress);

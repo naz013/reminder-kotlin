@@ -6,6 +6,7 @@ import com.elementary.tasks.google_tasks.RealmTaskList;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TaskListItem;
 import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.groups.RealmGroup;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
@@ -13,6 +14,8 @@ import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.RealmNote;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.RealmPlace;
+import com.elementary.tasks.reminder.models.RealmReminder;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +129,26 @@ public class RealmDb {
         }
         realm.commitTransaction();
         return items;
+    }
+
+    public List<String> getAllGroupsNames(List<GroupItem> items, String uuId, Position p) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmGroup> list = realm.where(RealmGroup.class).findAll();
+        for (RealmGroup object : list) {
+            items.add(new GroupItem(object));
+        }
+        if (uuId == null) uuId = "";
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            GroupItem item = items.get(i);
+            names.add(item.getTitle());
+            if (item.getUuId().matches(uuId)) {
+                p.i = i;
+            }
+        }
+        realm.commitTransaction();
+        return names;
     }
 
     public void savePlace(PlaceItem item) {
@@ -424,6 +447,31 @@ public class RealmDb {
             object.setStatus(GoogleTasks.TASKS_NEED_ACTION);
             object.setCompleteDate(0);
         }
+        realm.commitTransaction();
+    }
+
+    public Reminder getReminder(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new Reminder(object);
+    }
+
+    public boolean deleteReminder(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
+        object.deleteFromRealm();
+        realm.commitTransaction();
+        return true;
+    }
+
+    public void saveReminder(Reminder item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmReminder(item));
         realm.commitTransaction();
     }
 }

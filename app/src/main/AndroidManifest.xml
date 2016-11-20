@@ -65,6 +65,7 @@
         <activity android:name=".notes.NotePreviewActivity" />
         <activity android:name=".google_tasks.TaskListActivity" />
         <activity android:name=".google_tasks.TaskActivity" />
+        <activity android:name=".core.contacts.ContactsActivity" />
 
         <activity
             android:name=".core.SplashScreen"

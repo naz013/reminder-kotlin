@@ -78,8 +78,7 @@ public class ActionView extends LinearLayout {
         numberView = (RoboEditText) findViewById(R.id.numberView);
         numberView.setFocusableInTouchMode(true);
         numberView.setOnFocusChangeListener((v, hasFocus) -> {
-            imm = (InputMethodManager) mContext.getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
+            imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (!hasFocus) {
                 imm.hideSoftInputFromWindow(numberView.getWindowToken(), 0);
             } else {
@@ -87,8 +86,7 @@ public class ActionView extends LinearLayout {
             }
         });
         numberView.setOnClickListener(v -> {
-            imm = (InputMethodManager) mContext.getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
+            imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (!imm.isActive(numberView)){
                 imm.showSoftInput(numberView, 0);
             }

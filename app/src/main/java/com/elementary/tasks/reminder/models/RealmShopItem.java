@@ -16,36 +16,27 @@
 
 package com.elementary.tasks.reminder.models;
 
-import com.elementary.tasks.core.utils.TimeUtil;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-import java.util.UUID;
-
-public class ShopItem {
+public class RealmShopItem extends RealmObject {
 
     private String summary;
     private boolean visibility;
     private boolean checked;
+    @PrimaryKey
     private String uuId;
     private String createTime;
 
-    public ShopItem() {
-        this.uuId = UUID.randomUUID().toString();
+    public RealmShopItem() {
     }
 
-    public ShopItem(RealmShopItem item) {
+    public RealmShopItem(ShopItem item) {
         this.summary = item.getSummary();
         this.visibility = item.isVisibility();
         this.checked = item.isChecked();
         this.uuId = item.getUuId();
         this.createTime = item.getCreateTime();
-    }
-
-    public ShopItem(String summary, boolean visibility, boolean checked, String uuId, String createTime) {
-        this.summary = summary;
-        this.visibility = visibility;
-        this.checked = checked;
-        this.uuId = uuId;
-        this.createTime = createTime;
     }
 
     public String getSummary() {
@@ -86,14 +77,5 @@ public class ShopItem {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    @Override
-    public String toString(){
-        return "Shopping->Summary: " + summary +
-                "->Date: " + TimeUtil.getFullDateTime(createTime, true) +
-                "->UUID: " + uuId +
-                "->Status: " + checked +
-                "->Deleted: " + visibility;
     }
 }

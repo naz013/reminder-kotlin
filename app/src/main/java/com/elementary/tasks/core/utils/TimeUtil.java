@@ -104,6 +104,23 @@ public class TimeUtil {
         return gmtDateFormat.format(new Date());
     }
 
+    public static String getGmtFromDateTime(long date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return gmtDateFormat.format(calendar.getTime());
+    }
+
+    public static long getDateTimeFromGmt(String dateTime){
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date date = gmtDateFormat.parse(dateTime);
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar.getTimeInMillis();
+    }
+
     public static String getFullDateTime(long date, boolean is24){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
