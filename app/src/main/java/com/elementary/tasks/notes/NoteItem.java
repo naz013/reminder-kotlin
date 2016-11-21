@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import java.util.Random;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -23,6 +25,7 @@ public class NoteItem {
     private int color;
     private int style;
     private byte[] image;
+    private int uniqueId;
 
     public NoteItem(RealmNote item) {
         setColor(item.getColor());
@@ -31,6 +34,7 @@ public class NoteItem {
         setKey(item.getKey());
         setStyle(item.getStyle());
         setSummary(item.getSummary());
+        setUniqueId(item.getUniqueId());
     }
 
     public NoteItem(String summary, String key, String date, int color, int style, byte[] image) {
@@ -40,10 +44,20 @@ public class NoteItem {
         this.color = color;
         this.style = style;
         this.image = image;
+        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
     public NoteItem(String key) {
+        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
         setKey(key);
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
     }
 
     public String getSummary() {

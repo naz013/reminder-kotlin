@@ -26,6 +26,7 @@ import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
@@ -301,7 +302,7 @@ public class NotesFragment extends BaseNavigationFragment {
     private void showInStatusBar(String id) {
         NoteItem item = RealmDb.getInstance().getNote(id);
         if (item != null) {
-//            new Notifier(mContext).showNoteNotification(item);
+            new Notifier(mContext).showNoteNotification(item);
         }
     }
 

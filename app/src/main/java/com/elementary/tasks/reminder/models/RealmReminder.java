@@ -54,7 +54,7 @@ public class RealmReminder extends RealmObject {
     private int repeatLimit;
     private long after;
     private RealmList<RealmInteger> weekdays;
-    private String type;
+    private int type;
     private String target;
     private String subject;
     private String attachmentFile;
@@ -62,6 +62,7 @@ public class RealmReminder extends RealmObject {
     private boolean auto;
     private RealmList<RealmPlace2> places;
     private RealmList<RealmShopItem> shoppings;
+    private int uniqueId;
 
     public RealmReminder() {
     }
@@ -102,6 +103,7 @@ public class RealmReminder extends RealmObject {
         this.attachmentFile = item.getAttachmentFile();
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
+        this.uniqueId = item.getUniqueId();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
         }
@@ -124,6 +126,26 @@ public class RealmReminder extends RealmObject {
             strings.add(new RealmString(string));
         }
         return strings;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setHours(RealmList<RealmInteger> hours) {
+        this.hours = hours;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public void setAttachmentFiles(RealmList<RealmString> attachmentFiles) {
+        this.attachmentFiles = attachmentFiles;
+    }
+
+    public void setWeekdays(RealmList<RealmInteger> weekdays) {
+        this.weekdays = weekdays;
     }
 
     public String getNoteId() {
@@ -358,11 +380,11 @@ public class RealmReminder extends RealmObject {
         this.weekdays = wrapIntegerArray(weekdays);
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

@@ -16,13 +16,18 @@
 
 package com.elementary.tasks.reminder.models;
 
+import android.util.Log;
+
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class Reminder implements RecyclerInterface {
+
+    private static final String TAG = "Reminder";
 
     public static final int REMINDER = 0;
     public static final int SHOPPING = 1;
@@ -83,7 +88,7 @@ public class Reminder implements RecyclerInterface {
     private int repeatLimit;
     private long after;
     private List<Integer> weekdays = new ArrayList<>();
-    private String type;
+    private int type;
     private String target;
     private String subject;
     private String attachmentFile;
@@ -91,6 +96,7 @@ public class Reminder implements RecyclerInterface {
     private boolean auto;
     private List<Place> places = new ArrayList<>();
     private List<ShopItem> shoppings = new ArrayList<>();
+    private int uniqueId;
 
     public static boolean isType(int type, int base) {
         int res = type - base;
@@ -103,6 +109,8 @@ public class Reminder implements RecyclerInterface {
 
     public Reminder() {
         this.uuId = UUID.randomUUID().toString();
+        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
+        Log.d(TAG, "Reminder: " + uniqueId);
     }
 
     public Reminder(RealmReminder item) {
@@ -141,6 +149,7 @@ public class Reminder implements RecyclerInterface {
         this.attachmentFile = item.getAttachmentFile();
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
+        this.uniqueId = item.getUniqueId();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
         }
@@ -163,6 +172,14 @@ public class Reminder implements RecyclerInterface {
             strings.add(string.getString());
         }
         return strings;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public String getNoteId() {
@@ -426,11 +443,11 @@ public class Reminder implements RecyclerInterface {
         return this;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public Reminder setType(String type) {
+    public Reminder setType(int type) {
         this.type = type;
         return this;
     }

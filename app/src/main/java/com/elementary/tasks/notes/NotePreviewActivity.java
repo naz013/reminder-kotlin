@@ -22,6 +22,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.QuickReturnUtils;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -72,7 +73,7 @@ public class NotePreviewActivity extends ThemedActivity {
     private void initReminderCard() {
         binding.reminderContainer.setVisibility(View.GONE);
         binding.editReminder.setOnClickListener(v -> {
-            // TODO: 14.11.2016 Add reminder edit call
+
         });
         binding.deleteReminder.setOnClickListener(v -> showReminderDeleteDialog());
     }
@@ -168,7 +169,7 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void moveToStatus() {
         if (mItem != null){
-//            new Notifier(this).showNoteNotification(mItem);
+            new Notifier(this).showNoteNotification(mItem);
         }
     }
 

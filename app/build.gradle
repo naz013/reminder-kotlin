@@ -135,6 +135,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.6.1'
     compile 'com.google.android.gms:play-services-maps:9.6.1'
     compile 'com.google.android.gms:play-services-analytics:9.6.1'
+    compile 'com.google.android.gms:play-services-wearable:9.6.1'
     compile 'com.android.support:design:25.0.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.github.deano2390:MaterialShowcaseView:1.1.0'
@@ -150,6 +151,7 @@ dependencies {
     compile 'jp.wasabeef:picasso-transformations:2.1.0'
     compile project(':photoPreview')
     compile project(':simpleai')
+    compile project(path: ':shared')
 }
 
 apply plugin: 'com.google.gms.google-services'
