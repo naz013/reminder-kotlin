@@ -1,19 +1,14 @@
 package com.elementary.tasks.core.utils;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
-import android.view.View;
-import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
-
-import java.util.ArrayList;
-import java.util.Calendar;
+import com.elementary.tasks.notes.NoteItem;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,11 +30,55 @@ public class Notifier {
 
     private Context mContext;
     private int NOT_ID = 0;
-    private Sound sound;
 
     public Notifier(Context context){
         this.mContext = context;
-        sound = new Sound(context);
+    }
+
+    public void showNoteNotification(NoteItem item){
+        Prefs sPrefs = Prefs.getInstance(mContext);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        builder.setContentText(mContext.getString(R.string.note));
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
+        }
+        String content = item.getSummary();
+        builder.setSmallIcon(R.drawable.ic_note_white);
+        builder.setContentTitle(content);
+        boolean isWear = sPrefs.getBoolean(Prefs.WEAR_NOTIFICATION);
+        if (isWear) {
+            if (Module.isJellyMR2()) {
+                builder.setOnlyAlertOnce(true);
+                builder.setGroup("GROUP");
+                builder.setGroupSummary(true);
+            }
+        }
+        if (item.getImage() != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
+            builder.setLargeIcon(bitmap);
+            NotificationCompat.BigPictureStyle s = new NotificationCompat.BigPictureStyle();
+            s.bigLargeIcon(bitmap);
+            s.bigPicture(bitmap);
+            builder.setStyle(s);
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(mContext);
+        mNotifyMgr.notify(item.getUniqueId(), builder.build());
+        if (isWear){
+            if (Module.isJellyMR2()) {
+                final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
+                wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+                wearableNotificationBuilder.setContentTitle(content);
+                wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));
+                wearableNotificationBuilder.setOngoing(false);
+                if (Module.isLollipop()) {
+                    wearableNotificationBuilder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
+                }
+                wearableNotificationBuilder.setOnlyAlertOnce(true);
+                wearableNotificationBuilder.setGroup("GROUP");
+                wearableNotificationBuilder.setGroupSummary(false);
+                mNotifyMgr.notify(item.getUniqueId(), wearableNotificationBuilder.build());
+            }
+        }
     }
 
     public void recreatePermanent(){

@@ -27,6 +27,7 @@ public class RealmNote extends RealmObject {
     private int color;
     private int style;
     private byte[] image;
+    private int uniqueId;
 
     public RealmNote() {
 
@@ -39,15 +40,15 @@ public class RealmNote extends RealmObject {
         setKey(item.getKey());
         setStyle(item.getStyle());
         setSummary(item.getSummary());
+        setUniqueId(item.getUniqueId());
     }
 
-    public RealmNote(String summary, String key, String date, int color, int style, byte[] image) {
-        this.summary = summary;
-        this.key = key;
-        this.date = date;
-        this.color = color;
-        this.style = style;
-        this.image = image;
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public int getUniqueId() {
+        return uniqueId;
     }
 
     public String getSummary() {

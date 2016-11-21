@@ -104,36 +104,6 @@ public class ViewUtils {
         view.setVisibility(View.VISIBLE);
     }
 
-    @DrawableRes
-    public static int getIcon(String typePrefs) {
-//        int icon;
-//        if (typePrefs.contains(Constants.TYPE_CALL)) {
-//            icon = R.drawable.ic_call_white_24dp;
-//        } else if (typePrefs.contains(Constants.TYPE_MESSAGE)) {
-//            icon = R.drawable.ic_textsms_white_vector;
-//        } else if (typePrefs.matches(Constants.TYPE_LOCATION) || typePrefs.matches(Constants.TYPE_LOCATION_OUT)) {
-//            icon = R.drawable.ic_navigation_white_24dp;
-//        } else if (typePrefs.matches(Constants.TYPE_TIME)) {
-//            icon = R.drawable.ic_timer_white_24dp;
-//        } else if (typePrefs.startsWith(Constants.TYPE_SKYPE)) {
-//            icon = R.drawable.skype_icon_white;
-//        } else if (typePrefs.matches(Constants.TYPE_APPLICATION)) {
-//            icon = R.drawable.ic_launch_white_24dp;
-//        } else if (typePrefs.matches(Constants.TYPE_APPLICATION_BROWSER)) {
-//            icon = R.drawable.ic_public_white_24dp;
-//        } else if (typePrefs.matches(Constants.TYPE_SHOPPING_LIST)) {
-//            icon = R.drawable.ic_shopping_cart_white_24dp;
-//        } else if (typePrefs.matches(Constants.TYPE_MAIL)) {
-//            icon = R.drawable.ic_email_white_24dp;
-//        } else if (typePrefs.matches(Constants.TYPE_PLACES)) {
-//            icon = R.drawable.ic_near_me_white_24dp;
-//        } else {
-//            icon = R.drawable.ic_event_white_24dp;
-//        }
-//        return icon;
-        return 0;
-    }
-
     public static void fadeInAnimation(View view){
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());

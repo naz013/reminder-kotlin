@@ -49,6 +49,44 @@ public class TimeCount {
         return instance;
     }
 
+    public boolean isRange(List<Integer> hours, String fromHour, String toHour){
+        if (hours == null && fromHour == null && toHour == null) return true;
+        boolean res = false;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        if (hours != null){
+            return hours.contains(mHour);
+        }
+        long eventTime = calendar.getTimeInMillis();
+        if (fromHour != null && toHour != null){
+            Date fromDate = TimeUtil.getDate(fromHour);
+            Date toDate = TimeUtil.getDate(toHour);
+            if (fromDate != null && toDate != null){
+                calendar.setTime(fromDate);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                long start = calendar.getTimeInMillis();
+                calendar.setTime(toDate);
+                hour = calendar.get(Calendar.HOUR_OF_DAY);
+                minute = calendar.get(Calendar.MINUTE);
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                long end = calendar.getTimeInMillis();
+                if (start > end) {
+                    res = eventTime >= start || eventTime < end;
+                } else {
+                    res = eventTime >= start && eventTime <= end;
+                }
+            }
+        }
+        return res;
+    }
+
     public String[] getNextDateTime(long timeLong){
         String date;
         String time;
