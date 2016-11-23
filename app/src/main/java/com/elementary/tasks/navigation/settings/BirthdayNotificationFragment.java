@@ -83,7 +83,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setBirthdayLedColor(mItemSelect);
+            Prefs.getInstance(mContext).setBirthdayLedColor(LED.getLED(mItemSelect));
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();

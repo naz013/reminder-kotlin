@@ -104,9 +104,11 @@ public class RealmReminder extends RealmObject {
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
         this.uniqueId = item.getUniqueId();
+        this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
         }
+        this.shoppings = new RealmList<>();
         for (ShopItem shopItem : item.getShoppings()) {
             shoppings.add(new RealmShopItem(shopItem));
         }
@@ -114,16 +116,20 @@ public class RealmReminder extends RealmObject {
 
     private RealmList<RealmInteger> wrapIntegerArray(List<Integer> list) {
         RealmList<RealmInteger> strings = new RealmList<>();
-        for (Integer integer : list) {
-            strings.add(new RealmInteger(integer));
+        if (list != null) {
+            for (Integer integer : list) {
+                strings.add(new RealmInteger(integer));
+            }
         }
         return strings;
     }
 
     private RealmList<RealmString> wrapStringArray(List<String> list) {
         RealmList<RealmString> strings = new RealmList<>();
-        for (String string : list) {
-            strings.add(new RealmString(string));
+        if (list != null) {
+            for (String string : list) {
+                strings.add(new RealmString(string));
+            }
         }
         return strings;
     }

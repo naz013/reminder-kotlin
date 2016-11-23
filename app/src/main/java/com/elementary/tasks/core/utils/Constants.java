@@ -25,6 +25,7 @@ public class Constants {
     public static final String DEFAULT = "defaut";
 
     public static final String INTENT_ID = "item_id";
+    public static final String INTENT_NOTIFICATION = "item_resumed";
     public static final String SELECTED_CONTACT_NUMBER = "contact_number";
     public static final String SELECTED_TIME = "call_time";
     public static final String FILE_PICKED = "selected_file";

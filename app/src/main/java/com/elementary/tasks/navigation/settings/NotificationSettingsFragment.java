@@ -12,10 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.LED;
-import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LED;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
@@ -172,7 +172,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             mItemSelect = which;
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setLedColor(mItemSelect);
+            Prefs.getInstance(mContext).setLedColor(LED.getLED(mItemSelect));
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();

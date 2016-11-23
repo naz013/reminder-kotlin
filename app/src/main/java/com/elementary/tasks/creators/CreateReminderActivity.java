@@ -159,6 +159,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         mBinding.voiceButton.setOnClickListener(v -> openRecognizer());
         mBinding.customButton.setOnClickListener(v -> openCustomizationDialog());
         mBinding.groupButton.setOnClickListener(v -> changeGroup());
+        GroupItem groupItem = RealmDb.getInstance().getDefaultGroup();
+        if (groupItem != null) {
+            mBinding.groupButton.setText(groupItem.getTitle());
+            groupId = groupItem.getUuId();
+        }
     }
 
     private void changeGroup() {
@@ -337,7 +342,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void save() {
         fragment.save();
-//        finish();
+        finish();
     }
 
     @Override
@@ -442,7 +447,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public int getLedColor() {
-        return ledColor;
+        if (ledColor != -1) {
+            return LED.getLED(ledColor);
+        }
+        return 0;
     }
 
     public int getRepeatLimit() {

@@ -22,23 +22,42 @@ import com.elementary.tasks.reminder.models.Reminder;
 
 public interface ReminderInterface {
     Reminder getReminder();
+
     boolean getUseGlobal();
+
     boolean getVoice();
+
     boolean getVibration();
+
     boolean getNotificationRepeat();
+
     boolean getWake();
+
     boolean getUnlock();
+
     boolean getAuto();
+
     int getVolume();
+
     int getLedColor();
+
     int getRepeatLimit();
+
     String getGroup();
+
     void setRepeatLimit(int repeatLimit);
+
     void setEventHint(String hint);
+
     boolean isExportToCalendar();
+
     boolean isExportToTasks();
+
     String getSummary();
+
     String getMelodyPath();
+
     void showSnackbar(String title);
+
     void showSnackbar(String title, String actionName, View.OnClickListener listener);
 }
