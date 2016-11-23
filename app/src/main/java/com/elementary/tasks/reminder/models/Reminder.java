@@ -27,6 +27,12 @@ import java.util.UUID;
 
 public class Reminder implements RecyclerInterface {
 
+    public class Kind {
+        public static final int BASE = 0;
+        public static final int SMS = 2;
+        public static final int CALL = 1;
+    }
+
     private static final String TAG = "Reminder";
 
     public static final int REMINDER = 0;
@@ -79,7 +85,7 @@ public class Reminder implements RecyclerInterface {
     private boolean useGlobal;
     private String from;
     private String to;
-    private List<Integer> hours;
+    private List<Integer> hours = new ArrayList<>();
     private String fileName;
     private String melodyPath;
     private int volume;
@@ -101,6 +107,10 @@ public class Reminder implements RecyclerInterface {
     public static boolean isType(int type, int base) {
         int res = type - base;
         return res >= 0 && res < 10;
+    }
+
+    public static boolean isKind(int type, int kind) {
+        return type % BY_DATE == kind;
     }
 
     public static boolean isBase(int type, int base) {
@@ -150,9 +160,11 @@ public class Reminder implements RecyclerInterface {
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
         this.uniqueId = item.getUniqueId();
+        this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
         }
+        this.shoppings = new ArrayList<>();
         for (RealmShopItem shopItem : item.getShoppings()) {
             shoppings.add(new ShopItem(shopItem));
         }
@@ -160,16 +172,20 @@ public class Reminder implements RecyclerInterface {
 
     private List<Integer> wrapIntegerArray(List<RealmInteger> list) {
         List<Integer> strings = new ArrayList<>();
-        for (RealmInteger integer : list) {
-            strings.add(integer.getInteger());
+        if (list != null) {
+            for (RealmInteger integer : list) {
+                strings.add(integer.getInteger());
+            }
         }
         return strings;
     }
 
     private List<String> wrapStringArray(List<RealmString> list) {
         List<String> strings = new ArrayList<>();
-        for (RealmString string : list) {
-            strings.add(string.getString());
+        if (list != null) {
+            for (RealmString string : list) {
+                strings.add(string.getString());
+            }
         }
         return strings;
     }

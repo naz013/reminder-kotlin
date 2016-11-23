@@ -66,6 +66,7 @@
         <activity android:name=".google_tasks.TaskListActivity" />
         <activity android:name=".google_tasks.TaskActivity" />
         <activity android:name=".core.contacts.ContactsActivity" />
+        <activity android:name=".reminder.ReminderDialogActivity" />
 
         <activity
             android:name=".core.SplashScreen"
@@ -89,6 +90,7 @@
         <receiver android:name=".core.services.BirthdayAlarm" />
         <receiver android:name=".core.services.BirthdayCheckAlarm" />
         <receiver android:name=".core.services.AlarmReceiver" />
+        <receiver android:name=".core.services.RepeatNotificationReceiver" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"

@@ -119,6 +119,15 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
+    public GroupItem getDefaultGroup() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmGroup realmGroup = realm.where(RealmGroup.class).findFirst();
+        realm.commitTransaction();
+        if (realmGroup == null) return null;
+        else return new GroupItem(realmGroup);
+    }
+
     public List<GroupItem> getAllGroups() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

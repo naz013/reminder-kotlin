@@ -12,6 +12,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -43,7 +44,8 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Reminder item = RealmDb.getInstance().getReminder(id);
         int type = item.getType();
         if (Reminder.isType(type, Reminder.BY_TIME)) {
-            if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo())) start(context, id);
+            if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo()))
+                start(context, id);
             else {
 //                Reminder.update(context, id);
 //                UpdatesHelper.getInstance(context).updateWidget();
@@ -94,6 +96,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) alarmMgr.cancel(alarmIntent);
+        if (alarmMgr != null) alarmMgr.cancel(alarmIntent);
     }
 }

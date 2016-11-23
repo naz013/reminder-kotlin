@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -107,6 +109,8 @@ public class DateFragment extends RepeatableTypeFragment {
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
+        RealmDb.getInstance().saveReminder(reminder);
+        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
     }
 
     @Override
