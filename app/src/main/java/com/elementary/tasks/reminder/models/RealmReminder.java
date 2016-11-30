@@ -63,6 +63,8 @@ public class RealmReminder extends RealmObject {
     private RealmList<RealmPlace2> places;
     private RealmList<RealmShopItem> shoppings;
     private int uniqueId;
+    private boolean isActive;
+    private boolean isRemoved;
 
     public RealmReminder() {
     }
@@ -104,6 +106,8 @@ public class RealmReminder extends RealmObject {
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
         this.uniqueId = item.getUniqueId();
+        this.isActive = item.isActive();
+        this.isRemoved = item.isRemoved();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -132,6 +136,22 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public boolean isRemoved() {
+        return isRemoved;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setRemoved(boolean removed) {
+        isRemoved = removed;
     }
 
     public int getUniqueId() {

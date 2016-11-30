@@ -103,8 +103,10 @@ public class Reminder implements RecyclerInterface {
     private List<Place> places = new ArrayList<>();
     private List<ShopItem> shoppings = new ArrayList<>();
     private int uniqueId;
+    private boolean isActive;
+    private boolean isRemoved;
 
-    public static boolean isType(int type, int base) {
+    public static boolean isBase(int type, int base) {
         int res = type - base;
         return res >= 0 && res < 10;
     }
@@ -113,7 +115,7 @@ public class Reminder implements RecyclerInterface {
         return type % BY_DATE == kind;
     }
 
-    public static boolean isBase(int type, int base) {
+    public static boolean isSame(int type, int base) {
         return type == base;
     }
 
@@ -160,6 +162,8 @@ public class Reminder implements RecyclerInterface {
         this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
         this.auto = item.isAuto();
         this.uniqueId = item.getUniqueId();
+        this.isActive = item.isActive();
+        this.isRemoved = item.isRemoved();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -188,6 +192,22 @@ public class Reminder implements RecyclerInterface {
             }
         }
         return strings;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public boolean isRemoved() {
+        return isRemoved;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public void setRemoved(boolean removed) {
+        isRemoved = removed;
     }
 
     public int getUniqueId() {
