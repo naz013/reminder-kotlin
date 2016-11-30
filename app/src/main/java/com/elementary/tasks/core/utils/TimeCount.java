@@ -111,15 +111,15 @@ public class TimeCount {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isType(type, Reminder.BY_WEEK)){
+        if (Reminder.isBase(type, Reminder.BY_WEEK)){
             return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isType(type, Reminder.BY_MONTH)){
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
             return getNextMonthDayTime(dayOfMonth, calendar.getTimeInMillis());
         } else {
             calendar.set(year, month, dayOfMonth, hour, minute, seconds);
-            if (Reminder.isType(type, Reminder.BY_TIME))
+            if (Reminder.isBase(type, Reminder.BY_TIME))
                 return System.currentTimeMillis() + after;
-            if (Reminder.isBase(type, Reminder.BY_DATE_SHOP)) {
+            if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
                 if (dayOfMonth == 0) return 0;
             }
             return calendar.getTimeInMillis();
@@ -131,14 +131,14 @@ public class TimeCount {
         calendar.setTimeInMillis(time);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isType(type, Reminder.BY_WEEK)){
+        if (Reminder.isBase(type, Reminder.BY_WEEK)){
             return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isType(type, Reminder.BY_MONTH)){
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
             return getNextMonthDayTime(calendar.get(Calendar.DAY_OF_MONTH), calendar.getTimeInMillis());
         } else {
-            if (Reminder.isType(type, Reminder.BY_TIME))
+            if (Reminder.isBase(type, Reminder.BY_TIME))
                 return System.currentTimeMillis() + after;
-            if (Reminder.isBase(type, Reminder.BY_DATE_SHOP)) {
+            if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
                 if (time == 0) return 0;
             }
             return calendar.getTimeInMillis();
@@ -151,15 +151,20 @@ public class TimeCount {
         if (startTime == 0) {
             dateTime = 0;
         } else {
-            if (Reminder.isType(type, Reminder.BY_WEEK)){
+            if (Reminder.isBase(type, Reminder.BY_WEEK)){
                 dateTime = getNextWeekdayTime(startTime, weekdays, delay);
-            } else if (Reminder.isType(type, Reminder.BY_MONTH)){
+            } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
                 dateTime = getNextMonthDayTime(dayOfMonth, startTime);
             } else {
                 dateTime = startTime + (repeat * count) + (delay * MINUTE);
             }
         }
         return dateTime;
+    }
+
+    public String getRemaining(String dateTime) {
+        long time = TimeUtil.getDateTimeFromGmt(dateTime);
+        return getRemaining(time);
     }
 
     public String getRemaining(long eventTime){

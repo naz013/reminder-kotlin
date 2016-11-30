@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.utils;
 
+import android.util.Log;
+
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.google_tasks.RealmTask;
 import com.elementary.tasks.google_tasks.RealmTaskList;
@@ -41,6 +43,8 @@ import io.realm.Sort;
  */
 
 public class RealmDb {
+
+    private static final String TAG = "RealmDb";
 
     private static RealmDb instance;
 
@@ -104,11 +108,14 @@ public class RealmDb {
     }
 
     public GroupItem getGroup(String id) {
+        Log.d(TAG, "getGroup: " + id);
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmGroup object = realm.where(RealmGroup.class).equalTo("uuId", id).findFirst();
         realm.commitTransaction();
-        return new GroupItem(object);
+        if (object != null) {
+            return new GroupItem(object);
+        } else return null;
     }
 
     public void changeGroupColor(String id, int color) {
@@ -468,6 +475,14 @@ public class RealmDb {
         else return new Reminder(object);
     }
 
+    public void changeReminderGroup(String id, String groupId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
+        object.setGroupUuId(groupId);
+        realm.commitTransaction();
+    }
+
     public boolean deleteReminder(String id){
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -482,5 +497,47 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmReminder(item));
         realm.commitTransaction();
+    }
+
+    public List<Reminder> getActiveReminders() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String[] fields = new String[]{"isActive", "eventTime"};
+        Sort[] orders = new Sort[]{Sort.ASCENDING, Sort.ASCENDING};
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            items.add(new Reminder(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Reminder> getActiveReminders(String groupId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String[] fields = new String[]{"isActive", "eventTime"};
+        Sort[] orders = new Sort[]{Sort.ASCENDING, Sort.ASCENDING};
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("groupUuId", groupId).equalTo("isRemoved", false).findAllSorted(fields, orders);
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            items.add(new Reminder(object));
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Reminder> getArchivedReminder() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        String[] fields = new String[]{"eventTime"};
+        Sort[] orders = new Sort[]{Sort.ASCENDING};
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            items.add(new Reminder(object));
+        }
+        realm.commitTransaction();
+        return items;
     }
 }

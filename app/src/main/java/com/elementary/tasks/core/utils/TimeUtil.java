@@ -140,6 +140,10 @@ public class TimeUtil {
         else return fullDateTime12.format(calendar.getTime());
     }
 
+    public static String getSimpleDate(String gmtDate) {
+        return getSimpleDate(getDateTimeFromGmt(gmtDate));
+    }
+
     public static String getSimpleDate(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);

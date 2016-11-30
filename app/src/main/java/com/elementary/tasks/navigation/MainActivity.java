@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
@@ -38,10 +40,13 @@ import com.elementary.tasks.navigation.fragments.RemindersFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
 
+import java.util.ArrayList;
+
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
     private static final int PRESS_AGAIN_TIME = 2000;
     private static final String TAG = "MainActivity";
+    public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
 
     private ActivityMainBinding binding;
     private Toolbar toolbar;
@@ -181,7 +186,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+            ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            new Recognize(this).parseResults(matches, false);
+            super.onActivityResult(requestCode, resultCode, data);
+        }
         if (fragment != null) fragment.onActivityResult(requestCode, resultCode, data);
     }
 
