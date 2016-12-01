@@ -92,6 +92,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             super(v);
             binding = DataBindingUtil.bind(v);
             listHeader = binding.listHeader;
+            binding.reminderContainer.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
             binding.itemCard.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), v);
@@ -124,6 +125,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             super(v);
             binding = DataBindingUtil.bind(v);
             listHeader = binding.listHeader;
+            binding.subBackground.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
             binding.itemCard.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), v);
