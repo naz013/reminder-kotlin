@@ -57,6 +57,23 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     private int minute;
     private int repeat;
 
+    private DateTimeView.OnSelectListener mListener = new DateTimeView.OnSelectListener() {
+        @Override
+        public void onDateSelect(long mills, int dayOfMonth, int mon, int y) {
+            year = y;
+            month = mon;
+            day = dayOfMonth;
+            updatePrediction(repeatViewSeek.getProgress());
+        }
+
+        @Override
+        public void onTimeSelect(long mills, int hourOfDay, int min) {
+            hour = hourOfDay;
+            minute = min;
+            updatePrediction(repeatViewSeek.getProgress());
+        }
+    };
+
     public RepeatView(Context context) {
         super(context);
         init(context, null);
@@ -123,6 +140,10 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         initDateTime();
     }
 
+    public DateTimeView.OnSelectListener getEventListener() {
+        return mListener;
+    }
+
     private void initDateTime() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
@@ -131,6 +152,17 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         day = cal.get(Calendar.DAY_OF_MONTH);
         hour = cal.get(Calendar.HOUR_OF_DAY);
         minute = cal.get(Calendar.MINUTE);
+        updatePrediction(repeatViewSeek.getProgress());
+    }
+
+    public void setDateTime(String dateTime) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(dateTime));
+        this.year = calendar.get(Calendar.YEAR);
+        this.month = calendar.get(Calendar.MONTH);
+        this.day = calendar.get(Calendar.DAY_OF_MONTH);
+        this.hour = calendar.get(Calendar.HOUR_OF_DAY);
+        this.minute = calendar.get(Calendar.MINUTE);
         updatePrediction(repeatViewSeek.getProgress());
     }
 
@@ -180,6 +212,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     }
 
     public void setProgress(int progress){
+        this.repeat = progress;
         if (progress < repeatViewSeek.getMax()) {
             repeatViewSeek.setProgress(progress);
             updateEditField();
@@ -192,12 +225,12 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     }
 
     public void setProgress(long mills){
-        long progress = mills / AlarmManager.INTERVAL_DAY;
-        if (progress < repeatViewSeek.getMax()) {
-            repeatViewSeek.setProgress((int) progress);
+        repeat = (int) (mills / AlarmManager.INTERVAL_DAY);
+        if (repeat < repeatViewSeek.getMax()) {
+            repeatViewSeek.setProgress(repeat);
             updateEditField();
         }
-        updatePrediction((int) progress);
+        updatePrediction(repeat);
     }
 
     public int getRepeat() {

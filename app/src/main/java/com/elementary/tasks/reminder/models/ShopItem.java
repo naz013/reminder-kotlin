@@ -91,7 +91,7 @@ public class ShopItem {
     @Override
     public String toString(){
         return "Shopping->Summary: " + summary +
-                "->Date: " + TimeUtil.getFullDateTime(createTime, true) +
+                "->Date: " + TimeUtil.getDateTimeFromGmt(createTime, true) +
                 "->UUID: " + uuId +
                 "->Status: " + checked +
                 "->Deleted: " + visibility;

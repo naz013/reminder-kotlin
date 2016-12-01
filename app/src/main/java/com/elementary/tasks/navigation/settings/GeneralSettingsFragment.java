@@ -50,7 +50,6 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initDayNight();
         initSmartFold();
         initWearNotification();
-        checkDayNight();
         return binding.getRoot();
     }
 
@@ -83,11 +82,13 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     private void initDarkMode() {
         binding.darkPrefs.setChecked(Prefs.getInstance(mContext).isDarkModeEnabled());
         binding.darkPrefs.setOnClickListener(mDarkClick);
+        binding.darkPrefs.setReverseDependentView(binding.dayNightPrefs);
     }
 
     private void initDayNight() {
         binding.dayNightPrefs.setChecked(Prefs.getInstance(mContext).isNightModeEnabled());
         binding.dayNightPrefs.setOnClickListener(mDayNightClick);
+        binding.dayNightPrefs.setReverseDependentView(binding.darkPrefs);
     }
 
     private void initSmartFold() {
@@ -116,7 +117,6 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.dayNightPrefs.isChecked();
         Prefs.getInstance(mContext).setNightModeEnabled(!isChecked);
         binding.dayNightPrefs.setChecked(!isChecked);
-        checkDayNight();
         getActivity().recreate();
     }
 
@@ -125,9 +125,5 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         Prefs.getInstance(mContext).setDarkModeEnabled(!isChecked);
         binding.darkPrefs.setChecked(!isChecked);
         getActivity().recreate();
-    }
-
-    private void checkDayNight() {
-        binding.darkPrefs.setEnabled(binding.dayNightPrefs.isChecked());
     }
 }
