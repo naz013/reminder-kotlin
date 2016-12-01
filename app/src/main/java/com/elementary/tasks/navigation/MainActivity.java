@@ -63,6 +63,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initActionBar();
         initNavigation();
+        initStartFragment();
+    }
+
+    private void initStartFragment() {
+        prevItem = R.id.nav_current;
+        mNavigationView.setCheckedItem(prevItem);
+        replaceFragment(new RemindersFragment(), getString(R.string.events));
     }
 
     private void initActionBar() {
