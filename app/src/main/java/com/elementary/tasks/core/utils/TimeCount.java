@@ -38,7 +38,7 @@ public class TimeCount {
     private Context mContext;
     private static TimeCount instance;
 
-    private TimeCount(Context context){
+    private TimeCount(Context context) {
         this.mContext = context;
     }
 
@@ -49,20 +49,20 @@ public class TimeCount {
         return instance;
     }
 
-    public boolean isRange(List<Integer> hours, String fromHour, String toHour){
+    public boolean isRange(List<Integer> hours, String fromHour, String toHour) {
         if (hours == null && fromHour == null && toHour == null) return true;
         boolean res = false;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hours != null){
+        if (hours != null) {
             return hours.contains(mHour);
         }
         long eventTime = calendar.getTimeInMillis();
-        if (fromHour != null && toHour != null){
+        if (fromHour != null && toHour != null) {
             Date fromDate = TimeUtil.getDate(fromHour);
             Date toDate = TimeUtil.getDate(toHour);
-            if (fromDate != null && toDate != null){
+            if (fromDate != null && toDate != null) {
                 calendar.setTime(fromDate);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -87,7 +87,7 @@ public class TimeCount {
         return res;
     }
 
-    public String[] getNextDateTime(long timeLong){
+    public String[] getNextDateTime(long timeLong) {
         String date;
         String time;
         if (timeLong == 0) {
@@ -111,9 +111,9 @@ public class TimeCount {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isBase(type, Reminder.BY_WEEK)){
+        if (Reminder.isBase(type, Reminder.BY_WEEK)) {
             return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
             return getNextMonthDayTime(dayOfMonth, calendar.getTimeInMillis());
         } else {
             calendar.set(year, month, dayOfMonth, hour, minute, seconds);
@@ -131,29 +131,27 @@ public class TimeCount {
         calendar.setTimeInMillis(time);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isBase(type, Reminder.BY_WEEK)){
+        if (Reminder.isBase(type, Reminder.BY_WEEK)) {
             return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
             return getNextMonthDayTime(calendar.get(Calendar.DAY_OF_MONTH), calendar.getTimeInMillis());
+        } else if (Reminder.isSame(type, Reminder.BY_TIME)) {
+            return System.currentTimeMillis() + after;
         } else {
-            if (Reminder.isBase(type, Reminder.BY_TIME))
-                return System.currentTimeMillis() + after;
-            if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-                if (time == 0) return 0;
-            }
+            if (time == 0) return 0;
             return calendar.getTimeInMillis();
         }
     }
 
     public long generateDateTime(int type, int dayOfMonth, long startTime, long repeat,
-                                 List<Integer> weekdays, long count, long delay){
+                                 List<Integer> weekdays, long count, long delay) {
         long dateTime;
         if (startTime == 0) {
             dateTime = 0;
         } else {
-            if (Reminder.isBase(type, Reminder.BY_WEEK)){
+            if (Reminder.isBase(type, Reminder.BY_WEEK)) {
                 dateTime = getNextWeekdayTime(startTime, weekdays, delay);
-            } else if (Reminder.isBase(type, Reminder.BY_MONTH)){
+            } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
                 dateTime = getNextMonthDayTime(dayOfMonth, startTime);
             } else {
                 dateTime = startTime + (repeat * count) + (delay * MINUTE);
@@ -167,7 +165,7 @@ public class TimeCount {
         return getRemaining(time);
     }
 
-    public String getRemaining(long eventTime){
+    public String getRemaining(long eventTime) {
         long difference = eventTime - System.currentTimeMillis();
         long days = (difference / (DAY));
         long hours = ((difference - (DAY * days)) / (HOUR));
@@ -175,7 +173,7 @@ public class TimeCount {
         hours = (hours < 0 ? -hours : hours);
         StringBuilder result = new StringBuilder();
         String lang = Locale.getDefault().toString().toLowerCase();
-        if (difference > DAY){
+        if (difference > DAY) {
             if (lang.startsWith("uk") || lang.startsWith("ru")) {
                 long last = days;
                 while (last > 10) {
@@ -194,7 +192,7 @@ public class TimeCount {
                 else
                     result.append(String.format(mContext.getString(R.string.x_days), String.valueOf(days)));
             }
-        } else if (difference > HOUR){
+        } else if (difference > HOUR) {
             hours = (days * 24) + hours;
             if (lang.startsWith("uk") || lang.startsWith("ru")) {
                 long last = hours;
@@ -214,7 +212,7 @@ public class TimeCount {
                 else
                     result.append(String.format(mContext.getString(R.string.x_hours), String.valueOf(hours)));
             }
-        } else if (difference > MINUTE){
+        } else if (difference > MINUTE) {
             minutes = (hours * 60) + minutes;
             if (lang.startsWith("uk") || lang.startsWith("ru")) {
                 long last = minutes;
@@ -234,7 +232,7 @@ public class TimeCount {
                 else
                     result.append(String.format(mContext.getString(R.string.x_minutes), String.valueOf(minutes)));
             }
-        } else if (difference > 0){
+        } else if (difference > 0) {
             result.append(mContext.getString(R.string.less_than_minute));
         } else {
             result.append(mContext.getString(R.string.overdue));
@@ -252,7 +250,7 @@ public class TimeCount {
         }
     }
 
-    public static long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay){
+    public static long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(startTime);
         cc.set(Calendar.SECOND, 0);
@@ -280,8 +278,8 @@ public class TimeCount {
         return startTime < currentTome;
     }
 
-    public static long getNextMonthDayTime(int dayOfMonth, long fromTime){
-        if (dayOfMonth == 0){
+    public static long getNextMonthDayTime(int dayOfMonth, long fromTime) {
+        if (dayOfMonth == 0) {
             return getLastMonthDayTime(fromTime);
         }
         Calendar cc = Calendar.getInstance();

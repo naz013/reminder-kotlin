@@ -393,7 +393,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
                 textView.setText(R.string.paused);
             }
         } else {
-            textView.setText(TimeUtil.getFullDateTime(model.getEventTime(), is24));
+            textView.setText(TimeUtil.getDateTimeFromGmt(model.getEventTime(), is24));
         }
     }
 

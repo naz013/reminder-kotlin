@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -48,7 +47,7 @@ public class DateFragment extends RepeatableTypeFragment {
     private static final String TAG = "DateFragment";
     private static final int CONTACTS = 112;
 
-    private FragmentDateBinding mBinding;
+    private FragmentDateBinding binding;
     private ActionView.OnActionListener mActionListener = new ActionView.OnActionListener() {
         @Override
         public void onActionChange(boolean hasAction) {
@@ -73,44 +72,58 @@ public class DateFragment extends RepeatableTypeFragment {
     @Override
     public void save() {
         if (mInterface == null) return;
-        Reminder reminder = new Reminder();
-        String summary = mInterface.getSummary();
-        boolean isAction = mBinding.actionView.hasAction();
-        if (TextUtils.isEmpty(summary) && !isAction) {
+        Reminder reminder = mInterface.getReminder();
+        if (reminder == null) {
+            reminder = new Reminder();
+        }
+        boolean isAction = binding.actionView.hasAction();
+        if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
             mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
             return;
         }
         int type = Reminder.BY_DATE;
         if (isAction) {
-            String number = mBinding.actionView.getNumber();
+            String number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
                 mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
                 return;
             }
             reminder.setTarget(number);
-            if (mBinding.actionView.getType() == ActionView.TYPE_CALL) {
+            if (binding.actionView.getType() == ActionView.TYPE_CALL) {
                 type = Reminder.BY_DATE_CALL;
             } else {
                 type = Reminder.BY_DATE_SMS;
             }
         }
-        reminder.setSummary(summary);
-        reminder.setRepeatInterval(mBinding.repeatView.getRepeat());
-        reminder.setRepeatLimit(mInterface.getRepeatLimit());
-        reminder.setExportToCalendar(mBinding.exportToCalendar.isChecked());
-        reminder.setExportToTasks(mBinding.exportToTasks.isChecked());
-        reminder.setColor(mInterface.getLedColor());
-        reminder.setMelodyPath(mInterface.getMelodyPath());
-        reminder.setVolume(mInterface.getVolume());
-        reminder.setAuto(mInterface.getAuto());
+        reminder.setType(type);
+        reminder.setRepeatInterval(binding.repeatView.getRepeat());
+        reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
+        reminder.setExportToTasks(binding.exportToTasks.isChecked());
+        fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, mBinding.dateView.getDateTime(), null, 0);
+        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, binding.dateView.getDateTime(), null, 0);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
         RealmDb.getInstance().saveReminder(reminder);
-        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+//        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+    }
+
+    private void fillExtraData(Reminder reminder) {
+        reminder.setSummary(mInterface.getSummary());
+        reminder.setGroupUuId(mInterface.getGroup());
+        reminder.setRepeatLimit(mInterface.getRepeatLimit());
+        reminder.setColor(mInterface.getLedColor());
+        reminder.setMelodyPath(mInterface.getMelodyPath());
+        reminder.setVolume(mInterface.getVolume());
+        reminder.setAuto(mInterface.getAuto());
+        reminder.setVibrate(mInterface.getVibration());
+        reminder.setNotifyByVoice(mInterface.getVoice());
+        reminder.setRepeatNotification(mInterface.getNotificationRepeat());
+        reminder.setUseGlobal(mInterface.getUseGlobal());
+        reminder.setUnlock(mInterface.getUnlock());
+        reminder.setAwake(mInterface.getWake());
     }
 
     @Override
@@ -138,10 +151,42 @@ public class DateFragment extends RepeatableTypeFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mBinding = FragmentDateBinding.inflate(inflater, container, false);
-        mBinding.actionView.setListener(mActionListener);
-        mBinding.actionView.setContactClickListener(view -> selectContact());
-        return mBinding.getRoot();
+        binding = FragmentDateBinding.inflate(inflater, container, false);
+        binding.repeatView.enablePrediction(true);
+        binding.dateView.setEventListener(binding.repeatView.getEventListener());
+        binding.actionView.setListener(mActionListener);
+        binding.actionView.setContactClickListener(view -> selectContact());
+        if (mInterface.isExportToCalendar()) {
+            binding.exportToCalendar.setVisibility(View.VISIBLE);
+        } else {
+            binding.exportToCalendar.setVisibility(View.GONE);
+        }
+        if (mInterface.isExportToTasks()) {
+            binding.exportToTasks.setVisibility(View.VISIBLE);
+        } else {
+            binding.exportToTasks.setVisibility(View.GONE);
+        }
+        if (mInterface != null) editReminder();
+        return binding.getRoot();
+    }
+
+    private void editReminder() {
+        if (mInterface.getReminder() == null) return;
+        Reminder reminder = mInterface.getReminder();
+        binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
+        binding.exportToTasks.setChecked(reminder.isExportToTasks());
+        binding.dateView.setDateTime(reminder.getEventTime());
+        binding.repeatView.setDateTime(reminder.getEventTime());
+        binding.repeatView.setProgress(reminder.getRepeatInterval());
+        if (reminder.getTarget() != null) {
+            binding.actionView.setAction(true);
+            binding.actionView.setNumber(reminder.getTarget());
+            if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_CALL)) {
+                binding.actionView.setType(ActionView.TYPE_CALL);
+            } else if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_SMS)) {
+                binding.actionView.setType(ActionView.TYPE_MESSAGE);
+            }
+        }
     }
 
     private void selectContact() {
@@ -156,7 +201,7 @@ public class DateFragment extends RepeatableTypeFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
             String number = data.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
-            mBinding.actionView.setNumber(number);
+            binding.actionView.setNumber(number);
         }
     }
 

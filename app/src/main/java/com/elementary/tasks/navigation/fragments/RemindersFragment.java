@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -30,6 +31,7 @@ import com.elementary.tasks.databinding.FragmentRemindersBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.reminder.RecyclerListener;
+import com.elementary.tasks.reminder.ReminderControl;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -118,18 +120,23 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                     previewReminder(view, item1.getUuId(), item1.getType());
                     break;
                 case 1:
-//                    Reminder.edit(item1.getId(), mContext);
+                    editReminder(item1.getUuId());
                     break;
                 case 2:
                     changeGroup(item1.getGroupUuId(), item1.getUuId());
                     break;
                 case 3:
-                    mAdapter.removeItem(position);
-//                    Reminder.moveToTrash(item1.getId(), mContext, mCallbacks);
-                    loadData(null);
+                    if (ReminderControl.getInstance(mContext).moveToTrash(item1)) {
+                        mAdapter.removeItem(position);
+//                        loadData(null);
+                    }
                     break;
             }
         }, items);
+    }
+
+    private void editReminder(String uuId) {
+        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
     private void switchReminder(int position) {

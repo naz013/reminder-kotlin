@@ -107,6 +107,84 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
         initActionBar();
         initNavigation();
+        editReminder();
+    }
+
+    private void editReminder() {
+        if (mReminder == null) return;
+        mBinding.taskSummary.setText(mReminder.getSummary());
+        showGroup(RealmDb.getInstance().getGroup(mReminder.getGroupUuId()));
+        initParams();
+        switch (mReminder.getType()) {
+            case Reminder.BY_DATE:
+            case Reminder.BY_DATE_CALL:
+            case Reminder.BY_DATE_SMS:
+                spinner.setSelection(0);
+                break;
+            case Reminder.BY_TIME:
+                spinner.setSelection(1);
+                break;
+            case Reminder.BY_WEEK:
+            case Reminder.BY_WEEK_CALL:
+            case Reminder.BY_WEEK_SMS:
+                spinner.setSelection(2);
+                break;
+            case Reminder.BY_LOCATION:
+            case Reminder.BY_LOCATION_CALL:
+            case Reminder.BY_LOCATION_SMS:
+                spinner.setSelection(3);
+                break;
+            case Reminder.BY_SKYPE:
+            case Reminder.BY_SKYPE_CALL:
+            case Reminder.BY_SKYPE_VIDEO:
+                spinner.setSelection(4);
+                break;
+            case Reminder.BY_DATE_APP:
+            case Reminder.BY_DATE_LINK:
+                spinner.setSelection(5);
+                break;
+            case Reminder.BY_MONTH:
+            case Reminder.BY_MONTH_CALL:
+            case Reminder.BY_MONTH_SMS:
+                spinner.setSelection(6);
+                break;
+            case Reminder.BY_OUT:
+            case Reminder.BY_OUT_SMS:
+            case Reminder.BY_OUT_CALL:
+                spinner.setSelection(7);
+                break;
+            case Reminder.BY_DATE_SHOP:
+                spinner.setSelection(8);
+                break;
+            case Reminder.BY_DATE_EMAIL:
+                spinner.setSelection(9);
+                break;
+            default:
+                if (Module.isPro()) {
+                    switch (mReminder.getType()) {
+                        case Reminder.BY_PLACES:
+                        case Reminder.BY_PLACES_SMS:
+                        case Reminder.BY_PLACES_CALL:
+                            spinner.setSelection(10);
+                            break;
+                    }
+                }
+                break;
+        }
+    }
+
+    private void initParams() {
+        useGlobal = mReminder.isUseGlobal();
+        auto = mReminder.isAuto();
+        wake = mReminder.isAwake();
+        unlock = mReminder.isUnlock();
+        notificationRepeat = mReminder.isRepeatNotification();
+        voice = mReminder.isNotifyByVoice();
+        vibration = mReminder.isVibrate();
+        volume = mReminder.getVolume();
+        repeatLimit = mReminder.getRepeatLimit();
+        melodyPath = mReminder.getMelodyPath();
+        ledColor = mReminder.getColor();
     }
 
     private void initNavigation() {
@@ -176,12 +254,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         builder.setSingleChoiceItems(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_single_choice, categories), position.i, (dialog, which) -> {
             dialog.dismiss();
-            GroupItem item = list.get(which);
-            mBinding.groupButton.setText(item.getTitle());
-            groupId = item.getUuId();
+            showGroup(list.get(which));
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void showGroup(GroupItem item) {
+        if (item == null) return;
+        mBinding.groupButton.setText(item.getTitle());
+        groupId = item.getUuId();
     }
 
     private void openCustomizationDialog() {

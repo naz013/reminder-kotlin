@@ -45,6 +45,7 @@ public class DateTimeView extends RelativeLayout implements
     private int mDay;
     private Context mContext;
     private AttributeSet attrs;
+    private OnSelectListener mListener;
 
     public DateTimeView(Context context) {
         super(context);
@@ -59,6 +60,10 @@ public class DateTimeView extends RelativeLayout implements
     public DateTimeView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
+    }
+
+    public void setEventListener(OnSelectListener listener) {
+        mListener = listener;
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -91,6 +96,11 @@ public class DateTimeView extends RelativeLayout implements
         return calendar.getTimeInMillis();
     }
 
+    public void setDateTime(String dateTime) {
+        long mills = TimeUtil.getDateTimeFromGmt(dateTime);
+        updateDateTime(mills);
+    }
+
     private void updateDateTime(long mills){
         if (mills == 0) {
             mills = System.currentTimeMillis();
@@ -110,12 +120,14 @@ public class DateTimeView extends RelativeLayout implements
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
         date.setText(TimeUtil.getDate(cal.getTime()));
+        if (mListener != null) mListener.onDateSelect(mills, mDay, mMonth, mYear);
     }
 
     private void updateTime(long mills){
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
         time.setText(TimeUtil.getTime(cal.getTime(), Prefs.getInstance(mContext).is24HourFormatEnabled()));
+        if (mListener != null) mListener.onTimeSelect(mills, mHour, mMinute);
     }
 
     private void dateDialog() {

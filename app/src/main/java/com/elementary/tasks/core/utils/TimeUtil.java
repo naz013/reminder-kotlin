@@ -107,12 +107,14 @@ public class TimeUtil {
     public static String getGmtFromDateTime(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
+        gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
         return gmtDateFormat.format(calendar.getTime());
     }
 
     public static long getDateTimeFromGmt(String dateTime){
         Calendar calendar = Calendar.getInstance();
         try {
+            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
             Date date = gmtDateFormat.parse(dateTime);
             calendar.setTime(date);
         } catch (ParseException e) {
@@ -128,10 +130,11 @@ public class TimeUtil {
         else return fullDateTime12.format(calendar.getTime());
     }
 
-    public static String getFullDateTime(String dateTime, boolean is24){
+    public static String getDateTimeFromGmt(String dateTime, boolean is24){
         Calendar calendar = Calendar.getInstance();
         try {
-            Date date = timeStampFormat.parse(dateTime);
+            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = gmtDateFormat.parse(dateTime);
             calendar.setTime(date);
         } catch (ParseException e) {
             e.printStackTrace();
