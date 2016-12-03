@@ -39,6 +39,8 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
     private Context mContext;
     private AttributeSet attrs;
 
+    private TimerListener mListener;
+
     public TimerPickerView(Context context) {
         super(context);
         init(context, null);
@@ -125,7 +127,10 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
             b9.setOnClickListener(this);
             b0.setOnClickListener(this);
         }
+    }
 
+    public void setListener(TimerListener listener) {
+        this.mListener = listener;
     }
 
     private void updateTimeView() {
@@ -138,6 +143,7 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
             hoursView.setText(hours);
             minutesView.setText(minutes);
             secondsView.setText(seconds);
+            if (mListener != null) mListener.onTimerChange(getTimerValue());
         }
     }
 
@@ -152,5 +158,9 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
                 updateTimeView();
             }
         }
+    }
+
+    public interface TimerListener {
+        void onTimerChange(long time);
     }
 }

@@ -141,6 +141,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTimerBinding.inflate(inflater, container, false);
         binding.repeatView.setMultiplier(TimeCount.MINUTE);
+        binding.timerPickerView.setListener(binding.repeatView.getTimerListener());
         mInterface.setExclusionAction(view -> openExclusionDialog());
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
