@@ -36,6 +36,7 @@ public abstract class TypeFragment extends Fragment {
         if (mInterface == null) {
             mInterface = (ReminderInterface) context;
             mInterface.setExclusionAction(null);
+            mInterface.setRepeatAction(null);
         }
     }
 
@@ -48,6 +49,7 @@ public abstract class TypeFragment extends Fragment {
         if (mInterface == null) {
             mInterface = (ReminderInterface) activity;
             mInterface.setExclusionAction(null);
+            mInterface.setRepeatAction(null);
         }
     }
 }

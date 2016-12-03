@@ -575,6 +575,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         }
     }
 
+    @Override
+    public void setRepeatAction(View.OnClickListener listener) {
+        if (listener == null) {
+            mBinding.repeatButton.setVisibility(View.GONE);
+        } else {
+            mBinding.repeatButton.setVisibility(View.VISIBLE);
+            mBinding.repeatButton.setOnClickListener(listener);
+        }
+    }
+
     private class SpinnerItem {
         private String title;
         private int icon;

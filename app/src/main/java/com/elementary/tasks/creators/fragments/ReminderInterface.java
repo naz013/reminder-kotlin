@@ -62,4 +62,6 @@ public interface ReminderInterface {
     void showSnackbar(String title, String actionName, View.OnClickListener listener);
 
     void setExclusionAction(View.OnClickListener listener);
+
+    void setRepeatAction(View.OnClickListener listener);
 }
