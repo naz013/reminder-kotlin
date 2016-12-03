@@ -5,6 +5,7 @@ import android.content.Context;
 import com.elementary.tasks.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,9 +32,9 @@ public class IntervalUtil {
     public static final int INTERVAL_THREE_WEEKS = INTERVAL_WEEK * 3;
     public static final int INTERVAL_FOUR_WEEKS = INTERVAL_WEEK * 4;
 
-    public static ArrayList<Integer> getWeekRepeat(boolean mon, boolean tue, boolean wed, boolean thu, boolean fri,
+    public static List<Integer> getWeekRepeat(boolean mon, boolean tue, boolean wed, boolean thu, boolean fri,
                                                    boolean sat, boolean sun){
-        ArrayList<Integer> sb = new ArrayList<>(7);
+        List<Integer> sb = new ArrayList<>(7);
         sb.add(0, sun ? 1 : 0);
         sb.add(1, mon ? 1 : 0);
         sb.add(2, tue ? 1 : 0);
@@ -44,7 +45,7 @@ public class IntervalUtil {
         return sb;
     }
 
-    public static boolean isWeekday(ArrayList<Integer> weekday) {
+    public static boolean isWeekday(List<Integer> weekday) {
         for (int day : weekday) {
             if (day == ReminderUtils.DAY_CHECKED) {
                 return true;

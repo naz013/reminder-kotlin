@@ -252,6 +252,7 @@ public class TimeCount {
     }
 
     public static long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
+        if (weekdays == null) return 0;
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(startTime);
         cc.set(Calendar.SECOND, 0);
