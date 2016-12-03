@@ -60,7 +60,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
                     int color = r.nextInt(15);
                     taskList = new TaskListItem(item, color);
                 }
-                RealmDb.getInstance().saveTaskList(taskList);
+                RealmDb.getInstance().saveObject(taskList);
                 TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
                 RealmDb.getInstance().setDefault(listItem.getListId());
                 RealmDb.getInstance().setSystemDefault(listItem.getListId());
@@ -73,7 +73,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
                     } else {
                         taskItem = new TaskItem(task, listId);
                     }
-                    RealmDb.getInstance().saveTask(taskItem);
+                    RealmDb.getInstance().saveObject(taskItem);
                 }
             }
         }

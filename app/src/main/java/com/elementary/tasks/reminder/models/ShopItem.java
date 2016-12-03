@@ -16,7 +16,7 @@
 
 package com.elementary.tasks.reminder.models;
 
-import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.util.UUID;
 
@@ -90,10 +90,6 @@ public class ShopItem {
 
     @Override
     public String toString(){
-        return "Shopping->Summary: " + summary +
-                "->Date: " + TimeUtil.getDateTimeFromGmt(createTime, true) +
-                "->UUID: " + uuId +
-                "->Status: " + checked +
-                "->Deleted: " + visibility;
+        return SuperUtil.getObjectPrint(this, ShopItem.class);
     }
 }

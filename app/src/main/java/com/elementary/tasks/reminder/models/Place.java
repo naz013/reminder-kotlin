@@ -16,6 +16,8 @@
 
 package com.elementary.tasks.reminder.models;
 
+import com.elementary.tasks.core.utils.SuperUtil;
+
 public class Place {
 
     private int radius;
@@ -104,11 +106,6 @@ public class Place {
 
     @Override
     public String toString(){
-        return "Place->Name: " + name +
-                "->Address: " + address +
-                "->Id: " + id +
-                "->radius: " + radius +
-                "->longitude: " + longitude +
-                "->latitude: " + latitude;
+        return SuperUtil.getObjectPrint(this, Place.class);
     }
 }

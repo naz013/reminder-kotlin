@@ -1,5 +1,7 @@
 package com.elementary.tasks.places;
 
+import com.elementary.tasks.core.utils.SuperUtil;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -91,5 +93,10 @@ public class PlaceItem {
 
     public void setRadius(int radius) {
         this.radius = radius;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, PlaceItem.class);
     }
 }

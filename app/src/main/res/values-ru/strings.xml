@@ -580,4 +580,5 @@
     <string name="moving_task">Moving task...</string>
     <string name="deleting_task">Deleting task...</string>
     <string name="deleting_list">Deleting list...</string>
+    <string name="remove_exclusion">Remove exclusion</string>
 </resources>

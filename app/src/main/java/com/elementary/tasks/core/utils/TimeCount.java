@@ -29,6 +29,7 @@ import java.util.Locale;
 
 public class TimeCount {
 
+    private static final String TAG = "TimeCount";
     public final static long SECOND = 1000;
     public final static long MINUTE = 60 * SECOND;
     public final static long HOUR = MINUTE * 60;

@@ -88,7 +88,7 @@ public class GoogleTasks {
             }
             if (result != null) {
                 item.update(result);
-                RealmDb.getInstance().saveTask(item);
+                RealmDb.getInstance().saveObject(item);
                 return true;
             }
         }
@@ -159,7 +159,7 @@ public class GoogleTasks {
             try {
                 TaskList result = service.tasklists().insert(taskList).execute();
                 TaskListItem item = new TaskListItem(result, color);
-                RealmDb.getInstance().saveTaskList(item);
+                RealmDb.getInstance().saveObject(item);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -174,7 +174,7 @@ public class GoogleTasks {
             service.tasklists().update(listId, taskList).execute();
             TaskListItem item = RealmDb.getInstance().getTaskList(listId);
             item.update(taskList);
-            RealmDb.getInstance().saveTaskList(item);
+            RealmDb.getInstance().saveObject(item);
         }
     }
 

@@ -345,7 +345,7 @@ public class ActivityCreateNote extends ThemedActivity {
         mItem.setStyle(mFontStyle);
         boolean hasReminder = isReminderAttached();
         if (!hasReminder) removeNoteFromReminder(mItem.getKey());
-        RealmDb.getInstance().saveNote(mItem);
+        RealmDb.getInstance().saveObject(mItem);
         if (hasReminder){
             Calendar calendar = Calendar.getInstance();
             calendar.set(mYear, mMonth, mDay, mHour, mMinute);

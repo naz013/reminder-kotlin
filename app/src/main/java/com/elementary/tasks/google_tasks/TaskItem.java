@@ -1,9 +1,8 @@
 package com.elementary.tasks.google_tasks;
 
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.model.Task;
-
-import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -276,5 +275,10 @@ public class TaskItem {
 
     public void setHidden(int hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, TaskItem.class);
     }
 }

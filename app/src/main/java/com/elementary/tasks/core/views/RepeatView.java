@@ -144,7 +144,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         return mListener;
     }
 
-    private void initDateTime() {
+    public void initDateTime() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         year = cal.get(Calendar.YEAR);
@@ -198,7 +198,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         this.showPrediction = enable;
     }
 
-    private void setMultiplier(long multiplier) {
+    public void setMultiplier(long multiplier) {
         this.mMultiplier = multiplier;
         updatePrediction(repeatViewSeek.getProgress());
     }

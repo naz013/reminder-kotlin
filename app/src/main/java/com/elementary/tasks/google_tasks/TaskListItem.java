@@ -1,5 +1,6 @@
 package com.elementary.tasks.google_tasks;
 
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.services.tasks.model.TaskList;
 
 /**
@@ -134,5 +135,10 @@ public class TaskListItem {
 
     public void setSystemDefault(int systemDefault) {
         this.systemDefault = systemDefault;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, TaskListItem.class);
     }
 }

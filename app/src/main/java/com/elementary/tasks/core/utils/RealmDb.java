@@ -57,7 +57,26 @@ public class RealmDb {
         return instance;
     }
 
-    public void saveTemplate(TemplateItem item) {
+    public void saveObject(Object o) {
+        Log.d(TAG, "saveObject: " + o);
+        if (o instanceof TemplateItem) {
+            saveTemplate((TemplateItem) o);
+        } else if (o instanceof NoteItem) {
+            saveNote((NoteItem) o);
+        } else if (o instanceof PlaceItem) {
+            savePlace((PlaceItem) o);
+        } else if (o instanceof TaskItem) {
+            saveTask((TaskItem) o);
+        } else if (o instanceof TaskListItem) {
+            saveTaskList((TaskListItem) o);
+        } else if (o instanceof GroupItem) {
+            saveGroup((GroupItem) o);
+        } else if (o instanceof Reminder) {
+            saveReminder((Reminder) o);
+        }
+    }
+
+    private void saveTemplate(TemplateItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTemplate(item));
@@ -92,7 +111,7 @@ public class RealmDb {
         return items;
     }
 
-    public void saveGroup(GroupItem item) {
+    private void saveGroup(GroupItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmGroup(item));
@@ -167,7 +186,7 @@ public class RealmDb {
         return names;
     }
 
-    public void savePlace(PlaceItem item) {
+    private void savePlace(PlaceItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmPlace(item));
@@ -202,7 +221,7 @@ public class RealmDb {
         return items;
     }
 
-    public void saveNote(NoteItem item) {
+    private void saveNote(NoteItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmNote(item));
@@ -262,7 +281,7 @@ public class RealmDb {
         return items;
     }
 
-    public void saveTask(TaskItem item) {
+    private void saveTask(TaskItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTask(item));
@@ -421,7 +440,7 @@ public class RealmDb {
         return true;
     }
 
-    public void saveTaskList(TaskListItem item) {
+    private void saveTaskList(TaskListItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTaskList(item));
@@ -492,7 +511,7 @@ public class RealmDb {
         return true;
     }
 
-    public void saveReminder(Reminder item) {
+    private void saveReminder(Reminder item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmReminder(item));

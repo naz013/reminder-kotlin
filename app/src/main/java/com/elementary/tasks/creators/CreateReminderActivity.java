@@ -423,8 +423,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void save() {
-        fragment.save();
-        finish();
+        if (fragment.save()) {
+            finish();
+        }
     }
 
     @Override
@@ -562,6 +563,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public boolean isExportToTasks() {
         return false;
+    }
+
+    @Override
+    public void setExclusionAction(View.OnClickListener listener) {
+        if (listener == null) {
+            mBinding.exclusionButton.setVisibility(View.GONE);
+        } else {
+            mBinding.exclusionButton.setVisibility(View.VISIBLE);
+            mBinding.exclusionButton.setOnClickListener(listener);
+        }
     }
 
     private class SpinnerItem {

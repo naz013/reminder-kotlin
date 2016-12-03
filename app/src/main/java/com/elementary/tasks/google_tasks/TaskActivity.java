@@ -289,7 +289,7 @@ public class TaskActivity extends ThemedActivity {
 
                 @Override
                 public void onComplete() {
-                    RealmDb.getInstance().saveTask(mItem);
+                    RealmDb.getInstance().saveObject(mItem);
                     hideDialog();
                     finish();
                 }
@@ -358,7 +358,7 @@ public class TaskActivity extends ThemedActivity {
             mItem.setDueDate(due);
             if (listId != null) {
                 showProgressDialog(getString(R.string.saving));
-                RealmDb.getInstance().saveTask(mItem);
+                RealmDb.getInstance().saveObject(mItem);
                 new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, new TasksCallback() {
                     @Override
                     public void onFailed() {
@@ -376,7 +376,7 @@ public class TaskActivity extends ThemedActivity {
                 }).execute();
             } else {
                 showProgressDialog(getString(R.string.saving));
-                RealmDb.getInstance().saveTask(mItem);
+                RealmDb.getInstance().saveObject(mItem);
                 new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, mSimpleCallback).execute();
             }
         } else {

@@ -21,9 +21,14 @@ import android.view.View;
 
 public interface FragmentCallback {
     void replaceFragment(Fragment fragment, String title);
+
     void onTitleChange(String title);
+
     void onFragmentSelect(Fragment fragment);
+
     void setClick(View.OnClickListener listener);
+
     void onThemeChange(int primary, int primaryDark, int accent);
+
     void refreshMenu();
 }

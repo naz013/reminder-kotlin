@@ -25,7 +25,7 @@ public abstract class TypeFragment extends Fragment {
     protected Context mContext;
     protected ReminderInterface mInterface;
 
-    public abstract void save();
+    public abstract boolean save();
 
     @Override
     public void onAttach(Context context) {
@@ -35,6 +35,7 @@ public abstract class TypeFragment extends Fragment {
         }
         if (mInterface == null) {
             mInterface = (ReminderInterface) context;
+            mInterface.setExclusionAction(null);
         }
     }
 
@@ -46,6 +47,7 @@ public abstract class TypeFragment extends Fragment {
         }
         if (mInterface == null) {
             mInterface = (ReminderInterface) activity;
+            mInterface.setExclusionAction(null);
         }
     }
 }

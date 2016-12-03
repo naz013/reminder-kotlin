@@ -62,7 +62,7 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
                     int color = r.nextInt(15);
                     taskList = new TaskListItem(item, color);
                 }
-                RealmDb.getInstance().saveTaskList(taskList);
+                RealmDb.getInstance().saveObject(taskList);
                 List<Task> tasks = helper.getTasks(listId);
                 for (Task task : tasks) {
                     TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
@@ -72,7 +72,7 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
                     } else {
                         taskItem = new TaskItem(task, listId);
                     }
-                    RealmDb.getInstance().saveTask(taskItem);
+                    RealmDb.getInstance().saveObject(taskItem);
                 }
             }
         }
