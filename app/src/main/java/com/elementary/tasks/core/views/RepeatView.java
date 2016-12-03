@@ -233,8 +233,12 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         updatePrediction(repeat);
     }
 
-    public int getRepeat() {
+    public int getRepeatCode() {
         return repeat;
+    }
+
+    public long getRepeat() {
+        return repeat * mMultiplier;
     }
 
     @Override
