@@ -51,7 +51,7 @@
                 android:id="@+id/repeatView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="80dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 app:repeat_type_text="@string/days" />
 

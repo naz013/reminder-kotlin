@@ -41,6 +41,7 @@ import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.TimerFragment;
 import com.elementary.tasks.creators.fragments.TypeFragment;
+import com.elementary.tasks.creators.fragments.WeekFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -89,6 +90,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 1:
                     replaceFragment(new TimerFragment());
+                    break;
+                case 2:
+                    replaceFragment(new WeekFragment());
                     break;
             }
         }

@@ -1,6 +1,7 @@
 package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,17 +15,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
-import com.elementary.tasks.databinding.FragmentDateBinding;
+import com.elementary.tasks.databinding.FragmentWeekdaysBinding;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,12 +51,15 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class DateFragment extends RepeatableTypeFragment {
+public class WeekFragment extends RepeatableTypeFragment {
 
-    private static final String TAG = "DateFragment";
-    private static final int CONTACTS = 112;
+    private static final String TAG = "WeekFragment";
+    private static final int CONTACTS = 113;
 
-    private FragmentDateBinding binding;
+    protected int mHour = 0;
+    protected int mMinute = 0;
+
+    private FragmentWeekdaysBinding binding;
     private ActionView.OnActionListener mActionListener = new ActionView.OnActionListener() {
         @Override
         public void onActionChange(boolean hasAction) {
@@ -65,15 +77,29 @@ public class DateFragment extends RepeatableTypeFragment {
             }
         }
     };
+    private TimePickerDialog.OnTimeSetListener mTimeSelect = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+            mHour = hourOfDay;
+            mMinute = minute;
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            c.set(Calendar.MINUTE, minute);
+            String formattedTime = TimeUtil.getTime(c.getTime(), Prefs.getInstance(getActivity()).is24HourFormatEnabled());
+            binding.timeField.setText(formattedTime);
+        }
+    };
+    public View.OnClickListener timeClick = v -> new TimePickerDialog(getActivity(), mTimeSelect, mHour, mMinute,
+            Prefs.getInstance(getActivity()).is24HourFormatEnabled()).show();
 
-    public DateFragment() {
+    public WeekFragment() {
     }
 
     @Override
     public boolean save() {
         if (mInterface == null) return false;
         Reminder reminder = mInterface.getReminder();
-        int type = Reminder.BY_DATE;
+        int type = Reminder.BY_WEEK;
         boolean isAction = binding.actionView.hasAction();
         if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
             mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
@@ -87,23 +113,28 @@ public class DateFragment extends RepeatableTypeFragment {
                 return false;
             }
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
-                type = Reminder.BY_DATE_CALL;
+                type = Reminder.BY_WEEK_CALL;
             } else {
-                type = Reminder.BY_DATE_SMS;
+                type = Reminder.BY_WEEK_SMS;
             }
+        }
+        List<Integer> weekdays = getDays();
+        if (!IntervalUtil.isWeekday(weekdays)) {
+            Toast.makeText(mContext, getString(R.string.you_dont_select_any_day), Toast.LENGTH_SHORT).show();
+            return false;
         }
         if (reminder == null) {
             reminder = new Reminder();
         }
+        reminder.setWeekdays(weekdays);
         reminder.setTarget(number);
         reminder.setType(type);
-        long repeat = binding.repeatView.getRepeat();
-        reminder.setRepeatInterval(repeat);
+        reminder.setRepeatInterval(0);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, binding.dateView.getDateTime(), null, 0);
+        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, getTime(), weekdays, 0);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
@@ -111,6 +142,14 @@ public class DateFragment extends RepeatableTypeFragment {
         RealmDb.getInstance().saveObject(reminder);
 //        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
         return true;
+    }
+
+    private long getTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, mHour);
+        calendar.set(Calendar.MINUTE, mMinute);
+        return calendar.getTimeInMillis();
     }
 
     private void fillExtraData(Reminder reminder) {
@@ -156,9 +195,10 @@ public class DateFragment extends RepeatableTypeFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDateBinding.inflate(inflater, container, false);
-        binding.repeatView.enablePrediction(true);
-        binding.dateView.setEventListener(binding.repeatView.getEventListener());
+        binding = FragmentWeekdaysBinding.inflate(inflater, container, false);
+        binding.timeField.setOnClickListener(timeClick);
+        binding.timeField.setText(TimeUtil.getTime(updateTime(System.currentTimeMillis()),
+                Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
         binding.actionView.setListener(mActionListener);
         binding.actionView.setContactClickListener(view -> selectContact());
         if (mInterface.isExportToCalendar()) {
@@ -175,14 +215,60 @@ public class DateFragment extends RepeatableTypeFragment {
         return binding.getRoot();
     }
 
+    protected Date updateTime(long millis) {
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(millis);
+        mHour = cal.get(Calendar.HOUR_OF_DAY);
+        mMinute = cal.get(Calendar.MINUTE);
+        return cal.getTime();
+    }
+
+    private void setCheckForDays(List<Integer> weekdays){
+        if (weekdays.get(0) == 1) {
+            binding.sundayCheck.setChecked(true);
+        } else binding.sundayCheck.setChecked(false);
+        if (weekdays.get(1) == 1) {
+            binding.mondayCheck.setChecked(true);
+        } else binding.mondayCheck.setChecked(false);
+
+        if (weekdays.get(2) == 1) {
+            binding.tuesdayCheck.setChecked(true);
+        } else binding.tuesdayCheck.setChecked(false);
+
+        if (weekdays.get(3) == 1) {
+            binding. wednesdayCheck.setChecked(true);
+        } else binding.wednesdayCheck.setChecked(false);
+
+        if (weekdays.get(4) == 1) {
+            binding.thursdayCheck.setChecked(true);
+        } else binding.thursdayCheck.setChecked(false);
+
+        if (weekdays.get(5) == 1) {
+            binding.fridayCheck.setChecked(true);
+        } else binding.fridayCheck.setChecked(false);
+
+        if (weekdays.get(6) == 1) {
+            binding.saturdayCheck.setChecked(true);
+        } else binding.saturdayCheck.setChecked(false);
+    }
+
+    public List<Integer> getDays() {
+        return IntervalUtil.getWeekRepeat(binding.mondayCheck.isChecked(),
+                binding.tuesdayCheck.isChecked(), binding.wednesdayCheck.isChecked(),
+                binding.thursdayCheck.isChecked(), binding.fridayCheck.isChecked(),
+                binding.saturdayCheck.isChecked(), binding.sundayCheck.isChecked());
+    }
+
     private void editReminder() {
         if (mInterface.getReminder() == null) return;
         Reminder reminder = mInterface.getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
-        binding.dateView.setDateTime(reminder.getEventTime());
-        binding.repeatView.setDateTime(reminder.getEventTime());
-        binding.repeatView.setProgress(reminder.getRepeatInterval());
+        binding.timeField.setText(TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.getEventTime())),
+                Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
+        if (reminder.getWeekdays() != null && reminder.getWeekdays().size() > 0) {
+            setCheckForDays(reminder.getWeekdays());
+        }
         if (reminder.getTarget() != null) {
             binding.actionView.setAction(true);
             binding.actionView.setNumber(reminder.getTarget());
