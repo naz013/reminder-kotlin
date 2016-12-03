@@ -96,7 +96,9 @@ public class DateFragment extends RepeatableTypeFragment {
             }
         }
         reminder.setType(type);
-        reminder.setRepeatInterval(binding.repeatView.getRepeat());
+        long repeat = binding.repeatView.getRepeat();
+        Log.d(TAG, "save: rC " + repeat);
+        reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         fillExtraData(reminder);
