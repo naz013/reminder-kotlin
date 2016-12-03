@@ -70,34 +70,34 @@ public class DateFragment extends RepeatableTypeFragment {
     }
 
     @Override
-    public void save() {
-        if (mInterface == null) return;
+    public boolean save() {
+        if (mInterface == null) return false;
         Reminder reminder = mInterface.getReminder();
-        if (reminder == null) {
-            reminder = new Reminder();
-        }
+        int type = Reminder.BY_DATE;
         boolean isAction = binding.actionView.hasAction();
         if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
             mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
-            return;
+            return false;
         }
-        int type = Reminder.BY_DATE;
+        String number = null;
         if (isAction) {
-            String number = binding.actionView.getNumber();
+            number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
                 mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
-                return;
+                return false;
             }
-            reminder.setTarget(number);
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
                 type = Reminder.BY_DATE_CALL;
             } else {
                 type = Reminder.BY_DATE_SMS;
             }
         }
+        if (reminder == null) {
+            reminder = new Reminder();
+        }
+        reminder.setTarget(number);
         reminder.setType(type);
         long repeat = binding.repeatView.getRepeat();
-        Log.d(TAG, "save: rC " + repeat);
         reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
@@ -108,8 +108,9 @@ public class DateFragment extends RepeatableTypeFragment {
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
-        RealmDb.getInstance().saveReminder(reminder);
+        RealmDb.getInstance().saveObject(reminder);
 //        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+        return true;
     }
 
     private void fillExtraData(Reminder reminder) {
@@ -120,6 +121,8 @@ public class DateFragment extends RepeatableTypeFragment {
         reminder.setMelodyPath(mInterface.getMelodyPath());
         reminder.setVolume(mInterface.getVolume());
         reminder.setAuto(mInterface.getAuto());
+        reminder.setActive(true);
+        reminder.setRemoved(false);
         reminder.setVibrate(mInterface.getVibration());
         reminder.setNotifyByVoice(mInterface.getVoice());
         reminder.setRepeatNotification(mInterface.getNotificationRepeat());
@@ -168,7 +171,7 @@ public class DateFragment extends RepeatableTypeFragment {
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
         }
-        if (mInterface != null) editReminder();
+        editReminder();
         return binding.getRoot();
     }
 

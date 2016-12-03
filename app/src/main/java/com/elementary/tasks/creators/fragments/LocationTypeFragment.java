@@ -19,7 +19,8 @@ package com.elementary.tasks.creators.fragments;
 public class LocationTypeFragment extends TypeFragment {
 
     @Override
-    public void save() {
+    public boolean save() {
 
+        return true;
     }
 }

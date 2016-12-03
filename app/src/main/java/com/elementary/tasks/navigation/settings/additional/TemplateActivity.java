@@ -129,7 +129,7 @@ public class TemplateActivity extends ThemedActivity {
         } else {
             mItem = new TemplateItem(text, date);
         }
-        RealmDb.getInstance().saveTemplate(mItem);
+        RealmDb.getInstance().saveObject(mItem);
         finish();
     }
 

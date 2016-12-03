@@ -87,7 +87,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
             mItem.setDateTime(TimeUtil.getGmtDateTime());
             mItem.setTitle(text);
         }
-        RealmDb.getInstance().saveGroup(mItem);
+        RealmDb.getInstance().saveObject(mItem);
         finish();
     }
 

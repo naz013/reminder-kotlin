@@ -16,11 +16,13 @@
 
 package com.elementary.tasks.reminder.models;
 
-import android.util.Log;
-
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
+import com.elementary.tasks.core.utils.SuperUtil;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -122,7 +124,6 @@ public class Reminder implements RecyclerInterface {
     public Reminder() {
         this.uuId = UUID.randomUUID().toString();
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
-        Log.d(TAG, "Reminder: " + uniqueId);
     }
 
     public Reminder(RealmReminder item) {
@@ -553,7 +554,12 @@ public class Reminder implements RecyclerInterface {
 
     @Override
     public int getViewType() {
-        if (shoppings.size() > 0) return SHOPPING;
+        if (isSame(type, BY_DATE_SHOP)) return SHOPPING;
         else return REMINDER;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, Reminder.class);
     }
 }

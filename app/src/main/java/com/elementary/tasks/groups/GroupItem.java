@@ -1,5 +1,7 @@
 package com.elementary.tasks.groups;
 
+import com.elementary.tasks.core.utils.SuperUtil;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -66,5 +68,10 @@ public class GroupItem {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, GroupItem.class);
     }
 }

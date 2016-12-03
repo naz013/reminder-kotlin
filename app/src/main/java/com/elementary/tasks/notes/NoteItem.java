@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import com.elementary.tasks.core.utils.SuperUtil;
+
 import java.util.Random;
 
 /**
@@ -106,5 +108,10 @@ public class NoteItem {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, NoteItem.class);
     }
 }

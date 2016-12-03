@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="24dp">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                android:id="@+id/selectInterval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/interval"
+                app:check_font_style="roboto_light" />
+
+            <LinearLayout
+                android:id="@+id/intervalContainer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/create_margin"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:font_style="roboto_medium" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:font_style="roboto_medium" />
+
+            </LinearLayout>
+
+            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                android:id="@+id/selectHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/create_margin"
+                android:text="@string/hours"
+                app:check_font_style="roboto_light" />
+
+            <LinearLayout
+                android:id="@+id/hoursContainer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/zero"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="0"
+                        android:textOn="0"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/one"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="1"
+                        android:textOn="1"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/two"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="2"
+                        android:textOn="2"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/three"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="3"
+                        android:textOn="3"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/four"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="4"
+                        android:textOn="4"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/five"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="5"
+                        android:textOn="5"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/six"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="6"
+                        android:textOn="6"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/seven"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="7"
+                        android:textOn="7"
+                        android:textSize="@dimen/create_text_size_small" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/eight"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="8"
+                        android:textOn="8"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/nine"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="9"
+                        android:textOn="9"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/ten"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="10"
+                        android:textOn="10"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/eleven"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="11"
+                        android:textOn="11"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/twelve"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="12"
+                        android:textOn="12"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/thirteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="13"
+                        android:textOn="13"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/fourteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="14"
+                        android:textOn="14"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/fifteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="15"
+                        android:textOn="15"
+                        android:textSize="@dimen/create_text_size_small" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/sixteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="16"
+                        android:textOn="16"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/seventeen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="17"
+                        android:textOn="17"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/eighteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="18"
+                        android:textOn="18"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/nineteen"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="19"
+                        android:textOn="19"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/twenty"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="20"
+                        android:textOn="20"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/twentyOne"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="21"
+                        android:textOn="21"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/twentyTwo"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="22"
+                        android:textOn="22"
+                        android:textSize="@dimen/create_text_size_small" />
+
+                    <ToggleButton
+                        android:id="@+id/twentyThree"
+                        android:layout_width="@dimen/dialog_toggle_size"
+                        android:layout_height="@dimen/dialog_toggle_size"
+                        android:background="@drawable/toggle_blue"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textOff="23"
+                        android:textOn="23"
+                        android:textSize="@dimen/create_text_size_small" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+</layout>

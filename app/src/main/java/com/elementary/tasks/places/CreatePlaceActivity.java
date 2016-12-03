@@ -96,7 +96,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
             } else {
                 mItem = new PlaceItem(name, UUID.randomUUID().toString(), latitude, longitude, 0, Prefs.getInstance(this).getRadius());
             }
-            RealmDb.getInstance().savePlace(mItem);
+            RealmDb.getInstance().saveObject(mItem);
             finish();
         } else {
             Toast.makeText(this, getString(R.string.you_dont_select_place), Toast.LENGTH_SHORT).show();
