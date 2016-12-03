@@ -73,6 +73,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             updatePrediction(repeatViewSeek.getProgress());
         }
     };
+    private TimerPickerView.TimerListener mTimerListener = time -> initDateTime(System.currentTimeMillis() + time);
 
     public RepeatView(Context context) {
         super(context);
@@ -137,16 +138,20 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             repeatType.setText(titleText);
         }
         this.mContext = context;
-        initDateTime();
+        initDateTime(System.currentTimeMillis());
     }
 
     public DateTimeView.OnSelectListener getEventListener() {
         return mListener;
     }
 
-    public void initDateTime() {
+    public TimerPickerView.TimerListener getTimerListener() {
+        return mTimerListener;
+    }
+
+    public void initDateTime(long time) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.setTimeInMillis(time);
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH);
         day = cal.get(Calendar.DAY_OF_MONTH);
@@ -156,23 +161,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     }
 
     public void setDateTime(String dateTime) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(dateTime));
-        this.year = calendar.get(Calendar.YEAR);
-        this.month = calendar.get(Calendar.MONTH);
-        this.day = calendar.get(Calendar.DAY_OF_MONTH);
-        this.hour = calendar.get(Calendar.HOUR_OF_DAY);
-        this.minute = calendar.get(Calendar.MINUTE);
-        updatePrediction(repeatViewSeek.getProgress());
-    }
-
-    public void setDateTime(int year, int month, int day, int hour, int minute) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        updatePrediction(repeatViewSeek.getProgress());
+        initDateTime(TimeUtil.getDateTimeFromGmt(dateTime));
     }
 
     private void updatePrediction(int progress) {
