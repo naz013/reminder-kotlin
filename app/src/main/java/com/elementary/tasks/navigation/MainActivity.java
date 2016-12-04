@@ -54,6 +54,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private Fragment fragment;
 
     private int prevItem;
+    private int beforeSettings;
     private boolean isBackPressed;
     private long pressedTime;
 
@@ -163,8 +164,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                     onBackPressed();
                 }
             }
-            if (fragment instanceof SettingsFragment && !isBackPressed) {
-                firstBackPress();
+            if (fragment instanceof SettingsFragment) {
+                if (beforeSettings != 0) {
+                    openScreen(beforeSettings);
+                } else if (!isBackPressed) {
+                    firstBackPress();
+                }
             } else if (fragment instanceof BaseSettingsFragment) {
                 super.onBackPressed();
             } else if (!isBackPressed) {
@@ -209,10 +214,16 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 item.getItemId() != R.id.nav_help)) {
             return false;
         }
+        openScreen(item.getItemId());
         if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help) {
             prevItem = item.getItemId();
         }
-        switch (item.getItemId()) {
+        return true;
+    }
+
+    private void openScreen(int itemId) {
+        beforeSettings = 0;
+        switch (itemId) {
             case R.id.nav_current:
                 replaceFragment(new RemindersFragment(), getString(R.string.tasks));
                 break;
@@ -244,6 +255,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new ArchiveFragment(), getString(R.string.trash));
                 break;
             case R.id.nav_settings:
+                beforeSettings = prevItem;
                 replaceFragment(new SettingsFragment(), getString(R.string.settings));
                 break;
             case R.id.nav_feedback:
@@ -253,6 +265,5 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new DayViewFragment(), getString(R.string.help));
                 break;
         }
-        return true;
     }
 }
