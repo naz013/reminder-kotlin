@@ -39,6 +39,7 @@ import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.creators.fragments.SkypeFragment;
 import com.elementary.tasks.creators.fragments.TimerFragment;
 import com.elementary.tasks.creators.fragments.TypeFragment;
 import com.elementary.tasks.creators.fragments.WeekFragment;
@@ -94,6 +95,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 case 2:
                     replaceFragment(new WeekFragment());
                     break;
+                case 4:
+                    replaceFragment(new SkypeFragment());
+                    break;
             }
         }
 
@@ -138,7 +142,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case Reminder.BY_LOCATION_SMS:
                 spinner.setSelection(3);
                 break;
-            case Reminder.BY_SKYPE:
+            case Reminder.BY_SKYPE_CHAT:
             case Reminder.BY_SKYPE_CALL:
             case Reminder.BY_SKYPE_VIDEO:
                 spinner.setSelection(4);

@@ -145,7 +145,7 @@ public class ReminderUtils {
         } else if (Reminder.isSame(type, Reminder.BY_SKYPE_CALL)){
             String init = context.getString(R.string.skype_call);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE)){
+        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_CHAT)){
             String init = context.getString(R.string.skype_chat);
             res = init + " (" + getType(context, type) + ")";
         } else if (Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO)){

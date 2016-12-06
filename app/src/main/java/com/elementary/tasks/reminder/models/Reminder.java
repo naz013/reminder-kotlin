@@ -54,7 +54,7 @@ public class Reminder implements RecyclerInterface {
     public static final int BY_LOCATION = 40;
     public static final int BY_LOCATION_CALL = 41;
     public static final int BY_LOCATION_SMS = 42;
-    public static final int BY_SKYPE = 50;
+    public static final int BY_SKYPE_CHAT = 50;
     public static final int BY_SKYPE_CALL = 51;
     public static final int BY_SKYPE_VIDEO = 52;
     public static final int BY_MONTH = 60;

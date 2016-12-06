@@ -435,7 +435,9 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         int type = model.getType();
         String number = model.getTarget();
         textView.setVisibility(View.VISIBLE);
-        if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
+        if (Reminder.isBase(type, Reminder.BY_SKYPE_CHAT)) {
+            textView.setText(number);
+        } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
             String name = Contacts.getNameFromNumber(number, textView.getContext());
             if (name == null) {
                 textView.setText(number);
