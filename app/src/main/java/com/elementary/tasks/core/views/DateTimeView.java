@@ -104,14 +104,14 @@ public class DateTimeView extends RelativeLayout implements
     private void updateDateTime(long mills){
         if (mills == 0) {
             mills = System.currentTimeMillis();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(mills);
-            mYear = calendar.get(Calendar.YEAR);
-            mMonth = calendar.get(Calendar.MONTH);
-            mDay = calendar.get(Calendar.DAY_OF_MONTH);
-            mHour = calendar.get(Calendar.HOUR_OF_DAY);
-            mMinute = calendar.get(Calendar.MINUTE);
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mills);
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = calendar.get(Calendar.MINUTE);
         updateTime(mills);
         updateDate(mills);
     }
