@@ -28,7 +28,6 @@ import java.util.Locale;
 
 public class Prefs extends SharedPrefs {
 
-    private static final String PREFERENCES_NAME = "ui_settings";
     public static final String DRIVE_USER_NONE = "none";
 
     private static Prefs instance;
@@ -88,22 +87,6 @@ public class Prefs extends SharedPrefs {
         putInt(BIRTH_COLOR, value);
     }
 
-    public boolean isNightModeEnabled() {
-        return getBoolean(DAY_NIGHT);
-    }
-
-    public void setNightModeEnabled(boolean value) {
-        putBoolean(DAY_NIGHT, value);
-    }
-
-    public boolean isDarkModeEnabled() {
-        return getBoolean(USE_DARK_THEME);
-    }
-
-    public void setDarkModeEnabled(boolean value) {
-        putBoolean(USE_DARK_THEME, value);
-    }
-
     public boolean hasAppTheme() {
         return hasKey(APP_THEME);
     }
@@ -114,6 +97,14 @@ public class Prefs extends SharedPrefs {
 
     public void setAppTheme(int value) {
         putInt(APP_THEME, value);
+    }
+
+    public int getAppThemeColor() {
+        return getInt(APP_THEME_COLOR);
+    }
+
+    public void setAppThemeColor(int value) {
+        putInt(APP_THEME_COLOR, value);
     }
 
     public String getNightTime() {
@@ -813,11 +804,12 @@ public class Prefs extends SharedPrefs {
     }
 
     public void initPrefs(Context context) {
-        File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFERENCES_NAME + ".xml");
+        File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFS_NAME + ".xml");
         if (!settingsUI.exists()) {
-            SharedPreferences appUISettings = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+            SharedPreferences appUISettings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor uiEd = appUISettings.edit();
-            uiEd.putInt(APP_THEME, 8);
+            uiEd.putInt(APP_THEME, ThemeUtil.THEME_AUTO);
+            uiEd.putInt(APP_THEME_COLOR, 8);
             uiEd.putInt(TODAY_COLOR, 0);
             uiEd.putInt(BIRTH_COLOR, 2);
             uiEd.putInt(REMINDER_COLOR, 4);
@@ -868,7 +860,6 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(CONTACT_BIRTHDAYS, false);
             uiEd.putBoolean(BIRTHDAY_REMINDER, true);
             uiEd.putBoolean(CALENDAR_IMAGE, false);
-            uiEd.putBoolean(USE_DARK_THEME, false);
             uiEd.putBoolean(EXPORT_TO_CALENDAR, false);
             uiEd.putBoolean(AUTO_CHECK_BIRTHDAYS, false);
             uiEd.putBoolean(INFINITE_VIBRATION, false);
@@ -890,7 +881,6 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(REMINDER_IMAGE_BLUR, false);
             uiEd.putBoolean(SYSTEM_VOLUME, false);
             uiEd.putBoolean(INCREASING_VOLUME, false);
-            uiEd.putBoolean(DAY_NIGHT, false);
             if (Module.isPro()) {
                 uiEd.putBoolean(BIRTHDAY_LED_STATUS, false);
                 uiEd.putBoolean(LED_STATUS, true);
@@ -916,7 +906,10 @@ public class Prefs extends SharedPrefs {
             putInt(REMINDER_COLOR, 6);
         }
         if (!hasKey(APP_THEME)) {
-            putInt(APP_THEME, 8);
+            putInt(APP_THEME, ThemeUtil.THEME_AUTO);
+        }
+        if (!hasKey(APP_THEME_COLOR)) {
+            putInt(APP_THEME_COLOR, 8);
         }
         if (!hasKey(DRIVE_USER)) {
             putString(DRIVE_USER, DRIVE_USER_NONE);
@@ -994,10 +987,6 @@ public class Prefs extends SharedPrefs {
         if (!hasKey(SOUND_STREAM)) {
             putInt(SOUND_STREAM, 5);
         }
-
-        if (!hasKey(DAY_NIGHT)) {
-            putBoolean(DAY_NIGHT, false);
-        }
         if (!hasKey(RATE_SHOW)) {
             putBoolean(RATE_SHOW, false);
         }
@@ -1036,9 +1025,6 @@ public class Prefs extends SharedPrefs {
         }
         if (!hasKey(EXPORT_TO_STOCK)) {
             putBoolean(EXPORT_TO_STOCK, false);
-        }
-        if (!hasKey(USE_DARK_THEME)) {
-            putBoolean(USE_DARK_THEME, false);
         }
         if (!hasKey(EXPORT_TO_CALENDAR)) {
             putBoolean(EXPORT_TO_CALENDAR, false);

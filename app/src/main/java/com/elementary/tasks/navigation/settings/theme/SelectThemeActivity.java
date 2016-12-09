@@ -41,8 +41,8 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.theme));
-        int loaded = Prefs.getInstance(this).getAppTheme();
+        toolbar.setTitle(getString(R.string.theme_color));
+        int loaded = Prefs.getInstance(this).getAppThemeColor();
         ColorPickerView pickerView = (ColorPickerView) findViewById(R.id.pickerView);
         pickerView.setListener(this);
         pickerView.setSelectedColor(loaded);
@@ -52,7 +52,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     }
 
     private void saveColor(int code) {
-        Prefs.getInstance(this).setAppTheme(code);
+        Prefs.getInstance(this).setAppThemeColor(code);
         Prefs.getInstance(this).setUiChanged(true);
     }
 

@@ -565,4 +565,7 @@
     <string name="deleting_task">Deleting task...</string>
     <string name="deleting_list">Deleting list...</string>
     <string name="remove_exclusion">Remove exclusion</string>
+    <string name="theme_color">Theme color</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 </resources>

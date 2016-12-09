@@ -29,6 +29,9 @@ import java.util.Calendar;
 
 public class ThemeUtil {
 
+    public static final int THEME_AUTO = 0;
+    public static final int THEME_WHITE = 1;
+    public static final int THEME_DARK = 2;
     public static final int NUM_OF_MARKERS = 16;
 
     private Context mContext;
@@ -52,12 +55,12 @@ public class ThemeUtil {
 
     @ColorRes
     public int colorPrimary(){
-        return colorPrimary(Prefs.getInstance(mContext).getAppTheme());
+        return colorPrimary(Prefs.getInstance(mContext).getAppThemeColor());
     }
 
     @ColorRes
     public int colorAccent(){
-        return colorAccent(Prefs.getInstance(mContext).getAppTheme());
+        return colorAccent(Prefs.getInstance(mContext).getAppThemeColor());
     }
 
     @ColorRes
@@ -189,9 +192,9 @@ public class ThemeUtil {
 
     public boolean isDark() {
         Prefs prefs = Prefs.getInstance(mContext);
-        boolean isDark = prefs.isDarkModeEnabled();
-        boolean isDayNight = prefs.isNightModeEnabled();
-        if (isDayNight) {
+        int appTheme = prefs.getAppTheme();
+        boolean isDark = appTheme == THEME_DARK;
+        if (appTheme == THEME_AUTO) {
             Calendar calendar = Calendar.getInstance();
             long mTime = System.currentTimeMillis();
             calendar.setTimeInMillis(mTime);
@@ -208,7 +211,7 @@ public class ThemeUtil {
     @StyleRes
     public int getStyle(){
         int id;
-        int loadedColor = Prefs.getInstance(mContext).getAppTheme();
+        int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         if (isDark()) {
             switch (loadedColor) {
                 case 0:
@@ -479,7 +482,7 @@ public class ThemeUtil {
     }
 
     public Drawable toggleDrawable(){
-        int loadedColor = Prefs.getInstance(mContext).getAppTheme();
+        int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         int color;
         switch (loadedColor) {
             case 0:
@@ -610,7 +613,7 @@ public class ThemeUtil {
 
     @ColorRes
     public int colorPrimaryDark(){
-        int loadedColor = Prefs.getInstance(mContext).getAppTheme();
+        int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         return colorPrimaryDark(loadedColor);
     }
 
@@ -625,7 +628,7 @@ public class ThemeUtil {
     @StyleRes
     public int getDialogStyle(){
         int id;
-        int loadedColor = Prefs.getInstance(mContext).getAppTheme();
+        int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         if (isDark()) {
             switch (loadedColor) {
                 case 0:

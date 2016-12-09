@@ -17,17 +17,17 @@ package com.elementary.tasks.core.utils;
  */
 class PrefsConstants {
 
-    static final String EVENTS_CALENDAR = "events_cal";
-    static final String AUTO_CHECK_FOR_EVENTS = "auto_events";
-    static final String AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval";
-    static final String APP_THEME = "theme_";
-    static final String DRIVE_USER = "ggl_user";
-    static final String SCREEN = "screen";
-    static final String USE_DARK_THEME = "dark_theme";
-    static final String DAY_NIGHT = "day_night";
-    static final String MAP_TYPE = "new_map_type";
-    static final String LOCATION_RADIUS = "radius";
-    static final String TRACKING_NOTIFICATION = "tracking_notification";
+    protected static final String PREFS_NAME = "6_prefs";
+    protected static final String EVENTS_CALENDAR = "events_cal";
+    protected static final String AUTO_CHECK_FOR_EVENTS = "auto_events";
+    protected static final String AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval";
+    protected static final String APP_THEME = "theme_";
+    protected static final String APP_THEME_COLOR = "theme_color";
+    protected static final String DRIVE_USER = "ggl_user";
+    protected static final String SCREEN = "screen";
+    protected static final String MAP_TYPE = "new_map_type";
+    protected static final String LOCATION_RADIUS = "radius";
+    protected static final String TRACKING_NOTIFICATION = "tracking_notification";
     static final String VIBRATION_STATUS = "vibration_status";
     static final String SILENT_SOUND = "sound_status";
     static final String WAKE_STATUS = "wake_status";

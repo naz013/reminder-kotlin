@@ -1,13 +1,16 @@
 package com.elementary.tasks.navigation.settings;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
@@ -33,24 +36,35 @@ import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity;
 public class GeneralSettingsFragment extends BaseSettingsFragment {
 
     private FragmentSettingsGeneralBinding binding;
-    private View.OnClickListener mDarkClick = view -> changeNightMode();
-    private View.OnClickListener mDayNightClick = view -> changeDayNightMode();
     private View.OnClickListener mFoldingClick = view -> changeSmartFoldMode();
     private View.OnClickListener mWearClick = view -> changeWearNotification();
     private View.OnClickListener mThemeClick = view -> selectTheme();
     private View.OnClickListener mMainImageClick = view -> selectMainImage();
 
+    private int mItemSelect;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsGeneralBinding.inflate(inflater, container, false);
-        initTheme();
+        initAppTheme();
+        initThemeColor();
         initMainImage();
-        initDarkMode();
-        initDayNight();
         initSmartFold();
         initWearNotification();
         return binding.getRoot();
+    }
+
+    private void initAppTheme() {
+        binding.appThemePrefs.setDetailText(getCurrentTheme());
+        binding.appThemePrefs.setOnClickListener(view -> showThemeDialog());
+    }
+
+    private String getCurrentTheme() {
+        int theme = Prefs.getInstance(mContext).getAppTheme();
+        if (theme == ThemeUtil.THEME_AUTO) return getString(R.string.auto);
+        else if (theme == ThemeUtil.THEME_WHITE) return getString(R.string.light);
+        else return getString(R.string.dark);
     }
 
     @Override
@@ -60,6 +74,34 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
             mCallback.onTitleChange(getString(R.string.general));
             mCallback.onFragmentSelect(this);
         }
+    }
+
+    private void showThemeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setCancelable(true);
+        builder.setTitle(mContext.getString(R.string.theme));
+        String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark)};
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+                android.R.layout.simple_list_item_single_choice, colors);
+        int initTheme = Prefs.getInstance(mContext).getAppTheme();
+        mItemSelect = initTheme;
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
+            mItemSelect = which;
+        });
+        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
+            Prefs.getInstance(mContext).setAppTheme(mItemSelect);
+            dialog.dismiss();
+            if (initTheme != mItemSelect) restartApp();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
+        dialog.show();
+    }
+
+    private void restartApp() {
+        startActivity(new Intent(mContext, SplashScreen.class));
+        getActivity().finish();
     }
 
     private void selectMainImage() {
@@ -74,21 +116,9 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         startActivity(new Intent(mContext, SelectThemeActivity.class));
     }
 
-    private void initTheme() {
-        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getAppTheme()));
+    private void initThemeColor() {
+        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getAppThemeColor()));
         binding.themePrefs.setOnClickListener(mThemeClick);
-    }
-
-    private void initDarkMode() {
-        binding.darkPrefs.setChecked(Prefs.getInstance(mContext).isDarkModeEnabled());
-        binding.darkPrefs.setOnClickListener(mDarkClick);
-        binding.darkPrefs.setReverseDependentView(binding.dayNightPrefs);
-    }
-
-    private void initDayNight() {
-        binding.dayNightPrefs.setChecked(Prefs.getInstance(mContext).isNightModeEnabled());
-        binding.dayNightPrefs.setOnClickListener(mDayNightClick);
-        binding.dayNightPrefs.setReverseDependentView(binding.darkPrefs);
     }
 
     private void initSmartFold() {
@@ -111,19 +141,5 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.smartFoldPrefs.isChecked();
         Prefs.getInstance(mContext).setFoldingEnabled(!isChecked);
         binding.smartFoldPrefs.setChecked(!isChecked);
-    }
-
-    private void changeDayNightMode() {
-        boolean isChecked = binding.dayNightPrefs.isChecked();
-        Prefs.getInstance(mContext).setNightModeEnabled(!isChecked);
-        binding.dayNightPrefs.setChecked(!isChecked);
-        getActivity().recreate();
-    }
-
-    private void changeNightMode() {
-        boolean isChecked = binding.darkPrefs.isChecked();
-        Prefs.getInstance(mContext).setDarkModeEnabled(!isChecked);
-        binding.darkPrefs.setChecked(!isChecked);
-        getActivity().recreate();
     }
 }
