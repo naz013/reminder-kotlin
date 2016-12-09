@@ -37,6 +37,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.SkypeFragment;
@@ -97,6 +98,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 4:
                     replaceFragment(new SkypeFragment());
+                    break;
+                case 5:
+                    replaceFragment(new ApplicationFragment());
                     break;
             }
         }
