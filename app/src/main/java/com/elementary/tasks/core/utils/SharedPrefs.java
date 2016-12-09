@@ -37,7 +37,7 @@ abstract class SharedPrefs extends PrefsConstants {
     }
 
     SharedPrefs(Context context){
-        prefs = context.getSharedPreferences("ui_settings", Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     void putString(String stringToSave, String value){

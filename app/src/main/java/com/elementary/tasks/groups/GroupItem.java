@@ -1,6 +1,9 @@
 package com.elementary.tasks.groups;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
+
+import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,6 +32,13 @@ public class GroupItem {
         this.dateTime = item.getDateTime();
         this.uuId = item.getUuId();
         this.title = item.getTitle();
+    }
+
+    public GroupItem(String title, int color) {
+        this.title = title;
+        this.uuId = UUID.randomUUID().toString();
+        this.color = color;
+        this.dateTime = TimeUtil.getGmtDateTime();
     }
 
     public GroupItem(String title, String uuId, int color, String dateTime) {

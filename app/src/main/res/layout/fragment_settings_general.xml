@@ -12,29 +12,21 @@
             android:orientation="vertical">
 
             <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/themePrefs"
+                android:id="@+id/appThemePrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/theme"
+                app:prefs_secondary_text="@string/auto"
+                app:prefs_type="none" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/themePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/theme_color"
                 app:prefs_type="view" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/darkPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/dark_mode"
-                app:prefs_type="check" />
-
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/dayNightPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/day_night"
-                app:prefs_secondary_text="@string/enable_changing_theme_during_day"
-                app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/mainImagePrefs"
