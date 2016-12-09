@@ -79,7 +79,11 @@ public class SuperUtil {
             } else if (type == Boolean.TYPE) {
                 return field.getBoolean(clazz) + "";
             } else {
-                return (String) field.get(clazz);
+                try {
+                    return (String) field.get(clazz);
+                } catch (ClassCastException e) {
+                    return "array";
+                }
             }
         } else {
             String res = "{ ";

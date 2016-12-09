@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -331,7 +332,7 @@ public class ActivityCreateNote extends ThemedActivity {
 
     private void saveNote() {
         String note = taskField.getText().toString().trim();
-        if (note.matches("") && mItem.getImage() == null) {
+        if (TextUtils.isEmpty(note) && mImage == null) {
             taskField.setError(getString(R.string.must_be_not_empty));
             return;
         }
@@ -339,7 +340,7 @@ public class ActivityCreateNote extends ThemedActivity {
             mItem = new NoteItem(UUID.randomUUID().toString());
         }
         mItem.setSummary(note);
-        mItem.setDate(TimeUtil.getTimeStamp());
+        mItem.setDate(TimeUtil.getGmtDateTime());
         mItem.setImage(mImage);
         mItem.setColor(mColor);
         mItem.setStyle(mFontStyle);
@@ -516,7 +517,7 @@ public class ActivityCreateNote extends ThemedActivity {
         img = bitmapImage;
         if (bitmapImage != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             mImage = outputStream.toByteArray();
             noteImage.setImageBitmap(bitmapImage);
             if (!isImageAttached()) {
