@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:background="@android:color/transparent"
                 app:loadImage='@{note.image}' />
 
             <TextView
