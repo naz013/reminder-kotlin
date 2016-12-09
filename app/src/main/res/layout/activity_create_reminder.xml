@@ -70,7 +70,9 @@
                             android:drawableLeft="@drawable/ic_local_offe_white_24dp"
                             android:drawablePadding="8dp"
                             android:gravity="center"
-                            android:text="General"
+                            android:text="@string/general"
+                            android:maxLines="1"
+                            android:maxLength="15"
                             android:textColor="@color/material_white"
                             android:textSize="18sp" />
 
