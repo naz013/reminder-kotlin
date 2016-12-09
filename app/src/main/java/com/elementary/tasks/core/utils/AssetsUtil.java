@@ -56,6 +56,6 @@ public class AssetsUtil {
     }
 
     public static Typeface getDefaultTypeface(Context context){
-        return Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+        return getTypeface(context, 9);
     }
 }

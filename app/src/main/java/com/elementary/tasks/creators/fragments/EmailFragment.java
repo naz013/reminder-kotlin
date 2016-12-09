@@ -2,9 +2,9 @@ package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,15 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.apps.ApplicationActivity;
+import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.databinding.FragmentReminderApplicationBinding;
+import com.elementary.tasks.databinding.FragmentReminderEmailBinding;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import java.io.File;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,43 +44,49 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class ApplicationFragment extends RepeatableTypeFragment {
+public class EmailFragment extends RepeatableTypeFragment {
 
+    private static final int FILE_REQUEST = 323;
     private static final String TAG = "DateFragment";
 
-    private FragmentReminderApplicationBinding binding;
-    private String selectedPackage;
-    public View.OnClickListener appClick = v ->
-            getActivity().startActivityForResult(new Intent(getActivity(), ApplicationActivity.class), Constants.REQUEST_CODE_APPLICATION);
+    private FragmentReminderEmailBinding binding;
+    private String attachment;
 
-    public ApplicationFragment() {
+    public View.OnClickListener fileClick = v -> {
+        if (Permissions.checkPermission(getActivity(), Permissions.READ_EXTERNAL)) {
+            getActivity().startActivityForResult(new Intent(getActivity(), FileExplorerActivity.class)
+                    .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
+        } else {
+            Permissions.requestPermission(getActivity(), 331,
+                    Permissions.READ_EXTERNAL);
+        }
+    };
+
+    public EmailFragment() {
     }
 
     @Override
     public boolean save() {
         if (mInterface == null) return false;
         Reminder reminder = mInterface.getReminder();
-        int type = getType();
-        String number;
-        if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            number = selectedPackage;
-            if (TextUtils.isEmpty(number)) {
-                mInterface.showSnackbar(getString(R.string.you_dont_select_application));
-                return false;
-            }
-        } else {
-            number = binding.phoneNumber.getText().toString().trim();
-            if (TextUtils.isEmpty(number) || number.matches(".*https?://")) {
-                mInterface.showSnackbar(getString(R.string.you_dont_insert_link));
-                return false;
-            }
-            if (!number.startsWith("http://") && !number.startsWith("https://"))
-                number = "http://" + number;
+        int type = Reminder.BY_DATE_EMAIL;
+        String email = binding.mail.getText().toString().trim();
+        if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*")) {
+            mInterface.showSnackbar(getString(R.string.email_is_incorrect));
+            return false;
+        }
+        String subjectString = binding.subject.getText().toString().trim();
+        if (TextUtils.isEmpty(subjectString)) {
+            mInterface.showSnackbar(getString(R.string.you_dont_insert_any_message));
+            return false;
         }
         if (reminder == null) {
             reminder = new Reminder();
         }
-        reminder.setTarget(number);
+        reminder.setAttachmentFile(attachment);
+        reminder.setSubject(subjectString);
+        reminder.setSummary(mInterface.getSummary());
+        reminder.setTarget(email);
         reminder.setType(type);
         long repeat = binding.repeatView.getRepeat();
         reminder.setRepeatInterval(repeat);
@@ -96,16 +104,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         return true;
     }
 
-    private int getType() {
-        if (binding.application.isChecked()) {
-            return Reminder.BY_DATE_APP;
-        } else {
-            return Reminder.BY_DATE_LINK;
-        }
-    }
-
     private void fillExtraData(Reminder reminder) {
-        reminder.setSummary(mInterface.getSummary());
         reminder.setGroupUuId(mInterface.getGroup());
         reminder.setRepeatLimit(mInterface.getRepeatLimit());
         reminder.setColor(mInterface.getLedColor());
@@ -147,10 +146,10 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentReminderApplicationBinding.inflate(inflater, container, false);
-        binding.pickApplication.setOnClickListener(appClick);
-        if (ThemeUtil.getInstance(mContext).isDark()) binding.pickApplication.setImageResource(R.drawable.ic_launch_white_24dp);
-        else binding.pickApplication.setImageResource(R.drawable.ic_launch_black_24dp);
+        binding = FragmentReminderEmailBinding.inflate(inflater, container, false);
+        binding.chooseFile.setOnClickListener(fileClick);
+        if (ThemeUtil.getInstance(mContext).isDark()) binding.chooseFile.setImageResource(R.drawable.ic_attach_file_white_24dp);
+        else binding.chooseFile.setImageResource(R.drawable.ic_attach_file_black_24dp);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
         mInterface.setEventHint(getString(R.string.subject));
@@ -164,15 +163,9 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
         }
-        binding.phoneNumber.setVisibility(View.GONE);
-        binding.application.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (!b) {
-                ViewUtils.collapse(binding.applicationLayout);
-                ViewUtils.expand(binding.phoneNumber);
-            } else {
-                ViewUtils.collapse(binding.phoneNumber);
-                ViewUtils.expand(binding.applicationLayout);
-            }
+        binding.fileName.setOnClickListener(v -> {
+            attachment = null;
+            showAttachment();
         });
         editReminder();
         return binding.getRoot();
@@ -181,37 +174,51 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     private void editReminder() {
         if (mInterface.getReminder() == null) return;
         Reminder reminder = mInterface.getReminder();
+        attachment = reminder.getAttachmentFile();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());
         binding.repeatView.setDateTime(reminder.getEventTime());
         binding.repeatView.setProgress(reminder.getRepeatInterval());
-        if (reminder.getTarget() != null) {
-            if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_APP)) {
-                binding.application.setChecked(true);
-                selectedPackage = reminder.getTarget();
-                binding.applicationName.setText(getAppName());
-            } else {
-                binding.browser.setChecked(true);
-                binding.phoneNumber.setText(reminder.getTarget());
-            }
-        }
+        binding.mail.setText(reminder.getTarget());
+        binding.subject.setText(reminder.getSubject());
+        showAttachment();
     }
 
-    private String getAppName() {
-        PackageManager packageManager = mContext.getPackageManager();
-        ApplicationInfo applicationInfo = null;
-        try {
-            applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0);
-        } catch (final PackageManager.NameNotFoundException ignored) {}
-        return (String)((applicationInfo != null) ? packageManager.getApplicationLabel(applicationInfo) : "???");
+    private void showAttachment() {
+        if (attachment != null) {
+            File file = new File(attachment);
+            binding.fileName.setText(file.getName());
+        } else binding.fileName.setText(getString(R.string.no_files_attached));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_APPLICATION && resultCode == Activity.RESULT_OK) {
-            selectedPackage = data.getStringExtra(Constants.SELECTED_APPLICATION);
-            binding.applicationName.setText(getAppName());
+        if (requestCode == FILE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK){
+                attachment = data.getStringExtra(Constants.FILE_PICKED);
+                if (attachment != null) {
+                    File file = new File(attachment);
+                    binding.fileName.setText(file.getPath());
+                    mInterface.showSnackbar(String.format(getString(R.string.file_x_attached), file.getName()),
+                            getString(R.string.cancel), v -> {
+                                attachment = null;
+                                binding.fileName.setText(null);
+                            });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 331:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(mContext, FileExplorerActivity.class)
+                            .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
+                }
+                break;
         }
     }
 }

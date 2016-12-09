@@ -143,6 +143,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         binding.repeatView.setMultiplier(TimeCount.MINUTE);
         binding.timerPickerView.setListener(binding.repeatView.getTimerListener());
         mInterface.setExclusionAction(view -> openExclusionDialog());
+        mInterface.setEventHint(getString(R.string.subject));
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {

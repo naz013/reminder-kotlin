@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +41,7 @@ import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
+import com.elementary.tasks.creators.fragments.EmailFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.SkypeFragment;
 import com.elementary.tasks.creators.fragments.TimerFragment;
@@ -59,6 +62,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
+    private static final int CONTACTS_REQUEST_E = 501;
+    private static final int CONTACTS_REQUEST_C = 502;
     private static final String TAG = "CreateReminderActivity";
 
     private ActivityCreateReminderBinding mBinding;
@@ -101,6 +106,13 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 5:
                     replaceFragment(new ApplicationFragment());
+                    break;
+                case 9:
+                    if (Permissions.checkPermission(CreateReminderActivity.this, Permissions.READ_CONTACTS)) {
+                        replaceFragment(new EmailFragment());
+                    } else {
+                        Permissions.requestPermission(CreateReminderActivity.this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS);
+                    }
                     break;
             }
         }
@@ -473,6 +485,19 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             }
         }
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CONTACTS_REQUEST_E:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    spinner.setSelection(9);
+                } else {
+                    spinner.setSelection(0);
+                }
+                break;
+        }
     }
 
     @Override
