@@ -19,6 +19,7 @@ import com.elementary.tasks.places.RealmPlace;
 import com.elementary.tasks.reminder.models.RealmReminder;
 import com.elementary.tasks.reminder.models.Reminder;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +106,8 @@ public class RealmDb {
         List<RealmTemplate> list = realm.where(RealmTemplate.class).findAll();
         List<TemplateItem> items = new ArrayList<>();
         for (RealmTemplate template : list) {
-            items.add(new TemplateItem(template));
+            WeakReference<TemplateItem> reference = new WeakReference<>(new TemplateItem(template));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -160,7 +162,8 @@ public class RealmDb {
         List<RealmGroup> list = realm.where(RealmGroup.class).findAll();
         List<GroupItem> items = new ArrayList<>();
         for (RealmGroup object : list) {
-            items.add(new GroupItem(object));
+            WeakReference<GroupItem> reference = new WeakReference<>(new GroupItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -171,7 +174,8 @@ public class RealmDb {
         realm.beginTransaction();
         List<RealmGroup> list = realm.where(RealmGroup.class).findAll();
         for (RealmGroup object : list) {
-            items.add(new GroupItem(object));
+            WeakReference<GroupItem> reference = new WeakReference<>(new GroupItem(object));
+            items.add(reference.get());
         }
         if (uuId == null) uuId = "";
         List<String> names = new ArrayList<>();
@@ -215,7 +219,8 @@ public class RealmDb {
         List<RealmPlace> list = realm.where(RealmPlace.class).findAll();
         List<PlaceItem> items = new ArrayList<>();
         for (RealmPlace object : list) {
-            items.add(new PlaceItem(object));
+            WeakReference<PlaceItem> reference = new WeakReference<>(new PlaceItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -275,7 +280,8 @@ public class RealmDb {
         List<RealmNote> list = realm.where(RealmNote.class).findAllSorted(field, order);
         List<NoteItem> items = new ArrayList<>();
         for (RealmNote object : list) {
-            items.add(new NoteItem(object));
+            WeakReference<NoteItem> reference = new WeakReference<>(new NoteItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -331,7 +337,8 @@ public class RealmDb {
         List<RealmTask> list = realm.where(RealmTask.class).findAllSorted(field, order);
         List<TaskItem> items = new ArrayList<>();
         for (RealmTask object : list) {
-            items.add(new TaskItem(object));
+            WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -363,7 +370,8 @@ public class RealmDb {
         List<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).findAllSorted(field, order);
         List<TaskItem> items = new ArrayList<>();
         for (RealmTask object : list) {
-            items.add(new TaskItem(object));
+            WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -417,7 +425,8 @@ public class RealmDb {
         List<RealmTaskList> list = realm.where(RealmTaskList.class).findAll();
         List<TaskListItem> items = new ArrayList<>();
         for (RealmTaskList object : list) {
-            items.add(new TaskListItem(object));
+            WeakReference<TaskListItem> reference = new WeakReference<>(new TaskListItem(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -526,7 +535,8 @@ public class RealmDb {
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
-            items.add(new Reminder(object));
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -540,7 +550,8 @@ public class RealmDb {
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("groupUuId", groupId).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
-            items.add(new Reminder(object));
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;
@@ -554,7 +565,8 @@ public class RealmDb {
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
-            items.add(new Reminder(object));
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;

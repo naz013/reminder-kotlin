@@ -599,7 +599,6 @@ public class ActivityCreateNote extends ThemedActivity {
         };
         builder.setSingleChoiceItems(adapter, mFontStyle, (dialog, which) -> {
             mFontStyle = which;
-            mItem.setStyle(mFontStyle);
             updateTextStyle();
         });
         builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());

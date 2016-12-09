@@ -58,6 +58,13 @@ public class Events {
         return events.indexOf(event);
     }
 
+    public Event getNextWithoutMoving() {
+        int index = mPosition + 1;
+        if (events != null && index < events.size()) {
+            return events.get(index);
+        } else return null;
+    }
+
     public Event getNext() {
         if (events != null && mPosition < events.size()) {
             Event event = events.get(mPosition);
