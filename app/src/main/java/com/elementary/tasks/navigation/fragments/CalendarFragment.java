@@ -113,7 +113,7 @@ public class CalendarFragment extends BaseNavigationFragment {
         for (int i = 0; i < 100; i++) {
             Events events = new Events();
             int color = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(mContext).getReminderColor()));
-            for (int j = 0; j < 16; j++) {
+            for (int j = 0; j < 9; j++) {
                 events.addEvent("Event " + j, color, Events.Type.REMINDER);
             }
             map.put(FlextHelper.convertToDateTime(calendar.getTimeInMillis()), events);

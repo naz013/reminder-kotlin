@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -45,23 +46,28 @@ public class MonthView extends View implements View.OnTouchListener {
     private static final String TAG = "MonthView";
     private static final int ROWS = 6;
     private static final int COLS = 7;
-    private static final int GRID_R_C = 4;
+    private static final int GRID_R_C = 3;
     private static final long LONG_CLICK_TIME = 1500;
 
     private int mYear;
     private int mMonth;
     private int mDay;
+    private int currentYear;
+    private int currentMonth;
+    private int currentDay;
     private ArrayList<DateTime> mDateTimeList;
     private HashMap<DateTime, Events> eventsMap = new HashMap<>();
 
     private Context mContext;
 
     private Paint paint;
+    private Paint circlePaint;
     private List<Rect> mCells;
     private Map<Rect, List<Rect>> circlesMap = new HashMap<>();
     private int mWidth;
     private int mHeight;
     private int mDefaultColor;
+    private int mTodayColor;
     private int mTouchPosition = -1;
     private Rect mTouchRect;
 
@@ -98,16 +104,22 @@ public class MonthView extends View implements View.OnTouchListener {
         this.mContext = context;
         this.paint = new Paint();
         this.paint.setAntiAlias(true);
+        this.circlePaint = new Paint();
+        this.circlePaint.setAntiAlias(true);
         ThemeUtil themeUtil = ThemeUtil.getInstance(context);
         if (themeUtil.isDark()) {
             mDefaultColor = Color.WHITE;
         } else {
             mDefaultColor = Color.BLACK;
         }
-        paint.setTypeface(AssetsUtil.getTypeface(context, 9));
+        mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(context).getTodayColor()));
+        paint.setTypeface(AssetsUtil.getTypeface(context, 7));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH) + 1;
+        currentDay = mDay;
+        currentMonth = calendar.get(Calendar.MONTH);
+        currentYear = calendar.get(Calendar.YEAR);
         setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
         setOnTouchListener(this);
     }
@@ -127,9 +139,9 @@ public class MonthView extends View implements View.OnTouchListener {
     public void setDate(int year, int month) {
         mDateTimeList = new ArrayList<>();
         mDateTimeList.clear();
-        mMonth = month;
+        mMonth = month + 1;
         mYear = year;
-        DateTime firstDateOfMonth = new DateTime(mYear, month + 1, 1, 0, 0, 0, 0);
+        DateTime firstDateOfMonth = new DateTime(mYear, mMonth, 1, 0, 0, 0, 0);
         DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.getNumDaysInMonth() - 1);
         int weekdayOfFirstDate = firstDateOfMonth.getWeekDay();
         int startDayOfWeek = Prefs.getInstance(mContext).getStartDay() + 1;
@@ -167,8 +179,8 @@ public class MonthView extends View implements View.OnTouchListener {
         int numOfDays = 42 - size;
         DateTime lastDateTime = mDateTimeList.get(size - 1);
         for (int i = 1; i <= numOfDays; i++) {
-            DateTime nextDateTime = lastDateTime.plusDays(i);
-            mDateTimeList.add(nextDateTime);
+            WeakReference<DateTime> nextDateTime = new WeakReference<>(lastDateTime.plusDays(i));
+            mDateTimeList.add(nextDateTime.get());
         }
     }
 
@@ -183,12 +195,15 @@ public class MonthView extends View implements View.OnTouchListener {
             Rect rect = mCells.get(i);
             int color = mDefaultColor;
             DateTime dateTime = mDateTimeList.get(i);
-            Log.d(TAG, "onDraw: " + dateTime);
-            if (eventsMap.containsKey(dateTime)) {
-                drawEvents(canvas, eventsMap.get(dateTime), rect);
-            }
-            if (dateTime.getDay() == mDay && dateTime.getMonth() == mMonth + 1 && dateTime.getYear() == mYear) {
-                color = Color.RED;
+            if (mYear != dateTime.getYear() || mMonth != dateTime.getMonth()) {
+                color = Color.GRAY;
+            } else {
+                if (eventsMap.containsKey(dateTime)) {
+                    drawEvents(canvas, eventsMap.get(dateTime), rect);
+                }
+                if (dateTime.getDay() == currentDay && dateTime.getMonth() == currentMonth && dateTime.getYear() == currentYear) {
+                    color = mTodayColor;
+                }
             }
             drawRectText(dateTime.getDay().toString(), canvas, rect, color);
         }
@@ -196,31 +211,33 @@ public class MonthView extends View implements View.OnTouchListener {
     }
 
     private void drawEvents(Canvas canvas, Events events, Rect rect) {
-//        Log.d(TAG, "drawEvents: " + events);
         List<Rect> rects = circlesMap.get(rect);
         int index = 0;
         events.moveToStart();
-        paint.setAlpha(50);
-        paint.setStyle(Paint.Style.FILL);
-        while (events.hasNext() && index < GRID_R_C * GRID_R_C) {
-            Events.Event event = events.getNext();
-            paint.setColor(event.getColor());
+        circlePaint.setAlpha(50);
+        circlePaint.setStyle(Paint.Style.FILL);
+        int maxEvents = GRID_R_C * GRID_R_C;
+        while (events.hasNext() && index < maxEvents) {
+            WeakReference<Events.Event> event = new WeakReference<>(events.getNext());
+            circlePaint.setColor(event.get().getColor());
             Rect r = rects.get(index);
-            canvas.drawCircle(r.centerX(), r.centerY(), r.width() / 4f, paint);
+            int cX = r.centerX();
+            int cY = r.centerY();
+            if (index < maxEvents - 1) {
+                WeakReference<Events.Event> next = new WeakReference<>(events.getNextWithoutMoving());
+                if (next.get() != null) {
+                    Rect end = rects.get(index + 1);
+                    canvas.drawLine(cX, cY, end.centerX(), end.centerY(), circlePaint);
+                }
+            }
+            canvas.drawCircle(r.centerX(), r.centerY(), r.width() / 4f, circlePaint);
             index++;
-        }
-        index--;
-        while (index > 0) {
-            Rect st = rects.get(index);
-            Rect end = rects.get(index - 1);
-            canvas.drawLine(st.centerX(), st.centerY(), end.centerX(), end.centerY(), paint);
-            index--;
         }
     }
 
     private void initCells() {
-        Rect bounds = new Rect();
-        getLocalVisibleRect(bounds);
+        WeakReference<Rect> bounds = new WeakReference<>(new Rect());
+        getLocalVisibleRect(bounds.get());
         int cellWidth = mWidth / COLS;
         int cellHeight = mHeight / ROWS;
         mCells = new ArrayList<>();
@@ -245,15 +262,15 @@ public class MonthView extends View implements View.OnTouchListener {
             for (int j = 0; j < GRID_R_C; j++) {
                 int top = i * circleHeight + rectTop;
                 int left = j * circleWidth + rectLeft;
-                Rect tmp = new Rect(left, top, left + circleWidth, top + circleHeight);
-                rects.add(tmp);
+                WeakReference<Rect> tmp = new WeakReference<>(new Rect(left, top, left + circleWidth, top + circleHeight));
+                rects.add(tmp.get());
             }
         }
         circlesMap.put(rect, rects);
     }
 
     private void drawRectText(String text, Canvas canvas, Rect r, int color) {
-        paint.setTextSize(25);
+        paint.setTextSize(30);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setAlpha(100);
         paint.setColor(color);
