@@ -54,7 +54,7 @@ import java.util.List;
 public class WeekFragment extends RepeatableTypeFragment {
 
     private static final String TAG = "WeekFragment";
-    private static final int CONTACTS = 113;
+    private static final int CONTACTS = 112;
 
     protected int mHour = 0;
     protected int mMinute = 0;
@@ -200,6 +200,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         binding.timeField.setText(TimeUtil.getTime(updateTime(System.currentTimeMillis()),
                 Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
         binding.actionView.setListener(mActionListener);
+        binding.actionView.setActivity(getActivity());
         binding.actionView.setContactClickListener(view -> selectContact());
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
@@ -302,6 +303,11 @@ public class WeekFragment extends RepeatableTypeFragment {
             case CONTACTS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     selectContact();
+                }
+                break;
+            case DateFragment.CONTACTS_ACTION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    binding.actionView.setAction(true);
                 }
                 break;
         }

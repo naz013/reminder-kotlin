@@ -16,6 +16,7 @@
 
 package com.elementary.tasks.core.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -24,11 +25,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
+import com.elementary.tasks.creators.fragments.DateFragment;
 
 public class ActionView extends LinearLayout {
 
@@ -43,6 +46,7 @@ public class ActionView extends LinearLayout {
     private InputMethodManager imm;
 
     private Context mContext;
+    private Activity activity;
 
     private OnActionListener listener;
 
@@ -102,6 +106,10 @@ public class ActionView extends LinearLayout {
         });
         actionCheck = (RoboCheckBox) findViewById(R.id.actionCheck);
         actionCheck.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (!Permissions.checkPermission(activity, Permissions.READ_CONTACTS)) {
+                Permissions.requestPermission(activity, DateFragment.CONTACTS_ACTION, Permissions.READ_CONTACTS);
+                return;
+            }
             if (b){
                 ViewUtils.showOver(actionBlock);
             } else {
@@ -114,6 +122,10 @@ public class ActionView extends LinearLayout {
         if (actionCheck.isChecked()) {
             ViewUtils.showOver(actionBlock);
         }
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public void setContactClickListener(OnClickListener contactClickListener) {
