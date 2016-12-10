@@ -38,7 +38,7 @@ public class ReminderControl {
     }
 
     public boolean moveToTrash(Reminder reminder) {
-        RealmDb.getInstance().deleteReminder(reminder.getUuId());
+        RealmDb.getInstance().moveToTrash(reminder.getUuId());
         return true;
     }
 }

@@ -520,6 +520,17 @@ public class RealmDb {
         return true;
     }
 
+    public boolean moveToTrash(String id){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
+        if (object != null) {
+            object.setRemoved(true);
+        }
+        realm.commitTransaction();
+        return true;
+    }
+
     private void saveReminder(Reminder item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
