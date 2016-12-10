@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.util.Log;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -102,29 +103,6 @@ public class TimeCount {
             time = TimeUtil.getTime(mTime, Prefs.getInstance(mContext).is24HourFormatEnabled());
         }
         return new String[]{date, time};
-    }
-
-    public long generateStartEvent(int type, int dayOfMonth, int month, int year, int hour,
-                                   int minute, int seconds, List<Integer> weekdays, long after) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-            return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-            return getNextMonthDayTime(dayOfMonth, calendar.getTimeInMillis());
-        } else {
-            calendar.set(year, month, dayOfMonth, hour, minute, seconds);
-            if (Reminder.isBase(type, Reminder.BY_TIME))
-                return System.currentTimeMillis() + after;
-            if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-                if (dayOfMonth == 0) return 0;
-            }
-            return calendar.getTimeInMillis();
-        }
     }
 
     public long generateStartEvent(int type, long time, List<Integer> weekdays, long after) {
@@ -280,32 +258,35 @@ public class TimeCount {
         return startTime < currentTome;
     }
 
-    public static long getNextMonthDayTime(int dayOfMonth, long fromTime) {
+    public long getNextMonthDayTime(int dayOfMonth, long fromTime) {
         if (dayOfMonth == 0) {
             return getLastMonthDayTime(fromTime);
         }
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        if (cc.getTimeInMillis() > System.currentTimeMillis())
+        if (cc.getTimeInMillis() > System.currentTimeMillis()) {
             return cc.getTimeInMillis();
+        }
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth + 1);
-        while (cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth)
+        while (cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
             cc.setTimeInMillis(cc.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
+        }
         return cc.getTimeInMillis();
     }
 
     public static long getLastMonthDayTime(long fromTime) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
-        while (fromTime < System.currentTimeMillis()) {
+        while (true) {
             int lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH);
+            Log.d(TAG, "getLastMonthDayTime: " + lastDay + ", m " + cc.get(Calendar.MONTH));
             cc.set(Calendar.DAY_OF_MONTH, lastDay);
-            fromTime = cc.getTimeInMillis();
-            if (fromTime > System.currentTimeMillis())
+            if (cc.getTimeInMillis() > System.currentTimeMillis()) {
                 break;
-            cc.set(Calendar.DAY_OF_MONTH, 15);
-            cc.setTimeInMillis(cc.getTimeInMillis() + (30 * AlarmManager.INTERVAL_DAY));
+            }
+            cc.set(Calendar.DAY_OF_MONTH, 1);
+            cc.add(Calendar.MONTH, 1);
         }
         cc.set(Calendar.SECOND, 0);
         cc.set(Calendar.MILLISECOND, 0);
