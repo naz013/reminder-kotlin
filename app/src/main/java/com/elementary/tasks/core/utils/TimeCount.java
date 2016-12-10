@@ -105,7 +105,7 @@ public class TimeCount {
         return new String[]{date, time};
     }
 
-    public long generateStartEvent(int type, long time, List<Integer> weekdays, long after) {
+    public long generateStartEvent(int type, long time, List<Integer> weekdays, long after, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         calendar.set(Calendar.SECOND, 0);
@@ -113,7 +113,7 @@ public class TimeCount {
         if (Reminder.isBase(type, Reminder.BY_WEEK)) {
             return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
         } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-            return getNextMonthDayTime(calendar.get(Calendar.DAY_OF_MONTH), calendar.getTimeInMillis());
+            return getNextMonthDayTime(dayOfMonth, calendar.getTimeInMillis());
         } else if (Reminder.isSame(type, Reminder.BY_TIME)) {
             return System.currentTimeMillis() + after;
         } else {
