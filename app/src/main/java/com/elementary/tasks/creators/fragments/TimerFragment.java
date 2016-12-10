@@ -86,7 +86,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         reminder.setHours(mHours);
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, 0, null, binding.timerPickerView.getTimerValue());
+        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, 0, null, binding.timerPickerView.getTimerValue(), 0);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));

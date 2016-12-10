@@ -134,7 +134,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, getTime(), weekdays, 0);
+        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, getTime(), weekdays, 0, 0);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
