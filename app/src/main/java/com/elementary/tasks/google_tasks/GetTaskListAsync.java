@@ -83,6 +83,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        // TODO: 12.12.2016 Add widget update
 //        UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (mListener != null) {
             mListener.onComplete();

@@ -48,7 +48,6 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
-        String filePath = intent.getStringExtra(Constants.FILE_PICKED);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_group);
 
         setSupportActionBar(binding.toolbar);
@@ -58,13 +57,6 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         pickerView.setListener(this);
         if (id != null) {
             mItem = RealmDb.getInstance().getGroup(id);
-        } else if (filePath != null) {
-//            try {
-//                mItem = SyncHelper.getGroup(filePath);
-//                if (mItem == null) finish();
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
         }
         if (mItem != null) {
             binding.editField.setText(mItem.getTitle());

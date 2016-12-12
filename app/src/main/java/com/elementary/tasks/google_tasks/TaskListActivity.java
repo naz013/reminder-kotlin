@@ -207,6 +207,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // TODO: 12.12.2016 Add widget update
 //        UpdatesHelper.getInstance(this).updateTasksWidget();
     }
 

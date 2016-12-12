@@ -209,6 +209,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void showReminder() {
+        // TODO: 12.12.2016 Add reminder loading for note
 //        if (mItem.getLinkId() != 0){
 //            ReminderItem reminderItem = ReminderHelper.getInstance(this).getReminder(mItem.getLinkId());
 //            if (reminderItem != null){
@@ -241,6 +242,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void shareNote(){
+        // TODO: 12.12.2016 Add note sharing.
 //        if (!NoteHelper.getInstance(this).shareNote(mItem.getId())) {
 //            Messages.toast(this, getString(R.string.error_sending));
 //            closeWindow();
@@ -303,6 +305,7 @@ public class NotePreviewActivity extends ThemedActivity {
         builder.setMessage(R.string.delete_this_reminder);
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
+            // TODO: 12.12.2016 Add reminder deleting from note
 //            Reminder.delete(mItem.getLinkId(), NotePreviewActivity.this);
 //            NoteHelper.getInstance(this).linkReminder(mItem.getId(), 0);
             binding.reminderContainer.setVisibility(View.GONE);
