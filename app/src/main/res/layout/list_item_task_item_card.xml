@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false">
+
+        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+            android:id="@+id/itemCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:visibility="visible"
+            app:check_font_style="roboto_light" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/shopText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/clearButton"
+            android:layout_toRightOf="@+id/itemCheck"
+            android:textSize="16sp"
+            app:font_style="roboto_light" />
+
+        <ImageButton
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_clear_white_24dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</layout>

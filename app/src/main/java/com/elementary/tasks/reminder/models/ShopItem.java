@@ -17,32 +17,35 @@
 package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.util.UUID;
 
 public class ShopItem {
 
     private String summary;
-    private boolean visibility;
-    private boolean checked;
+    private boolean isDeleted = false;
+    private boolean checked = false;
     private String uuId;
     private String createTime;
 
-    public ShopItem() {
+    public ShopItem(String summary) {
+        this.summary = summary;
+        this.createTime = TimeUtil.getGmtDateTime();
         this.uuId = UUID.randomUUID().toString();
     }
 
     public ShopItem(RealmShopItem item) {
         this.summary = item.getSummary();
-        this.visibility = item.isVisibility();
+        this.isDeleted = item.isVisibility();
         this.checked = item.isChecked();
         this.uuId = item.getUuId();
         this.createTime = item.getCreateTime();
     }
 
-    public ShopItem(String summary, boolean visibility, boolean checked, String uuId, String createTime) {
+    public ShopItem(String summary, boolean isDeleted, boolean checked, String uuId, String createTime) {
         this.summary = summary;
-        this.visibility = visibility;
+        this.isDeleted = isDeleted;
         this.checked = checked;
         this.uuId = uuId;
         this.createTime = createTime;
@@ -56,12 +59,12 @@ public class ShopItem {
         this.summary = summary;
     }
 
-    public boolean isVisibility() {
-        return visibility;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setVisibility(boolean visibility) {
-        this.visibility = visibility;
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
     }
 
     public boolean isChecked() {

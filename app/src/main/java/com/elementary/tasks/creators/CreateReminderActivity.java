@@ -44,6 +44,7 @@ import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.EmailFragment;
 import com.elementary.tasks.creators.fragments.MonthFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.creators.fragments.ShopFragment;
 import com.elementary.tasks.creators.fragments.SkypeFragment;
 import com.elementary.tasks.creators.fragments.TimerFragment;
 import com.elementary.tasks.creators.fragments.TypeFragment;
@@ -110,6 +111,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 6:
                     replaceFragment(new MonthFragment());
+                    break;
+                case 8:
+                    replaceFragment(new ShopFragment());
                     break;
                 case 9:
                     if (Permissions.checkPermission(CreateReminderActivity.this, Permissions.READ_CONTACTS)) {

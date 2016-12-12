@@ -33,7 +33,7 @@ public class RealmShopItem extends RealmObject {
 
     public RealmShopItem(ShopItem item) {
         this.summary = item.getSummary();
-        this.visibility = item.isVisibility();
+        this.visibility = item.isDeleted();
         this.checked = item.isChecked();
         this.uuId = item.getUuId();
         this.createTime = item.getCreateTime();
