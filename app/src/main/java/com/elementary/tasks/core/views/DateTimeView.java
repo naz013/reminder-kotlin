@@ -43,9 +43,12 @@ public class DateTimeView extends RelativeLayout implements
     private int mYear;
     private int mMonth;
     private int mDay;
+    private boolean isSingleMode;
     private Context mContext;
     private AttributeSet attrs;
     private OnSelectListener mListener;
+
+    private View.OnClickListener mDateClick = view -> selectDate();
 
     public DateTimeView(Context context) {
         super(context);
@@ -76,18 +79,38 @@ public class DateTimeView extends RelativeLayout implements
         setLayoutParams(params);
         date = (RoboTextView) findViewById(R.id.dateField);
         time = (RoboTextView) findViewById(R.id.timeField);
-        if (ThemeUtil.getInstance(context).isDark()) {
+        date.setOnClickListener(mDateClick);
+        time.setOnClickListener(v -> selectTime());
+        setIcons();
+        this.mContext = context;
+        updateDateTime(0);
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        date.setOnLongClickListener(l);
+        time.setOnLongClickListener(l);
+    }
+
+    private void setIcons() {
+        if (ThemeUtil.getInstance(mContext).isDark()) {
             date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_white, 0, 0, 0);
             time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_white_24dp, 0, 0, 0);
         } else {
             date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
             time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_black_24dp, 0, 0, 0);
         }
-        date.setOnClickListener(v -> dateDialog());
-        time.setOnClickListener(v -> timeDialog());
+    }
 
-        this.mContext = context;
-        updateDateTime(0);
+    public void setSingleText(String text) {
+        isSingleMode = text != null;
+        if (!isSingleMode) {
+            time.setVisibility(VISIBLE);
+            updateDateTime(0);
+        } else {
+            date.setText(text);
+            time.setVisibility(GONE);
+        }
     }
 
     public long getDateTime() {
@@ -130,11 +153,11 @@ public class DateTimeView extends RelativeLayout implements
         if (mListener != null) mListener.onTimeSelect(mills, mHour, mMinute);
     }
 
-    private void dateDialog() {
+    public void selectDate() {
         new DatePickerDialog(mContext, this, mYear, mMonth, mDay).show();
     }
 
-    private void timeDialog() {
+    public void selectTime() {
         new TimePickerDialog(mContext, this, mHour, mMinute, Prefs.getInstance(mContext).is24HourFormatEnabled()).show();
     }
 
