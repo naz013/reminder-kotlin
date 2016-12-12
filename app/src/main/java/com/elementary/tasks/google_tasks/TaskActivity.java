@@ -152,6 +152,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void showReminder() {
+        // TODO: 12.12.2016 Add reminder saving
 //        ReminderItem item = ReminderHelper.getInstance(this).getReminder(remId);
 //        if (item != null){
 //            long eventTime = item.getDateTime();
@@ -506,6 +507,7 @@ public class TaskActivity extends ThemedActivity {
 
     @Override
     protected void onDestroy() {
+        // TODO: 12.12.2016 Add widget update.
 //        UpdatesHelper.getInstance(this).updateTasksWidget();
         super.onDestroy();
     }

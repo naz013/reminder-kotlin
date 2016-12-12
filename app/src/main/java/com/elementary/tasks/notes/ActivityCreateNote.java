@@ -205,6 +205,7 @@ public class ActivityCreateNote extends ThemedActivity {
 //                }
             }
         } else if (filePath != null) {
+            // TODO: 12.12.2016 Add note reading from file
 //            try {
 //                mItem = SyncHelper.getNote(filePath, null);
 //            } catch (JSONException e) {
@@ -239,6 +240,7 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void showReminder() {
+        // TODO: 12.12.2016 Add loading reminder for note
 //        ReminderItem item = ReminderHelper.getInstance(this).getReminder(mItem.getLinkId());
 //        if (item != null) {
 //            setDateTime(item.getDateTime());
@@ -275,6 +277,7 @@ public class ActivityCreateNote extends ThemedActivity {
 
 
     private void shareNote() {
+        // TODO: 12.12.2016 Add note sharing functionality
 //        SyncHelper sHelp = new SyncHelper(NotesActivity.this);
 //        String note = taskField.getText().toString();
 //        if (note.matches("")) {
@@ -356,11 +359,11 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void createReminder(String key, Calendar calendar) {
-
+        // TODO: 12.12.2016 Add reminder saving for note
     }
 
     private void removeNoteFromReminder(String key) {
-
+        // TODO: 12.12.2016 Add removing reminder from note
     }
 
     @Override
@@ -480,7 +483,6 @@ public class ActivityCreateNote extends ThemedActivity {
                             break;
                     }
                 });
-
         builder.show();
     }
 

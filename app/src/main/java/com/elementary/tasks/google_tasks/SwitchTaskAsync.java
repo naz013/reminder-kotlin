@@ -57,6 +57,7 @@ public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aVoid) {
         super.onPostExecute(aVoid);
+        // TODO: 12.12.2016 Add widget update
 //        UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (aVoid) {
             if (mListener != null) {
