@@ -51,6 +51,19 @@ public class ShopFragment extends RepeatableTypeFragment {
     private ShopListRecyclerAdapter mAdapter;
     private boolean isReminder = false;
     private int mSelectedPosition;
+    private ShopListRecyclerAdapter.ActionListener mActionListener = new ShopListRecyclerAdapter.ActionListener() {
+        @Override
+        public void onItemCheck(int position, boolean isChecked) {
+            ShopItem item = mAdapter.getItem(position);
+            item.setChecked(!item.isChecked());
+            mAdapter.updateData();
+        }
+
+        @Override
+        public void onItemDelete(int position) {
+            mAdapter.delete(position);
+        }
+    };
 
     public ShopFragment() {
     }
@@ -137,7 +150,7 @@ public class ShopFragment extends RepeatableTypeFragment {
             return true;
         });
         binding.todoList.setLayoutManager(new LinearLayoutManager(mContext));
-        mAdapter = new ShopListRecyclerAdapter(mContext, new ArrayList<>(), null);
+        mAdapter = new ShopListRecyclerAdapter(mContext, new ArrayList<>(), mActionListener);
         binding.todoList.setAdapter(mAdapter);
         binding.shopEdit.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)){

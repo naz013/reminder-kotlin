@@ -15,6 +15,7 @@ import com.elementary.tasks.databinding.ListItemTaskItemCardBinding;
 import com.elementary.tasks.reminder.models.ShopItem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,14 +40,48 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
     private List<ShopItem> mDataList = new ArrayList<>();
     private boolean isDark;
     private ActionListener listener;
+    private boolean onBind;
 
-    public ShopListRecyclerAdapter(Context context, List<ShopItem> list,
-                                   ActionListener listener) {
+    public ShopListRecyclerAdapter(Context context, List<ShopItem> list, ActionListener listener) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(list);
         this.listener = listener;
         isDark = ThemeUtil.getInstance(context).isDark();
-        setHasStableIds(true);
+        Collections.sort(mDataList, (item, t1) -> t1.getCreateTime().compareTo(item.getCreateTime()));
+        sort(mDataList);
+    }
+
+    public void delete(int position) {
+        mDataList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(0, mDataList.size());
+    }
+
+    public void addItem(ShopItem item) {
+        mDataList.add(0, item);
+        notifyItemInserted(0);
+        notifyItemRangeChanged(0, mDataList.size());
+    }
+
+    public void updateData() {
+        Collections.sort(mDataList, (item, t1) -> t1.getCreateTime().compareTo(item.getCreateTime()));
+        sort(mDataList);
+        notifyDataSetChanged();
+    }
+
+    private void sort(List<ShopItem> list) {
+        int pos = -1;
+        for (int i = 0; i < list.size(); i++) {
+            ShopItem item = list.get(i);
+            if (!item.isChecked() && i > pos + 1) {
+                list.remove(i);
+                list.add(pos + 1, item);
+            }
+        }
+    }
+
+    public ShopItem getItem(int position) {
+        return mDataList.get(position);
     }
 
     public List<ShopItem> getData() {
@@ -60,16 +95,20 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ListItemTaskItemCardBinding binding;
-        public ViewHolder(final View v) {
-            super(v);
-            binding = DataBindingUtil.bind(v);
+        public ViewHolder(final View itemView) {
+            super(itemView);
+            binding = DataBindingUtil.bind(itemView);
+            binding.clearButton.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemDelete(getAdapterPosition());
+                }
+            });
+            binding.itemCheck.setOnCheckedChangeListener((buttonView, isChecked1) -> {
+                if (!onBind && listener != null) {
+                    listener.onItemCheck(getAdapterPosition(), isChecked1);
+                }
+            });
         }
-    }
-
-    public void addItem(ShopItem item) {
-        mDataList.add(item);
-        notifyItemInserted(mDataList.size() - 1);
-        notifyItemRangeChanged(0, mDataList.size());
     }
 
     @Override
@@ -79,16 +118,17 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        onBind = true;
         final ShopItem item = mDataList.get(position);
         String title = item.getSummary();
-        if (item.isChecked()){
+        if (item.isChecked()) {
             holder.binding.shopText.setPaintFlags(holder.binding.shopText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
-            holder.binding.shopText.setPaintFlags(holder.binding.shopText.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.binding.shopText.setPaintFlags(holder.binding.shopText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
         holder.binding.itemCheck.setChecked(item.isChecked());
         holder.binding.shopText.setText(title);
-        if (listener == null){
+        if (listener == null) {
             holder.binding.clearButton.setVisibility(View.GONE);
             holder.binding.itemCheck.setEnabled(false);
             holder.binding.shopText.setTextColor(ViewUtils.getColor(mContext, R.color.blackPrimary));
@@ -98,30 +138,10 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
             } else {
                 holder.binding.clearButton.setImageResource(R.drawable.ic_clear_black_24dp);
             }
-
             holder.binding.itemCheck.setVisibility(View.VISIBLE);
             holder.binding.clearButton.setVisibility(View.VISIBLE);
-            holder.binding.clearButton.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemDelete(holder.getAdapterPosition());
-                }
-            });
-
-            holder.binding.shopText.setOnClickListener(v -> {
-                if (listener != null && item.isDeleted()) {
-                    listener.onItemChange(holder.getAdapterPosition());
-                }
-            });
-
-            holder.binding.itemCheck.setOnCheckedChangeListener((buttonView, isChecked1) -> {
-                if (listener != null) {
-                    listener.onItemCheck(holder.getAdapterPosition(), isChecked1);
-                }
-            });
         }
-        if (item.isDeleted()){
-            holder.binding.shopText.setTextColor(ViewUtils.getColor(mContext, R.color.redPrimaryDark));
-        }
+        onBind = false;
     }
 
     @Override
@@ -129,12 +149,10 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
         return mDataList.size();
     }
 
-    public interface ActionListener{
+    public interface ActionListener {
 
         void onItemCheck(int position, boolean isChecked);
 
         void onItemDelete(int position);
-
-        void onItemChange(int position);
     }
 }

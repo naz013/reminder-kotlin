@@ -112,6 +112,7 @@ public class TimeUtil {
     }
 
     public static long getDateTimeFromGmt(String dateTime){
+        if (dateTime == null) return 0;
         Calendar calendar = Calendar.getInstance();
         try {
             gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
