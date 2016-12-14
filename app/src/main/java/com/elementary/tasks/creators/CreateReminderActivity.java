@@ -37,11 +37,13 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.EmailFragment;
+import com.elementary.tasks.creators.fragments.LocationFragment;
 import com.elementary.tasks.creators.fragments.MonthFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.ShopFragment;
@@ -102,6 +104,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 2:
                     replaceFragment(new WeekFragment());
+                    break;
+                case 3:
+                    replaceFragment(new LocationFragment());
                     break;
                 case 4:
                     replaceFragment(new SkypeFragment());
@@ -627,6 +632,22 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         } else {
             mBinding.repeatButton.setVisibility(View.VISIBLE);
             mBinding.repeatButton.setOnClickListener(listener);
+        }
+    }
+
+    @Override
+    public void setFullScreenMode(boolean b) {
+        if (b) {
+            ViewUtils.collapse(toolbar);
+        } else {
+            ViewUtils.expand(toolbar);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragment.onBackPressed()) {
+            finish();
         }
     }
 

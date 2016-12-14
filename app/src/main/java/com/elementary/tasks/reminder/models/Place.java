@@ -18,6 +18,8 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 
+import java.util.UUID;
+
 public class Place {
 
     private int radius;
@@ -38,13 +40,13 @@ public class Place {
         this.address = item.getAddress();
     }
 
-    public Place(int radius, int marker, double latitude, double longitude, String name, String id, String address) {
+    public Place(int radius, int marker, double latitude, double longitude, String name, String address) {
         this.radius = radius;
         this.marker = marker;
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.address = address;
     }
 

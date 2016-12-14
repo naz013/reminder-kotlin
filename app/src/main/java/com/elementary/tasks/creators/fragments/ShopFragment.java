@@ -7,9 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,7 +40,7 @@ import java.util.ArrayList;
  * limitations under the License.
  */
 
-public class ShopFragment extends RepeatableTypeFragment {
+public class ShopFragment extends TypeFragment {
 
     private static final String TAG = "ShopFragment";
 
@@ -122,23 +119,6 @@ public class ShopFragment extends RepeatableTypeFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_date_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_limit:
-                changeLimit();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Nullable
@@ -162,6 +142,7 @@ public class ShopFragment extends RepeatableTypeFragment {
         if (ThemeUtil.getInstance(mContext).isDark()) addButton.setImageResource(R.drawable.ic_add_white_24dp);
         else addButton.setImageResource(R.drawable.ic_add_black_24dp);
         addButton.setOnClickListener(v -> addNewItem());
+        switchDate();
         editReminder();
         return binding.getRoot();
     }
@@ -183,11 +164,12 @@ public class ShopFragment extends RepeatableTypeFragment {
         mAdapter.setData(reminder.getShoppings());
         if (reminder.getEventTime() != null) {
             isReminder = true;
+            switchDate();
             binding.dateViewShopping.setDateTime(reminder.getEventTime());
         } else {
             isReminder = false;
         }
-        switchDate();
+
     }
 
     private void selectDateDialog() {

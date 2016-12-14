@@ -52,4 +52,8 @@ public abstract class TypeFragment extends Fragment {
             mInterface.setRepeatAction(null);
         }
     }
+
+    public boolean onBackPressed() {
+        return true;
+    }
 }

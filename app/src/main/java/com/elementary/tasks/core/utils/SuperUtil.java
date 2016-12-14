@@ -25,16 +25,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.contacts.ContactsActivity;
+import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -47,6 +51,22 @@ import java.util.List;
 import java.util.Locale;
 
 public class SuperUtil {
+
+    public static boolean checkLocationEnable(Context context){
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        return !(!isGPSEnabled && !isNetworkEnabled);
+    }
+
+    public static void showLocationAlert(final Context context, ReminderInterface callbacks){
+        callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings), v -> {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            context.startActivity(intent);
+        });
+    }
 
     public static String getObjectPrint(Object o, Class<?> clazz) {
         List<Field> fields = Arrays.asList(clazz.getDeclaredFields());
