@@ -64,4 +64,6 @@ public interface ReminderInterface {
     void setExclusionAction(View.OnClickListener listener);
 
     void setRepeatAction(View.OnClickListener listener);
+
+    void setFullScreenMode(boolean b);
 }

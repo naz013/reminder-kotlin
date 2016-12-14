@@ -106,9 +106,11 @@ public class DateTimeView extends RelativeLayout implements
         isSingleMode = text != null;
         if (!isSingleMode) {
             time.setVisibility(VISIBLE);
+            date.setOnClickListener(mDateClick);
             updateDateTime(0);
         } else {
             date.setText(text);
+            date.setOnClickListener(null);
             time.setVisibility(GONE);
         }
     }
