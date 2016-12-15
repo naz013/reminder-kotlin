@@ -44,6 +44,7 @@ import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.EmailFragment;
 import com.elementary.tasks.creators.fragments.LocationFragment;
+import com.elementary.tasks.creators.fragments.LocationOutFragment;
 import com.elementary.tasks.creators.fragments.MonthFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.ShopFragment;
@@ -116,6 +117,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     break;
                 case 6:
                     replaceFragment(new MonthFragment());
+                    break;
+                case 7:
+                    replaceFragment(new LocationOutFragment());
                     break;
                 case 8:
                     replaceFragment(new ShopFragment());
@@ -394,7 +398,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void deleteReminder() {
         if (mReminder != null) {
-            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+            RealmDb.getInstance().moveToTrash(mReminder.getUuId());
             finish();
         }
     }
