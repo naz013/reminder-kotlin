@@ -9,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,8 @@ import java.util.Locale;
  */
 
 public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final String TAG = "RRA";
 
     private Context mContext;
     private List<Reminder> mDataList;
@@ -148,22 +151,21 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Reminder item = mDataList.get(position);
         long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         String simpleDate = TimeUtil.getSimpleDate(due);
-        int isDone = item.getStatus();
         Reminder prevItem = null;
         try {
             prevItem = mDataList.get(position - 1);
         } catch (ArrayIndexOutOfBoundsException e) {}
-        if (isDone == 1 && position > 0 && (prevItem != null && prevItem.getStatus() == 0)) {
+        if (!item.isActive() && position > 0 && (prevItem != null && prevItem.isActive())) {
             simpleDate = mContext.getString(R.string.disabled);
             listHeader.setText(simpleDate);
             listHeader.setVisibility(View.VISIBLE);
-        } else if (isDone == 1 && position > 0 && (prevItem != null && prevItem.getStatus() == 1)) {
+        } else if (!item.isActive() && position > 0 && (prevItem != null && !prevItem.isActive())) {
             listHeader.setVisibility(View.GONE);
-        } else if (isDone == 1 && position == 0) {
+        } else if (!item.isActive() && position == 0) {
             simpleDate = mContext.getString(R.string.disabled);
             listHeader.setText(simpleDate);
             listHeader.setVisibility(View.VISIBLE);
-        } else if (isDone == 0 && position > 0 && (prevItem != null && simpleDate.equals(TimeUtil.getSimpleDate(prevItem.getEventTime())))) {
+        } else if (item.isActive() && position > 0 && (prevItem != null && simpleDate.equals(TimeUtil.getSimpleDate(prevItem.getEventTime())))) {
             listHeader.setVisibility(View.GONE);
         } else {
             if (due <= 0 || due < (System.currentTimeMillis() - AlarmManager.INTERVAL_DAY)) {
@@ -305,7 +307,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadLeft"})
     public static void loadLeft(RoboTextView textView, Reminder item) {
-        if (item.getStatus() == 0) {
+        if (item.isActive()) {
             textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime()));
         } else {
             textView.setText("");
@@ -385,6 +387,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadDate"})
     public static void loadDate(RoboTextView textView, Reminder model) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
+        Log.d(TAG, "loadDate: " + model.getType());
         if (Reminder.isBase(model.getType(), Reminder.BY_LOCATION) || Reminder.isBase(model.getType(), Reminder.BY_OUT)) {
             Place place = model.getPlaces().get(0);
             textView.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), model.getPlaces().size()));
@@ -420,14 +423,14 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadCheck"})
     public static void loadCheck(RoboSwitchCompat switchCompat, Reminder item) {
-        if (item.getStatus() == 1) {
+        if (!item.isActive()) {
             switchCompat.setChecked(false);
         } else {
             switchCompat.setChecked(true);
         }
-//        if (item == 1) {
-//            switchCompat.setVisibility(View.GONE);
-//        }
+        if (item.isRemoved()) {
+            switchCompat.setVisibility(View.GONE);
+        }
     }
 
     @BindingAdapter({"loadContact"})
