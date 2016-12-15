@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
@@ -132,9 +133,10 @@ public class ShopFragment extends TypeFragment {
         binding.todoList.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new ShopListRecyclerAdapter(mContext, new ArrayList<>(), mActionListener);
         binding.todoList.setAdapter(mAdapter);
-        binding.shopEdit.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER)){
+        binding.shopEdit.setOnEditorActionListener((textView, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
                 addNewItem();
+                return true;
             }
             return false;
         });

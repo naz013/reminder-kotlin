@@ -5,9 +5,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:orientation="vertical"
         android:visibility="visible">
 
         <android.support.v7.widget.RecyclerView
@@ -57,8 +57,9 @@
                         android:layout_toLeftOf="@+id/addButton"
                         android:background="@android:color/transparent"
                         android:hint="@string/task"
-                        android:lines="2"
-                        android:imeOptions="actionDone"
+                        android:imeOptions="actionNext"
+                        android:lines="1"
+                        android:singleLine="true"
                         app:edit_font_style="roboto_light" />
 
                     <ImageButton
