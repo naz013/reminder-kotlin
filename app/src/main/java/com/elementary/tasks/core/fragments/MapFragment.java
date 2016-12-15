@@ -15,21 +15,16 @@ import android.support.v13.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.async.GeocoderTask;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.utils.Configs;
@@ -40,6 +35,7 @@ import com.elementary.tasks.core.utils.QuickReturnUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.AddressAutoCompleteView;
 import com.elementary.tasks.databinding.FragmentMapBinding;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.PlacesRecyclerAdapter;
@@ -88,7 +84,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private CardView layersContainer;
     private CardView styleCard;
     private CardView placesListCard;
-    private AutoCompleteTextView cardSearch;
+    private AddressAutoCompleteView cardSearch;
     private ImageButton zoomOut;
     private ImageButton backButton;
     private ImageButton places;
@@ -126,14 +122,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
      * UI helper class;
      */
     private ThemeUtil mColor;
-
-    /**
-     * Arrays of place search results;
-     */
-    private List<Address> mFoundPlaces;
-    private ArrayAdapter<String> mAdapter;
-    private GeocoderTask mAddressTask;
-    private ArrayList<String> mAddressNames;
 
     /**
      * MapListener link;
@@ -545,44 +533,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 .commit();
         initViews();
         cardSearch = binding.cardSearch;
-        cardSearch.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search_white_24dp, 0, 0, 0);
-        cardSearch.setThreshold(3);
-        mAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, mAddressNames);
-        mAdapter.setNotifyOnChange(true);
-        cardSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                hideLayers();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (mAddressTask != null && !mAddressTask.isCancelled()) {
-                    mAddressTask.cancel(true);
-                }
-                if (s.length() != 0) {
-                    mAddressTask = new GeocoderTask(mContext, addresses -> {
-                        mFoundPlaces = addresses;
-                        mAddressNames = new ArrayList<>();
-                        mAddressNames.clear();
-                        for (Address selected : addresses) {
-                            mAddressNames.add(getFormattedAddress(selected));
-                        }
-                        mAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, mAddressNames);
-                        cardSearch.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
-                    });
-                    mAddressTask.execute(s.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         cardSearch.setOnItemClickListener((parent, view1, position, id) -> {
-            Address sel = mFoundPlaces.get(position);
+            Address sel = cardSearch.getAddress(position);
             double lat = sel.getLatitude();
             double lon = sel.getLongitude();
             LatLng pos = new LatLng(lat, lon);

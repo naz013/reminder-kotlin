@@ -7,9 +7,7 @@ import android.location.Address;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,11 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.async.GeocoderTask;
 import com.elementary.tasks.core.fragments.MapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
@@ -67,11 +63,7 @@ public class LocationFragment extends RadiusTypeFragment {
 
     private FragmentReminderLocationBinding binding;
     private MapFragment mapFragment;
-    private List<Address> foundPlaces;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> namesList;
 
-    private GeocoderTask task;
     private LatLng lastPos;
 
     private ActionView.OnActionListener mActionListener = new ActionView.OnActionListener() {
@@ -129,24 +121,6 @@ public class LocationFragment extends RadiusTypeFragment {
             }
             ViewUtils.fadeOutAnimation(binding.mapContainer);
             ViewUtils.fadeInAnimation(binding.specsContainer);
-        }
-    };
-    private GeocoderTask.GeocoderListener mExecutionCallback = new GeocoderTask.GeocoderListener() {
-        @Override
-        public void onAddressReceived(List<Address> addresses) {
-            foundPlaces = addresses;
-            namesList = new ArrayList<>();
-            namesList.clear();
-            for (Address selected:addresses){
-                String addressText = String.format("%s, %s%s",
-                        selected.getMaxAddressLineIndex() > 0 ? selected.getAddressLine(0) : "",
-                        selected.getMaxAddressLineIndex() > 1 ? selected.getAddressLine(1) + ", " : "",
-                        selected.getCountryName());
-                namesList.add(addressText);
-            }
-            adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, namesList);
-            binding.searchField.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
         }
     };
 
@@ -281,32 +255,8 @@ public class LocationFragment extends RadiusTypeFragment {
 
         clearField.setOnClickListener(v -> binding.searchField.setText(""));
         mapButton.setOnClickListener(v -> toggleMap());
-
-        binding.searchField.setThreshold(3);
-        adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, namesList);
-        adapter.setNotifyOnChange(true);
-        binding.searchField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (task != null && !task.isCancelled()) {
-                    task.cancel(true);
-                }
-                task = new GeocoderTask(mContext, mExecutionCallback);
-                task.execute(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         binding.searchField.setOnItemClickListener((parent, view1, position, id) -> {
-            Address sel = foundPlaces.get(position);
+            Address sel = binding.searchField.getAddress(position);
             double lat = sel.getLatitude();
             double lon = sel.getLongitude();
             LatLng pos = new LatLng(lat, lon);
