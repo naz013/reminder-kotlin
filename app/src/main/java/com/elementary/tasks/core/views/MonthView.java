@@ -51,7 +51,6 @@ public class MonthView extends View implements View.OnTouchListener {
 
     private int mYear;
     private int mMonth;
-    private int mDay;
     private int currentYear;
     private int currentMonth;
     private int currentDay;
@@ -116,9 +115,8 @@ public class MonthView extends View implements View.OnTouchListener {
         paint.setTypeface(AssetsUtil.getTypeface(context, 7));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        mDay = calendar.get(Calendar.DAY_OF_MONTH) + 1;
-        currentDay = mDay;
-        currentMonth = calendar.get(Calendar.MONTH);
+        currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        currentMonth = calendar.get(Calendar.MONTH) + 1;
         currentYear = calendar.get(Calendar.YEAR);
         setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH));
         setOnTouchListener(this);
