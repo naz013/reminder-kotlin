@@ -1028,6 +1028,66 @@ public class ThemeUtil {
 
     @ColorInt
     public int getNoteLightColor(int code) {
-        return getColor(colorAccent(code));
+        int color;
+        switch (code) {
+            case 0:
+                color = R.color.redAccent;
+                break;
+            case 1:
+                color = R.color.purpleAccent;
+                break;
+            case 2:
+                color = R.color.greenAccent;
+                break;
+            case 3:
+                color = R.color.greenLightAccent;
+                break;
+            case 4:
+                color = R.color.blueAccent;
+                break;
+            case 5:
+                color = R.color.blueLightAccent;
+                break;
+            case 6:
+                color = R.color.yellowAccent;
+                break;
+            case 7:
+                color = R.color.orangeAccent;
+                break;
+            case 8:
+                color = R.color.cyanAccent;
+                break;
+            case 9:
+                color = R.color.pinkAccent;
+                break;
+            case 10:
+                color = R.color.tealAccent;
+                break;
+            case 11:
+                color = R.color.amberAccent;
+                break;
+            default:
+                if (Module.isPro()) {
+                    switch (code) {
+                        case 12:
+                            color = R.color.purpleDeepAccent;
+                            break;
+                        case 13:
+                            color = R.color.orangeDeepAccent;
+                            break;
+                        case 14:
+                            color = R.color.limeAccent;
+                            break;
+                        case 15:
+                            color = R.color.indigoAccent;
+                            break;
+                        default:
+                            color = R.color.blueAccent;
+                            break;
+                    }
+                } else color = R.color.blueAccent;
+                break;
+        }
+        return getColor(color);
     }
 }
