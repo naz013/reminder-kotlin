@@ -327,7 +327,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadContainer"})
     public static void loadContainer(LinearLayout layout, int type) {
-        if (Reminder.isBase(type, Reminder.BY_LOCATION)) {
+        if (Reminder.isBase(type, Reminder.BY_LOCATION) || Reminder.isBase(type, Reminder.BY_OUT) || Reminder.isBase(type, Reminder.BY_PLACES)) {
             layout.setVisibility(View.GONE);
         } else {
             layout.setVisibility(View.VISIBLE);
