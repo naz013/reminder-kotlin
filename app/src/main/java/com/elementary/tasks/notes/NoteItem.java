@@ -2,7 +2,10 @@ package com.elementary.tasks.notes;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,32 +29,35 @@ public class NoteItem {
     private String date;
     private int color;
     private int style;
-    private byte[] image;
+    private List<NoteImage> images = new ArrayList<>();
     private int uniqueId;
 
     public NoteItem(RealmNote item) {
         setColor(item.getColor());
         setDate(item.getDate());
-        setImage(item.getImage());
+        this.images = new ArrayList<>();
+        for (RealmImage image : item.getImages()) {
+            images.add(new NoteImage(image));
+        }
         setKey(item.getKey());
         setStyle(item.getStyle());
         setSummary(item.getSummary());
         setUniqueId(item.getUniqueId());
     }
 
-    public NoteItem(String summary, String key, String date, int color, int style, byte[] image) {
+    public NoteItem(String summary, String key, String date, int color, int style, List<NoteImage> images) {
         this.summary = summary;
         this.key = key;
         this.date = date;
         this.color = color;
         this.style = style;
-        this.image = image;
+        this.images = images;
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
-    public NoteItem(String key) {
+    public NoteItem() {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
-        setKey(key);
+        setKey(UUID.randomUUID().toString());
     }
 
     public void setUniqueId(int uniqueId) {
@@ -102,12 +108,12 @@ public class NoteItem {
         this.style = style;
     }
 
-    public byte[] getImage() {
-        return image;
+    public List<NoteImage> getImages() {
+        return images;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImages(List<NoteImage> images) {
+        this.images = images;
     }
 
     @Override

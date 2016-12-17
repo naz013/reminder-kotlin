@@ -25,9 +25,9 @@
             android:id="@+id/layoutContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
             android:gravity="center|top"
             android:orientation="vertical"
+            android:padding="16dp"
             android:visibility="visible">
 
             <ScrollView
@@ -40,6 +40,11 @@
                     android:layout_marginBottom="80dp"
                     android:orientation="vertical">
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/imagesList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                     <EditText
                         android:id="@+id/task_message"
                         android:layout_width="match_parent"
@@ -50,34 +55,6 @@
                         android:textColor="@color/blackPrimary"
                         android:textColorHint="@color/blackPrimary"
                         android:textSize="@dimen/create_note_text_size" />
-
-                    <RelativeLayout
-                        android:id="@+id/imageContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/noteImage"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="20dp"
-                            android:adjustViewBounds="true"
-                            android:maxHeight="500dp"
-                            android:minHeight="350dp"
-                            android:scaleType="centerCrop"
-                            android:visibility="visible" />
-
-                        <ImageButton
-                            android:id="@+id/deleteButton"
-                            android:layout_width="@dimen/create_note_image_button_size"
-                            android:layout_height="@dimen/create_note_image_button_size"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:background="@drawable/drawable_cyan"
-                            android:src="@drawable/ic_clear_white_24dp" />
-
-                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/remindContainer"

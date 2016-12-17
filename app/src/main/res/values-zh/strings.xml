@@ -567,4 +567,5 @@
     <string name="theme_color">Theme color</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="x_out_of_x" formatted="false">%d out of %d</string>
 </resources>
