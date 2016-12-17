@@ -63,7 +63,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void initLedColorPrefs() {
-        binding.chooseLedColorPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.chooseLedColorPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.chooseLedColorPrefs.setDependentView(binding.ledPrefs);
         binding.chooseLedColorPrefs.setOnClickListener(view -> showLedColorDialog());
     }
@@ -95,7 +95,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void initLedPrefs() {
         binding.ledPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayLedEnabled());
         binding.ledPrefs.setOnClickListener(view -> changeLedPrefs());
-        binding.ledPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.ledPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
 
     private void changeLedPrefs() {
@@ -106,7 +106,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
 
     private void initMelodyPrefs() {
         binding.chooseSoundPrefs.setOnClickListener(view -> showSoundDialog());
-        binding.chooseSoundPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.chooseSoundPrefs.setReverseDependentView(binding.globalOptionPrefs);
         showMelody();
     }
 
@@ -158,7 +158,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void initTtsLocalePrefs() {
-        binding.localePrefs.setDependentView(binding.globalOptionPrefs);
+        binding.localePrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.localePrefs.setDependentView(binding.ttsPrefs);
         binding.localePrefs.setOnClickListener(view -> showTtsLocaleDialog());
     }
@@ -220,7 +220,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
 
     private void initTtsPrefs() {
         binding.ttsPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayTtsEnabled());
-        binding.ttsPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.ttsPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.ttsPrefs.setOnClickListener(view -> changeTtsPrefs());
     }
 
@@ -232,7 +232,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
 
     private void initWakePrefs() {
         binding.wakeScreenOptionPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayWakeEnabled());
-        binding.wakeScreenOptionPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.wakeScreenOptionPrefs.setOnClickListener(view -> changeWakePrefs());
     }
 
@@ -243,7 +243,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void initInfiniteSoundPrefs() {
-        binding.infiniteSoundOptionPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.infiniteSoundOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.infiniteSoundOptionPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayInfiniteSoundEnabled());
         binding.infiniteSoundOptionPrefs.setOnClickListener(view -> changeInfiniteSoundPrefs());
     }
@@ -257,7 +257,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void initSilentPrefs() {
         binding.soundOptionPrefs.setChecked(Prefs.getInstance(mContext).isBirthdaySilentEnabled());
         binding.soundOptionPrefs.setOnClickListener(view -> changeSilentPrefs());
-        binding.soundOptionPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.soundOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
 
     private void changeSilentPrefs() {
@@ -269,7 +269,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void initInfiniteVibratePrefs() {
         binding.infiniteVibrateOptionPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayInfiniteVibrationEnabled());
         binding.infiniteVibrateOptionPrefs.setOnClickListener(view -> changeInfiniteVibrationPrefs());
-        binding.infiniteVibrateOptionPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.infiniteVibrateOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
 
     private void changeInfiniteVibrationPrefs() {
@@ -281,7 +281,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void initVibratePrefs() {
         binding.vibrationOptionPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayVibrationEnabled());
         binding.vibrationOptionPrefs.setOnClickListener(view -> changeVibrationPrefs());
-        binding.vibrationOptionPrefs.setDependentView(binding.globalOptionPrefs);
+        binding.vibrationOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
 
     private void changeVibrationPrefs() {
