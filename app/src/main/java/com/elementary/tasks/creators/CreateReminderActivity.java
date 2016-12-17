@@ -71,7 +71,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final int CONTACTS_REQUEST_C = 502;
     private static final String TAG = "CreateReminderActivity";
 
-    private ActivityCreateReminderBinding mBinding;
+    private ActivityCreateReminderBinding binding;
     private Toolbar toolbar;
     private Spinner spinner;
     private RoboEditText taskField;
@@ -146,7 +146,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         super.onCreate(savedInstanceState);
         String id = getIntent().getStringExtra(Constants.INTENT_ID);
         mReminder = RealmDb.getInstance().getReminder(id);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
         initActionBar();
         initNavigation();
         editReminder();
@@ -154,7 +154,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void editReminder() {
         if (mReminder == null) return;
-        mBinding.taskSummary.setText(mReminder.getSummary());
+        binding.taskSummary.setText(mReminder.getSummary());
         showGroup(RealmDb.getInstance().getGroup(mReminder.getGroupUuId()));
         initParams();
         switch (mReminder.getType()) {
@@ -230,7 +230,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void initNavigation() {
-        spinner = mBinding.navSpinner;
+        spinner = binding.navSpinner;
         ArrayList<SpinnerItem> navSpinner = new ArrayList<>();
         if (themeUtil.isDark()) {
             navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar_white));
@@ -268,7 +268,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void initActionBar() {
-        toolbar = mBinding.toolbar;
+        toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -277,13 +277,13 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        taskField = mBinding.taskSummary;
-        mBinding.voiceButton.setOnClickListener(v -> openRecognizer());
-        mBinding.customButton.setOnClickListener(v -> openCustomizationDialog());
-        mBinding.groupButton.setOnClickListener(v -> changeGroup());
+        taskField = binding.taskSummary;
+        binding.voiceButton.setOnClickListener(v -> openRecognizer());
+        binding.customButton.setOnClickListener(v -> openCustomizationDialog());
+        binding.groupButton.setOnClickListener(v -> changeGroup());
         GroupItem groupItem = RealmDb.getInstance().getDefaultGroup();
         if (groupItem != null) {
-            mBinding.groupButton.setText(groupItem.getTitle());
+            binding.groupButton.setText(groupItem.getTitle());
             groupId = groupItem.getUuId();
         }
     }
@@ -306,7 +306,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void showGroup(GroupItem item) {
         if (item == null) return;
-        mBinding.groupButton.setText(item.getTitle());
+        binding.groupButton.setText(item.getTitle());
         groupId = item.getUuId();
     }
 
@@ -527,12 +527,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public void showSnackbar(String title, String actionName, View.OnClickListener listener) {
-        Snackbar.make(mBinding.mainContainer, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show();
+        Snackbar.make(binding.mainContainer, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show();
     }
 
     @Override
     public void showSnackbar(String title) {
-        Snackbar.make(mBinding.mainContainer, title, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(binding.mainContainer, title, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -624,21 +624,23 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public void setExclusionAction(View.OnClickListener listener) {
+        if (binding == null) return;
         if (listener == null) {
-            mBinding.exclusionButton.setVisibility(View.GONE);
+            binding.exclusionButton.setVisibility(View.GONE);
         } else {
-            mBinding.exclusionButton.setVisibility(View.VISIBLE);
-            mBinding.exclusionButton.setOnClickListener(listener);
+            binding.exclusionButton.setVisibility(View.VISIBLE);
+            binding.exclusionButton.setOnClickListener(listener);
         }
     }
 
     @Override
     public void setRepeatAction(View.OnClickListener listener) {
+        if (binding == null) return;
         if (listener == null) {
-            mBinding.repeatButton.setVisibility(View.GONE);
+            binding.repeatButton.setVisibility(View.GONE);
         } else {
-            mBinding.repeatButton.setVisibility(View.VISIBLE);
-            mBinding.repeatButton.setOnClickListener(listener);
+            binding.repeatButton.setVisibility(View.VISIBLE);
+            binding.repeatButton.setOnClickListener(listener);
         }
     }
 

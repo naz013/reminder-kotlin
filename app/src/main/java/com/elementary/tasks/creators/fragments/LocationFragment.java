@@ -96,7 +96,7 @@ public class LocationFragment extends RadiusTypeFragment {
                 if (mapFragment != null) {
                     mapFragment.setMarkerRadius(radius);
                     lastPos = new LatLng(latitude, longitude);
-                    mapFragment.addMarker(lastPos, text, true, false, radius);
+                    mapFragment.addMarker(lastPos, text, true, true, radius);
                     toggleMap();
                 }
             }
@@ -123,6 +123,11 @@ public class LocationFragment extends RadiusTypeFragment {
             ViewUtils.fadeInAnimation(binding.specsContainer);
         }
     };
+
+    @Override
+    protected void recreateMarker() {
+        mapFragment.recreateMarker(radius);
+    }
 
     @Override
     public boolean save() {

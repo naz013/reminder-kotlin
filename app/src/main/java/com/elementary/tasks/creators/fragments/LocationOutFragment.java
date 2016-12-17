@@ -98,8 +98,8 @@ public class LocationOutFragment extends RadiusTypeFragment {
                 if (mapFragment != null) {
                     mapFragment.setMarkerRadius(radius);
                     lastPos = new LatLng(latitude, longitude);
-                    mapFragment.addMarker(lastPos, text, true, false, radius);
-                    toggleMap();
+                    mapFragment.addMarker(lastPos, text, true, true, radius);
+//                    toggleMap();
                 }
                 binding.mapLocation.setText(SuperUtil.getAddress(lastPos.latitude, lastPos.longitude));
                 binding.mapCheck.setChecked(true);
@@ -141,6 +141,11 @@ public class LocationOutFragment extends RadiusTypeFragment {
             }
         }
     };
+
+    @Override
+    protected void recreateMarker() {
+        mapFragment.recreateMarker(radius);
+    }
 
     @Override
     public boolean save() {
