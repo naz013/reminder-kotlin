@@ -96,6 +96,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private AdapterView.OnItemSelectedListener mOnTypeSelectListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            Prefs.getInstance(CreateReminderActivity.this).setLastUsedReminder(position);
             switch (position) {
                 case 0:
                     replaceFragment(new DateFragment());
@@ -261,7 +262,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         TitleNavigationAdapter adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(mOnTypeSelectListener);
-        spinner.setSelection(0);
+        int lastPos = Prefs.getInstance(this).getLastUsedReminder();
+        if (lastPos >= navSpinner.size()) lastPos = 0;
+        spinner.setSelection(lastPos);
     }
 
     private void initActionBar() {

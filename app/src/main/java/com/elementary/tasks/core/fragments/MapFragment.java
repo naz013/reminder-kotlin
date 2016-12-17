@@ -5,16 +5,22 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v13.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +49,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -72,14 +79,10 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class MapFragment extends Fragment implements View.OnClickListener {
 
-
     private static final String TAG = "MapFragment";
 
     private Activity mContext;
 
-    /**
-     * UI elements;
-     */
     private GoogleMap mMap;
     private CardView layersContainer;
     private CardView styleCard;
@@ -94,15 +97,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private LinearLayout emptyItem;
     private FragmentMapBinding binding;
 
-    /**
-     * Array of user frequently used places;
-     */
     private ArrayList<String> spinnerArray = new ArrayList<>();
     private PlacesRecyclerAdapter placeRecyclerAdapter;
 
-    /**
-     * init variables and flags;
-     */
     private boolean isTouch = true;
     private boolean isZoom = true;
     private boolean isBack = true;
@@ -118,14 +115,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private LatLng lastPos;
     private float strokeWidth = 3f;
 
-    /**
-     * UI helper class;
-     */
     private ThemeUtil mColor;
 
-    /**
-     * MapListener link;
-     */
     private MapListener mListener;
     private MapCallback mCallback;
 
@@ -202,62 +193,30 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         this.placeRecyclerAdapter = adapter;
     }
 
-    /**
-     * Set listener for map fragment;
-     * @param listener listener for map fragment
-     */
     public void setListener(MapListener listener) {
         this.mListener = listener;
     }
 
-    /**
-     * Set listener for map fragment;
-     * @param callback listener for map fragment
-     */
     public void setCallback(MapCallback callback) {
         this.mCallback = callback;
     }
 
-    /**
-     * Set title for markers;
-     * @param markerTitle marker title
-     */
     public void setMarkerTitle(String markerTitle) {
         this.markerTitle = markerTitle;
     }
 
-    /**
-     * Set radius for marker;
-     * @param markerRadius radius for drawing circle around marker
-     */
     public void setMarkerRadius(int markerRadius) {
         this.markerRadius = markerRadius;
     }
 
-    /**
-     * Set style for marker;
-     * @param markerStyle code of style for marker
-     */
     public void setMarkerStyle(int markerStyle) {
         this.markerStyle = markerStyle;
     }
 
-    /**
-     * Get currently used marker style.
-     * @return marker code.
-     */
     public int getMarkerStyle() {
         return markerStyle;
     }
 
-    /**
-     * Add marker to map;
-     * @param pos coordinates
-     * @param title marker title
-     * @param clear remove previous markers flag
-     * @param animate animate to marker position
-     * @param radius radius for circle around marker
-     */
     public void addMarker(LatLng pos, String title, boolean clear, boolean animate, int radius) {
         if (mMap != null) {
             markerRadius = radius;
@@ -271,7 +230,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(BitmapDescriptorFactory.fromResource(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
             int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
@@ -284,15 +243,31 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     * Add marker to map with custom marker icon;
-     * @param pos coordinates
-     * @param title marker title
-     * @param clear remove previous markers flag
-     * @param markerStyle marker icon
-     * @param animate animate to marker position
-     * @param radius radius for circle around marker
-     */
+    private BitmapDescriptor getDescriptor(int resId) {
+        if (Module.isLollipop()) {
+            return getBitmapDescriptor(resId);
+        } else {
+            return BitmapDescriptorFactory.fromResource(resId);
+        }
+    }
+
+    private float convertDpToPixel(float dp) {
+        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        return dp * (metrics.densityDpi / 160f);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private BitmapDescriptor getBitmapDescriptor(int id) {
+        Drawable vectorDrawable = mContext.getDrawable(id);
+        int h = ((int) convertDpToPixel(24));
+        int w = ((int) convertDpToPixel(24));
+        vectorDrawable.setBounds(0, 0, w, h);
+        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bm);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bm);
+    }
+
     public void addMarker(LatLng pos, String title, boolean clear, int markerStyle, boolean animate, int radius) {
         if (mMap != null) {
             markerRadius = radius;
@@ -309,7 +284,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(BitmapDescriptorFactory.fromResource(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
             int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
@@ -324,10 +299,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     * Recreate last added marker with new circle radius;
-     * @param radius radius for a circle
-     */
     public void recreateMarker(int radius) {
         markerRadius = radius;
         if (markerRadius == -1)
@@ -354,10 +325,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     * Recreate last added marker with new marker style;
-     * @param style marker style.
-     */
     public void recreateStyle(int style) {
         markerStyle = style;
         if (mMap != null && lastPos != null) {
@@ -369,7 +336,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             mMap.addMarker(new MarkerOptions()
                     .position(lastPos)
                     .title(markerTitle)
-                    .icon(BitmapDescriptorFactory.fromResource(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(true));
             if (markerStyle >= 0) {
                 int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
@@ -387,26 +354,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     * Move camera to coordinates;
-     * @param pos coordinates
-     */
     public void moveCamera(LatLng pos) {
         if (mMap != null) animate(pos);
     }
 
-    /**
-     * Move camera to coordinates with animation;
-     * @param latLng coordinates
-     */
     public void animate(LatLng latLng) {
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, 13);
         if (mMap != null) mMap.animateCamera(update);
     }
 
-    /**
-     * Move camera to user current coordinates with animation;
-     */
     public void moveToMyLocation() {
         if (mMap != null) {
             LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -433,10 +389,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         isFullscreen = fullscreen;
     }
 
-    /**
-     * On back pressed interface for map;
-     * @return boolean
-     */
     public boolean onBackPressed() {
         if (isLayersVisible()) {
             hideLayers();

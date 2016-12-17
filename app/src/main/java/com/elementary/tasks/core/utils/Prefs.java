@@ -43,6 +43,14 @@ public class Prefs extends SharedPrefs {
         super(context);
     }
 
+    public int getLastUsedReminder() {
+        return getInt(LAST_USED_REMINDER);
+    }
+
+    public void setLastUsedReminder(int value) {
+        putInt(LAST_USED_REMINDER, value);
+    }
+
     public int getMarkerStyle() {
         return getInt(MARKER_STYLE);
     }
