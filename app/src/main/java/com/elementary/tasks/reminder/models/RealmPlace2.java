@@ -16,6 +16,9 @@
 
 package com.elementary.tasks.reminder.models;
 
+import java.util.List;
+
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -29,6 +32,7 @@ public class RealmPlace2 extends RealmObject {
     @PrimaryKey
     private String id;
     private String address;
+    private RealmList<RealmString> tags;
 
     public RealmPlace2() {}
 
@@ -40,6 +44,25 @@ public class RealmPlace2 extends RealmObject {
         this.name = item.getName();
         this.id = item.getId();
         this.address = item.getAddress();
+        this.tags = wrapStringArray(item.getTags());
+    }
+
+    private RealmList<RealmString> wrapStringArray(List<String> list) {
+        RealmList<RealmString> strings = new RealmList<>();
+        if (list != null) {
+            for (String string : list) {
+                strings.add(new RealmString(string));
+            }
+        }
+        return strings;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = wrapStringArray(tags);
+    }
+
+    public RealmList<RealmString> getTags() {
+        return tags;
     }
 
     public int getRadius() {

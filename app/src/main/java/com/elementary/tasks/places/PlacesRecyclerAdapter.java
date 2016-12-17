@@ -1,7 +1,6 @@
 package com.elementary.tasks.places;
 
 import android.content.Context;
-import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.elementary.tasks.core.interfaces.SimpleListener;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.PlaceListItemBinding;
@@ -37,7 +35,7 @@ import java.util.List;
 
 public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder> {
 
-    private List<PlaceItem> mDataList;
+    private List<PlaceItem> mDataList = new ArrayList<>();
     private SimpleListener mEventListener;
     private Context mContext;
 
@@ -47,12 +45,20 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
         this.mEventListener = listener;
     }
 
+    public List<PlaceItem> getData() {
+        return mDataList;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         PlaceListItemBinding binding;
         public ViewHolder(View v) {
             super(v);
             binding = DataBindingUtil.bind(v);
-            v.setOnClickListener(view -> open(getAdapterPosition()));
+            v.setOnClickListener(view -> {
+                if (mEventListener != null) {
+                    mEventListener.onItemClicked(getAdapterPosition(), view);
+                }
+            });
             v.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), view);
@@ -66,10 +72,6 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
         RealmDb.getInstance().deletePlace(mDataList.remove(position));
         notifyItemRemoved(position);
         notifyItemRangeChanged(0, mDataList.size());
-    }
-
-    private void open(int position) {
-        mContext.startActivity(new Intent(mContext, CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mDataList.get(position).getKey()));
     }
 
     @Override

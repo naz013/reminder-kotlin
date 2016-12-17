@@ -18,6 +18,8 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Place {
@@ -29,6 +31,7 @@ public class Place {
     private String name;
     private String id;
     private String address;
+    private List<String> tags;
 
     public Place(RealmPlace2 item) {
         this.radius = item.getRadius();
@@ -38,9 +41,10 @@ public class Place {
         this.name = item.getName();
         this.id = item.getId();
         this.address = item.getAddress();
+        this.tags = wrapStringArray(item.getTags());
     }
 
-    public Place(int radius, int marker, double latitude, double longitude, String name, String address) {
+    public Place(int radius, int marker, double latitude, double longitude, String name, String address, List<String> tags) {
         this.radius = radius;
         this.marker = marker;
         this.latitude = latitude;
@@ -48,6 +52,25 @@ public class Place {
         this.name = name;
         this.id = UUID.randomUUID().toString();
         this.address = address;
+        this.tags = tags;
+    }
+
+    private List<String> wrapStringArray(List<RealmString> list) {
+        List<String> strings = new ArrayList<>();
+        if (list != null) {
+            for (RealmString string : list) {
+                strings.add(string.getString());
+            }
+        }
+        return strings;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public int getRadius() {
