@@ -41,7 +41,8 @@ public class PlacesFragment extends BaseNavigationFragment {
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
         public void onItemClicked(int position, View view) {
-
+            startActivity(new Intent(mContext, CreatePlaceActivity.class)
+                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
         }
 
         @Override

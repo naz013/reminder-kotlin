@@ -46,6 +46,7 @@ import com.elementary.tasks.creators.fragments.EmailFragment;
 import com.elementary.tasks.creators.fragments.LocationFragment;
 import com.elementary.tasks.creators.fragments.LocationOutFragment;
 import com.elementary.tasks.creators.fragments.MonthFragment;
+import com.elementary.tasks.creators.fragments.PlacesFragment;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.creators.fragments.ShopFragment;
 import com.elementary.tasks.creators.fragments.SkypeFragment;
@@ -131,6 +132,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     } else {
                         Permissions.requestPermission(CreateReminderActivity.this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS);
                     }
+                    break;
+                case 10:
+                    replaceFragment(new PlacesFragment());
                     break;
             }
         }

@@ -2,21 +2,18 @@ package com.elementary.tasks.core.fragments;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -24,18 +21,20 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.interfaces.SimpleListener;
+import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.QuickReturnUtils;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.core.views.AddressAutoCompleteView;
-import com.elementary.tasks.databinding.FragmentMapBinding;
-import com.elementary.tasks.places.PlaceItem;
-import com.elementary.tasks.places.PlacesRecyclerAdapter;
+import com.elementary.tasks.core.views.roboto.RoboEditText;
+import com.elementary.tasks.databinding.FragmentPlacesMapBinding;
+import com.elementary.tasks.places.GooglePlaceItem;
+import com.elementary.tasks.places.GooglePlacesAdapter;
+import com.elementary.tasks.places.PlaceSearchTask;
+import com.elementary.tasks.reminder.models.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +43,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -65,51 +65,39 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
  * limitations under the License.
  */
 
-public class MapFragment extends BaseMapFragment implements View.OnClickListener {
+public class PlacesMapFragment extends BaseMapFragment implements View.OnClickListener, PlaceSearchTask.ExecutionListener {
 
-    private static final String TAG = "MapFragment";
-
+    private FragmentPlacesMapBinding binding;
     private GoogleMap mMap;
     private CardView layersContainer;
     private CardView styleCard;
     private CardView placesListCard;
-    private AddressAutoCompleteView cardSearch;
+    private RoboEditText cardSearch;
     private ImageButton zoomOut;
-    private ImageButton backButton;
     private ImageButton places;
     private ImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
     private RecyclerView placesList;
     private LinearLayout emptyItem;
-    private FragmentMapBinding binding;
 
-    private PlacesRecyclerAdapter placeRecyclerAdapter;
+    private List<GooglePlaceItem> spinnerArray = new ArrayList<>();
 
-    private boolean isTouch = true;
     private boolean isZoom = true;
-    private boolean isBack = true;
-    private boolean isStyles = true;
-    private boolean isPlaces = true;
-    private boolean isSearch = true;
     private boolean isFullscreen = false;
     private boolean isDark = false;
-    private String markerTitle;
-    private int markerRadius = -1;
+    private int mRadius = -1;
     private int markerStyle = -1;
     private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
-    private LatLng lastPos;
-    private float strokeWidth = 3f;
+    private double mLat, mLng;
 
     private ThemeUtil mColor;
 
-    private MapListener mListener;
+    private PlaceSearchTask mPlacesAsync;
+    private LocationTracker mLocList;
+
+    private MapListener mMapListener;
     private MapCallback mCallback;
 
-    public static final String ENABLE_TOUCH = "enable_touch";
-    public static final String ENABLE_PLACES = "enable_places";
-    public static final String ENABLE_SEARCH = "enable_search";
-    public static final String ENABLE_STYLES = "enable_styles";
-    public static final String ENABLE_BACK = "enable_back";
     public static final String ENABLE_ZOOM = "enable_zoom";
     public static final String MARKER_STYLE = "marker_style";
     public static final String THEME_MODE = "theme_mode";
@@ -126,43 +114,29 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
                 hideLayers();
                 hidePlaces();
                 hideStyles();
-                if (isTouch) {
-                    addMarker(latLng, markerTitle, true, true, markerRadius);
-                }
             });
-
-            if (lastPos != null) {
-                addMarker(lastPos, lastPos.toString(), true, false, markerRadius);
-            }
             if (mCallback != null) {
                 mCallback.onMapReady();
             }
         }
     };
+    private LocationTracker.Callback mTrackerCallback = (lat, lon) -> {
+        mLat = lat;
+        mLng = lon;
+    };
 
-    public static MapFragment newInstance(boolean isTouch, boolean isPlaces,
-                                          boolean isSearch, boolean isStyles,
-                                          boolean isBack, boolean isZoom, boolean isDark) {
-        MapFragment fragment = new MapFragment();
+    public static PlacesMapFragment newInstance(boolean isZoom, boolean isDark) {
+        PlacesMapFragment fragment = new PlacesMapFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ENABLE_TOUCH, isTouch);
-        args.putBoolean(ENABLE_PLACES, isPlaces);
-        args.putBoolean(ENABLE_SEARCH, isSearch);
-        args.putBoolean(ENABLE_STYLES, isStyles);
-        args.putBoolean(ENABLE_BACK, isBack);
         args.putBoolean(ENABLE_ZOOM, isZoom);
         args.putBoolean(THEME_MODE, isDark);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static MapFragment newInstance(boolean isPlaces, boolean isStyles, boolean isBack,
-                                          boolean isZoom, int markerStyle, boolean isDark) {
-        MapFragment fragment = new MapFragment();
+    public static PlacesMapFragment newInstance(boolean isZoom, int markerStyle, boolean isDark) {
+        PlacesMapFragment fragment = new PlacesMapFragment();
         Bundle args = new Bundle();
-        args.putBoolean(ENABLE_PLACES, isPlaces);
-        args.putBoolean(ENABLE_STYLES, isStyles);
-        args.putBoolean(ENABLE_BACK, isBack);
         args.putBoolean(ENABLE_ZOOM, isZoom);
         args.putBoolean(THEME_MODE, isDark);
         args.putInt(MARKER_STYLE, markerStyle);
@@ -170,183 +144,91 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         return fragment;
     }
 
-    public MapFragment() {
-
-    }
-
-    public void setAdapter(PlacesRecyclerAdapter adapter) {
-        this.placeRecyclerAdapter = adapter;
+    public PlacesMapFragment() {
     }
 
     public void setListener(MapListener listener) {
-        this.mListener = listener;
+        this.mMapListener = listener;
     }
 
     public void setCallback(MapCallback callback) {
         this.mCallback = callback;
     }
 
-    public void setMarkerTitle(String markerTitle) {
-        this.markerTitle = markerTitle;
-    }
-
-    public void setMarkerRadius(int markerRadius) {
-        this.markerRadius = markerRadius;
+    public void setRadius(int mRadius) {
+        this.mRadius = mRadius;
     }
 
     public void setMarkerStyle(int markerStyle) {
         this.markerStyle = markerStyle;
     }
 
-    public int getMarkerStyle() {
-        return markerStyle;
-    }
-
     public void addMarker(LatLng pos, String title, boolean clear, boolean animate, int radius) {
-        if (mMap != null) {
-            markerRadius = radius;
-            if (markerRadius == -1)
-                markerRadius = Prefs.getInstance(mContext).getRadius();
-            if (clear) mMap.clear();
-            if (title == null || title.matches("")) title = pos.toString();
-            if (!Module.isPro()) markerStyle = 5;
-            lastPos = pos;
-            if (mListener != null) mListener.placeChanged(pos, title);
-            mMap.addMarker(new MarkerOptions()
-                    .position(pos)
-                    .title(title)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
-                    .draggable(clear));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
-            mMap.addCircle(new CircleOptions()
-                    .center(pos)
-                    .radius(markerRadius)
-                    .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
-            if (animate) animate(pos);
-        }
-    }
-
-    public void addMarker(LatLng pos, String title, boolean clear, int markerStyle, boolean animate, int radius) {
-        if (mMap != null) {
-            markerRadius = radius;
-            if (markerRadius == -1) {
-                markerRadius = Prefs.getInstance(mContext).getRadius();
+        if (mMap != null && pos != null) {
+            if (pos.latitude == 0.0 && pos.longitude == 0.0) return;
+            mRadius = radius;
+            if (mRadius == -1) {
+                mRadius = Prefs.getInstance(mContext).getRadius();
             }
-            if (!Module.isPro()) markerStyle = 5;
-            this.markerStyle = markerStyle;
-            if (clear) mMap.clear();
-            if (title == null || title.matches(""))
+            if (clear) {
+                mMap.clear();
+            }
+            if (title == null || title.matches("")) {
                 title = pos.toString();
-            lastPos = pos;
-            if (mListener != null) mListener.placeChanged(pos, title);
+            }
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
             int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+            float strokeWidth = 3f;
             mMap.addCircle(new CircleOptions()
                     .center(pos)
-                    .radius(markerRadius)
+                    .radius(mRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
-            if (animate) animate(pos);
-        } else {
-            Log.d(TAG, "map is null");
+                    .fillColor(ViewUtils.getColor(mContext, circleColors[0]))
+                    .strokeColor(ViewUtils.getColor(mContext, circleColors[1])));
+            if (animate) {
+                animate(pos);
+            }
         }
     }
 
     public void recreateMarker(int radius) {
-        markerRadius = radius;
-        if (markerRadius == -1)
-            markerRadius = Prefs.getInstance(mContext).getRadius();
-        if (mMap != null && lastPos != null) {
-            mMap.clear();
-            if (markerTitle == null || markerTitle.matches(""))
-                markerTitle = lastPos.toString();
-            if (mListener != null) mListener.placeChanged(lastPos, markerTitle);
-            if (!Module.isPro()) markerStyle = 5;
-            mMap.addMarker(new MarkerOptions()
-                    .position(lastPos)
-                    .title(markerTitle)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
-                    .draggable(true));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
-            mMap.addCircle(new CircleOptions()
-                    .center(lastPos)
-                    .radius(markerRadius)
-                    .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
-            animate(lastPos);
+        mRadius = radius;
+        if (mRadius == -1) {
+            mRadius = Prefs.getInstance(mContext).getRadius();
+        }
+        if (mMap != null) {
+            addMarkers();
         }
     }
 
     public void recreateStyle(int style) {
         markerStyle = style;
-        if (mMap != null && lastPos != null) {
-            mMap.clear();
-            if (markerTitle == null || markerTitle.matches(""))
-                markerTitle = lastPos.toString();
-            if (mListener != null) mListener.placeChanged(lastPos, markerTitle);
-            if (!Module.isPro()) markerStyle = 5;
-            mMap.addMarker(new MarkerOptions()
-                    .position(lastPos)
-                    .title(markerTitle)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
-                    .draggable(true));
-            if (markerStyle >= 0) {
-                int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
-                if (markerRadius == -1) {
-                    markerRadius = Prefs.getInstance(mContext).getRadius();
-                }
-                mMap.addCircle(new CircleOptions()
-                        .center(lastPos)
-                        .radius(markerRadius)
-                        .strokeWidth(strokeWidth)
-                        .fillColor(mColor.getColor(circleColors[0]))
-                        .strokeColor(mColor.getColor(circleColors[1])));
-            }
-            animate(lastPos);
+        if (mMap != null) {
+            addMarkers();
         }
     }
 
-    public void moveCamera(LatLng pos) {
-        if (mMap != null) animate(pos);
+    public void addMarkers(List<Place> list) {
+        mMap.clear();
+        toModels(list, false);
+        refreshAdapter(false);
+    }
+
+    public void selectMarkers(List<Place> list) {
+        mMap.clear();
+        toModels(list, true);
+        refreshAdapter(false);
     }
 
     public void animate(LatLng latLng) {
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, 13);
-        if (mMap != null) mMap.animateCamera(update);
-    }
-
-    public void moveToMyLocation() {
         if (mMap != null) {
-            LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            if (location != null) {
-                LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-                animate(pos);
-            } else {
-                location = mMap.getMyLocation();
-                if (location != null) {
-                    LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-                    animate(pos);
-                }
-            }
+            mMap.animateCamera(update);
         }
-    }
-
-    public boolean isFullscreen() {
-        return isFullscreen;
-    }
-
-    public void setFullscreen(boolean fullscreen) {
-        isFullscreen = fullscreen;
     }
 
     public boolean onBackPressed() {
@@ -365,28 +247,25 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     }
 
     public void showShowcase() {
-        if (mContext == null) {
-            return;
-        }
-        if (!Prefs.getInstance(mContext).isMapShowcase() && isBack) {
+        if (!Prefs.getInstance(mContext).isMapShowcase()) {
+            ThemeUtil coloring = ThemeUtil.getInstance(mContext);
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
-            config.setMaskColor(mColor.getColor(mColor.colorAccent()));
-            config.setContentTextColor(mColor.getColor(R.color.whitePrimary));
-            config.setDismissTextColor(mColor.getColor(R.color.whitePrimary));
+            config.setMaskColor(coloring.getColor(coloring.colorAccent()));
+            config.setContentTextColor(coloring.getColor(R.color.whitePrimary));
+            config.setDismissTextColor(coloring.getColor(R.color.whitePrimary));
+
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(mContext);
             sequence.setConfig(config);
+
             sequence.addSequenceItem(zoomOut,
                     mContext.getString(R.string.click_to_expand_collapse_map),
                     mContext.getString(R.string.got_it));
-            sequence.addSequenceItem(backButton,
-                    mContext.getString(R.string.click_when_add_place),
+
+            sequence.addSequenceItem(markers,
+                    mContext.getString(R.string.select_style_for_marker),
                     mContext.getString(R.string.got_it));
-            if (Module.isPro()) {
-                sequence.addSequenceItem(markers,
-                        mContext.getString(R.string.select_style_for_marker),
-                        mContext.getString(R.string.got_it));
-            }
+
             sequence.addSequenceItem(places,
                     mContext.getString(R.string.select_place_from_list),
                     mContext.getString(R.string.got_it));
@@ -398,14 +277,10 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     private void initArgs() {
         Bundle args = getArguments();
         if (args != null) {
-            isTouch = args.getBoolean(ENABLE_TOUCH, true);
-            isPlaces = args.getBoolean(ENABLE_PLACES, true);
-            isSearch = args.getBoolean(ENABLE_SEARCH, true);
-            isStyles = args.getBoolean(ENABLE_STYLES, true);
-            isBack = args.getBoolean(ENABLE_BACK, true);
             isZoom = args.getBoolean(ENABLE_ZOOM, true);
             isDark = args.getBoolean(THEME_MODE, false);
-            markerStyle = args.getInt(MARKER_STYLE, Prefs.getInstance(mContext).getMarkerStyle());
+            markerStyle = args.getInt(MARKER_STYLE,
+                    Prefs.getInstance(mContext).getMarkerStyle());
         }
     }
 
@@ -413,41 +288,32 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initArgs();
-        mColor = ThemeUtil.getInstance(mContext);
-        binding = FragmentMapBinding.inflate(inflater, container, false);
+        binding = FragmentPlacesMapBinding.inflate(inflater, container, false);
         final Prefs prefs = Prefs.getInstance(mContext);
-        markerRadius = prefs.getRadius();
+        mRadius = prefs.getRadius();
         mMapType = prefs.getMapType();
-        if (!Module.isPro()) {
-            markerStyle = prefs.getMarkerStyle();
-        }
+
+        mColor = ThemeUtil.getInstance(mContext);
         isDark = mColor.isDark();
+
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
         fragment.getMapAsync(mMapCallback);
         getFragmentManager().beginTransaction()
                 .add(R.id.map, fragment)
                 .commit();
+
         initViews();
         cardSearch = binding.cardSearch;
-        cardSearch.setOnItemClickListener((parent, view1, position, id) -> {
-            Address sel = cardSearch.getAddress(position);
-            double lat = sel.getLatitude();
-            double lon = sel.getLongitude();
-            LatLng pos = new LatLng(lat, lon);
-            addMarker(pos, markerTitle, true, true, markerRadius);
-            if (mListener != null) {
-                mListener.placeChanged(pos, getFormattedAddress(sel));
+        cardSearch.setHint(R.string.search_place);
+        cardSearch.setOnEditorActionListener((textView, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
+                hideKeyboard();
+                loadPlaces();
+                return true;
             }
+            return false;
         });
-        if (isPlaces) loadPlaces();
         return binding.getRoot();
-    }
-
-    private String getFormattedAddress(Address address) {
-        return String.format("%s, %s%s",
-                address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
-                address.getMaxAddressLineIndex() > 1 ? address.getAddressLine(1) + ", " : "",
-                address.getCountryName());
     }
 
     private void initViews() {
@@ -455,16 +321,18 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         groupTwo = binding.groupTwo;
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
-        ImageView emptyImage = binding.emptyImage;
+
         if (isDark) {
-            emptyImage.setImageResource(R.drawable.ic_directions_white_24dp);
+            binding.emptyImage.setImageResource(R.drawable.ic_directions_white_24dp);
         } else {
-            emptyImage.setImageResource(R.drawable.ic_directions_black_24dp);
+            binding.emptyImage.setImageResource(R.drawable.ic_directions_black_24dp);
         }
+
         placesList = binding.placesList;
+        placesList.setLayoutManager(new LinearLayoutManager(mContext));
+
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
-        CardView myCard = binding.myCard;
         CardView layersCard = binding.layersCard;
         CardView placesCard = binding.placesCard;
         CardView backCard = binding.backCard;
@@ -473,9 +341,9 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         CardView markersCard = binding.markersCard;
         placesListCard.setVisibility(View.GONE);
         styleCard.setVisibility(View.GONE);
+
         zoomCard.setCardBackgroundColor(mColor.getCardStyle());
         searchCard.setCardBackgroundColor(mColor.getCardStyle());
-        myCard.setCardBackgroundColor(mColor.getCardStyle());
         layersCard.setCardBackgroundColor(mColor.getCardStyle());
         placesCard.setCardBackgroundColor(mColor.getCardStyle());
         styleCard.setCardBackgroundColor(mColor.getCardStyle());
@@ -490,7 +358,6 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         if (Module.isLollipop()) {
             zoomCard.setCardElevation(Configs.CARD_ELEVATION);
             searchCard.setCardElevation(Configs.CARD_ELEVATION);
-            myCard.setCardElevation(Configs.CARD_ELEVATION);
             layersContainer.setCardElevation(Configs.CARD_ELEVATION);
             layersCard.setCardElevation(Configs.CARD_ELEVATION);
             placesCard.setCardElevation(Configs.CARD_ELEVATION);
@@ -503,7 +370,6 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         int style = mColor.getCardStyle();
         zoomCard.setCardBackgroundColor(style);
         searchCard.setCardBackgroundColor(style);
-        myCard.setCardBackgroundColor(style);
         layersContainer.setCardBackgroundColor(style);
         layersCard.setCardBackgroundColor(style);
         placesCard.setCardBackgroundColor(style);
@@ -515,24 +381,21 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         ImageButton cardClear = binding.cardClear;
         zoomOut = binding.mapZoom;
         ImageButton layers = binding.layers;
-        ImageButton myLocation = binding.myLocation;
         markers = binding.markers;
         places = binding.places;
-        backButton = binding.backButton;
+        ImageButton backButton = binding.backButton;
 
         if (isDark) {
-            cardClear.setImageResource(R.drawable.ic_clear_white_24dp);
+            cardClear.setImageResource(R.drawable.ic_search_white_24dp);
             zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
             layers.setImageResource(R.drawable.ic_layers_white_24dp);
-            myLocation.setImageResource(R.drawable.ic_my_location_white_24dp);
             markers.setImageResource(R.drawable.ic_palette_white_24dp);
             places.setImageResource(R.drawable.ic_directions_white_24dp);
             backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_white_24dp);
         } else {
-            cardClear.setImageResource(R.drawable.ic_clear_black_24dp);
+            cardClear.setImageResource(R.drawable.ic_search_black_24dp);
             zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
             layers.setImageResource(R.drawable.ic_layers_black_24dp);
-            myLocation.setImageResource(R.drawable.ic_my_location_black_24dp);
             markers.setImageResource(R.drawable.ic_palette_black_24dp);
             places.setImageResource(R.drawable.ic_directions_black_24dp);
             backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_black_24dp);
@@ -541,32 +404,28 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         cardClear.setOnClickListener(this);
         zoomOut.setOnClickListener(this);
         layers.setOnClickListener(this);
-        myLocation.setOnClickListener(this);
         markers.setOnClickListener(this);
         places.setOnClickListener(this);
-        backButton.setOnClickListener(this);
 
         binding.typeNormal.setOnClickListener(this);
         binding.typeSatellite.setOnClickListener(this);
         binding.typeHybrid.setOnClickListener(this);
         binding.typeTerrain.setOnClickListener(this);
 
-        if (!isPlaces) {
-            placesCard.setVisibility(View.GONE);
-        }
-        if (!isBack) {
-            backCard.setVisibility(View.GONE);
-        }
-        if (!isSearch) {
-            searchCard.setVisibility(View.GONE);
-        }
-        if (!isStyles || !Module.isPro()) {
+        backCard.setVisibility(View.GONE);
+        if (!Module.isPro()) {
             markersCard.setVisibility(View.GONE);
         }
         if (!isZoom) {
             zoomCard.setVisibility(View.GONE);
         }
         loadMarkers();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager)
+                mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(cardSearch.getWindowToken(), 0);
     }
 
     private void loadMarkers() {
@@ -576,7 +435,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         for (int i = 0; i < ThemeUtil.NUM_OF_MARKERS; i++) {
             ImageButton ib = new ImageButton(mContext);
             ib.setBackgroundResource(android.R.color.transparent);
-            ib.setImageResource(mColor.getMarkerStyle(i));
+            ib.setImageResource(ThemeUtil.getInstance(mContext).getMarkerStyle(i));
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -612,53 +471,77 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     }
 
     private void loadPlaces(){
-        if (placeRecyclerAdapter == null) {
-            List<PlaceItem> list = RealmDb.getInstance().getAllPlaces();
-            if (list.isEmpty()) {
-                binding.placesCard.setVisibility(View.GONE);
-                placesList.setVisibility(View.GONE);
-                emptyItem.setVisibility(View.VISIBLE);
-            } else {
-                emptyItem.setVisibility(View.GONE);
-                binding.placesCard.setVisibility(View.VISIBLE);
-                placesList.setVisibility(View.VISIBLE);
-                placeRecyclerAdapter = new PlacesRecyclerAdapter(mContext, list, new SimpleListener() {
-                    @Override
-                    public void onItemClicked(int position, View view) {
-                        hideLayers();
-                        hidePlaces();
-                        PlaceItem item = placeRecyclerAdapter.getItem(position);
-                        if (item != null) {
-                            addMarker(new LatLng(item.getLat(), item.getLng()), markerTitle, true, true, markerRadius);
-                        }
-                    }
+        String req = cardSearch.getText().toString().trim().toLowerCase();
+        if (req.matches("")) return;
+        cancelSearchTask();
+        mPlacesAsync = new PlaceSearchTask(this, req, mLat, mLng);
+        mPlacesAsync.execute();
+    }
 
-                    @Override
-                    public void onItemLongClicked(int position, View view) {
+    private void cancelSearchTask() {
+        if (mPlacesAsync != null && !mPlacesAsync.isCancelled()) {
+            mPlacesAsync.cancel(true);
+        }
+    }
 
-                    }
-                });
-                placesList.setAdapter(placeRecyclerAdapter);
+    private void refreshAdapter(boolean show) {
+        GooglePlacesAdapter placesAdapter = new GooglePlacesAdapter(mContext, spinnerArray);
+        placesAdapter.setEventListener(new SimpleListener() {
+            @Override
+            public void onItemClicked(int position, View view) {
+                hideLayers();
+                hidePlaces();
+                animate(spinnerArray.get(position).getPosition());
             }
+
+            @Override
+            public void onItemLongClicked(int position, View view) {
+
+            }
+        });
+        if (spinnerArray != null && spinnerArray.size() > 0) {
+            emptyItem.setVisibility(View.GONE);
+            placesList.setVisibility(View.VISIBLE);
+            placesList.setAdapter(placesAdapter);
+            addMarkers();
+            if (!isPlacesVisible() && show) ViewUtils.slideInUp(mContext, placesListCard);
         } else {
-            if (placeRecyclerAdapter.getItemCount() > 0) {
-                emptyItem.setVisibility(View.GONE);
-                placesList.setVisibility(View.VISIBLE);
-                placesList.setLayoutManager(new LinearLayoutManager(mContext));
-                placesList.setAdapter(placeRecyclerAdapter);
-                addMarkers(placeRecyclerAdapter.getData());
-            } else {
-                placesList.setVisibility(View.GONE);
-                emptyItem.setVisibility(View.VISIBLE);
+            placesList.setVisibility(View.GONE);
+            emptyItem.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public List<Place> getPlaces() {
+        List<Place> places = new ArrayList<>();
+        if (spinnerArray != null && spinnerArray.size() > 0) {
+            for (GooglePlaceItem model : spinnerArray) {
+                if (model.isSelected()) {
+                    if (model.getPosition() != null) {
+                        places.add(new Place(mRadius, markerStyle, model.getPosition().latitude,
+                                model.getPosition().longitude, model.getName(), model.getAddress(), model.getTypes()));
+                    }
+                }
+            }
+        }
+        return places;
+    }
+
+    private void toModels(List<Place> list, boolean select) {
+        spinnerArray = new ArrayList<>();
+        if (list != null && list.size() > 0) {
+            for (Place model : list) {
+                spinnerArray.add(new GooglePlaceItem(model.getName(), model.getId(),
+                        null, model.getAddress(), new LatLng(model.getLatitude(),
+                        model.getLongitude()), model.getTags(), select));
             }
         }
     }
 
-    private void addMarkers(List<PlaceItem> list) {
-        if (list != null && list.size() > 0) {
-            for (PlaceItem model : list) {
-                addMarker(new LatLng(model.getLat(), model.getLng()), model.getTitle(), false,
-                        model.getIcon(), false, model.getRadius());
+    private void addMarkers() {
+        mMap.clear();
+        if (spinnerArray != null && spinnerArray.size() > 0) {
+            for (GooglePlaceItem model : spinnerArray) {
+                addMarker(model.getPosition(), model.getName(), false, false, mRadius);
             }
         }
     }
@@ -733,8 +616,8 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
 
     private void zoomClick() {
         isFullscreen = !isFullscreen;
-        if (mListener != null) {
-            mListener.onZoomClick(isFullscreen);
+        if (mMapListener != null) {
+            mMapListener.onZoomClick(isFullscreen);
         }
         if (isFullscreen) {
             if (isDark) zoomOut.setImageResource(R.drawable.ic_arrow_downward_white_24dp);
@@ -752,6 +635,11 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
+        startTracking();
+    }
+
+    private void startTracking() {
+        mLocList = new LocationTracker(mContext, mTrackerCallback);
     }
 
     @Override
@@ -760,6 +648,13 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             case 205:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     setMyLocation();
+                } else {
+                    Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 200:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    startTracking();
                 } else {
                     Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
                 }
@@ -774,20 +669,15 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             recreateStyle(v.getId() - ThemeUtil.NUM_OF_MARKERS);
             hideStyles();
         }
-
         switch (id) {
             case R.id.cardClear:
-                cardSearch.setText("");
+                loadPlaces();
                 break;
             case R.id.mapZoom:
                 zoomClick();
                 break;
             case R.id.layers:
                 toggleLayers();
-                break;
-            case R.id.myLocation:
-                hideLayers();
-                moveToMyLocation();
                 break;
             case R.id.typeNormal:
                 setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -807,20 +697,55 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             case R.id.markers:
                 toggleMarkers();
                 break;
-            case R.id.backButton:
-                restoreScaleButton();
-                if (mListener != null) {
-                    mListener.onBackClick();
-                }
-                break;
         }
     }
 
-    private void restoreScaleButton() {
-        if (isDark) {
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
-        } else {
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cancelTracking();
+    }
+
+    private void cancelTracking() {
+        if (mLocList != null) {
+            mLocList.removeUpdates();
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        cancelTracking();
+        cancelSearchTask();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        cancelTracking();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        cancelTracking();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cancelTracking();
+    }
+
+    @Override
+    public void onFinish(List<GooglePlaceItem> places) {
+        spinnerArray = places;
+        if (spinnerArray.size() == 0) {
+            Toast.makeText(mContext, mContext.getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+        }
+        if (spinnerArray != null && spinnerArray.size() > 1) {
+            spinnerArray.add(new GooglePlaceItem(mContext.getString(R.string.add_all), null, null, null, null, null, false));
+        }
+        refreshAdapter(true);
     }
 }
