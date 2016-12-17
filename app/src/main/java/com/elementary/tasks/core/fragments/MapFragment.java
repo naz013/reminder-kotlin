@@ -312,7 +312,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             mMap.addMarker(new MarkerOptions()
                     .position(lastPos)
                     .title(markerTitle)
-                    .icon(BitmapDescriptorFactory.fromResource(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(true));
             int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()

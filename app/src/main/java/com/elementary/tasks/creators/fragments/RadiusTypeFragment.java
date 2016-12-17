@@ -57,10 +57,13 @@ abstract class RadiusTypeFragment extends TypeFragment {
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             radius = b.seekBar.getProgress();
+            recreateMarker();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
+
+    protected abstract void recreateMarker();
 
     @Override
     public boolean save() {
