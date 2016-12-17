@@ -20,13 +20,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageView"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/imagesList"
                     android:layout_width="match_parent"
-                    android:layout_height="256dp"
-                    android:minHeight="?attr/actionBarSize"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/noteText"

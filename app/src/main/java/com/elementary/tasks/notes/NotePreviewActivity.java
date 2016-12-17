@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,15 +24,18 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.QuickReturnUtils;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
+import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -57,6 +61,7 @@ public class NotePreviewActivity extends ThemedActivity {
     private Bitmap img;
     private String mId;
 
+    private ImagesGridAdapter mAdapter;
     private ActivityNotePreviewBinding binding;
 
     @Override
@@ -65,8 +70,8 @@ public class NotePreviewActivity extends ThemedActivity {
         mId = getIntent().getStringExtra(Constants.INTENT_ID);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_preview);
         initActionBar();
+        initImagesList();
         initScrollView();
-        initImageView();
         initReminderCard();
     }
 
@@ -78,15 +83,36 @@ public class NotePreviewActivity extends ThemedActivity {
         binding.deleteReminder.setOnClickListener(v -> showReminderDeleteDialog());
     }
 
-    private void initImageView() {
-        if (Module.isLollipop()) binding.imageView.setTransitionName("image");
-        binding.imageView.setOnClickListener(v -> {
-            if (Permissions.checkPermission(NotePreviewActivity.this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-                openImage();
-            } else {
-                Permissions.requestPermission(NotePreviewActivity.this, REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
+    private void initImagesList() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 6);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int size = mAdapter.getItemCount();
+                switch (size % 3) {
+                    case 1:
+                        if (position == 0) {
+                            return 6;
+                        } else {
+                            return 2;
+                        }
+                    case 2:
+                        if (position < 2) {
+                            return 3;
+                        } else {
+                            return 2;
+                        }
+                    default:
+                        return 2;
+                }
             }
         });
+        binding.imagesList.setLayoutManager(gridLayoutManager);
+        binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
+        binding.imagesList.setHasFixedSize(true);
+        binding.imagesList.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new ImagesGridAdapter(this);
+        binding.imagesList.setAdapter(mAdapter);
     }
 
     private void initScrollView() {
@@ -94,7 +120,7 @@ public class NotePreviewActivity extends ThemedActivity {
             @Override
             public void onScrollChanged() {
                 int scrollY = binding.scrollContent.getScrollY();
-                if (mItem.getImage() != null) {
+                if (!mItem.getImages().isEmpty()) {
                     binding.appBar.getBackground().setAlpha(getAlphaForActionBar(scrollY));
                 } else {
                     binding.appBar.getBackground().setAlpha(255);
@@ -130,7 +156,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void openImage() {
-        if (mItem.getImage() != null) {
+        if (!mItem.getImages().isEmpty()) {
             File path = MemoryUtil.getImageCacheDir();
             boolean isDirectory = true;
             if (!path.exists()) {
@@ -139,29 +165,19 @@ public class NotePreviewActivity extends ThemedActivity {
             if (isDirectory) {
                 String fileName = UUID.randomUUID().toString() + FileConfig.FILE_NAME_IMAGE;
                 File f = new File(path + File.separator + fileName);
-                boolean isFile = false;
                 try {
-                    isFile = f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (isFile) {
-                    FileOutputStream fo = null;
+                    f.createNewFile();
+                    FileOutputStream fo = new FileOutputStream(f);
                     try {
-                        fo = new FileOutputStream(f);
-                    } catch (FileNotFoundException e) {
+                        fo.write(mItem.getImages().get(0).getImage());
+                        fo.close();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    if (fo != null) {
-                        try {
-                            fo.write(mItem.getImage());
-                            fo.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        startActivity(new Intent(NotePreviewActivity.this, ImagePreviewActivity.class)
-                                .putExtra(Constants.FILE_PICKED, f.toString()));
-                    }
+                    startActivity(new Intent(NotePreviewActivity.this, ImagePreviewActivity.class)
+                            .putExtra(Constants.FILE_PICKED, f.toString()));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -210,32 +226,21 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void showReminder() {
         // TODO: 12.12.2016 Add reminder loading for note
-//        if (mItem.getLinkId() != 0){
-//            ReminderItem reminderItem = ReminderHelper.getInstance(this).getReminder(mItem.getLinkId());
-//            if (reminderItem != null){
-//                long feature = reminderItem.getDateTime();
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(System.currentTimeMillis());
-//                if (feature != 0) {
-//                    calendar.setTimeInMillis(feature);
-//                }
-//                reminderTime.setText(TimeUtil.getDateTime(calendar.getTime(),
-//                        SharedPrefs.getInstance(this).getBoolean(Prefs.IS_24_TIME_FORMAT)));
-//                reminderContainer.setVisibility(View.VISIBLE);
-//            }
-//        }
+        Reminder reminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
+        if (reminder != null){
+            String dateTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime(), Prefs.getInstance(this).is24HourFormatEnabled());
+            binding.reminderTime.setText(dateTime);
+            binding.reminderContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showImage() {
-        byte[] imageByte = mItem.getImage();
-        if (imageByte != null){
-            img = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
-            binding.imageView.setImageBitmap(img);
-            binding.imageView.setVisibility(View.VISIBLE);
+        List<NoteImage> list = mItem.getImages();
+        if (!list.isEmpty()){
+            mAdapter.addImages(list);
             binding.appBar.setBackgroundColor(themeUtil.getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(0);
         } else {
-            binding.imageView.setVisibility(View.GONE);
             binding.appBar.setBackgroundColor(themeUtil.getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(255);
         }
@@ -307,12 +312,9 @@ public class NotePreviewActivity extends ThemedActivity {
             dialog.dismiss();
             // TODO: 12.12.2016 Add reminder deleting from note
 //            Reminder.delete(mItem.getLinkId(), NotePreviewActivity.this);
-//            NoteHelper.getInstance(this).linkReminder(mItem.getId(), 0);
             binding.reminderContainer.setVisibility(View.GONE);
         });
-        builder.setNegativeButton(getString(R.string.no), (dialog, which) -> {
-            dialog.dismiss();
-        });
+        builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }

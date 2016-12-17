@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -26,7 +27,7 @@ public class RealmNote extends RealmObject {
     private String date;
     private int color;
     private int style;
-    private byte[] image;
+    private RealmList<RealmImage> images;
     private int uniqueId;
 
     public RealmNote() {
@@ -36,7 +37,10 @@ public class RealmNote extends RealmObject {
     public RealmNote(NoteItem item) {
         setColor(item.getColor());
         setDate(item.getDate());
-        setImage(item.getImage());
+        this.images = new RealmList<>();
+        for (NoteImage image : item.getImages()) {
+            images.add(new RealmImage(image));
+        }
         setKey(item.getKey());
         setStyle(item.getStyle());
         setSummary(item.getSummary());
@@ -91,11 +95,11 @@ public class RealmNote extends RealmObject {
         this.style = style;
     }
 
-    public byte[] getImage() {
-        return image;
+    public RealmList<RealmImage> getImages() {
+        return images;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImages(RealmList<RealmImage> images) {
+        this.images = images;
     }
 }

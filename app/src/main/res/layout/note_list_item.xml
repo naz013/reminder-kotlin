@@ -39,7 +39,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:background="@android:color/transparent"
-                app:loadImage='@{note.image}' />
+                app:loadImage='@{note.getImages()}' />
 
             <TextView
                 android:id="@+id/note"

@@ -1028,66 +1028,6 @@ public class ThemeUtil {
 
     @ColorInt
     public int getNoteLightColor(int code) {
-        int color;
-        switch (code) {
-            case 0:
-                color = R.color.redA100;
-                break;
-            case 1:
-                color = R.color.purpleA100;
-                break;
-            case 2:
-                color = R.color.greenA100;
-                break;
-            case 3:
-                color = R.color.greenLightA100;
-                break;
-            case 4:
-                color = R.color.blueA100;
-                break;
-            case 5:
-                color = R.color.blueLightA100;
-                break;
-            case 6:
-                color = R.color.yellowA100;
-                break;
-            case 7:
-                color = R.color.orangeA100;
-                break;
-            case 8:
-                color = R.color.cyanA100;
-                break;
-            case 9:
-                color = R.color.pinkA100;
-                break;
-            case 10:
-                color = R.color.tealA100;
-                break;
-            case 11:
-                color = R.color.amberA100;
-                break;
-            default:
-                if (Module.isPro()) {
-                    switch (code) {
-                        case 12:
-                            color = R.color.purpleDeepA100;
-                            break;
-                        case 13:
-                            color = R.color.orangeDeepA100;
-                            break;
-                        case 14:
-                            color = R.color.limeA100;
-                            break;
-                        case 15:
-                            color = R.color.indigoA100;
-                            break;
-                        default:
-                            color = R.color.blueA100;
-                            break;
-                    }
-                } else color = R.color.blueA100;
-                break;
-        }
-        return getColor(color);
+        return getColor(colorAccent(code));
     }
 }

@@ -48,7 +48,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     private FilterCallback mCallback;
 
 
-    public NotesRecyclerAdapter(Context context, List<NoteItem> list, FilterCallback callback) {
+    public NotesRecyclerAdapter(List<NoteItem> list, FilterCallback callback) {
         this.mDataList = list;
         this.mCallback = callback;
         setHasStableIds(true);
@@ -179,6 +179,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     @BindingAdapter({"loadNote"})
     public static void loadNote(TextView textView, NoteItem note) {
         String title = note.getSummary();
+        if (title == null) return;
         Context context = textView.getContext();
         if (title.length() > 500) {
             String substring = title.substring(0, 500);
@@ -198,9 +199,10 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     }
 
     @BindingAdapter({"loadImage"})
-    public static void loadImage(ImageView imageView, byte[] image) {
-        if (image != null) {
-            Bitmap photo = BitmapFactory.decodeByteArray(image, 0, image.length);
+    public static void loadImage(ImageView imageView, List<NoteImage> images) {
+        if (!images.isEmpty()) {
+            NoteImage image = images.get(0);
+            Bitmap photo = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
             if (photo != null) {
                 imageView.setImageBitmap(photo);
             } else {

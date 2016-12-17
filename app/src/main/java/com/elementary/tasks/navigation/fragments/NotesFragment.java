@@ -257,7 +257,7 @@ public class NotesFragment extends BaseNavigationFragment {
         }
         binding.recyclerView.setLayoutManager(layoutManager);
         mDataList = RealmDb.getInstance().getAllNotes(Prefs.getInstance(mContext).getNoteOrder());
-        mAdapter = new NotesRecyclerAdapter(mContext, mDataList, mFilterCallback);
+        mAdapter = new NotesRecyclerAdapter(mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());

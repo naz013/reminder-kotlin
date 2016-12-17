@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,12 +13,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,7 +33,6 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,11 +42,9 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
@@ -57,6 +56,7 @@ import com.elementary.tasks.core.views.ColorPickerView;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
+import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -64,14 +64,13 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -90,6 +89,8 @@ import java.util.UUID;
  */
 
 public class ActivityCreateNote extends ThemedActivity {
+
+    private static final String TAG = "ActivityCreateNote";
     public static final int MENU_ITEM_DELETE = 12;
     private static final int REQUEST_SD_CARD = 1112;
 
@@ -100,16 +101,15 @@ public class ActivityCreateNote extends ThemedActivity {
     private int mDay = 1;
     private int mColor = 0;
     private int mFontStyle = 0;
-    private Bitmap img;
     private Uri mImageUri;
-    private byte[] mImage;
 
-    private RelativeLayout layoutContainer, imageContainer;
+    private RelativeLayout layoutContainer;
     private LinearLayout remindContainer;
     private RoboTextView remindDate, remindTime;
     private ImageButton discardReminder;
-    private ImageView noteImage;
+
     private ActivityCreateNoteBinding binding;
+    private ImagesGridAdapter mAdapter;
 
     private NoteItem mItem;
     private Toolbar toolbar;
@@ -135,32 +135,22 @@ public class ActivityCreateNote extends ThemedActivity {
         toolbar.setVisibility(View.VISIBLE);
 
         layoutContainer = binding.layoutContainer;
-        imageContainer = binding.imageContainer;
         remindContainer = binding.remindContainer;
         ViewUtils.fadeInAnimation(layoutContainer);
         remindDate = binding.remindDate;
         remindDate.setOnClickListener(v -> dateDialog().show());
         remindTime = binding.remindTime;
         remindTime.setOnClickListener(v -> timeDialog().show());
-        noteImage = binding.noteImage;
-        noteImage.setOnClickListener(v -> openImage());
         discardReminder = binding.discardReminder;
         discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
-        binding.deleteButton.setOnClickListener(v -> {
-            if (isImageAttached()) {
-                ViewUtils.collapse(imageContainer);
-                img = null;
-                mImage = null;
-                mItem.setImage(null);
-            }
-        });
+        initImagesList();
         setImages();
         Intent intent = getIntent();
         String filePath = intent.getStringExtra(Constants.FILE_PICKED);
         Uri name = null;
         try {
             name = intent.getData();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         } finally {
             String id = intent.getStringExtra(Constants.INTENT_ID);
@@ -168,7 +158,7 @@ public class ActivityCreateNote extends ThemedActivity {
                 mItem = RealmDb.getInstance().getNote(id);
             }
         }
-        if (name != null){
+        if (name != null) {
             String scheme = name.getScheme();
             if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
                 ContentResolver cr = getApplicationContext().getContentResolver();
@@ -212,21 +202,13 @@ public class ActivityCreateNote extends ThemedActivity {
 //                e.printStackTrace();
 //            }
         }
-
-        if (mItem != null){
+        if (mItem != null) {
             String note = mItem.getSummary();
             mColor = mItem.getColor();
             mFontStyle = mItem.getStyle();
             taskField.setText(note);
             taskField.setSelection(taskField.getText().length());
-            mImage = mItem.getImage();
-            if (mImage != null){
-                img = BitmapFactory.decodeByteArray(mImage, 0, mImage.length);
-                noteImage.setImageBitmap(img);
-                ViewUtils.expand(imageContainer);
-            } else {
-                imageContainer.setVisibility(View.GONE);
-            }
+            mAdapter.addImages(mItem.getImages());
             showReminder();
         } else {
             mColor = new Random().nextInt(16);
@@ -239,6 +221,38 @@ public class ActivityCreateNote extends ThemedActivity {
         }
     }
 
+    private void initImagesList() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 6);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int size = mAdapter.getItemCount();
+                switch (size % 3) {
+                    case 1:
+                        if (position == 0) {
+                            return 6;
+                        } else {
+                            return 2;
+                        }
+                    case 2:
+                        if (position < 2) {
+                            return 3;
+                        } else {
+                            return 2;
+                        }
+                    default:
+                        return 2;
+                }
+            }
+        });
+        binding.imagesList.setLayoutManager(gridLayoutManager);
+        binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
+        binding.imagesList.setHasFixedSize(true);
+        binding.imagesList.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new ImagesGridAdapter(this);
+        binding.imagesList.setAdapter(mAdapter);
+    }
+
     private void showReminder() {
         // TODO: 12.12.2016 Add loading reminder for note
 //        ReminderItem item = ReminderHelper.getInstance(this).getReminder(mItem.getLinkId());
@@ -247,34 +261,6 @@ public class ActivityCreateNote extends ThemedActivity {
 //            ViewUtils.expand(remindContainer);
 //        }
     }
-
-    private void openImage() {
-        try {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            Bitmap _bitmapScaled = img;
-            _bitmapScaled.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-            File path = MemoryUtil.getImageCacheDir();
-            boolean isDirectory = true;
-            if (!path.exists()) {
-                isDirectory = path.mkdirs();
-            }
-            if (isDirectory) {
-                String fileName = UUID.randomUUID().toString() + FileConfig.FILE_NAME_IMAGE;
-                File f = new File(path + File.separator + fileName);
-                boolean isCreated = f.createNewFile();
-                if (isCreated) {
-                    FileOutputStream fo = new FileOutputStream(f);
-                    fo.write(bytes.toByteArray());
-                    fo.close();
-                    startActivity(new Intent(this, ImagePreviewActivity.class)
-                            .putExtra(Constants.FILE_PICKED, f.toString()));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private void shareNote() {
         // TODO: 12.12.2016 Add note sharing functionality
@@ -304,7 +290,7 @@ public class ActivityCreateNote extends ThemedActivity {
 //        }
     }
 
-    private void sendMail(File file, String text){
+    private void sendMail(File file, String text) {
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             finish();
@@ -325,32 +311,29 @@ public class ActivityCreateNote extends ThemedActivity {
         remindTime.setText(TimeUtil.getTime(calendar.getTime(), Prefs.getInstance(this).is24HourFormatEnabled()));
     }
 
-    private boolean isReminderAttached(){
+    private boolean isReminderAttached() {
         return remindContainer.getVisibility() == View.VISIBLE;
-    }
-
-    private boolean isImageAttached(){
-        return imageContainer.getVisibility() == View.VISIBLE;
     }
 
     private void saveNote() {
         String note = taskField.getText().toString().trim();
-        if (TextUtils.isEmpty(note) && mImage == null) {
+        List<NoteImage> images = mAdapter.getImages();
+        if (TextUtils.isEmpty(note) && images.isEmpty()) {
             taskField.setError(getString(R.string.must_be_not_empty));
             return;
         }
         if (mItem == null) {
-            mItem = new NoteItem(UUID.randomUUID().toString());
+            mItem = new NoteItem();
         }
         mItem.setSummary(note);
         mItem.setDate(TimeUtil.getGmtDateTime());
-        mItem.setImage(mImage);
+        mItem.setImages(images);
         mItem.setColor(mColor);
         mItem.setStyle(mFontStyle);
         boolean hasReminder = isReminderAttached();
         if (!hasReminder) removeNoteFromReminder(mItem.getKey());
         RealmDb.getInstance().saveObject(mItem);
-        if (hasReminder){
+        if (hasReminder) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(mYear, mMonth, mDay, mHour, mMinute);
             createReminder(mItem.getKey(), calendar);
@@ -436,8 +419,8 @@ public class ActivityCreateNote extends ThemedActivity {
         dialog.show();
     }
 
-    private void setImages(){
-        if (themeUtil.isDark()){
+    private void setImages() {
+        if (themeUtil.isDark()) {
             discardReminder.setImageResource(R.drawable.ic_clear_white_24dp);
         } else {
             discardReminder.setImageResource(R.drawable.ic_clear_black_24dp);
@@ -454,7 +437,7 @@ public class ActivityCreateNote extends ThemedActivity {
         return true;
     }
 
-    private void getImage(){
+    private void getImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.image));
         builder.setItems(new CharSequence[]{getString(R.string.gallery),
@@ -464,8 +447,10 @@ public class ActivityCreateNote extends ThemedActivity {
                         case 0: {
                             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                             intent.setType("image/*");
-                            Intent chooser = Intent.createChooser(intent, getString(R.string.image));
-                            startActivityForResult(chooser, Constants.ACTION_REQUEST_GALLERY);
+                            if (Module.isJellyMR2()) {
+                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                            }
+                            startActivityForResult(Intent.createChooser(intent, getString(R.string.image)), Constants.ACTION_REQUEST_GALLERY);
                         }
                         break;
                         case 1: {
@@ -487,7 +472,7 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(contentUri, proj, null, null, null);
         int column_index = cursor
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -499,8 +484,7 @@ public class ActivityCreateNote extends ThemedActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case Constants.ACTION_REQUEST_GALLERY:
-                    Uri selectedImage = data.getData();
-                    getImageFromGallery(selectedImage);
+                    getImageFromGallery(data);
                     break;
                 case Constants.ACTION_REQUEST_CAMERA:
                     getImageFromCamera();
@@ -509,46 +493,39 @@ public class ActivityCreateNote extends ThemedActivity {
         }
     }
 
-    private void getImageFromGallery(Uri selectedImage) {
-        Bitmap bitmapImage = null;
-        try {
-            bitmapImage = BitmapUtils.decodeUriToBitmap(this, selectedImage);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        img = bitmapImage;
-        if (bitmapImage != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            mImage = outputStream.toByteArray();
-            noteImage.setImageBitmap(bitmapImage);
-            if (!isImageAttached()) {
-                ViewUtils.expand(imageContainer);
+    private void getImageFromGallery(Intent data) {
+        if (data.getData() != null) {
+            addImageFromUri(data.getData());
+        } else if (data.getClipData() != null) {
+            ClipData mClipData = data.getClipData();
+            for (int i = 0; i < mClipData.getItemCount(); i++) {
+                ClipData.Item item = mClipData.getItemAt(i);
+                addImageFromUri(item.getUri());
             }
         }
     }
 
-    private void getImageFromCamera() {
+    private void addImageFromUri(Uri uri) {
+        if (uri == null) return;
         Bitmap bitmapImage = null;
         try {
-            bitmapImage = BitmapUtils.decodeUriToBitmap(this, mImageUri);
+            bitmapImage = BitmapUtils.decodeUriToBitmap(this, uri);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        img = bitmapImage;
         if (bitmapImage != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            mImage = outputStream.toByteArray();
-            noteImage.setImageBitmap(bitmapImage);
-            if (!isImageAttached()) {
-                ViewUtils.expand(imageContainer);
-            }
-            String pathFromURI = getRealPathFromURI(mImageUri);
-            File file = new File(pathFromURI);
-            if (file.exists()) {
-                file.delete();
-            }
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            mAdapter.addImage(new NoteImage(outputStream.toByteArray()));
+        }
+    }
+
+    private void getImageFromCamera() {
+        addImageFromUri(mImageUri);
+        String pathFromURI = getRealPathFromURI(mImageUri);
+        File file = new File(pathFromURI);
+        if (file.exists()) {
+            file.delete();
         }
     }
 
@@ -596,7 +573,7 @@ public class ActivityCreateNote extends ThemedActivity {
                 return convertView;
             }
 
-            private Typeface getTypeface(int position){
+            private Typeface getTypeface(int position) {
                 return AssetsUtil.getTypeface(ActivityCreateNote.this, position);
             }
         };

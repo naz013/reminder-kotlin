@@ -503,6 +503,15 @@ public class RealmDb {
         else return new Reminder(object);
     }
 
+    public Reminder getReminderByNote(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmReminder object = realm.where(RealmReminder.class).equalTo("noteId", id).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new Reminder(object);
+    }
+
     public void changeReminderGroup(String id, String groupId) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

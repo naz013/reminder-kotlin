@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
 
 /**
@@ -53,8 +54,9 @@ public class Notifier {
                 builder.setGroupSummary(true);
             }
         }
-        if (item.getImage() != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
+        if (!item.getImages().isEmpty()) {
+            NoteImage image = item.getImages().get(0);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
             builder.setLargeIcon(bitmap);
             NotificationCompat.BigPictureStyle s = new NotificationCompat.BigPictureStyle();
             s.bigLargeIcon(bitmap);
