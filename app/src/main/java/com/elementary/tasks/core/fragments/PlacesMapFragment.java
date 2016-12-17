@@ -215,7 +215,14 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void addMarkers(List<Place> list) {
         mMap.clear();
         toModels(list, false);
+        addSelectAllItem();
         refreshAdapter(false);
+    }
+
+    private void addSelectAllItem() {
+        if (spinnerArray != null && spinnerArray.size() > 1) {
+            spinnerArray.add(new GooglePlaceItem(mContext.getString(R.string.add_all), null, null, null, null, null, false));
+        }
     }
 
     public void selectMarkers(List<Place> list) {
@@ -743,9 +750,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         if (spinnerArray.size() == 0) {
             Toast.makeText(mContext, mContext.getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
         }
-        if (spinnerArray != null && spinnerArray.size() > 1) {
-            spinnerArray.add(new GooglePlaceItem(mContext.getString(R.string.add_all), null, null, null, null, null, false));
-        }
+        addSelectAllItem();
         refreshAdapter(true);
     }
 }

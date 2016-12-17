@@ -61,7 +61,7 @@ public class PlaceSearchTask extends AsyncTask<Void, Void, List<GooglePlaceItem>
         }
         List<GooglePlaceItem> places = new ArrayList<>();
         if (result != null) {
-            JPlaceParser parser = new JPlaceParser();
+            PlaceParser parser = new PlaceParser();
             try {
                 JSONObject jObject = new JSONObject(result);
                 JSONArray jPlaces = jObject.getJSONArray("results");

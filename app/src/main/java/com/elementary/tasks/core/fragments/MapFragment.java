@@ -462,6 +462,8 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             emptyImage.setImageResource(R.drawable.ic_directions_black_24dp);
         }
         placesList = binding.placesList;
+        placesList.setLayoutManager(new LinearLayoutManager(mContext));
+
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
         CardView myCard = binding.myCard;
@@ -614,6 +616,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     private void loadPlaces(){
         if (placeRecyclerAdapter == null) {
             List<PlaceItem> list = RealmDb.getInstance().getAllPlaces();
+            Log.d(TAG, "loadPlaces: " + list.size());
             if (list.isEmpty()) {
                 binding.placesCard.setVisibility(View.GONE);
                 placesList.setVisibility(View.GONE);
@@ -644,7 +647,6 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             if (placeRecyclerAdapter.getItemCount() > 0) {
                 emptyItem.setVisibility(View.GONE);
                 placesList.setVisibility(View.VISIBLE);
-                placesList.setLayoutManager(new LinearLayoutManager(mContext));
                 placesList.setAdapter(placeRecyclerAdapter);
                 addMarkers(placeRecyclerAdapter.getData());
             } else {
@@ -774,7 +776,6 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             recreateStyle(v.getId() - ThemeUtil.NUM_OF_MARKERS);
             hideStyles();
         }
-
         switch (id) {
             case R.id.cardClear:
                 cardSearch.setText("");

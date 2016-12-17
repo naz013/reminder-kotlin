@@ -36,7 +36,7 @@ import com.elementary.tasks.reminder.models.Place;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -178,8 +178,8 @@ public class LocationOutFragment extends RadiusTypeFragment {
         if (reminder == null) {
             reminder = new Reminder();
         }
-        List<Place> places = new ArrayList<>();
-        places.add(new Place(radius, mapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number));
+        Place place = new Place(radius, mapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number, null);
+        List<Place> places = Collections.singletonList(place);
         reminder.setPlaces(places);
         reminder.setTarget(number);
         reminder.setType(type);

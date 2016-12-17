@@ -110,6 +110,9 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
         if (tag.contains("florist")) {
             if (isDark) return R.drawable.ic_local_florist_white_24dp;
             else return R.drawable.ic_local_florist_black_24dp;
+        } else if (tag.contains("school")) {
+            if (isDark) return R.drawable.ic_school_white_24dp;
+            else return R.drawable.ic_school_black_24dp;
         } else if (tag.contains("cafe")) {
             if (isDark) return R.drawable.ic_local_cafe_white_24dp;
             else return R.drawable.ic_local_cafe_black_24dp;

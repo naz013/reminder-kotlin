@@ -388,7 +388,8 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public static void loadDate(RoboTextView textView, Reminder model) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
         Log.d(TAG, "loadDate: " + model.getType());
-        if (Reminder.isBase(model.getType(), Reminder.BY_LOCATION) || Reminder.isBase(model.getType(), Reminder.BY_OUT)) {
+        if (Reminder.isBase(model.getType(), Reminder.BY_LOCATION) || Reminder.isBase(model.getType(), Reminder.BY_OUT) ||
+                Reminder.isBase(model.getType(), Reminder.BY_PLACES)) {
             Place place = model.getPlaces().get(0);
             textView.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), model.getPlaces().size()));
         } else if (Reminder.isSame(model.getType(), Reminder.BY_TIME)){
