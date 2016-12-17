@@ -27,9 +27,9 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class JPlaceParser {
+public class PlaceParser {
 
-    private final static String TAG = "JPlaceParser";
+    private final static String TAG = "PlaceParser";
     private final static String ADDRESS = "formatted_address";
     private final static String VICINITY = "vicinity";
     private final static String NAME = "name";

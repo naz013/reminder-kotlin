@@ -161,7 +161,7 @@ public class LocationFragment extends RadiusTypeFragment {
             reminder = new Reminder();
         }
         List<Place> places = new ArrayList<>();
-        places.add(new Place(radius, mapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number));
+        places.add(new Place(radius, mapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number, null));
         reminder.setPlaces(places);
         reminder.setTarget(number);
         reminder.setType(type);

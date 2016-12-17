@@ -52,8 +52,7 @@ public class PlacesFragment extends RadiusTypeFragment {
         public void onMapReady() {
             if (mInterface.getReminder() != null) {
                 Reminder item = mInterface.getReminder();
-                List<Place> list = item.getPlaces();
-                placesMap.selectMarkers(list);
+                placesMap.selectMarkers(item.getPlaces());
             }
         }
     };
@@ -76,6 +75,7 @@ public class PlacesFragment extends RadiusTypeFragment {
 
     @Override
     protected void recreateMarker() {
+        if (placesMap != null) placesMap.recreateMarker(radius);
     }
 
     @Override

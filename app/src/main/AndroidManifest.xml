@@ -51,20 +51,20 @@
         android:theme="@style/HomeDark.Cyan">
 
         <activity android:name=".navigation.MainActivity" />
-        <activity android:name=".creators.CreateReminderActivity" />
+        <activity android:name=".creators.CreateReminderActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
         <activity android:name=".navigation.settings.images.MainImageActivity" />
-        <activity android:name=".navigation.settings.additional.TemplateActivity" />
+        <activity android:name=".navigation.settings.additional.TemplateActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".core.additional.QuickSmsActivity" />
         <activity android:name=".core.additional.FollowReminderActivity" />
-        <activity android:name=".core.file_explorer.FileExplorerActivity" />
-        <activity android:name=".groups.CreateGroupActivity" />
-        <activity android:name=".places.CreatePlaceActivity" />
-        <activity android:name=".notes.ActivityCreateNote" />
+        <activity android:name=".core.file_explorer.FileExplorerActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".groups.CreateGroupActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".places.CreatePlaceActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".notes.ActivityCreateNote" android:configChanges="keyboardHidden"/>
         <activity android:name=".notes.ImagePreviewActivity" />
         <activity android:name=".notes.NotePreviewActivity" />
-        <activity android:name=".google_tasks.TaskListActivity" />
-        <activity android:name=".google_tasks.TaskActivity" />
+        <activity android:name=".google_tasks.TaskListActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".google_tasks.TaskActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".core.contacts.ContactsActivity" />
         <activity android:name=".reminder.ReminderDialogActivity" />
         <activity android:name=".core.apps.ApplicationActivity" />
