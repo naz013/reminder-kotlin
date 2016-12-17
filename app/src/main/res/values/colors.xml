@@ -69,9 +69,9 @@
     <color name="tealAccent">#64FFDA</color>
     <color name="tealA100">#A7FFEB</color>
 
-    <color name="greenPrimary">#4CAF50</color>
-    <color name="green50">#804CAF50</color>
-    <color name="greenPrimaryDark">#388E3C</color>
+    <color name="greenPrimary">#388E3C</color>
+    <color name="green50">#80388E3C</color>
+    <color name="greenPrimaryDark">#1B5E20</color>
     <color name="greenAccent">#69F0AE</color>
     <color name="greenA100">#B9F6CA</color>
 

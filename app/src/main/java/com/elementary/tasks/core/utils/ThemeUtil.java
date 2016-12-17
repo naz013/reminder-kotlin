@@ -37,7 +37,7 @@ public class ThemeUtil {
     private Context mContext;
     private static ThemeUtil instance;
 
-    private ThemeUtil(Context context){
+    private ThemeUtil(Context context) {
         this.mContext = context;
     }
 
@@ -49,22 +49,22 @@ public class ThemeUtil {
     }
 
     @ColorInt
-    public int getColor(@ColorRes int color){
+    public int getColor(@ColorRes int color) {
         return ViewUtils.getColor(mContext, color);
     }
 
     @ColorRes
-    public int colorPrimary(){
+    public int colorPrimary() {
         return colorPrimary(Prefs.getInstance(mContext).getAppThemeColor());
     }
 
     @ColorRes
-    public int colorAccent(){
+    public int colorAccent() {
         return colorAccent(Prefs.getInstance(mContext).getAppThemeColor());
     }
 
     @ColorRes
-    public int colorAccent(int code){
+    public int colorAccent(int code) {
         int color;
         if (isDark()) {
             switch (code) {
@@ -209,7 +209,7 @@ public class ThemeUtil {
     }
 
     @StyleRes
-    public int getStyle(){
+    public int getStyle() {
         int id;
         int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         if (isDark()) {
@@ -337,7 +337,7 @@ public class ThemeUtil {
     }
 
     @ColorRes
-    public int colorBirthdayCalendar(){
+    public int colorBirthdayCalendar() {
         return colorPrimary(Prefs.getInstance(mContext).getBirthdayColor());
     }
 
@@ -382,7 +382,7 @@ public class ThemeUtil {
                 color = R.color.amberPrimary;
                 break;
             default:
-                if (Module.isPro()){
+                if (Module.isPro()) {
                     switch (code) {
                         case 12:
                             color = R.color.purpleDeepPrimary;
@@ -409,17 +409,17 @@ public class ThemeUtil {
     }
 
     @ColorRes
-    public int colorReminderCalendar(){
+    public int colorReminderCalendar() {
         return colorPrimary(Prefs.getInstance(mContext).getReminderColor());
     }
 
     @ColorRes
-    public int colorCurrentCalendar(){
+    public int colorCurrentCalendar() {
         return colorPrimary(Prefs.getInstance(mContext).getTodayColor());
     }
 
     @DrawableRes
-    public int getIndicator(int color){
+    public int getIndicator(int color) {
         int drawable;
         switch (color) {
             case 0:
@@ -477,11 +477,11 @@ public class ThemeUtil {
         return drawable;
     }
 
-    private Drawable getDrawable(@DrawableRes int i){
+    private Drawable getDrawable(@DrawableRes int i) {
         return ViewUtils.getDrawable(mContext, i);
     }
 
-    public Drawable toggleDrawable(){
+    public Drawable toggleDrawable() {
         int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         int color;
         switch (loadedColor) {
@@ -522,7 +522,7 @@ public class ThemeUtil {
                 color = R.drawable.toggle_amber;
                 break;
             default:
-                if (Module.isPro()){
+                if (Module.isPro()) {
                     switch (loadedColor) {
                         case 12:
                             color = R.drawable.toggle_deep_purple;
@@ -587,7 +587,7 @@ public class ThemeUtil {
                 color = R.color.amberPrimaryDark;
                 break;
             default:
-                if (Module.isPro()){
+                if (Module.isPro()) {
                     switch (code) {
                         case 12:
                             color = R.color.purpleDeepPrimaryDark;
@@ -612,13 +612,13 @@ public class ThemeUtil {
     }
 
     @ColorRes
-    public int colorPrimaryDark(){
+    public int colorPrimaryDark() {
         int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         return colorPrimaryDark(loadedColor);
     }
 
     @ColorInt
-    public int getSpinnerStyle(){
+    public int getSpinnerStyle() {
         int color;
         if (isDark()) color = R.color.material_grey;
         else color = R.color.whitePrimary;
@@ -626,7 +626,7 @@ public class ThemeUtil {
     }
 
     @StyleRes
-    public int getDialogStyle(){
+    public int getDialogStyle() {
         int id;
         int loadedColor = Prefs.getInstance(mContext).getAppThemeColor();
         if (isDark()) {
@@ -754,7 +754,7 @@ public class ThemeUtil {
     }
 
     @StyleRes
-    public int getFullscreenStyle(){
+    public int getFullscreenStyle() {
         int id;
         if (isDark()) id = R.style.HomeDarkFullscreen;
         else id = R.style.HomeWhiteFullscreen;
@@ -762,7 +762,7 @@ public class ThemeUtil {
     }
 
     @StyleRes
-    public int getTransparentStyle(){
+    public int getTransparentStyle() {
         int id;
         if (isDark()) id = R.style.HomeDarkTranslucent;
         else id = R.style.HomeWhiteTranslucent;
@@ -770,7 +770,7 @@ public class ThemeUtil {
     }
 
     @ColorInt
-    public int getBackgroundStyle(){
+    public int getBackgroundStyle() {
         int id;
         if (isDark()) id = getColor(R.color.material_grey);
         else id = getColor(R.color.material_white);
@@ -778,30 +778,30 @@ public class ThemeUtil {
     }
 
     @ColorInt
-    public int getStatusBarStyle(){
+    public int getStatusBarStyle() {
         if (isDark()) return getColor(R.color.material_grey);
         else return getColor(colorPrimaryDark());
     }
 
     @ColorInt
-    public int getCardStyle(){
+    public int getCardStyle() {
         int color;
         if (isDark()) color = getColor(R.color.grey_x);
         else color = getColor(R.color.whitePrimary);
         return color;
     }
 
-    public int getRequestOrientation(){
+    public int getRequestOrientation() {
         return Prefs.getInstance(mContext).getScreenOrientation();
     }
 
     @ColorRes
-    public int[] getMarkerRadiusStyle(){
+    public int[] getMarkerRadiusStyle() {
         return getMarkerRadiusStyle(Prefs.getInstance(mContext).getMarkerStyle());
     }
 
     @ColorRes
-    public int[] getMarkerRadiusStyle(int color){
+    public int[] getMarkerRadiusStyle(int color) {
         int fillColor;
         int strokeColor;
         switch (color) {
@@ -878,78 +878,78 @@ public class ThemeUtil {
     }
 
     @DrawableRes
-    public int getMarkerStyle(){
+    public int getMarkerStyle() {
         if (Module.isPro()) {
             int loaded = Prefs.getInstance(mContext).getMarkerStyle();
             return getMarkerStyle(loaded);
         } else {
-            return R.drawable.marker_blue;
+            return R.drawable.ic_location_pointer_blue;
         }
     }
 
     @DrawableRes
-    public int getMarkerStyle(int code){
+    public int getMarkerStyle(int code) {
         int color;
         switch (code) {
             case 0:
-                color = R.drawable.marker_red;
+                color = R.drawable.ic_location_pointer_red;
                 break;
             case 1:
-                color = R.drawable.marker_violet;
+                color = R.drawable.ic_location_pointer_purple;
                 break;
             case 2:
-                color = R.drawable.marker_green_light;
+                color = R.drawable.ic_location_pointer_green_light;
                 break;
             case 3:
-                color = R.drawable.marker_green;
+                color = R.drawable.ic_location_pointer_green;
                 break;
             case 4:
-                color = R.drawable.marker_blue_light;
+                color = R.drawable.ic_location_pointer_blue_light;
                 break;
             case 5:
-                color = R.drawable.marker_blue;
+                color = R.drawable.ic_location_pointer_blue;
                 break;
             case 6:
-                color = R.drawable.marker_yellow;
+                color = R.drawable.ic_location_pointer_yellow;
                 break;
             case 7:
-                color = R.drawable.marker_orange;
+                color = R.drawable.ic_location_pointer_orange;
                 break;
             case 8:
-                color = R.drawable.marker_cyan;
+                color = R.drawable.ic_location_pointer_cyan;
                 break;
             case 9:
-                color = R.drawable.marker_pink;
+                color = R.drawable.ic_location_pointer_pink;
                 break;
             case 10:
-                color = R.drawable.marker_teal;
+                color = R.drawable.ic_location_pointer_teal;
                 break;
             case 11:
-                color = R.drawable.marker_amber;
+                color = R.drawable.ic_location_pointer_amber;
                 break;
             case 12:
-                color = R.drawable.marker_deep_purple;
+                color = R.drawable.ic_location_pointer_purple_deep;
                 break;
             case 13:
-                color = R.drawable.marker_deep_orange;
+                color = R.drawable.ic_location_pointer_orange_deep;
                 break;
             case 14:
-                color = R.drawable.marker_indigo;
+                color = R.drawable.ic_location_pointer_indigo;
                 break;
             case 15:
-                color = R.drawable.marker_lime;
+                color = R.drawable.ic_location_pointer_lime;
                 break;
             default:
-                color = R.drawable.marker_blue;
+                color = R.drawable.ic_location_pointer_blue;
                 break;
         }
         return color;
     }
 
     @DrawableRes
-    public int getCategoryIndicator(int code){
+    public int getCategoryIndicator(int code) {
         int color;
-        switch (code){
+        switch (code) {
             case 0:
                 color = R.drawable.circle_red;
                 break;
@@ -987,8 +987,8 @@ public class ThemeUtil {
                 color = R.drawable.circle_amber;
                 break;
             default:
-                if (Module.isPro()){
-                    switch (code){
+                if (Module.isPro()) {
+                    switch (code) {
                         case 12:
                             color = R.drawable.circle_deep_purple;
                             break;
@@ -1012,24 +1012,24 @@ public class ThemeUtil {
     }
 
     @ColorRes
-    public int getCategoryColor(int code){
+    public int getCategoryColor(int code) {
         return colorPrimary(code);
     }
 
     @ColorInt
-    public int getNoteColor(int code){
+    public int getNoteColor(int code) {
         return getColor(colorPrimary(code));
     }
 
     @ColorInt
-    public int getNoteDarkColor(int code){
+    public int getNoteDarkColor(int code) {
         return getColor(colorPrimaryDark(code));
     }
 
     @ColorInt
-    public int getNoteLightColor(int code){
+    public int getNoteLightColor(int code) {
         int color;
-        switch (code){
+        switch (code) {
             case 0:
                 color = R.color.redA100;
                 break;
@@ -1067,8 +1067,8 @@ public class ThemeUtil {
                 color = R.color.amberA100;
                 break;
             default:
-                if (Module.isPro()){
-                    switch (code){
+                if (Module.isPro()) {
+                    switch (code) {
                         case 12:
                             color = R.color.purpleDeepA100;
                             break;

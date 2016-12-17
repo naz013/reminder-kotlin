@@ -32,8 +32,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:scaleType="center"
-                card_view:loadMarker="@{item.icon}"
-                android:src="@drawable/marker_blue" />
+                card_view:loadMarker="@{item.icon}" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/textView"
