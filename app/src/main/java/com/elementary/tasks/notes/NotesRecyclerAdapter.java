@@ -7,21 +7,26 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.QuickReturnUtils;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +56,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     public NotesRecyclerAdapter(List<NoteItem> list, FilterCallback callback) {
         this.mDataList = list;
         this.mCallback = callback;
-        setHasStableIds(true);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -179,7 +183,10 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     @BindingAdapter({"loadNote"})
     public static void loadNote(TextView textView, NoteItem note) {
         String title = note.getSummary();
-        if (title == null) return;
+        if (TextUtils.isEmpty(title)) {
+            textView.setVisibility(View.GONE);
+            return;
+        }
         Context context = textView.getContext();
         if (title.length() > 500) {
             String substring = title.substring(0, 500);
@@ -198,15 +205,30 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         }
     }
 
+    private static void setImage(ImageView imageView, byte[] image) {
+        WeakReference<Bitmap> photo = new WeakReference<>(BitmapFactory.decodeByteArray(image, 0, image.length));
+        imageView.setImageBitmap(photo.get());
+    }
+
     @BindingAdapter({"loadImage"})
-    public static void loadImage(ImageView imageView, List<NoteImage> images) {
+    public static void loadImage(LinearLayout container, List<NoteImage> images) {
+        ImageView imageView = (ImageView) container.findViewById(R.id.noteImage);
         if (!images.isEmpty()) {
-            NoteImage image = images.get(0);
-            Bitmap photo = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
-            if (photo != null) {
-                imageView.setImageBitmap(photo);
-            } else {
-                imageView.setImageDrawable(null);
+            WeakReference<NoteImage> image = new WeakReference<>(images.get(0));
+            setImage(imageView, image.get().getImage());
+            int index = 1;
+            LinearLayout horView = (LinearLayout) container.findViewById(R.id.imagesContainer);
+            horView.removeAllViewsInLayout();
+            while (index < images.size() && index < 4) {
+                ImageView imV = new ImageView(container.getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(QuickReturnUtils.dp2px(container.getContext(), 128),
+                        QuickReturnUtils.dp2px(container.getContext(), 72));
+                imV.setLayoutParams(params);
+                imV.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                WeakReference<NoteImage> im = new WeakReference<>(images.get(index));
+                setImage(imV, im.get().getImage());
+                horView.addView(imV);
+                index++;
             }
         } else {
             imageView.setImageDrawable(null);

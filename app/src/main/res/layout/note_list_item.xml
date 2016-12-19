@@ -32,14 +32,27 @@
             android:orientation="vertical"
             android:padding="8dp">
 
-            <ImageView
-                android:id="@+id/noteImage"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:background="@android:color/transparent"
-                app:loadImage='@{note.getImages()}' />
+                android:orientation="vertical"
+                app:loadImage='@{note.getImages()}'>
+
+                <ImageView
+                    android:id="@+id/noteImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop" />
+
+                <LinearLayout
+                    android:id="@+id/imagesContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/note"
