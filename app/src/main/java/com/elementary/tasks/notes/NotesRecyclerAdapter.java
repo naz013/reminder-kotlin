@@ -1,10 +1,10 @@
 package com.elementary.tasks.notes;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,14 +15,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.QuickReturnUtils;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 
@@ -51,11 +54,20 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     private List<NoteItem> mDataList;
     private SimpleListener mEventListener;
     private FilterCallback mCallback;
+    private static Activity a;
 
 
-    public NotesRecyclerAdapter(List<NoteItem> list, FilterCallback callback) {
+    public NotesRecyclerAdapter(Activity activity, List<NoteItem> list, FilterCallback callback) {
         this.mDataList = list;
         this.mCallback = callback;
+        this.a = activity;
+    }
+
+    public void notifyChanged(int position, String id) {
+        NoteItem newItem = RealmDb.getInstance().getNote(id);
+        mDataList.remove(position);
+        mDataList.add(position, newItem);
+        notifyItemChanged(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -206,12 +218,20 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     }
 
     private static void setImage(ImageView imageView, byte[] image) {
-        WeakReference<Bitmap> photo = new WeakReference<>(BitmapFactory.decodeByteArray(image, 0, image.length));
-        imageView.setImageBitmap(photo.get());
+        Glide.with(a).load(image).crossFade().override(768, 500).into(imageView);
+    }
+
+    private static void setClick(ImageView imageView, int position, String key) {
+        imageView.setOnClickListener(view -> a.startActivity(new Intent(a, ImagePreviewActivity.class)
+                .putExtra(Constants.INTENT_ID, key)
+                .putExtra(Constants.INTENT_DELETE, false)
+                .putExtra(Constants.INTENT_POSITION, position)));
+
     }
 
     @BindingAdapter({"loadImage"})
-    public static void loadImage(LinearLayout container, List<NoteImage> images) {
+    public static void loadImage(LinearLayout container, NoteItem item) {
+        List<NoteImage> images = item.getImages();
         ImageView imageView = (ImageView) container.findViewById(R.id.noteImage);
         if (!images.isEmpty()) {
             WeakReference<NoteImage> image = new WeakReference<>(images.get(0));
@@ -219,15 +239,16 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
             int index = 1;
             LinearLayout horView = (LinearLayout) container.findViewById(R.id.imagesContainer);
             horView.removeAllViewsInLayout();
-            while (index < images.size() && index < 4) {
+            while (index < images.size()) {
                 ImageView imV = new ImageView(container.getContext());
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(QuickReturnUtils.dp2px(container.getContext(), 128),
                         QuickReturnUtils.dp2px(container.getContext(), 72));
                 imV.setLayoutParams(params);
+                setClick(imV, index, item.getKey());
                 imV.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                horView.addView(imV);
                 WeakReference<NoteImage> im = new WeakReference<>(images.get(index));
                 setImage(imV, im.get().getImage());
-                horView.addView(imV);
                 index++;
             }
         } else {

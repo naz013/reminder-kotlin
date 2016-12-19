@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.NoteImageListItemBinding;
@@ -75,8 +74,13 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
         }
     }
 
-    void addImages(List<NoteImage> list) {
+    void setImages(List<NoteImage> list) {
         mDataList.clear();
+        mDataList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    void addNextImages(List<NoteImage> list) {
         mDataList.addAll(list);
         notifyDataSetChanged();
     }
@@ -97,11 +101,6 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
 
     @BindingAdapter("loadImage")
     public static void loadImage(ImageView imageView, NoteImage image) {
-        Bitmap photo = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
-        if (photo != null) {
-            imageView.setImageBitmap(photo);
-        } else {
-            imageView.setImageDrawable(null);
-        }
+        Glide.with(imageView.getContext()).load(image.getImage()).crossFade().into(imageView);
     }
 }

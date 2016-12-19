@@ -116,6 +116,14 @@ public class ActivityCreateNote extends ThemedActivity {
     private EditText taskField;
 
     private Tracker mTracker;
+    private DecodeImagesAsync.DecodeListener mDecodeCallback = new DecodeImagesAsync.DecodeListener() {
+        @Override
+        public void onDecode(List<NoteImage> result) {
+            if (mAdapter != null && !result.isEmpty()) {
+                mAdapter.addNextImages(result);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +216,7 @@ public class ActivityCreateNote extends ThemedActivity {
             mFontStyle = mItem.getStyle();
             taskField.setText(note);
             taskField.setSelection(taskField.getText().length());
-            mAdapter.addImages(mItem.getImages());
+            mAdapter.setImages(mItem.getImages());
             showReminder();
         } else {
             mColor = new Random().nextInt(16);
@@ -498,10 +506,7 @@ public class ActivityCreateNote extends ThemedActivity {
             addImageFromUri(data.getData());
         } else if (data.getClipData() != null) {
             ClipData mClipData = data.getClipData();
-            for (int i = 0; i < mClipData.getItemCount(); i++) {
-                ClipData.Item item = mClipData.getItemAt(i);
-                addImageFromUri(item.getUri());
-            }
+            new DecodeImagesAsync(this, mDecodeCallback, mClipData.getItemCount()).execute(mClipData);
         }
     }
 
