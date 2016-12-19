@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -14,6 +16,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
@@ -48,7 +51,7 @@ public class GoogleDrive {
     private final HttpTransport mTransport = AndroidHttp.newCompatibleTransport();
     private final JsonFactory mJsonFactory = GsonFactory.getDefaultInstance();
     private Drive driveService;
-    private static final String APPLICATION_NAME = "Reminder/5.0";
+    private static final String APPLICATION_NAME = "Reminder/6.0";
 
     public GoogleDrive(Context context){
         this.mContext = context;
@@ -84,20 +87,20 @@ public class GoogleDrive {
      * Get information about user.
      * @return user info object
      */
-//    public UserItem getData() {
-//        if (isLinked()) {
-//            authorize();
-//            try {
-//                About about = driveService.about().get().setFields("user, storageQuota").execute();
-//                About.StorageQuota quota = about.getStorageQuota();
-//                return new UserItem(about.getUser().getDisplayName(), quota.getLimit(),
-//                        quota.getUsage(), countFiles(), about.getUser().getPhotoLink());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return null;
-//    }
+    public UserItem getData() {
+        if (isLinked()) {
+            authorize();
+            try {
+                About about = driveService.about().get().setFields("user, storageQuota").execute();
+                About.StorageQuota quota = about.getStorageQuota();
+                return new UserItem(about.getUser().getDisplayName(), quota.getLimit(),
+                        quota.getUsage(), countFiles(), about.getUser().getPhotoLink());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
     /**
      * Count all backup files stored on Google Drive.
@@ -105,27 +108,26 @@ public class GoogleDrive {
      */
     public int countFiles(){
         int count = 0;
-//        File dir = MemoryUtil.getGRDir();
-//        if (dir != null && dir.exists()) {
-//            File[] files = dir.listFiles();
-//            if (files != null) count += files.length;
-//        }
-//        dir = MemoryUtil.getGNDir();
-//        if (dir != null && dir.exists()) {
-//            File[] files = dir.listFiles();
-//            if (files != null) count += files.length;
-//        }
-//        dir = MemoryUtil.getGBDir();
-//        if (dir != null && dir.exists()) {
-//            File[] files = dir.listFiles();
-//            if (files != null) count += files.length;
-//        }
-//        dir = MemoryUtil.getGGroupsDir();
-//        if (dir != null && dir.exists()) {
-//            File[] files = dir.listFiles();
-//            if (files != null) count += files.length;
-//        }
-
+        java.io.File dir = MemoryUtil.getGRDir();
+        if (dir != null && dir.exists()) {
+            java.io.File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
+        dir = MemoryUtil.getGNDir();
+        if (dir != null && dir.exists()) {
+            java.io.File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
+        dir = MemoryUtil.getGBDir();
+        if (dir != null && dir.exists()) {
+            java.io.File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
+        dir = MemoryUtil.getGGroupsDir();
+        if (dir != null && dir.exists()) {
+            java.io.File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
         return count;
     }
 
