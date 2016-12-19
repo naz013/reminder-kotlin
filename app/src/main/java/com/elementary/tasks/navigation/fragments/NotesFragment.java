@@ -265,10 +265,6 @@ public class NotesFragment extends BaseNavigationFragment {
         refreshView();
     }
 
-    private void refreshItem(int position) {
-
-    }
-
     private void deleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(true);

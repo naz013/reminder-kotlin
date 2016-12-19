@@ -9,7 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -211,24 +211,24 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         return list;
     }
 
-    public Reminder remove(int position) {
+    private Reminder remove(int position) {
         final Reminder model = mDataList.remove(position);
         notifyItemRemoved(position);
         return model;
     }
 
-    public void addItem(int position, Reminder model) {
+    private void addItem(int position, Reminder model) {
         mDataList.add(position, model);
         notifyItemInserted(position);
     }
 
-    public void moveItem(int fromPosition, int toPosition) {
+    private void moveItem(int fromPosition, int toPosition) {
         final Reminder model = mDataList.remove(fromPosition);
         mDataList.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void animateTo(List<Reminder> models) {
+    private void animateTo(List<Reminder> models) {
         applyAndAnimateRemovals(models);
         applyAndAnimateAdditions(models);
         applyAndAnimateMovedItems(models);
@@ -307,7 +307,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadLeft"})
     public static void loadLeft(RoboTextView textView, Reminder item) {
-        if (item.isActive()) {
+        if (item.isActive() && !item.isRemoved()) {
             textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime()));
         } else {
             textView.setText("");
@@ -387,7 +387,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadDate"})
     public static void loadDate(RoboTextView textView, Reminder model) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
-        Log.d(TAG, "loadDate: " + model.getType());
         if (Reminder.isBase(model.getType(), Reminder.BY_LOCATION) || Reminder.isBase(model.getType(), Reminder.BY_OUT) ||
                 Reminder.isBase(model.getType(), Reminder.BY_PLACES)) {
             Place place = model.getPlaces().get(0);
@@ -415,7 +414,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadShoppingTitle"})
     public static void loadShoppingTitle(RoboTextView textView, String title) {
-        if (title.matches("")) {
+        if (TextUtils.isEmpty(title)) {
             textView.setVisibility(View.GONE);
         } else {
             textView.setVisibility(View.VISIBLE);
@@ -424,13 +423,14 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadCheck"})
     public static void loadCheck(RoboSwitchCompat switchCompat, Reminder item) {
+        if (item.isRemoved()) {
+            switchCompat.setVisibility(View.GONE);
+            return;
+        }
         if (!item.isActive()) {
             switchCompat.setChecked(false);
         } else {
             switchCompat.setChecked(true);
-        }
-        if (item.isRemoved()) {
-            switchCompat.setVisibility(View.GONE);
         }
     }
 
