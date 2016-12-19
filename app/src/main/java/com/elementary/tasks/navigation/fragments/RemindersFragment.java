@@ -235,13 +235,11 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         mDataList = new ArrayList<>();
         if (groupId != null) {
             mDataList = RealmDb.getInstance().getActiveReminders(groupId);
-            mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
         } else {
             mDataList = RealmDb.getInstance().getActiveReminders();
-            mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
         }
+        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
         reloadView();
