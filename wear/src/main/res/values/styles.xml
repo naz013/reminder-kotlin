@@ -1,0 +1,12 @@
+<resources>
+    <style name="HomeDark" parent="Theme.Wearable">
+        <item name="android:windowBackground">@color/material_grey</item>
+    </style>
+    <style name="HomeWhite" parent="Theme.Wearable">
+        <item name="android:windowBackground">@color/material_white</item>
+    </style>
+
+    <style name="HomeTransparent" parent="Theme.Wearable">
+        <item name="android:windowBackground">@color/black_transparency</item>
+    </style>
+</resources>

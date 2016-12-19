@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:deviceIds="wear_round">
+
+    <android.support.wearable.view.CircularButton
+        android:id="@+id/buttonVoice"
+        android:layout_width="50dp"
+        android:src="@drawable/ic_mic_black_24dp"
+        android:layout_height="50dp"
+        android:padding="15dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:color="@color/greenPrimary"/>
+</RelativeLayout>
