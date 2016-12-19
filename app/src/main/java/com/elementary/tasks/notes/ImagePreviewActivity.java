@@ -106,7 +106,7 @@ public class ImagePreviewActivity extends ThemedActivity {
 
     @Override
     protected void onDestroy() {
-        if (mItem != null) {
+        if (mItem != null && getIntent().getBooleanExtra(Constants.INTENT_DELETE, true)) {
             RealmDb.getInstance().deleteNote(mItem);
         }
         super.onDestroy();

@@ -97,7 +97,7 @@ public class NotesFragment extends BaseNavigationFragment {
                         showInStatusBar(noteItem.getKey());
                         break;
                     case 3:
-                        selectColor(noteItem.getKey());
+                        selectColor(position, noteItem.getKey());
                         break;
                     case 4:
                         mContext.startActivity(new Intent(mContext, ActivityCreateNote.class)
@@ -252,16 +252,21 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void showData() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-        if (Prefs.getInstance(mContext).isNotesGridEnabled()) {
+        enableGrid = Prefs.getInstance(mContext).isNotesGridEnabled();
+        if (enableGrid) {
             layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         }
         binding.recyclerView.setLayoutManager(layoutManager);
         mDataList = RealmDb.getInstance().getAllNotes(Prefs.getInstance(mContext).getNoteOrder());
-        mAdapter = new NotesRecyclerAdapter(mDataList, mFilterCallback);
+        mAdapter = new NotesRecyclerAdapter(getActivity(), mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         refreshView();
+    }
+
+    private void refreshItem(int position) {
+
     }
 
     private void deleteDialog() {
@@ -306,7 +311,7 @@ public class NotesFragment extends BaseNavigationFragment {
         }
     }
 
-    private void selectColor(final String id) {
+    private void selectColor(int position, final String id) {
         String[] items = {getString(R.string.red), getString(R.string.purple),
                 getString(R.string.green), getString(R.string.green_light),
                 getString(R.string.blue), getString(R.string.blue_light),
@@ -325,7 +330,7 @@ public class NotesFragment extends BaseNavigationFragment {
         }
         Dialogues.showLCAM(mContext, item -> {
             RealmDb.getInstance().changeNoteColor(id, item);
-            showData();
+            if (mAdapter != null) mAdapter.notifyChanged(position, id);
         }, items);
     }
 

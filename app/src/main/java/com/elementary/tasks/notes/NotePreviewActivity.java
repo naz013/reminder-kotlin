@@ -237,7 +237,7 @@ public class NotePreviewActivity extends ThemedActivity {
     private void showImage() {
         List<NoteImage> list = mItem.getImages();
         if (!list.isEmpty()){
-            mAdapter.addImages(list);
+            mAdapter.setImages(list);
             binding.appBar.setBackgroundColor(themeUtil.getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(0);
         } else {

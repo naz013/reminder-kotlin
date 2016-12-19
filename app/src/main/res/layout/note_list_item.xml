@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:loadImage='@{note.getImages()}'>
+                app:loadImage='@{note}'>
 
                 <ImageView
                     android:id="@+id/noteImage"
@@ -46,12 +46,17 @@
                     android:background="@android:color/transparent"
                     android:scaleType="centerCrop" />
 
-                <LinearLayout
-                    android:id="@+id/imagesContainer"
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
+                    android:layout_height="wrap_content">
 
+                    <LinearLayout
+                        android:id="@+id/imagesContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                </HorizontalScrollView>
             </LinearLayout>
 
             <TextView

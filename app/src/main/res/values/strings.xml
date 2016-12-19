@@ -554,6 +554,7 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
+    <string name="decoding_images">Decoding images</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>
