@@ -183,9 +183,9 @@ public class ArchiveFragment extends BaseNavigationFragment {
     public void onResume() {
         super.onResume();
         if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.tasks));
+            mCallback.onTitleChange(getString(R.string.trash));
             mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, CreateReminderActivity.class)));
+            mCallback.setClick(null);
         }
         loadData();
     }
