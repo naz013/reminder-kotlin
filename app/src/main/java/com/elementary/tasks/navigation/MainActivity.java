@@ -30,9 +30,11 @@ import com.elementary.tasks.navigation.fragments.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
+import com.elementary.tasks.navigation.fragments.FeedbackFragment;
 import com.elementary.tasks.navigation.fragments.FragmentCallback;
 import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
 import com.elementary.tasks.navigation.fragments.GroupsFragment;
+import com.elementary.tasks.navigation.fragments.HelpFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
@@ -166,6 +168,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             }
             if (fragment instanceof SettingsFragment) {
                 if (beforeSettings != 0) {
+                    mNavigationView.setCheckedItem(beforeSettings);
                     openScreen(beforeSettings);
                 } else if (!isBackPressed) {
                     firstBackPress();
@@ -259,10 +262,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 replaceFragment(new SettingsFragment(), getString(R.string.settings));
                 break;
             case R.id.nav_feedback:
-                replaceFragment(new DayViewFragment(), getString(R.string.feedback));
+                replaceFragment(new FeedbackFragment(), getString(R.string.feedback));
                 break;
             case R.id.nav_help:
-                replaceFragment(new DayViewFragment(), getString(R.string.help));
+                replaceFragment(new HelpFragment(), getString(R.string.help));
                 break;
         }
     }
