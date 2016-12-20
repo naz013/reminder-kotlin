@@ -241,7 +241,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     }
 
     private void checkDropboxStatus() {
-        if (mDropbox.isLinked()) {
+        if (mDropbox.checkLink() && mDropbox.isLinked()) {
             mDropboxButton.setText(getString(R.string.disconnect));
         } else {
             mDropboxButton.setText(getString(R.string.connect));

@@ -128,7 +128,6 @@ public class Dropbox {
                 session.finishAuthentication();
                 storeAuth(session);
                 isLogged = true;
-
             } catch (IllegalStateException e) {
                 Toast.makeText(mContext, "Couldn't authenticate with Dropbox:" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
