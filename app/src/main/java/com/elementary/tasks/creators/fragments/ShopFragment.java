@@ -14,6 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -95,7 +97,8 @@ public class ShopFragment extends TypeFragment {
         }
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         RealmDb.getInstance().saveObject(reminder);
-//        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.start();
         return true;
     }
 

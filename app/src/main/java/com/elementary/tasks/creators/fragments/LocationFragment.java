@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.fragments.MapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
@@ -180,7 +182,8 @@ public class LocationFragment extends RadiusTypeFragment {
         }
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         RealmDb.getInstance().saveObject(reminder);
-//        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.start();
         return true;
     }
 
