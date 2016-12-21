@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.SyncTask;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
@@ -128,7 +130,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                 case 3:
                     if (ReminderControl.getInstance(mContext).moveToTrash(item1)) {
                         mAdapter.removeItem(position);
-//                        loadData(null);
                     }
                     break;
             }
@@ -140,9 +141,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void switchReminder(int position) {
-//        boolean is = Reminder.toggle(mAdapter.getItem(position).getId(), mContext, mCallbacks);
-//        if (is) loadData(mLastGroupId);
-//        else mAdapter.notifyItemChanged(position);
+        EventControl control = EventControlImpl.getController(mContext, mAdapter.getItem(position));
+        control.onOff();
+        loadData(mLastGroupId);
     }
 
     @Override

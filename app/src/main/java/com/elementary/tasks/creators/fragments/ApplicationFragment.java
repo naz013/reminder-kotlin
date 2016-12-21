@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.apps.ApplicationActivity;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -92,7 +94,8 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
         RealmDb.getInstance().saveObject(reminder);
-//        new AlarmReceiver().enableReminder(mContext, reminder.getUuId());
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.start();
         return true;
     }
 

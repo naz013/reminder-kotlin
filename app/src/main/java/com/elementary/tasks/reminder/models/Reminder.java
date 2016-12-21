@@ -203,20 +203,23 @@ public class Reminder implements RecyclerInterface {
         return isRemoved;
     }
 
-    public void setActive(boolean active) {
+    public Reminder setActive(boolean active) {
         isActive = active;
+        return this;
     }
 
-    public void setRemoved(boolean removed) {
+    public Reminder setRemoved(boolean removed) {
         isRemoved = removed;
+        return this;
     }
 
     public int getUniqueId() {
         return uniqueId;
     }
 
-    public void setUniqueId(int uniqueId) {
+    public Reminder setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;
+        return this;
     }
 
     public String getNoteId() {
