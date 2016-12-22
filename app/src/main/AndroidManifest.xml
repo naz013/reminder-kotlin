@@ -92,6 +92,9 @@
         <receiver android:name=".core.services.BirthdayCheckAlarm" />
         <receiver android:name=".core.services.AlarmReceiver" />
         <receiver android:name=".core.services.RepeatNotificationReceiver" />
+        <receiver android:name=".core.services.PositionDelayReceiver" />
+
+        <service android:name=".core.services.GeolocationService" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"

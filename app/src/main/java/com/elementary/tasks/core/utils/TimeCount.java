@@ -2,10 +2,10 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -105,38 +105,17 @@ public class TimeCount {
         return new String[]{date, time};
     }
 
-    public long generateStartEvent(int type, long time, List<Integer> weekdays, long after, int dayOfMonth) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(time);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-            return getNextWeekdayTime(calendar.getTimeInMillis(), weekdays, 0);
-        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-            return getNextMonthDayTime(dayOfMonth, calendar.getTimeInMillis());
-        } else if (Reminder.isSame(type, Reminder.BY_TIME)) {
-            return System.currentTimeMillis() + after;
+    public long generateDateTime(String eventTime, long repeat, long delay) {
+        if (TextUtils.isEmpty(eventTime)) {
+            return 0;
         } else {
-            if (time == 0) return 0;
-            return calendar.getTimeInMillis();
+            long time = TimeUtil.getDateTimeFromGmt(eventTime);
+            return time + repeat + (delay * MINUTE);
         }
     }
 
-    public long generateDateTime(int type, int dayOfMonth, long startTime, long repeat,
-                                 List<Integer> weekdays, long count, long delay) {
-        long dateTime;
-        if (startTime == 0) {
-            dateTime = 0;
-        } else {
-            if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-                dateTime = getNextWeekdayTime(startTime, weekdays, delay);
-            } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-                dateTime = getNextMonthDayTime(dayOfMonth, startTime);
-            } else {
-                dateTime = startTime + (repeat * count) + (delay * MINUTE);
-            }
-        }
-        return dateTime;
+    public long generateTimerTime(long eventTime, long after) {
+        return eventTime + after;
     }
 
     public String getRemaining(String dateTime) {
@@ -229,7 +208,7 @@ public class TimeCount {
         }
     }
 
-    public static long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
+    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
         if (weekdays == null) return 0;
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(startTime);
@@ -251,11 +230,8 @@ public class TimeCount {
         }
     }
 
-    public boolean isCurrent(long startTime) {
-        Calendar cc = Calendar.getInstance();
-        cc.setTimeInMillis(System.currentTimeMillis());
-        long currentTome = cc.getTimeInMillis();
-        return startTime < currentTome;
+    public static boolean isCurrent(String eventTime) {
+        return TimeUtil.getDateTimeFromGmt(eventTime) < System.currentTimeMillis();
     }
 
     public long getNextMonthDayTime(int dayOfMonth, long fromTime) {
@@ -275,7 +251,7 @@ public class TimeCount {
         return cc.getTimeInMillis();
     }
 
-    public static long getLastMonthDayTime(long fromTime) {
+    public long getLastMonthDayTime(long fromTime) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
         while (true) {

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -22,50 +23,56 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class ShoppingEvent extends EventManager {
+class ShoppingEvent extends EventManager {
 
-    public ShoppingEvent(Reminder reminder, Context context) {
+    ShoppingEvent(Reminder reminder, Context context) {
         super(reminder, context);
     }
 
     @Override
-    public void start() {
-
-        new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+    public boolean start() {
+        if (TimeCount.isCurrent(mReminder.getEventTime())) {
+            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void stop() {
+    public boolean stop() {
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         RealmDb.getInstance().saveObject(mReminder.setActive(false));
+        return true;
     }
 
     @Override
-    public void pause() {
-
+    public boolean pause() {
+        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
+        return true;
     }
 
     @Override
-    public void skip() {
-
+    public boolean skip() {
+        return false;
     }
 
     @Override
-    public void resume() {
-
+    public boolean resume() {
+        new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+        return true;
     }
 
     @Override
-    public void next() {
-
+    public boolean next() {
+        return stop();
     }
 
     @Override
-    public void onOff() {
+    public boolean onOff() {
         if (isActive()) {
-            stop();
+            return stop();
         } else {
-            start();
+            return start();
         }
     }
 

@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.FragmentDateBinding;
@@ -106,7 +105,7 @@ public class DateFragment extends RepeatableTypeFragment {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, binding.dateView.getDateTime(), null, 0, 0);
+        long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));

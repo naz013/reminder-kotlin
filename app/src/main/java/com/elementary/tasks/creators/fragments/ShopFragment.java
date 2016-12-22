@@ -18,7 +18,6 @@ import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
 import com.elementary.tasks.reminder.ShopListRecyclerAdapter;
@@ -87,7 +86,7 @@ public class ShopFragment extends TypeFragment {
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
         if (isReminder) {
-            long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, binding.dateViewShopping.getDateTime(), null, 0, 0);
+            long startTime = binding.dateViewShopping.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
             Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));

@@ -1,9 +1,14 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 
-import com.elementary.tasks.core.services.AlarmReceiver;
+import com.elementary.tasks.core.services.GeolocationService;
+import com.elementary.tasks.core.services.PositionDelayReceiver;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -22,50 +27,67 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class LocationEvent extends EventManager {
+class LocationEvent extends EventManager {
 
-    public LocationEvent(Reminder reminder, Context context) {
+    LocationEvent(Reminder reminder, Context context) {
         super(reminder, context);
     }
 
     @Override
-    public void start() {
-
-
-    }
-
-    @Override
-    public void stop() {
-
-        RealmDb.getInstance().saveObject(mReminder.setActive(false));
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void skip() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void next() {
-
-    }
-
-    @Override
-    public void onOff() {
-        if (isActive()) {
-            stop();
+    public boolean start() {
+        if (!TextUtils.isEmpty(mReminder.getEventTime()) && TimeCount.isCurrent(mReminder.getEventTime())) {
+            new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+            return true;
         } else {
-            start();
+            if (!SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
+                mContext.startService(new Intent(mContext, GeolocationService.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public boolean stop() {
+        new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
+        RealmDb.getInstance().saveObject(mReminder.setActive(false));
+        stopTracking();
+        return true;
+    }
+
+    private void stopTracking() {
+
+    }
+
+    @Override
+    public boolean pause() {
+        new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
+        stopTracking();
+        return true;
+    }
+
+    @Override
+    public boolean skip() {
+        return false;
+    }
+
+    @Override
+    public boolean resume() {
+        new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+        return true;
+    }
+
+    @Override
+    public boolean next() {
+        return stop();
+    }
+
+    @Override
+    public boolean onOff() {
+        if (isActive()) {
+            return stop();
+        } else {
+            return start();
         }
     }
 

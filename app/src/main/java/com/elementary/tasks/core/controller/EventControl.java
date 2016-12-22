@@ -17,19 +17,19 @@ package com.elementary.tasks.core.controller;
  */
 
 public interface EventControl {
-    void start();
+    boolean start();
 
-    void stop();
+    boolean stop();
 
-    void pause();
+    boolean pause();
 
-    void skip();
+    boolean skip();
 
-    void resume();
+    boolean resume();
 
-    void next();
+    boolean next();
 
-    void onOff();
+    boolean onOff();
 
     boolean canSkip();
 

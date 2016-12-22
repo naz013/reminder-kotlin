@@ -29,7 +29,6 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ActionView;
@@ -190,7 +189,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
         fillExtraData(reminder);
         Log.d(TAG, "save: " + type);
         if (binding.attackDelay.isChecked()) {
-            long startTime = TimeCount.getInstance(mContext).generateStartEvent(type, binding.dateView.getDateTime(), null, 0, 0);
+            long startTime = binding.dateView.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
             Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
