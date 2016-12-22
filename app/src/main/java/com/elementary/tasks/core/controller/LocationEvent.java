@@ -105,4 +105,9 @@ class LocationEvent extends EventManager {
     public boolean isRepeatable() {
         return false;
     }
+
+    @Override
+    public void setDelay(int delay) {
+
+    }
 }

@@ -180,7 +180,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case Reminder.BY_LOCATION_SMS:
                 spinner.setSelection(3);
                 break;
-            case Reminder.BY_SKYPE_CHAT:
+            case Reminder.BY_SKYPE:
             case Reminder.BY_SKYPE_CALL:
             case Reminder.BY_SKYPE_VIDEO:
                 spinner.setSelection(4);

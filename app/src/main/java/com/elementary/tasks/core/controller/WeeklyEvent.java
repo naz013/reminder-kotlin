@@ -93,4 +93,9 @@ class WeeklyEvent extends EventManager {
     public boolean isRepeatable() {
         return true;
     }
+
+    @Override
+    public void setDelay(int delay) {
+
+    }
 }

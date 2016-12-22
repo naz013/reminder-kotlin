@@ -36,4 +36,6 @@ public interface EventControl {
     boolean isRepeatable();
 
     boolean isActive();
+
+    void setDelay(int delay);
 }
