@@ -97,4 +97,9 @@ class TimerEvent extends EventManager {
     public boolean isRepeatable() {
         return mReminder.getRepeatInterval() > 0;
     }
+
+    @Override
+    public void setDelay(int delay) {
+
+    }
 }

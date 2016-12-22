@@ -19,10 +19,7 @@ package com.elementary.tasks.reminder.models;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -54,7 +51,7 @@ public class Reminder implements RecyclerInterface {
     public static final int BY_LOCATION = 40;
     public static final int BY_LOCATION_CALL = 41;
     public static final int BY_LOCATION_SMS = 42;
-    public static final int BY_SKYPE_CHAT = 50;
+    public static final int BY_SKYPE = 50;
     public static final int BY_SKYPE_CALL = 51;
     public static final int BY_SKYPE_VIDEO = 52;
     public static final int BY_MONTH = 60;
@@ -119,6 +116,10 @@ public class Reminder implements RecyclerInterface {
 
     public static boolean isSame(int type, int base) {
         return type == base;
+    }
+
+    public static boolean isGpsType(int type) {
+        return isBase(type, BY_LOCATION) || isBase(type, BY_OUT) || isBase(type, BY_PLACES);
     }
 
     public Reminder() {

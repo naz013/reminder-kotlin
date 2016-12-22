@@ -8,6 +8,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -16,11 +18,15 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
@@ -34,6 +40,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.TextDrawable;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -41,11 +48,16 @@ import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -81,7 +93,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private int mVolume;
     private int mStream;
 
-    protected TextToSpeech.OnInitListener mTextToSpeachListener = new TextToSpeech.OnInitListener() {
+    protected TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(int status) {
             if (status == TextToSpeech.SUCCESS) {
@@ -221,6 +233,82 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         setUpScreenOptions();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mPrefs.isSystemLoudnessEnabled()) {
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            am.setStreamVolume(mStream, currVolume, 0);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(increaseVolume);
+    }
+
+    protected void setTextDrawable(FloatingActionButton button, String text){
+        TextDrawable drawable = TextDrawable.builder()
+                .beginConfig()
+                .textColor(Color.BLACK)
+                .useFont(Typeface.MONOSPACE)
+                .fontSize(30)
+                .bold()
+                .toUpperCase()
+                .endConfig()
+                .buildRound(text, Color.TRANSPARENT);
+        button.setImageDrawable(drawable);
+    }
+
+    protected void colorify(FloatingActionButton... fab){
+        for (FloatingActionButton button : fab){
+            button.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary()));
+        }
+    }
+
+    protected void loadImage(ImageView imageView) {
+        imageView.setVisibility(View.GONE);
+        String imagePrefs = mPrefs.getReminderImage();
+        boolean blur = mPrefs.isBlurEnabled();
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+        int height = (int) (metrics.heightPixels * 0.75);
+        if (imagePrefs.matches(Constants.DEFAULT)){
+            if (blur && Module.isPro()) {
+                Picasso.with(this)
+                        .load(R.drawable.photo)
+                        .resize(width, height)
+                        .transform(new BlurTransformation(this, 15, 2))
+                        .into(imageView);
+            } else {
+                Picasso.with(this)
+                        .load(R.drawable.photo)
+                        .resize(width, height)
+                        .into(imageView);
+            }
+            imageView.setVisibility(View.VISIBLE);
+        } else if (imagePrefs.matches(Constants.NONE)){
+            imageView.setVisibility(View.GONE);
+        } else {
+            if (blur && Module.isPro()) {
+                Picasso.with(this)
+                        .load(Uri.parse(imagePrefs))
+                        .resize(width, height)
+                        .transform(new BlurTransformation(this, 15, 2))
+                        .into(imageView);
+            } else {
+                Picasso.with(this)
+                        .load(Uri.parse(imagePrefs))
+                        .resize(width, height)
+                        .into(imageView);
+            }
+            imageView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void setUpScreenOptions() {
         boolean isFull = mPrefs.isDeviceUnlockEnabled();
         boolean isWake = mPrefs.isDeviceAwakeEnabled();
@@ -241,11 +329,30 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
+    protected void removeFlags(){
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        if (mPrefs.isWearEnabled()) {
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_STOP);
+            DataMap map = putDataMapReq.getDataMap();
+            map.putBoolean(SharedConst.KEY_STOP, true);
+            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MY_DATA_CHECK_CODE) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                tts = new TextToSpeech(this, mTextToSpeachListener);
+                tts = new TextToSpeech(this, mTextToSpeechListener);
             } else {
                 Intent installTTSIntent = new Intent();
                 installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -268,8 +375,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    protected void showReminderNotification(Class<Activity> activityClass) {
-        Intent notificationIntent = new Intent(this, activityClass);
+    protected void showReminderNotification(Activity activity) {
+        Intent notificationIntent = new Intent(this, activity.getClass());
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -333,11 +440,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    protected void showTTSNotification(Class<Activity> activityClass) {
+    protected void showTTSNotification(Activity activityClass) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getSummary());
         if (mPrefs.isFoldingEnabled()) {
-            Intent notificationIntent = new Intent(this, activityClass);
+            Intent notificationIntent = new Intent(this, activityClass.getClass());
             notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
             notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -455,6 +562,16 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
                 return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             }
         }
+    }
+
+    protected void discardNotification(int id){
+        discardMedia();
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.cancel(id);
+    }
+
+    protected void discardMedia(){
+        mSound.stop();
     }
 
     private void showWearNotification(String secondaryText) {

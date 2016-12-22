@@ -154,7 +154,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
                 type = Reminder.BY_SKYPE_CALL;
                 break;
             case R.id.skypeChat:
-                type = Reminder.BY_SKYPE_CHAT;
+                type = Reminder.BY_SKYPE;
                 break;
             case R.id.skypeVideo:
                 type = Reminder.BY_SKYPE_VIDEO;
@@ -174,7 +174,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
         int type = reminder.getType();
         if(type == Reminder.BY_SKYPE_CALL) binding.skypeCall.setChecked(true);
         else if(type == Reminder.BY_SKYPE_VIDEO) binding.skypeVideo.setChecked(true);
-        else if(type == Reminder.BY_SKYPE_CHAT) binding.skypeChat.setChecked(true);
+        else if(type == Reminder.BY_SKYPE) binding.skypeChat.setChecked(true);
         if (reminder.getTarget() != null) {
             binding.skypeContact.setText(reminder.getTarget());
         }
