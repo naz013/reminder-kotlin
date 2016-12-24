@@ -3,7 +3,7 @@ package com.elementary.tasks.core.controller;
 import android.content.Context;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.services.DelayReceiver;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -24,7 +24,7 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-class WeeklyEvent extends EventManager {
+class WeeklyEvent extends RepeatableEventManager {
 
     WeeklyEvent(Reminder reminder, Context context) {
         super(reminder, context);
@@ -41,9 +41,7 @@ class WeeklyEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        RealmDb.getInstance().saveObject(mReminder.setActive(false));
-        return true;
+        return super.stop();
     }
 
     @Override
@@ -66,7 +64,9 @@ class WeeklyEvent extends EventManager {
     @Override
     public boolean next() {
         long time = TimeCount.getInstance(mContext).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()), mReminder.getWeekdays(), 0);
-        RealmDb.getInstance().saveObject(mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time)));
+        mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
+        mReminder.setEventCount(mReminder.getEventCount() + 1);
+        super.save();
         return start();
     }
 
@@ -75,6 +75,11 @@ class WeeklyEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
+            long time = TimeCount.getInstance(mContext).getNextWeekdayTime(System.currentTimeMillis(), mReminder.getWeekdays(), 0);
+            mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
+            mReminder.setEventCount(0);
+            mReminder.setActive(true);
+            super.save();
             return start();
         }
     }
@@ -96,6 +101,12 @@ class WeeklyEvent extends EventManager {
 
     @Override
     public void setDelay(int delay) {
-
+        if (delay == 0) {
+            next();
+            return;
+        }
+        mReminder.setDelay(delay);
+        super.save();
+        new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
     }
 }

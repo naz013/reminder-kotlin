@@ -1,9 +1,10 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.services.DelayReceiver;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -31,17 +32,17 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public boolean start() {
-        if (TimeCount.isCurrent(mReminder.getEventTime())) {
+        if (!TextUtils.isEmpty(mReminder.getEventTime()) && TimeCount.isCurrent(mReminder.getEventTime())) {
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
             return true;
         }
-        return false;
+        return true;
     }
 
     @Override
     public boolean stop() {
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        RealmDb.getInstance().saveObject(mReminder.setActive(false));
+        super.save();
         return true;
     }
 
@@ -72,6 +73,8 @@ class ShoppingEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
+            mReminder.setActive(true);
+            super.save();
             return start();
         }
     }
@@ -93,6 +96,12 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public void setDelay(int delay) {
-
+        if (delay == 0) {
+            next();
+            return;
+        }
+        mReminder.setDelay(delay);
+        super.save();
+        new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
     }
 }

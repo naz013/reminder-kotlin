@@ -1,3 +1,17 @@
+package com.elementary.tasks.core.utils;
+
+import android.app.AlarmManager;
+import android.content.Context;
+
+import com.elementary.tasks.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,20 +27,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.app.AlarmManager;
-import android.content.Context;
-
-import com.elementary.tasks.R;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 public class TimeUtil {
 
@@ -127,6 +127,20 @@ public class TimeUtil {
     public static String getFullDateTime(long date, boolean is24){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
+        if (is24) return fullDateTime24.format(calendar.getTime());
+        else return fullDateTime12.format(calendar.getTime());
+    }
+
+    public static String getRealDateTime(String gmt, int delay, boolean is24) {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = gmtDateFormat.parse(gmt);
+            calendar.setTime(date);
+            calendar.setTimeInMillis(calendar.getTimeInMillis() + (delay * TimeCount.MINUTE));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (is24) return fullDateTime24.format(calendar.getTime());
         else return fullDateTime12.format(calendar.getTime());
     }

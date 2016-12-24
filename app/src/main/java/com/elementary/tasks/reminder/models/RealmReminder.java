@@ -1,3 +1,11 @@
+package com.elementary.tasks.reminder.models;
+
+import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,14 +21,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.reminder.models;
-
-import java.util.List;
-
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class RealmReminder extends RealmObject {
 
@@ -65,6 +65,8 @@ public class RealmReminder extends RealmObject {
     private int uniqueId;
     private boolean isActive;
     private boolean isRemoved;
+    private boolean isNotificationShown;
+    private boolean isLocked;
 
     public RealmReminder() {
     }
@@ -79,7 +81,7 @@ public class RealmReminder extends RealmObject {
         this.startTime = item.getStartTime();
         this.eventCount = item.getEventCount();
         this.color = item.getColor();
-        this.status = item.getStatus();
+        this.status = item.getDelay();
         this.vibrate = item.isVibrate();
         this.repeatNotification = item.isRepeatNotification();
         this.notifyByVoice = item.isNotifyByVoice();
@@ -108,6 +110,8 @@ public class RealmReminder extends RealmObject {
         this.uniqueId = item.getUniqueId();
         this.isActive = item.isActive();
         this.isRemoved = item.isRemoved();
+        this.isNotificationShown = item.isNotificationShown();
+        this.isLocked = item.isLocked();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -136,6 +140,22 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public boolean isNotificationShown() {
+        return isNotificationShown;
+    }
+
+    public void setNotificationShown(boolean notificationShown) {
+        isNotificationShown = notificationShown;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     public boolean isActive() {

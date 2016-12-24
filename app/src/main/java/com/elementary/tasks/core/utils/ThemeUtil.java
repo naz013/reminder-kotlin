@@ -419,6 +419,11 @@ public class ThemeUtil {
     }
 
     @DrawableRes
+    public int getIndicator() {
+        return getIndicator(Prefs.getInstance(mContext).getAppThemeColor());
+    }
+
+    @DrawableRes
     public int getIndicator(int color) {
         int drawable;
         switch (color) {

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 
+import com.elementary.tasks.R;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -37,6 +39,7 @@ public abstract class TypeFragment extends Fragment {
             mInterface = (ReminderInterface) context;
             mInterface.setExclusionAction(null);
             mInterface.setRepeatAction(null);
+            mInterface.setEventHint(getString(R.string.remind_me));
         }
     }
 
@@ -50,6 +53,7 @@ public abstract class TypeFragment extends Fragment {
             mInterface = (ReminderInterface) activity;
             mInterface.setExclusionAction(null);
             mInterface.setRepeatAction(null);
+            mInterface.setEventHint(getString(R.string.remind_me));
         }
     }
 

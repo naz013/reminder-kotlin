@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
@@ -63,6 +65,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReminderDialogActivity extends BaseNotificationActivity {
 
+    private static final int CALL_PERM = 612;
+    private static final int SMS_PERM = 613;
     private ActivityReminderDialogBinding binding;
     private FloatingActionButton buttonDelay;
     private FloatingActionButton buttonCancel;
@@ -228,10 +232,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         buttonCancel.setOnClickListener(v -> cancel());
         buttonNotification.setOnClickListener(v -> favourite());
         binding.buttonOk.setOnClickListener(v -> ok());
-        binding.buttonEdit.setOnClickListener(v -> {
-            editReminder();
-            finish();
-        });
+        binding.buttonEdit.setOnClickListener(v -> editReminder());
         buttonDelay.setOnClickListener(v -> delay());
         buttonDelayFor.setOnClickListener(v -> {
             showDialog();
@@ -241,13 +242,13 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         buttonCall.setOnClickListener(v -> call());
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
             if (isAutoEnabled()) {
-                sendSMS(mReminder.getTarget(), getSummary());
+                sendSMS();
             } else {
                 showReminder();
             }
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) || Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP)) {
+        } else if (isAppType()) {
             if (isAutoLaunchEnabled()) {
-                openApplication(mReminder.getTarget());
+                openApplication();
             } else {
                 showReminder();
             }
@@ -260,6 +261,10 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (isTtsEnabled()) {
             startTts();
         }
+    }
+
+    private boolean isAppType() {
+        return Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) || Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP);
     }
 
     @Override
@@ -305,15 +310,19 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
     }
 
-    public void openApplication(String number) {
+    public void openApplication() {
         if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP)) {
-            TelephonyUtil.openApp(number, this);
+            TelephonyUtil.openApp(mReminder.getTarget(), this);
         } else {
-            TelephonyUtil.openLink(number, this);
+            TelephonyUtil.openLink(mReminder.getTarget(), this);
         }
+        cancelTasks();
+        finish();
+    }
+
+    private void cancelTasks() {
         discardNotification(getId());
         repeater.cancelAlarm(ReminderDialogActivity.this, getId());
-        finish();
     }
 
     public void showDialog(){
@@ -368,13 +377,16 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         alert.show();
     }
 
-    private void sendSMS(String phoneNumber, String message) {
+    private void sendSMS() {
+        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
+            Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS);
+        }
         showProgressDialog(getString(R.string.sending_message));
         String SENT = "SMS_SENT";
         PendingIntent sentPI = PendingIntent.getBroadcast(ReminderDialogActivity.this, 0, new Intent(SENT), 0);
         registerReceiver(sentReceiver = new SendReceiver(mSendListener), new IntentFilter(SENT));
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, null);
+        sms.sendTextMessage(mReminder.getTarget(), null, getSummary(), sentPI, null);
     }
 
     private void showReminder(){
@@ -402,8 +414,11 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void editReminder() {
+        mControl.stop();
         removeFlags();
+        cancelTasks();
         startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, mReminder.getUuId()));
+        finish();
     }
 
     private boolean isRepeatEnabled() {
@@ -462,32 +477,78 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void call() {
+        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)){
+            sendSMS();
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_CALL)){
+            TelephonyUtil.skypeCall(mReminder.getTarget(), this);
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)){
+            TelephonyUtil.skypeVideoCall(mReminder.getTarget(), this);
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)){
+            TelephonyUtil.skypeChat(mReminder.getTarget(), this);
+        } else if (isAppType()){
+            openApplication();
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)){
+            TelephonyUtil.sendMail(ReminderDialogActivity.this, mReminder.getTarget(), mReminder.getSubject(), getSummary(), mReminder.getAttachmentFile());
+        } else {
+            makeCall();
+        }
+        removeFlags();
+        cancelTasks();
+        if (!Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)){
+            finish();
+        }
+    }
 
+    private void makeCall() {
+        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+            TelephonyUtil.makeCall(mReminder.getTarget(), ReminderDialogActivity.this);
+        } else {
+            Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE);
+        }
     }
 
     @Override
     protected void delay() {
-
+        int delay = mPrefs.getSnoozeTime();
+        mControl.setDelay(delay);
+        removeFlags();
+        cancelTasks();
+        finish();
     }
 
     @Override
     protected void cancel() {
-
+        mControl.stop();
+        removeFlags();
+        cancelTasks();
+        finish();
     }
 
     @Override
     protected void favourite() {
-
+        mControl.next();
+        removeFlags();
+        cancelTasks();
+        showFavouriteNotification();
+        finish();
     }
 
     @Override
     protected void ok() {
-
+        mControl.next();
+        removeFlags();
+        cancelTasks();
+        finish();
     }
 
     @Override
     protected void showSendingError() {
-
+        showReminder();
+        binding.remText.setText(getString(R.string.error_sending));
+        binding.buttonCall.setImageResource(R.drawable.ic_refresh);
+        if (binding.buttonCall.getVisibility() == View.GONE) {
+            binding.buttonCall.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -540,5 +601,21 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected boolean isUnlockDevice() {
         return mReminder.isUnlock();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CALL_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    makeCall();
+                }
+                break;
+            case SMS_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendSMS();
+                }
+                break;
+        }
     }
 }

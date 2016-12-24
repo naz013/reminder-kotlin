@@ -308,7 +308,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadLeft"})
     public static void loadLeft(RoboTextView textView, Reminder item) {
         if (item.isActive() && !item.isRemoved()) {
-            textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime()));
+            textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime(), item.getDelay()));
         } else {
             textView.setText("");
         }
@@ -387,17 +387,17 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadDate"})
     public static void loadDate(RoboTextView textView, Reminder model) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
-        if (Reminder.isBase(model.getType(), Reminder.BY_LOCATION) || Reminder.isBase(model.getType(), Reminder.BY_OUT) ||
-                Reminder.isBase(model.getType(), Reminder.BY_PLACES)) {
+        if (Reminder.isGpsType(model.getType())) {
             Place place = model.getPlaces().get(0);
             textView.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), model.getPlaces().size()));
+            return;
         } else if (Reminder.isSame(model.getType(), Reminder.BY_TIME)){
             if (TimeCount.getInstance(textView.getContext()).isRange(model.getHours(), model.getFrom(), model.getTo())){
                 textView.setText(R.string.paused);
+                return;
             }
-        } else {
-            textView.setText(TimeUtil.getDateTimeFromGmt(model.getEventTime(), is24));
         }
+        textView.setText(TimeUtil.getRealDateTime(model.getEventTime(), model.getDelay(), is24));
     }
 
     @BindingAdapter({"loadShoppingDate"})

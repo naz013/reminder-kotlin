@@ -93,6 +93,7 @@
         <receiver android:name=".core.services.AlarmReceiver" />
         <receiver android:name=".core.services.RepeatNotificationReceiver" />
         <receiver android:name=".core.services.PositionDelayReceiver" />
+        <receiver android:name=".core.services.DelayReceiver" />
 
         <service android:name=".core.services.GeolocationService" />
 

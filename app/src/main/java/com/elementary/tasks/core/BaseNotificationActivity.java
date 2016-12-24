@@ -375,6 +375,35 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
+    protected void showFavouriteNotification(){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle(getSummary());
+        String appName;
+        if (Module.isPro()) {
+            appName = getString(R.string.app_name_pro);
+        } else {
+            appName = getString(R.string.app_name);
+        }
+        builder.setContentText(appName);
+        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        }
+        boolean isWear = mPrefs.isWearEnabled();
+        if (isWear) {
+            if (Module.isJellyMR2()) {
+                builder.setOnlyAlertOnce(true);
+                builder.setGroup("GROUP");
+                builder.setGroupSummary(true);
+            }
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.notify(getId(), builder.build());
+        if (isWear){
+            showWearNotification(appName);
+        }
+    }
+
     protected void showReminderNotification(Activity activity) {
         Intent notificationIntent = new Intent(this, activity.getClass());
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
@@ -405,7 +434,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (isScreenResumed()) {
+        if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
@@ -557,11 +586,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             String defMelody = mPrefs.getMelodyFile();
             if (!TextUtils.isEmpty(defMelody)) {
                 File sound = new File(defMelody);
-                return Uri.fromFile(sound);
-            } else {
-                return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                if (sound.exists()) {
+                    return Uri.fromFile(sound);
+                }
             }
         }
+        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
     protected void discardNotification(int id){

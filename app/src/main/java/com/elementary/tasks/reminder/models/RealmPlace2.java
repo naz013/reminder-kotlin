@@ -1,3 +1,11 @@
+package com.elementary.tasks.reminder.models;
+
+import java.util.List;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,14 +21,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.reminder.models;
-
-import java.util.List;
-
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class RealmPlace2 extends RealmObject {
 

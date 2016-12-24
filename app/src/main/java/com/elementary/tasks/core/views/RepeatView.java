@@ -1,19 +1,3 @@
-/**
- * Copyright 2016 Nazar Suhovich
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.elementary.tasks.core.views;
 
 import android.app.AlarmManager;
@@ -38,7 +22,25 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 
 import java.util.Calendar;
 
+/**
+ * Copyright 2016 Nazar Suhovich
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeListener, TextWatcher {
+
+    private static final String TAG = "RepeatView";
 
     private LinearLayout predictionView;
     private RoboTextView eventView;
@@ -227,7 +229,9 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     }
 
     public long getRepeat() {
-        return repeat * mMultiplier;
+        long rep = repeat * mMultiplier;
+        Log.d(TAG, "getRepeat: " + rep);
+        return rep;
     }
 
     @Override
@@ -257,16 +261,14 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (listener != null){
-            try {
-                int res = Integer.parseInt(s.toString());
-                listener.onProgress(res);
-                if (res < repeatViewSeek.getMax()) {
-                    setProgress(res);
-                }
-            } catch (NumberFormatException e){
-                e.printStackTrace();
+        try {
+            int res = Integer.parseInt(s.toString());
+            if (listener != null) listener.onProgress(res);
+            if (res < repeatViewSeek.getMax()) {
+                setProgress(res);
             }
+        } catch (NumberFormatException e){
+            e.printStackTrace();
         }
     }
 
