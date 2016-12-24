@@ -27,6 +27,7 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
@@ -195,6 +196,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         binding.actionView.setListener(mActionListener);
         binding.actionView.setActivity(getActivity());
         binding.actionView.setContactClickListener(view -> selectContact());
+        setToggleTheme();
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
@@ -207,6 +209,17 @@ public class WeekFragment extends RepeatableTypeFragment {
         }
         editReminder();
         return binding.getRoot();
+    }
+
+    private void setToggleTheme() {
+        ThemeUtil cs = ThemeUtil.getInstance(mContext);
+        binding.mondayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.tuesdayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.wednesdayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.thursdayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.fridayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.saturdayCheck.setBackgroundDrawable(cs.toggleDrawable());
+        binding.sundayCheck.setBackgroundDrawable(cs.toggleDrawable());
     }
 
     protected Date updateTime(long millis) {
