@@ -587,6 +587,7 @@ public class Reminder implements RecyclerInterface {
         setActive(true);
         setRemoved(false);
         setDelay(0);
+        setEventCount(0);
         setVibrate(mInterface.getVibration());
         setNotifyByVoice(mInterface.getVoice());
         setRepeatNotification(mInterface.getNotificationRepeat());

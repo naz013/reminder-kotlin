@@ -95,7 +95,7 @@ class TimerEvent extends RepeatableEventManager {
 
     @Override
     public boolean canSkip() {
-        return mReminder.getRepeatLimit() != -1 && mReminder.getRepeatLimit() - mReminder.getEventCount() - 1 > 0;
+        return isRepeatable() && (mReminder.getRepeatLimit() == -1 || mReminder.getRepeatLimit() - mReminder.getEventCount() - 1 > 0);
     }
 
     @Override

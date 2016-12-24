@@ -67,6 +67,8 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class PlacesMapFragment extends BaseMapFragment implements View.OnClickListener, PlaceSearchTask.ExecutionListener {
 
+    private static final String SHOWCASE = "places_showcase";
+
     private FragmentPlacesMapBinding binding;
     private GoogleMap mMap;
     private CardView layersContainer;
@@ -254,7 +256,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     public void showShowcase() {
-        if (!Prefs.getInstance(mContext).isMapShowcase()) {
+        if (!Prefs.getInstance(mContext).isShowcase(SHOWCASE)) {
             ThemeUtil coloring = ThemeUtil.getInstance(mContext);
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
@@ -277,7 +279,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                     mContext.getString(R.string.select_place_from_list),
                     mContext.getString(R.string.got_it));
             sequence.start();
-            Prefs.getInstance(mContext).setMapShowcase(true);
+            Prefs.getInstance(mContext).setShowcase(SHOWCASE, true);
         }
     }
 

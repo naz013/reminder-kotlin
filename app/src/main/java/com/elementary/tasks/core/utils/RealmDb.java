@@ -553,7 +553,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"isActive", "eventTime"};
-        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.DESCENDING};
+        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
@@ -568,7 +568,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"isActive", "eventTime"};
-        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.DESCENDING};
+        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("groupUuId", groupId).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
@@ -583,7 +583,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"eventTime"};
-        Sort[] orders = new Sort[]{Sort.DESCENDING};
+        Sort[] orders = new Sort[]{Sort.ASCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
