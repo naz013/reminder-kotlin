@@ -274,9 +274,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             mTracker.setScreenName("Reminder " + mReminder.getType());
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
-
-        if (mPrefs.isWearEnabled())
+        if (mPrefs.isWearEnabled()) {
             mGoogleApiClient.connect();
+        }
     }
 
     @Override

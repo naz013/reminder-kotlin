@@ -91,7 +91,7 @@ class MonthlyEvent extends RepeatableEventManager {
 
     @Override
     public boolean canSkip() {
-        return mReminder.getRepeatLimit() != -1 && mReminder.getEventCount() < mReminder.getRepeatLimit();
+        return mReminder.getRepeatLimit() == -1 || mReminder.getEventCount() + 1 < mReminder.getRepeatLimit();
     }
 
     @Override

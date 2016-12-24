@@ -40,6 +40,7 @@ public abstract class TypeFragment extends Fragment {
             mInterface.setExclusionAction(null);
             mInterface.setRepeatAction(null);
             mInterface.setEventHint(getString(R.string.remind_me));
+            mInterface.setHasAutoExtra(false);
         }
     }
 
@@ -54,6 +55,7 @@ public abstract class TypeFragment extends Fragment {
             mInterface.setExclusionAction(null);
             mInterface.setRepeatAction(null);
             mInterface.setEventHint(getString(R.string.remind_me));
+            mInterface.setHasAutoExtra(false);
         }
     }
 

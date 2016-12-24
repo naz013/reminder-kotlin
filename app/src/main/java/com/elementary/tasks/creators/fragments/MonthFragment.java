@@ -71,6 +71,7 @@ public class MonthFragment extends RepeatableTypeFragment {
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
                 mInterface.setEventHint(getString(R.string.remind_me));
+                mInterface.setHasAutoExtra(false);
             }
         }
 
@@ -78,8 +79,10 @@ public class MonthFragment extends RepeatableTypeFragment {
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
                 mInterface.setEventHint(getString(R.string.message));
+                mInterface.setHasAutoExtra(true);
             } else {
                 mInterface.setEventHint(getString(R.string.remind_me));
+                mInterface.setHasAutoExtra(false);
             }
         }
     };

@@ -1,3 +1,18 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Map;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,21 +28,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.google.gson.Gson;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Map;
 
 abstract class SharedPrefs extends PrefsConstants {
 

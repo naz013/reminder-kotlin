@@ -74,6 +74,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
                 mInterface.setEventHint(getString(R.string.remind_me));
+                mInterface.setHasAutoExtra(false);
             }
         }
 
@@ -81,8 +82,10 @@ public class LocationOutFragment extends RadiusTypeFragment {
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
                 mInterface.setEventHint(getString(R.string.message));
+                mInterface.setHasAutoExtra(true);
             } else {
                 mInterface.setEventHint(getString(R.string.remind_me));
+                mInterface.setHasAutoExtra(false);
             }
         }
     };

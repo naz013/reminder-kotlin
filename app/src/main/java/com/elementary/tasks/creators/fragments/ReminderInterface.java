@@ -66,4 +66,6 @@ public interface ReminderInterface {
     void setRepeatAction(View.OnClickListener listener);
 
     void setFullScreenMode(boolean b);
+
+    void setHasAutoExtra(boolean b);
 }

@@ -148,6 +148,7 @@ public class EmailFragment extends RepeatableTypeFragment {
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
         mInterface.setEventHint(getString(R.string.message));
+        mInterface.setHasAutoExtra(true);
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {

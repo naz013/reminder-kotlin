@@ -12,7 +12,6 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,6 +63,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class CreateReminderActivity extends ThemedActivity implements ReminderInterface {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
@@ -71,6 +73,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final int CONTACTS_REQUEST_E = 501;
     private static final int CONTACTS_REQUEST_C = 502;
     private static final String TAG = "CreateReminderActivity";
+    private static final String SHOWCASE = "reminder_showcase";
 
     private ActivityCreateReminderBinding binding;
     private Toolbar toolbar;
@@ -86,6 +89,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean wake;
     private boolean unlock;
     private boolean auto;
+    private boolean hasAutoExtra;
     private int repeatLimit = -1;
     private int volume;
     private String groupId;
@@ -296,7 +300,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         List<GroupItem> list = new ArrayList<>();
         Position position = new Position();
         final List<String> categories = RealmDb.getInstance().getAllGroupsNames(list, groupId, position);
-        Log.d(TAG, "selectCategory: " + position);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.choose_group);
         builder.setSingleChoiceItems(new ArrayAdapter<>(this,
@@ -356,6 +359,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.vibrationCheck.setEnabled(useGlobal);
         binding.voiceCheck.setEnabled(useGlobal);
         binding.wakeCheck.setEnabled(useGlobal);
+        if (hasAutoExtra) {
+            binding.autoCheck.setVisibility(View.VISIBLE);
+        } else {
+            binding.autoCheck.setVisibility(View.GONE);
+        }
         return binding;
     }
 
@@ -525,6 +533,38 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        showShowcase();
+    }
+
+    public void showShowcase() {
+        if (!Prefs.getInstance(this).isShowcase(SHOWCASE)) {
+            Prefs.getInstance(this).setShowcase(SHOWCASE, true);
+            ShowcaseConfig config = new ShowcaseConfig();
+            config.setDelay(350);
+            config.setMaskColor(themeUtil.getColor(themeUtil.colorAccent()));
+            config.setContentTextColor(themeUtil.getColor(R.color.whitePrimary));
+            config.setDismissTextColor(themeUtil.getColor(R.color.whitePrimary));
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+            sequence.setConfig(config);
+            sequence.addSequenceItem(binding.navSpinner,
+                    getString(R.string.click_to_select_reminder_type),
+                    getString(R.string.got_it));
+            sequence.addSequenceItem(binding.voiceButton,
+                    getString(R.string.to_insert_task_by_voice),
+                    getString(R.string.got_it));
+            sequence.addSequenceItem(binding.customButton,
+                    getString(R.string.click_to_customize),
+                    getString(R.string.got_it));
+            sequence.addSequenceItem(binding.groupButton,
+                    getString(R.string.click_to_change_reminder_group),
+                    getString(R.string.got_it));
+            sequence.start();
+        }
+    }
+
+    @Override
     public String getMelodyPath() {
         return melodyPath;
     }
@@ -655,6 +695,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         } else {
             ViewUtils.expand(toolbar);
         }
+    }
+
+    @Override
+    public void setHasAutoExtra(boolean hasAutoExtra) {
+        this.hasAutoExtra = hasAutoExtra;
     }
 
     @Override
