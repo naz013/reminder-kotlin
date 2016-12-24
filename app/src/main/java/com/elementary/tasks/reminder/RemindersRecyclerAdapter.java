@@ -412,15 +412,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    @BindingAdapter({"loadShoppingTitle"})
-    public static void loadShoppingTitle(RoboTextView textView, String title) {
-        if (TextUtils.isEmpty(title)) {
-            textView.setVisibility(View.GONE);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-        }
-    }
-
     @BindingAdapter({"loadCheck"})
     public static void loadCheck(RoboSwitchCompat switchCompat, Reminder item) {
         if (item.isRemoved()) {
