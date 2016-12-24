@@ -18,6 +18,7 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.creators.fragments.ReminderInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,6 @@ import java.util.UUID;
 public class Reminder implements RecyclerInterface {
 
     public class Kind {
-        public static final int BASE = 0;
         public static final int SMS = 2;
         public static final int CALL = 1;
     }
@@ -73,7 +73,7 @@ public class Reminder implements RecyclerInterface {
     private String startTime;
     private long eventCount;
     private int color;
-    private int status;
+    private int delay;
     private boolean vibrate;
     private boolean repeatNotification;
     private boolean notifyByVoice;
@@ -104,6 +104,8 @@ public class Reminder implements RecyclerInterface {
     private int uniqueId;
     private boolean isActive;
     private boolean isRemoved;
+    private boolean isNotificationShown;
+    private boolean isLocked;
 
     public static boolean isBase(int type, int base) {
         int res = type - base;
@@ -137,7 +139,7 @@ public class Reminder implements RecyclerInterface {
         this.startTime = item.getStartTime();
         this.eventCount = item.getEventCount();
         this.color = item.getColor();
-        this.status = item.getStatus();
+        this.delay = item.getStatus();
         this.vibrate = item.isVibrate();
         this.repeatNotification = item.isRepeatNotification();
         this.notifyByVoice = item.isNotifyByVoice();
@@ -166,6 +168,8 @@ public class Reminder implements RecyclerInterface {
         this.uniqueId = item.getUniqueId();
         this.isActive = item.isActive();
         this.isRemoved = item.isRemoved();
+        this.isNotificationShown = item.isNotificationShown();
+        this.isLocked = item.isLocked();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -194,6 +198,22 @@ public class Reminder implements RecyclerInterface {
             }
         }
         return strings;
+    }
+
+    public boolean isNotificationShown() {
+        return isNotificationShown;
+    }
+
+    public void setNotificationShown(boolean notificationShown) {
+        isNotificationShown = notificationShown;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     public boolean isActive() {
@@ -313,12 +333,12 @@ public class Reminder implements RecyclerInterface {
         return this;
     }
 
-    public int getStatus() {
-        return status;
+    public int getDelay() {
+        return delay;
     }
 
-    public Reminder setStatus(int status) {
-        this.status = status;
+    public Reminder setDelay(int delay) {
+        this.delay = delay;
         return this;
     }
 
@@ -554,6 +574,25 @@ public class Reminder implements RecyclerInterface {
     public Reminder setShoppings(List<ShopItem> shoppings) {
         this.shoppings = shoppings;
         return this;
+    }
+
+    public void setClear(ReminderInterface mInterface) {
+        setSummary(mInterface.getSummary());
+        setGroupUuId(mInterface.getGroup());
+        setRepeatLimit(mInterface.getRepeatLimit());
+        setColor(mInterface.getLedColor());
+        setMelodyPath(mInterface.getMelodyPath());
+        setVolume(mInterface.getVolume());
+        setAuto(mInterface.getAuto());
+        setActive(true);
+        setRemoved(false);
+        setDelay(0);
+        setVibrate(mInterface.getVibration());
+        setNotifyByVoice(mInterface.getVoice());
+        setRepeatNotification(mInterface.getNotificationRepeat());
+        setUseGlobal(mInterface.getUseGlobal());
+        setUnlock(mInterface.getUnlock());
+        setAwake(mInterface.getWake());
     }
 
     @Override

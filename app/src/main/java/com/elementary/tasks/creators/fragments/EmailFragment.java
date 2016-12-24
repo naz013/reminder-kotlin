@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
@@ -23,6 +24,7 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -93,34 +95,25 @@ public class EmailFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        fillExtraData(reminder);
+        reminder.setClear(mInterface);
         Log.d(TAG, "save: " + type);
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
+        if (!TimeCount.isCurrent(reminder.getEventTime())) {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
-        control.start();
-        return true;
-    }
-
-    private void fillExtraData(Reminder reminder) {
-        reminder.setGroupUuId(mInterface.getGroup());
-        reminder.setRepeatLimit(mInterface.getRepeatLimit());
-        reminder.setColor(mInterface.getLedColor());
-        reminder.setMelodyPath(mInterface.getMelodyPath());
-        reminder.setVolume(mInterface.getVolume());
-        reminder.setAuto(mInterface.getAuto());
-        reminder.setActive(true);
-        reminder.setRemoved(false);
-        reminder.setVibrate(mInterface.getVibration());
-        reminder.setNotifyByVoice(mInterface.getVoice());
-        reminder.setRepeatNotification(mInterface.getNotificationRepeat());
-        reminder.setUseGlobal(mInterface.getUseGlobal());
-        reminder.setUnlock(mInterface.getUnlock());
-        reminder.setAwake(mInterface.getWake());
+        if (control.start()) {
+            return true;
+        } else {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     @Override
@@ -154,7 +147,7 @@ public class EmailFragment extends RepeatableTypeFragment {
         else binding.chooseFile.setImageResource(R.drawable.ic_attach_file_black_24dp);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
-        mInterface.setEventHint(getString(R.string.subject));
+        mInterface.setEventHint(getString(R.string.message));
         if (mInterface.isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {

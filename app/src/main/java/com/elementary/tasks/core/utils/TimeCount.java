@@ -114,13 +114,22 @@ public class TimeCount {
         }
     }
 
+    public long generateTimerTime(String eventTime, long after) {
+        if (TextUtils.isEmpty(eventTime)) {
+            return 0;
+        } else {
+            long time = TimeUtil.getDateTimeFromGmt(eventTime);
+            return time + after;
+        }
+    }
+
     public long generateTimerTime(long eventTime, long after) {
         return eventTime + after;
     }
 
-    public String getRemaining(String dateTime) {
+    public String getRemaining(String dateTime, int delay) {
         long time = TimeUtil.getDateTimeFromGmt(dateTime);
-        return getRemaining(time);
+        return getRemaining(time + (delay * MINUTE));
     }
 
     public String getRemaining(long eventTime) {
@@ -231,7 +240,7 @@ public class TimeCount {
     }
 
     public static boolean isCurrent(String eventTime) {
-        return TimeUtil.getDateTimeFromGmt(eventTime) < System.currentTimeMillis();
+        return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis();
     }
 
     public long getNextMonthDayTime(int dayOfMonth, long fromTime) {

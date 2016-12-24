@@ -168,7 +168,7 @@ public class LocationFragment extends RadiusTypeFragment {
         reminder.setType(type);
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
-        fillExtraData(reminder);
+        reminder.setClear(mInterface);
         Log.d(TAG, "save: " + type);
         if (binding.attackDelay.isChecked()) {
             long startTime = binding.dateView.getDateTime();
@@ -184,24 +184,6 @@ public class LocationFragment extends RadiusTypeFragment {
         EventControl control = EventControlImpl.getController(mContext, reminder);
         control.start();
         return true;
-    }
-
-    private void fillExtraData(Reminder reminder) {
-        reminder.setSummary(mInterface.getSummary());
-        reminder.setGroupUuId(mInterface.getGroup());
-        reminder.setRepeatLimit(mInterface.getRepeatLimit());
-        reminder.setColor(mInterface.getLedColor());
-        reminder.setMelodyPath(mInterface.getMelodyPath());
-        reminder.setVolume(mInterface.getVolume());
-        reminder.setAuto(mInterface.getAuto());
-        reminder.setActive(true);
-        reminder.setRemoved(false);
-        reminder.setVibrate(mInterface.getVibration());
-        reminder.setNotifyByVoice(mInterface.getVoice());
-        reminder.setRepeatNotification(mInterface.getNotificationRepeat());
-        reminder.setUseGlobal(mInterface.getUseGlobal());
-        reminder.setUnlock(mInterface.getUnlock());
-        reminder.setAwake(mInterface.getWake());
     }
 
     @Override

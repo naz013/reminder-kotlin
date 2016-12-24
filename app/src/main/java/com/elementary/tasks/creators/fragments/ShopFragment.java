@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
@@ -83,7 +84,7 @@ public class ShopFragment extends TypeFragment {
         reminder.setTarget(null);
         reminder.setType(type);
         reminder.setRepeatInterval(0);
-        fillExtraData(reminder);
+        reminder.setClear(mInterface);
         Log.d(TAG, "save: " + type);
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
@@ -97,26 +98,12 @@ public class ShopFragment extends TypeFragment {
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
-        control.start();
-        return true;
-    }
-
-    private void fillExtraData(Reminder reminder) {
-        reminder.setSummary(mInterface.getSummary());
-        reminder.setGroupUuId(mInterface.getGroup());
-        reminder.setRepeatLimit(mInterface.getRepeatLimit());
-        reminder.setColor(mInterface.getLedColor());
-        reminder.setMelodyPath(mInterface.getMelodyPath());
-        reminder.setVolume(mInterface.getVolume());
-        reminder.setAuto(mInterface.getAuto());
-        reminder.setActive(true);
-        reminder.setRemoved(false);
-        reminder.setVibrate(mInterface.getVibration());
-        reminder.setNotifyByVoice(mInterface.getVoice());
-        reminder.setRepeatNotification(mInterface.getNotificationRepeat());
-        reminder.setUseGlobal(mInterface.getUseGlobal());
-        reminder.setUnlock(mInterface.getUnlock());
-        reminder.setAwake(mInterface.getWake());
+        if (control.start()) {
+            return true;
+        } else {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     @Override

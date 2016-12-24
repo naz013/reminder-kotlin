@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -44,11 +46,11 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Reminder item = RealmDb.getInstance().getReminder(id);
         int type = item.getType();
         if (Reminder.isBase(type, Reminder.BY_TIME)) {
-            if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo()))
+            if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo())) {
                 start(context, id);
-            else {
-//                Reminder.update(context, id);
-//                UpdatesHelper.getInstance(context).updateWidget();
+            } else {
+                EventControl control = EventControlImpl.getController(context, item);
+                control.next();
             }
         } else start(context, id);
     }

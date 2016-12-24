@@ -533,11 +533,13 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
+        boolean res = false;
         if (object != null) {
             object.setRemoved(true);
+            res = true;
         }
         realm.commitTransaction();
-        return true;
+        return res;
     }
 
     private void saveReminder(Reminder item) {
@@ -551,7 +553,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"isActive", "eventTime"};
-        Sort[] orders = new Sort[]{Sort.ASCENDING, Sort.ASCENDING};
+        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.DESCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
@@ -566,7 +568,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"isActive", "eventTime"};
-        Sort[] orders = new Sort[]{Sort.ASCENDING, Sort.ASCENDING};
+        Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.DESCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("groupUuId", groupId).equalTo("isRemoved", false).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
@@ -581,7 +583,7 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"eventTime"};
-        Sort[] orders = new Sort[]{Sort.ASCENDING};
+        Sort[] orders = new Sort[]{Sort.DESCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {

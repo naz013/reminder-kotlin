@@ -87,6 +87,10 @@ class LocationEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
+            mReminder.setActive(true);
+            mReminder.setLocked(false);
+            mReminder.setNotificationShown(false);
+            super.save();
             return start();
         }
     }

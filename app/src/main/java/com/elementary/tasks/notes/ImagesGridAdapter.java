@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteImageListItemBinding;
 
 import java.util.ArrayList;
@@ -38,10 +39,15 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
 
     private Context mContext;
     private List<NoteImage> mDataList;
+    private boolean isEditable;
 
     ImagesGridAdapter(Context context) {
         this.mContext = context;
         this.mDataList = new ArrayList<>();
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
     }
 
     List<NoteImage> getImages() {
@@ -71,7 +77,25 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
             binding.photoView.setOnClickListener(view -> performClick(getAdapterPosition()));
+            if (isEditable) {
+                binding.removeButton.setVisibility(View.VISIBLE);
+                binding.removeButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                binding.removeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        removeImage(getAdapterPosition());
+                    }
+                });
+            } else {
+                binding.removeButton.setVisibility(View.GONE);
+            }
         }
+    }
+
+    private void removeImage(int position) {
+        mDataList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(0, mDataList.size());
     }
 
     void setImages(List<NoteImage> list) {

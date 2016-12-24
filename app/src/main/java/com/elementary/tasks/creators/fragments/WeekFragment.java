@@ -134,17 +134,25 @@ public class WeekFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(0);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        fillExtraData(reminder);
+        reminder.setClear(mInterface);
         Log.d(TAG, "save: " + type);
         long startTime = TimeCount.getInstance(mContext).getNextWeekdayTime(getTime(), weekdays, 0);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
+        if (!TimeCount.isCurrent(reminder.getEventTime())) {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
-        control.start();
-        return true;
+        if (control.start()) {
+            return true;
+        } else {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 
     private long getTime() {
@@ -153,24 +161,6 @@ public class WeekFragment extends RepeatableTypeFragment {
         calendar.set(Calendar.HOUR_OF_DAY, mHour);
         calendar.set(Calendar.MINUTE, mMinute);
         return calendar.getTimeInMillis();
-    }
-
-    private void fillExtraData(Reminder reminder) {
-        reminder.setSummary(mInterface.getSummary());
-        reminder.setGroupUuId(mInterface.getGroup());
-        reminder.setRepeatLimit(mInterface.getRepeatLimit());
-        reminder.setColor(mInterface.getLedColor());
-        reminder.setMelodyPath(mInterface.getMelodyPath());
-        reminder.setVolume(mInterface.getVolume());
-        reminder.setAuto(mInterface.getAuto());
-        reminder.setActive(true);
-        reminder.setRemoved(false);
-        reminder.setVibrate(mInterface.getVibration());
-        reminder.setNotifyByVoice(mInterface.getVoice());
-        reminder.setRepeatNotification(mInterface.getNotificationRepeat());
-        reminder.setUseGlobal(mInterface.getUseGlobal());
-        reminder.setUnlock(mInterface.getUnlock());
-        reminder.setAwake(mInterface.getWake());
     }
 
     @Override

@@ -258,6 +258,7 @@ public class ActivityCreateNote extends ThemedActivity {
         binding.imagesList.setHasFixedSize(true);
         binding.imagesList.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new ImagesGridAdapter(this);
+        mAdapter.setEditable(true);
         binding.imagesList.setAdapter(mAdapter);
     }
 

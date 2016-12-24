@@ -68,6 +68,7 @@ public class TelephonyUtil {
         context.startActivity(smsIntent);
     }
 
+    @SuppressWarnings("MissingPermission")
     public static void makeCall(String number, Context context){
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));

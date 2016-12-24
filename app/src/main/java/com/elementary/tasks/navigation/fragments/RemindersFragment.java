@@ -33,7 +33,6 @@ import com.elementary.tasks.databinding.FragmentRemindersBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.reminder.RecyclerListener;
-import com.elementary.tasks.reminder.ReminderControl;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -128,7 +127,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                     changeGroup(item1.getGroupUuId(), item1.getUuId());
                     break;
                 case 3:
-                    if (ReminderControl.getInstance(mContext).moveToTrash(item1)) {
+                    if (RealmDb.getInstance().moveToTrash(item1.getUuId())) {
+                        EventControl control = EventControlImpl.getController(mContext, item1.setRemoved(true));
+                        control.stop();
                         mAdapter.removeItem(position);
                     }
                     break;
@@ -142,7 +143,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void switchReminder(int position) {
         EventControl control = EventControlImpl.getController(mContext, mAdapter.getItem(position));
-        control.onOff();
+        if (!control.onOff()) {
+            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+        }
         loadData(mLastGroupId);
     }
 
