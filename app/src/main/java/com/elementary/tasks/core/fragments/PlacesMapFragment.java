@@ -472,7 +472,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     private void setMyLocation() {
-        if (Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             Permissions.requestPermission(mContext, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
         } else {
             mMap.setMyLocationEnabled(true);

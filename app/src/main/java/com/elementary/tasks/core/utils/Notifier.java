@@ -36,6 +36,11 @@ public class Notifier {
         this.mContext = context;
     }
 
+    public static void hideNotification(Context context, int id) {
+        NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel(id);
+    }
+
     public void showNoteNotification(NoteItem item){
         Prefs sPrefs = Prefs.getInstance(mContext);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);

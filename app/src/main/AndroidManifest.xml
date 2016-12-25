@@ -94,8 +94,14 @@
         <receiver android:name=".core.services.RepeatNotificationReceiver" />
         <receiver android:name=".core.services.PositionDelayReceiver" />
         <receiver android:name=".core.services.DelayReceiver" />
-
+        <receiver android:name=".core.services.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
         <service android:name=".core.services.GeolocationService" />
+        <service android:name=".core.services.TasksService" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
