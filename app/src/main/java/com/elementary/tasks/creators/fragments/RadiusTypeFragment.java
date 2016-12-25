@@ -3,6 +3,7 @@ package com.elementary.tasks.creators.fragments;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
@@ -35,11 +36,11 @@ abstract class RadiusTypeFragment extends TypeFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
-        b.seekBar.setMax(5000);
+        b.seekBar.setMax(5001);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(progress)));
+                setTitle(b.titleView, progress);
             }
 
             @Override
@@ -53,14 +54,22 @@ abstract class RadiusTypeFragment extends TypeFragment {
             }
         });
         b.seekBar.setProgress(radius);
-        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(radius)));
+        setTitle(b.titleView, radius + 1);
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            radius = b.seekBar.getProgress();
+            radius = b.seekBar.getProgress() - 1;
             recreateMarker();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    private void setTitle(TextView textView, int progress) {
+        if (progress == 0) {
+            textView.setText(getString(R.string.default_string));
+        } else {
+            textView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(progress - 1)));
+        }
     }
 
     protected abstract void recreateMarker();
