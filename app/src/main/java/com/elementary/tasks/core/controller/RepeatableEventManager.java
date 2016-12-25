@@ -5,6 +5,7 @@ import android.content.Context;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -40,6 +41,7 @@ abstract class RepeatableEventManager implements EventControl {
 
     @Override
     public boolean stop() {
+        Notifier.hideNotification(mContext, mReminder.getUniqueId());
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         new DelayReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         new RepeatNotificationReceiver().cancelAlarm(mContext, mReminder.getUniqueId());

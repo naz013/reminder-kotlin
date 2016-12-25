@@ -263,7 +263,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected void colorify(FloatingActionButton... fab){
         for (FloatingActionButton button : fab){
-            button.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary()));
+            button.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorAccent()));
         }
     }
 
@@ -409,7 +409,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getSummary());
         builder.setContentIntent(intent);
@@ -472,15 +472,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     protected void showTTSNotification(Activity activityClass) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getSummary());
-        if (mPrefs.isFoldingEnabled()) {
-            Intent notificationIntent = new Intent(this, activityClass.getClass());
-            notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
-            notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            PendingIntent intent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(intent);
-        }
+        Intent notificationIntent = new Intent(this, activityClass.getClass());
+        notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
+        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setPriority(Notification.PRIORITY_MAX);
         if (mPrefs.isManualRemoveEnabled()) {

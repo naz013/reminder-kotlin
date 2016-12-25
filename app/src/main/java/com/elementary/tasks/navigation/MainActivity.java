@@ -129,7 +129,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (accent == 0) accent = themeUtil.getColor(themeUtil.colorAccent());
         toolbar.setBackgroundColor(primary);
         if (Module.isLollipop()) getWindow().setStatusBarColor(primaryDark);
-        binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, primary));
+        binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, accent));
     }
 
     @Override

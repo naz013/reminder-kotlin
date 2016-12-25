@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -41,6 +42,7 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public boolean stop() {
+        Notifier.hideNotification(mContext, mReminder.getUniqueId());
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         super.save();
         return true;
