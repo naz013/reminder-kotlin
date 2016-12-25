@@ -57,7 +57,7 @@ public class TimeCount {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int mHour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hours != null) {
+        if (hours != null && hours.size() > 0) {
             return hours.contains(mHour);
         }
         long eventTime = calendar.getTimeInMillis();

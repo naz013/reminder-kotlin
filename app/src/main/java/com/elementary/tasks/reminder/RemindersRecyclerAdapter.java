@@ -9,7 +9,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -308,7 +307,13 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadLeft"})
     public static void loadLeft(RoboTextView textView, Reminder item) {
         if (item.isActive() && !item.isRemoved()) {
-            textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime(), item.getDelay()));
+            if (Reminder.isSame(item.getType(), Reminder.BY_TIME)){
+                if (TimeCount.getInstance(textView.getContext()).isRange(item.getHours(), item.getFrom(), item.getTo())){
+                    textView.setText(R.string.paused);
+                }
+            } else {
+                textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime(), item.getDelay()));
+            }
         } else {
             textView.setText("");
         }

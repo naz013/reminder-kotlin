@@ -45,7 +45,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         context.startService(service);
         Reminder item = RealmDb.getInstance().getReminder(id);
         int type = item.getType();
-        if (Reminder.isBase(type, Reminder.BY_TIME)) {
+        if (Reminder.isSame(type, Reminder.BY_TIME)) {
             if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo())) {
                 start(context, id);
             } else {

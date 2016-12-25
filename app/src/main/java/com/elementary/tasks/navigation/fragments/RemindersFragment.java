@@ -131,6 +131,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                         EventControl control = EventControlImpl.getController(mContext, item1.setRemoved(true));
                         control.stop();
                         mAdapter.removeItem(position);
+                        reloadView();
                     }
                     break;
             }
