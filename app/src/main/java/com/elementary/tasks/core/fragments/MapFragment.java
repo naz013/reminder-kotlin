@@ -607,7 +607,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     }
 
     private void setMyLocation() {
-        if (Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             Permissions.requestPermission(mContext, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
         } else {
             mMap.setMyLocationEnabled(true);
@@ -617,7 +617,6 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     private void loadPlaces(){
         if (placeRecyclerAdapter == null) {
             List<PlaceItem> list = RealmDb.getInstance().getAllPlaces();
-            Log.d(TAG, "loadPlaces: " + list.size());
             if (list.isEmpty()) {
                 binding.placesCard.setVisibility(View.GONE);
                 placesList.setVisibility(View.GONE);

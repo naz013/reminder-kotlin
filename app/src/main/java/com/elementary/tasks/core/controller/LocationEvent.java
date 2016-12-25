@@ -6,10 +6,13 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.core.services.GeolocationService;
 import com.elementary.tasks.core.services.PositionDelayReceiver;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,7 +38,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean start() {
-        if (!TextUtils.isEmpty(mReminder.getEventTime()) && TimeCount.isCurrent(mReminder.getEventTime())) {
+        if (!TextUtils.isEmpty(mReminder.getEventTime())) {
             new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
             return true;
         } else {
@@ -51,12 +54,31 @@ class LocationEvent extends EventManager {
     public boolean stop() {
         new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
         RealmDb.getInstance().saveObject(mReminder.setActive(false));
+        Notifier.hideNotification(mContext, mReminder.getUniqueId());
         stopTracking();
         return true;
     }
 
     private void stopTracking() {
-
+        List<Reminder> list = RealmDb.getInstance().getEnabledReminders();
+        if (list.size() == 0) {
+            mContext.stopService(new Intent(mContext, GeolocationService.class));
+        }
+        boolean hasActive = false;
+        for (Reminder item : list) {
+            if (Reminder.isGpsType(item.getType())) {
+                if (!TextUtils.isEmpty(item.getEventTime())) {
+                    if (TimeCount.isCurrent(item.getEventTime())) {
+                        hasActive = !item.isNotificationShown();
+                    }
+                } else {
+                    hasActive = !item.isNotificationShown();
+                }
+            }
+        }
+        if (!hasActive) {
+            mContext.stopService(new Intent(mContext, GeolocationService.class));
+        }
     }
 
     @Override

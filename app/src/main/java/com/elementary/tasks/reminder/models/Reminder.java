@@ -1,3 +1,14 @@
+package com.elementary.tasks.reminder.models;
+
+import com.elementary.tasks.core.interfaces.RecyclerInterface;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.creators.fragments.ReminderInterface;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,17 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.reminder.models;
-
-import com.elementary.tasks.core.interfaces.RecyclerInterface;
-import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.creators.fragments.ReminderInterface;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
 public class Reminder implements RecyclerInterface {
 
@@ -204,16 +204,18 @@ public class Reminder implements RecyclerInterface {
         return isNotificationShown;
     }
 
-    public void setNotificationShown(boolean notificationShown) {
+    public Reminder setNotificationShown(boolean notificationShown) {
         isNotificationShown = notificationShown;
+        return this;
     }
 
     public boolean isLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean locked) {
+    public Reminder setLocked(boolean locked) {
         isLocked = locked;
+        return this;
     }
 
     public boolean isActive() {

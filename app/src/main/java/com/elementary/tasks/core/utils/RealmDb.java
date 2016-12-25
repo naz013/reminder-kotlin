@@ -536,6 +536,7 @@ public class RealmDb {
         boolean res = false;
         if (object != null) {
             object.setRemoved(true);
+            object.setActive(false);
             res = true;
         }
         realm.commitTransaction();
@@ -555,6 +556,19 @@ public class RealmDb {
         String[] fields = new String[]{"isActive", "eventTime"};
         Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Reminder> getEnabledReminders() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
