@@ -302,9 +302,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     public void onBackPressed() {
         discardMedia();
         if (mPrefs.isFoldingEnabled()){
-            moveTaskToBack(true);
             repeater.cancelAlarm(ReminderDialogActivity.this, getId());
             removeFlags();
+            finish();
         } else {
             Toast.makeText(ReminderDialogActivity.this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show();
         }
