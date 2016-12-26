@@ -88,7 +88,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         reminder.setHours(mHours);
         reminder.setClear(mInterface);
         Log.d(TAG, "save: " + type);
-        long startTime = TimeCount.getInstance(mContext).generateTimerTime(System.currentTimeMillis(), binding.timerPickerView.getTimerValue());
+        long startTime = TimeCount.getInstance(mContext).generateNextTimer(reminder, true);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
@@ -179,6 +179,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void saveExclusion(DialogExclusionPickerBinding b) {
+        clearExclusion();
         if (b.selectHours.isChecked()) {
             mHours = getSelectedList();
             if (mHours.size() == 0) {

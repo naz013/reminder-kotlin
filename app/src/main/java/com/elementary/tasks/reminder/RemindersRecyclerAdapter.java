@@ -307,13 +307,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     @BindingAdapter({"loadLeft"})
     public static void loadLeft(RoboTextView textView, Reminder item) {
         if (item.isActive() && !item.isRemoved()) {
-            if (Reminder.isSame(item.getType(), Reminder.BY_TIME)){
-                if (TimeCount.getInstance(textView.getContext()).isRange(item.getHours(), item.getFrom(), item.getTo())){
-                    textView.setText(R.string.paused);
-                }
-            } else {
-                textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime(), item.getDelay()));
-            }
+            textView.setText(TimeCount.getInstance(textView.getContext()).getRemaining(item.getEventTime(), item.getDelay()));
         } else {
             textView.setText("");
         }
@@ -396,11 +390,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             Place place = model.getPlaces().get(0);
             textView.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), model.getPlaces().size()));
             return;
-        } else if (Reminder.isSame(model.getType(), Reminder.BY_TIME)){
-            if (TimeCount.getInstance(textView.getContext()).isRange(model.getHours(), model.getFrom(), model.getTo())){
-                textView.setText(R.string.paused);
-                return;
-            }
         }
         textView.setText(TimeUtil.getRealDateTime(model.getEventTime(), model.getDelay(), is24));
     }

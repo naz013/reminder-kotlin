@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,14 +52,20 @@ public class TimeCount {
         return instance;
     }
 
-    public boolean isRange(List<Integer> hours, String fromHour, String toHour) {
-        if (hours == null && fromHour == null && toHour == null) return true;
-        boolean res = false;
+    public long generateNextTimer(Reminder reminder, boolean isNew) {
+        List<Integer> hours = reminder.getHours();
+        String fromHour = reminder.getFrom();
+        String toHour = reminder.getTo();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+        if (isNew) calendar.setTimeInMillis(calendar.getTimeInMillis() + reminder.getAfter());
         int mHour = calendar.get(Calendar.HOUR_OF_DAY);
         if (hours != null && hours.size() > 0) {
-            return hours.contains(mHour);
+            while (hours.contains(mHour)) {
+                calendar.setTimeInMillis(calendar.getTimeInMillis() + reminder.getRepeatInterval());
+                mHour = calendar.get(Calendar.HOUR_OF_DAY);
+            }
+            return calendar.getTimeInMillis();
         }
         long eventTime = calendar.getTimeInMillis();
         if (fromHour != null && toHour != null) {
@@ -79,14 +86,20 @@ public class TimeCount {
                 calendar.set(Calendar.HOUR_OF_DAY, hour);
                 calendar.set(Calendar.MINUTE, minute);
                 long end = calendar.getTimeInMillis();
-                if (start > end) {
-                    res = eventTime >= start || eventTime < end;
-                } else {
-                    res = eventTime >= start && eventTime <= end;
+                while (isRange(eventTime, start, end)) {
+                    eventTime = eventTime + reminder.getRepeatInterval();
                 }
             }
         }
-        return res;
+        return eventTime;
+    }
+
+    private boolean isRange(long time, long start, long end) {
+        if (start > end) {
+            return time >= start || time < end;
+        } else {
+            return time >= start && time <= end;
+        }
     }
 
     public String[] getNextDateTime(long timeLong) {
@@ -121,10 +134,6 @@ public class TimeCount {
             long time = TimeUtil.getDateTimeFromGmt(eventTime);
             return time + after;
         }
-    }
-
-    public long generateTimerTime(long eventTime, long after) {
-        return eventTime + after;
     }
 
     public String getRemaining(String dateTime, int delay) {
