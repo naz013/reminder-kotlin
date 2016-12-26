@@ -42,7 +42,10 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.AssetsUtil;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
@@ -50,6 +53,8 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TelephonyUtil;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ColorPickerView;
@@ -57,16 +62,14 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
+import com.elementary.tasks.reminder.models.Reminder;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -112,6 +115,7 @@ public class ActivityCreateNote extends ThemedActivity {
     private ImagesGridAdapter mAdapter;
 
     private NoteItem mItem;
+    private Reminder mReminder;
     private Toolbar toolbar;
     private EditText taskField;
 
@@ -169,46 +173,26 @@ public class ActivityCreateNote extends ThemedActivity {
         if (name != null) {
             String scheme = name.getScheme();
             if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getApplicationContext().getContentResolver();
-                InputStream is = null;
+                ContentResolver cr = getContentResolver();
                 try {
-                    is = cr.openInputStream(name);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                BufferedReader r = null;
-                if (is != null) {
-                    r = new BufferedReader(new InputStreamReader(is));
-                }
-                StringBuilder total = new StringBuilder();
-                String line;
-                try {
-                    while ((line = r != null ? r.readLine() : null) != null) {
-                        total.append(line);
-                    }
+                    String file = BackupTool.getInstance(this).readFileToJson(cr, name);
+                    mItem = BackupTool.getInstance(this).getNote(null, file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                String file = total.toString();
-//                try {
-//                    mItem = SyncHelper.getNote(null, file);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
             } else {
-//                try {
-//                    mItem = SyncHelper.getNote(name.getPath(), null);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    mItem = BackupTool.getInstance(this).getNote(name.getPath(), null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (filePath != null) {
-            // TODO: 12.12.2016 Add note reading from file
-//            try {
-//                mItem = SyncHelper.getNote(filePath, null);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                mItem = BackupTool.getInstance(this).getNote(filePath, null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (mItem != null) {
             String note = mItem.getSummary();
@@ -263,54 +247,27 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void showReminder() {
-        // TODO: 12.12.2016 Add loading reminder for note
-//        ReminderItem item = ReminderHelper.getInstance(this).getReminder(mItem.getLinkId());
-//        if (item != null) {
-//            setDateTime(item.getDateTime());
-//            ViewUtils.expand(remindContainer);
-//        }
+        mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
+        if (mReminder != null) {
+            setDateTime(mReminder.getEventTime());
+            ViewUtils.expand(remindContainer);
+        }
     }
 
     private void shareNote() {
-        // TODO: 12.12.2016 Add note sharing functionality
-//        SyncHelper sHelp = new SyncHelper(NotesActivity.this);
-//        String note = taskField.getText().toString();
-//        if (note.matches("")) {
-//            taskField.setError(getString(R.string.must_be_not_empty));
-//            return;
-//        }
-//        Calendar calendar1 = Calendar.getInstance();
-//        int day = calendar1.get(Calendar.DAY_OF_MONTH);
-//        int month = calendar1.get(Calendar.MONTH);
-//        int year = calendar1.get(Calendar.YEAR);
-//        String date = year + "/" + month + "/" + day;
-//        String uuID = mItem.getUuId();
-//        if (uuID == null || uuID.matches("")) {
-//            uuID = SyncHelper.generateID();
-//        }
-//        mItem.setNote(note);
-//        mItem.setDate(date);
-//        mItem.setUuId(uuID);
-//        try {
-//            File file = sHelp.createNote(mItem);
-//            sendMail(file, note);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    private void sendMail(File file, String text) {
+        createObject();
+        File file = BackupTool.getInstance(this).createNote(mItem);
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
-            finish();
             return;
         }
-//        Telephony.sendNote(file, this, text);
+        TelephonyUtil.sendNote(file, this, mItem.getSummary());
     }
 
-    private void setDateTime(long mills) {
+    private void setDateTime(String eventTime) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(mills);
+        if (eventTime == null) calendar.setTimeInMillis(System.currentTimeMillis());
+        else calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
         mMonth = calendar.get(Calendar.MONTH);
         mYear = calendar.get(Calendar.YEAR);
@@ -324,7 +281,7 @@ public class ActivityCreateNote extends ThemedActivity {
         return remindContainer.getVisibility() == View.VISIBLE;
     }
 
-    private void saveNote() {
+    private void createObject() {
         String note = taskField.getText().toString().trim();
         List<NoteImage> images = mAdapter.getImages();
         if (TextUtils.isEmpty(note) && images.isEmpty()) {
@@ -339,6 +296,10 @@ public class ActivityCreateNote extends ThemedActivity {
         mItem.setImages(images);
         mItem.setColor(mColor);
         mItem.setStyle(mFontStyle);
+    }
+
+    private void saveNote() {
+        createObject();
         boolean hasReminder = isReminderAttached();
         if (!hasReminder) removeNoteFromReminder(mItem.getKey());
         RealmDb.getInstance().saveObject(mItem);
@@ -351,11 +312,39 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void createReminder(String key, Calendar calendar) {
-        // TODO: 12.12.2016 Add reminder saving for note
+        if (mReminder == null) {
+            mReminder = new Reminder();
+        }
+        mReminder.setType(Reminder.BY_DATE);
+        mReminder.setDelay(0);
+        mReminder.setEventCount(0);
+        mReminder.setUseGlobal(true);
+        mReminder.setNoteId(key);
+        mReminder.setActive(true);
+        mReminder.setRemoved(false);
+        mReminder.setSummary(mItem.getSummary());
+        mReminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+        long startTime = calendar.getTimeInMillis();
+        mReminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
+        mReminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
+        if (!TimeCount.isCurrent(mReminder.getEventTime())) {
+            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        RealmDb.getInstance().saveObject(mReminder);
+        EventControl control = EventControlImpl.getController(this, mReminder);
+        if (!control.start()) {
+            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void removeNoteFromReminder(String key) {
-        // TODO: 12.12.2016 Add removing reminder from note
+        mReminder = RealmDb.getInstance().getReminderByNote(key);
+        if (mReminder != null) {
+            EventControl control = EventControlImpl.getController(this, mReminder);
+            control.stop();
+            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+        }
     }
 
     @Override
@@ -376,7 +365,7 @@ public class ActivityCreateNote extends ThemedActivity {
                 return true;
             case R.id.action_reminder:
                 if (!isReminderAttached()) {
-                    setDateTime(System.currentTimeMillis());
+                    setDateTime(null);
                     ViewUtils.expand(remindContainer);
                 } else {
                     ViewUtils.collapse(remindContainer);

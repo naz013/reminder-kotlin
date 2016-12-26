@@ -524,7 +524,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
         return true;
     }

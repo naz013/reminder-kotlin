@@ -2,11 +2,8 @@ package com.elementary.tasks.notes;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -15,28 +12,29 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.FileConfig;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.AssetsUtil;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.QuickReturnUtils;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -56,9 +54,8 @@ import java.util.UUID;
 
 public class NotePreviewActivity extends ThemedActivity {
 
-    private static final int REQUEST_SD_CARD = 1122;
     private NoteItem mItem;
-    private Bitmap img;
+    private Reminder mReminder;
     private String mId;
 
     private ImagesGridAdapter mAdapter;
@@ -77,9 +74,8 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void initReminderCard() {
         binding.reminderContainer.setVisibility(View.GONE);
-        binding.editReminder.setOnClickListener(v -> {
-
-        });
+        binding.editReminder.setOnClickListener(v ->
+                startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, mReminder.getUuId())));
         binding.deleteReminder.setOnClickListener(v -> showReminderDeleteDialog());
     }
 
@@ -155,34 +151,6 @@ public class NotePreviewActivity extends ThemedActivity {
                 .putExtra(Constants.INTENT_ID, mItem.getKey()));
     }
 
-    private void openImage() {
-        if (!mItem.getImages().isEmpty()) {
-            File path = MemoryUtil.getImageCacheDir();
-            boolean isDirectory = true;
-            if (!path.exists()) {
-                isDirectory = path.mkdirs();
-            }
-            if (isDirectory) {
-                String fileName = UUID.randomUUID().toString() + FileConfig.FILE_NAME_IMAGE;
-                File f = new File(path + File.separator + fileName);
-                try {
-                    f.createNewFile();
-                    FileOutputStream fo = new FileOutputStream(f);
-                    try {
-                        fo.write(mItem.getImages().get(0).getImage());
-                        fo.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    startActivity(new Intent(NotePreviewActivity.this, ImagePreviewActivity.class)
-                            .putExtra(Constants.FILE_PICKED, f.toString()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     private void moveToStatus() {
         if (mItem != null){
             new Notifier(this).showNoteNotification(mItem);
@@ -201,7 +169,6 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void loadData(){
-        img = null;
         mItem = RealmDb.getInstance().getNote(mId);
         if (mItem != null){
             showNote();
@@ -225,10 +192,9 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void showReminder() {
-        // TODO: 12.12.2016 Add reminder loading for note
-        Reminder reminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
-        if (reminder != null){
-            String dateTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime(), Prefs.getInstance(this).is24HourFormatEnabled());
+        mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
+        if (mReminder != null){
+            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), Prefs.getInstance(this).is24HourFormatEnabled());
             binding.reminderTime.setText(dateTime);
             binding.reminderContainer.setVisibility(View.VISIBLE);
         }
@@ -247,11 +213,13 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void shareNote(){
-        // TODO: 12.12.2016 Add note sharing.
-//        if (!NoteHelper.getInstance(this).shareNote(mItem.getId())) {
-//            Messages.toast(this, getString(R.string.error_sending));
-//            closeWindow();
-//        }
+        File file = BackupTool.getInstance(this).createNote(mItem);
+        if (!file.exists() || !file.canRead()) {
+            Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        TelephonyUtil.sendNote(file, this, mItem.getSummary());
+        closeWindow();
     }
 
     @Override
@@ -310,8 +278,9 @@ public class NotePreviewActivity extends ThemedActivity {
         builder.setMessage(R.string.delete_this_reminder);
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
-            // TODO: 12.12.2016 Add reminder deleting from note
-//            Reminder.delete(mItem.getLinkId(), NotePreviewActivity.this);
+            EventControl control = EventControlImpl.getController(this, mReminder);
+            control.stop();
+            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
             binding.reminderContainer.setVisibility(View.GONE);
         });
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
@@ -321,16 +290,5 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void deleteNote() {
         RealmDb.getInstance().deleteNote(mItem);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_SD_CARD:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openImage();
-                }
-                break;
-        }
     }
 }
