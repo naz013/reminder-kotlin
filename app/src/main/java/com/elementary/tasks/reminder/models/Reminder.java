@@ -127,6 +127,8 @@ public class Reminder implements RecyclerInterface {
     public Reminder() {
         this.uuId = UUID.randomUUID().toString();
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
+        this.isActive = true;
+        this.isRemoved = false;
     }
 
     public Reminder(RealmReminder item) {

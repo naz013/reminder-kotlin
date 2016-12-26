@@ -60,7 +60,25 @@
         <activity android:name=".core.file_explorer.FileExplorerActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".groups.CreateGroupActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".places.CreatePlaceActivity" android:configChanges="keyboardHidden"/>
-        <activity android:name=".notes.ActivityCreateNote" android:configChanges="keyboardHidden"/>
+        <activity android:name=".notes.ActivityCreateNote" android:configChanges="keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.note" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.note" />
+            </intent-filter>
+        </activity>
         <activity android:name=".notes.ImagePreviewActivity" />
         <activity android:name=".notes.NotePreviewActivity" />
         <activity android:name=".google_tasks.TaskListActivity" android:configChanges="keyboardHidden"/>
