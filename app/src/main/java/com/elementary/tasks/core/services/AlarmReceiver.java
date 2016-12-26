@@ -7,12 +7,9 @@ import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -43,16 +40,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         String id = intent.getStringExtra(Constants.INTENT_ID);
         Intent service = new Intent(context, AlarmReceiver.class);
         context.startService(service);
-        Reminder item = RealmDb.getInstance().getReminder(id);
-        int type = item.getType();
-        if (Reminder.isSame(type, Reminder.BY_TIME)) {
-            if (!TimeCount.getInstance(context).isRange(item.getHours(), item.getFrom(), item.getTo())) {
-                start(context, id);
-            } else {
-                EventControl control = EventControlImpl.getController(context, item);
-                control.next();
-            }
-        } else start(context, id);
+        start(context, id);
     }
 
     private void start(Context context, String id) {
@@ -69,19 +57,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         long due = 0;
         if (item != null) {
             due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
-            /*if (due < System.currentTimeMillis()) {
-                if (type != null) {
-                    if (type.startsWith(Constants.TYPE_WEEKDAY) ||
-                            type.startsWith(Constants.TYPE_MONTHDAY)) {
-                        due = new TimeCount(context).generateDateTime(type,
-                                jRecurrence.getMonthday(), System.currentTimeMillis(), repeat,
-                                jRecurrence.getWeekdays(), jModel.getCount(), 0);
-                        jModel.setEventTime(due);
-                        db.updateReminderTime(id, due);
-                        db.updateCount(id, jModel.toJsonString());
-                    }
-                }
-            }*/
         }
         Log.d(TAG, "enableReminder: " + due);
         if (due == 0) return;

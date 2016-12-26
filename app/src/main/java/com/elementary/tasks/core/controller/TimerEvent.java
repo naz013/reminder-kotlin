@@ -66,7 +66,7 @@ class TimerEvent extends RepeatableEventManager {
         if (!isRepeatable()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval(), 0);
+            long time = TimeCount.getInstance(mContext).generateNextTimer(mReminder, false);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             super.save();
@@ -79,7 +79,7 @@ class TimerEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            long time = System.currentTimeMillis() + mReminder.getAfter();
+            long time = TimeCount.getInstance(mContext).generateNextTimer(mReminder, true);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             mReminder.setActive(true);
