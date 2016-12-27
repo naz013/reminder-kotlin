@@ -67,7 +67,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:drawableLeft="@drawable/ic_local_offe_white_24dp"
+                            android:drawableLeft="@drawable/ic_local_offer_white_24dp"
                             android:drawablePadding="8dp"
                             android:gravity="center"
                             android:text="@string/general"

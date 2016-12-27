@@ -63,7 +63,7 @@ class WeeklyEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
-        long time = TimeCount.getInstance(mContext).getNextWeekdayTime(mReminder);
+        long time = calculateTime(false);
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
         mReminder.setEventCount(mReminder.getEventCount() + 1);
         super.save();
@@ -75,7 +75,7 @@ class WeeklyEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).getNextWeekdayTime(mReminder);
+            long time = calculateTime(true);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             mReminder.setActive(true);
@@ -108,5 +108,10 @@ class WeeklyEvent extends RepeatableEventManager {
         mReminder.setDelay(delay);
         super.save();
         new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+    }
+
+    @Override
+    public long calculateTime(boolean isNew) {
+        return TimeCount.getInstance(mContext).getNextWeekdayTime(mReminder);
     }
 }

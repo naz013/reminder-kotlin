@@ -136,4 +136,9 @@ class LocationEvent extends EventManager {
     public void setDelay(int delay) {
 
     }
+
+    @Override
+    public long calculateTime(boolean isNew) {
+        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
+    }
 }

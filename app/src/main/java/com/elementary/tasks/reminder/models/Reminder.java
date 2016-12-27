@@ -131,6 +131,46 @@ public class Reminder implements RecyclerInterface {
         this.isRemoved = false;
     }
 
+    private Reminder(Reminder item) {
+        this.summary = item.getSummary();
+        this.reminderType = item.getReminderType();
+        this.groupUuId = item.getGroupUuId();
+        this.eventCount = 0;
+        this.color = item.getColor();
+        this.delay = 0;
+        this.vibrate = item.isVibrate();
+        this.repeatNotification = item.isRepeatNotification();
+        this.notifyByVoice = item.isNotifyByVoice();
+        this.awake = item.isAwake();
+        this.unlock = item.isUnlock();
+        this.exportToTasks = item.isExportToTasks();
+        this.exportToCalendar = item.isExportToCalendar();
+        this.useGlobal = item.isUseGlobal();
+        this.from = item.getFrom();
+        this.to = item.getTo();
+        this.hours = item.getHours();
+        this.fileName = item.getFileName();
+        this.melodyPath = item.getMelodyPath();
+        this.volume = item.getVolume();
+        this.dayOfMonth = item.getDayOfMonth();
+        this.repeatInterval = item.getRepeatInterval();
+        this.repeatLimit = item.getRepeatLimit();
+        this.after = item.getAfter();
+        this.weekdays = item.getWeekdays();
+        this.type = item.getType();
+        this.target = item.getTarget();
+        this.subject = item.getSubject();
+        this.attachmentFile = item.getAttachmentFile();
+        this.attachmentFiles = item.getAttachmentFiles();
+        this.auto = item.isAuto();
+        this.isActive = item.isActive();
+        this.isRemoved = item.isRemoved();
+        this.isNotificationShown = item.isNotificationShown();
+        this.isLocked = item.isLocked();
+        this.places = item.getPlaces();
+        this.shoppings = item.getShoppings();
+    }
+
     public Reminder(RealmReminder item) {
         this.summary = item.getSummary();
         this.noteId = item.getNoteId();
@@ -200,6 +240,15 @@ public class Reminder implements RecyclerInterface {
             }
         }
         return strings;
+    }
+
+    public Reminder copy() {
+        Reminder reminder = new Reminder(this);
+        reminder.setUuId(UUID.randomUUID().toString());
+        reminder.setUniqueId(new Random().nextInt(Integer.MAX_VALUE));
+        reminder.setActive(true);
+        reminder.setRemoved(false);
+        return reminder;
     }
 
     public boolean isNotificationShown() {
