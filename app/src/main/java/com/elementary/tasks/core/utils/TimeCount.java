@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -226,33 +225,41 @@ public class TimeCount {
         }
     }
 
-    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
+    public long getNextWeekdayTime(Reminder reminder) {
+        List<Integer> weekdays = reminder.getWeekdays();
         if (weekdays == null) return 0;
+        int delay = reminder.getDelay();
         Calendar cc = Calendar.getInstance();
-        cc.setTimeInMillis(startTime);
+        if (reminder.getEventTime() != null) {
+            cc.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
+        } else
         cc.set(Calendar.SECOND, 0);
         cc.set(Calendar.MILLISECOND, 0);
         if (delay > 0) {
-            return startTime + (delay * MINUTE);
-        } else {
-            while (true) {
-                int mDay = cc.get(Calendar.DAY_OF_WEEK);
-                if (weekdays.get(mDay - 1) == 1) {
-                    if (cc.getTimeInMillis() > System.currentTimeMillis()) {
-                        break;
-                    }
-                }
-                cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
-            }
-            return cc.getTimeInMillis();
+            return cc.getTimeInMillis() + (delay * MINUTE);
         }
+        while (true) {
+            int mDay = cc.get(Calendar.DAY_OF_WEEK);
+            if (weekdays.get(mDay - 1) == 1) {
+                if (cc.getTimeInMillis() > System.currentTimeMillis()) {
+                    break;
+                }
+            }
+            cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
+        }
+        return cc.getTimeInMillis();
     }
 
     public static boolean isCurrent(String eventTime) {
         return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis();
     }
 
-    public long getNextMonthDayTime(int dayOfMonth, long fromTime) {
+    public long getNextMonthDayTime(Reminder reminder) {
+        int dayOfMonth = reminder.getDayOfMonth();
+        long fromTime = System.currentTimeMillis();
+        if (reminder.getEventTime() != null) {
+            fromTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+        }
         if (dayOfMonth == 0) {
             return getLastMonthDayTime(fromTime);
         }
@@ -269,12 +276,11 @@ public class TimeCount {
         return cc.getTimeInMillis();
     }
 
-    public long getLastMonthDayTime(long fromTime) {
+    private long getLastMonthDayTime(long fromTime) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
         while (true) {
             int lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH);
-            Log.d(TAG, "getLastMonthDayTime: " + lastDay + ", m " + cc.get(Calendar.MONTH));
             cc.set(Calendar.DAY_OF_MONTH, lastDay);
             if (cc.getTimeInMillis() > System.currentTimeMillis()) {
                 break;

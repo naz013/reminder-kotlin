@@ -63,7 +63,7 @@ class MonthlyEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
-        long time = TimeCount.getInstance(mContext).getNextMonthDayTime(mReminder.getDayOfMonth(), TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()));
+        long time = TimeCount.getInstance(mContext).getNextMonthDayTime(mReminder);
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
         mReminder.setEventCount(mReminder.getEventCount() + 1);
         super.save();
@@ -75,7 +75,7 @@ class MonthlyEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).getNextMonthDayTime(mReminder.getDayOfMonth(), System.currentTimeMillis());
+            long time = TimeCount.getInstance(mContext).getNextMonthDayTime(mReminder);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             mReminder.setActive(true);
