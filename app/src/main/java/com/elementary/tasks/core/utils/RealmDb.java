@@ -97,7 +97,11 @@ public class RealmDb {
         realm.beginTransaction();
         RealmTemplate template = realm.where(RealmTemplate.class).equalTo("key", id).findFirst();
         realm.commitTransaction();
-        return new TemplateItem(template);
+        if (template != null) {
+            return new TemplateItem(template);
+        } else {
+            return null;
+        }
     }
 
     public List<TemplateItem> getAllTemplates() {
@@ -210,7 +214,11 @@ public class RealmDb {
         realm.beginTransaction();
         RealmPlace object = realm.where(RealmPlace.class).equalTo("key", id).findFirst();
         realm.commitTransaction();
-        return new PlaceItem(object);
+        if (object != null) {
+            return new PlaceItem(object);
+        } else {
+            return null;
+        }
     }
 
     public List<PlaceItem> getAllPlaces() {
@@ -246,7 +254,11 @@ public class RealmDb {
         realm.beginTransaction();
         RealmNote object = realm.where(RealmNote.class).equalTo("key", id).findFirst();
         realm.commitTransaction();
-        return new NoteItem(object);
+        if (object != null) {
+            return new NoteItem(object);
+        } else {
+            return null;
+        }
     }
 
     public void changeNoteColor(String id, int color) {
@@ -300,6 +312,15 @@ public class RealmDb {
         RealmTask object = realm.where(RealmTask.class).equalTo("taskId", item.getTaskId()).findFirst();
         object.deleteFromRealm();
         realm.commitTransaction();
+    }
+
+    public TaskItem getTaskByReminder(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmTask object = realm.where(RealmTask.class).equalTo("uuId", id).findFirst();
+        realm.commitTransaction();
+        if (object == null) return null;
+        else return new TaskItem(object);
     }
 
     public TaskItem getTask(String id) {

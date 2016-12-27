@@ -38,4 +38,6 @@ public interface EventControl {
     boolean isActive();
 
     void setDelay(int delay);
+
+    long calculateTime(boolean isNew);
 }

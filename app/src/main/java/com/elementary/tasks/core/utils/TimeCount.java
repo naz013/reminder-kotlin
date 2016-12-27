@@ -101,37 +101,15 @@ public class TimeCount {
         }
     }
 
-    public String[] getNextDateTime(long timeLong) {
-        String date;
-        String time;
-        if (timeLong == 0) {
-            date = null;
-            time = null;
-        } else {
-            Calendar cl = Calendar.getInstance();
-            cl.setTimeInMillis(timeLong);
-            Date mTime = cl.getTime();
-            date = TimeUtil.dateFormat.format(mTime);
-            time = TimeUtil.getTime(mTime, Prefs.getInstance(mContext).is24HourFormatEnabled());
-        }
-        return new String[]{date, time};
-    }
-
-    public long generateDateTime(String eventTime, long repeat, long delay) {
+    public long generateDateTime(String eventTime, long repeat) {
         if (TextUtils.isEmpty(eventTime)) {
             return 0;
         } else {
             long time = TimeUtil.getDateTimeFromGmt(eventTime);
-            return time + repeat + (delay * MINUTE);
-        }
-    }
-
-    public long generateTimerTime(String eventTime, long after) {
-        if (TextUtils.isEmpty(eventTime)) {
-            return 0;
-        } else {
-            long time = TimeUtil.getDateTimeFromGmt(eventTime);
-            return time + after;
+            if (time < System.currentTimeMillis()) {
+                time = time + repeat;
+            }
+            return time;
         }
     }
 
@@ -215,29 +193,15 @@ public class TimeCount {
         return result.toString();
     }
 
-    public boolean isNext(long due) {
-        if (due == 0) return true;
-        else {
-            Calendar cc = Calendar.getInstance();
-            cc.setTimeInMillis(System.currentTimeMillis());
-            long currentTome = cc.getTimeInMillis();
-            return due > currentTome;
-        }
-    }
-
     public long getNextWeekdayTime(Reminder reminder) {
         List<Integer> weekdays = reminder.getWeekdays();
         if (weekdays == null) return 0;
-        int delay = reminder.getDelay();
         Calendar cc = Calendar.getInstance();
         if (reminder.getEventTime() != null) {
             cc.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
         } else
         cc.set(Calendar.SECOND, 0);
         cc.set(Calendar.MILLISECOND, 0);
-        if (delay > 0) {
-            return cc.getTimeInMillis() + (delay * MINUTE);
-        }
         while (true) {
             int mDay = cc.get(Calendar.DAY_OF_WEEK);
             if (weekdays.get(mDay - 1) == 1) {
@@ -291,19 +255,5 @@ public class TimeCount {
         cc.set(Calendar.SECOND, 0);
         cc.set(Calendar.MILLISECOND, 0);
         return cc.getTimeInMillis();
-    }
-
-    public static boolean isWeeekDay(List<Integer> days) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int day = calendar.get(Calendar.DAY_OF_WEEK);
-        return days.get(day) == 1;
-    }
-
-    public static boolean isDayOfMonth(int dayOfMonth) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        return dayOfMonth == day;
     }
 }

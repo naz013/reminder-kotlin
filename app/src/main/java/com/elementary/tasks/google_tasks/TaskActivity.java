@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -28,6 +30,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -152,15 +155,13 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void showReminder() {
-        // TODO: 12.12.2016 Add reminder saving
-//        ReminderItem item = ReminderHelper.getInstance(this).getReminder(remId);
-//        if (item != null){
-//            long eventTime = item.getDateTime();
-//            calendar.setTimeInMillis(eventTime);
-//            timeField.setText(TimeUtil.getTime(calendar.getTime(),
-//                    SharedPrefs.getInstance(this).getBoolean(Prefs.IS_24_TIME_FORMAT)));
-//            isReminder = true;
-//        }
+        Reminder item = RealmDb.getInstance().getReminder(mItem.getUuId());
+        if (item != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
+            timeField.setText(TimeUtil.getTime(calendar.getTime(), Prefs.getInstance(this).is24HourFormatEnabled()));
+            isReminder = true;
+        }
     }
 
     private void initNewTask(String id) {
@@ -348,14 +349,15 @@ public class TaskActivity extends ThemedActivity {
         calendar.set(Calendar.MILLISECOND, 0);
         long due = 0;
         if (isDate) due = calendar.getTimeInMillis();
-//        long remId = 0;
-//        if (isReminder) remId = saveReminder(taskName);
+        String uuId = null;
+        if (isReminder) uuId = saveReminder(taskName);
         if (action.matches(TasksConstants.EDIT) && mItem != null) {
             String initListId = mItem.getListId();
             mItem.setListId(listId);
             mItem.setStatus(GoogleTasks.TASKS_NEED_ACTION);
             mItem.setTitle(taskName);
             mItem.setNotes(note);
+            mItem.setUuId(uuId);
             mItem.setDueDate(due);
             if (listId != null) {
                 showProgressDialog(getString(R.string.saving));
@@ -387,20 +389,28 @@ public class TaskActivity extends ThemedActivity {
             mItem.setTitle(taskName);
             mItem.setNotes(note);
             mItem.setDueDate(due);
+            mItem.setUuId(uuId);
             showProgressDialog(getString(R.string.saving));
             new TaskAsync(TaskActivity.this, TasksConstants.INSERT_TASK, null, mItem, mSimpleCallback).execute();
         }
     }
 
-    private void saveReminder(String task, String uuId) {
+    private String saveReminder(String task) {
         String categoryId = RealmDb.getInstance().getAllGroups().get(0).getUuId();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(myYear, myMonth, myDay, myHour, myMinute);
         long due = calendar.getTimeInMillis();
-//        JsonModel jsonModel = new JsonModel(task, Constants.TYPE_REMINDER, categoryId,
-//                SyncHelper.generateID(), due, due, null, null, null);
-//        return new DateType(TaskActivity.this, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
+        Reminder reminder = new Reminder();
+        reminder.setType(Reminder.BY_DATE);
+        reminder.setSummary(task);
+        reminder.setGroupUuId(categoryId);
+        reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
+        reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
+        RealmDb.getInstance().saveObject(reminder);
+        EventControl control = EventControlImpl.getController(this, reminder);
+        control.start();
+        return reminder.getUuId();
     }
 
     private void deleteDialog() {

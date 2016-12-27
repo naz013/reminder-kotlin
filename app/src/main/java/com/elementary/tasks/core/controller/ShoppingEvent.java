@@ -106,4 +106,9 @@ class ShoppingEvent extends EventManager {
         super.save();
         new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
     }
+
+    @Override
+    public long calculateTime(boolean isNew) {
+        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
+    }
 }

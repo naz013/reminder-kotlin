@@ -63,10 +63,11 @@ class DateEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
+        mReminder.setDelay(0);
         if (!isRepeatable()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval(), 0);
+            long time = calculateTime(false);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             super.save();
@@ -109,5 +110,10 @@ class DateEvent extends RepeatableEventManager {
         mReminder.setDelay(delay);
         super.save();
         new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+    }
+
+    @Override
+    public long calculateTime(boolean isNew) {
+        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
     }
 }

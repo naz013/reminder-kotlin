@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/switchWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true">
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/statusText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/statusSwitch"
+                        android:paddingLeft="35dp"
+                        android:textSize="20sp"
+                        app:font_style="roboto_regular" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
+                        android:id="@+id/statusSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="false"
+                        app:switch_font_style="roboto_medium" />
+
+                </RelativeLayout>
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_access_time_black_24dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_navigation_black_24dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_local_offer_black_24dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_format_list_bulleted_type"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_account_black"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/melody"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_music_note_black_24dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/ic_refresh"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular" />
+
+                <LinearLayout
+                    android:id="@+id/mapContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginLeft="@dimen/reminder_preview_container_padding"
+                    android:layout_marginRight="@dimen/reminder_preview_container_padding"
+                    android:layout_marginTop="@dimen/reminder_preview_margin_top"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dataContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

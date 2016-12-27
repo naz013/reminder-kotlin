@@ -66,7 +66,7 @@ class TimerEvent extends RepeatableEventManager {
         if (!isRepeatable()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).generateNextTimer(mReminder, false);
+            long time = calculateTime(false);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             super.save();
@@ -79,7 +79,7 @@ class TimerEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).generateNextTimer(mReminder, true);
+            long time = calculateTime(true);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             mReminder.setActive(true);
@@ -112,5 +112,10 @@ class TimerEvent extends RepeatableEventManager {
         mReminder.setDelay(delay);
         super.save();
         new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+    }
+
+    @Override
+    public long calculateTime(boolean isNew) {
+        return TimeCount.getInstance(mContext).generateNextTimer(mReminder, isNew);
     }
 }

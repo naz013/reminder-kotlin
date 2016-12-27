@@ -33,6 +33,7 @@ import com.elementary.tasks.databinding.FragmentRemindersBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.reminder.RecyclerListener;
+import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -219,20 +220,13 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void previewReminder(final View view, final String id, final int type){
-//        Intent intent = new Intent(mContext, ReminderPreviewActivity.class);
-//        intent.putExtra(Constants.INTENT_ID, id);
-//        if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)){
-//            intent = new Intent(mContext, ShopsPreview.class);
-//            intent.putExtra(Constants.INTENT_ID, id);
-//        }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            String transitionName = "toolbar";
-//            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                    getActivity(), view, transitionName);
-//            mContext.startActivity(intent, options.toBundle());
-//        } else {
-//            mContext.startActivity(intent);
-//        }
+        if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)){
+//            mContext.startActivity(new Intent(mContext, ShopsPreview.class)
+//                    .putExtra(Constants.EDIT_ID, id));
+        } else {
+            mContext.startActivity(new Intent(mContext, ReminderPreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, id));
+        }
     }
 
     private void loadData(String groupId) {
