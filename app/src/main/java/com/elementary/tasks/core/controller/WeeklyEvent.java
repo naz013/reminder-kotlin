@@ -63,7 +63,7 @@ class WeeklyEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
-        long time = TimeCount.getInstance(mContext).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()), mReminder.getWeekdays(), 0);
+        long time = TimeCount.getInstance(mContext).getNextWeekdayTime(mReminder);
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
         mReminder.setEventCount(mReminder.getEventCount() + 1);
         super.save();
@@ -75,7 +75,7 @@ class WeeklyEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            long time = TimeCount.getInstance(mContext).getNextWeekdayTime(System.currentTimeMillis(), mReminder.getWeekdays(), 0);
+            long time = TimeCount.getInstance(mContext).getNextWeekdayTime(mReminder);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             mReminder.setActive(true);
