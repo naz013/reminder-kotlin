@@ -424,7 +424,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
             if (mPrefs.isLedEnabled()) {
-                builder.setLights(mPrefs.getLedColor(), 500, 1000);
+                builder.setLights(getLedColor(), 500, 1000);
             }
         } else {
             appName = getString(R.string.app_name);
@@ -489,7 +489,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
             if (mPrefs.isLedEnabled()) {
-                builder.setLights(mPrefs.getLedColor(), 500, 1000);
+                builder.setLights(getLedColor(), 500, 1000);
             }
         } else {
             appName = getString(R.string.app_name);

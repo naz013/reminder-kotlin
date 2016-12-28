@@ -585,12 +585,18 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        return mReminder.getColor();
+        int ledColor = mReminder.getColor();
+        if (ledColor == -1) {
+            ledColor = mPrefs.getLedColor();
+        }
+        return ledColor;
     }
 
     @Override
     protected boolean isAwakeDevice() {
-        return mReminder.isAwake();
+        boolean is = mPrefs.isDeviceAwakeEnabled();
+        if (!isGlobal()) is = mReminder.isAwake();
+        return is;
     }
 
     @Override
@@ -600,7 +606,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isUnlockDevice() {
-        return mReminder.isUnlock();
+        boolean is = mPrefs.isDeviceUnlockEnabled();
+        if (!isGlobal()) is = mReminder.isUnlock();
+        return is;
     }
 
     @Override

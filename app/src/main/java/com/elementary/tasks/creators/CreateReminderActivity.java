@@ -82,7 +82,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private TypeFragment fragment;
 
-    private boolean useGlobal;
+    private boolean useGlobal = true;
     private boolean vibration;
     private boolean voice;
     private boolean notificationRepeat;
@@ -339,12 +339,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private DialogSelectExtraBinding getCustomizationView() {
         DialogSelectExtraBinding binding = DialogSelectExtraBinding.inflate(getLayoutInflater());
         binding.extraSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            binding.autoCheck.setEnabled(isChecked);
-            binding.repeatCheck.setEnabled(isChecked);
-            binding.unlockCheck.setEnabled(isChecked);
-            binding.vibrationCheck.setEnabled(isChecked);
-            binding.voiceCheck.setEnabled(isChecked);
-            binding.wakeCheck.setEnabled(isChecked);
+            binding.autoCheck.setEnabled(!isChecked);
+            binding.repeatCheck.setEnabled(!isChecked);
+            binding.unlockCheck.setEnabled(!isChecked);
+            binding.vibrationCheck.setEnabled(!isChecked);
+            binding.voiceCheck.setEnabled(!isChecked);
+            binding.wakeCheck.setEnabled(!isChecked);
         });
         binding.voiceCheck.setChecked(voice);
         binding.vibrationCheck.setChecked(vibration);
@@ -353,12 +353,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.autoCheck.setChecked(auto);
         binding.wakeCheck.setChecked(wake);
         binding.extraSwitch.setChecked(useGlobal);
-        binding.autoCheck.setEnabled(useGlobal);
-        binding.repeatCheck.setEnabled(useGlobal);
-        binding.unlockCheck.setEnabled(useGlobal);
-        binding.vibrationCheck.setEnabled(useGlobal);
-        binding.voiceCheck.setEnabled(useGlobal);
-        binding.wakeCheck.setEnabled(useGlobal);
+        binding.autoCheck.setEnabled(!useGlobal);
+        binding.repeatCheck.setEnabled(!useGlobal);
+        binding.unlockCheck.setEnabled(!useGlobal);
+        binding.vibrationCheck.setEnabled(!useGlobal);
+        binding.voiceCheck.setEnabled(!useGlobal);
+        binding.wakeCheck.setEnabled(!useGlobal);
         if (hasAutoExtra) {
             binding.autoCheck.setVisibility(View.VISIBLE);
         } else {
