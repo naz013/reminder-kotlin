@@ -87,6 +87,7 @@
         <activity android:name=".reminder.ReminderDialogActivity" />
         <activity android:name=".core.apps.ApplicationActivity" />
         <activity android:name=".reminder.ReminderPreviewActivity" />
+        <activity android:name=".reminder.ShoppingPreviewActivity" />
 
         <activity
             android:name=".core.SplashScreen"
