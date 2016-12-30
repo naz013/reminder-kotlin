@@ -60,11 +60,11 @@ public class TaskActivity extends ThemedActivity {
     private RoboTextView timeField;
     private RoboTextView listText;
 
-    private int myHour = 0;
-    private int myMinute = 0;
-    private int myYear = 0;
-    private int myMonth = 0;
-    private int myDay = 1;
+    private int mHour = 0;
+    private int mMinute = 0;
+    private int mYear = 0;
+    private int mMonth = 0;
+    private int mDay = 1;
     private String listId = null;
     private String action;
     private boolean isReminder = false;
@@ -103,11 +103,11 @@ public class TaskActivity extends ThemedActivity {
         setIcons();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        myHour = calendar.get(Calendar.HOUR_OF_DAY);
-        myMinute = calendar.get(Calendar.MINUTE);
-        myYear = calendar.get(Calendar.YEAR);
-        myMonth = calendar.get(Calendar.MONTH);
-        myDay = calendar.get(Calendar.DAY_OF_MONTH);
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = calendar.get(Calendar.MINUTE);
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
         Intent intent = getIntent();
         String tmp = intent.getStringExtra(Constants.INTENT_ID);
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION);
@@ -135,11 +135,11 @@ public class TaskActivity extends ThemedActivity {
             if (time != 0) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(time);
-                myHour = calendar.get(Calendar.HOUR_OF_DAY);
-                myMinute = calendar.get(Calendar.MINUTE);
-                myYear = calendar.get(Calendar.YEAR);
-                myMonth = calendar.get(Calendar.MONTH);
-                myDay = calendar.get(Calendar.DAY_OF_MONTH);
+                mHour = calendar.get(Calendar.HOUR_OF_DAY);
+                mMinute = calendar.get(Calendar.MINUTE);
+                mYear = calendar.get(Calendar.YEAR);
+                mMonth = calendar.get(Calendar.MONTH);
+                mDay = calendar.get(Calendar.DAY_OF_MONTH);
                 isDate = true;
                 dateField.setText(TimeUtil.getDate(calendar.getTime()));
             }
@@ -343,7 +343,7 @@ public class TaskActivity extends ThemedActivity {
         String note = noteField.getText().toString().trim();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(myYear, myMonth, myDay, 0, 0, 0);
+        calendar.set(mYear, mMonth, mDay, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long due = 0;
         if (isDate) due = calendar.getTimeInMillis();
@@ -397,7 +397,7 @@ public class TaskActivity extends ThemedActivity {
         String categoryId = RealmDb.getInstance().getAllGroups().get(0).getUuId();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(myYear, myMonth, myDay, myHour, myMinute);
+        calendar.set(mYear, mMonth, mDay, mHour, mMinute);
         long due = calendar.getTimeInMillis();
         Reminder reminder = new Reminder();
         reminder.setType(Reminder.BY_DATE);
@@ -481,15 +481,14 @@ public class TaskActivity extends ThemedActivity {
     }
 
     protected Dialog dateDialog() {
-        return new DatePickerDialog(this, myDateCallBack, myYear, myMonth, myDay);
+        return new DatePickerDialog(this, myDateCallBack, mYear, mMonth, mDay);
     }
 
     DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            myYear = year;
-            myMonth = monthOfYear;
-            myDay = dayOfMonth;
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            mYear = year;
+            mMonth = monthOfYear;
+            mDay = dayOfMonth;
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(year, monthOfYear, dayOfMonth);
@@ -498,14 +497,13 @@ public class TaskActivity extends ThemedActivity {
     };
 
     protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, myHour, myMinute,
-                Prefs.getInstance(this).is24HourFormatEnabled());
+        return new TimePickerDialog(this, myCallBack, mHour, mMinute, Prefs.getInstance(this).is24HourFormatEnabled());
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            myHour = hourOfDay;
-            myMinute = minute;
+            mHour = hourOfDay;
+            mMinute = minute;
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
