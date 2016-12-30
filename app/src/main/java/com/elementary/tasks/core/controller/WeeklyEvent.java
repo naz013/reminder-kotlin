@@ -34,6 +34,8 @@ class WeeklyEvent extends RepeatableEventManager {
     public boolean start() {
         if (TimeCount.isCurrent(mReminder.getEventTime())) {
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+            mReminder.setActive(true);
+            super.save();
             return true;
         }
         return false;
@@ -66,7 +68,6 @@ class WeeklyEvent extends RepeatableEventManager {
         long time = calculateTime(false);
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
         mReminder.setEventCount(mReminder.getEventCount() + 1);
-        super.save();
         return start();
     }
 
@@ -78,8 +79,6 @@ class WeeklyEvent extends RepeatableEventManager {
             long time = calculateTime(true);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
-            mReminder.setActive(true);
-            super.save();
             return start();
         }
     }

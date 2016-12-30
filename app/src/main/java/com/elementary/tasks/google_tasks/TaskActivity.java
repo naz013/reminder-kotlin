@@ -66,7 +66,6 @@ public class TaskActivity extends ThemedActivity {
     private int myMonth = 0;
     private int myDay = 1;
     private String listId = null;
-    private String taskId;
     private String action;
     private boolean isReminder = false;
     private boolean isDate = false;
@@ -126,7 +125,6 @@ public class TaskActivity extends ThemedActivity {
         mItem = RealmDb.getInstance().getTask(id);
         if (mItem != null) {
             editField.setText(mItem.getTitle());
-            taskId = mItem.getTaskId();
             listId = mItem.getListId();
             String note = mItem.getNotes();
             if (note != null) {

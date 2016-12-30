@@ -38,6 +38,8 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean start() {
+        mReminder.setActive(true);
+        super.save();
         if (!TextUtils.isEmpty(mReminder.getEventTime())) {
             new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
             return true;
@@ -55,6 +57,8 @@ class LocationEvent extends EventManager {
         new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
         RealmDb.getInstance().saveObject(mReminder.setActive(false));
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
+        mReminder.setActive(false);
+        super.save();
         stopTracking();
         return true;
     }
@@ -109,7 +113,6 @@ class LocationEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
-            mReminder.setActive(true);
             mReminder.setLocked(false);
             mReminder.setNotificationShown(false);
             super.save();

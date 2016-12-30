@@ -326,6 +326,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
         if (!control.onOff()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
+        item = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
         loadInfo();
     }
 

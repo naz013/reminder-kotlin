@@ -33,6 +33,8 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public boolean start() {
+        mReminder.setActive(true);
+        super.save();
         if (!TextUtils.isEmpty(mReminder.getEventTime()) && TimeCount.isCurrent(mReminder.getEventTime())) {
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
             return true;
@@ -44,6 +46,7 @@ class ShoppingEvent extends EventManager {
     public boolean stop() {
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
+        mReminder.setActive(false);
         super.save();
         return true;
     }
@@ -75,8 +78,6 @@ class ShoppingEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
-            mReminder.setActive(true);
-            super.save();
             return start();
         }
     }

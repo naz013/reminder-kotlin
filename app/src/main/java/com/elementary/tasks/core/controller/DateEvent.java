@@ -33,6 +33,8 @@ class DateEvent extends RepeatableEventManager {
     @Override
     public boolean start() {
         if (TimeCount.isCurrent(mReminder.getEventTime())) {
+            mReminder.setActive(true);
+            super.save();
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
             return true;
         }
@@ -70,7 +72,6 @@ class DateEvent extends RepeatableEventManager {
             long time = calculateTime(false);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
-            super.save();
             return start();
         }
     }
@@ -80,7 +81,6 @@ class DateEvent extends RepeatableEventManager {
         if (isActive()) {
             return stop();
         } else {
-            mReminder.setActive(true);
             super.save();
             return start();
         }
