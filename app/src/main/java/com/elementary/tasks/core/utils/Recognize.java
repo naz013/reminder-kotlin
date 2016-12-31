@@ -1,3 +1,26 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.backdoor.simpleai.Model;
+import com.backdoor.simpleai.RecUtils;
+import com.backdoor.simpleai.Recognizer;
+import com.backdoor.simpleai.Types;
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.SplashScreen;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.reminder.models.Reminder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,18 +36,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-
-import com.backdoor.simpleai.Model;
-import com.backdoor.simpleai.Recognizer;
-import com.elementary.tasks.core.utils.Language;
-import com.elementary.tasks.core.utils.Prefs;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Recognize {
 
@@ -49,14 +60,13 @@ public class Recognize {
             String day = prefs.getNoonTime();
             String evening = prefs.getEveningTime();
             String night = prefs.getNightTime();
-
             Model model = new Recognizer(mContext, new String[]{morning, day, evening, night}).parseResults(keyStr, language);
-//            if (model != null){
-//                Types types = model.getTypes();
-//                if (types == Types.ACTION && isWidget) {
-//                    int action = model.getActivity();
-//                    if (action == RecUtils.APP)
-//                        mContext.startActivity(new Intent(mContext, SplashScreenActivity.class));
+            if (model != null){
+                Types types = model.getTypes();
+                if (types == Types.ACTION && isWidget) {
+                    int action = model.getActivity();
+                    if (action == RecUtils.APP)
+                        mContext.startActivity(new Intent(mContext, SplashScreen.class));
 //                    else if (action == RecUtils.REPORT)
 //                        mContext.startActivity(new Intent(mContext, SendReportActivity.class));
 //                    else if (action == RecUtils.HELP)
@@ -68,13 +78,13 @@ public class Recognize {
 //                        mContext.startActivity(new Intent(mContext, AddReminderActivity.class));
 //                    else mContext.startActivity(new Intent(mContext, SelectVolume.class)
 //                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
-//                } else if (types == Types.NOTE) {
-//                    saveNote(model.getSummary());
-//                } else if (types == Types.REMINDER) {
-//                    saveReminder(model, isWidget);
-//                }
-//                break;
-//            }
+                } else if (types == Types.NOTE) {
+                    saveNote(model.getSummary());
+                } else if (types == Types.REMINDER) {
+                    saveReminder(model, isWidget);
+                }
+                break;
+            }
         }
     }
 
@@ -84,73 +94,71 @@ public class Recognize {
         String summary = model.getSummary();
         long repeat = model.getRepeat();
         int telephony = model.getAction();
-        ArrayList<Integer> weekdays = model.getWeekdays();
+        List<Integer> weekdays = model.getWeekdays();
         boolean isCalendar = model.getCalendar();
         long startTime = model.getDateTime();
-
-//        if (type.matches(Recognizer.WEEK)) {
-//            startTime = TimeCount.getNextWeekdayTime(startTime, weekdays, 0);
-//            if (number != null && !number.matches("")) {
-//                if (telephony == 1) type = Constants.TYPE_WEEKDAY_CALL;
-//                else type = Constants.TYPE_WEEKDAY_MESSAGE;
-//            }
-//        }
-//
-//        String categoryId = GroupHelper.getInstance(mContext).getDefaultUuId();
-//        JRecurrence jRecurrence = new JRecurrence(0, repeat, -1, weekdays, 0);
-//        JAction jAction = new JAction(type, number, -1, "", null);
-//
-//        SharedPrefs prefs = SharedPrefs.getInstance(mContext);
-//        boolean isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR);
-//        boolean isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK);
-//        int exp = (isCalendar && (isCal || isStock)) ? 1 : 0;
-//        JExport jExport = new JExport(0, exp, null);
-//
-//        Log.d("----RECORD_TIME-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
-//        Log.d("----EVENT_TIME-----", TimeUtil.getFullDateTime(startTime, true));
-//
-//        JsonModel jsonModel = new JsonModel(summary, type, categoryId,
-//                SyncHelper.generateID(), startTime, startTime, jRecurrence, jAction, jExport);
-//        long remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new Reminder(jsonModel));
-//        if (isCalendar || isStock) {
-//            ReminderUtils.exportToCalendar(mContext, summary, startTime, remId, isCalendar, isStock);
-//        }
-//
-//        if (widget && !isWear) {
+        int typeT = Reminder.BY_DATE;
+        if (type.matches(Recognizer.WEEK)) {
+            typeT = Reminder.BY_WEEK;
+            startTime = TimeCount.getInstance(mContext).getNextWeekdayTime(startTime, weekdays, 0);
+            if (!TextUtils.isEmpty(number)) {
+                if (telephony == 1) typeT = Reminder.BY_WEEK_CALL;
+                else typeT = Reminder.BY_WEEK_SMS;
+            }
+        }
+        String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+        Prefs prefs = Prefs.getInstance(mContext);
+        boolean isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR);
+        boolean isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK);
+        Log.d("----RECORD_TIME-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
+        Log.d("----EVENT_TIME-----", TimeUtil.getFullDateTime(startTime, true));
+        Reminder reminder = new Reminder();
+        reminder.setType(typeT);
+        reminder.setSummary(summary);
+        reminder.setGroupUuId(categoryId);
+        reminder.setWeekdays(weekdays);
+        reminder.setRepeatInterval(repeat);
+        reminder.setTarget(number);
+        reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
+        reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
+        reminder.setExportToCalendar(isCalendar && (isCal || isStock));
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.start();
+        if (widget && !isWear) {
 //            mContext.startActivity(new Intent(mContext, VoiceResult.class)
 //                    .putExtra("ids", remId)
 //                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
-//        } else {
-//            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
-//        }
+        } else {
+            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void saveNote(String note) {
         Prefs prefs = Prefs.getInstance(mContext);
-        Calendar calendar1 = Calendar.getInstance();
-        int day = calendar1.get(Calendar.DAY_OF_MONTH);
-        int month = calendar1.get(Calendar.MONTH);
-        int year = calendar1.get(Calendar.YEAR);
-        String date = day + "-" + month + "-" + year;
-//        String uuID = SyncHelper.generateID();
-//        int color = new Random().nextInt(15);
-//        if (prefs.getBoolean(Prefs.NOTE_ENCRYPT)){
-//            note = SyncHelper.encrypt(note);
-//        }
-//        NoteItem item = new NoteItem(note, uuID, date, color, 5, null, 0, 0);
-//        long remId = 0;
-//        if (prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)){
-//            String categoryId = GroupHelper.getInstance(mContext).getDefaultUuId();
-//            long after = prefs.getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
-//            long due = calendar1.getTimeInMillis() + after;
-//            JRecurrence jRecurrence = new JRecurrence(0, 0, -1, null, after);
-//            JsonModel jsonModel = new JsonModel(note, Constants.TYPE_REMINDER, categoryId,
-//                    SyncHelper.generateID(), due, due, jRecurrence, null, null);
-//            remId = new DateType(mContext, Constants.TYPE_REMINDER).save(new Reminder(jsonModel));
-//        }
-//        item.setLinkId(remId);
-//        NoteHelper.getInstance(mContext).saveNote(item);
+        int color = new Random().nextInt(15);
+        NoteItem item = new NoteItem();
+        item.setColor(color);
+        item.setSummary(note);
+        item.setDate(TimeUtil.getGmtDateTime());
+        if (prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)){
+            long after = prefs.getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
+            long due = System.currentTimeMillis() + after;
+            Reminder mReminder = new Reminder();
+            mReminder.setType(Reminder.BY_DATE);
+            mReminder.setDelay(0);
+            mReminder.setEventCount(0);
+            mReminder.setUseGlobal(true);
+            mReminder.setNoteId(item.getKey());
+            mReminder.setSummary(item.getSummary());
+            mReminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+            mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
+            mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
+            RealmDb.getInstance().saveObject(mReminder);
+            EventControl control = EventControlImpl.getController(mContext, mReminder);
+            control.start();
+        }
+        RealmDb.getInstance().saveObject(item);
 //        UpdatesHelper.getInstance(mContext).updateNotesWidget();
-//        if (!isWear) Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        if (!isWear) Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
     }
 }

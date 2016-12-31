@@ -36,6 +36,7 @@ class DateEvent extends RepeatableEventManager {
             mReminder.setActive(true);
             super.save();
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+            super.export();
             return true;
         }
         return false;

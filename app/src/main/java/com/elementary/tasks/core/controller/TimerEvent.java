@@ -33,9 +33,10 @@ class TimerEvent extends RepeatableEventManager {
     @Override
     public boolean start() {
         if (TimeCount.isCurrent(mReminder.getEventTime())) {
-            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
             mReminder.setActive(true);
             super.save();
+            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+            super.export();
             return true;
         }
         return false;

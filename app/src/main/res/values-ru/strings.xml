@@ -586,4 +586,5 @@
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
     <string name="decoding_images">Decoding images</string>
+    <string name="failed_to_sync_google_tasks">Failed to sync Google Tasks</string>
 </resources>

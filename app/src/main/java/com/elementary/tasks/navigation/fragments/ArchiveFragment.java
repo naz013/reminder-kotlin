@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -108,12 +109,17 @@ public class ArchiveFragment extends BaseNavigationFragment {
                 editReminder(item1.getUuId());
             }
             if (item == 1) {
-                RealmDb.getInstance().deleteReminder(item1.getUuId());
+                deleteReminder(item1);
                 mAdapter.removeItem(position);
                 Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
                 reloadView();
             }
         }, items);
+    }
+
+    private void deleteReminder(Reminder reminder) {
+        RealmDb.getInstance().deleteReminder(reminder.getUuId());
+        CalendarUtils.getInstance(mContext).deleteEvents(reminder.getUuId());
     }
 
     @Override
@@ -158,7 +164,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
     private void deleteAll(){
         for (Reminder reminder : mDataList) {
-            RealmDb.getInstance().deleteReminder(reminder.getUuId());
+            deleteReminder(reminder);
         }
         Toast.makeText(mContext, getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         loadData();
