@@ -40,6 +40,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
 import com.elementary.tasks.missed_calls.CallItem;
@@ -100,8 +101,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         public void onInit(int status) {
             if (status == TextToSpeech.SUCCESS) {
                 int result = tts.setLanguage(getTtsLocale());
-                if (result == TextToSpeech.LANG_MISSING_DATA ||
-                        result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e(TAG, "This Language is not supported");
                 } else {
                     if (!TextUtils.isEmpty(getSummary())) {
@@ -385,7 +385,59 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    public void showMissedReminder(CallItem callItem, String name){
+    protected boolean isBirthdayInfiniteVibration() {
+        return true;
+    }
+
+    protected boolean isBirthdayInfiniteSound() {
+        return true;
+    }
+
+    public void showNotification(int years, String name){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle(name);
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years));
+        builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        }
+        if (isScreenResumed()) {
+            Uri soundUri = getSoundUri();
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
+            } else {
+                if (mPrefs.isSoundInSilentModeEnabled()) {
+                    mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
+                }
+            }
+        }
+        if (isVibrate()){
+            long[] pattern = new long[]{150, 86400000};
+            if (isBirthdayInfiniteVibration()){
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        if (Module.isPro()){
+            builder.setLights(getLedColor(), 500, 1000);
+        }
+        boolean isWear = mPrefs.isWearEnabled();
+        if (isWear) {
+            if (Module.isJellyMR2()) {
+                builder.setOnlyAlertOnce(true);
+                builder.setGroup("GROUP");
+                builder.setGroupSummary(true);
+            }
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.notify(getId(), builder.build());
+        if (isWear) {
+            showWearNotification(name);
+        }
+    }
+
+    protected void showMissedReminder(CallItem callItem, String name){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
         builder.setAutoCancel(false);
@@ -640,11 +692,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    private Locale getTtsLocale() {
+    protected Locale getTtsLocale() {
         return new Language().getLocale(this, false);
     }
 
-    private Uri getSoundUri() {
+    protected Uri getSoundUri() {
         if (!TextUtils.isEmpty(getMelody())) {
             File sound = new File(getMelody());
             return Uri.fromFile(sound);

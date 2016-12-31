@@ -10,8 +10,6 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
 
-import java.util.Calendar;
-
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -39,8 +37,8 @@ public class BirthdayAlarm extends WakefulBroadcastReceiver {
         context.startService(service);
         cancelAlarm(context);
         setAlarm(context);
-//        Intent check = new Intent(context, CheckBirthdays.class);
-//        context.startService(check);
+        Intent check = new Intent(context, CheckBirthdays.class);
+        context.startService(check);
     }
 
     public void setAlarm(Context context){

@@ -89,6 +89,7 @@
         <activity android:name=".reminder.ReminderPreviewActivity" />
         <activity android:name=".reminder.ShoppingPreviewActivity" />
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
+        <activity android:name=".birthdays.ShowBirthdayActivity" />
 
         <activity
             android:name=".core.SplashScreen"
@@ -124,6 +125,7 @@
         </receiver>
         <service android:name=".core.services.GeolocationService" />
         <service android:name=".core.services.TasksService" />
+        <service android:name=".core.services.CheckBirthdays" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"

@@ -14,16 +14,19 @@ import android.widget.SeekBar;
 import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.async.CheckBirthdayAsync;
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.services.BirthdayAlarm;
 import com.elementary.tasks.core.services.BirthdayCheckAlarm;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,6 +47,7 @@ import java.util.Calendar;
 public class BirthdaySettingsFragment extends BaseSettingsFragment implements TimePickerDialog.OnTimeSetListener {
 
     private static final int CONTACTS_CODE = 302;
+    private static final int BIRTHDAYS_CODE = 303;
 
     private FragmentBirthdaysSettingsBinding binding;
 
@@ -69,7 +73,11 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void scanForBirthdays() {
-        new CheckBirthdayAsync(getActivity(), true).execute();
+        if (!Permissions.checkPermission(getActivity(), Permissions.READ_CONTACTS)) {
+            Permissions.requestPermission(getActivity(), BIRTHDAYS_CODE, Permissions.READ_CONTACTS);
+            return;
+        }
+        new CheckBirthdaysAsync(getActivity(), true).execute();
     }
 
     private void initContactsAutoPrefs() {
@@ -200,7 +208,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void cleanBirthdays(){
         new Thread(() -> {
             Looper.prepare();
-            // TODO: 07.11.2016 Remove all birthdays
+            List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
+            for (int i = list.size() - 1; i >= 0; i--) {
+                RealmDb.getInstance().deleteBirthday(list.remove(i));
+            }
         }).start();
     }
 
@@ -225,6 +236,11 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
             case CONTACTS_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     changeContactsPrefs();
+                }
+                break;
+            case BIRTHDAYS_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    scanForBirthdays();
                 }
                 break;
         }

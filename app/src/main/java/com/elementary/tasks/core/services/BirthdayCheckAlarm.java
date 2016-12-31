@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.elementary.tasks.core.async.CheckBirthdayAsync;
+import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.utils.Module;
 
 import java.util.Calendar;
@@ -36,7 +36,7 @@ public class BirthdayCheckAlarm extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent service = new Intent(context, BirthdayCheckAlarm.class);
         context.startService(service);
-        new CheckBirthdayAsync(context).execute();
+        new CheckBirthdaysAsync(context).execute();
     }
 
     public void setAlarm(Context context){

@@ -1,7 +1,10 @@
 package com.elementary.tasks.core.utils;
 
+import android.app.AlarmManager;
 import android.util.Log;
 
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.birthdays.RealmBirthdayItem;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.calendar.RealmCalendarEvent;
 import com.elementary.tasks.core.cloud.GoogleTasks;
@@ -24,8 +27,11 @@ import com.elementary.tasks.reminder.models.RealmReminder;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -50,6 +56,7 @@ import io.realm.Sort;
 public class RealmDb {
 
     private static final String TAG = "RealmDb";
+    private static final SimpleDateFormat birthFormat = new SimpleDateFormat("dd|MM", Locale.getDefault());
 
     private static RealmDb instance;
 
@@ -82,7 +89,94 @@ public class RealmDb {
             saveCalendarEvent((CalendarEvent) o);
         } else if (o instanceof CallItem) {
             saveMissedCall((CallItem) o);
+        } else if (o instanceof BirthdayItem) {
+            saveBirthday((BirthdayItem) o);
         }
+    }
+
+    private void saveBirthday(BirthdayItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmBirthdayItem(item));
+        realm.commitTransaction();
+    }
+
+    public void deleteBirthday(BirthdayItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmBirthdayItem callItem = realm.where(RealmBirthdayItem.class).equalTo("key", item.getKey()).findFirst();
+        callItem.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public BirthdayItem getBirthday(String key) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmBirthdayItem item = realm.where(RealmBirthdayItem.class).equalTo("key", key).findFirst();
+        realm.commitTransaction();
+        if (item != null) {
+            return new BirthdayItem(item);
+        } else {
+            return null;
+        }
+    }
+
+    public List<BirthdayItem> getAllBirthdays() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmBirthdayItem> list = realm.where(RealmBirthdayItem.class).findAll();
+        List<BirthdayItem> items = new ArrayList<>();
+        for (RealmBirthdayItem item : list) {
+            WeakReference<BirthdayItem> reference = new WeakReference<>(new BirthdayItem(item));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<BirthdayItem> getTodayBirthdays(int daysBefore) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        int mYear = cal.get(Calendar.YEAR);
+        String mDate = birthFormat.format(cal.getTime());
+        List<BirthdayItem> birthdayItemList = getAllBirthdays();
+        List<BirthdayItem> list = new ArrayList<>();
+        for (BirthdayItem item : birthdayItemList) {
+            int year = item.getShowedYear();
+            String birthValue = getBirthdayValue(item.getMonth(), item.getDay(), daysBefore);
+            if (year != 0) {
+                if (birthValue.equals(mDate) && year != mYear) {
+                    list.add(item);
+                }
+            } else {
+                if (birthValue.equals(mDate)) {
+                    list.add(item);
+                }
+            }
+        }
+        return list;
+    }
+
+    private String getBirthdayValue(int month, int day, int daysBefore) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.setTimeInMillis(calendar.getTimeInMillis() - (AlarmManager.INTERVAL_DAY * daysBefore));
+        return birthFormat.format(calendar.getTime());
+    }
+
+    public List<BirthdayItem> getBirthdays(int day, int month) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmBirthdayItem> list = realm.where(RealmBirthdayItem.class).equalTo("dayMonth", day + "|" + month).findAll();
+        List<BirthdayItem> items = new ArrayList<>();
+        for (RealmBirthdayItem item : list) {
+            WeakReference<BirthdayItem> reference = new WeakReference<>(new BirthdayItem(item));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
     }
 
     private void saveMissedCall(CallItem item) {
