@@ -1,3 +1,18 @@
+package com.elementary.tasks.core.services;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+
+import com.elementary.tasks.core.additional.FollowReminderActivity;
+import com.elementary.tasks.core.additional.QuickSmsActivity;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.missed_calls.CallItem;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,21 +28,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.services;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-
-import com.elementary.tasks.core.additional.FollowReminderActivity;
-import com.elementary.tasks.core.additional.QuickSmsActivity;
-import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 
 public class CallReceiver extends BroadcastReceiver {
 
@@ -80,25 +80,17 @@ public class CallReceiver extends BroadcastReceiver {
                         long currTime = System.currentTimeMillis();
                         if (currTime - startCallTime >= 1000 * 10) {
                             if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
-//                                DataBase db = new DataBase(mContext);
-//                                db.open();
-//                                Cursor c = db.getMissedCall(mIncomingNumber);
-//                                MissedCallAlarmReceiver alarm = new MissedCallAlarmReceiver();
-//                                if (c != null && c.moveToFirst()){
-//                                    do {
-//                                        long id = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
-//                                        db.deleteMissedCall(id);
-//                                        alarm.cancelAlarm(mContext, id);
-//                                    } while (c.moveToNext());
-//
-//                                    long id = db.addMissedCall(mIncomingNumber, currTime);
-//                                    alarm.setAlarm(mContext, id, mIncomingNumber, currTime);
-//                                } else {
-//                                    long id = db.addMissedCall(mIncomingNumber, currTime);
-//                                    alarm.setAlarm(mContext, id, mIncomingNumber, currTime);
-//                                }
-//                                if (c != null) c.close();
-//                                db.close();
+                                MissedCallReceiver alarm = new MissedCallReceiver();
+                                CallItem callItem = RealmDb.getInstance().getMissedCall(mIncomingNumber);
+                                if (callItem != null) {
+                                    alarm.cancelAlarm(mContext, callItem.getUniqueId());
+                                } else {
+                                    callItem = new CallItem();
+                                }
+                                callItem.setDateTime(currTime);
+                                callItem.setNumber(mIncomingNumber);
+                                RealmDb.getInstance().saveObject(callItem);
+                                alarm.setAlarm(mContext, callItem);
                                 break;
                             }
                         } else {

@@ -88,6 +88,7 @@
         <activity android:name=".core.apps.ApplicationActivity" />
         <activity android:name=".reminder.ReminderPreviewActivity" />
         <activity android:name=".reminder.ShoppingPreviewActivity" />
+        <activity android:name=".missed_calls.MissedCallDialogActivity" />
 
         <activity
             android:name=".core.SplashScreen"
@@ -114,6 +115,7 @@
         <receiver android:name=".core.services.RepeatNotificationReceiver" />
         <receiver android:name=".core.services.PositionDelayReceiver" />
         <receiver android:name=".core.services.DelayReceiver" />
+        <receiver android:name=".core.services.MissedCallReceiver" />
         <receiver android:name=".core.services.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
