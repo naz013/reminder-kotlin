@@ -3,8 +3,6 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.cloud.GoogleTasks;
-import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -31,27 +29,6 @@ public class ReminderUtils {
 
     public static final String DAY_CHECK = "1";
     public static final int DAY_CHECKED = 1;
-
-    public static void exportToCalendar(Context context, String summary, long startTime, long id,
-                                        boolean calendar, boolean stock){
-        if (calendar){
-            CalendarUtils.getInstance(context).addEvent(summary, startTime, id);
-        }
-        if (stock){
-            CalendarUtils.getInstance(context).addEventToStock(summary, startTime);
-        }
-    }
-
-    public static void exportToTasks(Context context, String summary, long startTime, int mId){
-        TaskItem item = new TaskItem();
-        item.setTitle(summary);
-        item.setStatus(GoogleTasks.TASKS_NEED_ACTION);
-        item.setDueDate(startTime);
-        item.setNotes(context.getString(R.string.from_reminder));
-//        long localId = TasksHelper.getInstance(context).saveTask(item);
-//        new TaskAsync(context, summary, null, null, TasksConstants.INSERT_TASK, startTime,
-//                context.getString(R.string.from_reminder), localId, null).execute();
-    }
 
     public static ArrayList<Integer> getRepeatArray(String weekdays){
         ArrayList<Integer> res = new ArrayList<>();

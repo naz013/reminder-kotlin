@@ -129,6 +129,7 @@ public class Reminder implements RecyclerInterface {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
         this.isActive = true;
         this.isRemoved = false;
+        this.useGlobal = true;
     }
 
     private Reminder(Reminder item) {

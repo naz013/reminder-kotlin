@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
@@ -67,12 +68,12 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     private TasksCallback mTasksCallback = new TasksCallback() {
         @Override
         public void onFailed() {
-
+            Toast.makeText(mContext, R.string.failed_to_sync_google_tasks, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onComplete() {
-
+            loadData();
         }
     };
 

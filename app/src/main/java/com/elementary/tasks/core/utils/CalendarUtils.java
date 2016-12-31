@@ -8,11 +8,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.calendar.CalendarEvent;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -49,22 +53,20 @@ public class CalendarUtils {
 
     /**
      * Add event to calendar.
-     * @param summary summary.
-     * @param startTime start time of event in milliseconds.
-     * @param id local reminder id.
      */
-    public void addEvent(String summary, long startTime, long id){
+    public void addEvent(Reminder reminder){
         int mId = Prefs.getInstance(mContext).getCalendarId();
         if (mId != 0){
             TimeZone tz = TimeZone.getDefault();
             String timeZone = tz.getDisplayName();
             ContentResolver cr = mContext.getContentResolver();
             ContentValues values = new ContentValues();
+            long startTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
             values.put(CalendarContract.Events.DTSTART, startTime);
             values.put(CalendarContract.Events.DTEND, startTime +
                     (60 * 1000 * Prefs.getInstance(mContext).getCalendarEventDuration()));
-            if (summary != null) {
-                values.put(CalendarContract.Events.TITLE, summary);
+            if (!TextUtils.isEmpty(reminder.getSummary())) {
+                values.put(CalendarContract.Events.TITLE, reminder.getSummary());
             }
             values.put(CalendarContract.Events.CALENDAR_ID, mId);
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone);
@@ -73,18 +75,15 @@ public class CalendarUtils {
             values.put(CalendarContract.Events.DESCRIPTION, mContext.getString(R.string.from_reminder));
             Uri l_eventUri = Uri.parse("content://com.android.calendar/events");
             Uri event;
-//            try {
-//                event = cr.insert(l_eventUri, values);
-//                DataBase db = new DataBase(mContext);
-//                db.open();
-//                if (event != null) {
-//                    long eventID = Long.parseLong(event.getLastPathSegment());
-//                    db.addCalendarEvent(event.toString(), id, eventID);
-//                }
-//                db.close();
-//            } catch (Exception e) {
-//                Toast.makeText(mContext, R.string.no_calendars_found, Toast.LENGTH_LONG).show();
-//            }
+            try {
+                event = cr.insert(l_eventUri, values);
+                if (event != null) {
+                    long eventID = Long.parseLong(event.getLastPathSegment());
+                    RealmDb.getInstance().saveObject(new CalendarEvent(reminder.getUuId(), event.toString(), eventID));
+                }
+            } catch (Exception e) {
+                Toast.makeText(mContext, R.string.no_calendars_found, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -92,22 +91,16 @@ public class CalendarUtils {
      * Delete event from calendar.
      * @param id event identifier inside application.
      */
-    public void deleteEvents(long id){
-//        DataBase db = new DataBase(mContext);
-//        db.open();
-//        Cursor c = db.getCalendarEvents(id);
-//        if (c != null && c.moveToFirst()){
-//            do {
-//                long mID = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
-//                long eventId = c.getLong(c.getColumnIndex(Constants.COLUMN_EVENT_ID));
-//                ContentResolver cr = mContext.getContentResolver();
-//                cr.delete(CalendarContract.Events.CONTENT_URI,
-//                        CalendarContract.Events._ID + "='" + eventId + "'", null);
-//                db.deleteCalendarEvent(mID);
-//            } while (c.moveToNext());
-//        }
-//        if (c != null) c.close();
-//        db.close();
+    @SuppressWarnings("MissingPermission")
+    public void deleteEvents(String id){
+        List<CalendarEvent> events = RealmDb.getInstance().getCalendarEvents(id);
+        ContentResolver cr = mContext.getContentResolver();
+        for (int i = events.size() - 1; i >= 0; i--) {
+            CalendarEvent event = events.remove(i);
+            cr.delete(CalendarContract.Events.CONTENT_URI,
+                    CalendarContract.Events._ID + "='" + event.getEventId() + "'", null);
+            RealmDb.getInstance().deleteCalendarEvent(event);
+        }
     }
 
     /**

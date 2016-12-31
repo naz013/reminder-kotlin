@@ -2,6 +2,8 @@ package com.elementary.tasks.core.utils;
 
 import android.util.Log;
 
+import com.elementary.tasks.core.calendar.CalendarEvent;
+import com.elementary.tasks.core.calendar.RealmCalendarEvent;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.google_tasks.RealmTask;
 import com.elementary.tasks.google_tasks.RealmTaskList;
@@ -74,7 +76,49 @@ public class RealmDb {
             saveGroup((GroupItem) o);
         } else if (o instanceof Reminder) {
             saveReminder((Reminder) o);
+        } else if (o instanceof CalendarEvent) {
+            saveCalendarEvent((CalendarEvent) o);
         }
+    }
+
+    private void saveCalendarEvent(CalendarEvent item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmCalendarEvent(item));
+        realm.commitTransaction();
+    }
+
+    public void deleteCalendarEvent(CalendarEvent item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmCalendarEvent template = realm.where(RealmCalendarEvent.class).equalTo("uuId", item.getUuId()).findFirst();
+        template.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public CalendarEvent getCalendarEvent(String id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmCalendarEvent template = realm.where(RealmCalendarEvent.class).equalTo("uuId", id).findFirst();
+        realm.commitTransaction();
+        if (template != null) {
+            return new CalendarEvent(template);
+        } else {
+            return null;
+        }
+    }
+
+    public List<CalendarEvent> getCalendarEvents(String reminderId) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmCalendarEvent> list = realm.where(RealmCalendarEvent.class).equalTo("reminderId", reminderId).findAll();
+        List<CalendarEvent> items = new ArrayList<>();
+        for (RealmCalendarEvent item : list) {
+            WeakReference<CalendarEvent> reference = new WeakReference<>(new CalendarEvent(item));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
     }
 
     private void saveTemplate(TemplateItem item) {

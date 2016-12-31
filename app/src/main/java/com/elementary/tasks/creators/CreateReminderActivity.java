@@ -28,6 +28,7 @@ import android.widget.Spinner;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
@@ -90,6 +91,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean unlock;
     private boolean auto;
     private boolean hasAutoExtra;
+    private boolean isExportToTasks;
     private int repeatLimit = -1;
     private int volume;
     private String groupId;
@@ -155,6 +157,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         String id = getIntent().getStringExtra(Constants.INTENT_ID);
         mReminder = RealmDb.getInstance().getReminder(id);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
+        isExportToTasks = new GoogleTasks(this).isLinked();
         initActionBar();
         initNavigation();
         editReminder();
@@ -663,7 +666,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public boolean isExportToTasks() {
-        return false;
+        return isExportToTasks;
     }
 
     @Override

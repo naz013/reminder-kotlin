@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -79,7 +80,7 @@ public class GoogleTasks {
             }
             Task result;
             String listId = item.getListId();
-            if (listId != null && !listId.matches("")) {
+            if (!TextUtils.isEmpty(listId)) {
                 result = service.tasks().insert(listId, task).execute();
             } else {
                 TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();

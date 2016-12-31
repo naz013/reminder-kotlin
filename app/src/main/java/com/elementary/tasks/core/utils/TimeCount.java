@@ -193,6 +193,27 @@ public class TimeCount {
         return result.toString();
     }
 
+    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay){
+        Calendar cc = Calendar.getInstance();
+        cc.setTimeInMillis(startTime);
+        cc.set(Calendar.SECOND, 0);
+        cc.set(Calendar.MILLISECOND, 0);
+        if (delay > 0) {
+            return startTime + (delay * MINUTE);
+        } else {
+            while (true) {
+                int mDay = cc.get(Calendar.DAY_OF_WEEK);
+                if (weekdays.get(mDay - 1) == 1) {
+                    if (cc.getTimeInMillis() > System.currentTimeMillis()) {
+                        break;
+                    }
+                }
+                cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
+            }
+            return cc.getTimeInMillis();
+        }
+    }
+
     public long getNextWeekdayTime(Reminder reminder) {
         List<Integer> weekdays = reminder.getWeekdays();
         if (weekdays == null) return 0;
