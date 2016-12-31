@@ -12,6 +12,8 @@ import com.elementary.tasks.google_tasks.TaskListItem;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.groups.RealmGroup;
+import com.elementary.tasks.missed_calls.CallItem;
+import com.elementary.tasks.missed_calls.RealmCallItem;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.NoteItem;
@@ -78,6 +80,35 @@ public class RealmDb {
             saveReminder((Reminder) o);
         } else if (o instanceof CalendarEvent) {
             saveCalendarEvent((CalendarEvent) o);
+        } else if (o instanceof CallItem) {
+            saveMissedCall((CallItem) o);
+        }
+    }
+
+    private void saveMissedCall(CallItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new RealmCallItem(item));
+        realm.commitTransaction();
+    }
+
+    public void deleteMissedCall(CallItem item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmCallItem callItem = realm.where(RealmCallItem.class).equalTo("number", item.getNumber()).findFirst();
+        callItem.deleteFromRealm();
+        realm.commitTransaction();
+    }
+
+    public CallItem getMissedCall(String number) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        RealmCallItem template = realm.where(RealmCallItem.class).equalTo("number", number).findFirst();
+        realm.commitTransaction();
+        if (template != null) {
+            return new CallItem(template);
+        } else {
+            return null;
         }
     }
 

@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -41,6 +42,7 @@ import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
+import com.elementary.tasks.missed_calls.CallItem;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
@@ -248,6 +250,14 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         handler.removeCallbacks(increaseVolume);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (MotionEvent.ACTION_DOWN == event.getAction()){
+            discardMedia();
+        }
+        return super.onTouchEvent(event);
+    }
+
     protected void setTextDrawable(FloatingActionButton button, String text){
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
@@ -372,6 +382,65 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void showMissedReminder(CallItem callItem, String name){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle(name);
+        builder.setAutoCancel(false);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        if (mPrefs.isManualRemoveEnabled()) {
+            builder.setOngoing(false);
+        } else {
+            builder.setOngoing(true);
+        }
+        String appName;
+        if (Module.isPro()) {
+            appName = getString(R.string.app_name_pro);
+            if (mPrefs.isLedEnabled()) {
+                builder.setLights(getLedColor(), 500, 1000);
+            }
+        } else {
+            appName = getString(R.string.app_name);
+        }
+        builder.setContentText(appName);
+        builder.setSmallIcon(R.drawable.ic_call_black_24dp);
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        }
+        if (!isScreenResumed()) {
+            Uri soundUri = getSoundUri();
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+            } else {
+                if (mPrefs.isSoundInSilentModeEnabled()) {
+                    mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+                }
+            }
+        }
+        if (isVibrate()) {
+            long[] pattern;
+            if (mPrefs.isInfiniteVibrateEnabled()) {
+                pattern = new long[]{150, 86400000};
+            } else {
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        boolean isWear = mPrefs.isWearEnabled();
+        if (isWear) {
+            if (Module.isJellyMR2()) {
+                builder.setOnlyAlertOnce(true);
+                builder.setGroup("GROUP");
+                builder.setGroupSummary(true);
+            }
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.notify(getId(), builder.build());
+        if (isWear) {
+            showWearNotification(appName);
         }
     }
 
