@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.async;
+package com.elementary.tasks.birthdays;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -9,8 +9,13 @@ import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.RealmDb;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,25 +35,27 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class CheckBirthdayAsync extends AsyncTask<Void, Void, Integer> {
+public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
 
     private Context mContext;
-    private final SimpleDateFormat[] birthdayFormats = {
-            new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()),
-            new SimpleDateFormat("yyyyMMdd", Locale.getDefault()),
-            new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()),
-            new SimpleDateFormat("yy.MM.dd", Locale.getDefault()),
-            new SimpleDateFormat("yy/MM/dd", Locale.getDefault()),
+    private final DateFormat[] birthdayFormats = {
+            new SimpleDateFormat("yyyy-MM-dd", Locale.US),
+            new SimpleDateFormat("yyyyMMdd", Locale.US),
+            new SimpleDateFormat("yyyy.MM.dd", Locale.US),
+            new SimpleDateFormat("yy.MM.dd", Locale.US),
+            new SimpleDateFormat("MMM dd, yyyy", Locale.US),
+            new SimpleDateFormat("yy/MM/dd", Locale.US),
     };
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private boolean showDialog = false;
     private ProgressDialog pd;
 
-    public CheckBirthdayAsync(Context context){
+    public CheckBirthdaysAsync(Context context){
         this.mContext = context;
     }
 
-    public CheckBirthdayAsync(Context context, boolean showDialog){
+    public CheckBirthdaysAsync(Context context, boolean showDialog){
         this.mContext = context;
         this.showDialog = showDialog;
         if (showDialog){
@@ -71,6 +78,7 @@ public class CheckBirthdayAsync extends AsyncTask<Void, Void, Integer> {
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
                 ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+        if (cur == null) return 0;
         while (cur.moveToNext()) {
             String contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID));
             String columns[] = {
@@ -83,38 +91,40 @@ public class CheckBirthdayAsync extends AsyncTask<Void, Void, Integer> {
             String where = ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
                     " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
                     "' and "                  + ContactsContract.Data.CONTACT_ID + " = " + contactId;
-            String[] selectionArgs = null;
             String sortOrder = ContactsContract.Contacts.DISPLAY_NAME;
-//            List<Integer> contacts = BirthdayHelper.getInstance(mContext).getContacts();
-//            Cursor birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, selectionArgs, sortOrder);
-//            if (birthdayCur != null && birthdayCur.getCount() > 0) {
-//                while (birthdayCur.moveToNext()) {
-//                    Date date;
-//                    String birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
-//                    String name = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-//                    int id = birthdayCur.getInt(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-//                    String number = com.cray.software.justreminder.contacts.Contacts.getNumber(name, mContext);
-//                    Calendar calendar = Calendar.getInstance();
-//                    for (SimpleDateFormat f : birthdayFormats) {
-//                        try {
-//                            date = f.parse(birthday);
-//                            if (date != null) {
-//                                calendar.setTime(date);
-//                                int day = calendar.get(Calendar.DAY_OF_MONTH);
-//                                int month = calendar.get(Calendar.MONTH);
-//                                if (!contacts.contains(id)) {
-//                                    i = i + 1;
-//                                    BirthdayItem item = new BirthdayItem(0, name, birthday, number, SyncHelper.generateID(), null, id, day, month);
-//                                    BirthdayHelper.getInstance(mContext).saveBirthday(item);
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//            if (birthdayCur != null) birthdayCur.close();
+            List<BirthdayItem> contacts = RealmDb.getInstance().getAllBirthdays();
+            Cursor birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder);
+            if (birthdayCur != null && birthdayCur.getCount() > 0) {
+                while (birthdayCur.moveToNext()) {
+                    String birthday = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE));
+                    String name = birthdayCur.getString(birthdayCur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    int id = birthdayCur.getInt(birthdayCur.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                    String number = Contacts.getNumber(name, mContext);
+                    Calendar calendar = Calendar.getInstance();
+                    for (DateFormat f : birthdayFormats) {
+                        Date date = null;
+                        try {
+                            date = f.parse(birthday);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (date != null) {
+                            calendar.setTime(date);
+                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+                            int month = calendar.get(Calendar.MONTH);
+                            BirthdayItem birthdayItem = new BirthdayItem(name, dateFormat.format(calendar.getTime()), number, 0, id, day, month);
+                            if (!contacts.contains(birthdayItem)) {
+                                i = i + 1;
+                            }
+                            RealmDb.getInstance().saveObject(birthdayItem);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (birthdayCur != null) {
+                birthdayCur.close();
+            }
         }
         cur.close();
         return i;
@@ -124,16 +134,17 @@ public class CheckBirthdayAsync extends AsyncTask<Void, Void, Integer> {
     protected void onPostExecute(Integer files) {
         if (showDialog) {
             try {
-                if ((pd != null) && pd.isShowing()) {
+                if (pd != null && pd.isShowing()) {
                     pd.dismiss();
                 }
             } catch (final Exception e) {
-                // Handle or log or ignore
             }
             if (files > 0) {
-                Toast.makeText(mContext, files + " " +mContext.getString(R.string.events_found), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, files + " " +mContext.getString(R.string.events_found),
+                        Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(mContext, R.string.found_nothing, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.found_nothing,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,9 +1,5 @@
 package com.elementary.tasks.navigation.settings;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-
-import com.elementary.tasks.R;
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 
 /**

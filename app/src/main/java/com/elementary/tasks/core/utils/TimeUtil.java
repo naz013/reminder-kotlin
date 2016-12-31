@@ -210,7 +210,6 @@ public class TimeUtil {
         calendar.setTimeInMillis(System.currentTimeMillis());
         if (date != null) calendar.setTime(date);
         int yearOfBirth = calendar.get(Calendar.YEAR);
-
         Calendar calendar1 = Calendar.getInstance();
         calendar1.getTimeInMillis();
         int currentYear = calendar1.get(Calendar.YEAR);
