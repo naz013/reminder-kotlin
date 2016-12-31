@@ -343,7 +343,7 @@ public class TaskActivity extends ThemedActivity {
         String note = noteField.getText().toString().trim();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(mYear, mMonth, mDay, 0, 0, 0);
+        calendar.set(mYear, mMonth, mDay, 12, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long due = 0;
         if (isDate) due = calendar.getTimeInMillis();

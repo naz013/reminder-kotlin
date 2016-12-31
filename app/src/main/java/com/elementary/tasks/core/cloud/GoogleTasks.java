@@ -43,6 +43,7 @@ import java.util.List;
 
 public class GoogleTasks {
 
+    private static final String TAG = "GoogleTasks";
     public static final String TASKS_NEED_ACTION = "needsAction";
     public static final String TASKS_COMPLETE = "completed";
 
@@ -73,7 +74,9 @@ public class GoogleTasks {
             Task task = new Task();
             task.setTitle(item.getTitle());
             if (item.getNotes() != null) task.setNotes(item.getNotes());
-            if (item.getDueDate() != 0) task.setDue(new DateTime(item.getDueDate()));
+            if (item.getDueDate() != 0) {
+                task.setDue(new DateTime(item.getDueDate()));
+            }
             Task result;
             String listId = item.getListId();
             if (listId != null && !listId.matches("")) {
