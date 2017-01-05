@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays;
 
 import android.text.TextUtils;
 
+import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
  * limitations under the License.
  */
 
-public class BirthdayItem implements RecyclerInterface {
+public class BirthdayItem implements RecyclerInterface, EventInterface {
 
     private String name;
     private String date;
@@ -162,7 +163,27 @@ public class BirthdayItem implements RecyclerInterface {
     }
 
     @Override
+    public int hashCode() {
+        return UUID.fromString(uuId).hashCode();
+    }
+
+    @Override
     public int getViewType() {
         return 2;
+    }
+
+    @Override
+    public int getYear() {
+        return 0;
+    }
+
+    @Override
+    public int getMinute() {
+        return 0;
+    }
+
+    @Override
+    public int getHour() {
+        return 0;
     }
 }
