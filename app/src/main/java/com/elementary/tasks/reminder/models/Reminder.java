@@ -1,11 +1,13 @@
 package com.elementary.tasks.reminder.models;
 
+import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -26,7 +28,7 @@ import java.util.UUID;
  * limitations under the License.
  */
 
-public class Reminder implements RecyclerInterface {
+public class Reminder implements RecyclerInterface, EventInterface {
 
     public class Kind {
         public static final int SMS = 2;
@@ -668,5 +670,45 @@ public class Reminder implements RecyclerInterface {
     @Override
     public String toString() {
         return SuperUtil.getObjectPrint(this, Reminder.class);
+    }
+
+    @Override
+    public int hashCode() {
+        return UUID.fromString(uuId).hashCode();
+    }
+
+    @Override
+    public int getYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        return calendar.get(Calendar.YEAR);
+    }
+
+    @Override
+    public int getMinute() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        return calendar.get(Calendar.MINUTE);
+    }
+
+    @Override
+    public int getHour() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    @Override
+    public int getDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    @Override
+    public int getMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        return calendar.get(Calendar.MONTH);
     }
 }
