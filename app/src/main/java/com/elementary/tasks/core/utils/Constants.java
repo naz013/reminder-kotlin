@@ -28,6 +28,7 @@ public class Constants {
     public static final String INTENT_POSITION = "item_position";
     public static final String INTENT_DELETE = "item_delete";
     public static final String INTENT_NOTIFICATION = "item_resumed";
+    public static final String INTENT_DATE = "item_date";
     public static final String SELECTED_CONTACT_NUMBER = "contact_number";
     public static final String SELECTED_TIME = "call_time";
     public static final String FILE_PICKED = "selected_file";
