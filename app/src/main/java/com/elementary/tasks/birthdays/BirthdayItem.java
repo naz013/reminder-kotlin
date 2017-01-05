@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays;
 
 import android.text.TextUtils;
 
+import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.util.Random;
@@ -23,7 +24,7 @@ import java.util.UUID;
  * limitations under the License.
  */
 
-public class BirthdayItem {
+public class BirthdayItem implements RecyclerInterface {
 
     private String name;
     private String date;
@@ -158,5 +159,10 @@ public class BirthdayItem {
     @Override
     public String toString() {
         return SuperUtil.getObjectPrint(this, BirthdayItem.class);
+    }
+
+    @Override
+    public int getViewType() {
+        return 2;
     }
 }

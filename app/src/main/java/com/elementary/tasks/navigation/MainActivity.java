@@ -24,6 +24,7 @@ import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
@@ -135,6 +136,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     public void refreshMenu() {
         setMenuVisible();
+    }
+
+    @Override
+    public void onVoiceAction() {
+        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false);
+    }
+
+    @Override
+    public void onMenuSelect(int menu) {
+        prevItem = menu;
+        mNavigationView.setCheckedItem(prevItem);
     }
 
     private void initNavigation() {

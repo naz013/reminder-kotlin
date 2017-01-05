@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            <com.elementary.tasks.core.views.roboto.RoboEditText
+                android:id="@+id/birthName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+
+                android:background="@android:color/transparent"
+                android:hint="@string/name"
+                android:textColorHint="@color/whitePrimary"
+                android:textSize="@dimen/create_text_size_secondary"
+                app:edit_font_style="roboto_light" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/dateIcon"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="15dp"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_calendar_white" />
+
+                        <com.elementary.tasks.core.views.roboto.RoboTextView
+                            android:id="@+id/birthDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="25/05/1985"
+                            android:textSize="@dimen/add_birthday_text_size_primary"
+                            app:font_style="roboto_medium" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/view_margin_top"
+                    android:layout_marginTop="@dimen/view_margin_top"
+                    android:background="?attr/colorAccent" />
+
+                <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                    android:id="@+id/contactCheck"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="@string/contact"
+                    android:textSize="@dimen/add_birthday_text_size_primary"
+                    app:check_font_style="roboto_light" />
+
+                <LinearLayout
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/view_margin_top"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/pickContact"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@android:color/transparent"
+                        android:clickable="false"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:src="@drawable/ic_perm_identity_white_24dp"
+                        android:textSize="@dimen/add_birthday_text_size_primary" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboEditText
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ems="10"
+                        android:hint="@string/phone"
+                        android:inputType="phone"
+                        android:textSize="@dimen/add_birthday_text_size_primary"
+                        app:edit_font_style="roboto_light" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

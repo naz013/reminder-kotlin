@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.elementary.tasks.R;
 
@@ -112,7 +113,7 @@ public class TimeUtil {
     }
 
     public static long getDateTimeFromGmt(String dateTime){
-        if (dateTime == null) return 0;
+        if (TextUtils.isEmpty(dateTime)) return 0;
         Calendar calendar = Calendar.getInstance();
         try {
             gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));

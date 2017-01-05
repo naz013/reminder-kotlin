@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 
 import java.util.ArrayList;
@@ -132,7 +133,7 @@ public class Reminder implements RecyclerInterface {
         this.useGlobal = true;
     }
 
-    private Reminder(Reminder item) {
+    public Reminder(Reminder item, boolean fullCopy) {
         this.summary = item.getSummary();
         this.reminderType = item.getReminderType();
         this.groupUuId = item.getGroupUuId();
@@ -170,6 +171,10 @@ public class Reminder implements RecyclerInterface {
         this.isLocked = item.isLocked();
         this.places = item.getPlaces();
         this.shoppings = item.getShoppings();
+        if (fullCopy) {
+            this.uuId = item.getUuId();
+            this.uniqueId = item.getUniqueId();
+        }
     }
 
     public Reminder(RealmReminder item) {
@@ -244,7 +249,7 @@ public class Reminder implements RecyclerInterface {
     }
 
     public Reminder copy() {
-        Reminder reminder = new Reminder(this);
+        Reminder reminder = new Reminder(this, false);
         reminder.setUuId(UUID.randomUUID().toString());
         reminder.setUniqueId(new Random().nextInt(Integer.MAX_VALUE));
         reminder.setActive(true);
@@ -648,6 +653,10 @@ public class Reminder implements RecyclerInterface {
         setUseGlobal(mInterface.getUseGlobal());
         setUnlock(mInterface.getUnlock());
         setAwake(mInterface.getWake());
+    }
+
+    public long getDateTime() {
+        return TimeUtil.getDateTimeFromGmt(eventTime);
     }
 
     @Override
