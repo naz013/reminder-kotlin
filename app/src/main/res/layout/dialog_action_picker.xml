@@ -2,20 +2,21 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="16dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
+        android:gravity="center"
         android:paddingTop="24dp">
 
         <ImageButton
             android:id="@+id/addEvent"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_alarm_white" />
 
@@ -24,7 +25,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
-            android:background="@android:color/transparent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_cake_white_24dp" />
 

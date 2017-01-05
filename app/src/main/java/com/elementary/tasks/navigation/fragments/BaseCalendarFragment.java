@@ -1,9 +1,12 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.view.LayoutInflater;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
 
@@ -46,7 +49,7 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             binding.addEvent.setImageResource(R.drawable.ic_alarm);
             binding.addBirth.setImageResource(R.drawable.ic_cake_black_24dp);
         }
-        mDialog.setView(binding.getRoot());
+        builder.setView(binding.getRoot());
         mDialog = builder.create();
         mDialog.show();
     }
@@ -56,6 +59,6 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     }
 
     private void addBirthday() {
-
+        mContext.startActivity(new Intent(mContext, AddBirthdayActivity.class).putExtra(Constants.INTENT_DATE, dateMills));
     }
 }
