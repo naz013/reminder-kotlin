@@ -46,7 +46,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
             new SimpleDateFormat("MMM dd, yyyy", Locale.US),
             new SimpleDateFormat("yy/MM/dd", Locale.US),
     };
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private boolean showDialog = false;
     private ProgressDialog pd;

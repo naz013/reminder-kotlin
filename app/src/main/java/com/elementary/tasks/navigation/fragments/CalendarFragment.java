@@ -1,13 +1,14 @@
 package com.elementary.tasks.navigation.fragments;
 
-import android.app.AlarmManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.calendar.Events;
+import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.calendar.FlextCalendarFragment;
-import com.elementary.tasks.core.calendar.FlextHelper;
 import com.elementary.tasks.core.calendar.FlextListener;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -16,9 +17,6 @@ import com.elementary.tasks.navigation.settings.images.MonthImage;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-
-import hirondelle.date4j.DateTime;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,9 +34,38 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class CalendarFragment extends BaseNavigationFragment {
+public class CalendarFragment extends BaseCalendarFragment {
 
     private static final String TAG = "CalendarFragment";
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.day_view_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_voice:
+                if (mCallback != null){
+                    mCallback.onVoiceAction();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onResume() {
@@ -47,7 +74,10 @@ public class CalendarFragment extends BaseNavigationFragment {
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.calendar));
             mCallback.onFragmentSelect(this);
-            mCallback.setClick(null);
+            mCallback.setClick(view -> {
+                dateMills = System.currentTimeMillis();
+                showActionDialog();
+            });
         }
     }
 
@@ -74,20 +104,15 @@ public class CalendarFragment extends BaseNavigationFragment {
             @Override
             public void onClickDate(Date date) {
                 Log.d(TAG, "onClick: " + date);
+                saveTime(date);
+                replaceFragment(DayViewFragment.newInstance(dateMills, 0), "");
             }
 
             @Override
             public void onLongClickDate(Date date) {
                 Log.d(TAG, "onLongClickDate: " + date);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int minute = calendar.get(Calendar.MINUTE);
-                calendar.setTime(date);
-                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                long dateMills = calendar.getTimeInMillis();
-//                startActivity(new Intent(mContext, ActionPickerDialog.class).putExtra("date", dateMills));
+                saveTime(date);
+                showActionDialog();
             }
 
             @Override
@@ -107,24 +132,33 @@ public class CalendarFragment extends BaseNavigationFragment {
         calendarView.setListener(listener);
         calendarView.refreshView();
         replaceFragment(calendarView, getString(R.string.calendar));
-        HashMap<DateTime, Events> map = new HashMap<>();
+//        HashMap<DateTime, Events> map = new HashMap<>();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        for (int i = 0; i < 100; i++) {
+//            Events events = new Events();
+//            int color = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(mContext).getReminderColor()));
+//            for (int j = 0; j < 9; j++) {
+//                events.addEvent("Event " + j, color, Events.Type.REMINDER);
+//            }
+//            map.put(FlextHelper.convertToDateTime(calendar.getTimeInMillis()), events);
+//            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
+//        }
+//        calendarView.setEvents(map);
+        boolean isReminder = Prefs.getInstance(mContext).isRemindersInCalendarEnabled();
+        boolean isFeature = Prefs.getInstance(mContext).isFutureEventEnabled();
+        calendarView.setEvents(new EventsDataProvider(mContext, isReminder, isFeature).getEvents());
+        getActivity().invalidateOptionsMenu();
+    }
+
+    private void saveTime(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        for (int i = 0; i < 100; i++) {
-            Events events = new Events();
-            int color = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(mContext).getReminderColor()));
-            for (int j = 0; j < 9; j++) {
-                events.addEvent("Event " + j, color, Events.Type.REMINDER);
-            }
-            map.put(FlextHelper.convertToDateTime(calendar.getTimeInMillis()), events);
-            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
-        }
-        calendarView.setEvents(map);
-//        boolean isReminder = SharedPrefs.getInstance(mContext).getBoolean(Prefs.REMINDERS_IN_CALENDAR);
-//        boolean isFeature = SharedPrefs.getInstance(mContext).getBoolean(Prefs.CALENDAR_FEATURE_TASKS);
-//        calendarView.setEvents(new ReminderDataProvider(mContext, isReminder, isFeature).getEvents());
-//        replace(calendarView, StartActivity.ACTION_CALENDAR);
-//        SharedPrefs.getInstance(mContext).putInt(Prefs.LAST_CALENDAR_VIEW, 1);
-        getActivity().invalidateOptionsMenu();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        dateMills = calendar.getTimeInMillis();
     }
 }

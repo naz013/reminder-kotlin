@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.elementary.tasks.birthdays.BirthdayItem" />
+
+        <variable
+            name="click"
+            type="com.elementary.tasks.core.interfaces.ClickListener" />
+
+        <variable
+            name="color"
+            type="java.lang.Integer" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/itemCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:clipChildren="false"
+        android:foreground="?attr/selectableItemBackground"
+        android:onClick="@{click.onClick}"
+        app:cardCornerRadius="3dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:focusable="false">
+
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/eventColor"
+                android:layout_width="10dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@{color}" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/eventColor"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/eventType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/birthday"
+                        app:font_style="roboto_light" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/eventDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:lines="2"
+                        app:font_style="roboto_light"
+                        app:loadBirthday='@{item.date}' />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/eventText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{item.name}"
+                        app:font_style="roboto_medium" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/eventNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:lines="2"
+                        android:text="@{item.number}"
+                        app:font_style="roboto_light" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</layout>

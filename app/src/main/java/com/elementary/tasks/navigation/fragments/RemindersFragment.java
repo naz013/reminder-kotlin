@@ -27,11 +27,9 @@ import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentRemindersBinding;
 import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
@@ -181,7 +179,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                 new SyncTask(mContext, this, false).execute();
                 break;
             case R.id.action_voice:
-                SuperUtil.startVoiceRecognitionActivity(getActivity(), MainActivity.VOICE_RECOGNITION_REQUEST_CODE, false);
+                if (mCallback != null) {
+                    mCallback.onVoiceAction();
+                }
                 break;
             case R.id.action_filter:
                 filterDialog();

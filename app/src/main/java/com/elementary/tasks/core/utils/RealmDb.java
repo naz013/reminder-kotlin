@@ -302,7 +302,6 @@ public class RealmDb {
     }
 
     public GroupItem getGroup(String id) {
-        Log.d(TAG, "getGroup: " + id);
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmGroup object = realm.where(RealmGroup.class).equalTo("uuId", id).findFirst();

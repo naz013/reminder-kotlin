@@ -31,4 +31,8 @@ public interface FragmentCallback {
     void onThemeChange(int primary, int primaryDark, int accent);
 
     void refreshMenu();
+
+    void onVoiceAction();
+
+    void onMenuSelect(int menu);
 }
