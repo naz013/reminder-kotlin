@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.event_tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -22,14 +23,12 @@ import java.util.TreeMap;
 class Year implements TreeInterface, MonthInterface {
 
     private int year;
+    private int maxNodes = 11;
     private TreeMap<Integer, Month> nodes = new TreeMap<>();
-    private int count = 0;
+    private int count;
 
     public Year(int year) {
         this.year = year;
-        for (int i = 0; i < 12; i++) {
-            nodes.put(i, new Month(i, this));
-        }
     }
 
     public int getYear() {
@@ -37,10 +36,17 @@ class Year implements TreeInterface, MonthInterface {
     }
 
     @Override
-    public void addEvent(EventInterface eventInterface) {
+    public void addNode(Object object) {
+        EventInterface eventInterface = (EventInterface) object;
         int month = eventInterface.getMonth();
-        Month month1 = nodes.get(month);
-        month1.addEvent(eventInterface);
+        if (month < 0 || month > maxNodes) return;
+        if (nodes.containsKey(month)) {
+            nodes.get(month).addNode(object);
+        } else {
+            Month month1 = new Month(month, this);
+            month1.addNode(object);
+            nodes.put(month, month1);
+        }
         count++;
     }
 
@@ -50,8 +56,24 @@ class Year implements TreeInterface, MonthInterface {
     }
 
     @Override
-    public List<EventInterface> getEvents(int y, int m, int d, int h, int min) {
-        return nodes.get(m).getEvents(y, m, d, h, min);
+    public List<Object> getNodes(int... params) {
+        if (params.length == 1) return getAll();
+        int m = params[1];
+        if (m == -1) {
+            return getAll();
+        }
+        if (nodes.containsKey(m)) {
+            return nodes.get(m).getNodes(params);
+        } else return null;
+    }
+
+    @Override
+    public List<Object> getAll() {
+        List<Object> list = new ArrayList<>();
+        for (Month month : nodes.values()) {
+            list.addAll(month.getAll());
+        }
+        return list;
     }
 
     @Override

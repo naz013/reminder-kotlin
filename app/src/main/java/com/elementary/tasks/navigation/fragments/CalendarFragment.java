@@ -139,7 +139,7 @@ public class CalendarFragment extends BaseCalendarFragment {
 //            Events events = new Events();
 //            int color = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(mContext).getReminderColor()));
 //            for (int j = 0; j < 9; j++) {
-//                events.addEvent("Event " + j, color, Events.Type.REMINDER);
+//                events.addNode("Event " + j, color, Events.Type.REMINDER);
 //            }
 //            map.put(FlextHelper.convertToDateTime(calendar.getTimeInMillis()), events);
 //            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);

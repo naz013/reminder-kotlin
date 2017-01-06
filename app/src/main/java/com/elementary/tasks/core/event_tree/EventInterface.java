@@ -16,7 +16,7 @@ package com.elementary.tasks.core.event_tree;
  * limitations under the License.
  */
 
-public interface EventInterface {
+public interface EventInterface extends Comparable {
     int getYear();
     int getMonth();
     int getDay();

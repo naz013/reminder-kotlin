@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.event_tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -22,6 +23,7 @@ import java.util.TreeMap;
 class Hour implements TreeInterface, MinuteInterface {
 
     private int hour;
+    private int maxNodes = 59;
     private Day day;
     private TreeMap<Integer, Minute> nodes = new TreeMap<>();
     private int count = 0;
@@ -29,9 +31,6 @@ class Hour implements TreeInterface, MinuteInterface {
     Hour(int hour, Day day) {
         this.day = day;
         this.hour = hour;
-        for (int i = 0; i < 60; i++) {
-            nodes.put(i, new Minute(i, this));
-        }
     }
 
     public Day getDay() {
@@ -43,8 +42,17 @@ class Hour implements TreeInterface, MinuteInterface {
     }
 
     @Override
-    public void addEvent(EventInterface eventInterface) {
-        nodes.get(eventInterface.getMinute()).addEvent(eventInterface);
+    public void addNode(Object object) {
+        EventInterface eventInterface = (EventInterface) object;
+        int min = eventInterface.getMinute();
+        if (min < 0 || min > maxNodes) return;
+        if (nodes.containsKey(min)) {
+            nodes.get(min).addNode(object);
+        } else {
+            Minute minute = new Minute(min, this);
+            minute.addNode(object);
+            nodes.put(min, minute);
+        }
         count++;
     }
 
@@ -54,8 +62,22 @@ class Hour implements TreeInterface, MinuteInterface {
     }
 
     @Override
-    public List<EventInterface> getEvents(int y, int m, int d, int h, int min) {
-        return nodes.get(min).getEvents(y, m, d, h, min);
+    public List<Object> getNodes(int... params) {
+        if (params.length == 4) return getAll();
+        int min = params[4];
+        if (min == -1) return getAll();
+        if (nodes.containsKey(min)) {
+            return nodes.get(min).getNodes(params);
+        } else return null;
+    }
+
+    @Override
+    public List<Object> getAll() {
+        List<Object> list = new ArrayList<>();
+        for (Minute minute : nodes.values()) {
+            list.addAll(minute.getAll());
+        }
+        return list;
     }
 
     @Override

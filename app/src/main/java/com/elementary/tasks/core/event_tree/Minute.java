@@ -24,7 +24,7 @@ class Minute implements TreeInterface {
 
     private int minute;
     private Hour hour;
-    private TreeSet<EventInterface> nodes = new TreeSet<>();
+    private TreeSet<Object> nodes = new TreeSet<>();
 
     public Minute(int minute, Hour hour) {
         this.minute = minute;
@@ -40,8 +40,8 @@ class Minute implements TreeInterface {
     }
 
     @Override
-    public void addEvent(EventInterface eventInterface) {
-        nodes.add(eventInterface);
+    public void addNode(Object object) {
+        nodes.add(object);
     }
 
     @Override
@@ -50,9 +50,14 @@ class Minute implements TreeInterface {
     }
 
     @Override
-    public List<EventInterface> getEvents(int y, int m, int d, int h, int min) {
-        List<EventInterface> list = new ArrayList<>();
-        for (EventInterface node : nodes) {
+    public List<Object> getNodes(int... params) {
+        return getAll();
+    }
+
+    @Override
+    public List<Object> getAll() {
+        List<Object> list = new ArrayList<>();
+        for (Object node : nodes) {
             list.add(node);
         }
         return list;
@@ -60,8 +65,12 @@ class Minute implements TreeInterface {
 
     @Override
     public void remove(String uuId) {
-        for (EventInterface eventInterface : nodes) {
-            nodes.remove(eventInterface);
+        for (Object o : nodes) {
+            EventInterface eventInterface = (EventInterface) o;
+            if (eventInterface.getUuId().equals(uuId)) {
+                nodes.remove(o);
+                break;
+            }
         }
     }
 }

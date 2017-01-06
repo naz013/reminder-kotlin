@@ -46,21 +46,29 @@ public class TreeManager {
             calendar.set(Calendar.HOUR_OF_DAY, 15);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.YEAR, 2017);
-            root.addEvent(new BirthdayItem(name, date, null, 0, 0, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)));
+            root.addNode(new BirthdayItem(name, date, null, 0, 0, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)));
         }
     }
 
-    public EventInterface getItem(int y, int m, int d, int h, int min) {
-        List<EventInterface> list = root.getEvents(y, m, d, h, min);
+    public Object getItem(int y, int m, int d, int h, int min) {
+        List<Object> list = root.getNodes(y, m, d, h, min);
         if (list != null && list.size() > 0) {
             return list.get(0);
         } else return null;
     }
 
+    public List<Object> getItems(int... params) {
+        return root.getNodes(params);
+    }
+
+    public List<Object> getAll() {
+        return root.getAll();
+    }
+
     public void addReminder(String eventTime, String summary) {
         Reminder reminder = new Reminder();
         reminder.setEventTime(eventTime).setSummary(summary);
-        root.addEvent(reminder);
+        root.addNode(reminder);
     }
 
     public int getCount() {
