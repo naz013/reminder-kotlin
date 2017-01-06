@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
+import android.support.annotation.NonNull;
+
 import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -710,5 +712,11 @@ public class Reminder implements RecyclerInterface, EventInterface {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
         return calendar.get(Calendar.MONTH);
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        EventInterface eventInterface = (EventInterface) o;
+        return eventInterface.hashCode() - hashCode();
     }
 }

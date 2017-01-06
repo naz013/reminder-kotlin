@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.event_tree;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TreeMap;
@@ -23,6 +24,7 @@ import java.util.TreeMap;
 class Month implements TreeInterface, DayInterface {
 
     private int month;
+    private int maxNodes;
     private Year year;
     private TreeMap<Integer, Day> nodes = new TreeMap<>();
     private int count = 0;
@@ -32,10 +34,7 @@ class Month implements TreeInterface, DayInterface {
         this.month = month;
         Calendar calendar = Calendar.getInstance();
         calendar.set(year.getYear(), month, 1);
-        int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        for (int i = 1; i <= days; i++) {
-            nodes.put(i, new Day(i, this));
-        }
+        maxNodes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
     public int getMonth() {
@@ -47,8 +46,17 @@ class Month implements TreeInterface, DayInterface {
     }
 
     @Override
-    public void addEvent(EventInterface eventInterface) {
-        nodes.get(eventInterface.getDay()).addEvent(eventInterface);
+    public void addNode(Object object) {
+        EventInterface eventInterface = (EventInterface) object;
+        int day = eventInterface.getDay();
+        if (day < 1 || day > maxNodes) return;
+        if (nodes.containsKey(day)) {
+            nodes.get(day).addNode(object);
+        } else {
+            Day day1 = new Day(day, this);
+            day1.addNode(object);
+            nodes.put(day, day1);
+        }
         count++;
     }
 
@@ -58,9 +66,23 @@ class Month implements TreeInterface, DayInterface {
     }
 
     @Override
-    public List<EventInterface> getEvents(int y, int m, int d, int h, int min) {
-        if (d == 0) return null;
-        else return nodes.get(d).getEvents(y, m, d, h, min);
+    public List<Object> getNodes(int... params) {
+        if (params.length == 2) return getAll();
+        int d = params[2];
+        if (d == -1) return getAll();
+        else if (d == 0) return null;
+        if (nodes.containsKey(d)) {
+            return nodes.get(d).getNodes(params);
+        } else return null;
+    }
+
+    @Override
+    public List<Object> getAll() {
+        List<Object> list = new ArrayList<>();
+        for (Day day : nodes.values()) {
+            list.addAll(day.getAll());
+        }
+        return list;
     }
 
     @Override

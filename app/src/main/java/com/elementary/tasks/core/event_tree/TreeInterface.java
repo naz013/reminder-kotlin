@@ -19,8 +19,44 @@ import java.util.List;
  */
 
 public interface TreeInterface {
-    void addEvent(EventInterface eventInterface);
+
+    /**
+     * Add new node to tree.
+     *
+     * @param object node object;
+     */
+    void addNode(Object object);
+
+    /**
+     * Get size of current node.
+     *
+     * @return number of nodes.
+     */
     int size();
-    List<EventInterface> getEvents(int y, int m, int d, int h, int min);
+
+    /**
+     * Find nodes by parameters.
+     *
+     * @param params [0] year (if (-1) - get all nodes from tree);
+     * @param params [1] month (if (-1) - get all nodes from selected year);
+     * @param params [2] day (if (-1) - get all nodes from selected month);
+     * @param params [3] hour (if (-1) - get all nodes from selected day);
+     * @param params [4] minute (if (-1) - get all nodes from selected hour);
+     * @return list of nodes.
+     */
+    List<Object> getNodes(int... params);
+
+    /**
+     * Find all nodes in a tree.
+     *
+     * @return list of nodes.
+     */
+    List<Object> getAll();
+
+    /**
+     * Remove all nodes from with selected key.
+     *
+     * @param uuId key of nodes.
+     */
     void remove(String uuId);
 }

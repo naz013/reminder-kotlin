@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.event_tree;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -22,16 +24,27 @@ import java.util.TreeMap;
 public class EventRoot implements TreeInterface, YearInterface {
 
     private TreeMap<Integer, Year> nodes = new TreeMap<>();
-    private int count = 0;
+    private int count;
+
+    public EventRoot() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int year = calendar.get(Calendar.YEAR);
+        if (!nodes.containsKey(year)) {
+            Year y = new Year(year);
+            nodes.put(year, y);
+        }
+    }
 
     @Override
-    public void addEvent(EventInterface eventInterface) {
+    public void addNode(Object object) {
+        EventInterface eventInterface = (EventInterface) object;
         int year = eventInterface.getYear();
         if (nodes.containsKey(year)) {
-            nodes.get(year).addEvent(eventInterface);
+            nodes.get(year).addNode(eventInterface);
         } else {
             Year y = new Year(year);
-            y.addEvent(eventInterface);
+            y.addNode(eventInterface);
             nodes.put(year, y);
         }
         count++;
@@ -43,10 +56,24 @@ public class EventRoot implements TreeInterface, YearInterface {
     }
 
     @Override
-    public List<EventInterface> getEvents(int y, int m, int d, int h, int min) {
+    public List<Object> getNodes(int... params) {
+        if (params.length == 0) return getAll();
+        int y = params[0];
+        if (y == -1) {
+            return getAll();
+        }
         if (nodes.containsKey(y)) {
-            return nodes.get(y).getEvents(y, m, d, h, min);
+            return nodes.get(y).getNodes(params);
         } else return null;
+    }
+
+    @Override
+    public List<Object> getAll() {
+        List<Object> list = new ArrayList<>();
+        for (Year year : nodes.values()) {
+            list.addAll(year.getAll());
+        }
+        return list;
     }
 
     @Override
