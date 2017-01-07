@@ -1,8 +1,9 @@
 package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Map;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -24,7 +25,7 @@ class Minute implements TreeInterface {
 
     private int minute;
     private Hour hour;
-    private TreeSet<Object> nodes = new TreeSet<>();
+    private Map<String, Object> nodes = new HashMap<>();
 
     public Minute(int minute, Hour hour) {
         this.minute = minute;
@@ -41,7 +42,8 @@ class Minute implements TreeInterface {
 
     @Override
     public void addNode(Object object) {
-        nodes.add(object);
+        EventInterface eventInterface = (EventInterface) object;
+        nodes.put(eventInterface.getUuId(), object);
     }
 
     @Override
@@ -57,20 +59,14 @@ class Minute implements TreeInterface {
     @Override
     public List<Object> getAll() {
         List<Object> list = new ArrayList<>();
-        for (Object node : nodes) {
-            list.add(node);
-        }
+        list.addAll(nodes.values());
         return list;
     }
 
     @Override
     public void remove(String uuId) {
-        for (Object o : nodes) {
-            EventInterface eventInterface = (EventInterface) o;
-            if (eventInterface.getUuId().equals(uuId)) {
-                nodes.remove(o);
-                break;
-            }
+        if (nodes.containsKey(uuId)) {
+            nodes.remove(uuId);
         }
     }
 }
