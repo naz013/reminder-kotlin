@@ -78,6 +78,7 @@ public class EventRoot implements TreeInterface, YearInterface {
 
     @Override
     public void remove(String uuId) {
+        if (uuId == null) return;
         for (Year year : nodes.values()) {
             year.remove(uuId);
         }
