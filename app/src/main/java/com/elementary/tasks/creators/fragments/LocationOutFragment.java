@@ -114,7 +114,8 @@ public class LocationOutFragment extends RadiusTypeFragment {
         @Override
         public void placeChanged(LatLng place, String address) {
             lastPos = place;
-            binding.mapLocation.setText(SuperUtil.getAddress(place.latitude, place.longitude));
+            String location = SuperUtil.getAddress(place.latitude, place.longitude);
+            binding.currentLocation.setText(location);
         }
 
         @Override

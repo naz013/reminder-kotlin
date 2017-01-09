@@ -2,6 +2,8 @@ package com.elementary.tasks.places;
 
 import com.elementary.tasks.core.utils.Module;
 
+import java.util.Locale;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -17,14 +19,17 @@ import com.elementary.tasks.core.utils.Module;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class RequestBuilder {
+
+    private static final String TAG = "RequestBuilder";
 
     public static String getNearby(double lat, double lng, String name) {
         String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
         if (Module.isPro()) key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
         key = "&key=" + key;
         String req = name.replaceAll("\\s+", "+");
-        String params = "location=" + lat + "," + lng + req + "&radius=50000&name=" + name;
+        String params = "location=" + lat + "," + lng + "&radius=50000&name=" + req + getLanguage();
         return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + params + key;
     }
 
@@ -33,7 +38,12 @@ public class RequestBuilder {
         if (Module.isPro()) key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
         key = "&key=" + key;
         String req = name.replaceAll("\\s+", "+");
-        String params = "query=" + req;
+        String params = "query=" + req + getLanguage();
         return "https://maps.googleapis.com/maps/api/place/textsearch/json?" + params + key;
+    }
+
+    private static String getLanguage() {
+        Locale locale = Locale.getDefault();
+        return "&language=" + locale.getLanguage();
     }
 }

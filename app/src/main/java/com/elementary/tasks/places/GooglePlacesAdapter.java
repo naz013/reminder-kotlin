@@ -40,7 +40,6 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
     public GooglePlacesAdapter(final Context context, List<GooglePlaceItem> array) {
         this.array = array;
         isDark = ThemeUtil.getInstance(context).isDark();
-        setHasStableIds(true);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,8 +50,8 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
             super(v);
             binding = DataBindingUtil.bind(v);
             v.setOnClickListener(view -> {
-                if (getAdapterPosition() == getLast() && getItemCount() > 1) {
-                    for (GooglePlaceItem item : array) item.setSelected(true);
+                if (getItemCount() > 1 && getAdapterPosition() == getLast()) {
+                    for (GooglePlaceItem item : array) item.setSelected(!item.isSelected());
                     notifyDataSetChanged();
                 } else {
                     if (mEventListener != null) {
@@ -82,10 +81,13 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
         GooglePlaceItem item = array.get(position);
         holder.binding.setItem(item);
         holder.binding.placeIcon.setImageResource(getIcon(item.getTypes()));
-        if (position == getLast() && getItemCount() > 1) {
+        if (getItemCount() > 1 && position == getLast()) {
             holder.binding.placeCheck.setVisibility(View.GONE);
             holder.binding.placeIcon.setVisibility(View.GONE);
             holder.binding.text2.setText("");
+        } else {
+            holder.binding.placeCheck.setVisibility(View.VISIBLE);
+            holder.binding.placeIcon.setVisibility(View.VISIBLE);
         }
     }
 
