@@ -127,7 +127,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             binding.type.setText(ReminderUtils.getTypeString(this, item.getType()));
             long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
             if (due > 0) {
-                binding.time.setText(TimeUtil.getFullDateTime(due, Prefs.getInstance(this).is24HourFormatEnabled()));
+                binding.time.setText(TimeUtil.getFullDateTime(due, Prefs.getInstance(this).is24HourFormatEnabled(), false));
                 String repeatStr = IntervalUtil.getInterval(this, item.getRepeatInterval());
                 if (Reminder.isBase(item.getType(), Reminder.BY_WEEK)) {
                     repeatStr = ReminderUtils.getRepeatString(this, item.getWeekdays());

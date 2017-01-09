@@ -125,11 +125,22 @@ public class TimeUtil {
         return calendar.getTimeInMillis();
     }
 
-    public static String getFullDateTime(long date, boolean is24){
+    public static String getFullDateTime(long date, boolean is24, boolean isLog) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        if (is24) return fullDateTime24.format(calendar.getTime());
-        else return fullDateTime12.format(calendar.getTime());
+        if (isLog) {
+            return timeStampFormat.format(calendar.getTime());
+        } else {
+            if (is24) return fullDateTime24.format(calendar.getTime());
+            else return fullDateTime12.format(calendar.getTime());
+        }
+    }
+
+    public static String getFullDateTime(String date) {
+        if (TextUtils.isEmpty(date)) return "No event time";
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getDateTimeFromGmt(date));
+        return timeStampFormat.format(calendar.getTime());
     }
 
     public static String getRealDateTime(String gmt, int delay, boolean is24) {

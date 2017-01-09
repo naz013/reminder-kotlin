@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
@@ -25,6 +26,8 @@ import com.elementary.tasks.reminder.models.Reminder;
  */
 
 class TimerEvent extends RepeatableEventManager {
+
+    private static final String TAG = "TimerEvent";
 
     TimerEvent(Reminder reminder, Context context) {
         super(reminder, context);
@@ -70,6 +73,11 @@ class TimerEvent extends RepeatableEventManager {
             return stop();
         } else {
             long time = calculateTime(false);
+            while (time < System.currentTimeMillis()) {
+                mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
+                time = calculateTime(false);
+            }
+            Log.d(TAG, "next: " + TimeUtil.getFullDateTime(time, true, true));
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             return start();
@@ -82,6 +90,10 @@ class TimerEvent extends RepeatableEventManager {
             return stop();
         } else {
             long time = calculateTime(true);
+            while (time < System.currentTimeMillis()) {
+                mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
+                time = calculateTime(true);
+            }
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(0);
             return start();

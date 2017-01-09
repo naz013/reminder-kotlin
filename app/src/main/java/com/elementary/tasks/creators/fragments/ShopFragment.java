@@ -90,12 +90,11 @@ public class ShopFragment extends TypeFragment {
             long startTime = binding.dateViewShopping.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-            Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
+            Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         } else {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
         RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         if (control.start()) {

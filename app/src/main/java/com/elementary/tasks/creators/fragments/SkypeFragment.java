@@ -74,8 +74,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        Log.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
-        Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true));
+        Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;

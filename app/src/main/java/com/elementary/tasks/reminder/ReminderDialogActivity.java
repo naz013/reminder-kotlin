@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -65,6 +67,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReminderDialogActivity extends BaseNotificationActivity {
 
+    private static final String TAG = "ReminderDialogActivity";
     private static final int CALL_PERM = 612;
     private static final int SMS_PERM = 613;
     private ActivityReminderDialogBinding binding;
@@ -87,6 +90,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
         mControl = EventControlImpl.getController(this, mReminder);
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(mReminder.getEventTime()));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
         binding.card.setCardBackgroundColor(themeUtil.getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);

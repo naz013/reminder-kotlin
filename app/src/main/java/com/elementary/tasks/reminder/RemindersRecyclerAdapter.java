@@ -399,7 +399,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
         long due = TimeUtil.getDateTimeFromGmt(eventTime);
         if (due > 0){
-            textView.setText(TimeUtil.getFullDateTime(due, is24));
+            textView.setText(TimeUtil.getFullDateTime(due, is24, false));
             textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);

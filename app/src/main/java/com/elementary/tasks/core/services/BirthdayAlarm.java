@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -28,11 +29,14 @@ import com.elementary.tasks.core.utils.TimeUtil;
 
 public class BirthdayAlarm extends WakefulBroadcastReceiver {
 
+    private static final String TAG = "BirthdayAlarm";
+
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive: " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         Intent service = new Intent(context, BirthdayAlarm.class);
         context.startService(service);
         cancelAlarm(context);
