@@ -333,10 +333,14 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
                 LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
                 animate(pos);
             } else {
-                location = mMap.getMyLocation();
-                if (location != null) {
-                    LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-                    animate(pos);
+                try {
+                    location = mMap.getMyLocation();
+                    if (location != null) {
+                        LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+                        animate(pos);
+                    }
+                } catch (IllegalStateException e) {
+
                 }
             }
         }

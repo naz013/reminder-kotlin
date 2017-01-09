@@ -50,6 +50,7 @@ public class PlaceSearchTask extends AsyncTask<Void, Void, List<GooglePlaceItem>
     protected List<GooglePlaceItem> doInBackground(Void... place) {
         String result = "";
         String query = RequestBuilder.getSearch(request);
+        Log.d(TAG, "doInBackground: " + lat + ", " + lng);
         if (lat != 0.0 && lng != 0.0) {
             query = RequestBuilder.getNearby(lat, lng, request);
         }
