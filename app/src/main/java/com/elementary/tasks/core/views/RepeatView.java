@@ -176,7 +176,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             if (showPrediction) predictionView.setVisibility(VISIBLE);
         }
         if (showPrediction) {
-            eventView.setText(TimeUtil.getFullDateTime(calendar.getTimeInMillis() + progress * mMultiplier, is24));
+            eventView.setText(TimeUtil.getFullDateTime(calendar.getTimeInMillis() + progress * mMultiplier, is24, false));
         }
     }
 

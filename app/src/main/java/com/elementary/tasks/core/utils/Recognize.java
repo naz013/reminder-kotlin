@@ -110,8 +110,7 @@ public class Recognize {
         Prefs prefs = Prefs.getInstance(mContext);
         boolean isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR);
         boolean isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK);
-        Log.d("----RECORD_TIME-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
-        Log.d("----EVENT_TIME-----", TimeUtil.getFullDateTime(startTime, true));
+        Log.d("----EVENT_TIME-----", TimeUtil.getFullDateTime(startTime, true, true));
         Reminder reminder = new Reminder();
         reminder.setType(typeT);
         reminder.setSummary(summary);

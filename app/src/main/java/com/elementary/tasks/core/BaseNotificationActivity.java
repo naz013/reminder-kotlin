@@ -219,6 +219,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         mSound = new Sound(this);
         mPrefs = Prefs.getInstance(this);
         if (mPrefs.isWearEnabled()) {

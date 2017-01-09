@@ -219,7 +219,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             calendar.set(Calendar.MINUTE, minute);
             time = calendar.getTimeInMillis();
         }
-        textView.setText(SuperUtil.appendString(TimeUtil.getFullDateTime(time, is24),
+        textView.setText(SuperUtil.appendString(TimeUtil.getFullDateTime(time, is24, false),
                 "\n", TimeUtil.getAgeFormatted(textView.getContext(), year)));
     }
 }

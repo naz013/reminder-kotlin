@@ -56,8 +56,11 @@ public class TimeCount {
         String fromHour = reminder.getFrom();
         String toHour = reminder.getTo();
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        if (isNew) calendar.setTimeInMillis(calendar.getTimeInMillis() + reminder.getAfter());
+        if (isNew) {
+            calendar.setTimeInMillis(System.currentTimeMillis() + reminder.getAfter());
+        } else {
+            calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()) + reminder.getRepeatInterval());
+        }
         int mHour = calendar.get(Calendar.HOUR_OF_DAY);
         if (hours != null && hours.size() > 0) {
             while (hours.contains(mHour)) {

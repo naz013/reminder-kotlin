@@ -36,7 +36,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("----ON_RECEIVE-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true));
+        Log.d("----ON_RECEIVE-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         String id = intent.getStringExtra(Constants.INTENT_ID);
         Intent service = new Intent(context, AlarmReceiver.class);
         context.startService(service);
@@ -58,7 +58,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         if (item != null) {
             due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         }
-        Log.d(TAG, "enableReminder: " + due);
+        Log.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
         if (due == 0) return;
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

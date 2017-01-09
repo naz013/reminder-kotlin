@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.core.utils.Prefs;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -25,9 +27,9 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         context.startService(new Intent(context, TasksService.class));
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.BIRTHDAY_REMINDER)){
-//            new BirthdayAlarm().setAlarm(context);
-//        }
+        if (Prefs.getInstance(context).isBirthdayReminderEnabled()){
+            new BirthdayAlarm().setAlarm(context);
+        }
 //        if (SharedPrefs.getInstance(context).getBoolean(Prefs.STATUS_BAR_NOTIFICATION)){
 //            new Notifier(context).showPermanent();
 //        }
