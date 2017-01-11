@@ -246,6 +246,32 @@ public class RealmDb {
         return items;
     }
 
+    public List<CalendarEvent> getCalendarEvents() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmCalendarEvent> list = realm.where(RealmCalendarEvent.class).findAll();
+        List<CalendarEvent> items = new ArrayList<>();
+        for (RealmCalendarEvent item : list) {
+            WeakReference<CalendarEvent> reference = new WeakReference<>(new CalendarEvent(item));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Long> getCalendarEventsIds() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmCalendarEvent> list = realm.where(RealmCalendarEvent.class).findAll();
+        List<Long> items = new ArrayList<>();
+        for (RealmCalendarEvent item : list) {
+            WeakReference<CalendarEvent> reference = new WeakReference<>(new CalendarEvent(item));
+            items.add(reference.get().getEventId());
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
     private void saveTemplate(TemplateItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

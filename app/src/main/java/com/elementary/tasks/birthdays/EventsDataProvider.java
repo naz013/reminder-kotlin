@@ -77,14 +77,12 @@ public class EventsDataProvider {
                 int mType = item.getType();
                 String summary = item.getSummary();
                 long eventTime = item.getDateTime();
-                if (!Reminder.isGpsType(mType)) {
+                if (!Reminder.isGpsType(mType) && eventTime > 0) {
                     long repeatTime = item.getRepeatInterval();
                     long limit = item.getRepeatLimit();
                     long count = item.getEventCount();
                     boolean isLimited = limit > 0;
-                    if (eventTime > 0) {
-                        setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
-                    } else continue;
+                    setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                     if (isFeature) {
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTimeInMillis(eventTime);
@@ -98,7 +96,7 @@ public class EventsDataProvider {
                                         AlarmManager.INTERVAL_DAY);
                                 eventTime = calendar1.getTimeInMillis();
                                 int weekDay = calendar1.get(Calendar.DAY_OF_WEEK);
-                                if (list.get(weekDay - 1) == 1 && eventTime > 0) {
+                                if (list.get(weekDay - 1) == 1) {
                                     days++;
                                     setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                                 }
@@ -111,10 +109,8 @@ public class EventsDataProvider {
                                 item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                                 eventTime = timeCount.getNextMonthDayTime(item);
                                 calendar1.setTimeInMillis(eventTime);
-                                if (eventTime > 0) {
-                                    days++;
-                                    setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
-                                }
+                                days++;
+                                setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                             } while (days < max);
                         } else {
                             if (repeatTime == 0) continue;
