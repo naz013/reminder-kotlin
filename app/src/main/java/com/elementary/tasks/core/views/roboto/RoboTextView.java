@@ -1,3 +1,15 @@
+package com.elementary.tasks.core.views.roboto;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.widget.TextView;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.AssetsUtil;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,18 +25,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.views.roboto;
-
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Typeface;
-import android.util.AttributeSet;
-import android.widget.TextView;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.AssetsUtil;
 
 public class RoboTextView extends TextView {
 

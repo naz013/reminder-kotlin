@@ -1,3 +1,18 @@
+package com.elementary.tasks.core.views;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.views.roboto.RoboButton;
+import com.elementary.tasks.core.views.roboto.RoboTextView;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,21 +28,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.views;
-
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.views.roboto.RoboButton;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
 
 public class TimerPickerView extends LinearLayout implements View.OnClickListener {
 
