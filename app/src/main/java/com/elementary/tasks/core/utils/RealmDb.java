@@ -139,19 +139,12 @@ public class RealmDb {
         cal.setTimeInMillis(System.currentTimeMillis());
         int mYear = cal.get(Calendar.YEAR);
         String mDate = birthFormat.format(cal.getTime());
-        List<BirthdayItem> birthdayItemList = getAllBirthdays();
         List<BirthdayItem> list = new ArrayList<>();
-        for (BirthdayItem item : birthdayItemList) {
+        for (BirthdayItem item : getAllBirthdays()) {
             int year = item.getShowedYear();
             String birthValue = getBirthdayValue(item.getMonth(), item.getDay(), daysBefore);
-            if (year != 0) {
-                if (birthValue.equals(mDate) && year != mYear) {
-                    list.add(item);
-                }
-            } else {
-                if (birthValue.equals(mDate)) {
-                    list.add(item);
-                }
+            if (birthValue.equals(mDate) && year != mYear) {
+                list.add(item);
             }
         }
         return list;

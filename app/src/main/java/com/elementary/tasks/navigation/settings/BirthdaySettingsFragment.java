@@ -228,6 +228,9 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
         Prefs.getInstance(mContext).setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
         initBirthdayTimePrefs();
+        if (Prefs.getInstance(mContext).isBirthdayReminderEnabled()) {
+            new BirthdayAlarm().setAlarm(mContext);
+        }
     }
 
     @Override
