@@ -171,7 +171,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         calendar.set(year, month, day, hour, minute, 0);
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
         if (progress == 0) {
-            predictionView.setVisibility(INVISIBLE);
+//            predictionView.setVisibility(INVISIBLE);
         } else {
             if (showPrediction) predictionView.setVisibility(VISIBLE);
         }
