@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.settings.calendar;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,18 +18,30 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.calendar.CalendarEvent;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.services.EventsCheckAlarm;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.databinding.FragmentEventsImportBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
+import com.elementary.tasks.reminder.models.Reminder;
+
+import org.dmfs.rfc5545.recur.Freq;
+import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
+import org.dmfs.rfc5545.recur.RecurrenceRule;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,6 +63,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         CompoundButton.OnCheckedChangeListener {
 
     public static final String EVENT_KEY = "Events";
+    private static final int CALENDAR_PERM = 500;
 
     private FragmentEventsImportBinding binding;
 
@@ -79,7 +93,6 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         else syncInterval.setEnabled(false);
 
         eventCalendar = binding.eventCalendar;
-        loadCalendars();
         return binding.getRoot();
     }
 
@@ -169,9 +182,21 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     @Override
     public void onResume() {
         super.onResume();
+        if (checkCalendarPerm()) {
+            loadCalendars();
+        }
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.import_events));
             mCallback.onFragmentSelect(this);
+        }
+    }
+
+    private boolean checkCalendarPerm() {
+        if (Permissions.checkPermission(getActivity(), Permissions.READ_CALENDAR)) {
+            return true;
+        } else {
+            Permissions.requestPermission(getActivity(), CALENDAR_PERM, Permissions.READ_CALENDAR);
+            return false;
         }
     }
 
@@ -244,6 +269,11 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
                     importEvents();
                 }
                 break;
+            case CALENDAR_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    loadCalendars();
+                }
+                break;
         }
     }
 
@@ -278,91 +308,85 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             }
             CalendarUtils cm = CalendarUtils.getInstance(mContext);
             long currTime = System.currentTimeMillis();
-
             int eventsCount = 0;
             HashMap<String, Integer> map = params[0];
             if (map.containsKey(EVENT_KEY)) {
                 ArrayList<CalendarUtils.EventItem> eventItems = cm.getEvents(map.get(EVENT_KEY));
                 if (eventItems != null && eventItems.size() > 0) {
-//                    DataBase DB = new DataBase(mContext);
-//                    DB.open();
-//                    Cursor c = DB.getCalendarEvents();
-//                    ArrayList<Long> ids = new ArrayList<>();
-//                    if (c != null && c.moveToFirst()) {
-//                        do {
-//                            long eventId = c.getLong(c.getColumnIndex(Constants.COLUMN_EVENT_ID));
-//                            ids.add(eventId);
-//                        } while (c.moveToNext());
-//                    }
-//                    for (CalendarHelper.EventItem item : eventItems) {
-//                        long itemId = item.getId();
-//                        if (!ids.contains(itemId)) {
-//                            String rrule = item.getRrule();
-//                            int repeat = 0;
-//                            if (rrule != null && !rrule.matches("")) {
-//                                try {
-//                                    RecurrenceRule rule = new RecurrenceRule(rrule);
-//                                    int interval = rule.getInterval();
-//                                    Freq freq = rule.getFreq();
-//                                    if (freq == Freq.HOURLY || freq == Freq.MINUTELY || freq == Freq.SECONDLY) {
-//                                    } else {
-//                                        if (freq == Freq.WEEKLY) repeat = interval * 7;
-//                                        else if (freq == Freq.MONTHLY) repeat = interval * 30;
-//                                        else if (freq == Freq.YEARLY) repeat = interval * 365;
-//                                        else repeat = interval;
-//                                    }
-//                                } catch (InvalidRecurrenceRuleException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                            String summary = item.getTitle();
-//
-//                            String uuID = SyncHelper.generateID();
-//                            String categoryId = GroupHelper.getInstance(mContext).getDefaultUuId();
-//                            Calendar calendar = Calendar.getInstance();
-//                            long dtStart = item.getDtStart();
-//                            calendar.setTimeInMillis(dtStart);
-//                            if (dtStart >= currTime) {
-//                                eventsCount += 1;
-//                                JRecurrence jRecurrence = new JRecurrence(0, repeat, -1, null, 0);
-//                                JsonModel jsonModel = new JsonModel(summary, Constants.TYPE_REMINDER, categoryId, uuID, dtStart,
-//                                        dtStart, jRecurrence, null, null);
-//                                long id = new DateType(mContext, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
-//                                DB.addCalendarEvent(null, id, item.getId());
-//                            } else {
-//                                if (repeat > 0) {
-//                                    do {
-//                                        calendar.setTimeInMillis(dtStart + (repeat * AlarmManager.INTERVAL_DAY));
-//                                        dtStart = calendar.getTimeInMillis();
-//                                    } while (dtStart < currTime);
-//                                    eventsCount += 1;
-//                                    JRecurrence jRecurrence = new JRecurrence(0, repeat, -1, null, 0);
-//                                    JsonModel jsonModel = new JsonModel(summary, Constants.TYPE_REMINDER, categoryId, uuID, dtStart,
-//                                            dtStart, jRecurrence, null, null);
-//                                    long id = new DateType(mContext, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
-//                                    DB.addCalendarEvent(null, id, item.getId());
-//                                }
-//                            }
-//                        }
-//                    }
-//                    DB.close();
+                    List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
+                    for (CalendarUtils.EventItem item : eventItems) {
+                        long itemId = item.getId();
+                        if (!list.contains(itemId)) {
+                            String rrule = item.getRrule();
+                            int repeat = 0;
+                            if (rrule != null && !rrule.matches("")) {
+                                try {
+                                    RecurrenceRule rule = new RecurrenceRule(rrule);
+                                    int interval = rule.getInterval();
+                                    Freq freq = rule.getFreq();
+                                    if (freq == Freq.HOURLY || freq == Freq.MINUTELY || freq == Freq.SECONDLY) {
+                                    } else {
+                                        if (freq == Freq.WEEKLY) repeat = interval * 7;
+                                        else if (freq == Freq.MONTHLY) repeat = interval * 30;
+                                        else if (freq == Freq.YEARLY) repeat = interval * 365;
+                                        else repeat = interval;
+                                    }
+                                } catch (InvalidRecurrenceRuleException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            String summary = item.getTitle();
+                            String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+                            Calendar calendar = Calendar.getInstance();
+                            long dtStart = item.getDtStart();
+                            calendar.setTimeInMillis(dtStart);
+                            if (dtStart >= currTime) {
+                                eventsCount += 1;
+                                saveReminder(itemId, summary, dtStart, repeat, categoryId);
+                            } else {
+                                if (repeat > 0) {
+                                    do {
+                                        calendar.setTimeInMillis(dtStart + (repeat * AlarmManager.INTERVAL_DAY));
+                                        dtStart = calendar.getTimeInMillis();
+                                    } while (dtStart < currTime);
+                                    eventsCount += 1;
+                                    saveReminder(itemId, summary, dtStart, repeat, categoryId);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             return eventsCount;
+        }
+
+        private void saveReminder(long itemId, String summary, long dtStart, int repeat, String categoryId) {
+            Reminder reminder = new Reminder();
+            reminder.setType(Reminder.BY_DATE);
+            reminder.setRepeatInterval(repeat);
+            reminder.setGroupUuId(categoryId);
+            reminder.setSummary(summary);
+            reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
+            reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
+            RealmDb.getInstance().saveObject(reminder);
+            EventControl control = EventControlImpl.getController(mContext, reminder);
+            control.start();
+            CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
+            RealmDb.getInstance().saveObject(event);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             if (dialog != null && dialog.isShowing()) dialog.dismiss();
-
             if (result == 0) Toast.makeText(mContext, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show();
-
             if (result > 0) {
                 Toast.makeText(mContext, result + " " + getString(R.string.events_found), Toast.LENGTH_SHORT).show();
-//                UpdatesHelper.getInstance(mContext).updateWidget();
+                // TODO: 11.01.2017 Update app widgets.
                 new Notifier(mContext).recreatePermanent();
             }
         }
     }
+
+
 }
