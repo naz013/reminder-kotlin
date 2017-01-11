@@ -74,6 +74,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         loadImage(binding.bgImage);
         colorify(binding.buttonOk, binding.buttonCall, binding.buttonSend);
 
+        binding.buttonOk.setOnClickListener(view -> ok());
+        binding.buttonCall.setOnClickListener(view -> call());
+        binding.buttonSend.setOnClickListener(view -> sendSMS());
+
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
         binding.buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
         binding.buttonSend.setImageResource(R.drawable.ic_send_black_24dp);

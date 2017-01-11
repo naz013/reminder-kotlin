@@ -31,6 +31,8 @@ public class BirthdayAlarm extends WakefulBroadcastReceiver {
 
     private static final String TAG = "BirthdayAlarm";
 
+    private static final int ID = 99250;
+
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
 
@@ -47,7 +49,7 @@ public class BirthdayAlarm extends WakefulBroadcastReceiver {
 
     public void setAlarm(Context context){
         Intent intent1 = new Intent(context, BirthdayAlarm.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 210, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmIntent = PendingIntent.getBroadcast(context, ID, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         String time = Prefs.getInstance(context).getBirthdayTime();
         if (Module.isMarshmallow()) {
@@ -59,7 +61,7 @@ public class BirthdayAlarm extends WakefulBroadcastReceiver {
 
     public void cancelAlarm(Context context) {
         Intent intent = new Intent(context, BirthdayAlarm.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 210, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmIntent = PendingIntent.getBroadcast(context, ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmMgr!= null) alarmMgr.cancel(alarmIntent);
     }
