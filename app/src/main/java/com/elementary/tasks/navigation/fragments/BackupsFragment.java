@@ -108,22 +108,22 @@ public class BackupsFragment extends BaseNavigationFragment {
 
     private String[] getFolders(UserInfoAsync.Info info) {
         if (info == UserInfoAsync.Info.Dropbox) {
-            String r = MemoryUtil.getDRDir().getPath();
-            String n = MemoryUtil.getDNDir().getPath();
-            String g = MemoryUtil.getDGroupsDir().getPath();
-            String b = MemoryUtil.getDBDir().getPath();
+            String r = MemoryUtil.getDropboxRemindersDir().getPath();
+            String n = MemoryUtil.getDropboxNotesDir().getPath();
+            String g = MemoryUtil.getDropboxGroupsDir().getPath();
+            String b = MemoryUtil.getDropboxBirthdaysDir().getPath();
             return new String[]{r, n, g, b};
         } else if (info == UserInfoAsync.Info.Google) {
-            String r = MemoryUtil.getGRDir().getPath();
-            String n = MemoryUtil.getGNDir().getPath();
-            String g = MemoryUtil.getGGroupsDir().getPath();
-            String b = MemoryUtil.getGBDir().getPath();
+            String r = MemoryUtil.getGoogleRemindersDir().getPath();
+            String n = MemoryUtil.getGoogleNotesDir().getPath();
+            String g = MemoryUtil.getGoogleGroupsDir().getPath();
+            String b = MemoryUtil.getGoogleBirthdaysDir().getPath();
             return new String[]{r, n, g, b};
         } else {
-            String r = MemoryUtil.getRDir().getPath();
-            String n = MemoryUtil.getNDir().getPath();
+            String r = MemoryUtil.getRemindersDir().getPath();
+            String n = MemoryUtil.getNotesDir().getPath();
             String g = MemoryUtil.getGroupsDir().getPath();
-            String b = MemoryUtil.getBDir().getPath();
+            String b = MemoryUtil.getBirthdaysDir().getPath();
             return new String[]{r, n, g, b};
         }
     }

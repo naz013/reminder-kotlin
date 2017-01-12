@@ -1,13 +1,16 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
+import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.places.PlaceItem;
+import com.elementary.tasks.reminder.models.Reminder;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -42,34 +45,161 @@ import java.lang.ref.WeakReference;
 public class BackupTool {
 
     private static final String TAG = "BackupTool";
-
-    private Context mContext;
     private static BackupTool instance;
 
-    private BackupTool() {}
-
-    private BackupTool(Context context) {
-        this.mContext = context;
+    private BackupTool() {
     }
 
-    public static BackupTool getInstance(Context context) {
+    public static BackupTool getInstance() {
         if (instance == null) {
-            instance = new BackupTool(context);
+            instance = new BackupTool();
         }
         return instance;
     }
 
+    public void exportPlace(PlaceItem item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getGroupsDir();
+        if (dir != null) {
+            String exportFileName = item.getKey() + FileConfig.FILE_NAME_PLACE;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), PlaceItem.class));
+        return item.get();
+    }
+
+    public PlaceItem getPlace(String filePath, String json) throws IOException {
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), PlaceItem.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(json, PlaceItem.class));
+            return item.get();
+        } else return null;
+    }
+
+    public void exportBirthday(BirthdayItem item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getGroupsDir();
+        if (dir != null) {
+            String exportFileName = item.getUuId() + FileConfig.FILE_NAME_BIRTHDAY;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), BirthdayItem.class));
+        return item.get();
+    }
+
+    public BirthdayItem getBirthday(String filePath, String json) throws IOException {
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), BirthdayItem.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(json, BirthdayItem.class));
+            return item.get();
+        } else return null;
+    }
+
+    public void exportGroup(GroupItem item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getGroupsDir();
+        if (dir != null) {
+            String exportFileName = item.getUuId() + FileConfig.FILE_NAME_GROUP;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), GroupItem.class));
+        return item.get();
+    }
+
+    public GroupItem getGroup(String filePath, String json) throws IOException {
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), GroupItem.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(json, GroupItem.class));
+            return item.get();
+        } else return null;
+    }
+
+    public void exportReminder(Reminder item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getRemindersDir();
+        if (dir != null) {
+            String exportFileName = item.getUuId() + FileConfig.FILE_NAME_REMINDER;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public Reminder getReminder(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Reminder.class));
+        return item.get();
+    }
+
+    public Reminder getReminder(String filePath, String json) throws IOException {
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Reminder.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(json, Reminder.class));
+            return item.get();
+        } else return null;
+    }
+
+    public NoteItem getNote(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
+        return note.get();
+    }
+
     public NoteItem getNote(String filePath, String json) throws IOException {
-        if (filePath != null) {
-            if (MemoryUtil.isSdPresent()){
-                WeakReference<String> jsonText = new WeakReference<>(readFileToJson(filePath));
-                WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(jsonText.get(), NoteItem.class));
-                return note.get();
-            } else return null;
-        } else {
-            WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(json, NoteItem.class));
-            return note.get();
-        }
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), NoteItem.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(json, NoteItem.class));
+            return item.get();
+        } else return null;
+    }
+
+    public void exportNote(NoteItem item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getRemindersDir();
+        if (dir != null) {
+            String exportFileName = item.getKey() + FileConfig.FILE_NAME_NOTE;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
     }
 
     public File createNote(NoteItem item) {
@@ -135,10 +265,11 @@ public class BackupTool {
 
     /**
      * Decrypt string to human readable format.
+     *
      * @param string string to decrypt.
      * @return Decrypted string
      */
-    public static String decrypt(String string){
+    public static String decrypt(String string) {
         String result = "";
         byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
         try {
@@ -152,10 +283,11 @@ public class BackupTool {
 
     /**
      * Encrypt string.
+     *
      * @param string string to encrypt.
      * @return Encrypted string
      */
-    public static String encrypt(String string){
+    public static String encrypt(String string) {
         Log.d(TAG, "encrypt: " + string);
         byte[] string_byted = null;
         try {

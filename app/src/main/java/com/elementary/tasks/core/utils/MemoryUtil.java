@@ -23,21 +23,24 @@ import java.util.Locale;
 
 public class MemoryUtil {
 
-    private final static String DIR_SD = "backup";
-    private final static String DIR_IMAGE_CACHE = "img";
-    private final static String DIR_PREFS = "preferences";
-    private final static String DIR_NOTES_SD = "notes";
-    private final static String DIR_GROUP_SD = "groups";
-    private final static String DIR_BIRTHDAY_SD = "birthdays";
-    private final static String DIR_MAIL_SD = "mail_attachments";
-    private final static String DIR_SD_DBX_TMP = "tmp_dropbox";
-    private final static String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
-    private final static String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
-    private final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
-    private final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
-    private final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
-    private final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
-    private final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
+    public final static String DIR_SD = "backup";
+    public final static String DIR_IMAGE_CACHE = "img";
+    public final static String DIR_PREFS = "preferences";
+    public final static String DIR_NOTES_SD = "notes";
+    public final static String DIR_GROUP_SD = "groups";
+    public final static String DIR_BIRTHDAY_SD = "birthdays";
+    public final static String DIR_PLACES_SD = "places";
+    public final static String DIR_MAIL_SD = "mail_attachments";
+    public final static String DIR_SD_DBX_TMP = "tmp_dropbox";
+    public final static String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
+    public final static String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
+    public final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
+    public final static String DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places";
+    public final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
+    public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
+    public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
+    public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
+    public final static String DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places";
 
     public static boolean isSdPresent() {
         String state = Environment.getExternalStorageState();
@@ -45,7 +48,7 @@ public class MemoryUtil {
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
-    public static File getRDir() {
+    public static File getRemindersDir() {
         return getDir(DIR_SD);
     }
 
@@ -53,43 +56,55 @@ public class MemoryUtil {
         return getDir(DIR_GROUP_SD);
     }
 
-    public static File getBDir() {
+    public static File getBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD);
     }
 
-    public static File getNDir() {
+    public static File getNotesDir() {
         return getDir(DIR_NOTES_SD);
     }
 
-    public static File getDRDir() {
+    public static File getPlacesDir() {
+        return getDir(DIR_PLACES_SD);
+    }
+
+    public static File getGooglePlacesDir() {
+        return getDir(DIR_PLACES_SD_GDRIVE_TMP);
+    }
+
+    public static File getDropboxPlacesDir() {
+        return getDir(DIR_PLACES_SD_DBX_TMP);
+    }
+
+    public static File getDropboxRemindersDir() {
         return getDir(DIR_SD_DBX_TMP);
     }
 
-    public static File getDGroupsDir() {
+    public static File getDropboxGroupsDir() {
         return getDir(DIR_GROUP_SD_DBX_TMP);
     }
 
-    public static File getDBDir() {
+    public static File getDropboxBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD_DBX_TMP);
     }
 
-    public static File getDNDir() {
+    public static File getDropboxNotesDir() {
         return getDir(DIR_NOTES_SD_DBX_TMP);
     }
 
-    public static File getGRDir() {
+    public static File getGoogleRemindersDir() {
         return getDir(DIR_SD_GDRIVE_TMP);
     }
 
-    public static File getGGroupsDir() {
+    public static File getGoogleGroupsDir() {
         return getDir(DIR_GROUP_SD_GDRIVE_TMP);
     }
 
-    public static File getGBDir() {
+    public static File getGoogleBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD_GDRIVE_TMP);
     }
 
-    public static File getGNDir() {
+    public static File getGoogleNotesDir() {
         return getDir(DIR_NOTES_SD_GDRIVE_TMP);
     }
 
@@ -109,7 +124,7 @@ public class MemoryUtil {
         return getDir("");
     }
 
-    public static File getDir(String directory) {
+    private static File getDir(String directory) {
         if (isSdPresent()) {
             File sdPath = Environment.getExternalStorageDirectory();
             File dir = new File(sdPath.toString() + "/JustReminder/" + directory);
@@ -130,7 +145,7 @@ public class MemoryUtil {
             return bytes + " B";
         }
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "");
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "");
         return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

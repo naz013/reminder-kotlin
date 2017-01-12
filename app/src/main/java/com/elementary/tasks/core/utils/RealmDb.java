@@ -70,6 +70,7 @@ public class RealmDb {
     }
 
     public void saveObject(Object o) {
+        if (o == null) return;
         Log.d(TAG, "saveObject: " + o);
         if (o instanceof TemplateItem) {
             saveTemplate((TemplateItem) o);

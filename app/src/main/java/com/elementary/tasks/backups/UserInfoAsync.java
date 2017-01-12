@@ -150,21 +150,21 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
 
     private void getCountFiles(UserItem item) {
         int count = 0;
-        File dir = MemoryUtil.getRDir();
+        File dir = MemoryUtil.getRemindersDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
                 count += files.length;
             }
         }
-        dir = MemoryUtil.getNDir();
+        dir = MemoryUtil.getNotesDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
                 count += files.length;
             }
         }
-        dir = MemoryUtil.getBDir();
+        dir = MemoryUtil.getBirthdaysDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
