@@ -53,22 +53,6 @@ public class Constants {
     public final static String SELECTED_LED_COLOR = "selected_led_color";
     public final static String SELECTED_APPLICATION = "selected_application";
 
-    public final static String DIR_SD = "backup";
-    public final static String DIR_IMAGE_CACHE = "img";
-    public final static String DIR_PREFS = "preferences";
-    public final static String DIR_NOTES_SD = "notes";
-    public final static String DIR_GROUP_SD = "groups";
-    public final static String DIR_BIRTHDAY_SD = "birthdays";
-    public final static String DIR_MAIL_SD = "mail_attachments";
-    public final static String DIR_SD_DBX_TMP = "tmp_dropbox";
-    public final static String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
-    public final static String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
-    public final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
-    public final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
-    public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
-    public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
-    public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
-
     public static final String ORDER_DATE_A_Z = "date_az";
     public static final String ORDER_DATE_Z_A = "date_za";
     public static final String ORDER_COMPLETED_A_Z = "completed_az";

@@ -213,7 +213,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void shareNote(){
-        File file = BackupTool.getInstance(this).createNote(mItem);
+        File file = BackupTool.getInstance().createNote(mItem);
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;

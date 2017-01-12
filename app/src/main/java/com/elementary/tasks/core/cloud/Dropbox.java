@@ -17,8 +17,9 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
-import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.MemoryUtil;
+import com.elementary.tasks.core.utils.RealmDb;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +51,7 @@ public class Dropbox {
     private String dbxNoteFolder = "Notes/";
     private String dbxGroupFolder = "Groups/";
     private String dbxBirthFolder = "Birthdays/";
+    private String dbxPlacesFolder = "Places/";
 
     private DropboxAPI<AndroidAuthSession> mDBApi;
     private DropboxAPI.Entry newEntry;
@@ -60,14 +62,14 @@ public class Dropbox {
     final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
     final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 
-    public Dropbox(Context context){
+    public Dropbox(Context context) {
         this.mContext = context;
     }
 
     /**
      * Start connection to Dropbox.
      */
-    public void startSession(){
+    public void startSession() {
         AndroidAuthSession session = buildSession();
         mDBApi = new DropboxAPI<>(session);
         checkAppKeySetup();
@@ -75,6 +77,7 @@ public class Dropbox {
 
     /**
      * Check if user has already connected to Dropbox from this application.
+     *
      * @return Boolean
      */
     public boolean isLinked() {
@@ -83,9 +86,10 @@ public class Dropbox {
 
     /**
      * Get Dropbox user name.
+     *
      * @return String user name
      */
-    public String userName(){
+    public String userName() {
         DropboxAPI.Account account = null;
         try {
             account = mDBApi.accountInfo();
@@ -97,9 +101,10 @@ public class Dropbox {
 
     /**
      * Get user all apace on Dropbox.
+     *
      * @return Long - user quota
      */
-    public long userQuota(){
+    public long userQuota() {
         DropboxAPI.Account account = null;
         try {
             account = mDBApi.accountInfo();
@@ -109,7 +114,7 @@ public class Dropbox {
         return account != null ? account.quota : 0;
     }
 
-    public long userQuotaNormal(){
+    public long userQuotaNormal() {
         DropboxAPI.Account account = null;
         try {
             account = mDBApi.accountInfo();
@@ -119,7 +124,7 @@ public class Dropbox {
         return account != null ? (account.quotaNormal + account.quotaShared) : 0;
     }
 
-    public boolean checkLink(){
+    public boolean checkLink() {
         boolean isLogged = false;
         startSession();
         AndroidAuthSession session = mDBApi.getSession();
@@ -135,12 +140,12 @@ public class Dropbox {
         return isLogged;
     }
 
-    public boolean startLink(){
+    public boolean startLink() {
         mDBApi.getSession().startOAuth2Authentication(mContext);
         return mDBApi.getSession().isLinked();
     }
 
-    public boolean unlink(){
+    public boolean unlink() {
         boolean is = false;
         if (logOut()) {
             is = true;
@@ -190,7 +195,7 @@ public class Dropbox {
             SharedPreferences.Editor edit = prefs.edit();
             edit.putString(ACCESS_KEY_NAME, "oauth2:");
             edit.putString(ACCESS_SECRET_NAME, oauth2AccessToken);
-            edit.commit();
+            edit.apply();
             return;
         }
         AccessTokenPair oauth1AccessToken = session.getAccessTokenPair();
@@ -199,7 +204,7 @@ public class Dropbox {
             SharedPreferences.Editor edit = prefs.edit();
             edit.putString(ACCESS_KEY_NAME, oauth1AccessToken.key);
             edit.putString(ACCESS_SECRET_NAME, oauth1AccessToken.secret);
-            edit.commit();
+            edit.apply();
         }
     }
 
@@ -220,234 +225,258 @@ public class Dropbox {
         SharedPreferences prefs = mContext.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
         SharedPreferences.Editor edit = prefs.edit();
         edit.clear();
-        edit.commit();
+        edit.apply();
     }
 
     /**
      * Upload to Dropbox folder backup files from selected folder on SD Card.
+     *
      * @param path name of folder to upload.
      */
-    private void upload(String path){
+    private void upload(String path) {
         startSession();
-        if (isLinked()) {
-            File sdPath = Environment.getExternalStorageDirectory();
-            File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + path);
-            File[] files = sdPathDr.listFiles();
-            String fileLoc = sdPathDr.toString();
-            if (files != null) {
-                for (File file : files) {
-                    String fileLoopName = file.getName();
-                    File tmpFile = new File(fileLoc, fileLoopName);
-                    FileInputStream fis = null;
-                    try {
-                        fis = new FileInputStream(tmpFile);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    String folder;
-                    if (path.matches(Constants.DIR_NOTES_SD)) folder = dbxNoteFolder;
-                    else if (path.matches(Constants.DIR_GROUP_SD)) folder = dbxGroupFolder;
-                    else if (path.matches(Constants.DIR_BIRTHDAY_SD)) folder = dbxBirthFolder;
-                    else folder = dbxFolder;
-                    try {
-                        newEntry = mDBApi.putFileOverwrite(folder + fileLoopName,
-                                fis, tmpFile.length(), null);
-                    } catch (DropboxUnlinkedException e) {
-                        Log.e("DbLog", "User has unlinked.");
-                    } catch (DropboxException e) {
-                        Log.e("DbLog", "Something went wrong while uploading.");
-                    }
-                    if (file.exists()) file.delete();
-                }
+        if (!isLinked()) return;
+        File sdPath = Environment.getExternalStorageDirectory();
+        File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + path);
+        File[] files = sdPathDr.listFiles();
+        String fileLoc = sdPathDr.toString();
+        if (files == null) return;
+        for (File file : files) {
+            String fileLoopName = file.getName();
+            File tmpFile = new File(fileLoc, fileLoopName);
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(tmpFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
+            String folder;
+            if (path.matches(MemoryUtil.DIR_NOTES_SD)) folder = dbxNoteFolder;
+            else if (path.matches(MemoryUtil.DIR_GROUP_SD)) folder = dbxGroupFolder;
+            else if (path.matches(MemoryUtil.DIR_BIRTHDAY_SD)) folder = dbxBirthFolder;
+            else if (path.matches(MemoryUtil.DIR_PLACES_SD)) folder = dbxPlacesFolder;
+            else folder = dbxFolder;
+            try {
+                newEntry = mDBApi.putFileOverwrite(folder + fileLoopName, fis, tmpFile.length(), null);
+            } catch (DropboxUnlinkedException e) {
+                Log.e("DbLog", "User has unlinked.");
+            } catch (DropboxException e) {
+                Log.e("DbLog", "Something went wrong while uploading.");
+            }
+            if (file.exists()) file.delete();
         }
     }
 
     /**
      * Upload reminder backup files or selected file to Dropbox folder.
+     *
      * @param fileName file name.
      */
     public void uploadReminder(final String fileName) {
+        File dir = MemoryUtil.getRemindersDir();
+        if (dir == null) return;
         startSession();
-        if (isLinked()) {
-            if (fileName != null) {
-                File dir = MemoryUtil.getRDir();
-                if (dir == null) return;
-                File tmpFile = new File(dir.toString(), fileName);
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(tmpFile);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    newEntry = mDBApi.putFileOverwrite(dbxFolder + fileName, fis, tmpFile.length(), null);
-                } catch (DropboxUnlinkedException e) {
-                    Log.e("DbLog", "User has unlinked.");
-                } catch (DropboxException e) {
-                    Log.e("DbLog", "Something went wrong while uploading.");
-                }
-                if (tmpFile.exists()) tmpFile.delete();
-            } else {
-                upload(Constants.DIR_SD);
+        if (!isLinked()) return;
+        if (fileName != null) {
+            File tmpFile = new File(dir.toString(), fileName);
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(tmpFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
+            try {
+                newEntry = mDBApi.putFileOverwrite(dbxFolder + fileName, fis, tmpFile.length(), null);
+            } catch (DropboxUnlinkedException e) {
+                Log.e("DbLog", "User has unlinked.");
+            } catch (DropboxException e) {
+                Log.e("DbLog", "Something went wrong while uploading.");
+            }
+            if (tmpFile.exists()) tmpFile.delete();
+        } else {
+            upload(MemoryUtil.DIR_SD);
         }
     }
 
     /**
      * Upload all note backup files to Dropbox folder.
      */
-    public void uploadNote() {
-        upload(Constants.DIR_NOTES_SD);
+    public void uploadNotes() {
+        upload(MemoryUtil.DIR_NOTES_SD);
     }
 
     /**
      * Upload all group backup files to Dropbox folder.
      */
-    public void uploadGroup() {
-        upload(Constants.DIR_GROUP_SD);
+    public void uploadGroups() {
+        upload(MemoryUtil.DIR_GROUP_SD);
     }
 
     /**
      * Upload all birthday backup files to Dropbox folder.
      */
-    public void uploadBirthday() {
-        upload(Constants.DIR_BIRTHDAY_SD);
+    public void uploadBirthdays() {
+        upload(MemoryUtil.DIR_BIRTHDAY_SD);
+    }
+
+    /**
+     * Upload all places backup files to Dropbox folder.
+     */
+    public void uploadPlaces() {
+        upload(MemoryUtil.DIR_PLACES_SD);
     }
 
     public void deleteFile(String fileName) {
-        if (fileName.endsWith(FileConfig.FILE_NAME_REMINDER))
+        if (fileName.endsWith(FileConfig.FILE_NAME_REMINDER)) {
             deleteReminder(fileName);
-        else if (fileName.endsWith(FileConfig.FILE_NAME_NOTE))
+        } else if (fileName.endsWith(FileConfig.FILE_NAME_NOTE)) {
             deleteNote(fileName);
-        else if (fileName.endsWith(FileConfig.FILE_NAME_GROUP))
+        } else if (fileName.endsWith(FileConfig.FILE_NAME_GROUP)) {
             deleteGroup(fileName);
-        else if (fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY))
+        } else if (fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
             deleteBirthday(fileName);
+        } else if (fileName.endsWith(FileConfig.FILE_NAME_PLACE)) {
+            deletePlace(fileName);
+        }
     }
 
     /**
      * Delete reminder backup file from Dropbox folder.
+     *
      * @param name file name.
      */
-    public void deleteReminder(String name){
+    public void deleteReminder(String name) {
         startSession();
-        if (isLinked()) {
-            try {
-                mDBApi.delete(dbxFolder + name);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxFolder + name);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Delete note backup file from Dropbox folder.
+     *
      * @param name file name.
      */
-    public void deleteNote(String name){
+    public void deleteNote(String name) {
         startSession();
-        if (isLinked()) {
-            try {
-                mDBApi.delete(dbxNoteFolder + name + FileConfig.FILE_NAME_NOTE);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxNoteFolder + name + FileConfig.FILE_NAME_NOTE);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Delete group backup file from Dropbox folder.
+     *
      * @param name file name.
      */
-    public void deleteGroup(String name){
+    public void deleteGroup(String name) {
         startSession();
-        if (isLinked()) {
-            try {
-                mDBApi.delete(dbxGroupFolder + name + FileConfig.FILE_NAME_GROUP);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxGroupFolder + name + FileConfig.FILE_NAME_GROUP);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Delete birthday backup file from Dropbox folder.
+     *
      * @param name file name
      */
-    public void deleteBirthday(String name){
+    public void deleteBirthday(String name) {
         startSession();
-        if (isLinked()) {
-            try {
-                mDBApi.delete(dbxBirthFolder + name);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxBirthFolder + name);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Delete place backup file from Dropbox folder.
+     *
+     * @param name file name
+     */
+    public void deletePlace(String name) {
+        startSession();
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxPlacesFolder + name);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Delete all folders inside application folder on Dropbox.
      */
-    public void cleanFolder(){
+    public void cleanFolder() {
         startSession();
-        if (isLinked()) {
-            try {
-                mDBApi.delete(dbxNoteFolder);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            try {
-                mDBApi.delete(dbxGroupFolder);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            try {
-                mDBApi.delete(dbxBirthFolder);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            try {
-                mDBApi.delete(dbxFolder);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxNoteFolder);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+        try {
+            mDBApi.delete(dbxGroupFolder);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+        try {
+            mDBApi.delete(dbxBirthFolder);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+        try {
+            mDBApi.delete(dbxFolder);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+        try {
+            mDBApi.delete(dbxPlacesFolder);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Download on SD Card all reminder backup files found on Dropbox.
      */
-    public void downloadReminder() {
+    public void downloadReminders() {
+        File dir = MemoryUtil.getDropboxRemindersDir();
+        if (dir == null) return;
         startSession();
-        if (isLinked()) {
-            try {
-                newEntry = mDBApi.metadata("/" + dbxFolder, 1000, null, true, null);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            if (newEntry != null) {
-                for (DropboxAPI.Entry e : newEntry.contents) {
-                    if (!e.isDeleted) {
-                        String fileName = e.fileName();
-                        File dir = MemoryUtil.getDRDir();
-                        if (dir == null) return;
-                        File localFile = new File(dir + "/" + fileName);
-                        String cloudFile = "/" + dbxFolder + fileName;
-                        downloadFile(localFile, cloudFile);
-//                        try {
-//                            new SyncHelper(mContext).reminderFromJson(localFile.toString());
-//                        } catch (JSONException e1) {
-//                            e1.printStackTrace();
-//                        }
-                        try {
-                            mDBApi.delete(e.path);
-                        } catch (DropboxException e1) {
-                            e1.printStackTrace();
-                        }
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            RealmDb realmDb = RealmDb.getInstance();
+            BackupTool backupTool = BackupTool.getInstance();
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    File localFile = new File(dir + "/" + fileName);
+                    String cloudFile = "/" + dbxFolder + fileName;
+                    downloadFile(localFile, cloudFile);
+                    try {
+                        realmDb.saveObject(backupTool.getReminder(localFile.toString(), null));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
+                    mDBApi.delete(e.path);
                 }
             }
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
@@ -475,138 +504,180 @@ public class Dropbox {
     /**
      * Download on SD Card all note backup files found on Dropbox.
      */
-    public void downloadNote() {
+    public void downloadNotes() {
+        File dir = MemoryUtil.getDropboxNotesDir();
+        if (dir == null) return;
         startSession();
-        if (isLinked()) {
-            try {
-                newEntry = mDBApi.metadata("/" + dbxNoteFolder, 1000, null, true, null);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            if (newEntry != null) {
-                for (DropboxAPI.Entry e : newEntry.contents) {
-                    if (!e.isDeleted) {
-                        String fileName = e.fileName();
-                        File dir = MemoryUtil.getDNDir();
-                        if (dir == null) return;
-                        File localFile = new File(dir + "/" + fileName);
-                        String cloudFile = "/" + dbxNoteFolder + fileName;
-                        downloadFile(localFile, cloudFile);
-//                        try {
-//                            new SyncHelper(mContext).noteFromJson(localFile.toString(), fileName);
-//                        } catch (JSONException e1) {
-//                            e1.printStackTrace();
-//                        }
-                        try {
-                            mDBApi.delete(e.path);
-                        } catch (DropboxException e1) {
-                            e1.printStackTrace();
-                        }
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxNoteFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            RealmDb realmDb = RealmDb.getInstance();
+            BackupTool backupTool = BackupTool.getInstance();
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    File localFile = new File(dir + "/" + fileName);
+                    String cloudFile = "/" + dbxNoteFolder + fileName;
+                    downloadFile(localFile, cloudFile);
+                    try {
+                        realmDb.saveObject(backupTool.getNote(localFile.toString(), null));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        mDBApi.delete(e.path);
+                    } catch (DropboxException e1) {
+                        e1.printStackTrace();
                     }
                 }
             }
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
+
     }
 
     /**
      * Download on SD Card all group backup files found on Dropbox.
      */
-    public void downloadGroup() {
+    public void downloadGroups() {
+        File dir = MemoryUtil.getDropboxGroupsDir();
+        if (dir == null) return;
         startSession();
-        if (isLinked()) {
-            try {
-                newEntry = mDBApi.metadata("/" + dbxGroupFolder, 1000, null, true, null);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            if (newEntry != null) {
-                for (DropboxAPI.Entry e : newEntry.contents) {
-                    if (!e.isDeleted) {
-                        String fileName = e.fileName();
-                        File dir = MemoryUtil.getDGroupsDir();
-                        if (dir == null) return;
-                        File localFile = new File(dir + "/" + fileName);
-                        String cloudFile = "/" + dbxGroupFolder + fileName;
-                        downloadFile(localFile, cloudFile);
-//                        try {
-//                            new SyncHelper(mContext).groupFromJson(localFile);
-//                        } catch (JSONException e1) {
-//                            e1.printStackTrace();
-//                        }
-                        try {
-                            mDBApi.delete(e.path);
-                        } catch (DropboxException e1) {
-                            e1.printStackTrace();
-                        }
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxGroupFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            RealmDb realmDb = RealmDb.getInstance();
+            BackupTool backupTool = BackupTool.getInstance();
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    File localFile = new File(dir + "/" + fileName);
+                    String cloudFile = "/" + dbxGroupFolder + fileName;
+                    downloadFile(localFile, cloudFile);
+                    try {
+                        realmDb.saveObject(backupTool.getGroup(localFile.toString(), null));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        mDBApi.delete(e.path);
+                    } catch (DropboxException e1) {
+                        e1.printStackTrace();
                     }
                 }
             }
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Download on SD Card all birthday backup files found on Dropbox.
      */
-    public void downloadBirthday() {
+    public void downloadBirthdays() {
+        File dir = MemoryUtil.getDropboxBirthdaysDir();
+        if (dir == null) return;
         startSession();
-        if (isLinked()) {
-            try {
-                newEntry = mDBApi.metadata("/" + dbxBirthFolder, 1000, null, true, null);
-            } catch (DropboxException e) {
-                e.printStackTrace();
-            }
-            if (newEntry != null) {
-                for (DropboxAPI.Entry e : newEntry.contents) {
-                    if (!e.isDeleted) {
-                        String fileName = e.fileName();
-                        File dir = MemoryUtil.getDBDir();
-                        if (dir == null) return;
-                        File localFile = new File(dir + "/" + fileName);
-                        String cloudFile = "/" + dbxBirthFolder + fileName;
-                        downloadFile(localFile, cloudFile);
-//                        try {
-//                            new SyncHelper(mContext).birthdayFromJson(localFile);
-//                        } catch (JSONException e1) {
-//                            e1.printStackTrace();
-//                        }
-                        try {
-                            mDBApi.delete(e.path);
-                        } catch (DropboxException e1) {
-                            e1.printStackTrace();
-                        }
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxBirthFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            RealmDb realmDb = RealmDb.getInstance();
+            BackupTool backupTool = BackupTool.getInstance();
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    File localFile = new File(dir + "/" + fileName);
+                    String cloudFile = "/" + dbxBirthFolder + fileName;
+                    downloadFile(localFile, cloudFile);
+                    try {
+                        realmDb.saveObject(backupTool.getBirthday(localFile.toString(), null));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        mDBApi.delete(e.path);
+                    } catch (DropboxException e1) {
+                        e1.printStackTrace();
                     }
                 }
             }
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Download on SD Card all places backup files found on Dropbox.
+     */
+    public void downloadPlaces() {
+        File dir = MemoryUtil.getDropboxPlacesDir();
+        if (dir == null) return;
+        startSession();
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxPlacesFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            RealmDb realmDb = RealmDb.getInstance();
+            BackupTool backupTool = BackupTool.getInstance();
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    File localFile = new File(dir + "/" + fileName);
+                    String cloudFile = "/" + dbxPlacesFolder + fileName;
+                    downloadFile(localFile, cloudFile);
+                    try {
+                        realmDb.saveObject(backupTool.getPlace(localFile.toString(), null));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        mDBApi.delete(e.path);
+                    } catch (DropboxException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * Count all reminder backup files in Dropbox folder.
+     *
      * @return number of found backup files.
      */
     public int countFiles() {
         int count = 0;
-        File dir = MemoryUtil.getDRDir();
+        File dir = MemoryUtil.getDropboxRemindersDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) count += files.length;
         }
-        dir = MemoryUtil.getDNDir();
+        dir = MemoryUtil.getDropboxNotesDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) count += files.length;
         }
-        dir = MemoryUtil.getDBDir();
+        dir = MemoryUtil.getDropboxBirthdaysDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) count += files.length;
         }
-        dir = MemoryUtil.getDGroupsDir();
+        dir = MemoryUtil.getDropboxGroupsDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) count += files.length;
         }
-
+        dir = MemoryUtil.getDropboxPlacesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
         return count;
     }
 }

@@ -170,30 +170,7 @@ public class ActivityCreateNote extends ThemedActivity {
                 mItem = RealmDb.getInstance().getNote(id);
             }
         }
-        if (name != null) {
-            String scheme = name.getScheme();
-            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getContentResolver();
-                try {
-                    String file = BackupTool.getInstance(this).readFileToJson(cr, name);
-                    mItem = BackupTool.getInstance(this).getNote(null, file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    mItem = BackupTool.getInstance(this).getNote(name.getPath(), null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else if (filePath != null) {
-            try {
-                mItem = BackupTool.getInstance(this).getNote(filePath, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        loadNoteFromFile(filePath, name);
         if (mItem != null) {
             String note = mItem.getSummary();
             mColor = mItem.getColor();
@@ -210,6 +187,24 @@ public class ActivityCreateNote extends ThemedActivity {
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
             ReminderApp application = (ReminderApp) getApplication();
             mTracker = application.getDefaultTracker();
+        }
+    }
+
+    private void loadNoteFromFile(String filePath, Uri name) {
+        try {
+            if (name != null) {
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mItem = BackupTool.getInstance().getNote(cr, name);
+                } else {
+                    mItem = BackupTool.getInstance().getNote(name.getPath(), null);
+                }
+            } else {
+                mItem = BackupTool.getInstance().getNote(filePath, null);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -256,7 +251,7 @@ public class ActivityCreateNote extends ThemedActivity {
 
     private void shareNote() {
         createObject();
-        File file = BackupTool.getInstance(this).createNote(mItem);
+        File file = BackupTool.getInstance().createNote(mItem);
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
