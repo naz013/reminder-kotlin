@@ -9,6 +9,7 @@ import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
+import com.elementary.tasks.reminder.AddReminderActivity;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,6 +28,9 @@ import com.elementary.tasks.databinding.DialogActionPickerBinding;
  */
 
 public abstract class BaseCalendarFragment extends BaseNavigationFragment {
+
+    protected static final int REMINDER_CODE = 1110;
+    protected static final int BD_CODE = 1111;
 
     protected long dateMills;
     private AlertDialog mDialog;
@@ -55,10 +59,10 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     }
 
     private void addReminder() {
-
+        getActivity().startActivityForResult(new Intent(mContext, AddReminderActivity.class).putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE);
     }
 
     private void addBirthday() {
-        mContext.startActivity(new Intent(mContext, AddBirthdayActivity.class).putExtra(Constants.INTENT_DATE, dateMills));
+        getActivity().startActivityForResult(new Intent(mContext, AddBirthdayActivity.class).putExtra(Constants.INTENT_DATE, dateMills), BD_CODE);
     }
 }

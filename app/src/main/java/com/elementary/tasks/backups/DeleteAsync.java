@@ -11,6 +11,7 @@ import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -91,15 +92,25 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                             File[] files = file.listFiles();
                             if (files != null) {
                                 for (File f : files) {
-                                    if (isLinked && isConnected)
-                                        gdx.deleteFile(f.getName());
+                                    if (isLinked && isConnected) {
+                                        try {
+                                            gdx.deleteFile(f.getName());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                     f.delete();
                                 }
                             }
                             res = 2;
                         } else {
-                            if (isLinked && isConnected)
-                                gdx.deleteFile(file.getName());
+                            if (isLinked && isConnected) {
+                                try {
+                                    gdx.deleteFile(file.getName());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             if (file.delete()) res = 1;
                         }
                     }

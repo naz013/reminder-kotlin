@@ -161,6 +161,7 @@ public class AddBirthdayActivity extends ThemedActivity {
             mItem = new BirthdayItem(contact, binding.birthDate.getText().toString().trim(), number, 0, contactId, myDay, myMonth);
         }
         RealmDb.getInstance().saveObject(mItem);
+        setResult(RESULT_OK);
         finish();
     }
 
@@ -168,6 +169,7 @@ public class AddBirthdayActivity extends ThemedActivity {
         if (mItem != null) {
             RealmDb.getInstance().deleteBirthday(mItem);
         }
+        setResult(RESULT_OK);
         finish();
     }
 
