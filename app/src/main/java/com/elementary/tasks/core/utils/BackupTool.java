@@ -8,6 +8,7 @@ import android.util.Log;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -53,6 +54,56 @@ public class BackupTool {
             instance = new BackupTool();
         }
         return instance;
+    }
+
+    public void exportTemplates() {
+        for (TemplateItem item : RealmDb.getInstance().getAllTemplates()) {
+            exportTemplate(item);
+        }
+    }
+
+    public void importTemplates() throws IOException {
+        File dir = MemoryUtil.getTemplatesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
+                        realmDb.saveObject(getTemplate(file.toString(), null));
+                    }
+                }
+            }
+        }
+    }
+
+    public void exportTemplate(TemplateItem item) {
+        WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
+        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
+        File dir = MemoryUtil.getTemplatesDir();
+        if (dir != null) {
+            String exportFileName = item.getKey() + FileConfig.FILE_NAME_TEMPLATE;
+            try {
+                writeFile(new File(dir, exportFileName), encrypted.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException {
+        WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), TemplateItem.class));
+        return item.get();
+    }
+
+    public TemplateItem getTemplate(String filePath, String json) throws IOException {
+        if (filePath != null && MemoryUtil.isSdPresent()) {
+            WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), TemplateItem.class));
+            return item.get();
+        } else if (json != null) {
+            WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(json, TemplateItem.class));
+            return item.get();
+        } else return null;
     }
 
     public void exportPlaces() {

@@ -30,17 +30,20 @@ public class MemoryUtil {
     public final static String DIR_GROUP_SD = "groups";
     public final static String DIR_BIRTHDAY_SD = "birthdays";
     public final static String DIR_PLACES_SD = "places";
+    public final static String DIR_TEMPLATES_SD = "templates";
     public final static String DIR_MAIL_SD = "mail_attachments";
     public final static String DIR_SD_DBX_TMP = "tmp_dropbox";
     public final static String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
     public final static String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
     public final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
     public final static String DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places";
+    public final static String DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates";
     public final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
     public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
     public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
     public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
     public final static String DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places";
+    public final static String DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates";
 
     public static boolean isSdPresent() {
         String state = Environment.getExternalStorageState();
@@ -68,12 +71,24 @@ public class MemoryUtil {
         return getDir(DIR_PLACES_SD);
     }
 
+    public static File getTemplatesDir() {
+        return getDir(DIR_TEMPLATES_SD);
+    }
+
     public static File getGooglePlacesDir() {
         return getDir(DIR_PLACES_SD_GDRIVE_TMP);
     }
 
+    public static File getGoogleTemplatesDir() {
+        return getDir(DIR_TEMPLATES_SD_GDRIVE_TMP);
+    }
+
     public static File getDropboxPlacesDir() {
         return getDir(DIR_PLACES_SD_DBX_TMP);
+    }
+
+    public static File getDropboxTemplatesDir() {
+        return getDir(DIR_TEMPLATES_SD_DBX_TMP);
     }
 
     public static File getDropboxRemindersDir() {

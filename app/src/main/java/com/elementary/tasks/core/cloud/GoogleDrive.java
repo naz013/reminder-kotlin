@@ -134,7 +134,40 @@ public class GoogleDrive {
             java.io.File[] files = dir.listFiles();
             if (files != null) count += files.length;
         }
+        dir = MemoryUtil.getGoogleTemplatesDir();
+        if (dir != null && dir.exists()) {
+            java.io.File[] files = dir.listFiles();
+            if (files != null) count += files.length;
+        }
         return count;
+    }
+
+    /**
+     * Upload all template backup files stored on SD Card.
+     * @throws IOException
+     */
+    public void saveTemplatesToDrive() throws IOException {
+        if (!isLinked()) return;
+        authorize();
+        String folderId = getFolderId();
+        if (folderId == null){
+            return;
+        }
+        java.io.File folder = MemoryUtil.getTemplatesDir();
+        if (folder == null) return;
+        java.io.File[] files = folder.listFiles();
+        if (files == null) return;
+        for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) continue;
+            File fileMetadata = new File();
+            fileMetadata.setName(file.getName());
+            fileMetadata.setDescription("Template Backup");
+            fileMetadata.setParents(Collections.singletonList(folderId));
+            FileContent mediaContent = new FileContent("text/plain", file);
+            driveService.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute();
+        }
     }
 
     /**
@@ -142,7 +175,6 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void saveRemindersToDrive() throws IOException {
-        Log.d(TAG, "saveReminderToDrive: ");
         if (!isLinked()) return;
         authorize();
         String folderId = getFolderId();
@@ -154,6 +186,7 @@ public class GoogleDrive {
         java.io.File[] files = folder.listFiles();
         if (files == null) return;
         for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Reminder Backup");
@@ -181,6 +214,7 @@ public class GoogleDrive {
         java.io.File[] files = folder.listFiles();
         if (files == null) return;
         for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Note Backup");
@@ -208,6 +242,7 @@ public class GoogleDrive {
         java.io.File[] files = folder.listFiles();
         if (files == null) return;
         for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Group Backup");
@@ -235,6 +270,7 @@ public class GoogleDrive {
         java.io.File[] files = folder.listFiles();
         if (files == null) return;
         for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Birthday Backup");
@@ -263,6 +299,7 @@ public class GoogleDrive {
         java.io.File[] files = folder.listFiles();
         if (files == null) return;
         for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Place Backup");
@@ -279,8 +316,43 @@ public class GoogleDrive {
      * Download on SD Card all reminder backup files stored on Google Drive.
      * @throws IOException
      */
+    public void downloadTemplates(boolean deleteBackup) throws IOException {
+        java.io.File folder = MemoryUtil.getGoogleRemindersDir();
+        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
+            return;
+        }
+        authorize();
+        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        RealmDb realmDb = RealmDb.getInstance();
+        BackupTool backupTool = BackupTool.getInstance();
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                String title = f.getName();
+                if (title.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
+                    java.io.File file = new java.io.File(folder, title);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    OutputStream out = new FileOutputStream(file);
+                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
+                    realmDb.saveObject(backupTool.getTemplate(file.toString(), null));
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    if (deleteBackup) deleteFileById(f.getId());
+                }
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+    }
+
+    /**
+     * Download on SD Card all reminder backup files stored on Google Drive.
+     * @throws IOException
+     */
     public void downloadReminders(boolean deleteBackup) throws IOException {
-        Log.d(TAG, "downloadReminder: ");
         java.io.File folder = MemoryUtil.getGoogleRemindersDir();
         if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
             return;

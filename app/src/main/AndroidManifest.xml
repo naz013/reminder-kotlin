@@ -51,92 +51,146 @@
         android:theme="@style/HomeDark.Cyan">
 
         <activity android:name=".navigation.MainActivity" />
-        <activity android:name=".creators.CreateReminderActivity" android:configChanges="keyboardHidden">
+        <activity
+            android:name=".creators.CreateReminderActivity"
+            android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.task2" />
+                <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.task2" />
+                <data android:pathPattern=".*\\.ta2" />
             </intent-filter>
         </activity>
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
         <activity android:name=".navigation.settings.images.MainImageActivity" />
-        <activity android:name=".navigation.settings.additional.TemplateActivity" android:configChanges="keyboardHidden"/>
+        <activity
+            android:name=".navigation.settings.additional.TemplateActivity"
+            android:configChanges="keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.te2" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.te2" />
+            </intent-filter>
+        </activity>
         <activity android:name=".core.additional.QuickSmsActivity" />
         <activity android:name=".core.additional.FollowReminderActivity" />
-        <activity android:name=".core.file_explorer.FileExplorerActivity" android:configChanges="keyboardHidden"/>
-        <activity android:name=".groups.CreateGroupActivity" android:configChanges="keyboardHidden">
+        <activity
+            android:name=".core.file_explorer.FileExplorerActivity"
+            android:configChanges="keyboardHidden" />
+        <activity
+            android:name=".groups.CreateGroupActivity"
+            android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.group2" />
+                <data android:pathPattern=".*\\.gr2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.group2" />
+                <data android:pathPattern=".*\\.gr2" />
             </intent-filter>
         </activity>
-        <activity android:name=".places.CreatePlaceActivity" android:configChanges="keyboardHidden">
+        <activity
+            android:name=".places.CreatePlaceActivity"
+            android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.place2" />
+                <data android:pathPattern=".*\\.pl2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.place2" />
+                <data android:pathPattern=".*\\.pl2" />
             </intent-filter>
         </activity>
-        <activity android:name=".notes.ActivityCreateNote" android:configChanges="keyboardHidden">
+        <activity
+            android:name=".notes.ActivityCreateNote"
+            android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.note2" />
+                <data android:pathPattern=".*\\.no2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.note2" />
+                <data android:pathPattern=".*\\.no2" />
             </intent-filter>
         </activity>
         <activity android:name=".notes.ImagePreviewActivity" />
         <activity android:name=".notes.NotePreviewActivity" />
-        <activity android:name=".google_tasks.TaskListActivity" android:configChanges="keyboardHidden"/>
-        <activity android:name=".google_tasks.TaskActivity" android:configChanges="keyboardHidden"/>
+        <activity
+            android:name=".google_tasks.TaskListActivity"
+            android:configChanges="keyboardHidden" />
+        <activity
+            android:name=".google_tasks.TaskActivity"
+            android:configChanges="keyboardHidden" />
         <activity android:name=".core.contacts.ContactsActivity" />
         <activity android:name=".reminder.ReminderDialogActivity" />
         <activity android:name=".core.apps.ApplicationActivity" />
@@ -144,23 +198,27 @@
         <activity android:name=".reminder.ShoppingPreviewActivity" />
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
-        <activity android:name=".birthdays.AddBirthdayActivity" >
+        <activity android:name=".birthdays.AddBirthdayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.birthday2" />
+                <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.birthday2" />
+                <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
         <activity android:name=".reminder.AddReminderActivity" />
@@ -176,7 +234,7 @@
 
         <receiver
             android:name=".core.services.CallReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -191,12 +249,13 @@
         <receiver android:name=".core.services.PositionDelayReceiver" />
         <receiver android:name=".core.services.DelayReceiver" />
         <receiver android:name=".core.services.MissedCallReceiver" />
-        <receiver android:name=".core.services.BootReceiver" >
+        <receiver android:name=".core.services.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
         <service android:name=".core.services.GeolocationService" />
         <service android:name=".core.services.TasksService" />
         <service android:name=".core.services.CheckBirthdays" />

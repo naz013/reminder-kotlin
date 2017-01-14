@@ -1,8 +1,10 @@
 package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
+import android.content.Context;
 import android.util.Log;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.RealmBirthdayItem;
 import com.elementary.tasks.core.calendar.CalendarEvent;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -312,6 +315,18 @@ public class RealmDb {
         }
         realm.commitTransaction();
         return items;
+    }
+
+    public String setDefaultGroups(Context context) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Random random = new Random();
+        GroupItem def = new GroupItem(context.getString(R.string.general), random.nextInt(16));
+        realm.copyToRealmOrUpdate(new RealmGroup(def));
+        realm.copyToRealmOrUpdate(new RealmGroup(new GroupItem(context.getString(R.string.work), random.nextInt(16))));
+        realm.copyToRealmOrUpdate(new RealmGroup(new GroupItem(context.getString(R.string.personal), random.nextInt(16))));
+        realm.commitTransaction();
+        return def.getUuId();
     }
 
     private void saveGroup(GroupItem item) {
