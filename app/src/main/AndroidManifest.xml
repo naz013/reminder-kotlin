@@ -144,7 +144,25 @@
         <activity android:name=".reminder.ShoppingPreviewActivity" />
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
-        <activity android:name=".birthdays.AddBirthdayActivity" />
+        <activity android:name=".birthdays.AddBirthdayActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.birthday2" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.birthday2" />
+            </intent-filter>
+        </activity>
         <activity android:name=".reminder.AddReminderActivity" />
 
         <activity

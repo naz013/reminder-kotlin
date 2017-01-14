@@ -3,10 +3,12 @@ package com.elementary.tasks.creators;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
@@ -61,6 +64,7 @@ import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,13 +158,33 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
-        mReminder = RealmDb.getInstance().getReminder(id);
+        loadReminder();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
         isExportToTasks = new GoogleTasks(this).isLinked();
         initActionBar();
         initNavigation();
         editReminder();
+    }
+
+    private void loadReminder() {
+        Intent intent = getIntent();
+        try {
+            Uri name = intent.getData();
+            String scheme = name.getScheme();
+            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                ContentResolver cr = getContentResolver();
+                mReminder = BackupTool.getInstance().getReminder(cr, name);
+            } else {
+                mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
+            }
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            String id = intent.getStringExtra(Constants.INTENT_ID);
+            if (id != null) {
+                mReminder = RealmDb.getInstance().getReminder(id);
+            }
+        }
     }
 
     private void editReminder() {

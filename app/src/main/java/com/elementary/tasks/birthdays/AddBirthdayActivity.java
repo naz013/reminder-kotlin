@@ -1,9 +1,11 @@
 package com.elementary.tasks.birthdays;
 
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import android.widget.DatePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Permissions;
@@ -22,6 +25,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,16 +52,17 @@ public class AddBirthdayActivity extends ThemedActivity {
 
     private ActivityAddBirthdayBinding binding;
 
-    private int myYear = 0, myMonth = 0, myDay = 0;
+    private int myYear = 0;
+    private int myMonth = 0;
+    private int myDay = 0;
     private String number;
     private BirthdayItem mItem;
+    private long date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String id = intent.getStringExtra(Constants.INTENT_ID);
-        long date = intent.getLongExtra(Constants.INTENT_DATE, 0);
+        loadBirthday();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_birthday);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -74,7 +79,13 @@ public class AddBirthdayActivity extends ThemedActivity {
             if (isChecked) binding.container.setVisibility(View.VISIBLE);
             else binding.container.setVisibility(View.GONE);
         });
-        mItem = RealmDb.getInstance().getBirthday(id);
+        binding.birthDate.setOnClickListener(view -> dateDialog());
+        binding.pickContact.setOnClickListener(view -> pickContact());
+        showBirthday();
+
+    }
+
+    private void showBirthday() {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         if (mItem != null) {
@@ -99,8 +110,28 @@ public class AddBirthdayActivity extends ThemedActivity {
         myMonth = calendar.get(Calendar.MONTH);
         myDay = calendar.get(Calendar.DAY_OF_MONTH);
         binding.birthDate.setText(CheckBirthdaysAsync.dateFormat.format(calendar.getTime()));
-        binding.birthDate.setOnClickListener(view -> dateDialog());
-        binding.pickContact.setOnClickListener(view -> pickContact());
+    }
+
+    private void loadBirthday() {
+        Intent intent = getIntent();
+        date = intent.getLongExtra(Constants.INTENT_DATE, 0);
+        try {
+            Uri name = intent.getData();
+            String scheme = name.getScheme();
+            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                ContentResolver cr = getContentResolver();
+                mItem = BackupTool.getInstance().getBirthday(cr, name);
+            } else {
+                mItem = BackupTool.getInstance().getBirthday(name.getPath(), null);
+            }
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            String id = intent.getStringExtra(Constants.INTENT_ID);
+            if (id != null) {
+                mItem = RealmDb.getInstance().getBirthday(id);
+            }
+        }
     }
 
     private void pickContact() {

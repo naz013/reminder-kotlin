@@ -1,7 +1,9 @@
 package com.elementary.tasks.groups;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -17,6 +20,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ColorPickerView;
 import com.elementary.tasks.databinding.ActivityCreateGroupBinding;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -46,24 +50,43 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String id = intent.getStringExtra(Constants.INTENT_ID);
+        loadGroup();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_group);
-
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        ColorPickerView pickerView = binding.pickerView;
-        pickerView.setListener(this);
-        if (id != null) {
-            mItem = RealmDb.getInstance().getGroup(id);
-        }
+        binding.pickerView.setListener(this);
+        showGroup();
+    }
+
+    private void showGroup() {
         if (mItem != null) {
             binding.editField.setText(mItem.getTitle());
             color = mItem.getColor();
         }
-        pickerView.setSelectedColor(color);
+        binding.pickerView.setSelectedColor(color);
         setColor(color);
+    }
+
+    private void loadGroup() {
+        Intent intent = getIntent();
+        try {
+            Uri name = intent.getData();
+            String scheme = name.getScheme();
+            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                ContentResolver cr = getContentResolver();
+                mItem = BackupTool.getInstance().getGroup(cr, name);
+            } else {
+                mItem = BackupTool.getInstance().getGroup(name.getPath(), null);
+            }
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            String id = intent.getStringExtra(Constants.INTENT_ID);
+            if (id != null) {
+                mItem = RealmDb.getInstance().getGroup(id);
+            }
+        }
     }
 
     private void saveCategory(){
