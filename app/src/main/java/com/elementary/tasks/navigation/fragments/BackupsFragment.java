@@ -52,7 +52,6 @@ public class BackupsFragment extends BaseNavigationFragment {
     private UserInfoAsync.DataListener mDataCallback = new UserInfoAsync.DataListener() {
         @Override
         public void onReceive(List<UserItem> result) {
-            Log.d(TAG, "onReceive: " + result.size());
             if (mAdapter != null) {
                 mAdapter.setData(result);
             }
