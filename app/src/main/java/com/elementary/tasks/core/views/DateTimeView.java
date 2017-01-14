@@ -121,6 +121,10 @@ public class DateTimeView extends RelativeLayout implements
         return calendar.getTimeInMillis();
     }
 
+    public void setDateTime(long dateTime) {
+        updateDateTime(dateTime);
+    }
+
     public void setDateTime(String dateTime) {
         long mills = TimeUtil.getDateTimeFromGmt(dateTime);
         updateDateTime(mills);

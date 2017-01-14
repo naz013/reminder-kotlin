@@ -141,7 +141,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
         }
-        if (RealmDb.getInstance().getArchivedReminder().size() == 0){
+        if (RealmDb.getInstance().getArchivedReminders().size() == 0){
             menu.findItem(R.id.action_delete_all).setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -197,7 +197,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void loadData() {
-        mDataList = RealmDb.getInstance().getArchivedReminder();
+        mDataList = RealmDb.getInstance().getArchivedReminders();
         mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

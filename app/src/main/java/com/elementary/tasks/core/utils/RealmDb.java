@@ -804,12 +804,25 @@ public class RealmDb {
         return items;
     }
 
-    public List<Reminder> getArchivedReminder() {
+    public List<Reminder> getArchivedReminders() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"eventTime"};
         Sort[] orders = new Sort[]{Sort.ASCENDING};
         List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Reminder> getAllRemindera() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmReminder> list = realm.where(RealmReminder.class).findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));

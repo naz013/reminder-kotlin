@@ -57,6 +57,25 @@ public class BackupTool {
         return instance;
     }
 
+    public void exportPlaces() {
+        for (PlaceItem item : RealmDb.getInstance().getAllPlaces()) {
+            exportPlace(item);
+        }
+    }
+
+    public void importPlaces() throws IOException {
+        File dir = MemoryUtil.getPlacesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    realmDb.saveObject(getPlace(file.toString(), null));
+                }
+            }
+        }
+    }
+
     public void exportPlace(PlaceItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
@@ -84,6 +103,25 @@ public class BackupTool {
             WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(json, PlaceItem.class));
             return item.get();
         } else return null;
+    }
+
+    public void exportBirthdays() {
+        for (BirthdayItem item : RealmDb.getInstance().getAllBirthdays()) {
+            exportBirthday(item);
+        }
+    }
+
+    public void importBirthdays() throws IOException {
+        File dir = MemoryUtil.getBirthdaysDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    realmDb.saveObject(getBirthday(file.toString(), null));
+                }
+            }
+        }
     }
 
     public void exportBirthday(BirthdayItem item) {
@@ -115,6 +153,12 @@ public class BackupTool {
         } else return null;
     }
 
+    public void exportGroups() {
+        for (GroupItem item : RealmDb.getInstance().getAllGroups()) {
+            exportGroup(item);
+        }
+    }
+
     public void exportGroup(GroupItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
@@ -127,6 +171,19 @@ public class BackupTool {
                 e.printStackTrace();
             }
         } else Log.i(TAG, "Couldn't find external storage!");
+    }
+
+    public void importGroups() throws IOException {
+        File dir = MemoryUtil.getGroupsDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    realmDb.saveObject(getGroup(file.toString(), null));
+                }
+            }
+        }
     }
 
     public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException {
@@ -142,6 +199,25 @@ public class BackupTool {
             WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(json, GroupItem.class));
             return item.get();
         } else return null;
+    }
+
+    public void exportReminders() {
+        for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
+            exportReminder(item);
+        }
+    }
+
+    public void importReminders() throws IOException {
+        File dir = MemoryUtil.getRemindersDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    realmDb.saveObject(getReminder(file.toString(), null));
+                }
+            }
+        }
     }
 
     public void exportReminder(Reminder item) {
@@ -186,6 +262,25 @@ public class BackupTool {
             WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(json, NoteItem.class));
             return item.get();
         } else return null;
+    }
+
+    public void exportNotes() {
+        for (NoteItem item : RealmDb.getInstance().getAllNotes(null)) {
+            exportNote(item);
+        }
+    }
+
+    public void importNotes() throws IOException {
+        File dir = MemoryUtil.getNotesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                RealmDb realmDb = RealmDb.getInstance();
+                for (File file : files) {
+                    realmDb.saveObject(getNote(file.toString(), null));
+                }
+            }
+        }
     }
 
     public void exportNote(NoteItem item) {
@@ -271,13 +366,12 @@ public class BackupTool {
      */
     public static String decrypt(String string) {
         String result = "";
-        byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
         try {
+            byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
             result = new String(byte_string, "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
-        Log.d(TAG, "decrypt: " + result);
         return result;
     }
 
@@ -288,7 +382,6 @@ public class BackupTool {
      * @return Encrypted string
      */
     public static String encrypt(String string) {
-        Log.d(TAG, "encrypt: " + string);
         byte[] string_byted = null;
         try {
             string_byted = string.getBytes("UTF-8");

@@ -6,7 +6,15 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.IoHelper;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.reminder.models.Reminder;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -64,42 +72,41 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-//        IOHelper ioHelper = new IOHelper(mContext);
-//        ioHelper.restoreGroup(true, true);
-//        ioHelper.backupGroup(true);
-//        GroupHelper helper = GroupHelper.getInstance(mContext);
-//        List<GroupItem> list = helper.getAll();
-//        if (list.size() == 0) {
-//            long time = System.currentTimeMillis();
-//            String defUiID = SyncHelper.generateID();
-//            helper.saveGroup(new GroupItem("General", defUiID, 5, 0, time));
-//            helper.saveGroup(new GroupItem("Work", SyncHelper.generateID(), 3, 0, time));
-//            helper.saveGroup(new GroupItem("Personal", SyncHelper.generateID(), 0, 0, time));
-//            List<ReminderItem> items = ReminderHelper.getInstance(mContext).getAll();
-//            for (ReminderItem item : items) {
-//                item.setGroupId(defUiID);
-//            }
-//            ReminderHelper.getInstance(mContext).saveReminders(items);
-//        }
-//        //export & import reminders
-//        publishProgress(mContext.getString(R.string.syncing_reminders));
-//        ioHelper.restoreReminder(true, true);
-//        ioHelper.backupReminder(true);
-//
-//        //export & import notes
-//        SharedPrefs prefs = SharedPrefs.getInstance(mContext);
-//        if (prefs.getBoolean(Prefs.SYNC_NOTES)) {
-//            publishProgress(mContext.getString(R.string.syncing_notes));
-//            ioHelper.restoreNote(true, true);
-//            ioHelper.backupNote(true);
-//        }
-//
-//        //export & import birthdays
-//        if (prefs.getBoolean(Prefs.SYNC_BIRTHDAYS)) {
-//            publishProgress(mContext.getString(R.string.syncing_birthdays));
-//            ioHelper.restoreBirthday(true, true);
-//            ioHelper.backupBirthday(true);
-//        }
+        IoHelper ioHelper = new IoHelper(mContext);
+        ioHelper.restoreGroup(true, true);
+        ioHelper.backupGroup(true);
+        List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+        if (list.size() == 0) {
+            String time = TimeUtil.getGmtDateTime();
+            String defUiID = UUID.randomUUID().toString();
+            RealmDb.getInstance().saveObject(new GroupItem("General", defUiID, 5, time));
+            RealmDb.getInstance().saveObject(new GroupItem("Work", UUID.randomUUID().toString(), 3, time));
+            RealmDb.getInstance().saveObject(new GroupItem("Personal", UUID.randomUUID().toString(), 0, time));
+            List<Reminder> items = RealmDb.getInstance().getAllRemindera();
+            for (Reminder item : items) {
+                item.setGroupUuId(defUiID);
+                RealmDb.getInstance().saveObject(item);
+            }
+        }
+        //export & import reminders
+        publishProgress(mContext.getString(R.string.syncing_reminders));
+        ioHelper.restoreReminder(true, true);
+        ioHelper.backupReminder(true);
+
+        //export & import notes
+        publishProgress(mContext.getString(R.string.syncing_notes));
+        ioHelper.restoreNote(true, true);
+        ioHelper.backupNote(true);
+
+        //export & import birthdays
+        publishProgress(mContext.getString(R.string.syncing_birthdays));
+        ioHelper.restoreBirthday(true, true);
+        ioHelper.backupBirthday(true);
+
+        //export & import places
+        publishProgress(mContext.getString(R.string.syncing_places));
+        ioHelper.restorePlaces(true, true);
+        ioHelper.backupPlaces(true);
         return true;
     }
 

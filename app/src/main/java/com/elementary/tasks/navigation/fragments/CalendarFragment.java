@@ -1,5 +1,7 @@
 package com.elementary.tasks.navigation.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -121,7 +123,7 @@ public class CalendarFragment extends BaseCalendarFragment {
             }
 
             @Override
-            public void onCaldroidViewCreated() {
+            public void onViewCreated() {
             }
 
             @Override
@@ -132,19 +134,6 @@ public class CalendarFragment extends BaseCalendarFragment {
         calendarView.setListener(listener);
         calendarView.refreshView();
         replaceFragment(calendarView, getString(R.string.calendar));
-//        HashMap<DateTime, Events> map = new HashMap<>();
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        for (int i = 0; i < 100; i++) {
-//            Events events = new Events();
-//            int color = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(mContext).getReminderColor()));
-//            for (int j = 0; j < 9; j++) {
-//                events.addNode("Event " + j, color, Events.Type.REMINDER);
-//            }
-//            map.put(FlextHelper.convertToDateTime(calendar.getTimeInMillis()), events);
-//            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
-//        }
-//        calendarView.setEvents(map);
         boolean isReminder = Prefs.getInstance(mContext).isRemindersInCalendarEnabled();
         boolean isFeature = Prefs.getInstance(mContext).isFutureEventEnabled();
         calendarView.setEvents(new EventsDataProvider(mContext, isReminder, isFeature).getEvents());
@@ -160,5 +149,13 @@ public class CalendarFragment extends BaseCalendarFragment {
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         dateMills = calendar.getTimeInMillis();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REMINDER_CODE || requestCode == BD_CODE && resultCode == Activity.RESULT_OK) {
+            showCalendar();
+        }
     }
 }

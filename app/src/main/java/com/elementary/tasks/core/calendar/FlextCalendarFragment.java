@@ -301,7 +301,7 @@ public class FlextCalendarFragment extends Fragment {
         setupDateGridPages(view);
         refreshView();
         if (caldroidListener != null) {
-            caldroidListener.onCaldroidViewCreated();
+            caldroidListener.onViewCreated();
         }
         return view;
     }

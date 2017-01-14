@@ -47,7 +47,7 @@ public class MonthView extends View implements View.OnTouchListener {
     private static final int ROWS = 6;
     private static final int COLS = 7;
     private static final int GRID_R_C = 3;
-    private static final long LONG_CLICK_TIME = 1000;
+    private static final long LONG_CLICK_TIME = 500;
 
     private int mYear;
     private int mMonth;

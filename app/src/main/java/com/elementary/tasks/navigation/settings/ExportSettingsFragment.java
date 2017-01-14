@@ -26,6 +26,7 @@ import com.elementary.tasks.databinding.FragmentSettingsExportBinding;
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -94,7 +95,11 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
                 GoogleDrive gdx = new GoogleDrive(mContext);
                 Dropbox dbx = new Dropbox(mContext);
                 if (SuperUtil.isConnected(mContext)) {
-                    gdx.clean();
+                    try {
+                        gdx.clean();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     dbx.cleanFolder();
                 }
             }).start();

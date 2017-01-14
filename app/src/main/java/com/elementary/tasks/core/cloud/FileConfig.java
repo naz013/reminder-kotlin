@@ -20,22 +20,22 @@ public class FileConfig {
     /**
      * File extensions for reminder.
      */
-    public static final String FILE_NAME_REMINDER = ".task";
+    public static final String FILE_NAME_REMINDER = ".task2";
 
     /**
      * File extension for note.
      */
-    public static final String FILE_NAME_NOTE = ".note";
+    public static final String FILE_NAME_NOTE = ".note2";
 
     /**
      * File extension for reminder group.
      */
-    public static final String FILE_NAME_GROUP = ".groupel";
+    public static final String FILE_NAME_GROUP = ".group2";
 
     /**
      * File extension for birthday.
      */
-    public static final String FILE_NAME_BIRTHDAY = ".birthday";
+    public static final String FILE_NAME_BIRTHDAY = ".birthday2";
 
     /**
      * File extension for image.
@@ -45,5 +45,5 @@ public class FileConfig {
     /**
      * File extension for place.
      */
-    public static final String FILE_NAME_PLACE = ".place";
+    public static final String FILE_NAME_PLACE = ".place2";
 }

@@ -91,6 +91,7 @@
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
         <activity android:name=".birthdays.AddBirthdayActivity" />
+        <activity android:name=".reminder.AddReminderActivity" />
 
         <activity
             android:name=".core.SplashScreen"
