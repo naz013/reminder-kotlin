@@ -149,7 +149,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     protected void onDestroy() {
         super.onDestroy();
         removeFlags();
-        new BackupTask(this).execute();
+        if (mPrefs.isAutoBackupEnabled()) {
+            new BackupTask(this).execute();
+        }
     }
 
     @Override

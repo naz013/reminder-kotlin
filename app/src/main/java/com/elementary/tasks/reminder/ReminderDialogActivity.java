@@ -301,7 +301,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
 //        notifier.recreatePermanent();
         removeFlags();
-        new BackupTask(this).execute();
+        if (mPrefs.isAutoBackupEnabled()) {
+            new BackupTask(this).execute();
+        }
     }
 
     @Override
