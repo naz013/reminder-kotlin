@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -234,7 +233,6 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     private void loadData() {
         taskListDatum = new ArrayList<>();
         List<TaskListItem> taskLists = getTaskLists();
-        Log.d(TAG, "loadData: " + taskLists.size());
         if (taskLists.size() == 0) return;
         Map<String, Integer> colors = new HashMap<>();
         for (int i = 0; i < taskLists.size(); i++) {
@@ -242,7 +240,6 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
             taskListDatum.add(new TaskListWrapperItem(item, getList(item.getListId()), i));
             if (i > 0) colors.put(item.getListId(), item.getColor());
         }
-        Log.d(TAG, "loadData: " + colors.toString());
         int pos = Prefs.getInstance(mContext).getLastGoogleList();
         final TaskPagerAdapter pagerAdapter = new TaskPagerAdapter(getFragmentManager(), taskListDatum, colors);
         pager.setAdapter(pagerAdapter);
@@ -300,7 +297,6 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
 
     private List<TaskItem> getList(String listId) {
         List<TaskItem> mData = new ArrayList<>();
-        Log.d(TAG, "getList: " + listId);
         String orderPrefs = Prefs.getInstance(mContext).getTasksOrder();
         if (listId == null) {
             List<TaskItem> list = RealmDb.getInstance().getTasks(orderPrefs);
