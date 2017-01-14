@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
+import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
@@ -148,6 +149,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     protected void onDestroy() {
         super.onDestroy();
         removeFlags();
+        new BackupTask(this).execute();
     }
 
     @Override
