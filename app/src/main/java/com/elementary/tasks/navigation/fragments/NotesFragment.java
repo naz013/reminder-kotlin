@@ -19,22 +19,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.interfaces.SimpleListener;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
 import com.elementary.tasks.notes.ActivityCreateNote;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
+import com.elementary.tasks.notes.SyncNotes;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,15 +88,7 @@ public class NotesFragment extends BaseNavigationFragment {
                         previewNote(noteItem.getKey(), view);
                         break;
                     case 1:
-//                        if (NoteHelper.getInstance(mContext).shareNote(id)){
-//                            Messages.toast(mContext, mContext.getString(R.string.sent));
-//                        } else {
-//                            if (mCallbacks != null) {
-//                                mCallbacks.showSnackbar(R.string.error_sending);
-//                            } else {
-//                                Messages.toast(mContext, R.string.error_sending);
-//                            }
-//                        }
+                        shareNote(noteItem);
                         break;
                     case 2:
                         showInStatusBar(noteItem.getKey());
@@ -143,6 +140,7 @@ public class NotesFragment extends BaseNavigationFragment {
         showData();
         return true;
     };
+    private SyncNotes.SyncListener mSyncListener = b -> showData();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -179,11 +177,20 @@ public class NotesFragment extends BaseNavigationFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private void shareNote(NoteItem noteItem){
+        File file = BackupTool.getInstance().createNote(noteItem);
+        if (!file.exists() || !file.canRead()) {
+            Toast.makeText(mContext, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        TelephonyUtil.sendNote(file, mContext, noteItem.getSummary());
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sync:
-//                new SyncNotesAsync(mContext, this).execute();
+                new SyncNotes(mContext, mSyncListener).execute();
                 break;
             case R.id.action_order:
                 showDialog();
