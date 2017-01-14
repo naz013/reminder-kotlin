@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,6 +47,13 @@ import java.io.IOException;
 
 public class Dropbox {
 
+    private static final String TAG = "Dropbox";
+    public static final String APP_KEY = "4zi1d414h0v8sxe";
+    public static final String APP_SECRET = "aopehxo80oq8g5o";
+    final static private String ACCOUNT_PREFS_NAME = "prefs";
+    final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
+    final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
+
     private Context mContext;
 
     private String dbxFolder = "Reminders/";
@@ -58,12 +66,6 @@ public class Dropbox {
 
     private DropboxAPI<AndroidAuthSession> mDBApi;
     private DropboxAPI.Entry newEntry;
-
-    public static final String APP_KEY = "4zi1d414h0v8sxe";
-    public static final String APP_SECRET = "aopehxo80oq8g5o";
-    final static private String ACCOUNT_PREFS_NAME = "prefs";
-    final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
-    final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 
     public Dropbox(Context context) {
         this.mContext = context;
@@ -704,11 +706,20 @@ public class Dropbox {
         startSession();
         if (!isLinked()) return 0;
         try {
-            newEntry = mDBApi.metadata("/" + dbxSettingsFolder, 1000, null, true, null);
+            newEntry = mDBApi.metadata("/", 1000, null, true, null);
             if (newEntry == null) return 0;
             for (DropboxAPI.Entry e : newEntry.contents) {
                 if (!e.isDeleted) {
-                    count++;
+                    if (e.isDir) {
+                        DropboxAPI.Entry entry = mDBApi.metadata(e.path, 1000, null, true, null);
+                        if (entry == null) continue;
+                        List<DropboxAPI.Entry> list = entry.contents;
+                        if (list != null) {
+                            count += list.size();
+                        }
+                    } else {
+                        count++;
+                    }
                 }
             }
         } catch (DropboxException e) {
