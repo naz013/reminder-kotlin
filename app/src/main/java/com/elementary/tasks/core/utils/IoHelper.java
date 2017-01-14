@@ -3,10 +3,8 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.cloud.GoogleDrive;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -33,38 +31,6 @@ public class IoHelper {
     public IoHelper(Context context) {
         this.mContext = context;
         isConnected = SuperUtil.isConnected(context);
-    }
-
-    /**
-     * Delete all local and cloud file copies.
-     *
-     * @param name file name.
-     */
-    public void deleteReminder(String name) {
-        String exportFileName = name + FileConfig.FILE_NAME_REMINDER;
-        File dir = MemoryUtil.getRemindersDir();
-        if (dir != null) {
-            File file = new File(dir, exportFileName);
-            if (file.exists()) file.delete();
-        }
-        dir = MemoryUtil.getDropboxRemindersDir();
-        if (dir != null) {
-            File file = new File(dir, exportFileName);
-            if (file.exists()) file.delete();
-        }
-        dir = MemoryUtil.getGoogleRemindersDir();
-        if (dir != null) {
-            File file = new File(dir, exportFileName);
-            if (file.exists()) file.delete();
-        }
-        if (isConnected) {
-            new Dropbox(mContext).deleteReminder(name);
-            try {
-                new GoogleDrive(mContext).deleteReminderFileByName(name);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

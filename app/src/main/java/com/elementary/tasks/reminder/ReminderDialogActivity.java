@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
+import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
@@ -300,6 +301,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
 //        notifier.recreatePermanent();
         removeFlags();
+        new BackupTask(this).execute();
     }
 
     @Override
