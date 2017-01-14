@@ -127,7 +127,9 @@
                         android:layout_toLeftOf="@+id/cardClear"
                         android:drawableLeft="@drawable/ic_search_white_24dp"
                         android:hint="@string/address"
+                        android:imeOptions="actionSearch"
                         android:maxLines="1"
+                        android:singleLine="true"
                         android:textSize="@dimen/create_text_size_normal" />
 
                     <ImageButton
