@@ -105,8 +105,10 @@ public class RealmDb {
     public void deleteBirthday(BirthdayItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmBirthdayItem callItem = realm.where(RealmBirthdayItem.class).equalTo("key", item.getKey()).findFirst();
-        callItem.deleteFromRealm();
+        RealmBirthdayItem birthdayItem = realm.where(RealmBirthdayItem.class).equalTo("key", item.getKey()).findFirst();
+        if (birthdayItem != null) {
+            birthdayItem.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -184,7 +186,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmCallItem callItem = realm.where(RealmCallItem.class).equalTo("number", item.getNumber()).findFirst();
-        callItem.deleteFromRealm();
+        if (callItem != null) {
+            callItem.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -210,8 +214,10 @@ public class RealmDb {
     public void deleteCalendarEvent(CalendarEvent item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmCalendarEvent template = realm.where(RealmCalendarEvent.class).equalTo("uuId", item.getUuId()).findFirst();
-        template.deleteFromRealm();
+        RealmCalendarEvent event = realm.where(RealmCalendarEvent.class).equalTo("uuId", item.getUuId()).findFirst();
+        if (event != null) {
+            event.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -277,7 +283,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmTemplate template = realm.where(RealmTemplate.class).equalTo("key", item.getKey()).findFirst();
-        template.deleteFromRealm();
+        if (template != null) {
+            template.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -317,7 +325,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmGroup object = realm.where(RealmGroup.class).equalTo("uuId", item.getUuId()).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -393,7 +403,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmPlace object = realm.where(RealmPlace.class).equalTo("key", item.getKey()).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -433,7 +445,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmNote object = realm.where(RealmNote.class).equalTo("key", item.getKey()).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -498,7 +512,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmTask object = realm.where(RealmTask.class).equalTo("taskId", item.getTaskId()).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
     }
 
@@ -653,7 +669,9 @@ public class RealmDb {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
-        object.deleteFromRealm();
+        if (object != null) {
+            object.deleteFromRealm();
+        }
         realm.commitTransaction();
         return true;
     }
