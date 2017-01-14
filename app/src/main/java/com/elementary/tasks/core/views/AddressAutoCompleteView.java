@@ -6,6 +6,8 @@ import android.location.Address;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -94,6 +96,15 @@ public class AddressAutoCompleteView extends AutoCompleteTextView {
             public void afterTextChanged(Editable editable) {
 
             }
+        });
+        setSingleLine(true);
+        setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        setOnEditorActionListener((textView, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_SEARCH)) {
+                performTypeValue(getText().toString().trim());
+                return true;
+            }
+            return false;
         });
     }
 
