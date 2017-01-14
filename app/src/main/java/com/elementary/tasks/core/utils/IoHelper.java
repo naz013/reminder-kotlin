@@ -45,6 +45,18 @@ public class IoHelper {
         backupTemplates(true);
     }
 
+    public void backupSettings() {
+        Prefs.getInstance(mContext).savePrefsBackup();
+        if (isConnected) {
+            new Dropbox(mContext).uploadSettings();
+            try {
+                new GoogleDrive(mContext).saveSettingsToDrive();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Create backup files for groups.
      *

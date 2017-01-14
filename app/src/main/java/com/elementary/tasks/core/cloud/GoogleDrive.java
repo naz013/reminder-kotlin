@@ -107,39 +107,153 @@ public class GoogleDrive {
      * Count all backup files stored on Google Drive.
      * @return number of files in local folder.
      */
-    public int countFiles(){
+    public int countFiles() throws IOException {
+        if (!isLinked()) return 0;
         int count = 0;
-        java.io.File dir = MemoryUtil.getGoogleRemindersDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getGoogleNotesDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getGoogleBirthdaysDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getGoogleGroupsDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getGooglePlacesDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getGoogleTemplatesDir();
-        if (dir != null && dir.exists()) {
-            java.io.File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
+        authorize();
+        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                String title = f.getName();
+                if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_PLACE)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_GROUP)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_NOTE)) {
+                    count++;
+                } else if (title.endsWith(FileConfig.FILE_NAME_REMINDER)) {
+                    count++;
+                }
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
         return count;
+    }
+
+    public void downloadData(boolean deleteBackup, boolean isPrefs) throws IOException {
+        if (!isLinked()) return;
+        authorize();
+        java.io.File folderR = MemoryUtil.getGoogleRemindersDir();
+        boolean isReminders = true;
+        if (!folderR.exists() && !folderR.mkdirs()) {
+            isReminders = false;
+        }
+        java.io.File folderN = MemoryUtil.getGoogleNotesDir();
+        boolean isNotes = true;
+        if (!folderN.exists() && !folderN.mkdirs()) {
+            isNotes = false;
+        }
+        java.io.File folderG = MemoryUtil.getGoogleGroupsDir();
+        boolean isGroups = true;
+        if (!folderG.exists() && !folderG.mkdirs()) {
+            isGroups = false;
+        }
+        java.io.File folderB = MemoryUtil.getGoogleBirthdaysDir();
+        boolean isBirthdays = true;
+        if (!folderB.exists() && !folderB.mkdirs()) {
+            isBirthdays = false;
+        }
+        java.io.File folderP = MemoryUtil.getGooglePlacesDir();
+        boolean isPlaces = true;
+        if (!folderP.exists() && !folderP.mkdirs()) {
+            isPlaces = false;
+        }
+        java.io.File folderT = MemoryUtil.getGoogleTemplatesDir();
+        boolean isTemplates = true;
+        if (!folderT.exists() && !folderT.mkdirs()) {
+            isTemplates = false;
+        }
+        java.io.File folderPrefs = MemoryUtil.getGooglePrefsDir();
+        if (isPrefs) {
+            if (!folderPrefs.exists() && !folderPrefs.mkdirs()) {
+                isPrefs = false;
+            }
+        }
+        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        RealmDb realmDb = RealmDb.getInstance();
+        BackupTool backupTool = BackupTool.getInstance();
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                String title = f.getName();
+                if (title.endsWith(FileConfig.FILE_NAME_REMINDER)) {
+                    java.io.File file = new java.io.File(folderR, title);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    OutputStream out = new FileOutputStream(file);
+                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
+                    if (deleteBackup) deleteFileById(f.getId());
+                    realmDb.saveObject(backupTool.getReminder(file.toString(), null));
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                }
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+    }
+
+    public void saveSettingsToDrive() throws IOException {
+        if (!isLinked()) return;
+        authorize();
+        String folderId = getFolderId();
+        if (folderId == null){
+            return;
+        }
+        java.io.File folder = MemoryUtil.getPrefsDir();
+        if (folder == null) return;
+        java.io.File[] files = folder.listFiles();
+        if (files == null) return;
+        for (java.io.File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue;
+            File fileMetadata = new File();
+            fileMetadata.setName(file.getName());
+            fileMetadata.setDescription("Settings Backup");
+            fileMetadata.setParents(Collections.singletonList(folderId));
+            FileContent mediaContent = new FileContent("text/plain", file);
+            driveService.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute();
+            break;
+        }
+    }
+
+    public void downloadSettings() throws IOException {
+        java.io.File folder = MemoryUtil.getPrefsDir();
+        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
+            return;
+        }
+        authorize();
+        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                String title = f.getName();
+                if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
+                    java.io.File file = new java.io.File(folder, title);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    OutputStream out = new FileOutputStream(file);
+                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
+                    Prefs.getInstance(mContext).loadPrefsFromFile();
+                    break;
+                }
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
     }
 
     /**
