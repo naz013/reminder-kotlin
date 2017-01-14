@@ -38,12 +38,14 @@ public class MemoryUtil {
     public final static String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
     public final static String DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places";
     public final static String DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates";
+    public final static String DIR_PREFERENCES_SD_DBX_TMP = "tmp_dropbox_preferences";
     public final static String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
     public final static String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
     public final static String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
     public final static String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
     public final static String DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places";
     public final static String DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates";
+    public final static String DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences";
 
     public static boolean isSdPresent() {
         String state = Environment.getExternalStorageState();
@@ -129,6 +131,14 @@ public class MemoryUtil {
 
     public static File getPrefsDir() {
         return getDir(DIR_PREFS);
+    }
+
+    public static File getGooglePrefsDir() {
+        return getDir(DIR_PREFERENCES_SD_GDRIVE_TMP);
+    }
+
+    public static File getDropboxPrefsDir() {
+        return getDir(DIR_PREFERENCES_SD_DBX_TMP);
     }
 
     public static File getImageCacheDir() {

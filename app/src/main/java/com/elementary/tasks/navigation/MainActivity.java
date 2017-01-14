@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -100,6 +101,14 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (Prefs.getInstance(this).isUiChanged()) {
             Prefs.getInstance(this).setUiChanged(false);
             recreate();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Prefs.getInstance(this).isSettingsBackupEnabled()) {
+            new BackupSettingTask(this).execute();
         }
     }
 

@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.elementary.tasks.core.cloud.FileConfig;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -132,16 +133,16 @@ abstract class SharedPrefs extends PrefsConstants {
         return res;
     }
 
-    void savePrefsBackup(String key){
+    public void savePrefsBackup(){
         File dir = MemoryUtil.getPrefsDir();
         if (dir != null) {
-            File prefsFile = new File(dir + "/prefs.xml");
+            File prefsFile = new File(dir + "/" + FileConfig.FILE_NAME_SETTINGS);
             if (prefsFile.exists()) prefsFile.delete();
             ObjectOutputStream output = null;
             try {
                 output = new ObjectOutputStream(new FileOutputStream(prefsFile));
                 Map<String, ?> list = prefs.getAll();
-                if (list.containsKey(key)) list.remove(key);
+                if (list.containsKey(DRIVE_USER)) list.remove(DRIVE_USER);
                 output.writeObject(list);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -158,11 +159,10 @@ abstract class SharedPrefs extends PrefsConstants {
         }
     }
 
-    void loadPrefsFromFile(){
+    public void loadPrefsFromFile(){
         File dir = MemoryUtil.getPrefsDir();
         if (dir == null) return;
-
-        File prefsFile = new File(dir + "/prefs.xml");
+        File prefsFile = new File(dir + "/" + FileConfig.FILE_NAME_SETTINGS);
         if (prefsFile.exists()) {
             ObjectInputStream input = null;
             try {

@@ -19,6 +19,7 @@ import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.MemoryUtil;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 
 import java.io.File;
@@ -47,12 +48,13 @@ public class Dropbox {
 
     private Context mContext;
 
-    private String dbxFolder = "JustReminder/";
+    private String dbxFolder = "Reminders/";
     private String dbxNoteFolder = "Notes/";
     private String dbxGroupFolder = "Groups/";
     private String dbxBirthFolder = "Birthdays/";
     private String dbxPlacesFolder = "Places/";
     private String dbxTemplatesFolder = "Templates/";
+    private String dbxSettingsFolder = "Settings/";
 
     private DropboxAPI<AndroidAuthSession> mDBApi;
     private DropboxAPI.Entry newEntry;
@@ -453,6 +455,7 @@ public class Dropbox {
             mDBApi.delete(dbxBirthFolder);
             mDBApi.delete(dbxPlacesFolder);
             mDBApi.delete(dbxTemplatesFolder);
+            mDBApi.delete(dbxSettingsFolder);
             mDBApi.delete(dbxFolder);
         } catch (DropboxException e) {
             e.printStackTrace();
@@ -640,6 +643,57 @@ public class Dropbox {
         }
     }
 
+    public void uploadSettings() {
+        File dir = MemoryUtil.getPrefsDir();
+        if (dir == null) return;
+        startSession();
+        if (!isLinked()) return;
+        File[] files = dir.listFiles();
+        if (files == null) return;
+        for (File file : files) {
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue;
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                newEntry = mDBApi.putFileOverwrite(dbxSettingsFolder + file.getName(), fis, file.length(), null);
+            } catch (DropboxUnlinkedException e) {
+                Log.e("DbLog", "User has unlinked.");
+            } catch (DropboxException e) {
+                Log.e("DbLog", "Something went wrong while uploading.");
+            }
+            break;
+        }
+    }
+
+    public void downloadSettings() {
+        File dir = MemoryUtil.getPrefsDir();
+        if (dir == null) return;
+        startSession();
+        if (!isLinked()) return;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxSettingsFolder, 1000, null, true, null);
+            if (newEntry == null) return;
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    String fileName = e.fileName();
+                    if (fileName.contains(FileConfig.FILE_NAME_SETTINGS)) {
+                        File localFile = new File(dir + "/" + fileName);
+                        String cloudFile = "/" + dbxPlacesFolder + fileName;
+                        downloadFile(localFile, cloudFile);
+                        Prefs.getInstance(mContext).loadPrefsFromFile();
+                        break;
+                    }
+                }
+            }
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Count all reminder backup files in Dropbox folder.
      *
@@ -647,35 +701,18 @@ public class Dropbox {
      */
     public int countFiles() {
         int count = 0;
-        File dir = MemoryUtil.getDropboxRemindersDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getDropboxNotesDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getDropboxBirthdaysDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getDropboxGroupsDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getDropboxPlacesDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
-        }
-        dir = MemoryUtil.getDropboxTemplatesDir();
-        if (dir != null && dir.exists()) {
-            File[] files = dir.listFiles();
-            if (files != null) count += files.length;
+        startSession();
+        if (!isLinked()) return 0;
+        try {
+            newEntry = mDBApi.metadata("/" + dbxSettingsFolder, 1000, null, true, null);
+            if (newEntry == null) return 0;
+            for (DropboxAPI.Entry e : newEntry.contents) {
+                if (!e.isDeleted) {
+                    count++;
+                }
+            }
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
         return count;
     }

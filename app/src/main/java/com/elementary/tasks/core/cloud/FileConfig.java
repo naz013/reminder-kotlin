@@ -51,4 +51,6 @@ public class FileConfig {
      * File extension for message template.
      */
     public static final String FILE_NAME_TEMPLATE = ".te2";
+
+    public static final String FILE_NAME_SETTINGS = "app.settings";
 }
