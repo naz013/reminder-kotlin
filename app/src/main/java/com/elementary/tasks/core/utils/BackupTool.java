@@ -21,9 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.lang.ref.WeakReference;
 
 /**
@@ -331,13 +329,11 @@ public class BackupTool {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        BufferedReader r = null;
-        if (is != null) {
-            r = new BufferedReader(new InputStreamReader(is));
-        }
+        if (is == null) return null;
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
         StringBuilder total = new StringBuilder();
         String line;
-        while ((line = r != null ? r.readLine() : null) != null) {
+        while ((line = r.readLine()) != null) {
             total.append(line);
         }
         WeakReference<String> file = new WeakReference<>(total.toString());
@@ -347,15 +343,14 @@ public class BackupTool {
 
     public String readFileToJson(String path) throws IOException {
         FileInputStream stream = new FileInputStream(path);
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-            writer.write(buffer, 0, n);
+        StringBuilder total = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            total.append(line);
         }
         stream.close();
-        WeakReference<String> decrypted = new WeakReference<>(decrypt(writer.toString()));
+        WeakReference<String> decrypted = new WeakReference<>(decrypt(total.toString()));
         return decrypted.get();
     }
 
@@ -375,6 +370,7 @@ public class BackupTool {
      * @return Decrypted string
      */
     public static String decrypt(String string) {
+        Log.d(TAG, "decrypt: " + string);
         String result = "";
         try {
             byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
@@ -392,6 +388,7 @@ public class BackupTool {
      * @return Encrypted string
      */
     public static String encrypt(String string) {
+        Log.d(TAG, "encrypt: " + string);
         byte[] string_byted = null;
         try {
             string_byted = string.getBytes("UTF-8");
