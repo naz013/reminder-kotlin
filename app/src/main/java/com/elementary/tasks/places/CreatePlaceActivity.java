@@ -1,6 +1,9 @@
 package com.elementary.tasks.places;
 
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,12 +15,14 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.fragments.MapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -49,15 +54,11 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
+        loadPlace();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_place);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-
-        if (id != null) {
-            mItem = RealmDb.getInstance().getPlace(id);
-        }
 
         mGoogleMap = MapFragment.newInstance(false, false, false, false,
                 Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
@@ -71,6 +72,27 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     }
 
     private void loadPlace() {
+        Intent intent = getIntent();
+        try {
+            Uri name = intent.getData();
+            String scheme = name.getScheme();
+            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                ContentResolver cr = getContentResolver();
+                mItem = BackupTool.getInstance().getPlace(cr, name);
+            } else {
+                mItem = BackupTool.getInstance().getPlace(name.getPath(), null);
+            }
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            String id = intent.getStringExtra(Constants.INTENT_ID);
+            if (id != null) {
+                mItem = RealmDb.getInstance().getPlace(id);
+            }
+        }
+    }
+
+    private void showPlace() {
         if (mItem != null){
             mGoogleMap.addMarker(new LatLng(mItem.getLat(), mItem.getLng()), mItem.getTitle(), true, true, -1);
             binding.placeName.setText(mItem.getTitle());
@@ -165,6 +187,6 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
 
     @Override
     public void onMapReady() {
-        loadPlace();
+        showPlace();
     }
 }

@@ -51,15 +51,69 @@
         android:theme="@style/HomeDark.Cyan">
 
         <activity android:name=".navigation.MainActivity" />
-        <activity android:name=".creators.CreateReminderActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".creators.CreateReminderActivity" android:configChanges="keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.task2" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.task2" />
+            </intent-filter>
+        </activity>
         <activity android:name=".navigation.settings.theme.SelectThemeActivity" />
         <activity android:name=".navigation.settings.images.MainImageActivity" />
         <activity android:name=".navigation.settings.additional.TemplateActivity" android:configChanges="keyboardHidden"/>
         <activity android:name=".core.additional.QuickSmsActivity" />
         <activity android:name=".core.additional.FollowReminderActivity" />
         <activity android:name=".core.file_explorer.FileExplorerActivity" android:configChanges="keyboardHidden"/>
-        <activity android:name=".groups.CreateGroupActivity" android:configChanges="keyboardHidden"/>
-        <activity android:name=".places.CreatePlaceActivity" android:configChanges="keyboardHidden"/>
+        <activity android:name=".groups.CreateGroupActivity" android:configChanges="keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.group2" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.group2" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".places.CreatePlaceActivity" android:configChanges="keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.place2" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="content" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:pathPattern=".*\\.place2" />
+            </intent-filter>
+        </activity>
         <activity android:name=".notes.ActivityCreateNote" android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -68,7 +122,7 @@
                 <data android:scheme="file" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
-                <data android:pathPattern=".*\\.note" />
+                <data android:pathPattern=".*\\.note2" />
             </intent-filter>
             <intent-filter>
                 <data android:scheme="content" />
@@ -76,7 +130,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:mimeType="application/octet-stream" />
-                <data android:pathPattern=".*\\.note" />
+                <data android:pathPattern=".*\\.note2" />
             </intent-filter>
         </activity>
         <activity android:name=".notes.ImagePreviewActivity" />
