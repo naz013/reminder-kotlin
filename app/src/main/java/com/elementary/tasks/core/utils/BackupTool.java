@@ -70,7 +70,9 @@ public class BackupTool {
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
-                    realmDb.saveObject(getPlace(file.toString(), null));
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) {
+                        realmDb.saveObject(getPlace(file.toString(), null));
+                    }
                 }
             }
         }
@@ -79,7 +81,7 @@ public class BackupTool {
     public void exportPlace(PlaceItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
-        File dir = MemoryUtil.getGroupsDir();
+        File dir = MemoryUtil.getPlacesDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_PLACE;
             try {
@@ -118,7 +120,9 @@ public class BackupTool {
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
-                    realmDb.saveObject(getBirthday(file.toString(), null));
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
+                        realmDb.saveObject(getBirthday(file.toString(), null));
+                    }
                 }
             }
         }
@@ -127,7 +131,7 @@ public class BackupTool {
     public void exportBirthday(BirthdayItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
-        File dir = MemoryUtil.getGroupsDir();
+        File dir = MemoryUtil.getBirthdaysDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_BIRTHDAY;
             try {
@@ -180,7 +184,9 @@ public class BackupTool {
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
-                    realmDb.saveObject(getGroup(file.toString(), null));
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
+                        realmDb.saveObject(getGroup(file.toString(), null));
+                    }
                 }
             }
         }
@@ -214,7 +220,9 @@ public class BackupTool {
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
-                    realmDb.saveObject(getReminder(file.toString(), null));
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
+                        realmDb.saveObject(getReminder(file.toString(), null));
+                    }
                 }
             }
         }
@@ -277,7 +285,9 @@ public class BackupTool {
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
-                    realmDb.saveObject(getNote(file.toString(), null));
+                    if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
+                        realmDb.saveObject(getNote(file.toString(), null));
+                    }
                 }
             }
         }
@@ -286,7 +296,7 @@ public class BackupTool {
     public void exportNote(NoteItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
-        File dir = MemoryUtil.getRemindersDir();
+        File dir = MemoryUtil.getNotesDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_NOTE;
             try {
