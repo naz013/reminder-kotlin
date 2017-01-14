@@ -9,12 +9,10 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.IoHelper;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -77,11 +75,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         ioHelper.backupGroup(true);
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
-            String time = TimeUtil.getGmtDateTime();
-            String defUiID = UUID.randomUUID().toString();
-            RealmDb.getInstance().saveObject(new GroupItem("General", defUiID, 5, time));
-            RealmDb.getInstance().saveObject(new GroupItem("Work", UUID.randomUUID().toString(), 3, time));
-            RealmDb.getInstance().saveObject(new GroupItem("Personal", UUID.randomUUID().toString(), 0, time));
+            String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
             List<Reminder> items = RealmDb.getInstance().getAllRemindera();
             for (Reminder item : items) {
                 item.setGroupUuId(defUiID);
@@ -107,6 +101,11 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         publishProgress(mContext.getString(R.string.syncing_places));
         ioHelper.restorePlaces(true, true);
         ioHelper.backupPlaces(true);
+
+        //export & import templates
+        publishProgress(mContext.getString(R.string.syncing_templates));
+        ioHelper.restoreTemplates(true, true);
+        ioHelper.backupTemplates(true);
         return true;
     }
 

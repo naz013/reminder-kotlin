@@ -178,6 +178,20 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
                 count += files.length;
             }
         }
+        dir = MemoryUtil.getPlacesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                count += files.length;
+            }
+        }
+        dir = MemoryUtil.getTemplatesDir();
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                count += files.length;
+            }
+        }
         item.count = count;
     }
 

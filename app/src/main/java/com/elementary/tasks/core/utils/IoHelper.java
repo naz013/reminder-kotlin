@@ -75,6 +75,8 @@ public class IoHelper {
         backupReminder(true);
         backupNote(true);
         backupBirthday(true);
+        backupPlaces(true);
+        backupTemplates(true);
     }
 
     /**
@@ -261,6 +263,44 @@ public class IoHelper {
             new Dropbox(mContext).downloadPlaces();
             try {
                 new GoogleDrive(mContext).downloadPlaces(delete);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Create backup files for places.
+     *
+     * @param isCloud create cloud backup.
+     */
+    public void backupTemplates(boolean isCloud) {
+        BackupTool.getInstance().exportTemplates();
+        if (isConnected && isCloud) {
+            new Dropbox(mContext).uploadTemplates();
+            try {
+                new GoogleDrive(mContext).saveTemplatesToDrive();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Restore all birthdays from backup files.
+     *
+     * @param isCloud restore from cloud.
+     */
+    public void restoreTemplates(boolean isCloud, boolean delete) {
+        try {
+            BackupTool.getInstance().importTemplates();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (isConnected && isCloud) {
+            new Dropbox(mContext).downloadTemplates();
+            try {
+                new GoogleDrive(mContext).downloadTemplates(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }

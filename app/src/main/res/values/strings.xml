@@ -557,6 +557,9 @@
     <string name="decoding_images">Decoding images</string>
     <string name="failed_to_sync_google_tasks">Failed to sync Google Tasks</string>
     <string name="syncing_places">Syncing places...</string>
+    <string name="syncing_templates">Syncing message templates...</string>
+    <string name="work">Work</string>
+    <string name="personal">Personal</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

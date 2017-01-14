@@ -7,10 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.MainActivity;
-
-import java.util.Random;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -24,15 +21,8 @@ public class SplashScreen extends AppCompatActivity {
 
     private void initGroups() {
         if (RealmDb.getInstance().getAllGroups().size() == 0) {
-            addDefaultGroups();
+            RealmDb.getInstance().setDefaultGroups(this);
         }
-    }
-
-    private void addDefaultGroups() {
-        Random random = new Random();
-        RealmDb.getInstance().saveObject(new GroupItem("General", random.nextInt(16)));
-        RealmDb.getInstance().saveObject(new GroupItem("Work", random.nextInt(16)));
-        RealmDb.getInstance().saveObject(new GroupItem("Personal", random.nextInt(16)));
     }
 
     private void initPrefs() {

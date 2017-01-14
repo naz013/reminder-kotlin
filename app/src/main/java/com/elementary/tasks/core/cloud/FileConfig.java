@@ -46,4 +46,9 @@ public class FileConfig {
      * File extension for place.
      */
     public static final String FILE_NAME_PLACE = ".pl2";
+
+    /**
+     * File extension for message template.
+     */
+    public static final String FILE_NAME_TEMPLATE = ".te2";
 }
