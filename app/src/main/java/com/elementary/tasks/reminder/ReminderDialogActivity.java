@@ -223,7 +223,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             buttonCall.setVisibility(View.GONE);
         }
 
-        if (Reminder.isGpsType(mReminder.getType())){
+        if (Reminder.isGpsType(mReminder.getType())) {
             buttonDelay.setVisibility(View.GONE);
             buttonDelayFor.setVisibility(View.GONE);
         }
@@ -245,18 +245,12 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             discardNotification(getId());
         });
         buttonCall.setOnClickListener(v -> call());
-        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
-            if (isAutoEnabled()) {
-                sendSMS();
-            } else {
-                showReminder();
-            }
-        } else if (isAppType()) {
-            if (isAutoLaunchEnabled()) {
-                openApplication();
-            } else {
-                showReminder();
-            }
+        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && isAutoEnabled()) {
+            sendSMS();
+        } else if (Reminder.isKind(mReminder.getType(), Reminder.Kind.CALL) && isAutoCallEnabled()) {
+            call();
+        } else if (isAppType() && isAutoLaunchEnabled()) {
+            openApplication();
         } else {
             showReminder();
         }
@@ -309,7 +303,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (mPrefs.isFoldingEnabled()){
+        if (mPrefs.isFoldingEnabled()) {
             repeater.cancelAlarm(ReminderDialogActivity.this, getId());
             removeFlags();
             finish();
@@ -333,7 +327,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         repeater.cancelAlarm(ReminderDialogActivity.this, getId());
     }
 
-    public void showDialog(){
+    public void showDialog() {
         final CharSequence[] items = {String.format(getString(R.string.x_minutes), String.valueOf(5)),
                 String.format(getString(R.string.x_minutes), String.valueOf(10)),
                 String.format(getString(R.string.x_minutes), String.valueOf(15)),
@@ -397,7 +391,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         sms.sendTextMessage(mReminder.getTarget(), null, getSummary(), sentPI, null);
     }
 
-    private void showReminder(){
+    private void showReminder() {
         if (!isTtsEnabled()) {
             showReminderNotification(this);
         } else {
@@ -405,20 +399,28 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
     }
 
-    private boolean isAutoLaunchEnabled() {
-        boolean isRepeat = mPrefs.isAutoLaunchEnabled();
+    private boolean isAutoCallEnabled() {
+        boolean is = mPrefs.isAutoCallEnabled();
         if (!isGlobal()) {
-            isRepeat = mReminder.isAuto();
+            is = mReminder.isAuto();
         }
-        return isRepeat;
+        return is;
+    }
+
+    private boolean isAutoLaunchEnabled() {
+        boolean is = mPrefs.isAutoLaunchEnabled();
+        if (!isGlobal()) {
+            is = mReminder.isAuto();
+        }
+        return is;
     }
 
     private boolean isAutoEnabled() {
-        boolean isRepeat = mPrefs.isAutoSmsEnabled();
+        boolean is = mPrefs.isAutoSmsEnabled();
         if (!isGlobal()) {
-            isRepeat = mReminder.isAuto();
+            is = mReminder.isAuto();
         }
-        return isRepeat;
+        return is;
     }
 
     private void editReminder() {
@@ -485,24 +487,25 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void call() {
-        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)){
+        mControl.next();
+        removeFlags();
+        cancelTasks();
+        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
             sendSMS();
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_CALL)){
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_CALL)) {
             TelephonyUtil.skypeCall(mReminder.getTarget(), this);
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)){
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
             TelephonyUtil.skypeVideoCall(mReminder.getTarget(), this);
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)){
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)) {
             TelephonyUtil.skypeChat(mReminder.getTarget(), this);
-        } else if (isAppType()){
+        } else if (isAppType()) {
             openApplication();
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)){
+        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)) {
             TelephonyUtil.sendMail(ReminderDialogActivity.this, mReminder.getTarget(), mReminder.getSubject(), getSummary(), mReminder.getAttachmentFile());
         } else {
             makeCall();
         }
-        removeFlags();
-        cancelTasks();
-        if (!Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)){
+        if (!Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
             finish();
         }
     }

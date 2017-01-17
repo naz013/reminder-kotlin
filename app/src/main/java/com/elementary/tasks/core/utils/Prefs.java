@@ -503,6 +503,14 @@ public class Prefs extends SharedPrefs {
         return getBoolean(APPLICATION_AUTO_LAUNCH);
     }
 
+    public void setAutoCallEnabled(boolean value) {
+        putBoolean(AUTO_CALL, value);
+    }
+
+    public boolean isAutoCallEnabled() {
+        return getBoolean(AUTO_CALL);
+    }
+
     public void setAutoLaunchEnabled(boolean value) {
         putBoolean(APPLICATION_AUTO_LAUNCH, value);
     }

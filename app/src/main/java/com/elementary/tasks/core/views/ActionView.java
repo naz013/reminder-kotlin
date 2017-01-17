@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Permissions;
@@ -40,7 +41,9 @@ public class ActionView extends LinearLayout {
 
     private RoboCheckBox actionCheck;
     private LinearLayout actionBlock;
-    private RoboRadioButton callAction, messageAction;
+    private RadioGroup radioGroup;
+    private RoboRadioButton callAction;
+    private RoboRadioButton messageAction;
     private ImageButton selectNumber;
     private RoboEditText numberView;
     private InputMethodManager imm;
@@ -95,15 +98,11 @@ public class ActionView extends LinearLayout {
                 imm.showSoftInput(numberView, 0);
             }
         });
-
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> buttonClick(i));
         callAction = (RoboRadioButton) findViewById(R.id.callAction);
         callAction.setChecked(true);
         messageAction = (RoboRadioButton) findViewById(R.id.messageAction);
-        messageAction.setOnCheckedChangeListener((compoundButton1, b) -> {
-            if (listener != null){
-                listener.onTypeChange(b);
-            }
-        });
         actionCheck = (RoboCheckBox) findViewById(R.id.actionCheck);
         actionCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             if (!Permissions.checkPermission(activity, Permissions.READ_CONTACTS)) {
@@ -111,7 +110,7 @@ public class ActionView extends LinearLayout {
                 return;
             }
             if (b){
-                ViewUtils.showOver(actionBlock);
+                openAction();
             } else {
                 ViewUtils.hideOver(actionBlock);
             }
@@ -120,7 +119,31 @@ public class ActionView extends LinearLayout {
             }
         });
         if (actionCheck.isChecked()) {
-            ViewUtils.showOver(actionBlock);
+            openAction();
+        }
+    }
+
+    private void openAction() {
+        ViewUtils.showOver(actionBlock);
+        refreshState();
+    }
+
+    private void refreshState() {
+        buttonClick(radioGroup.getCheckedRadioButtonId());
+    }
+
+    private void buttonClick(int i) {
+        switch (i) {
+            case R.id.callAction:
+                if (listener != null){
+                    listener.onTypeChange(false);
+                }
+                break;
+            case R.id.messageAction:
+                if (listener != null){
+                    listener.onTypeChange(true);
+                }
+                break;
         }
     }
 

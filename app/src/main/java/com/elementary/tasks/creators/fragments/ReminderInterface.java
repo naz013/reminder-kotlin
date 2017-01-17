@@ -67,5 +67,5 @@ public interface ReminderInterface {
 
     void setFullScreenMode(boolean b);
 
-    void setHasAutoExtra(boolean b);
+    void setHasAutoExtra(boolean b, String label);
 }

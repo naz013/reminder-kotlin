@@ -57,7 +57,7 @@ public class DateFragment extends RepeatableTypeFragment {
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
                 mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(false);
+                mInterface.setHasAutoExtra(false, null);
             }
         }
 
@@ -65,10 +65,10 @@ public class DateFragment extends RepeatableTypeFragment {
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
                 mInterface.setEventHint(getString(R.string.message));
-                mInterface.setHasAutoExtra(true);
+                mInterface.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
             } else {
                 mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(false);
+                mInterface.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
             }
         }
     };

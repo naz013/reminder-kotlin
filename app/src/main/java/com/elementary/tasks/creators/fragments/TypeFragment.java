@@ -37,10 +37,7 @@ public abstract class TypeFragment extends Fragment {
         }
         if (mInterface == null) {
             mInterface = (ReminderInterface) context;
-            mInterface.setExclusionAction(null);
-            mInterface.setRepeatAction(null);
-            mInterface.setEventHint(getString(R.string.remind_me));
-            mInterface.setHasAutoExtra(false);
+            setDefault();
         }
     }
 
@@ -52,11 +49,15 @@ public abstract class TypeFragment extends Fragment {
         }
         if (mInterface == null) {
             mInterface = (ReminderInterface) activity;
-            mInterface.setExclusionAction(null);
-            mInterface.setRepeatAction(null);
-            mInterface.setEventHint(getString(R.string.remind_me));
-            mInterface.setHasAutoExtra(false);
+            setDefault();
         }
+    }
+
+    private void setDefault() {
+        mInterface.setExclusionAction(null);
+        mInterface.setRepeatAction(null);
+        mInterface.setEventHint(getString(R.string.remind_me));
+        mInterface.setHasAutoExtra(false, null);
     }
 
     public boolean onBackPressed() {

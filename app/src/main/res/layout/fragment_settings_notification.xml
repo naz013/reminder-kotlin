@@ -205,6 +205,15 @@
                 app:prefs_type="check" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/autoCallPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/auto_call"
+                app:prefs_secondary_text="@string/enable_making_phone_calls_automatically"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/silentSMSOptionPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -74,6 +74,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private View.OnClickListener mLedColorClick = view -> showLedColorDialog();
     private View.OnClickListener mLedClick = view -> changeLedPrefs();
     private View.OnClickListener mRepeatTimeClick = view -> showRepeatTimeDialog();
+    private View.OnClickListener mAutoCallClick = view -> changeAutoCallPrefs();
 
     @Nullable
     @Override
@@ -104,6 +105,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         initLedColorPrefs();
         initRepeatPrefs();
         initRepeatTimePrefs();
+        initAutoCallPrefs();
         return binding.getRoot();
     }
 
@@ -233,6 +235,17 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    private void changeAutoCallPrefs() {
+        boolean isChecked = binding.autoCallPrefs.isChecked();
+        binding.autoCallPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setAutoCallEnabled(!isChecked);
+    }
+
+    private void initAutoCallPrefs() {
+        binding.autoCallPrefs.setOnClickListener(mAutoCallClick);
+        binding.autoCallPrefs.setChecked(Prefs.getInstance(mContext).isAutoCallEnabled());
     }
 
     private void changeAutoLaunchPrefs() {
