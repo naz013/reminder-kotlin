@@ -100,6 +100,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private int volume;
     private String groupId;
     private String melodyPath;
+    private String autoLabel;
     private int ledColor = -1;
 
     private Reminder mReminder;
@@ -386,8 +387,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.vibrationCheck.setEnabled(!useGlobal);
         binding.voiceCheck.setEnabled(!useGlobal);
         binding.wakeCheck.setEnabled(!useGlobal);
-        if (hasAutoExtra) {
+        if (hasAutoExtra && autoLabel != null) {
             binding.autoCheck.setVisibility(View.VISIBLE);
+            binding.autoCheck.setText(autoLabel);
         } else {
             binding.autoCheck.setVisibility(View.GONE);
         }
@@ -725,8 +727,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     @Override
-    public void setHasAutoExtra(boolean hasAutoExtra) {
+    public void setHasAutoExtra(boolean hasAutoExtra, String label) {
         this.hasAutoExtra = hasAutoExtra;
+        this.autoLabel = label;
     }
 
     @Override
