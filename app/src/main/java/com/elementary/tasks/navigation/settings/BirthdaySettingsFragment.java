@@ -63,13 +63,19 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         initContactsPrefs();
         initContactsAutoPrefs();
         initScanPrefs();
-        binding.birthdayNotificationPrefs.setOnClickListener(view -> replaceFragment(new BirthdayNotificationFragment(), getString(R.string.birthday_notification)));
+        initNotificationPrefs();
         return binding.getRoot();
+    }
+
+    private void initNotificationPrefs() {
+        binding.birthdayNotificationPrefs.setOnClickListener(view -> replaceFragment(new BirthdayNotificationFragment(), getString(R.string.birthday_notification)));
+        binding.birthdayNotificationPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void initScanPrefs() {
         binding.contactsScanPrefs.setDependentView(binding.useContactsPrefs);
         binding.contactsScanPrefs.setOnClickListener(view -> scanForBirthdays());
+        binding.contactsScanPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void scanForBirthdays() {
@@ -84,6 +90,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         binding.autoScanPrefs.setChecked(Prefs.getInstance(mContext).isContactAutoCheckEnabled());
         binding.autoScanPrefs.setOnClickListener(view -> changeAutoPrefs());
         binding.autoScanPrefs.setDependentView(binding.useContactsPrefs);
+        binding.autoScanPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void changeAutoPrefs() {
@@ -100,6 +107,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void initContactsPrefs() {
         binding.useContactsPrefs.setChecked(Prefs.getInstance(mContext).isContactBirthdaysEnabled());
         binding.useContactsPrefs.setOnClickListener(view -> changeContactsPrefs());
+        binding.useContactsPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void changeContactsPrefs() {
@@ -115,6 +123,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void initBirthdayTimePrefs() {
         binding.reminderTimePrefs.setOnClickListener(view -> showTimeDialog());
         binding.reminderTimePrefs.setValueText(Prefs.getInstance(mContext).getBirthdayTime());
+        binding.reminderTimePrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void showTimeDialog() {
@@ -127,6 +136,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void initDaysToPrefs() {
         binding.daysToPrefs.setOnClickListener(view -> showDaysToDialog());
         binding.daysToPrefs.setValue(Prefs.getInstance(mContext).getDaysToBirthday());
+        binding.daysToPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void showDaysToDialog() {
@@ -167,6 +177,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void initPermanentPrefs() {
         binding.birthdayPermanentPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayPermanentEnabled());
         binding.birthdayPermanentPrefs.setOnClickListener(view -> changeBirthdayPermanentPrefs());
+        binding.birthdayPermanentPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void changeBirthdayPermanentPrefs() {
@@ -179,6 +190,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void initBirthdaysWidgetPrefs() {
         binding.widgetShowPrefs.setChecked(Prefs.getInstance(mContext).isBirthdayInWidgetEnabled());
         binding.widgetShowPrefs.setOnClickListener(view -> changeWidgetPrefs());
+        binding.widgetShowPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void changeWidgetPrefs() {
