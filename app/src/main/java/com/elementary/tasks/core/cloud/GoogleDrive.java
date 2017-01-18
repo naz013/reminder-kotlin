@@ -1,14 +1,17 @@
 package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.elementary.tasks.backups.UserItem;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.BackupTool;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.reminder.models.Reminder;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.FileContent;
@@ -53,6 +56,7 @@ public class GoogleDrive {
     private final JsonFactory mJsonFactory = GsonFactory.getDefaultInstance();
     private Drive driveService;
     private static final String APPLICATION_NAME = "Reminder/6.0";
+    private static final String FOLDER_NAME = "Reminder";
 
     public GoogleDrive(Context context){
         this.mContext = context;
@@ -235,7 +239,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_SETTINGS + "'")
+                .setFields("nextPageToken, files");
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
@@ -436,7 +442,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_TEMPLATE + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -472,7 +480,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_REMINDER + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -487,7 +497,10 @@ public class GoogleDrive {
                     }
                     OutputStream out = new FileOutputStream(file);
                     driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getReminder(file.toString(), null));
+                    Reminder reminder = backupTool.getReminder(file.toString(), null);
+                    realmDb.saveObject(reminder);
+                    EventControl control = EventControlImpl.getController(mContext, reminder);
+                    control.next();
                     if (file.exists()) {
                         file.delete();
                     }
@@ -508,7 +521,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_PLACE + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -544,7 +559,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_NOTE + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -580,7 +597,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_GROUP + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -616,7 +635,9 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_BIRTHDAY + "'")
+                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
         do {
@@ -647,7 +668,7 @@ public class GoogleDrive {
      * @param title file name.
      */
     public void deleteReminderFileByName(String title) throws IOException {
-        Log.d(TAG, "deleteReminderFileByName: ");
+        LogUtil.d(TAG, "deleteReminderFileByName: " + title);
         if (title == null || !isLinked()) {
             return;
         }
@@ -656,14 +677,15 @@ public class GoogleDrive {
             title = strs[0];
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileTitle = f.getName();
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER) && fileTitle.contains(title)) {
+                if (fileTitle.endsWith(FileConfig.FILE_NAME_REMINDER)) {
                     driveService.files().delete(f.getId()).execute();
                 }
             }
@@ -684,14 +706,15 @@ public class GoogleDrive {
             title = strs[0];
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileTitle = f.getName();
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE) && fileTitle.contains(title)) {
+                if (fileTitle.endsWith(FileConfig.FILE_NAME_NOTE)) {
                     driveService.files().delete(f.getId()).execute();
                 }
             }
@@ -712,14 +735,15 @@ public class GoogleDrive {
             title = strs[0];
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileTitle = f.getName();
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP) && fileTitle.contains(title)) {
+                if (fileTitle.endsWith(FileConfig.FILE_NAME_GROUP)) {
                     driveService.files().delete(f.getId()).execute();
                 }
             }
@@ -748,14 +772,15 @@ public class GoogleDrive {
             title = strs[0];
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileTitle = f.getName();
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY) && fileTitle.contains(title)) {
+                if (fileTitle.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
                     driveService.files().delete(f.getId()).execute();
                 }
             }
@@ -776,14 +801,15 @@ public class GoogleDrive {
             title = strs[0];
         }
         authorize();
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
         do {
             FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileTitle = f.getName();
-                if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE) && fileTitle.contains(title)) {
+                if (fileTitle.endsWith(FileConfig.FILE_NAME_PLACE)) {
                     driveService.files().delete(f.getId()).execute();
                 }
             }
@@ -813,20 +839,50 @@ public class GoogleDrive {
             return;
         }
         authorize();
-        Drive.Files.List requestF = driveService.files().list().setQ("mimeType = 'application/vnd.google-apps.folder'");
-        if (requestF == null) return;
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
+        if (request == null) return;
         do {
-            FileList files = requestF.execute();
+            FileList files = request.execute();
             ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
             for (com.google.api.services.drive.model.File f : fileList) {
                 String fileMIME = f.getMimeType();
-                if (fileMIME.contains("application/vnd.google-apps.folder") && f.getName().contains("Reminder")) {
+                if (fileMIME.contains("application/vnd.google-apps.folder") && f.getName().contains(FOLDER_NAME)) {
                     driveService.files().delete(f.getId()).execute();
                     break;
                 }
             }
-            requestF.setPageToken(files.getNextPageToken());
-        } while (requestF.getPageToken() != null && requestF.getPageToken().length() >= 0);
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+    }
+
+    /**
+     * Remove all backup files from app folder.
+     * @throws IOException
+     */
+    public void cleanFolder() throws IOException {
+        if (!isLinked()) {
+            return;
+        }
+        authorize();
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and (name contains '" + FileConfig.FILE_NAME_SETTINGS + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_TEMPLATE + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_PLACE + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_BIRTHDAY + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_NOTE + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_GROUP + "' " +
+                        "or name contains '" + FileConfig.FILE_NAME_REMINDER + "' " +
+                        ")");
+        if (request == null) return;
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                driveService.files().delete(f.getId()).execute();
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
     }
 
     /**
@@ -834,7 +890,8 @@ public class GoogleDrive {
      * @return Drive folder identifier.
      */
     private String getFolderId() throws IOException {
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'application/vnd.google-apps.folder' and name contains 'Reminder'");
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
         if (request == null) return null;
         do {
             FileList files = request.execute();
@@ -843,8 +900,8 @@ public class GoogleDrive {
             for (File f : fileList) {
                 String fileMIME = f.getMimeType();
                 if (fileMIME.trim().contains("application/vnd.google-apps.folder") &&
-                        f.getName().contains("Reminder")) {
-                    Log.d(TAG, "getFolderId: " + f.getName() + ", " + f.getMimeType());
+                        f.getName().contains(FOLDER_NAME)) {
+                    LogUtil.d(TAG, "getFolderId: " + f.getName() + ", " + f.getMimeType());
                     return f.getId();
                 }
             }
@@ -861,7 +918,7 @@ public class GoogleDrive {
      */
     private File createFolder() throws IOException {
         File folder = new File();
-        folder.setName("Reminder");
+        folder.setName(FOLDER_NAME);
         folder.setMimeType("application/vnd.google-apps.folder");
         Drive.Files.Create  folderInsert = driveService.files().create(folder);
         return folderInsert != null ? folderInsert.execute() : null;

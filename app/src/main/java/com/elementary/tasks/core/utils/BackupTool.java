@@ -1,11 +1,14 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.net.Uri;
 import android.util.Base64;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.NoteItem;
@@ -44,8 +47,12 @@ public class BackupTool {
 
     private static final String TAG = "BackupTool";
     private static BackupTool instance;
+    private Context mContext;
 
-    private BackupTool() {
+    private BackupTool() {}
+
+    private BackupTool(Context context) {
+        this.mContext = context;
     }
 
     public static BackupTool getInstance() {
@@ -53,6 +60,17 @@ public class BackupTool {
             instance = new BackupTool();
         }
         return instance;
+    }
+
+    public static BackupTool getInstance(Context context) {
+        if (instance == null || instance.getContext() == null) {
+            instance = new BackupTool(context);
+        }
+        return instance;
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     public void exportTemplates() {
@@ -271,7 +289,10 @@ public class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                        realmDb.saveObject(getReminder(file.toString(), null));
+                        Reminder reminder = getReminder(file.toString(), null);
+                        realmDb.saveObject(reminder);
+                        EventControl control = EventControlImpl.getController(mContext, reminder);
+                        control.next();
                     }
                 }
             }

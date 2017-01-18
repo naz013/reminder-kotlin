@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -85,12 +85,12 @@ public class ShopFragment extends TypeFragment {
         reminder.setType(type);
         reminder.setRepeatInterval(0);
         reminder.setClear(mInterface);
-        Log.d(TAG, "save: " + type);
+        LogUtil.d(TAG, "save: " + type);
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-            Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
+            LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         } else {
             reminder.setEventTime(null);
             reminder.setStartTime(null);

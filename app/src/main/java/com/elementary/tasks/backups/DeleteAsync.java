@@ -58,79 +58,80 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             boolean isLinked = dbx.isLinked();
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        if (file.isDirectory()) {
-                            File[] files = file.listFiles();
-                            if (files != null) {
-                                for (File f : files) {
-                                    if (isLinked && isConnected) {
-                                        dbx.deleteFile(f.getName());
-                                    }
-                                    f.delete();
-                                }
-                            }
-                            res = 2;
-                        } else {
-                            if (isLinked && isConnected)
-                                dbx.deleteFile(file.getName());
-                            if (file.delete()) res = 1;
+                if (filePath == null) continue;
+                File file = new File(filePath);
+                if (!file.exists()) continue;
+                if (file.isDirectory()) {
+                    File[] files = file.listFiles();
+                    if (files == null) continue;
+                    for (File f : files) {
+                        if (isLinked && isConnected) {
+                            dbx.deleteFile(f.getName());
                         }
+                        f.delete();
                     }
+                    res = 2;
+                } else {
+                    if (isLinked && isConnected)
+                        dbx.deleteFile(file.getName());
+                    if (file.delete()) res = 1;
                 }
+            }
+            if (isLinked && isConnected) {
+                dbx.cleanFolder();
             }
         } else if (type == UserInfoAsync.Info.Google) {
             GoogleDrive gdx = new GoogleDrive(mContext);
             boolean isLinked = gdx.isLinked();
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        if (file.isDirectory()) {
-                            File[] files = file.listFiles();
-                            if (files != null) {
-                                for (File f : files) {
-                                    if (isLinked && isConnected) {
-                                        try {
-                                            gdx.deleteFile(f.getName());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    f.delete();
-                                }
+                if (filePath == null) continue;
+                File file = new File(filePath);
+                if (!file.exists()) continue;
+                if (file.isDirectory()) {
+                    File[] files = file.listFiles();
+                    if (files == null) continue;
+                    for (File f : files) {
+                        if (isLinked && isConnected) {
+                            try {
+                                gdx.deleteFile(f.getName());
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                            res = 2;
-                        } else {
-                            if (isLinked && isConnected) {
-                                try {
-                                    gdx.deleteFile(file.getName());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (file.delete()) res = 1;
+                        }
+                        f.delete();
+                    }
+                    res = 2;
+                } else {
+                    if (isLinked && isConnected) {
+                        try {
+                            gdx.deleteFile(file.getName());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
+                    if (file.delete()) res = 1;
+                }
+            }
+            if (isLinked && isConnected) {
+                try {
+                    gdx.cleanFolder();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         } else if (type == UserInfoAsync.Info.Local) {
             for (String filePath : params) {
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    if (file.exists()) {
-                        if (file.isDirectory()) {
-                            File[] files = file.listFiles();
-                            if (files != null) {
-                                for (File f : files) f.delete();
-                            }
-                            res = 2;
-                        } else {
-                            if (file.delete()) res = 1;
-                        }
-                    }
+                if (filePath == null) continue;
+                File file = new File(filePath);
+                if (!file.exists()) continue;
+                if (file.isDirectory()) {
+                    File[] files = file.listFiles();
+                    if (files == null) continue;
+                    for (File f : files) f.delete();
+                    res = 2;
+                } else {
+                    if (file.delete()) res = 1;
                 }
             }
         }

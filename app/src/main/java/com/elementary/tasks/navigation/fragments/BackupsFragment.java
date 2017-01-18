@@ -4,7 +4,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -111,19 +110,28 @@ public class BackupsFragment extends BaseNavigationFragment {
             String n = MemoryUtil.getDropboxNotesDir().getPath();
             String g = MemoryUtil.getDropboxGroupsDir().getPath();
             String b = MemoryUtil.getDropboxBirthdaysDir().getPath();
-            return new String[]{r, n, g, b};
+            String p = MemoryUtil.getDropboxPlacesDir().getPath();
+            String s = MemoryUtil.getDropboxPrefsDir().getPath();
+            String t = MemoryUtil.getDropboxTemplatesDir().getPath();
+            return new String[]{r, n, g, b, p, s, t};
         } else if (info == UserInfoAsync.Info.Google) {
             String r = MemoryUtil.getGoogleRemindersDir().getPath();
             String n = MemoryUtil.getGoogleNotesDir().getPath();
             String g = MemoryUtil.getGoogleGroupsDir().getPath();
             String b = MemoryUtil.getGoogleBirthdaysDir().getPath();
-            return new String[]{r, n, g, b};
+            String p = MemoryUtil.getGooglePlacesDir().getPath();
+            String s = MemoryUtil.getGooglePrefsDir().getPath();
+            String t = MemoryUtil.getGoogleTemplatesDir().getPath();
+            return new String[]{r, n, g, b, p, s, t};
         } else {
             String r = MemoryUtil.getRemindersDir().getPath();
             String n = MemoryUtil.getNotesDir().getPath();
             String g = MemoryUtil.getGroupsDir().getPath();
             String b = MemoryUtil.getBirthdaysDir().getPath();
-            return new String[]{r, n, g, b};
+            String p = MemoryUtil.getPlacesDir().getPath();
+            String s = MemoryUtil.getPrefsDir().getPath();
+            String t = MemoryUtil.getTemplatesDir().getPath();
+            return new String[]{r, n, g, b, p, s, t};
         }
     }
 
