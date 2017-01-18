@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +23,7 @@ import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -191,12 +191,12 @@ public class LocationOutFragment extends RadiusTypeFragment {
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
         reminder.setClear(mInterface);
-        Log.d(TAG, "save: " + type);
+        LogUtil.d(TAG, "save: " + type);
         if (binding.attackDelay.isChecked()) {
             long startTime = binding.dateView.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-            Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
+            LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         } else {
             reminder.setEventTime(null);
             reminder.setStartTime(null);

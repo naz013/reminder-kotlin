@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +21,7 @@ import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -50,7 +50,7 @@ import com.elementary.tasks.reminder.models.Reminder;
 
 public class AddReminderActivity extends ThemedActivity {
 
-    private static final String TAG = "DateFragment";
+    private static final String TAG = "AddReminderActivity";
     private static final int CONTACTS = 112;
     public static final int CONTACTS_ACTION = 113;
 
@@ -163,11 +163,11 @@ public class AddReminderActivity extends ThemedActivity {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setSummary(summary);
         reminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
-        Log.d(TAG, "save: " + type);
+        LogUtil.d(TAG, "save: " + type);
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        Log.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
+        LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;

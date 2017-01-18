@@ -119,7 +119,7 @@ public class IoHelper {
      */
     public void restoreReminder(boolean isCloud, boolean delete) {
         try {
-            BackupTool.getInstance().importReminders();
+            BackupTool.getInstance(mContext).importReminders();
         } catch (IOException e) {
             e.printStackTrace();
         }

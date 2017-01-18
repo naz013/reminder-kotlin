@@ -16,11 +16,14 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,8 +51,8 @@ import java.util.List;
 public class Dropbox {
 
     private static final String TAG = "Dropbox";
-    public static final String APP_KEY = "4zi1d414h0v8sxe";
-    public static final String APP_SECRET = "aopehxo80oq8g5o";
+    private static final String APP_KEY = "4zi1d414h0v8sxe";
+    private static final String APP_SECRET = "aopehxo80oq8g5o";
     final static private String ACCOUNT_PREFS_NAME = "prefs";
     final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
     final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
@@ -349,6 +352,8 @@ public class Dropbox {
             deletePlace(fileName);
         } else if (fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
             deleteTemplate(fileName);
+        } else if (fileName.endsWith(FileConfig.FILE_NAME_SETTINGS)) {
+            deleteSettings(fileName);
         }
     }
 
@@ -376,7 +381,7 @@ public class Dropbox {
         startSession();
         if (!isLinked()) return;
         try {
-            mDBApi.delete(dbxNoteFolder + name + FileConfig.FILE_NAME_NOTE);
+            mDBApi.delete(dbxNoteFolder + name);
         } catch (DropboxException e) {
             LogUtil.e(TAG, "deleteNote: ", e);
         }
@@ -388,12 +393,13 @@ public class Dropbox {
      * @param name file name.
      */
     public void deleteGroup(String name) {
+        LogUtil.d(TAG, "deleteGroup: " + name);
         startSession();
         if (!isLinked()) return;
         try {
-            mDBApi.delete(dbxGroupFolder + name + FileConfig.FILE_NAME_GROUP);
+            mDBApi.delete(dbxGroupFolder + name);
         } catch (DropboxException e) {
-            LogUtil.e(TAG, "deleteGroup: ", e);
+            LogUtil.e(TAG, "deleteGroup: " + name, e);
         }
     }
 
@@ -443,21 +449,40 @@ public class Dropbox {
     }
 
     /**
+     * Delete settings backup file from Dropbox folder.
+     *
+     * @param name file name
+     */
+    public void deleteSettings(String name) {
+        startSession();
+        if (!isLinked()) return;
+        try {
+            mDBApi.delete(dbxSettingsFolder + name);
+        } catch (DropboxException e) {
+            LogUtil.e(TAG, "deleteSettings: ", e);
+        }
+    }
+
+    /**
      * Delete all folders inside application folder on Dropbox.
      */
     public void cleanFolder() {
         startSession();
         if (!isLinked()) return;
+        deleteFolder(dbxNoteFolder);
+        deleteFolder(dbxGroupFolder);
+        deleteFolder(dbxBirthFolder);
+        deleteFolder(dbxPlacesFolder);
+        deleteFolder(dbxTemplatesFolder);
+        deleteFolder(dbxSettingsFolder);
+        deleteFolder(dbxFolder);
+    }
+
+    private void deleteFolder(String folder) {
         try {
-            mDBApi.delete(dbxNoteFolder);
-            mDBApi.delete(dbxGroupFolder);
-            mDBApi.delete(dbxBirthFolder);
-            mDBApi.delete(dbxPlacesFolder);
-            mDBApi.delete(dbxTemplatesFolder);
-            mDBApi.delete(dbxSettingsFolder);
-            mDBApi.delete(dbxFolder);
+            mDBApi.delete(folder);
         } catch (DropboxException e) {
-            LogUtil.e(TAG, "cleanFolder: ", e);
+            LogUtil.e(TAG, "deleteFolder: ", e);
         }
     }
 
@@ -508,8 +533,11 @@ public class Dropbox {
                     File localFile = new File(dir + "/" + fileName);
                     String cloudFile = "/" + dbxFolder + fileName;
                     downloadFile(localFile, cloudFile);
-                    realmDb.saveObject(backupTool.getReminder(localFile.toString(), null));
+                    Reminder reminder = backupTool.getReminder(localFile.toString(), null);
+                    realmDb.saveObject(reminder);
                     mDBApi.delete(e.path);
+                    EventControl control = EventControlImpl.getController(mContext, reminder);
+                    control.next();
                 }
             }
         } catch (DropboxException | IOException e) {

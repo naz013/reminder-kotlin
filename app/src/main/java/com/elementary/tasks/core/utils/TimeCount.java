@@ -109,8 +109,8 @@ public class TimeCount {
             return 0;
         } else {
             long time = TimeUtil.getDateTimeFromGmt(eventTime);
-            if (time < System.currentTimeMillis()) {
-                time = time + repeat;
+            while (time < System.currentTimeMillis()) {
+                time += repeat;
             }
             return time;
         }

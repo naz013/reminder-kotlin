@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
-import android.util.Log;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
@@ -74,7 +73,7 @@ public class RealmDb {
 
     public void saveObject(Object o) {
         if (o == null) return;
-        Log.d(TAG, "saveObject: " + o);
+        LogUtil.d(TAG, "saveObject: " + o);
         if (o instanceof TemplateItem) {
             saveTemplate((TemplateItem) o);
         } else if (o instanceof NoteItem) {

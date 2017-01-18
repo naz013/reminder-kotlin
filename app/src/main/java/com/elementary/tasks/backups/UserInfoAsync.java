@@ -79,7 +79,6 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     protected List<UserItem> doInBackground(Info... infos) {
         List<UserItem> list = new ArrayList<>();
         for (int i = 0; i < infos.length; i++) {
-            publishProgress(i + 1);
             Info info = infos[i];
             if (info == Info.Dropbox) {
                 addDropboxData(list);
@@ -88,6 +87,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
             } else if (info == Info.Local) {
                 addLocalData(list);
             }
+            publishProgress(i + 1);
         }
         return list;
     }
