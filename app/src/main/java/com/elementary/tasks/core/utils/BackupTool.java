@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.util.Base64;
-import android.util.Log;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
@@ -88,7 +87,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException {
@@ -138,7 +137,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException {
@@ -188,7 +187,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException {
@@ -218,12 +217,14 @@ public class BackupTool {
         File dir = MemoryUtil.getGroupsDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_GROUP;
+            File file = new File(dir, exportFileName);
+            LogUtil.d(TAG, "exportGroup: " + file);
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(file, encrypted.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public void importGroups() throws IOException {
@@ -288,7 +289,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public Reminder getReminder(ContentResolver cr, Uri name) throws IOException {
@@ -353,7 +354,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
     }
 
     public File createNote(NoteItem item) {
@@ -369,7 +370,7 @@ public class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else Log.i(TAG, "Couldn't find external storage!");
+        } else LogUtil.i(TAG, "Couldn't find external storage!");
         return file;
     }
 
@@ -421,7 +422,7 @@ public class BackupTool {
      * @return Decrypted string
      */
     public static String decrypt(String string) {
-        Log.d(TAG, "decrypt: " + string);
+//        LogUtil.d(TAG, "decrypt: " + string);
         String result = "";
         try {
             byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
@@ -439,7 +440,7 @@ public class BackupTool {
      * @return Encrypted string
      */
     public static String encrypt(String string) {
-        Log.d(TAG, "encrypt: " + string);
+//        LogUtil.d(TAG, "encrypt: " + string);
         byte[] string_byted = null;
         try {
             string_byted = string.getBytes("UTF-8");
