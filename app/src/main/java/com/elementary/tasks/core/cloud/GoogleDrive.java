@@ -346,17 +346,17 @@ public class GoogleDrive {
      */
     public void saveGroupsToDrive() throws IOException {
         if (!isLinked()) return;
+        java.io.File folder = MemoryUtil.getGroupsDir();
+        if (folder == null) return;
+        java.io.File[] files = folder.listFiles();
+        if (files == null) return;
         authorize();
         String folderId = getFolderId();
         if (folderId == null){
             return;
         }
-        java.io.File folder = MemoryUtil.getGroupsDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
         for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) continue;
+            if (!file.getName().endsWith(FileConfig.FILE_NAME_GROUP)) continue;
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Group Backup");
@@ -822,6 +822,7 @@ public class GoogleDrive {
                 String fileMIME = f.getMimeType();
                 if (fileMIME.contains("application/vnd.google-apps.folder") && f.getName().contains("Reminder")) {
                     driveService.files().delete(f.getId()).execute();
+                    break;
                 }
             }
             requestF.setPageToken(files.getNextPageToken());
@@ -833,7 +834,7 @@ public class GoogleDrive {
      * @return Drive folder identifier.
      */
     private String getFolderId() throws IOException {
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'application/vnd.google-apps.folder'");
+        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'application/vnd.google-apps.folder' and name contains 'Reminder'");
         if (request == null) return null;
         do {
             FileList files = request.execute();
@@ -843,6 +844,7 @@ public class GoogleDrive {
                 String fileMIME = f.getMimeType();
                 if (fileMIME.trim().contains("application/vnd.google-apps.folder") &&
                         f.getName().contains("Reminder")) {
+                    Log.d(TAG, "getFolderId: " + f.getName() + ", " + f.getMimeType());
                     return f.getId();
                 }
             }

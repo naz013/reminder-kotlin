@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
@@ -18,6 +17,7 @@ import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.elementary.tasks.core.utils.BackupTool;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -99,7 +99,7 @@ public class Dropbox {
         try {
             account = mDBApi.accountInfo();
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "userName: ", e);
         }
         return account != null ? account.displayName : null;
     }
@@ -114,7 +114,7 @@ public class Dropbox {
         try {
             account = mDBApi.accountInfo();
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "userQuota: ", e);
         }
         return account != null ? account.quota : 0;
     }
@@ -124,7 +124,7 @@ public class Dropbox {
         try {
             account = mDBApi.accountInfo();
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "userQuotaNormal: ", e);
         }
         return account != null ? (account.quotaNormal + account.quotaShared) : 0;
     }
@@ -185,7 +185,6 @@ public class Dropbox {
         String key = prefs.getString(ACCESS_KEY_NAME, null);
         String secret = prefs.getString(ACCESS_SECRET_NAME, null);
         if (key == null || secret == null || key.length() == 0 || secret.length() == 0) return;
-
         if (key.equals("oauth2:")) {
             session.setOAuth2AccessToken(secret);
         } else {
@@ -265,11 +264,10 @@ public class Dropbox {
             try {
                 newEntry = mDBApi.putFileOverwrite(folder + fileLoopName, fis, tmpFile.length(), null);
             } catch (DropboxUnlinkedException e) {
-                Log.e("DbLog", "User has unlinked.");
+                LogUtil.e(TAG, "User has unlinked.", e);
             } catch (DropboxException e) {
-                Log.e("DbLog", "Something went wrong while uploading.");
+                LogUtil.e(TAG, "Something went wrong while uploading.", e);
             }
-            if (file.exists()) file.delete();
         }
     }
 
@@ -294,11 +292,10 @@ public class Dropbox {
             try {
                 newEntry = mDBApi.putFileOverwrite(dbxFolder + fileName, fis, tmpFile.length(), null);
             } catch (DropboxUnlinkedException e) {
-                Log.e("DbLog", "User has unlinked.");
+                LogUtil.e(TAG, "User has unlinked.", e);
             } catch (DropboxException e) {
-                Log.e("DbLog", "Something went wrong while uploading.");
+                LogUtil.e(TAG, "Something went wrong while uploading.", e);
             }
-            if (tmpFile.exists()) tmpFile.delete();
         } else {
             upload(MemoryUtil.DIR_SD);
         }
@@ -366,7 +363,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxFolder + name);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deleteReminder: ", e);
         }
     }
 
@@ -381,7 +378,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxNoteFolder + name + FileConfig.FILE_NAME_NOTE);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deleteNote: ", e);
         }
     }
 
@@ -396,7 +393,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxGroupFolder + name + FileConfig.FILE_NAME_GROUP);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deleteGroup: ", e);
         }
     }
 
@@ -411,7 +408,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxBirthFolder + name);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deleteBirthday: ", e);
         }
     }
 
@@ -426,7 +423,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxPlacesFolder + name);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deletePlace: ", e);
         }
     }
 
@@ -441,7 +438,7 @@ public class Dropbox {
         try {
             mDBApi.delete(dbxTemplatesFolder + name);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "deleteTemplate: ", e);
         }
     }
 
@@ -460,7 +457,7 @@ public class Dropbox {
             mDBApi.delete(dbxSettingsFolder);
             mDBApi.delete(dbxFolder);
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "cleanFolder: ", e);
         }
     }
 
@@ -488,7 +485,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadTemplates: ", e);
         }
     }
 
@@ -516,7 +513,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadReminders: ", e);
         }
     }
 
@@ -528,7 +525,7 @@ public class Dropbox {
             FileOutputStream outputStream = new FileOutputStream(localFile);
             mDBApi.getFile(cloudFile, null, outputStream, null);
         } catch (DropboxException | IOException e1) {
-            e1.printStackTrace();
+            LogUtil.e(TAG, "downloadFile: ", e1);
         }
     }
 
@@ -556,7 +553,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadNotes: ", e);
         }
 
     }
@@ -585,7 +582,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadGroups: ", e);
         }
     }
 
@@ -613,7 +610,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadBirthdays: ", e);
         }
     }
 
@@ -641,7 +638,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException | IOException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadPlaces: ", e);
         }
     }
 
@@ -663,9 +660,9 @@ public class Dropbox {
             try {
                 newEntry = mDBApi.putFileOverwrite(dbxSettingsFolder + file.getName(), fis, file.length(), null);
             } catch (DropboxUnlinkedException e) {
-                Log.e("DbLog", "User has unlinked.");
+                LogUtil.e(TAG, "User has unlinked.", e);
             } catch (DropboxException e) {
-                Log.e("DbLog", "Something went wrong while uploading.");
+                LogUtil.e(TAG, "Something went wrong while uploading.", e);
             }
             break;
         }
@@ -692,7 +689,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "downloadSettings: ", e);
         }
     }
 
@@ -723,7 +720,7 @@ public class Dropbox {
                 }
             }
         } catch (DropboxException e) {
-            e.printStackTrace();
+            LogUtil.e(TAG, "countFiles: ", e);
         }
         return count;
     }
