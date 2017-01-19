@@ -72,7 +72,6 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
     protected Boolean doInBackground(Void... params) {
         IoHelper ioHelper = new IoHelper(mContext);
         ioHelper.restoreGroup(true, true);
-        ioHelper.backupGroup(true);
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
@@ -82,6 +81,8 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
                 RealmDb.getInstance().saveObject(item);
             }
         }
+        ioHelper.backupGroup(true);
+
         //export & import reminders
         publishProgress(mContext.getString(R.string.syncing_reminders));
         ioHelper.restoreReminder(true, true);
