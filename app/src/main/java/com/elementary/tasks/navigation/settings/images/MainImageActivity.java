@@ -54,6 +54,7 @@ import retrofit2.Response;
  */
 
 public class MainImageActivity extends ThemedActivity implements CompoundButton.OnCheckedChangeListener {
+
     public static final String DEFAULT_PHOTO = "https://unsplash.it/1280/768?image=33";
     private static final String NONE_PHOTO = "";
     private static final String TAG = "MainImageActivity";
@@ -149,11 +150,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_image_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.main_image));
+        initActionBar();
 
         selectGroup = (RadioGroup) findViewById(R.id.selectGroup);
         RoboRadioButton defaultCheck = (RoboRadioButton) findViewById(R.id.defaultCheck);
@@ -181,6 +178,14 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         initImageContainer();
         mCall = RetrofitBuilder.getApi().getAllImages();
         mCall.enqueue(mPhotoCallback);
+    }
+
+    private void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setTitle(getString(R.string.main_image));
     }
 
     private void initImageContainer() {
@@ -215,9 +220,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
     private void showMonthDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(R.array.month_list, (dialogInterface, i) -> {
-            setImageFotMonth(i);
-        });
+        builder.setItems(R.array.month_list, (dialogInterface, i) -> setImageFotMonth(i));
         AlertDialog dialog = builder.create();
         dialog.show();
     }
