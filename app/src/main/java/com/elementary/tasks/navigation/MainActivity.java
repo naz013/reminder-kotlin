@@ -202,6 +202,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         View view = mNavigationView.getHeaderView(0);
         mMainImageView = (ImageView) view.findViewById(R.id.headerImage);
         mMainImageView.setOnClickListener(view1 -> openImageScreen());
+        view.findViewById(R.id.headerItem).setOnClickListener(view12 -> openImageScreen());
         setMenuVisible();
     }
 
