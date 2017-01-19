@@ -290,6 +290,7 @@ public class BackupTool {
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);
+                        if (reminder.isRemoved() || !reminder.isActive()) continue;
                         realmDb.saveObject(reminder);
                         EventControl control = EventControlImpl.getController(mContext, reminder);
                         control.next();

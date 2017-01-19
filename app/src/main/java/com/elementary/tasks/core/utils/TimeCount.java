@@ -206,10 +206,8 @@ public class TimeCount {
         } else {
             while (true) {
                 int mDay = cc.get(Calendar.DAY_OF_WEEK);
-                if (weekdays.get(mDay - 1) == 1) {
-                    if (cc.getTimeInMillis() > System.currentTimeMillis()) {
-                        break;
-                    }
+                if (weekdays.get(mDay - 1) == 1 && cc.getTimeInMillis() > System.currentTimeMillis()) {
+                    break;
                 }
                 cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
             }
@@ -228,10 +226,8 @@ public class TimeCount {
         cc.set(Calendar.MILLISECOND, 0);
         while (true) {
             int mDay = cc.get(Calendar.DAY_OF_WEEK);
-            if (weekdays.get(mDay - 1) == 1) {
-                if (cc.getTimeInMillis() > System.currentTimeMillis()) {
-                    break;
-                }
+            if (weekdays.get(mDay - 1) == 1 && cc.getTimeInMillis() > System.currentTimeMillis()) {
+                break;
             }
             cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
         }

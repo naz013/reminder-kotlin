@@ -534,6 +534,7 @@ public class Dropbox {
                     String cloudFile = "/" + dbxFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     Reminder reminder = backupTool.getReminder(localFile.toString(), null);
+                    if (reminder.isRemoved() || !reminder.isActive()) continue;
                     realmDb.saveObject(reminder);
                     mDBApi.delete(e.path);
                     EventControl control = EventControlImpl.getController(mContext, reminder);

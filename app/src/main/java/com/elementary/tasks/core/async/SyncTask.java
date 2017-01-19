@@ -71,6 +71,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         IoHelper ioHelper = new IoHelper(mContext);
+        publishProgress(mContext.getString(R.string.syncing_groups));
         ioHelper.restoreGroup(true);
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {

@@ -67,14 +67,12 @@ class DateEvent extends RepeatableEventManager {
     @Override
     public boolean next() {
         mReminder.setDelay(0);
-        if (!isRepeatable()) {
-            return stop();
-        } else {
+        if (canSkip()) {
             long time = calculateTime(false);
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             return start();
-        }
+        } else return stop();
     }
 
     @Override

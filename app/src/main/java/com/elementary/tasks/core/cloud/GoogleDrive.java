@@ -498,6 +498,7 @@ public class GoogleDrive {
                     OutputStream out = new FileOutputStream(file);
                     driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
                     Reminder reminder = backupTool.getReminder(file.toString(), null);
+                    if (reminder.isRemoved() || !reminder.isActive()) continue;
                     realmDb.saveObject(reminder);
                     EventControl control = EventControlImpl.getController(mContext, reminder);
                     control.next();

@@ -5,14 +5,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import java.util.Calendar;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,7 +38,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("----ON_RECEIVE-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
+        LogUtil.d("----ON_RECEIVE-----", TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         String id = intent.getStringExtra(Constants.INTENT_ID);
         Intent service = new Intent(context, AlarmReceiver.class);
         context.startService(service);
@@ -58,8 +60,14 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         if (item != null) {
             due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         }
-        Log.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
+        LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
         if (due == 0) return;
+        if (!Reminder.isBase(item.getType(), Reminder.BY_TIME)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(due);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+        }
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (Module.isMarshmallow()) {
