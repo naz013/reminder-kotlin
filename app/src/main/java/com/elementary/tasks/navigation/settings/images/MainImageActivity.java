@@ -1,22 +1,16 @@
 package com.elementary.tasks.navigation.settings.images;
 
 import android.app.AlertDialog;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
@@ -26,7 +20,7 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -60,16 +54,9 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private static final String TAG = "MainImageActivity";
     private static final int START_SIZE = 50;
 
-    private LinearLayout emptyItem;
-    private RadioGroup selectGroup;
+    private ActivityMainImageLayoutBinding binding;
     private RecyclerView imagesList;
     private ImagesRecyclerAdapter mAdapter;
-    private RelativeLayout fullContainer;
-    private ImageView fullImageView;
-    private ImageButton downloadButton;
-    private ImageButton setToMonthButton;
-    private RoboTextView photoInfoView;
-    private CardView imageContainer;
 
     private List<ImageItem> mPhotoList = new ArrayList<>();
     private int mPointer;
@@ -114,7 +101,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         @Override
         public void onImageSelected(boolean b) {
             if (b) {
-                selectGroup.clearCheck();
+                binding.selectGroup.clearCheck();
             } else {
                 ((RoboRadioButton) findViewById(R.id.defaultCheck)).setChecked(true);
             }
@@ -132,7 +119,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     };
     private ViewUtils.AnimationCallback mAnimationCallback = (code) -> {
         if (code == 0) {
-            fullImageView.setImageBitmap(null);
+            binding.fullImageView.setImageBitmap(null);
             mSelectedItem = null;
         }
     };
@@ -142,79 +129,64 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         mAdapter = new ImagesRecyclerAdapter(this, mPhotoList.subList(0, mPointer), mListener);
         mAdapter.setPrevSelected(position);
         imagesList.setAdapter(mAdapter);
-        emptyItem.setVisibility(View.GONE);
+        binding.emptyLayout.emptyItem.setVisibility(View.GONE);
         imagesList.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_image_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_image_layout);
         initActionBar();
-
-        selectGroup = (RadioGroup) findViewById(R.id.selectGroup);
-        RoboRadioButton defaultCheck = (RoboRadioButton) findViewById(R.id.defaultCheck);
-        RoboRadioButton noneCheck = (RoboRadioButton) findViewById(R.id.noneCheck);
-        defaultCheck.setOnCheckedChangeListener(this);
-        noneCheck.setOnCheckedChangeListener(this);
-        position = Prefs.getInstance(this).getImageId();
-        String path = Prefs.getInstance(this).getImagePath();
-        if (path.matches(NONE_PHOTO)) {
-            noneCheck.setChecked(true);
-        } else if (position == -1 || path.matches(DEFAULT_PHOTO)) {
-            defaultCheck.setChecked(true);
-        }
-        emptyItem = (LinearLayout) findViewById(R.id.emptyItem);
-        emptyItem.setVisibility(View.VISIBLE);
-        RoboTextView emptyText = (RoboTextView) findViewById(R.id.emptyText);
-        emptyText.setText(R.string.no_images);
-        ImageView emptyImage = (ImageView) findViewById(R.id.emptyImage);
-        if (themeUtil.isDark()) {
-            emptyImage.setImageResource(R.drawable.ic_broken_image_white_24dp);
-        } else {
-            emptyImage.setImageResource(R.drawable.ic_broken_image_black_24dp);
-        }
+        initRadios();
+        binding.emptyLayout.emptyItem.setVisibility(View.VISIBLE);
+        binding.emptyLayout.emptyText.setText(R.string.no_images);
         initRecyclerView();
         initImageContainer();
         mCall = RetrofitBuilder.getApi().getAllImages();
         mCall.enqueue(mPhotoCallback);
     }
 
+    private void initRadios() {
+        binding.defaultCheck.setOnCheckedChangeListener(this);
+        binding.noneCheck.setOnCheckedChangeListener(this);
+        position = Prefs.getInstance(this).getImageId();
+        String path = Prefs.getInstance(this).getImagePath();
+        if (path.matches(NONE_PHOTO)) {
+            binding.noneCheck.setChecked(true);
+        } else if (position == -1 || path.matches(DEFAULT_PHOTO)) {
+            binding.defaultCheck.setChecked(true);
+        }
+    }
+
     private void initActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.main_image));
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        binding.toolbar.setTitle(getString(R.string.main_image));
     }
 
     private void initImageContainer() {
-        imageContainer = (CardView) findViewById(R.id.imageContainer);
-        imageContainer.setVisibility(View.GONE);
-        fullContainer = (RelativeLayout) findViewById(R.id.fullContainer);
-        fullContainer.setVisibility(View.GONE);
-        fullContainer.setOnTouchListener((view, motionEvent) -> {
+        binding.imageContainer.setVisibility(View.GONE);
+        binding.fullContainer.setVisibility(View.GONE);
+        binding.fullContainer.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                 hideImage();
             }
             return true;
         });
-        photoInfoView = (RoboTextView) findViewById(R.id.photoInfoView);
-        fullImageView = (ImageView) findViewById(R.id.fullImageView);
-        fullImageView.setOnTouchListener((view, motionEvent) -> true);
-        downloadButton = (ImageButton) findViewById(R.id.downloadButton);
-        downloadButton.setOnClickListener(view -> showDownloadDialog());
-        setToMonthButton = (ImageButton) findViewById(R.id.setToMonthButton);
-        setToMonthButton.setOnClickListener(view -> showMonthDialog());
+        binding.fullImageView.setOnTouchListener((view, motionEvent) -> true);
+        binding.downloadButton.setOnClickListener(view -> showDownloadDialog());
+        binding.setToMonthButton.setOnClickListener(view -> showMonthDialog());
         if (!Prefs.getInstance(this).isCalendarImagesEnabled()) {
-            setToMonthButton.setVisibility(View.GONE);
+            binding.setToMonthButton.setVisibility(View.GONE);
         }
         if (themeUtil.isDark()) {
-            downloadButton.setImageResource(R.drawable.ic_get_app_white_24dp);
-            setToMonthButton.setImageResource(R.drawable.ic_calendar_white);
+            binding.downloadButton.setImageResource(R.drawable.ic_get_app_white_24dp);
+            binding.setToMonthButton.setImageResource(R.drawable.ic_calendar_white);
         } else {
-            downloadButton.setImageResource(R.drawable.ic_get_app_black_24dp);
-            setToMonthButton.setImageResource(R.drawable.ic_calendar);
+            binding.downloadButton.setImageResource(R.drawable.ic_get_app_black_24dp);
+            binding.setToMonthButton.setImageResource(R.drawable.ic_calendar);
         }
     }
 
@@ -259,19 +231,19 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private void showImage(int position) {
         mSelectedItem = mPhotoList.get(position);
         if (mSelectedItem != null) {
-            photoInfoView.setText(getString(R.string.number) + mSelectedItem.getId() + " " + mSelectedItem.getAuthor());
+            binding.photoInfoView.setText(getString(R.string.number) + mSelectedItem.getId() + " " + mSelectedItem.getAuthor());
             Picasso.with(this)
                     .load(RetrofitBuilder.getImageLink(mSelectedItem.getId()))
                     .error(themeUtil.isDark() ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
-                    .into(fullImageView);
-            ViewUtils.showReveal(fullContainer);
-            ViewUtils.show(this, imageContainer, mAnimationCallback);
+                    .into(binding.fullImageView);
+            ViewUtils.showReveal(binding.fullContainer);
+            ViewUtils.show(this, binding.imageContainer, mAnimationCallback);
         }
     }
 
     private void hideImage() {
-        ViewUtils.hide(this, imageContainer, mAnimationCallback);
-        ViewUtils.hideReveal(fullContainer);
+        ViewUtils.hide(this, binding.imageContainer, mAnimationCallback);
+        ViewUtils.hideReveal(binding.fullContainer);
     }
 
     private void downloadImage(int width, int height) {
@@ -301,7 +273,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void initRecyclerView() {
-        imagesList = (RecyclerView) findViewById(R.id.imagesList);
+        imagesList = binding.imagesList;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -363,7 +335,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
     @Override
     public void onBackPressed() {
-        if (fullContainer.getVisibility() == View.VISIBLE) {
+        if (binding.fullContainer.getVisibility() == View.VISIBLE) {
             hideImage();
         } else {
             finish();
