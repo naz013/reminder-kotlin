@@ -37,12 +37,13 @@ public class IoHelper {
      * Create backup files for reminders, groups, birthdays and notes.
      */
     public void backup() {
-        backupGroup(true);
-        backupReminder(true);
-        backupNote(true);
-        backupBirthday(true);
-        backupPlaces(true);
-        backupTemplates(true);
+        backupGroup();
+        backupReminder();
+        backupNote();
+        backupBirthday();
+        backupPlaces();
+        backupTemplates();
+        backupSettings();
     }
 
     public void backupSettings() {
@@ -59,12 +60,10 @@ public class IoHelper {
 
     /**
      * Create backup files for groups.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupGroup(boolean isCloud) {
+    public void backupGroup() {
         BackupTool.getInstance().exportGroups();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadGroups();
             try {
                 new GoogleDrive(mContext).saveGroupsToDrive();
@@ -76,16 +75,14 @@ public class IoHelper {
 
     /**
      * Restore all groups from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restoreGroup(boolean isCloud, boolean delete) {
+    public void restoreGroup(boolean delete) {
         try {
             BackupTool.getInstance().importGroups();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadGroups();
             try {
                 new GoogleDrive(mContext).downloadGroups(delete);
@@ -97,12 +94,10 @@ public class IoHelper {
 
     /**
      * Create backup files for reminder.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupReminder(boolean isCloud) {
+    public void backupReminder() {
         BackupTool.getInstance().exportReminders();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadReminder(null);
             try {
                 new GoogleDrive(mContext).saveRemindersToDrive();
@@ -114,16 +109,14 @@ public class IoHelper {
 
     /**
      * Restore all reminder from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restoreReminder(boolean isCloud, boolean delete) {
+    public void restoreReminder(boolean delete) {
         try {
             BackupTool.getInstance(mContext).importReminders();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadReminders();
             try {
                 new GoogleDrive(mContext).downloadReminders(delete);
@@ -135,12 +128,10 @@ public class IoHelper {
 
     /**
      * Create backup files for notes.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupNote(boolean isCloud) {
+    public void backupNote() {
         BackupTool.getInstance().exportNotes();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadNotes();
             try {
                 new GoogleDrive(mContext).saveNotesToDrive();
@@ -152,16 +143,14 @@ public class IoHelper {
 
     /**
      * Restore all notes from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restoreNote(boolean isCloud, boolean delete) {
+    public void restoreNote(boolean delete) {
         try {
             BackupTool.getInstance().importNotes();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadNotes();
             try {
                 new GoogleDrive(mContext).downloadNotes(delete);
@@ -173,12 +162,10 @@ public class IoHelper {
 
     /**
      * Create backup files for birthdays.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupBirthday(boolean isCloud) {
+    public void backupBirthday() {
         BackupTool.getInstance().exportBirthdays();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadBirthdays();
             try {
                 new GoogleDrive(mContext).saveBirthdaysToDrive();
@@ -190,16 +177,14 @@ public class IoHelper {
 
     /**
      * Restore all birthdays from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restoreBirthday(boolean isCloud, boolean delete) {
+    public void restoreBirthday(boolean delete) {
         try {
             BackupTool.getInstance().importBirthdays();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadBirthdays();
             try {
                 new GoogleDrive(mContext).downloadBirthdays(delete);
@@ -211,12 +196,10 @@ public class IoHelper {
 
     /**
      * Create backup files for places.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupPlaces(boolean isCloud) {
+    public void backupPlaces() {
         BackupTool.getInstance().exportPlaces();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadPlaces();
             try {
                 new GoogleDrive(mContext).savePlacesToDrive();
@@ -228,16 +211,14 @@ public class IoHelper {
 
     /**
      * Restore all birthdays from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restorePlaces(boolean isCloud, boolean delete) {
+    public void restorePlaces(boolean delete) {
         try {
             BackupTool.getInstance().importPlaces();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadPlaces();
             try {
                 new GoogleDrive(mContext).downloadPlaces(delete);
@@ -249,12 +230,10 @@ public class IoHelper {
 
     /**
      * Create backup files for places.
-     *
-     * @param isCloud create cloud backup.
      */
-    public void backupTemplates(boolean isCloud) {
+    public void backupTemplates() {
         BackupTool.getInstance().exportTemplates();
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).uploadTemplates();
             try {
                 new GoogleDrive(mContext).saveTemplatesToDrive();
@@ -266,16 +245,14 @@ public class IoHelper {
 
     /**
      * Restore all birthdays from backup files.
-     *
-     * @param isCloud restore from cloud.
      */
-    public void restoreTemplates(boolean isCloud, boolean delete) {
+    public void restoreTemplates(boolean delete) {
         try {
             BackupTool.getInstance().importTemplates();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (isConnected && isCloud) {
+        if (isConnected) {
             new Dropbox(mContext).downloadTemplates();
             try {
                 new GoogleDrive(mContext).downloadTemplates(delete);

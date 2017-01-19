@@ -71,7 +71,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         IoHelper ioHelper = new IoHelper(mContext);
-        ioHelper.restoreGroup(true, true);
+        ioHelper.restoreGroup(true);
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
@@ -81,32 +81,33 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
                 RealmDb.getInstance().saveObject(item);
             }
         }
-        ioHelper.backupGroup(true);
+        ioHelper.backupGroup();
 
         //export & import reminders
         publishProgress(mContext.getString(R.string.syncing_reminders));
-        ioHelper.restoreReminder(true, true);
-        ioHelper.backupReminder(true);
+        ioHelper.restoreReminder(true);
+        ioHelper.backupReminder();
 
         //export & import notes
         publishProgress(mContext.getString(R.string.syncing_notes));
-        ioHelper.restoreNote(true, true);
-        ioHelper.backupNote(true);
+        ioHelper.restoreNote(true);
+        ioHelper.backupNote();
 
         //export & import birthdays
         publishProgress(mContext.getString(R.string.syncing_birthdays));
-        ioHelper.restoreBirthday(true, true);
-        ioHelper.backupBirthday(true);
+        ioHelper.restoreBirthday(true);
+        ioHelper.backupBirthday();
 
         //export & import places
         publishProgress(mContext.getString(R.string.syncing_places));
-        ioHelper.restorePlaces(true, true);
-        ioHelper.backupPlaces(true);
+        ioHelper.restorePlaces(true);
+        ioHelper.backupPlaces();
 
         //export & import templates
         publishProgress(mContext.getString(R.string.syncing_templates));
-        ioHelper.restoreTemplates(true, true);
-        ioHelper.backupTemplates(true);
+        ioHelper.restoreTemplates(true);
+        ioHelper.backupTemplates();
+        ioHelper.backupSettings();
         return true;
     }
 
