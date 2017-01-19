@@ -36,6 +36,7 @@ import com.elementary.tasks.core.interfaces.SendListener;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Language;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Sound;
@@ -102,7 +103,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             if (status == TextToSpeech.SUCCESS) {
                 int result = tts.setLanguage(getTtsLocale());
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e(TAG, "This Language is not supported");
+                    LogUtil.d(TAG, "This Language is not supported");
                 } else {
                     if (!TextUtils.isEmpty(getSummary())) {
                         try {
@@ -118,7 +119,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
                     }
                 }
             } else {
-                Log.e(TAG, "Initialization Failed!");
+                LogUtil.d(TAG, "Initialization Failed!");
             }
         }
     };
@@ -156,7 +157,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     };
 
     protected DataApi.DataListener mDataListener = dataEventBuffer -> {
-        Log.d(TAG, "Data received");
+        LogUtil.d(TAG, "Data received");
         for (DataEvent event : dataEventBuffer) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 processDataEvent(event.getDataItem());
@@ -219,7 +220,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
+        LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         mSound = new Sound(this);
         mPrefs = Prefs.getInstance(this);
         if (mPrefs.isWearEnabled()) {
