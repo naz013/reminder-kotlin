@@ -1,8 +1,8 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -46,7 +46,7 @@ public class EventControlImpl {
         } else {
             control = new DateEvent(reminder, context);
         }
-        Log.d(TAG, "getController: " + control);
+        LogUtil.d(TAG, "getController: " + control);
         return control;
     }
 }

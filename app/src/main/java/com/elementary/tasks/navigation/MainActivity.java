@@ -16,13 +16,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -43,7 +46,11 @@ import com.elementary.tasks.navigation.fragments.PlacesFragment;
 import com.elementary.tasks.navigation.fragments.RemindersFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
+import com.elementary.tasks.navigation.settings.images.MainImageActivity;
+import com.elementary.tasks.navigation.settings.images.SaveAsync;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
@@ -54,6 +61,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     private ActivityMainBinding binding;
     private Toolbar toolbar;
+    private ImageView mMainImageView;
     private NavigationView mNavigationView;
     private Fragment fragment;
 
@@ -102,6 +110,32 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             Prefs.getInstance(this).setUiChanged(false);
             recreate();
         }
+        showMainImage();
+    }
+
+    private void showMainImage() {
+        String path = Prefs.getInstance(this).getImagePath();
+        if (!path.isEmpty()) {
+            String fileName = path;
+            if (path.contains("=")) {
+                int index = path.indexOf("=");
+                fileName = path.substring(index);
+            }
+            File file = new File(MemoryUtil.getImageCacheDir(), fileName + ".jpg");
+            boolean readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
+            if (readPerm && file.exists()) {
+                Picasso.with(this)
+                        .load(file)
+                        .into(mMainImageView);
+                mMainImageView.setVisibility(View.VISIBLE);
+            } else {
+                Picasso.with(this)
+                        .load(path)
+                        .into(mMainImageView);
+                mMainImageView.setVisibility(View.VISIBLE);
+                if (readPerm) new SaveAsync(this).execute(path);
+            }
+        } else mMainImageView.setVisibility(View.GONE);
     }
 
     @Override
@@ -165,7 +199,14 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         toggle.syncState();
         mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
+        View view = mNavigationView.getHeaderView(0);
+        mMainImageView = (ImageView) view.findViewById(R.id.headerImage);
+        mMainImageView.setOnClickListener(view1 -> openImageScreen());
         setMenuVisible();
+    }
+
+    private void openImageScreen() {
+        startActivity(new Intent(this, MainImageActivity.class));
     }
 
     private void setMenuVisible() {
