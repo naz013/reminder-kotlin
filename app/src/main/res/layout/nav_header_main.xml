@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
+        android:id="@+id/headerItem"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="?attr/colorPrimary"
