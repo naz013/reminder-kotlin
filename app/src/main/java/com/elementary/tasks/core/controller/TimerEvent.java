@@ -69,9 +69,8 @@ class TimerEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
-        if (!isRepeatable()) {
-            return stop();
-        } else {
+        mReminder.setDelay(0);
+        if (canSkip()) {
             long time = calculateTime(false);
             while (time < System.currentTimeMillis()) {
                 mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
@@ -81,7 +80,7 @@ class TimerEvent extends RepeatableEventManager {
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             return start();
-        }
+        } else return stop();
     }
 
     @Override

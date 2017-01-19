@@ -66,10 +66,13 @@ class MonthlyEvent extends RepeatableEventManager {
 
     @Override
     public boolean next() {
-        long time = calculateTime(false);
-        mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
-        mReminder.setEventCount(mReminder.getEventCount() + 1);
-        return start();
+        mReminder.setDelay(0);
+        if (canSkip()) {
+            long time = calculateTime(false);
+            mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
+            mReminder.setEventCount(mReminder.getEventCount() + 1);
+            return start();
+        } else return stop();
     }
 
     @Override
