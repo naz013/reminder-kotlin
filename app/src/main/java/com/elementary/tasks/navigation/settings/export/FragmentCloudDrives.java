@@ -101,16 +101,20 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     private void initGoogleDriveButton() {
         mGoogleDriveButton = binding.linkGDrive;
         mGoogleDriveButton.setOnClickListener(v -> {
-            if (Permissions.checkPermission(getActivity(),
-                    Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                    Permissions.WRITE_EXTERNAL)) {
-                switchGoogleStatus();
-            } else {
-                Permissions.requestPermission(getActivity(), 103,
-                        Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
-                        Permissions.WRITE_EXTERNAL);
-            }
+            googleDriveButtonClick();
         });
+    }
+
+    private void googleDriveButtonClick() {
+        if (Permissions.checkPermission(getActivity(),
+                Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                Permissions.WRITE_EXTERNAL)) {
+            switchGoogleStatus();
+        } else {
+            Permissions.requestPermission(getActivity(), 103,
+                    Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
+                    Permissions.WRITE_EXTERNAL);
+        }
     }
 
     private void initDropboxButton() {
@@ -242,6 +246,8 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void checkDropboxStatus() {
         if (mDropbox.checkLink() && mDropbox.isLinked()) {
+            mDropboxButton.setText(getString(R.string.disconnect));
+        } else if (mDropbox.isLinked()) {
             mDropboxButton.setText(getString(R.string.disconnect));
         } else {
             mDropboxButton.setText(getString(R.string.connect));
