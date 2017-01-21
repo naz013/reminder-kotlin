@@ -24,7 +24,7 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.QuickReturnUtils;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -124,7 +124,7 @@ public class NotePreviewActivity extends ThemedActivity {
             }
 
             private int getAlphaForActionBar(int scrollY) {
-                int minDist = 0, maxDist = QuickReturnUtils.dp2px(NotePreviewActivity.this, 200);
+                int minDist = 0, maxDist = MeasureUtils.dp2px(NotePreviewActivity.this, 200);
                 if (scrollY > maxDist) {
                     return 255;
                 } else if (scrollY<minDist) {

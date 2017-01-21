@@ -28,7 +28,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.QuickReturnUtils;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -587,9 +587,9 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    QuickReturnUtils.dp2px(mContext, 35),
-                    QuickReturnUtils.dp2px(mContext, 35));
-            int px = QuickReturnUtils.dp2px(mContext, 2);
+                    MeasureUtils.dp2px(mContext, 35),
+                    MeasureUtils.dp2px(mContext, 35));
+            int px = MeasureUtils.dp2px(mContext, 2);
             params.setMargins(px, px, px, px);
             ib.setLayoutParams(params);
             if (i < 5) {

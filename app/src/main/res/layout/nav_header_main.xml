@@ -21,8 +21,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textSize="27sp"
-            app:font_style="roboto_thin" />
+            android:textSize="25sp"
+            app:font_style="roboto_regular" />
 
     </RelativeLayout>
 </layout>

@@ -24,7 +24,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.QuickReturnUtils;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
@@ -241,8 +241,8 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
             horView.removeAllViewsInLayout();
             while (index < images.size()) {
                 ImageView imV = new ImageView(container.getContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(QuickReturnUtils.dp2px(container.getContext(), 128),
-                        QuickReturnUtils.dp2px(container.getContext(), 72));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(MeasureUtils.dp2px(container.getContext(), 128),
+                        MeasureUtils.dp2px(container.getContext(), 72));
                 imV.setLayoutParams(params);
                 setClick(imV, index, item.getKey());
                 imV.setScaleType(ImageView.ScaleType.CENTER_CROP);
