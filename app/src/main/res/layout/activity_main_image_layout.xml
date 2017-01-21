@@ -27,45 +27,54 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <android.support.v7.widget.CardView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RadioGroup
-                    android:id="@+id/selectGroup"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent">
 
-                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                        android:id="@+id/defaultCheck"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/default_image" />
+                    <include
+                        android:id="@+id/emptyLayout"
+                        layout="@layout/empty_item_layout" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                        android:id="@+id/noneCheck"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:text="@string/none" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/imagesList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-                </RadioGroup>
+                </RelativeLayout>
 
-            </android.support.v7.widget.CardView>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/empty_item_layout" android:id="@+id/emptyLayout" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/imagesList"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="56dp"
+                    app:cardBackgroundColor="@color/whitePrimary30">
+
+                    <RadioGroup
+                        android:id="@+id/selectGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                            android:id="@+id/defaultCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/default_image" />
+
+                        <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                            android:id="@+id/noneCheck"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:text="@string/none" />
+
+                    </RadioGroup>
+
+                </android.support.v7.widget.CardView>
 
             </RelativeLayout>
 

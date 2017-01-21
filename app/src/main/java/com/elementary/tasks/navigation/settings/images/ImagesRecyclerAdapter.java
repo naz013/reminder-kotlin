@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings.images;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.MeasureUtils;
+import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.PhotoListItemBinding;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,8 @@ import java.util.List;
  */
 
 public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAdapter.PhotoViewHolder> {
+
+    private static final String TAG = "ImagesRecyclerAdapter";
 
     private Context mContext;
     private List<ImageItem> mDataList;
@@ -69,6 +74,13 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         ImageItem item = mDataList.get(position);
         holder.binding.setItem(item);
+        GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) holder.binding.card.getLayoutParams();
+        if (position < 3) {
+            params.topMargin = MeasureUtils.dp2px(mContext, 56);
+        } else {
+            params.topMargin = 0;
+        }
+        holder.binding.card.setLayoutParams(params);
     }
 
     @Override
@@ -123,11 +135,22 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         }
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        LogUtil.d(TAG, "finalize: " + getItemCount());
+        PicassoTool.getInstance(mContext).clearCache();
+        for (ImageItem item : mDataList) {
+            PicassoTool.getInstance(mContext).invalidateCache(RetrofitBuilder.getImageLink(item.getId(), 800, 480));
+        }
+        super.finalize();
+    }
+
     @BindingAdapter("loadPhoto")
     public static void loadPhoto(ImageView imageView, long id) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         String url = RetrofitBuilder.getImageLink(id, 800, 480);
-        Picasso.with(imageView.getContext())
+        PicassoTool.getInstance(imageView.getContext())
+                .getPicasso()
                 .load(url)
                 .error(isDark ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
                 .into(imageView);

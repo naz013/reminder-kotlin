@@ -30,6 +30,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
@@ -203,6 +204,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         mMainImageView = (ImageView) view.findViewById(R.id.headerImage);
         mMainImageView.setOnClickListener(view1 -> openImageScreen());
         view.findViewById(R.id.headerItem).setOnClickListener(view12 -> openImageScreen());
+        RoboTextView nameView = (RoboTextView) view.findViewById(R.id.appNameBanner);
+        String appName = getString(R.string.app_name);
+        if (Module.isPro()) {
+            appName = getString(R.string.app_name_pro);
+        }
+        nameView.setText(appName.toUpperCase());
         setMenuVisible();
     }
 

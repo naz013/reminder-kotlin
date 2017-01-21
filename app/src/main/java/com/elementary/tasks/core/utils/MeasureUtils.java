@@ -30,7 +30,7 @@ import java.util.Hashtable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class QuickReturnUtils {
+public class MeasureUtils {
     private static TypedValue sTypedValue = new TypedValue();
     private static int sActionBarHeight;
     private static Dictionary<Integer, Integer> sListViewItemHeights = new Hashtable<>();
@@ -120,7 +120,7 @@ public class QuickReturnUtils {
         }
         int scrollY = -(c.getTop());
         if (columnCount > 1) {
-            sRecyclerViewItemHeights.put(firstVisiblePosition, c.getHeight() + QuickReturnUtils.dp2px(rv.getContext(), 8) / columnCount);
+            sRecyclerViewItemHeights.put(firstVisiblePosition, c.getHeight() + MeasureUtils.dp2px(rv.getContext(), 8) / columnCount);
         } else {
             sRecyclerViewItemHeights.put(firstVisiblePosition, c.getHeight());
         }

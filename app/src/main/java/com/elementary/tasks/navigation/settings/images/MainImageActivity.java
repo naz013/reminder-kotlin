@@ -17,11 +17,13 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
-import com.squareup.picasso.Picasso;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -232,8 +234,11 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         mSelectedItem = mPhotoList.get(position);
         if (mSelectedItem != null) {
             binding.photoInfoView.setText(getString(R.string.number) + mSelectedItem.getId() + " " + mSelectedItem.getAuthor());
-            Picasso.with(this)
+            PicassoTool.getInstance(this)
+                    .getPicasso()
                     .load(RetrofitBuilder.getImageLink(mSelectedItem.getId()))
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                     .error(themeUtil.isDark() ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
                     .into(binding.fullImageView);
             ViewUtils.showReveal(binding.fullContainer);
@@ -331,6 +336,18 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         Prefs.getInstance(this).setImagePath(imageUrl);
         Prefs.getInstance(this).setImageId(id);
         if (mAdapter != null) mAdapter.deselectLast();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mAdapter != null) {
+            try {
+                mAdapter.finalize();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
     }
 
     @Override
