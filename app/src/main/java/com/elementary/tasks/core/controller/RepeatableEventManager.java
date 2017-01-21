@@ -1,11 +1,13 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
+import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
@@ -45,6 +47,7 @@ abstract class RepeatableEventManager implements EventControl {
 
     protected void save() {
         RealmDb.getInstance().saveObject(mReminder);
+        mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
     }
 
     protected void export() {

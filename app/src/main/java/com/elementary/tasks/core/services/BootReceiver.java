@@ -30,18 +30,18 @@ public class BootReceiver extends BroadcastReceiver {
         if (Prefs.getInstance(context).isBirthdayReminderEnabled()){
             new BirthdayAlarm().setAlarm(context);
         }
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.STATUS_BAR_NOTIFICATION)){
-//            new Notifier(context).showPermanent();
-//        }
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.AUTO_CHECK_BIRTHDAYS)){
-//            new BirthdayCheckAlarm().setAlarm(context);
-//        }
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.AUTO_CHECK_FOR_EVENTS)){
-//            new EventsCheckAlarm().setAlarm(context);
-//        }
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.AUTO_BACKUP)){
-//            new AutoSyncAlarm().setAlarm(context);
-//        }
+        if (Prefs.getInstance(context).isSbNotificationEnabled()){
+            context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        }
+        if (Prefs.getInstance(context).isContactAutoCheckEnabled()){
+            new BirthdayCheckAlarm().setAlarm(context);
+        }
+        if (Prefs.getInstance(context).isAutoEventsCheckEnabled()){
+            new EventsCheckAlarm().setAlarm(context);
+        }
+        if (Prefs.getInstance(context).isAutoBackupEnabled()){
+            new AutoSyncAlarm().setAlarm(context);
+        }
 //        if (SharedPrefs.getInstance(context).getBoolean(Prefs.BIRTHDAY_PERMANENT)){
 //            new BirthdayPermanentAlarm().setAlarm(context);
 //            new Notifier(context).showBirthdayPermanent();

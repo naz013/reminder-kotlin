@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.navigation.MainActivity;
@@ -17,6 +18,7 @@ public class SplashScreen extends AppCompatActivity {
         initPrefs();
         initGroups();
         runApplication();
+        startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
     }
 
     private void initGroups() {
