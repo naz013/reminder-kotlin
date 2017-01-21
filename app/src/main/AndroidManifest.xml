@@ -266,6 +266,9 @@
         <service
             android:name=".core.services.PermanentReminderService"
             android:exported="true" />
+        <service
+            android:name=".core.services.PermanentBirthdayService"
+            android:exported="true" />
 
         <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"

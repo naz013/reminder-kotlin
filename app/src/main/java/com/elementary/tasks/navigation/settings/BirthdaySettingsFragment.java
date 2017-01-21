@@ -2,6 +2,7 @@ package com.elementary.tasks.navigation.settings;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -18,6 +19,7 @@ import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.services.BirthdayAlarm;
 import com.elementary.tasks.core.services.BirthdayCheckAlarm;
+import com.elementary.tasks.core.services.PermanentBirthdayService;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -181,10 +183,14 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void changeBirthdayPermanentPrefs() {
-        boolean isChecked = binding.birthdayPermanentPrefs.isChecked();
-        binding.birthdayPermanentPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setBirthdayPermanentEnabled(!isChecked);
-        // TODO: 07.11.2016 Update permanent notification
+        boolean isChecked = !binding.birthdayPermanentPrefs.isChecked();
+        binding.birthdayPermanentPrefs.setChecked(isChecked);
+        Prefs.getInstance(mContext).setBirthdayPermanentEnabled(isChecked);
+        if (isChecked) {
+            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+        } else {
+            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+        }
     }
 
     private void initBirthdaysWidgetPrefs() {

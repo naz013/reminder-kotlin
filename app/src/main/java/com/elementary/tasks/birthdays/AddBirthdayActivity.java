@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.services.PermanentBirthdayService;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
@@ -192,16 +193,20 @@ public class AddBirthdayActivity extends ThemedActivity {
             mItem = new BirthdayItem(contact, binding.birthDate.getText().toString().trim(), number, 0, contactId, myDay, myMonth);
         }
         RealmDb.getInstance().saveObject(mItem);
+        closeScreen();
+    }
+
+    private void closeScreen() {
         setResult(RESULT_OK);
         finish();
+        startService(new Intent(this, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
     }
 
     private void deleteItem() {
         if (mItem != null) {
             RealmDb.getInstance().deleteBirthday(mItem);
         }
-        setResult(RESULT_OK);
-        finish();
+        closeScreen();
     }
 
     private void dateDialog() {

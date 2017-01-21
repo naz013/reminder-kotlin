@@ -42,10 +42,10 @@ public class BootReceiver extends BroadcastReceiver {
         if (Prefs.getInstance(context).isAutoBackupEnabled()){
             new AutoSyncAlarm().setAlarm(context);
         }
-//        if (SharedPrefs.getInstance(context).getBoolean(Prefs.BIRTHDAY_PERMANENT)){
-//            new BirthdayPermanentAlarm().setAlarm(context);
-//            new Notifier(context).showBirthdayPermanent();
-//        }
+        if (Prefs.getInstance(context).isBirthdayPermanentEnabled()){
+            new BirthdayPermanentAlarm().setAlarm(context);
+            context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+        }
 //        if (Prefs.getInstance(context).isWearEnabled()) {
 //            context.startService(new Intent(context, WearService.class));
 //        }
