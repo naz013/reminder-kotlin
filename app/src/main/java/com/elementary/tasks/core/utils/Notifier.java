@@ -30,7 +30,6 @@ import com.elementary.tasks.notes.NoteItem;
 public class Notifier {
 
     private Context mContext;
-    private int NOT_ID = 0;
 
     public Notifier(Context context){
         this.mContext = context;
@@ -86,100 +85,5 @@ public class Notifier {
                 mNotifyMgr.notify(item.getUniqueId(), wearableNotificationBuilder.build());
             }
         }
-    }
-
-    public void recreatePermanent(){
-        if (Prefs.getInstance(mContext).isSbNotificationEnabled()) showPermanent();
-    }
-
-    public void showPermanent(){
-//        RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.notification_layout);
-//        NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext);
-//        notification.setAutoCancel(false);
-//        notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
-//        notification.setContent(remoteViews);
-//        notification.setOngoing(true);
-//        if (Prefs.getInstance(mContext).isSbIconEnabled()) {
-//            notification.setPriority(NotificationCompat.PRIORITY_MAX);
-//        } else {
-//            notification.setPriority(NotificationCompat.PRIORITY_MIN);
-//        }
-//        Intent resultIntent = new Intent(mContext, ReminderActivity.class)
-//                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-//        stackBuilder.addParentStack(ReminderActivity.class);
-//        stackBuilder.addNextIntentWithParentStack(resultIntent);
-//        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-//                PendingIntent.FLAG_ONE_SHOT);
-//        remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
-//        Intent noteIntent = new Intent(mContext, NotesActivity.class)
-//                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        TaskStackBuilder noteBuilder = TaskStackBuilder.create(mContext);
-//        noteBuilder.addParentStack(NotesActivity.class);
-//        noteBuilder.addNextIntent(noteIntent);
-//        PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//        remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent);
-//        Intent resInt = new Intent(mContext, StartActivity.class);
-//        resInt.putExtra("tag", StartActivity.FRAGMENT_ACTIVE);
-//        TaskStackBuilder stackInt = TaskStackBuilder.create(mContext);
-//        stackInt.addParentStack(StartActivity.class);
-//        stackInt.addNextIntent(resInt);
-//        PendingIntent resultPendingInt = stackInt.getPendingIntent(0,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//        remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
-//        remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
-//        ArrayList<Long> dates = new ArrayList<>();
-//        ArrayList<String> tasks = new ArrayList<>();
-//        List<ReminderItem> list = ReminderHelper.getInstance(mContext).getRemindersEnabled();
-//        int count = list.size();
-//        for (ReminderItem item : list) {
-//            long eventTime = item.getDateTime();
-//            String summary = item.getSummary();
-//            if (eventTime > 0) {
-//                dates.add(eventTime);
-//                tasks.add(summary);
-//            }
-//        }
-//        String event = "";
-//        long prevTime = 0;
-//        for (int i = 0; i < dates.size(); i++) {
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTimeInMillis(System.currentTimeMillis());
-//            long currTime = calendar.getTimeInMillis();
-//            calendar.setTimeInMillis(dates.get(i));
-//            if (calendar.getTimeInMillis() > currTime){
-//                if (prevTime == 0){
-//                    prevTime = dates.get(i);
-//                    event = tasks.get(i);
-//                } else {
-//                    if (dates.get(i) < prevTime){
-//                        prevTime = dates.get(i);
-//                        event = tasks.get(i);
-//                    }
-//                }
-//
-//            }
-//        }
-//        if (count != 0){
-//            if (!event.matches("")){
-//                remoteViews.setTextViewText(R.id.text, event);
-//                remoteViews.setViewVisibility(R.id.featured, View.VISIBLE);
-//            } else {
-//                remoteViews.setTextViewText(R.id.text, mContext.getString(R.string.active_reminders) + " " + String.valueOf(count));
-//                remoteViews.setViewVisibility(R.id.featured, View.GONE);
-//            }
-//        } else {
-//            remoteViews.setTextViewText(R.id.text, mContext.getString(R.string.no_events));
-//            remoteViews.setViewVisibility(R.id.featured, View.GONE);
-//        }
-//        ColorSetter cs = ColorSetter.getInstance(mContext);
-//        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
-//        NotificationManagerCompat notifier = NotificationManagerCompat.from(mContext);
-//        notifier.notify(1, notification.build());
-    }
-
-    public void hidePermanent(){
-        ((NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(1);
     }
 }

@@ -13,11 +13,11 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
+import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding;
@@ -552,11 +552,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.statusIconPrefs.isChecked();
         binding.statusIconPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setSbIconEnabled(!isChecked);
-        new Notifier(getActivity()).recreatePermanent();
+        mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
     }
 
     private void initSbIconPrefs() {
         binding.statusIconPrefs.setOnClickListener(mSbIconClick);
+        binding.statusIconPrefs.setChecked(Prefs.getInstance(mContext).isSbIconEnabled());
         binding.statusIconPrefs.setDependentView(binding.permanentNotificationPrefs);
     }
 
@@ -565,9 +566,9 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         binding.permanentNotificationPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setSbNotificationEnabled(!isChecked);
         if (Prefs.getInstance(mContext).isSbNotificationEnabled()) {
-            new Notifier(mContext).showPermanent();
+            mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         } else {
-            new Notifier(mContext).hidePermanent();
+            mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_HIDE));
         }
     }
 
