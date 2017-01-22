@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -207,8 +208,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TODO: 12.12.2016 Add widget update
-//        UpdatesHelper.getInstance(this).updateTasksWidget();
+        UpdatesHelper.getInstance(this).updateTasksWidget();
     }
 
 

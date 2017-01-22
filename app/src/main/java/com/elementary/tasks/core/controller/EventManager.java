@@ -2,6 +2,7 @@ package com.elementary.tasks.core.controller;
 
 import android.content.Context;
 
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -33,5 +34,7 @@ public abstract class EventManager implements EventControl {
 
     protected void save() {
         RealmDb.getInstance().saveObject(mReminder);
+        UpdatesHelper.getInstance(mContext).updateWidget();
+        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
     }
 }

@@ -17,6 +17,7 @@ import android.widget.TimePicker;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.BirthdayAlarm;
 import com.elementary.tasks.core.services.BirthdayCheckAlarm;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
@@ -203,7 +204,8 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         boolean isChecked = binding.widgetShowPrefs.isChecked();
         binding.widgetShowPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setBirthdayInWidgetEnabled(!isChecked);
-        //// TODO: 07.11.2016 Update widget
+        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
+        UpdatesHelper.getInstance(mContext).updateWidget();
     }
 
     private void initBirthdayReminderPrefs() {

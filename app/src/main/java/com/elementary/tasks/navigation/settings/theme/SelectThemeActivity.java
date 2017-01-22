@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation.settings.theme;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +8,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -76,8 +78,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
 
     private void updateNotification() {
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
-//            new Notifier(ThemeActivity.this).recreatePermanent();
-            // TODO: 25.10.2016 Add refreshing of permanent notification
+            startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
     }
 

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
@@ -513,8 +514,7 @@ public class TaskActivity extends ThemedActivity {
 
     @Override
     protected void onDestroy() {
-        // TODO: 12.12.2016 Add widget update.
-//        UpdatesHelper.getInstance(this).updateTasksWidget();
+        UpdatesHelper.getInstance(this).updateTasksWidget();
         super.onDestroy();
     }
 }
