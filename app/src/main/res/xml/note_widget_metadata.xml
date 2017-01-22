@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.elementary.tasks.core.app_widgets.notes.NotesWidgetConfig"
+    android:initialLayout="@layout/note_widget_layout"
+    android:minHeight="40dp"
+    android:minWidth="250dp"
+    android:previewImage="@drawable/note_widget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen|keyguard" />

@@ -276,4 +276,20 @@ public class TimeCount {
         cc.set(Calendar.MILLISECOND, 0);
         return cc.getTimeInMillis();
     }
+
+    public String[] getNextDateTime(long timeLong){
+        String date;
+        String time;
+        if (timeLong == 0) {
+            date = null;
+            time = null;
+        } else {
+            Calendar cl = Calendar.getInstance();
+            cl.setTimeInMillis(timeLong);
+            Date mTime = cl.getTime();
+            date = TimeUtil.dateFormat.format(mTime);
+            time = TimeUtil.getTime(mTime, Prefs.getInstance(mContext).getBoolean(Prefs.IS_24_TIME_FORMAT));
+        }
+        return new String[]{date, time};
+    }
 }

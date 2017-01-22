@@ -23,6 +23,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
@@ -77,7 +78,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initActionBar();
         initNavigation();
-        initStartFragment();
+        if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
+            openScreen(getIntent().getIntExtra(Constants.INTENT_POSITION, 0));
+        } else {
+            initStartFragment();
+        }
     }
 
     private void initStartFragment() {

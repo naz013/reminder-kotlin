@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.elementary.tasks.core.app_widgets.new_birthday.AddBirthdayWidgetConfig"
+    android:initialLayout="@layout/add_birthday_widget_layout"
+    android:minHeight="40dp"
+    android:minWidth="40dp"
+    android:previewImage="@drawable/add_birthday_widget_preview"
+    android:resizeMode="none"
+    android:updatePeriodMillis="1800000" />

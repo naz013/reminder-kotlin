@@ -23,4 +23,21 @@
     <dimen name="floating_edit_text_underline_height">1dp</dimen>
     <dimen name="floating_edit_text_underline_highlighted_height">2dp</dimen>
 
+    <color name="simple_transparent_widget_color">#1affffff</color>
+    <color name="simple_transparent_header_color">#1affffff</color>
+    <color name="simple_transparent_row_color">#1affffff</color>
+    <color name="simple_transparent_border_color">#1affffff</color>
+
+    <drawable name="simple_left_arrow">@drawable/ic_keyboard_arrow_left_white_24dp</drawable>
+    <drawable name="simple_right_arrow">@drawable/ic_keyboard_arrow_right_white_24dp</drawable>
+    <drawable name="simple_plus_button">@drawable/ic_add_white_24dp</drawable>
+    <drawable name="simple_voice_button">@drawable/ic_microphone_white</drawable>
+    <drawable name="simple_settings_button">@drawable/ic_settings_white</drawable>
+
+    <drawable name="simple_left_arrow_black">@drawable/ic_keyboard_arrow_left_black_24dp</drawable>
+    <drawable name="simple_right_arrow_black">@drawable/ic_keyboard_arrow_right_black_24dp</drawable>
+    <drawable name="simple_plus_button_black">@drawable/ic_add_black_24dp</drawable>
+    <drawable name="simple_voice_button_black">@drawable/ic_microphone_black</drawable>
+    <drawable name="simple_settings_button_black">@drawable/ic_settings</drawable>
+
 </resources>

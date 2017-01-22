@@ -35,7 +35,9 @@ public abstract class BaseNavigationFragment extends Fragment {
             mContext = context;
         }
         if (mCallback == null) {
-            mCallback = (FragmentCallback) context;
+            try {
+                mCallback = (FragmentCallback) context;
+            } catch (ClassCastException e) {}
         }
     }
 
@@ -46,7 +48,9 @@ public abstract class BaseNavigationFragment extends Fragment {
             mContext = activity;
         }
         if (mCallback == null) {
-            mCallback = (FragmentCallback) activity;
+            try {
+                mCallback = (FragmentCallback) activity;
+            } catch (ClassCastException e) {}
         }
     }
 
