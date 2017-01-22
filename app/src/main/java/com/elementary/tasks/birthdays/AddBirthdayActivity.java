@@ -83,7 +83,6 @@ public class AddBirthdayActivity extends ThemedActivity {
         binding.birthDate.setOnClickListener(view -> dateDialog());
         binding.pickContact.setOnClickListener(view -> pickContact());
         showBirthday();
-
     }
 
     private void showBirthday() {
@@ -116,21 +115,21 @@ public class AddBirthdayActivity extends ThemedActivity {
     private void loadBirthday() {
         Intent intent = getIntent();
         date = intent.getLongExtra(Constants.INTENT_DATE, 0);
-        try {
-            Uri name = intent.getData();
-            String scheme = name.getScheme();
-            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getContentResolver();
-                mItem = BackupTool.getInstance().getBirthday(cr, name);
-            } else {
-                mItem = BackupTool.getInstance().getBirthday(name.getPath(), null);
-            }
-        } catch (NullPointerException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            String id = intent.getStringExtra(Constants.INTENT_ID);
-            if (id != null) {
-                mItem = RealmDb.getInstance().getBirthday(id);
+        String id = intent.getStringExtra(Constants.INTENT_ID);
+        if (id != null) {
+            mItem = RealmDb.getInstance().getBirthday(id);
+        } else {
+            try {
+                Uri name = intent.getData();
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mItem = BackupTool.getInstance().getBirthday(cr, name);
+                } else {
+                    mItem = BackupTool.getInstance().getBirthday(name.getPath(), null);
+                }
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -73,21 +73,21 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
 
     private void loadPlace() {
         Intent intent = getIntent();
-        try {
-            Uri name = intent.getData();
-            String scheme = name.getScheme();
-            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getContentResolver();
-                mItem = BackupTool.getInstance().getPlace(cr, name);
-            } else {
-                mItem = BackupTool.getInstance().getPlace(name.getPath(), null);
-            }
-        } catch (NullPointerException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            String id = intent.getStringExtra(Constants.INTENT_ID);
-            if (id != null) {
-                mItem = RealmDb.getInstance().getPlace(id);
+        String id = intent.getStringExtra(Constants.INTENT_ID);
+        if (id != null) {
+            mItem = RealmDb.getInstance().getPlace(id);
+        } else {
+            try {
+                Uri name = intent.getData();
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mItem = BackupTool.getInstance().getPlace(cr, name);
+                } else {
+                    mItem = BackupTool.getInstance().getPlace(name.getPath(), null);
+                }
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -70,21 +70,21 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
 
     private void loadGroup() {
         Intent intent = getIntent();
-        try {
-            Uri name = intent.getData();
-            String scheme = name.getScheme();
-            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getContentResolver();
-                mItem = BackupTool.getInstance().getGroup(cr, name);
-            } else {
-                mItem = BackupTool.getInstance().getGroup(name.getPath(), null);
-            }
-        } catch (NullPointerException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            String id = intent.getStringExtra(Constants.INTENT_ID);
-            if (id != null) {
-                mItem = RealmDb.getInstance().getGroup(id);
+        String id = intent.getStringExtra(Constants.INTENT_ID);
+        if (id != null) {
+            mItem = RealmDb.getInstance().getGroup(id);
+        } else {
+            try {
+                Uri name = intent.getData();
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mItem = BackupTool.getInstance().getGroup(cr, name);
+                } else {
+                    mItem = BackupTool.getInstance().getGroup(name.getPath(), null);
+                }
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
             }
         }
     }

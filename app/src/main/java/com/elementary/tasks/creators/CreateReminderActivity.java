@@ -169,21 +169,21 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void loadReminder() {
         Intent intent = getIntent();
-        try {
-            Uri name = intent.getData();
-            String scheme = name.getScheme();
-            if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-                ContentResolver cr = getContentResolver();
-                mReminder = BackupTool.getInstance().getReminder(cr, name);
-            } else {
-                mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
-            }
-        } catch (NullPointerException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            String id = intent.getStringExtra(Constants.INTENT_ID);
-            if (id != null) {
-                mReminder = RealmDb.getInstance().getReminder(id);
+        String id = intent.getStringExtra(Constants.INTENT_ID);
+        if (id != null) {
+            mReminder = RealmDb.getInstance().getReminder(id);
+        } else {
+            try {
+                Uri name = intent.getData();
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mReminder = BackupTool.getInstance().getReminder(cr, name);
+                } else {
+                    mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
+                }
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
             }
         }
     }
