@@ -6,6 +6,6 @@
     android:minHeight="180dp"
     android:minWidth="250dp"
     android:previewImage="@drawable/calendar_widget_preview"
-    android:resizeMode="horizontal"
+    android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen|keyguard" />
