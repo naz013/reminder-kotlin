@@ -1,6 +1,9 @@
 package com.elementary.tasks.navigation.settings.additional;
 
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -11,10 +14,13 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityTemplateLayoutBinding;
+
+import java.io.IOException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,14 +48,32 @@ public class TemplateActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
+        loadTemplate();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_template_layout);
         initActionBar();
         initMessageField();
+        showTemplate();
+    }
+
+    private void loadTemplate() {
+        Intent intent = getIntent();
+        String id = intent.getStringExtra(Constants.INTENT_ID);
         if (id != null) {
             mItem = RealmDb.getInstance().getTemplate(id);
+        } else {
+            try {
+                Uri name = intent.getData();
+                String scheme = name.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    ContentResolver cr = getContentResolver();
+                    mItem = BackupTool.getInstance().getTemplate(cr, name);
+                } else {
+                    mItem = BackupTool.getInstance().getTemplate(name.getPath(), null);
+                }
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
+            }
         }
-        showTemplate();
     }
 
     private void initMessageField() {

@@ -133,18 +133,7 @@ public class ActivityCreateNote extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_note);
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-        taskField = binding.taskMessage;
-        taskField.setTextSize(Prefs.getInstance(this).getNoteTextSize() + 12);
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setElevation(0f);
-
-        toolbar.setVisibility(View.VISIBLE);
+        initActionBar();
 
         layoutContainer = binding.layoutContainer;
         remindContainer = binding.remindContainer;
@@ -157,20 +146,7 @@ public class ActivityCreateNote extends ThemedActivity {
         discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
         initImagesList();
         setImages();
-        Intent intent = getIntent();
-        String filePath = intent.getStringExtra(Constants.FILE_PICKED);
-        Uri name = null;
-        try {
-            name = intent.getData();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            String id = intent.getStringExtra(Constants.INTENT_ID);
-            if (id != null) {
-                mItem = RealmDb.getInstance().getNote(id);
-            }
-        }
-        loadNoteFromFile(filePath, name);
+        loadNote();
         if (mItem != null) {
             String note = mItem.getSummary();
             mColor = mItem.getColor();
@@ -188,6 +164,36 @@ public class ActivityCreateNote extends ThemedActivity {
             ReminderApp application = (ReminderApp) getApplication();
             mTracker = application.getDefaultTracker();
         }
+    }
+
+    private void loadNote() {
+        Intent intent = getIntent();
+        String id = intent.getStringExtra(Constants.INTENT_ID);
+        if (id != null) {
+            mItem = RealmDb.getInstance().getNote(id);
+        } else {
+            String filePath = intent.getStringExtra(Constants.FILE_PICKED);
+            Uri name = null;
+            try {
+                name = intent.getData();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            loadNoteFromFile(filePath, name);
+        }
+    }
+
+    private void initActionBar() {
+        toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+        taskField = binding.taskMessage;
+        taskField.setTextSize(Prefs.getInstance(this).getNoteTextSize() + 12);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setElevation(0f);
+        toolbar.setVisibility(View.VISIBLE);
     }
 
     private void loadNoteFromFile(String filePath, Uri name) {
