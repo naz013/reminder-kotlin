@@ -3,6 +3,7 @@ package com.elementary.tasks.google_tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.SuperUtil;
 
@@ -57,8 +58,7 @@ public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aVoid) {
         super.onPostExecute(aVoid);
-        // TODO: 12.12.2016 Add widget update
-//        UpdatesHelper.getInstance(mContext).updateTasksWidget();
+        UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (aVoid) {
             if (mListener != null) {
                 mListener.onComplete();

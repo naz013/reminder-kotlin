@@ -74,7 +74,7 @@ public class VoiceWidgetConfig extends ThemedActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 color = WidgetUtils.getDrawable(i);
-                binding.widgetBg.setBackgroundResource(color);
+                binding.widgetLayout.widgetBg.setBackgroundResource(color);
             }
 
             @Override

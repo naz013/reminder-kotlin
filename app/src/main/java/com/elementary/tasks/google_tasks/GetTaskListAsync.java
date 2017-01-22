@@ -3,6 +3,7 @@ package com.elementary.tasks.google_tasks;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.google.api.services.tasks.model.Task;
@@ -83,8 +84,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        // TODO: 12.12.2016 Add widget update
-//        UpdatesHelper.getInstance(mContext).updateTasksWidget();
+        UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (mListener != null) {
             mListener.onComplete();
         }
