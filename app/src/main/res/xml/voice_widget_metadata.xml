@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetConfig"
+    android:initialLayout="@layout/voice_widget_layout"
+    android:minHeight="40dp"
+    android:minWidth="40dp"
+    android:previewImage="@drawable/voice_widget_preview"
+    android:resizeMode="none"
+    android:updatePeriodMillis="1800000" />

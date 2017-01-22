@@ -271,6 +271,203 @@
             android:exported="true" />
 
         <receiver
+            android:name=".core.app_widgets.new_reminder.AddReminderWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/add_reminder_menu" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/add_reminder_widget_metadata" />
+        </receiver>
+        <receiver
+            android:name=".core.app_widgets.voice_control.VoiceWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/voice_control" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/voice_widget_metadata" />
+        </receiver>
+        <receiver
+            android:name=".core.app_widgets.new_birthday.AddBirthdayWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/add_birthday" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/add_birthday_widget_metadata" />
+        </receiver>
+        <receiver
+            android:name=".core.app_widgets.quick_reminder.QuickReminderWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/add_reminder_menu" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_reminder_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name=".core.app_widgets.events.EventsWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.notes.NotesWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.new_reminder.AddReminderWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.new_birthday.AddBirthdayWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.quick_reminder.QuickReminderWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.tasks.TasksWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".core.app_widgets.voice_control.VoiceWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".core.app_widgets.events.EventsWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/active_reminders" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="justreminder.LOCATION_CHANGED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/current_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name=".core.app_widgets.events.EventsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".core.app_widgets.notes.NotesWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/notes" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/note_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name=".core.app_widgets.notes.NotesService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".core.app_widgets.tasks.TasksWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/google_tasks" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tasks_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name=".core.app_widgets.tasks.TasksService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity
+            android:name=".core.app_widgets.calendar.CalendarWidgetConfig"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:windowSoftInputMode="stateHidden" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".core.app_widgets.calendar.CalendarWidget"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/calendar" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calendar_widget_metadata" />
+        </receiver>
+
+        <service
+            android:name=".core.app_widgets.calendar.CalendarWeekdayService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".core.app_widgets.calendar.CalendarMonthService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".core.app_widgets.voice_control.VoiceWidgetDialog"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/HomeWhiteDialog" >
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <service android:name=".core.app_widgets.calendar.CalendarUpdateMinusService" />
+        <service android:name=".core.app_widgets.calendar.CalendarUpdateService" />
+
+        <receiver
             android:name="com.google.android.gms.analytics.AnalyticsReceiver"
             android:enabled="true">
             <intent-filter>

@@ -50,6 +50,9 @@ public class PermanentReminderService extends Service {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         LogUtil.d(TAG, "onStartCommand: ");
+        if (!Prefs.getInstance(getApplicationContext()).isSbNotificationEnabled()) {
+            hidePermanent();
+        }
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
