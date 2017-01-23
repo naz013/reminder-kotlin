@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.event_tree;
 
-import android.support.annotation.Nullable;
-
-import java.util.List;
+import hirondelle.date4j.DateTime;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -20,30 +18,6 @@ import java.util.List;
  * limitations under the License.
  */
 
-public interface TreeInterface {
-
-    void buildTree(Param params, int position);
-
-    boolean isEmpty();
-
-    /**
-     * Get size of current node.
-     *
-     * @return number of nodes.
-     */
-    int size();
-
-    /**
-     * Find all nodes in a tree.
-     *
-     * @return list of nodes.
-     */
-    List<Integer> getAll();
-
-    @Nullable
-    List<Integer> getNodes(Param params);
-
-    void remove(Param params, int position);
-
-    void print();
+public interface SearchInterface {
+    boolean hasRange(DateTime stDate, int length);
 }

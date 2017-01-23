@@ -25,7 +25,6 @@ class Year implements TreeInterface, MonthInterface {
     private int year;
     private int maxNodes = 11;
     private TreeMap<Integer, Month> nodes = new TreeMap<>();
-    private int count;
 
     public Year(int year) {
         this.year = year;
@@ -36,40 +35,31 @@ class Year implements TreeInterface, MonthInterface {
     }
 
     @Override
-    public void addNode(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        int month = eventInterface.getMonth();
-        if (month < 0 || month > maxNodes) return;
+    public void buildTree(Param params, int position) {
+        int month = params.getMonth();
         if (nodes.containsKey(month)) {
-            nodes.get(month).addNode(object);
+            Month m = nodes.get(month);
+            m.buildTree(params, position);
         } else {
-            Month month1 = new Month(month, this);
-            month1.addNode(object);
-            nodes.put(month, month1);
+            Month m = new Month(month, this);
+            m.buildTree(params, position);
+            nodes.put(month, m);
         }
-        count++;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return nodes.isEmpty();
     }
 
     @Override
     public int size() {
-        return count;
+        return nodes.size();
     }
 
     @Override
-    public List<Object> getNodes(int... params) {
-        if (params.length == 1) return getAll();
-        int m = params[1];
-        if (m == -1) {
-            return getAll();
-        }
-        if (nodes.containsKey(m)) {
-            return nodes.get(m).getNodes(params);
-        } else return null;
-    }
-
-    @Override
-    public List<Object> getAll() {
-        List<Object> list = new ArrayList<>();
+    public List<Integer> getAll() {
+        List<Integer> list = new ArrayList<>();
         for (Month month : nodes.values()) {
             list.addAll(month.getAll());
         }
@@ -77,11 +67,26 @@ class Year implements TreeInterface, MonthInterface {
     }
 
     @Override
-    public void remove(String uuId) {
-        for (Month month : nodes.values()) {
-            month.remove(uuId);
+    public List<Integer> getNodes(Param params) {
+        int month = params.getMonth();
+        if (nodes.containsKey(month)) {
+            return nodes.get(month).getAll();
+        }
+        return null;
+    }
+
+    @Override
+    public void remove(Param params, int position) {
+        int month = params.getMonth();
+        if (nodes.containsKey(month)) {
+            Month m = nodes.get(month);
+            m.remove(params, position);
+            if (m.isEmpty()) {
+                nodes.remove(m.getMonth());
+            }
         }
     }
+
 
     @Override
     public void clearMinute(int year, int month, int day, int hour, int minute) {
@@ -101,5 +106,13 @@ class Year implements TreeInterface, MonthInterface {
     @Override
     public void clearHour(int year, int month, int day, int hour) {
         nodes.get(month).clearHour(year, month, day, hour);
+    }
+
+    @Override
+    public void print() {
+        System.out.println("YEAR -> " + year + ", CONTENT: " + nodes.keySet());
+        for (Month month : nodes.values()) {
+            month.print();
+        }
     }
 }

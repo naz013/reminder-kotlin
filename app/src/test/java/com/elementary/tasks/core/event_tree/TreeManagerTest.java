@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.event_tree;
 
-import android.app.AlarmManager;
-
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -10,7 +8,6 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -37,11 +34,9 @@ import static org.junit.Assert.assertNotEquals;
 public class TreeManagerTest {
 
     private static final String TAG = "TreeManagerTest";
-    private static final int NUM_OF_NODES = 1000000;
+    private static final int NUM_OF_NODES = 10000;
 
     private static EventRoot root;
-    private static List<Reminder> list = new ArrayList<>();
-    private static String testUid;
 
     @BeforeClass
     public static void setup() {
@@ -52,21 +47,19 @@ public class TreeManagerTest {
         for (int i = 0; i < NUM_OF_NODES; i++) {
             Reminder reminder = new Reminder();
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis())).setSummary("Node " + i);
-            list.add(reminder);
             calendar.setTimeInMillis(calendar.getTimeInMillis() + 1000);
+            root.addNode(reminder);
         }
         long procTime = System.currentTimeMillis() - time;
         System.out.println("setup: " + procTime);
     }
 
     @Test
-    public void test() throws Exception {
+    public void print() throws Exception {
         long time = System.currentTimeMillis();
-        for (int i = 0; i < NUM_OF_NODES; i++) {
-            root.addNode(list.get(i));
-        }
+        root.print();
         long procTime = System.currentTimeMillis() - time;
-        System.out.println("addition_test: " + procTime);
+        System.out.println("print_test: " + procTime);
         assertEquals(NUM_OF_NODES, root.size());
     }
 
@@ -81,52 +74,12 @@ public class TreeManagerTest {
     }
 
     @Test
-    public void test2() throws Exception {
-        long time = System.currentTimeMillis();
-        List<Object> list = root.getNodes(2017, 9, 15, 17);
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("get by hour: " + procTime);
-//        assertNotEquals(null, list);
-//        System.out.println("get by hour: " + list.size());
-    }
-
-    @Test
-    public void test3() throws Exception {
-        long time = System.currentTimeMillis();
-        List<Object> list = root.getNodes(2017, 9, 15);
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("get by day: " + procTime);
-//        assertNotEquals(null, list);
-//        System.out.println("get by day: " + list.size());
-    }
-
-    @Test
     public void test4() throws Exception {
         long time = System.currentTimeMillis();
         List<Object> list = root.getNodes(2017);
         long procTime = System.currentTimeMillis() - time;
         System.out.println("get by year: " + procTime);
         assertNotEquals(null, list);
-//        System.out.println("get by year: " + list.size());
-    }
-
-    @Test
-    public void test5() throws Exception {
-        long time = System.currentTimeMillis();
-        List<Object> list = root.getNodes(2017, 9);
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("get by month: " + procTime);
-//        assertNotEquals(null, list);
-//        System.out.println("get by month: " + list.size());
-    }
-
-    @Test
-    public void test6() throws Exception {
-        assertNotEquals(null, list.get(0));
-        long time = System.currentTimeMillis();
-        root.remove(list.get(0).getUuId());
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("remove: " + procTime);
     }
 
     @Test
@@ -135,30 +88,5 @@ public class TreeManagerTest {
         root.clearMonth(2017, 7);
         long procTime = System.currentTimeMillis() - time;
         System.out.println("clear month: " + procTime);
-    }
-
-    @Test
-    public void test8() throws Exception {
-        long time = System.currentTimeMillis();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 6, 25, 10, 20);
-        Reminder reminder = new Reminder();
-        testUid = reminder.getUuId();
-        for (int i = 0; i < 1000; i++) {
-            reminder.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis())).setSummary("Node t " + i);
-            root.addNode(reminder);
-            calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_FIFTEEN_MINUTES);
-        }
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("add multiple with same id: " + procTime);
-    }
-
-    @Test
-    public void test9() throws Exception {
-        assertNotEquals(null, testUid);
-        long time = System.currentTimeMillis();
-        root.remove(testUid);
-        long procTime = System.currentTimeMillis() - time;
-        System.out.println("remove multiple instances: " + procTime);
     }
 }

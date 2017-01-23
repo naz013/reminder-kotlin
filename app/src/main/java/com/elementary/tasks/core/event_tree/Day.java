@@ -26,7 +26,6 @@ class Day implements TreeInterface, HourInterface {
     private int maxNodes = 23;
     private Month month;
     private TreeMap<Integer, Hour> nodes = new TreeMap<>();
-    private int count = 0;
 
     Day(int day, Month month) {
         this.day = day;
@@ -42,38 +41,31 @@ class Day implements TreeInterface, HourInterface {
     }
 
     @Override
-    public void addNode(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        int hour = eventInterface.getHour();
-        if (hour < 0 || hour > maxNodes) return;
+    public void buildTree(Param params, int position) {
+        int hour = params.getHour();
         if (nodes.containsKey(hour)) {
-            nodes.get(hour).addNode(object);
+            Hour h = nodes.get(hour);
+            h.buildTree(params, position);
         } else {
-            Hour hour1 = new Hour(hour, this);
-            hour1.addNode(object);
-            nodes.put(hour, hour1);
+            Hour h = new Hour(hour, this);
+            h.buildTree(params, position);
+            nodes.put(hour, h);
         }
-        count++;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return nodes.isEmpty();
     }
 
     @Override
     public int size() {
-        return count;
+        return nodes.size();
     }
 
     @Override
-    public List<Object> getNodes(int... params) {
-        if (params.length == 3) return getAll();
-        int h = params[3];
-        if (h == -1) return getAll();
-        if (nodes.containsKey(h)) {
-            return nodes.get(h).getNodes(params);
-        } else return null;
-    }
-
-    @Override
-    public List<Object> getAll() {
-        List<Object> list = new ArrayList<>();
+    public List<Integer> getAll() {
+        List<Integer> list = new ArrayList<>();
         for (Hour hour : nodes.values()) {
             list.addAll(hour.getAll());
         }
@@ -81,11 +73,26 @@ class Day implements TreeInterface, HourInterface {
     }
 
     @Override
-    public void remove(String uuId) {
-        for (Hour hour : nodes.values()) {
-            hour.remove(uuId);
+    public List<Integer> getNodes(Param params) {
+        int hour = params.getHour();
+        if (nodes.containsKey(hour)) {
+            return nodes.get(hour).getAll();
+        }
+        return null;
+    }
+
+    @Override
+    public void remove(Param params, int position) {
+        int hour = params.getHour();
+        if (nodes.containsKey(hour)) {
+            Hour h = nodes.get(hour);
+            h.remove(params, position);
+            if (h.isEmpty()) {
+                nodes.remove(h.getHour());
+            }
         }
     }
+
 
     @Override
     public void clearMinute(int year, int month, int day, int hour, int minute) {
@@ -95,5 +102,13 @@ class Day implements TreeInterface, HourInterface {
     @Override
     public void clearHour(int year, int month, int day, int hour) {
         nodes.put(hour, new Hour(hour, this));
+    }
+
+    @Override
+    public void print() {
+        System.out.println("DAY -> " + day + ", CONTENT: " + nodes.keySet());
+        for (Hour hour : nodes.values()) {
+            hour.print();
+        }
     }
 }
