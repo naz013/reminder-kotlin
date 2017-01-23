@@ -174,18 +174,8 @@ public class BirthdayItem implements RecyclerInterface, EventInterface {
     }
 
     @Override
-    public int getYear() {
-        return 0;
-    }
-
-    @Override
-    public int getMinute() {
-        return 0;
-    }
-
-    @Override
-    public int getHour() {
-        return 0;
+    public int[] getKeys() {
+        return new int[]{0, 0, 0};
     }
 
     @Override

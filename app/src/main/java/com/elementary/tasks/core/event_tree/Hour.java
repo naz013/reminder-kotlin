@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import hirondelle.date4j.DateTime;
+
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -20,13 +22,12 @@ import java.util.TreeMap;
  * limitations under the License.
  */
 
-class Hour implements TreeInterface, MinuteInterface {
+class Hour implements TreeInterface, MinuteInterface, SearchInterface {
 
     private int hour;
     private int maxNodes = 59;
     private Day day;
     private TreeMap<Integer, Minute> nodes = new TreeMap<>();
-    private int count = 0;
 
     Hour(int hour, Day day) {
         this.day = day;
@@ -42,38 +43,31 @@ class Hour implements TreeInterface, MinuteInterface {
     }
 
     @Override
-    public void addNode(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        int min = eventInterface.getMinute();
-        if (min < 0 || min > maxNodes) return;
-        if (nodes.containsKey(min)) {
-            nodes.get(min).addNode(object);
+    public void buildTree(Param params, int position) {
+        int minute = params.getMinute();
+        if (nodes.containsKey(minute)) {
+            Minute m = nodes.get(minute);
+            m.buildTree(params, position);
         } else {
-            Minute minute = new Minute(min, this);
-            minute.addNode(object);
-            nodes.put(min, minute);
+            Minute m = new Minute(minute, this);
+            m.buildTree(params, position);
+            nodes.put(minute, m);
         }
-        count++;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return nodes.isEmpty();
     }
 
     @Override
     public int size() {
-        return count;
+        return nodes.size();
     }
 
     @Override
-    public List<Object> getNodes(int... params) {
-        if (params.length == 4) return getAll();
-        int min = params[4];
-        if (min == -1) return getAll();
-        if (nodes.containsKey(min)) {
-            return nodes.get(min).getNodes(params);
-        } else return null;
-    }
-
-    @Override
-    public List<Object> getAll() {
-        List<Object> list = new ArrayList<>();
+    public List<Integer> getAll() {
+        List<Integer> list = new ArrayList<>();
         for (Minute minute : nodes.values()) {
             list.addAll(minute.getAll());
         }
@@ -81,14 +75,43 @@ class Hour implements TreeInterface, MinuteInterface {
     }
 
     @Override
-    public void remove(String uuId) {
-        for (Minute minute : nodes.values()) {
-            minute.remove(uuId);
+    public List<Integer> getNodes(Param params) {
+        int minute = params.getMinute();
+        if (nodes.containsKey(minute)) {
+            return nodes.get(minute).getAll();
+        }
+        return null;
+    }
+
+    @Override
+    public void remove(Param params, int position) {
+        int minute = params.getMinute();
+        if (nodes.containsKey(minute)) {
+            Minute m = nodes.get(minute);
+            m.remove(params, position);
+            if (m.isEmpty()) {
+                nodes.remove(m.getMinute());
+            }
         }
     }
+
 
     @Override
     public void clearMinute(int year, int month, int day, int hour, int minute) {
         nodes.put(minute, new Minute(minute, this));
+    }
+
+    @Override
+    public void print() {
+        System.out.println("HOUR -> " + hour + ", CONTENT: " + nodes.keySet());
+        for (Minute minute : nodes.values()) {
+            minute.print();
+        }
+    }
+
+    @Override
+    public boolean hasRange(DateTime stDate, int length) {
+        int minute = stDate.getMinute();
+        return false;
     }
 }

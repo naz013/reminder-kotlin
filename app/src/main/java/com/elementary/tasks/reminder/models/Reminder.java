@@ -680,38 +680,15 @@ public class Reminder implements RecyclerInterface, EventInterface {
     }
 
     @Override
-    public int getYear() {
+    public int[] getKeys() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
-        return calendar.get(Calendar.YEAR);
-    }
-
-    @Override
-    public int getMinute() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
-        return calendar.get(Calendar.MINUTE);
-    }
-
-    @Override
-    public int getHour() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
-        return calendar.get(Calendar.HOUR_OF_DAY);
-    }
-
-    @Override
-    public int getDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
-        return calendar.get(Calendar.DAY_OF_MONTH);
-    }
-
-    @Override
-    public int getMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
-        return calendar.get(Calendar.MONTH);
+        int y = calendar.get(Calendar.YEAR);
+        int m = calendar.get(Calendar.MONTH);
+        int d = calendar.get(Calendar.DAY_OF_MONTH);
+        int h = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+        return new int[]{y, m, d, h, min};
     }
 
     @Override

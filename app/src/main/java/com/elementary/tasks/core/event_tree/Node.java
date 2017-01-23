@@ -1,9 +1,5 @@
 package com.elementary.tasks.core.event_tree;
 
-import android.support.annotation.Nullable;
-
-import java.util.List;
-
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -20,30 +16,33 @@ import java.util.List;
  * limitations under the License.
  */
 
-public interface TreeInterface {
+public class Node {
 
-    void buildTree(Param params, int position);
+    private Object object;
+    private String uuId;
+    private Param keys;
 
-    boolean isEmpty();
+    public Node(Object object, String uuId, int[] keys) {
+        this.uuId = uuId;
+        this.keys = new Param(keys);
+        this.object = object;
+    }
 
-    /**
-     * Get size of current node.
-     *
-     * @return number of nodes.
-     */
-    int size();
+    public Node(Object object, String uuId, Param keys) {
+        this.uuId = uuId;
+        this.keys = keys;
+        this.object = object;
+    }
 
-    /**
-     * Find all nodes in a tree.
-     *
-     * @return list of nodes.
-     */
-    List<Integer> getAll();
+    public String getUuId() {
+        return uuId;
+    }
 
-    @Nullable
-    List<Integer> getNodes(Param params);
+    public Param getKeys() {
+        return keys;
+    }
 
-    void remove(Param params, int position);
-
-    void print();
+    public Object getObject() {
+        return object;
+    }
 }

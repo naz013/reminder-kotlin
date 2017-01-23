@@ -2,7 +2,9 @@ package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -21,10 +23,11 @@ import java.util.TreeMap;
  * limitations under the License.
  */
 
-public class EventRoot implements TreeInterface, YearInterface {
+public class EventRoot implements YearInterface, RootInterface {
 
     private TreeMap<Integer, Year> nodes = new TreeMap<>();
-    private int count;
+    private List<Node> keys = new ArrayList<>();
+    private Map<String, Integer> map = new HashMap<>();
 
     public EventRoot() {
         Calendar calendar = Calendar.getInstance();
@@ -37,22 +40,35 @@ public class EventRoot implements TreeInterface, YearInterface {
     }
 
     @Override
-    public void addNode(Object object) {
+    public int addNode(Object object) {
         EventInterface eventInterface = (EventInterface) object;
-        int year = eventInterface.getYear();
+        if (map.containsKey(eventInterface.getUuId())) {
+            int position = map.get(eventInterface.getUuId());
+            addAnotherTree(position);
+            return position;
+        }
+        Param param = new Param(eventInterface.getKeys());
+        int year = param.getYear();
+        keys.add(new Node(object, eventInterface.getUuId(), param));
+        int position = keys.size() - 1;
+        map.put(eventInterface.getUuId(), position);
         if (nodes.containsKey(year)) {
-            nodes.get(year).addNode(eventInterface);
+            nodes.get(year).buildTree(param, position);
         } else {
             Year y = new Year(year);
-            y.addNode(eventInterface);
+            y.buildTree(param, position);
             nodes.put(year, y);
         }
-        count++;
+        return position;
+    }
+
+    private void addAnotherTree(int position) {
+
     }
 
     @Override
     public int size() {
-        return count;
+        return keys.size();
     }
 
     @Override
@@ -63,8 +79,25 @@ public class EventRoot implements TreeInterface, YearInterface {
             return getAll();
         }
         if (nodes.containsKey(y)) {
-            return nodes.get(y).getNodes(params);
-        } else return null;
+            List<Integer> list = nodes.get(y).getNodes(new Param(params));
+            if (list != null && !list.isEmpty()) {
+                List<Object> objects = new ArrayList<>();
+                for (int i : list) {
+                    objects.add(keys.get(i).getObject());
+                }
+                return objects;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object getNode(int position) throws IndexOutOfBoundsException {
+        if (position > 0 && position < size()) {
+            return getNodes(keys.get(position).getKeys().getParams()).get(0);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     @Override
@@ -77,11 +110,36 @@ public class EventRoot implements TreeInterface, YearInterface {
     }
 
     @Override
-    public void remove(String uuId) {
-        if (uuId == null) return;
-        for (Year year : nodes.values()) {
-            year.remove(uuId);
+    public void remove(Object o) {
+        EventInterface eventInterface = (EventInterface) o;
+        if (eventInterface.getUuId() == null) return;
+        if (map.containsKey(eventInterface.getUuId())) {
+            int position = map.get(eventInterface.getUuId());
+            Node node = keys.get(position);
+            for (Year year : nodes.values()) {
+                year.remove(new Param(node.getKeys().getParams()), position);
+            }
+            map.remove(eventInterface.getUuId());
+            keys.remove(position);
         }
+    }
+
+    @Override
+    public void remove(int position) throws IndexOutOfBoundsException {
+        if (position > 0 && position < size()) {
+            remove(keys.get(position).getUuId());
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    @Override
+    public int indexOf(Object object) {
+        EventInterface eventInterface = (EventInterface) object;
+        if (map.containsKey(eventInterface.getUuId())) {
+            return map.get(eventInterface.getUuId());
+        }
+        return -1;
     }
 
     @Override
@@ -107,5 +165,12 @@ public class EventRoot implements TreeInterface, YearInterface {
     @Override
     public void clearMonth(int year, int month) {
         nodes.get(year).clearMonth(year, month);
+    }
+
+    public void print() {
+        System.out.println("ROOT -> CONTENT: " + nodes.keySet());
+        for (Year year : nodes.values()) {
+            year.print();
+        }
     }
 }

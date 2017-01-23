@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -25,7 +25,7 @@ class Minute implements TreeInterface {
 
     private int minute;
     private Hour hour;
-    private Map<String, Object> nodes = new HashMap<>();
+    private Set<Integer> nodes = new TreeSet<>();
 
     public Minute(int minute, Hour hour) {
         this.minute = minute;
@@ -40,10 +40,16 @@ class Minute implements TreeInterface {
         return minute;
     }
 
+
     @Override
-    public void addNode(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        nodes.put(eventInterface.getUuId(), object);
+    public void buildTree(Param params, int position) {
+        nodes.add(position);
+
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return nodes.isEmpty();
     }
 
     @Override
@@ -52,21 +58,24 @@ class Minute implements TreeInterface {
     }
 
     @Override
-    public List<Object> getNodes(int... params) {
+    public List<Integer> getAll() {
+        return new ArrayList<>(nodes);
+    }
+
+    @Override
+    public List<Integer> getNodes(Param params) {
         return getAll();
     }
 
     @Override
-    public List<Object> getAll() {
-        List<Object> list = new ArrayList<>();
-        list.addAll(nodes.values());
-        return list;
+    public void remove(Param params, int position) {
+        if (nodes.contains(position)) {
+            nodes.remove(position);
+        }
     }
 
     @Override
-    public void remove(String uuId) {
-        if (nodes.containsKey(uuId)) {
-            nodes.remove(uuId);
-        }
+    public void print() {
+        System.out.println("MINUTE -> " + minute + ", CONTENT: " + nodes.size());
     }
 }

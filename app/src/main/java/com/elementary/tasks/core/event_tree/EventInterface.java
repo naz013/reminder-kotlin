@@ -17,10 +17,6 @@ package com.elementary.tasks.core.event_tree;
  */
 
 public interface EventInterface extends Comparable {
-    int getYear();
-    int getMonth();
-    int getDay();
-    int getHour();
-    int getMinute();
+    int[] getKeys();
     String getUuId();
 }
