@@ -18,7 +18,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
-import com.elementary.tasks.core.fragments.MapFragment;
+import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -64,7 +64,7 @@ import java.util.List;
 public class ReminderPreviewActivity extends ThemedActivity {
 
     private ActivityReminderPreviewBinding binding;
-    private MapFragment mGoogleMap;
+    private AdvancedMapFragment mGoogleMap;
 
     private Reminder item;
     private List<Long> list = new ArrayList<>();
@@ -332,7 +332,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
 
     private void initMap() {
-        mGoogleMap = MapFragment.newInstance(false, false, false, false, Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
         getFragmentManager().beginTransaction()
                 .replace(binding.mapContainer.getId(), mGoogleMap)
                 .addToBackStack(null)
