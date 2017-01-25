@@ -6,6 +6,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.BackupTool;
@@ -62,15 +63,14 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
         }
         BackupTool.getInstance().exportNotes();
         if (SuperUtil.isConnected(mContext)) {
-            new Dropbox(mContext).downloadNotes();
+            new Dropbox(mContext).downloadNotes(true);
             new Dropbox(mContext).uploadNotes();
             try {
-                new GoogleDrive(mContext).downloadNotes(false);
+                new GoogleDrive(mContext).downloadNotes(true);
                 new GoogleDrive(mContext).saveNotesToDrive();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         return true;
     }
@@ -86,7 +86,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
         builder.setWhen(System.currentTimeMillis());
         mNotifyMgr.notify(2, builder.build());
         mListener.endExecution(aVoid);
-//        UpdatesHelper.getInstance(mContext).updateNotesWidget();
+        UpdatesHelper.getInstance(mContext).updateNotesWidget();
     }
 
     public interface SyncListener {
