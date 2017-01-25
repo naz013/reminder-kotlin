@@ -99,7 +99,13 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean resume() {
-        new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+        if (mReminder.isActive()) {
+            boolean b = new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+            if (!b && !SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
+                mContext.startService(new Intent(mContext, GeolocationService.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+        }
         return true;
     }
 

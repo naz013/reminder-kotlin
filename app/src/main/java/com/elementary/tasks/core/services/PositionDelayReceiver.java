@@ -41,15 +41,18 @@ public class PositionDelayReceiver extends WakefulBroadcastReceiver {
         }
     }
 
-    public void setDelay(Context context, String id) {
+    public boolean setDelay(Context context, String id) {
         Reminder item = RealmDb.getInstance().getReminder(id);
         long startTime = TimeUtil.getDateTimeFromGmt(item.getEventTime());
+        if (startTime == 0 || startTime < System.currentTimeMillis()) {
+            return false;
+        }
         Intent intent = new Intent(context, PositionDelayReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, 0);
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
         if (Module.isMarshmallow()) alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
         else alarmMgr.set(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
+        return true;
     }
 
     public void cancelDelay(Context context, int id) {

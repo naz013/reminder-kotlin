@@ -46,8 +46,7 @@ class DateEvent extends RepeatableEventManager {
 
     @Override
     public boolean pause() {
-        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        return true;
+        return super.pause();
     }
 
     @Override
@@ -57,8 +56,7 @@ class DateEvent extends RepeatableEventManager {
 
     @Override
     public boolean resume() {
-        new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
-        return true;
+        return super.resume();
     }
 
     @Override

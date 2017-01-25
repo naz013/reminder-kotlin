@@ -31,6 +31,8 @@ import android.widget.Spinner;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -103,6 +105,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private String melodyPath;
     private String autoLabel;
     private int ledColor = -1;
+    private boolean isEditing;
 
     private Reminder mReminder;
 
@@ -173,6 +176,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         String id = intent.getStringExtra(Constants.INTENT_ID);
         if (id != null) {
             mReminder = RealmDb.getInstance().getReminder(id);
+            isEditing = true;
+            getControl().pause();
         } else {
             try {
                 Uri name = intent.getData();
@@ -187,6 +192,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 LogUtil.d(TAG, "loadReminder: " + e.getLocalizedMessage());
             }
         }
+    }
+
+    private EventControl getControl() {
+        return EventControlImpl.getController(this, mReminder);
     }
 
     private void editReminder() {
@@ -435,10 +444,17 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 deleteReminder();
                 return true;
             case android.R.id.home:
-                finish();
+                closeScreen();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void closeScreen() {
+        if (isEditing) {
+            getControl().resume();
+        }
+        finish();
     }
 
     private void deleteReminder() {
@@ -736,7 +752,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public void onBackPressed() {
         if (fragment.onBackPressed()) {
-            finish();
+            closeScreen();
         }
     }
 
