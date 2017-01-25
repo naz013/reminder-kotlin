@@ -142,72 +142,6 @@ public class GoogleDrive {
         return count;
     }
 
-    public void downloadData(boolean deleteBackup, boolean isPrefs) throws IOException {
-        if (!isLinked()) return;
-        authorize();
-        java.io.File folderR = MemoryUtil.getGoogleRemindersDir();
-        boolean isReminders = true;
-        if (!folderR.exists() && !folderR.mkdirs()) {
-            isReminders = false;
-        }
-        java.io.File folderN = MemoryUtil.getGoogleNotesDir();
-        boolean isNotes = true;
-        if (!folderN.exists() && !folderN.mkdirs()) {
-            isNotes = false;
-        }
-        java.io.File folderG = MemoryUtil.getGoogleGroupsDir();
-        boolean isGroups = true;
-        if (!folderG.exists() && !folderG.mkdirs()) {
-            isGroups = false;
-        }
-        java.io.File folderB = MemoryUtil.getGoogleBirthdaysDir();
-        boolean isBirthdays = true;
-        if (!folderB.exists() && !folderB.mkdirs()) {
-            isBirthdays = false;
-        }
-        java.io.File folderP = MemoryUtil.getGooglePlacesDir();
-        boolean isPlaces = true;
-        if (!folderP.exists() && !folderP.mkdirs()) {
-            isPlaces = false;
-        }
-        java.io.File folderT = MemoryUtil.getGoogleTemplatesDir();
-        boolean isTemplates = true;
-        if (!folderT.exists() && !folderT.mkdirs()) {
-            isTemplates = false;
-        }
-        java.io.File folderPrefs = MemoryUtil.getGooglePrefsDir();
-        if (isPrefs) {
-            if (!folderPrefs.exists() && !folderPrefs.mkdirs()) {
-                isPrefs = false;
-            }
-        }
-        Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
-        RealmDb realmDb = RealmDb.getInstance();
-        BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                    java.io.File file = new java.io.File(folderR, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    if (deleteBackup) deleteFileById(f.getId());
-                    realmDb.saveObject(backupTool.getReminder(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-
-                }
-            }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
-    }
-
     public void saveSettingsToDrive() throws IOException {
         if (!isLinked()) return;
         authorize();
@@ -221,6 +155,7 @@ public class GoogleDrive {
         if (files == null) return;
         for (java.io.File file : files) {
             if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue;
+            removeAllCopies(file.getName());
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
             fileMetadata.setDescription("Settings Backup");
@@ -233,7 +168,21 @@ public class GoogleDrive {
         }
     }
 
-    public void downloadSettings() throws IOException {
+    private void removeAllCopies(String fileName) throws IOException {
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + fileName + "'")
+                .setFields("nextPageToken, files");
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                driveService.files().delete(f.getId()).execute();
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+    }
+
+    public void downloadSettings(boolean deleteFile) throws IOException {
         java.io.File folder = MemoryUtil.getPrefsDir();
         if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
             return;
@@ -254,6 +203,9 @@ public class GoogleDrive {
                     }
                     OutputStream out = new FileOutputStream(file);
                     driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
+                    if (deleteFile) {
+                        driveService.files().delete(f.getId()).execute();
+                    }
                     Prefs.getInstance(mContext).loadPrefsFromFile();
                     break;
                 }
@@ -264,97 +216,79 @@ public class GoogleDrive {
 
     /**
      * Upload all template backup files stored on SD Card.
-     * @throws IOException
      */
-    public void saveTemplatesToDrive() throws IOException {
-        if (!isLinked()) return;
-        authorize();
-        String folderId = getFolderId();
-        if (folderId == null){
-            return;
-        }
-        java.io.File folder = MemoryUtil.getTemplatesDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
-        for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) continue;
-            File fileMetadata = new File();
-            fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Template Backup");
-            fileMetadata.setParents(Collections.singletonList(folderId));
-            FileContent mediaContent = new FileContent("text/plain", file);
-            driveService.files().create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute();
+    public void saveTemplatesToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.getTemplatesDir(), "Template Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "saveTemplatesToDrive: " + e.getLocalizedMessage());
         }
     }
 
     /**
      * Upload all reminder backup files stored on SD Card.
-     * @throws IOException
      */
-    public void saveRemindersToDrive() throws IOException {
-        if (!isLinked()) return;
-        authorize();
-        String folderId = getFolderId();
-        if (folderId == null){
-            return;
-        }
-        java.io.File folder = MemoryUtil.getRemindersDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
-        for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) continue;
-            File fileMetadata = new File();
-            fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Reminder Backup");
-            fileMetadata.setParents(Collections.singletonList(folderId));
-            FileContent mediaContent = new FileContent("text/plain", file);
-            driveService.files().create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute();
+    public void saveRemindersToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.getRemindersDir(), "Reminder Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "saveRemindersToDrive: " + e.getLocalizedMessage());
         }
     }
 
     /**
      * Upload all note backup files stored on SD Card.
-     * @throws IOException
      */
-    public void saveNotesToDrive() throws IOException {
-        if (!isLinked()) return;
-        authorize();
-        String folderId = getFolderId();
-        if (folderId == null){
-            return;
-        }
-        java.io.File folder = MemoryUtil.getNotesDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
-        for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) continue;
-            File fileMetadata = new File();
-            fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Note Backup");
-            fileMetadata.setParents(Collections.singletonList(folderId));
-            FileContent mediaContent = new FileContent("text/plain", file);
-            driveService.files().create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute();
+    public void saveNotesToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.getNotesDir(), "Note Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "saveNotesToDrive: " + e.getLocalizedMessage());
         }
     }
 
     /**
      * Upload all group backup files stored on SD Card.
+     */
+    public void saveGroupsToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.getGroupsDir(), "Group Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "saveGroupsToDrive: " + e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Upload all birthday backup files stored on SD Card.
+     */
+    public void saveBirthdaysToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.getBirthdaysDir(), "Birthday Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "saveBirthdaysToDrive: " + e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Upload all place backup files stored on SD Card.
+     */
+    public void savePlacesToDrive() {
+        try {
+            saveToDrive(new Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.getPlacesDir(), "Place Backup", null));
+        } catch (IOException e) {
+            LogUtil.d(TAG, "savePlacesToDrive: " + e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Upload files from folder to Google Drive.
+     * @param metadata metadata.
      * @throws IOException
      */
-    public void saveGroupsToDrive() throws IOException {
+    private void saveToDrive(Metadata metadata) throws IOException {
         if (!isLinked()) return;
-        java.io.File folder = MemoryUtil.getGroupsDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
+        if (metadata.getFolder() == null) return;
+        java.io.File[] files = metadata.getFolder().listFiles();
         if (files == null) return;
         authorize();
         String folderId = getFolderId();
@@ -362,10 +296,11 @@ public class GoogleDrive {
             return;
         }
         for (java.io.File file : files) {
-            if (!file.getName().endsWith(FileConfig.FILE_NAME_GROUP)) continue;
+            if (!file.getName().endsWith(metadata.getFileExt())) continue;
+            removeAllCopies(file.getName());
             File fileMetadata = new File();
             fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Group Backup");
+            fileMetadata.setDescription(metadata.getMeta());
             fileMetadata.setParents(Collections.singletonList(folderId));
             FileContent mediaContent = new FileContent("text/plain", file);
             driveService.files().create(fileMetadata, mediaContent)
@@ -374,62 +309,40 @@ public class GoogleDrive {
         }
     }
 
-    /**
-     * Upload all birthday backup files stored on SD Card.
-     * @throws IOException
-     */
-    public void saveBirthdaysToDrive() throws IOException {
-        if (!isLinked()) return;
-        authorize();
-        String folderId = getFolderId();
-        if (folderId == null){
+    public void download(boolean deleteBackup, Metadata metadata) throws IOException {
+        java.io.File folder = metadata.getFolder();
+        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
             return;
         }
-        java.io.File folder = MemoryUtil.getBirthdaysDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
-        for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) continue;
-            File fileMetadata = new File();
-            fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Birthday Backup");
-            fileMetadata.setParents(Collections.singletonList(folderId));
-            FileContent mediaContent = new FileContent("text/plain", file);
-            driveService.files()
-                    .create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute();
-        }
-    }
-
-    /**
-     * Upload all place backup files stored on SD Card.
-     * @throws IOException
-     */
-    public void savePlacesToDrive() throws IOException {
-        if (!isLinked()) return;
         authorize();
-        String folderId = getFolderId();
-        if (folderId == null){
-            return;
-        }
-        java.io.File folder = MemoryUtil.getPlacesDir();
-        if (folder == null) return;
-        java.io.File[] files = folder.listFiles();
-        if (files == null) return;
-        for (java.io.File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) continue;
-            File fileMetadata = new File();
-            fileMetadata.setName(file.getName());
-            fileMetadata.setDescription("Place Backup");
-            fileMetadata.setParents(Collections.singletonList(folderId));
-            FileContent mediaContent = new FileContent("text/plain", file);
-            driveService.files()
-                    .create(fileMetadata, mediaContent)
-                    .setFields("id")
-                    .execute();
-        }
+        Drive.Files.List request = driveService.files().list()
+                .setQ("mimeType = 'text/plain' and name contains '" + metadata.getFileExt() + "'")
+                .setFields("nextPageToken, files");
+        do {
+            FileList files = request.execute();
+            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+            for (com.google.api.services.drive.model.File f : fileList) {
+                String title = f.getName();
+                if (title.endsWith(metadata.getFileExt())) {
+                    java.io.File file = new java.io.File(folder, title);
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    OutputStream out = new FileOutputStream(file);
+                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
+                    if (metadata.action != null) {
+                        metadata.action.onSave(file);
+                    }
+                    if (deleteBackup) {
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        driveService.files().delete(f.getId()).execute();
+                    }
+                }
+            }
+            request.setPageToken(files.getNextPageToken());
+        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
     }
 
     /**
@@ -437,37 +350,15 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadTemplates(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGoogleRemindersDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_TEMPLATE + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getTemplate(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.getGoogleRemindersDir(), null, file -> {
+            try {
+                realmDb.saveObject(backupTool.getTemplate(file.toString(), null));
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadTemplates: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -475,41 +366,19 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadReminders(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGoogleRemindersDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_REMINDER + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    Reminder reminder = backupTool.getReminder(file.toString(), null);
-                    if (reminder.isRemoved() || !reminder.isActive()) continue;
-                    realmDb.saveObject(reminder);
-                    EventControl control = EventControlImpl.getController(mContext, reminder);
-                    control.next();
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.getGoogleRemindersDir(), null, file -> {
+            try {
+                Reminder reminder = backupTool.getReminder(file.toString(), null);
+                if (reminder.isRemoved() || !reminder.isActive()) return;
+                realmDb.saveObject(reminder);
+                EventControl control = EventControlImpl.getController(mContext, reminder);
+                control.next();
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -517,37 +386,15 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadPlaces(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGooglePlacesDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_PLACE + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_PLACE)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getPlace(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.getGooglePlacesDir(), null, file -> {
+            try {
+                realmDb.saveObject(backupTool.getPlace(file.toString(), null));
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadPlaces: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -555,37 +402,15 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadNotes(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGoogleNotesDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_NOTE + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_NOTE)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getNote(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.getGoogleNotesDir(), null, file -> {
+            try {
+                realmDb.saveObject(backupTool.getNote(file.toString(), null));
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadNotes: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -593,37 +418,15 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadGroups(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGoogleGroupsDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_GROUP + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_GROUP)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getGroup(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.getGoogleGroupsDir(), null, file -> {
+            try {
+                realmDb.saveObject(backupTool.getGroup(file.toString(), null));
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadGroups: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -631,37 +434,15 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void downloadBirthdays(boolean deleteBackup) throws IOException {
-        java.io.File folder = MemoryUtil.getGoogleBirthdaysDir();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
-            return;
-        }
-        authorize();
-        Drive.Files.List request = driveService.files().list()
-                .setQ("mimeType = 'text/plain' and name contains '" + FileConfig.FILE_NAME_BIRTHDAY + "'")
-                .setFields("nextPageToken, files");
         RealmDb realmDb = RealmDb.getInstance();
         BackupTool backupTool = BackupTool.getInstance();
-        do {
-            FileList files = request.execute();
-            ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
-            for (com.google.api.services.drive.model.File f : fileList) {
-                String title = f.getName();
-                if (title.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                    java.io.File file = new java.io.File(folder, title);
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    OutputStream out = new FileOutputStream(file);
-                    driveService.files().get(f.getId()).executeMediaAndDownloadTo(out);
-                    realmDb.saveObject(backupTool.getBirthday(file.toString(), null));
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                    if (deleteBackup) deleteFileById(f.getId());
-                }
+        download(deleteBackup, new Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.getGoogleBirthdaysDir(), null, file -> {
+            try {
+                realmDb.saveObject(backupTool.getBirthday(file.toString(), null));
+            } catch (IOException e) {
+                LogUtil.d(TAG, "downloadBirthdays: " + e.getLocalizedMessage());
             }
-            request.setPageToken(files.getNextPageToken());
-        } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }));
     }
 
     /**
@@ -818,20 +599,6 @@ public class GoogleDrive {
         } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
     }
 
-    public void deleteFile(String fileName) throws IOException {
-        if (fileName.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-            deleteReminderFileByName(fileName);
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_NOTE)) {
-            deleteNoteFileByName(fileName);
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_GROUP)) {
-            deleteGroupFileByName(fileName);
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-            deleteBirthdayFileByName(fileName);
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_PLACE)) {
-            deletePlaceFileByName(fileName);
-        }
-    }
-
     /**
      * Delete application folder from Google Drive.
      */
@@ -923,5 +690,40 @@ public class GoogleDrive {
         folder.setMimeType("application/vnd.google-apps.folder");
         Drive.Files.Create  folderInsert = driveService.files().create(folder);
         return folderInsert != null ? folderInsert.execute() : null;
+    }
+
+    private class Metadata {
+
+        private String fileExt;
+        private java.io.File folder;
+        private String meta;
+        private Action action;
+
+        Metadata(String fileExt, java.io.File folder, String meta, Action action) {
+            this.fileExt = fileExt;
+            this.folder = folder;
+            this.meta = meta;
+            this.action = action;
+        }
+
+        public Action getAction() {
+            return action;
+        }
+
+        public String getFileExt() {
+            return fileExt;
+        }
+
+        public java.io.File getFolder() {
+            return folder;
+        }
+
+        public String getMeta() {
+            return meta;
+        }
+    }
+
+    private interface Action {
+        void onSave(java.io.File file);
     }
 }

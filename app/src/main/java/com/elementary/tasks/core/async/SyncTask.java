@@ -6,6 +6,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.IoHelper;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -128,8 +129,8 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
             }
         }
         if (mContext != null) {
-//            UpdatesHelper.getInstance(mContext).updateWidget();
-//            UpdatesHelper.getInstance(mContext).updateNotesWidget();
+            UpdatesHelper.getInstance(mContext).updateWidget();
+            UpdatesHelper.getInstance(mContext).updateNotesWidget();
         }
     }
 
