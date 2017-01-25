@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
-import com.elementary.tasks.core.fragments.MapFragment;
+import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.location.LocationTracker;
@@ -26,7 +26,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -64,7 +63,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
     public static final int CONTACTS_ACTION = 133;
 
     private FragmentReminderLocationOutBinding binding;
-    private MapFragment mapFragment;
+    private AdvancedMapFragment advancedMapFragment;
 
     private LocationTracker mTracker;
     private LatLng lastPos;
@@ -99,10 +98,10 @@ public class LocationOutFragment extends RadiusTypeFragment {
                 double latitude = jPlace.getLatitude();
                 double longitude = jPlace.getLongitude();
                 radius = jPlace.getRadius();
-                if (mapFragment != null) {
-                    mapFragment.setMarkerRadius(radius);
+                if (advancedMapFragment != null) {
+                    advancedMapFragment.setMarkerRadius(radius);
                     lastPos = new LatLng(latitude, longitude);
-                    mapFragment.addMarker(lastPos, text, true, true, radius);
+                    advancedMapFragment.addMarker(lastPos, text, true, true, radius);
 //                    toggleMap();
                 }
                 binding.mapLocation.setText(SuperUtil.getAddress(lastPos.latitude, lastPos.longitude));
@@ -125,8 +124,8 @@ public class LocationOutFragment extends RadiusTypeFragment {
 
         @Override
         public void onBackClick() {
-            if (mapFragment.isFullscreen()) {
-                mapFragment.setFullscreen(false);
+            if (advancedMapFragment.isFullscreen()) {
+                advancedMapFragment.setFullscreen(false);
                 mInterface.setFullScreenMode(true);
             }
             ViewUtils.fadeOutAnimation(binding.mapContainer);
@@ -141,15 +140,15 @@ public class LocationOutFragment extends RadiusTypeFragment {
             String text = mInterface.getSummary();
             if (TextUtils.isEmpty(text)) text = _Location;
             binding.currentLocation.setText(_Location);
-            if (mapFragment != null) {
-                mapFragment.addMarker(lastPos, text, true, true, radius);
+            if (advancedMapFragment != null) {
+                advancedMapFragment.addMarker(lastPos, text, true, true, radius);
             }
         }
     };
 
     @Override
     protected void recreateMarker() {
-        mapFragment.recreateMarker(radius);
+        advancedMapFragment.recreateMarker(radius);
     }
 
     @Override
@@ -183,7 +182,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
         if (reminder == null) {
             reminder = new Reminder();
         }
-        Place place = new Place(radius, mapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number, null);
+        Place place = new Place(radius, advancedMapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number, null);
         List<Place> places = Collections.singletonList(place);
         reminder.setPlaces(places);
         reminder.setTarget(number);
@@ -232,12 +231,12 @@ public class LocationOutFragment extends RadiusTypeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderLocationOutBinding.inflate(inflater, container, false);
-        mapFragment = MapFragment.newInstance(true, true, true, true,
+        advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
                 Prefs.getInstance(mContext).getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
-        mapFragment.setListener(mListener);
-        mapFragment.setCallback(mCallback);
+        advancedMapFragment.setListener(mListener);
+        advancedMapFragment.setCallback(mCallback);
         getFragmentManager().beginTransaction()
-                .replace(binding.mapFrame.getId(), mapFragment)
+                .replace(binding.mapFrame.getId(), advancedMapFragment)
                 .addToBackStack(null)
                 .commit();
         binding.actionView.setListener(mActionListener);
@@ -293,15 +292,15 @@ public class LocationOutFragment extends RadiusTypeFragment {
         } else {
             ViewUtils.fadeOutAnimation(binding.specsContainer);
             ViewUtils.fadeInAnimation(binding.mapContainer);
-            if (mapFragment != null) {
-                mapFragment.showShowcase();
+            if (advancedMapFragment != null) {
+                advancedMapFragment.showShowcase();
             }
         }
     }
 
     @Override
     public boolean onBackPressed() {
-        return mapFragment == null || mapFragment.onBackPressed();
+        return advancedMapFragment == null || advancedMapFragment.onBackPressed();
     }
 
     private void editReminder() {

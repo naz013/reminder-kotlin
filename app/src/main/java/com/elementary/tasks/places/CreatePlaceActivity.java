@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.fragments.MapFragment;
+import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.utils.BackupTool;
@@ -46,7 +46,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     private static final int MENU_ITEM_DELETE = 12;
 
     private ActivityCreatePlaceBinding binding;
-    private MapFragment mGoogleMap;
+    private AdvancedMapFragment mGoogleMap;
     private PlaceItem mItem;
     private LatLng place;
     private String placeTitle;
@@ -60,7 +60,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
-        mGoogleMap = MapFragment.newInstance(false, false, false, false,
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
                 Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
         mGoogleMap.setListener(this);
         mGoogleMap.setCallback(this);

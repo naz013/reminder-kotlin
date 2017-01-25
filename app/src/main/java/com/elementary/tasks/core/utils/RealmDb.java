@@ -821,6 +821,21 @@ public class RealmDb {
         return items;
     }
 
+    public List<Reminder> getGpsReminders() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).findAll();
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            if (Reminder.isGpsType(object.getType())) {
+                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+                items.add(reference.get());
+            }
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
     public List<Reminder> getActiveReminders(String groupId) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

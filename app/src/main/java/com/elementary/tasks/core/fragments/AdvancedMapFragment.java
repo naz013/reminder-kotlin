@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +24,11 @@ import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -65,9 +65,9 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
  * limitations under the License.
  */
 
-public class MapFragment extends BaseMapFragment implements View.OnClickListener {
+public class AdvancedMapFragment extends BaseMapFragment implements View.OnClickListener {
 
-    private static final String TAG = "MapFragment";
+    private static final String TAG = "AdvancedMapFragment";
     private static final String SHOWCASE = "map_showcase";
 
     private GoogleMap mMap;
@@ -115,6 +115,9 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     public static final String MARKER_STYLE = "marker_style";
     public static final String THEME_MODE = "theme_mode";
 
+    private GoogleMap.OnMapClickListener onMapClickListener;
+    private GoogleMap.OnMarkerClickListener onMarkerClickListener;
+
     private OnMapReadyCallback mMapCallback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -123,15 +126,8 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             mMap.getUiSettings().setCompassEnabled(true);
             mMap.setMapType(mMapType);
             setMyLocation();
-            mMap.setOnMapClickListener(latLng -> {
-                hideLayers();
-                hidePlaces();
-                hideStyles();
-                if (isTouch) {
-                    addMarker(latLng, markerTitle, true, true, markerRadius);
-                }
-            });
-
+            mMap.setOnMapClickListener(onMapClickListener);
+            setOnMarkerClick(onMarkerClickListener);
             if (lastPos != null) {
                 addMarker(lastPos, lastPos.toString(), true, false, markerRadius);
             }
@@ -141,10 +137,10 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         }
     };
 
-    public static MapFragment newInstance(boolean isTouch, boolean isPlaces,
-                                          boolean isSearch, boolean isStyles,
-                                          boolean isBack, boolean isZoom, boolean isDark) {
-        MapFragment fragment = new MapFragment();
+    public static AdvancedMapFragment newInstance(boolean isTouch, boolean isPlaces,
+                                                  boolean isSearch, boolean isStyles,
+                                                  boolean isBack, boolean isZoom, boolean isDark) {
+        AdvancedMapFragment fragment = new AdvancedMapFragment();
         Bundle args = new Bundle();
         args.putBoolean(ENABLE_TOUCH, isTouch);
         args.putBoolean(ENABLE_PLACES, isPlaces);
@@ -157,9 +153,9 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         return fragment;
     }
 
-    public static MapFragment newInstance(boolean isPlaces, boolean isStyles, boolean isBack,
-                                          boolean isZoom, int markerStyle, boolean isDark) {
-        MapFragment fragment = new MapFragment();
+    public static AdvancedMapFragment newInstance(boolean isPlaces, boolean isStyles, boolean isBack,
+                                                  boolean isZoom, int markerStyle, boolean isDark) {
+        AdvancedMapFragment fragment = new AdvancedMapFragment();
         Bundle args = new Bundle();
         args.putBoolean(ENABLE_PLACES, isPlaces);
         args.putBoolean(ENABLE_STYLES, isStyles);
@@ -171,8 +167,18 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         return fragment;
     }
 
-    public MapFragment() {
+    public AdvancedMapFragment() {
 
+    }
+
+    public void setSearchEnabled(boolean enabled) {
+        if (cardSearch != null) {
+            if (enabled) {
+                binding.searchCard.setVisibility(View.VISIBLE);
+            } else {
+                binding.searchCard.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     public void setAdapter(PlacesRecyclerAdapter adapter) {
@@ -229,7 +235,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         }
     }
 
-    public void addMarker(LatLng pos, String title, boolean clear, int markerStyle, boolean animate, int radius) {
+    public boolean addMarker(LatLng pos, String title, boolean clear, int markerStyle, boolean animate, int radius) {
         if (mMap != null) {
             markerRadius = radius;
             if (markerRadius == -1) {
@@ -238,8 +244,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             if (!Module.isPro()) markerStyle = 5;
             this.markerStyle = markerStyle;
             if (clear) mMap.clear();
-            if (title == null || title.matches(""))
-                title = pos.toString();
+            if (title == null || title.matches("")) title = pos.toString();
             lastPos = pos;
             if (mListener != null) mListener.placeChanged(pos, title);
             mMap.addMarker(new MarkerOptions()
@@ -255,8 +260,10 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
                     .fillColor(mColor.getColor(circleColors[0]))
                     .strokeColor(mColor.getColor(circleColors[1])));
             if (animate) animate(pos);
+            return true;
         } else {
-            Log.d(TAG, "map is null");
+            LogUtil.d(TAG, "Map is not initialized!");
+            return false;
         }
     }
 
@@ -315,8 +322,11 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         }
     }
 
-    public void moveCamera(LatLng pos) {
-        if (mMap != null) animate(pos);
+    public void moveCamera(LatLng pos, int i1, int i2, int i3, int i4) {
+        if (mMap != null) {
+            animate(pos);
+            mMap.setPadding(i1, i2, i3, i4);
+        }
     }
 
     public void animate(LatLng latLng) {
@@ -427,6 +437,14 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
             markerStyle = prefs.getMarkerStyle();
         }
         isDark = mColor.isDark();
+        setOnMapClickListener(onMapClickListener = latLng -> {
+            hideLayers();
+            hidePlaces();
+            hideStyles();
+            if (isTouch) {
+                addMarker(latLng, markerTitle, true, true, markerRadius);
+            }
+        });
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
         fragment.getMapAsync(mMapCallback);
         getFragmentManager().beginTransaction()
@@ -446,6 +464,16 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         });
         if (isPlaces) loadPlaces();
         return binding.getRoot();
+    }
+
+    public void setOnMarkerClick(GoogleMap.OnMarkerClickListener onMarkerClickListener) {
+        this.onMarkerClickListener = onMarkerClickListener;
+        if (mMap != null) mMap.setOnMarkerClickListener(onMarkerClickListener);
+    }
+
+    public void setOnMapClickListener(GoogleMap.OnMapClickListener onMapClickListener) {
+        this.onMapClickListener = onMapClickListener;
+        if (mMap != null) mMap.setOnMapClickListener(onMapClickListener);
     }
 
     private String getFormattedAddress(Address address) {
@@ -618,7 +646,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
         }
     }
 
-    private void loadPlaces(){
+    private void loadPlaces() {
         if (placeRecyclerAdapter == null) {
             List<PlaceItem> list = RealmDb.getInstance().getAllPlaces();
             if (list.isEmpty()) {
@@ -764,7 +792,7 @@ public class MapFragment extends BaseMapFragment implements View.OnClickListener
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 205:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setMyLocation();
                 } else {
                     Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
