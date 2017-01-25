@@ -18,9 +18,12 @@
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/appNameBanner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whitePrimary30"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/app_name"
+            android:textColor="@color/whitePrimary"
             android:textSize="25sp"
             app:font_style="roboto_regular" />
 
