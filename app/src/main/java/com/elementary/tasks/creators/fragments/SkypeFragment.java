@@ -70,7 +70,6 @@ public class SkypeFragment extends RepeatableTypeFragment {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(mInterface);
-        LogUtil.d(TAG, "save: " + type);
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));

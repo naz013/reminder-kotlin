@@ -104,7 +104,6 @@ public class PlacesFragment extends RadiusTypeFragment {
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
         reminder.setClear(mInterface);
-        LogUtil.d(TAG, "save: " + type);
         reminder.setEventTime(null);
         reminder.setStartTime(null);
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));

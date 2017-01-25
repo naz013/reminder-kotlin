@@ -191,7 +191,6 @@ public class LocationOutFragment extends RadiusTypeFragment {
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
         reminder.setClear(mInterface);
-        LogUtil.d(TAG, "save: " + type);
         if (binding.attackDelay.isChecked()) {
             long startTime = binding.dateView.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));

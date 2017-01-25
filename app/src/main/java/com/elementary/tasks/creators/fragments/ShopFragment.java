@@ -85,7 +85,6 @@ public class ShopFragment extends TypeFragment {
         reminder.setType(type);
         reminder.setRepeatInterval(0);
         reminder.setClear(mInterface);
-        LogUtil.d(TAG, "save: " + type);
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));

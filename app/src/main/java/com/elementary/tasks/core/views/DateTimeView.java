@@ -118,6 +118,7 @@ public class DateTimeView extends RelativeLayout implements
     public long getDateTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
     }
 
