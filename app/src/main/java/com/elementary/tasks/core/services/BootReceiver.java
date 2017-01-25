@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 
 /**
@@ -24,8 +25,11 @@ import com.elementary.tasks.core.utils.Prefs;
 
 public class BootReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "BootReceiver";
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        LogUtil.d(TAG, "onReceive: ");
         context.startService(new Intent(context, TasksService.class));
         if (Prefs.getInstance(context).isBirthdayReminderEnabled()){
             new BirthdayAlarm().setAlarm(context);

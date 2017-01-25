@@ -1,8 +1,11 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
+import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -36,5 +39,8 @@ public abstract class EventManager implements EventControl {
         RealmDb.getInstance().saveObject(mReminder);
         UpdatesHelper.getInstance(mContext).updateWidget();
         UpdatesHelper.getInstance(mContext).updateCalendarWidget();
+        if (Prefs.getInstance(mContext).isSbNotificationEnabled()) {
+            mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        }
     }
 }

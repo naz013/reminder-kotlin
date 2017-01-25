@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
-import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -25,7 +24,7 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-class ShoppingEvent extends EventManager {
+class ShoppingEvent extends RepeatableEventManager {
 
     ShoppingEvent(Reminder reminder, Context context) {
         super(reminder, context);
@@ -44,17 +43,12 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        Notifier.hideNotification(mContext, mReminder.getUniqueId());
-        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        mReminder.setActive(false);
-        super.save();
-        return true;
+        return super.stop();
     }
 
     @Override
     public boolean pause() {
-        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        return true;
+        return super.pause();
     }
 
     @Override
@@ -64,8 +58,7 @@ class ShoppingEvent extends EventManager {
 
     @Override
     public boolean resume() {
-        new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
-        return true;
+        return super.resume();
     }
 
     @Override

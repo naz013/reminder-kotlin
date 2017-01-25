@@ -1,18 +1,15 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.DelayReceiver;
-import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.google_tasks.TaskAsync;
 import com.elementary.tasks.google_tasks.TaskItem;
@@ -35,19 +32,10 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-abstract class RepeatableEventManager implements EventControl {
-
-    protected Reminder mReminder;
-    protected Context mContext;
+abstract class RepeatableEventManager extends EventManager {
 
     RepeatableEventManager(Reminder reminder, Context context) {
-        this.mReminder = reminder;
-        this.mContext = context;
-    }
-
-    protected void save() {
-        RealmDb.getInstance().saveObject(mReminder);
-        mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        super(reminder, context);
     }
 
     protected void export() {
@@ -74,13 +62,26 @@ abstract class RepeatableEventManager implements EventControl {
     }
 
     @Override
-    public boolean stop() {
+    public boolean resume() {
+        if (mReminder.isActive()) {
+            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean pause() {
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
         new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         new DelayReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         new RepeatNotificationReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
+        return true;
+    }
+
+    @Override
+    public boolean stop() {
         mReminder.setActive(false);
         save();
-        return true;
+        return pause();
     }
 }
