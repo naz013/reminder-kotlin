@@ -27,10 +27,14 @@ public class IoHelper {
 
     private Context mContext;
     private boolean isConnected;
+    private GoogleDrive mDrive;
+    private Dropbox mDropbox;
 
     public IoHelper(Context context) {
         this.mContext = context;
         isConnected = SuperUtil.isConnected(context);
+        mDrive = new GoogleDrive(context);
+        mDropbox = new Dropbox(context);
     }
 
     /**
@@ -49,9 +53,9 @@ public class IoHelper {
     public void backupSettings() {
         Prefs.getInstance(mContext).savePrefsBackup();
         if (isConnected) {
-            new Dropbox(mContext).uploadSettings();
+            mDropbox.uploadSettings();
             try {
-                new GoogleDrive(mContext).saveSettingsToDrive();
+                mDrive.saveSettingsToDrive();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -64,12 +68,8 @@ public class IoHelper {
     public void backupGroup() {
         BackupTool.getInstance().exportGroups();
         if (isConnected) {
-            new Dropbox(mContext).uploadGroups();
-            try {
-                new GoogleDrive(mContext).saveGroupsToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadGroups();
+            mDrive.saveGroupsToDrive();
         }
     }
 
@@ -83,9 +83,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadGroups();
+            mDropbox.downloadGroups(delete);
             try {
-                new GoogleDrive(mContext).downloadGroups(delete);
+                mDrive.downloadGroups(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -98,12 +98,8 @@ public class IoHelper {
     public void backupReminder() {
         BackupTool.getInstance().exportReminders();
         if (isConnected) {
-            new Dropbox(mContext).uploadReminder(null);
-            try {
-                new GoogleDrive(mContext).saveRemindersToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadReminder(null);
+            mDrive.saveRemindersToDrive();
         }
     }
 
@@ -117,9 +113,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadReminders();
+            mDropbox.downloadReminders(delete);
             try {
-                new GoogleDrive(mContext).downloadReminders(delete);
+                mDrive.downloadReminders(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -132,12 +128,8 @@ public class IoHelper {
     public void backupNote() {
         BackupTool.getInstance().exportNotes();
         if (isConnected) {
-            new Dropbox(mContext).uploadNotes();
-            try {
-                new GoogleDrive(mContext).saveNotesToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadNotes();
+            mDrive.saveNotesToDrive();
         }
     }
 
@@ -151,9 +143,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadNotes();
+            mDropbox.downloadNotes(delete);
             try {
-                new GoogleDrive(mContext).downloadNotes(delete);
+                mDrive.downloadNotes(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -166,12 +158,8 @@ public class IoHelper {
     public void backupBirthday() {
         BackupTool.getInstance().exportBirthdays();
         if (isConnected) {
-            new Dropbox(mContext).uploadBirthdays();
-            try {
-                new GoogleDrive(mContext).saveBirthdaysToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadBirthdays();
+            mDrive.saveBirthdaysToDrive();
         }
     }
 
@@ -185,9 +173,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadBirthdays();
+            mDropbox.downloadBirthdays(delete);
             try {
-                new GoogleDrive(mContext).downloadBirthdays(delete);
+                mDrive.downloadBirthdays(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -200,12 +188,8 @@ public class IoHelper {
     public void backupPlaces() {
         BackupTool.getInstance().exportPlaces();
         if (isConnected) {
-            new Dropbox(mContext).uploadPlaces();
-            try {
-                new GoogleDrive(mContext).savePlacesToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadPlaces();
+            mDrive.savePlacesToDrive();
         }
     }
 
@@ -219,9 +203,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadPlaces();
+            mDropbox.downloadPlaces(delete);
             try {
-                new GoogleDrive(mContext).downloadPlaces(delete);
+                mDrive.downloadPlaces(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -234,12 +218,8 @@ public class IoHelper {
     public void backupTemplates() {
         BackupTool.getInstance().exportTemplates();
         if (isConnected) {
-            new Dropbox(mContext).uploadTemplates();
-            try {
-                new GoogleDrive(mContext).saveTemplatesToDrive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mDropbox.uploadTemplates();
+            mDrive.saveTemplatesToDrive();
         }
     }
 
@@ -253,9 +233,9 @@ public class IoHelper {
             e.printStackTrace();
         }
         if (isConnected) {
-            new Dropbox(mContext).downloadTemplates();
+            mDropbox.downloadTemplates(delete);
             try {
-                new GoogleDrive(mContext).downloadTemplates(delete);
+                mDrive.downloadTemplates(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }

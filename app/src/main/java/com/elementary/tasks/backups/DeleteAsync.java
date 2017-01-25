@@ -65,15 +65,10 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                     File[] files = file.listFiles();
                     if (files == null) continue;
                     for (File f : files) {
-                        if (isLinked && isConnected) {
-                            dbx.deleteFile(f.getName());
-                        }
                         f.delete();
                     }
                     res = 2;
                 } else {
-                    if (isLinked && isConnected)
-                        dbx.deleteFile(file.getName());
                     if (file.delete()) res = 1;
                 }
             }
@@ -92,24 +87,10 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                     File[] files = file.listFiles();
                     if (files == null) continue;
                     for (File f : files) {
-                        if (isLinked && isConnected) {
-                            try {
-                                gdx.deleteFile(f.getName());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
                         f.delete();
                     }
                     res = 2;
                 } else {
-                    if (isLinked && isConnected) {
-                        try {
-                            gdx.deleteFile(file.getName());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
                     if (file.delete()) res = 1;
                 }
             }

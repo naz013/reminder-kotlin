@@ -489,7 +489,7 @@ public class Dropbox {
     /**
      * Download on SD Card all template backup files found on Dropbox.
      */
-    public void downloadTemplates() {
+    public void downloadTemplates(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxTemplatesDir();
         if (dir == null) return;
         startSession();
@@ -506,7 +506,12 @@ public class Dropbox {
                     String cloudFile = "/" + dbxTemplatesFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     realmDb.saveObject(backupTool.getReminder(localFile.toString(), null));
-                    mDBApi.delete(e.path);
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
@@ -517,7 +522,7 @@ public class Dropbox {
     /**
      * Download on SD Card all reminder backup files found on Dropbox.
      */
-    public void downloadReminders() {
+    public void downloadReminders(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxRemindersDir();
         if (dir == null) return;
         startSession();
@@ -536,9 +541,14 @@ public class Dropbox {
                     Reminder reminder = backupTool.getReminder(localFile.toString(), null);
                     if (reminder.isRemoved() || !reminder.isActive()) continue;
                     realmDb.saveObject(reminder);
-                    mDBApi.delete(e.path);
                     EventControl control = EventControlImpl.getController(mContext, reminder);
                     control.next();
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
@@ -561,7 +571,7 @@ public class Dropbox {
     /**
      * Download on SD Card all note backup files found on Dropbox.
      */
-    public void downloadNotes() {
+    public void downloadNotes(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxNotesDir();
         if (dir == null) return;
         startSession();
@@ -578,7 +588,12 @@ public class Dropbox {
                     String cloudFile = "/" + dbxNoteFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     realmDb.saveObject(backupTool.getNote(localFile.toString(), null));
-                    mDBApi.delete(e.path);
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
@@ -590,7 +605,7 @@ public class Dropbox {
     /**
      * Download on SD Card all group backup files found on Dropbox.
      */
-    public void downloadGroups() {
+    public void downloadGroups(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxGroupsDir();
         if (dir == null) return;
         startSession();
@@ -607,7 +622,12 @@ public class Dropbox {
                     String cloudFile = "/" + dbxGroupFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     realmDb.saveObject(backupTool.getGroup(localFile.toString(), null));
-                    mDBApi.delete(e.path);
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
@@ -618,7 +638,7 @@ public class Dropbox {
     /**
      * Download on SD Card all birthday backup files found on Dropbox.
      */
-    public void downloadBirthdays() {
+    public void downloadBirthdays(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxBirthdaysDir();
         if (dir == null) return;
         startSession();
@@ -635,7 +655,12 @@ public class Dropbox {
                     String cloudFile = "/" + dbxBirthFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     realmDb.saveObject(backupTool.getBirthday(localFile.toString(), null));
-                    mDBApi.delete(e.path);
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
@@ -646,7 +671,7 @@ public class Dropbox {
     /**
      * Download on SD Card all places backup files found on Dropbox.
      */
-    public void downloadPlaces() {
+    public void downloadPlaces(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxPlacesDir();
         if (dir == null) return;
         startSession();
@@ -663,7 +688,12 @@ public class Dropbox {
                     String cloudFile = "/" + dbxPlacesFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     realmDb.saveObject(backupTool.getPlace(localFile.toString(), null));
-                    mDBApi.delete(e.path);
+                    if (deleteFile) {
+                        if (localFile.exists()) {
+                            localFile.delete();
+                        }
+                        mDBApi.delete(e.path);
+                    }
                 }
             }
         } catch (DropboxException | IOException e) {
