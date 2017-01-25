@@ -157,7 +157,6 @@ public class MonthFragment extends RepeatableTypeFragment {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(mInterface);
-        LogUtil.d(TAG, "save: " + type);
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(getTime()));
         long startTime = TimeCount.getInstance(mContext).getNextMonthDayTime(reminder);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -182,6 +181,8 @@ public class MonthFragment extends RepeatableTypeFragment {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, mHour);
         calendar.set(Calendar.MINUTE, mMinute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
     }
 
