@@ -116,7 +116,7 @@ public class DateFragment extends RepeatableTypeFragment {
             Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        RealmDb.getInstance().saveObject(reminder);
+//        RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         if (control.start()) {
             return true;

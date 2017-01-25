@@ -200,7 +200,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        RealmDb.getInstance().saveObject(reminder);
+//        RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         control.start();
         return true;
