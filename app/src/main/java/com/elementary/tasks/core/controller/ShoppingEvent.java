@@ -35,7 +35,7 @@ class ShoppingEvent extends EventManager {
     public boolean start() {
         mReminder.setActive(true);
         super.save();
-        if (!TextUtils.isEmpty(mReminder.getEventTime()) && TimeCount.isCurrent(mReminder.getEventTime())) {
+        if (!TextUtils.isEmpty(mReminder.getEventTime())) {
             new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
             return true;
         }

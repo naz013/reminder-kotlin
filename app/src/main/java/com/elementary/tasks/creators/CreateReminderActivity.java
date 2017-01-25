@@ -35,6 +35,7 @@ import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
@@ -183,7 +184,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
                 }
             } catch (NullPointerException | IOException e) {
-                e.printStackTrace();
+                LogUtil.d(TAG, "loadReminder: " + e.getLocalizedMessage());
             }
         }
     }
