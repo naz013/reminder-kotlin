@@ -40,8 +40,7 @@ class LocationEvent extends EventManager {
     public boolean start() {
         mReminder.setActive(true);
         super.save();
-        if (!TextUtils.isEmpty(mReminder.getEventTime())) {
-            new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+        if (new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId())) {
             return true;
         } else {
             if (!SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
@@ -59,18 +58,18 @@ class LocationEvent extends EventManager {
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
         mReminder.setActive(false);
         super.save();
-        stopTracking();
+        stopTracking(false);
         return true;
     }
 
-    private void stopTracking() {
+    private void stopTracking(boolean isPaused) {
         List<Reminder> list = RealmDb.getInstance().getEnabledReminders();
         if (list.size() == 0) {
             mContext.stopService(new Intent(mContext, GeolocationService.class));
         }
         boolean hasActive = false;
         for (Reminder item : list) {
-            if (Reminder.isGpsType(item.getType())) {
+            if (Reminder.isGpsType(item.getType()) && (isPaused && item.getUniqueId() != mReminder.getUniqueId())) {
                 if (!TextUtils.isEmpty(item.getEventTime())) {
                     if (TimeCount.isCurrent(item.getEventTime())) {
                         hasActive = !item.isNotificationShown();
@@ -88,7 +87,7 @@ class LocationEvent extends EventManager {
     @Override
     public boolean pause() {
         new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
-        stopTracking();
+        stopTracking(true);
         return true;
     }
 
