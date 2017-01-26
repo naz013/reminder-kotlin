@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -303,14 +304,16 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = binding.drawerLayout;
         drawer.closeDrawer(GravityCompat.START);
-        if (prevItem == item.getItemId() && (item.getItemId() != R.id.nav_feedback ||
-                item.getItemId() != R.id.nav_help)) {
-            return false;
-        }
-        openScreen(item.getItemId());
-        if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help) {
-            prevItem = item.getItemId();
-        }
+        new Handler().postDelayed(() -> {
+            if (prevItem == item.getItemId() && (item.getItemId() != R.id.nav_feedback ||
+                    item.getItemId() != R.id.nav_help)) {
+                return;
+            }
+            openScreen(item.getItemId());
+            if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help) {
+                prevItem = item.getItemId();
+            }
+        }, 250);
         return true;
     }
 

@@ -24,7 +24,9 @@ import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.DataLoader;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.creators.CreateReminderActivity;
@@ -108,6 +110,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         @Override
         public void onItemLongClicked(int position, View view) {
             showActionDialog(position, view);
+        }
+    };
+    private RealmCallback<List<Reminder>> mLoadCallback = new RealmCallback<List<Reminder>>() {
+        @Override
+        public void onDataLoaded(List<Reminder> result) {
+            mDataList = result;
+            mAdapter = new RemindersRecyclerAdapter(mContext, result, mFilterCallback);
+            mAdapter.setEventListener(mEventListener);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.setAdapter(mAdapter);
+            reloadView();
         }
     };
 
@@ -232,17 +245,11 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void loadData(String groupId) {
         mLastGroupId = groupId;
-        mDataList = new ArrayList<>();
         if (groupId != null) {
-            mDataList = RealmDb.getInstance().getActiveReminders(groupId);
+            DataLoader.loadActiveReminder(groupId, mLoadCallback);
         } else {
-            mDataList = RealmDb.getInstance().getActiveReminders();
+            DataLoader.loadActiveReminder(mLoadCallback);
         }
-        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
-        mAdapter.setEventListener(mEventListener);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-        reloadView();
     }
 
     private void reloadView() {
