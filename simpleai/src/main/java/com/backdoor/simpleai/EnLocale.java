@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 class EnLocale extends RecUtils implements LocaleImpl {
 
     private final static String[] weekDays = {
@@ -272,12 +273,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
-            for (SimpleDateFormat format : RecUtils.dateTaskFormats){
+            for (SimpleDateFormat format : RecUtils.dateTaskFormats) {
                 Date date;
                 try {
                     date = format.parse(time);
                     if (date != null) return date;
-                } catch (NullPointerException | ParseException e){
+                } catch (NullPointerException | ParseException e) {
                 }
             }
         }
@@ -362,7 +363,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
-    private int getMonth(String input){
+    private int getMonth(String input) {
         int res = -1;
         if (input.contains("january")) res = 0;
         if (input.contains("february")) res = 1;
@@ -557,7 +558,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
 
     private boolean hasHours(String input) {
         return input.matches(".*hour.*") || input.matches(".*o'clock.*")
-                || input.matches(".*am.*")  || input.matches(".*pm.*");
+                || input.matches(".*am.*") || input.matches(".*pm.*");
     }
 
     private boolean hasMinutes(String input) {
@@ -599,7 +600,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         } else return number;
     }
 
-    private static int findNumber(String input){
+    private static int findNumber(String input) {
         int number = -1;
         if (input.matches("zero") || input.matches("nil")) number = 0;
         if (input.matches("one") || input.matches("first")) number = 1;

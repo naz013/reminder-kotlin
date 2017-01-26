@@ -17,7 +17,9 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class Model {
+
     private String type, number, summary;
     private long dateTime, repeat;
     private Types types;

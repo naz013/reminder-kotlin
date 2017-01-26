@@ -23,6 +23,7 @@ import java.util.Calendar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class Recognizer {
 
     public static final String WEEK = "weekday";
@@ -34,12 +35,12 @@ public class Recognizer {
     private Context mContext;
     private String[] times;
 
-    public Recognizer(Context context, String[] times){
+    public Recognizer(Context context, String[] times) {
         this.mContext = context;
         this.times = times;
     }
 
-    public Model parseResults(String matches, String locale){
+    public Model parseResults(String matches, String locale) {
         String keyStr = matches.toLowerCase().trim();
         return parse(keyStr, locale);
     }
@@ -47,7 +48,6 @@ public class Recognizer {
     private Model parse(String keyStr, String locale) {
         Log.d("-----BEFORE------", keyStr);
         LocaleImpl wrapper = LocaleFactory.Builder(locale);
-        if (wrapper == null) return null;
         keyStr = wrapper.replaceNumbers(keyStr);
         Log.d("-----AFTER------", keyStr);
         Model model = new Model();

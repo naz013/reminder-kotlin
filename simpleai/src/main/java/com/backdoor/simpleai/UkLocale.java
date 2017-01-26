@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 class UkLocale extends RecUtils implements LocaleImpl {
 
     private final static String[] weekDays = {
@@ -263,12 +264,12 @@ class UkLocale extends RecUtils implements LocaleImpl {
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
-            for (SimpleDateFormat format : RecUtils.dateTaskFormats){
+            for (SimpleDateFormat format : RecUtils.dateTaskFormats) {
                 Date date;
                 try {
                     date = format.parse(time);
                     if (date != null) return date;
-                } catch (NullPointerException | ParseException e){
+                } catch (NullPointerException | ParseException e) {
                 }
             }
         }
@@ -353,7 +354,7 @@ class UkLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
-    static int getMonth(String input){
+    static int getMonth(String input) {
         int res = -1;
         if (input.contains("січень") || input.contains("січня")) res = 0;
         if (input.contains("лютий") || input.contains("лютого")) res = 1;
@@ -401,13 +402,13 @@ class UkLocale extends RecUtils implements LocaleImpl {
     }
 
     public boolean hasSender(String input) {
-        return input.matches(".*надіслати.*");
+        return input.matches(".*надісл.*");
     }
 
     public String clearSender(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
-            if (string.matches(".*надіслати.*")) {
+            if (string.matches(".*надісл.*")) {
                 input = input.replace(string, "");
                 break;
             }
@@ -589,7 +590,7 @@ class UkLocale extends RecUtils implements LocaleImpl {
         } else return number;
     }
 
-    private int findNumber(String input){
+    private int findNumber(String input) {
         int number = -1;
         if (input.matches("нуль")) number = 0;
         if (input.matches("один") || input.matches("одну") || input.matches("одна")) number = 1;

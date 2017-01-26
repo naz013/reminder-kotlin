@@ -20,38 +20,72 @@ import java.util.ArrayList;
 
 public interface LocaleImpl {
     boolean hasCalendar(String input);
+
     String clearCalendar(String input);
+
     ArrayList<Integer> getWeekDays(String input);
+
     String clearWeekDays(String input);
+
     long getDaysRepeat(String input);
+
     String clearDaysRepeat(String input);
+
     boolean hasRepeat(String input);
+
     String clearRepeat(String input);
+
     boolean hasTomorrow(String input);
+
     String clearTomorrow(String input);
+
     String getMessage(String input);
+
     String clearMessage(String input);
+
     int getType(String input);
+
     String clearType(String input);
+
     int getAmpm(String input);
+
     String clearAmpm(String input);
+
     long getTime(String input, int ampm, String[] times);
+
     String clearTime(String input);
+
     long getDate(String input);
+
     String clearDate(String input);
+
     boolean hasCall(String input);
+
     String clearCall(String input);
+
     boolean isTimer(String input);
+
     String cleanTimer(String input);
+
     boolean hasSender(String input);
+
     String clearSender(String input);
+
     boolean hasNote(String input);
+
     String clearNote(String input);
+
     boolean hasAction(String input);
+
     int getAction(String input);
+
     boolean hasEvent(String input);
+
     int getEvent(String input);
+
     long getMultiplier(String input);
+
     String clearMultiplier(String input);
+
     String replaceNumbers(String input);
 }

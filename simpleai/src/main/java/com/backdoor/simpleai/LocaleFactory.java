@@ -15,15 +15,16 @@ package com.backdoor.simpleai;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 class LocaleFactory {
 
     static LocaleImpl Builder(String locale) {
-        if (locale.matches(Locale.EN)){
+        if (locale.matches(Locale.EN)) {
             return new EnLocale();
-        } else if (locale.matches(Locale.UK)){
+        } else if (locale.matches(Locale.UK)) {
             return new UkLocale();
-        } else if (locale.matches(Locale.RU)){
+        } else if (locale.matches(Locale.RU)) {
             return new RuLocale();
-        } else return null;
+        } else return new EnLocale();
     }
 }

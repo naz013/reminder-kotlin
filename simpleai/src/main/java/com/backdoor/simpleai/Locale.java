@@ -15,6 +15,7 @@ package com.backdoor.simpleai;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class Locale {
     public static final String EN = "en-US";
     public static final String RU = "ru-RU";
