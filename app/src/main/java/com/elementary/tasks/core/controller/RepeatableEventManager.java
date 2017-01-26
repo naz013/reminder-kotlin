@@ -5,7 +5,6 @@ import android.content.Context;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.GoogleTasks;
 import com.elementary.tasks.core.services.AlarmReceiver;
-import com.elementary.tasks.core.services.DelayReceiver;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
@@ -72,8 +71,8 @@ abstract class RepeatableEventManager extends EventManager {
     @Override
     public boolean pause() {
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
-        new AlarmReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
-        new DelayReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
+        new AlarmReceiver().cancelReminder(mContext, mReminder.getUniqueId());
+        new AlarmReceiver().cancelDelay(mContext, mReminder.getUniqueId());
         new RepeatNotificationReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
         return true;
     }

@@ -23,7 +23,7 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
-import com.elementary.tasks.core.services.EventsCheckAlarm;
+import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Permissions;
@@ -133,7 +133,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         } else if (mItemSelect == 4) {
             Prefs.getInstance(mContext).setAutoCheckInterval(48);
         }
-        new EventsCheckAlarm().setAlarm(mContext);
+        new AlarmReceiver().enableEventCheck(mContext);
     }
 
     private int getIntervalPosition() {
@@ -282,9 +282,9 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     private void autoCheck(boolean isChecked) {
         Prefs.getInstance(mContext).setAutoEventsCheckEnabled(isChecked);
         syncInterval.setEnabled(isChecked);
-        EventsCheckAlarm alarm = new EventsCheckAlarm();
-        if (isChecked) alarm.setAlarm(mContext);
-        else alarm.cancelAlarm(mContext);
+        AlarmReceiver alarm = new AlarmReceiver();
+        if (isChecked) alarm.enableEventCheck(mContext);
+        else alarm.cancelEventCheck(mContext);
     }
 
     public class Import extends AsyncTask<HashMap<String, Integer>, Void, Integer> {

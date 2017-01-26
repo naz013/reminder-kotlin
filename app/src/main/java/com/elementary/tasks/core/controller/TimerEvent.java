@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
-import com.elementary.tasks.core.services.DelayReceiver;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -117,7 +116,7 @@ class TimerEvent extends RepeatableEventManager {
         }
         mReminder.setDelay(delay);
         super.save();
-        new DelayReceiver().setAlarm(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+        new AlarmReceiver().enableDelay(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
     }
 
     @Override

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.GeolocationService;
-import com.elementary.tasks.core.services.PositionDelayReceiver;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -40,7 +40,7 @@ class LocationEvent extends EventManager {
     public boolean start() {
         mReminder.setActive(true);
         super.save();
-        if (new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId())) {
+        if (new AlarmReceiver().enablePositionDelay(mContext, mReminder.getUuId())) {
             return true;
         } else {
             if (!SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
@@ -53,7 +53,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
+        new AlarmReceiver().cancelPositionDelay(mContext, mReminder.getUniqueId());
         RealmDb.getInstance().saveObject(mReminder.setActive(false));
         Notifier.hideNotification(mContext, mReminder.getUniqueId());
         mReminder.setActive(false);
@@ -86,7 +86,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean pause() {
-        new PositionDelayReceiver().cancelDelay(mContext, mReminder.getUniqueId());
+        new AlarmReceiver().cancelPositionDelay(mContext, mReminder.getUniqueId());
         stopTracking(true);
         return true;
     }
@@ -99,7 +99,7 @@ class LocationEvent extends EventManager {
     @Override
     public boolean resume() {
         if (mReminder.isActive()) {
-            boolean b = new PositionDelayReceiver().setDelay(mContext, mReminder.getUuId());
+            boolean b = new AlarmReceiver().enablePositionDelay(mContext, mReminder.getUuId());
             if (!b && !SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
                 mContext.startService(new Intent(mContext, GeolocationService.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.cloud.GoogleDrive;
-import com.elementary.tasks.core.services.AutoSyncAlarm;
+import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
@@ -156,7 +156,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         } else if (mItemSelect == 4) {
             Prefs.getInstance(mContext).setAutoBackupInterval(48);
         }
-        new AutoSyncAlarm().setAlarm(mContext);
+        new AlarmReceiver().enableAutoSync(mContext);
     }
 
     private int getIntervalPosition() {
@@ -196,9 +196,9 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         binding.autoBackupPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setAutoBackupEnabled(!isChecked);
         if (binding.autoBackupPrefs.isChecked()) {
-            new AutoSyncAlarm().setAlarm(mContext);
+            new AlarmReceiver().enableAutoSync(mContext);
         } else {
-            new AutoSyncAlarm().cancelAlarm(mContext);
+            new AlarmReceiver().cancelAutoSync(mContext);
         }
     }
 
