@@ -18,8 +18,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.services.BirthdayAlarm;
-import com.elementary.tasks.core.services.BirthdayCheckAlarm;
+import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
@@ -101,9 +100,9 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         binding.autoScanPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setContactAutoCheckEnabled(!isChecked);
         if (!isChecked) {
-            new BirthdayCheckAlarm().setAlarm(mContext);
+            new AlarmReceiver().enableBirthdayCheckAlarm(mContext);
         } else {
-            new BirthdayCheckAlarm().cancelAlarm(mContext);
+            new AlarmReceiver().cancelBirthdayCheckAlarm(mContext);
         }
     }
 
@@ -189,8 +188,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         Prefs.getInstance(mContext).setBirthdayPermanentEnabled(isChecked);
         if (isChecked) {
             mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            new AlarmReceiver().enableBirthdayPermanentAlarm(mContext);
         } else {
-            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_HIDE));
+            new AlarmReceiver().cancelBirthdayPermanentAlarm(mContext);
         }
     }
 
@@ -218,10 +219,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         binding.birthReminderPrefs.setChecked(isChecked);
         Prefs.getInstance(mContext).setBirthdayReminderEnabled(isChecked);
         if (isChecked) {
-            new BirthdayAlarm().setAlarm(mContext);
+            new AlarmReceiver().enableBirthdayAlarm(mContext);
         } else {
             cleanBirthdays();
-            new BirthdayAlarm().cancelAlarm(mContext);
+            new AlarmReceiver().cancelBirthdayAlarm(mContext);
         }
     }
 
@@ -249,7 +250,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         Prefs.getInstance(mContext).setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
         initBirthdayTimePrefs();
         if (Prefs.getInstance(mContext).isBirthdayReminderEnabled()) {
-            new BirthdayAlarm().setAlarm(mContext);
+            new AlarmReceiver().enableBirthdayAlarm(mContext);
         }
     }
 
