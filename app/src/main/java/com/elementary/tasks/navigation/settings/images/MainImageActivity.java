@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PicassoTool;
@@ -87,6 +88,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private Callback<List<ImageItem>> mPhotoCallback = new Callback<List<ImageItem>>() {
         @Override
         public void onResponse(Call<List<ImageItem>> call, Response<List<ImageItem>> response) {
+            LogUtil.d(TAG, "onResponse: " + response.code() + ", " + response.message());
             if (response.code() == Api.OK) {
                 mPhotoList = new ArrayList<>(response.body());
                 if (position != -1) mPhotoList.get(position).setSelected(true);
@@ -96,7 +98,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
         @Override
         public void onFailure(Call<List<ImageItem>> call, Throwable t) {
-
+            LogUtil.d(TAG, "onFailure: " + t.getLocalizedMessage());
         }
     };
     private SelectListener mListener = new SelectListener() {
