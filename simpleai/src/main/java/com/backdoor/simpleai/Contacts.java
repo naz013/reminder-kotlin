@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 /**
  * Helper class for accessing to contacts.
  */
+
 public class Contacts {
 
     /**
