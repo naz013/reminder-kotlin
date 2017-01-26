@@ -811,7 +811,7 @@ public class RealmDb {
     public List<Reminder> getEnabledReminders() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).findAll();
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).equalTo("isRemoved", false).findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
@@ -824,7 +824,7 @@ public class RealmDb {
     public List<Reminder> getGpsReminders() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).findAll();
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).equalTo("isRemoved", false).findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             if (Reminder.isGpsType(object.getType())) {
