@@ -72,7 +72,6 @@ public class CalendarFragment extends BaseCalendarFragment {
     @Override
     public void onResume() {
         super.onResume();
-        showCalendar();
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.calendar));
             mCallback.onFragmentSelect(this);
@@ -81,6 +80,7 @@ public class CalendarFragment extends BaseCalendarFragment {
                 showActionDialog();
             });
         }
+        showCalendar();
     }
 
     private void showCalendar() {
