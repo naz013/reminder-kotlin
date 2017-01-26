@@ -19,8 +19,10 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.DataLoader;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.creators.CreateReminderActivity;
@@ -100,6 +102,18 @@ public class ArchiveFragment extends BaseNavigationFragment {
             showActionDialog(position);
         }
     };
+    private RealmCallback<List<Reminder>> mLoadCallback = new RealmCallback<List<Reminder>>() {
+        @Override
+        public void onDataLoaded(List<Reminder> result) {
+            mDataList = result;
+            mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
+            mAdapter.setEventListener(mEventListener);
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            mRecyclerView.setAdapter(mAdapter);
+            reloadView();
+            getActivity().invalidateOptionsMenu();
+        }
+    };
 
     private void showActionDialog(int position) {
         final String[] items = {getString(R.string.edit), getString(R.string.delete)};
@@ -141,8 +155,12 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
         }
-        if (RealmDb.getInstance().getArchivedReminders().size() == 0){
+        if (mDataList.size() == 0){
             menu.findItem(R.id.action_delete_all).setVisible(false);
+            menu.findItem(R.id.action_search).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_delete_all).setVisible(true);
+            menu.findItem(R.id.action_search).setVisible(true);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -197,12 +215,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void loadData() {
-        mDataList = RealmDb.getInstance().getArchivedReminders();
-        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
-        mAdapter.setEventListener(mEventListener);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-        reloadView();
+        DataLoader.loadArchivedReminder(mLoadCallback);
     }
 
     private void reloadView() {
