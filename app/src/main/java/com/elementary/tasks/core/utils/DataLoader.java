@@ -34,4 +34,8 @@ public class DataLoader {
     public static void loadActiveReminder(RealmCallback<List<Reminder>> callback) {
         RealmDb.getInstance().getActiveReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
     }
+
+    public static void loadArchivedReminder(RealmCallback<List<Reminder>> callback) {
+        RealmDb.getInstance().getArchivedReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
+    }
 }

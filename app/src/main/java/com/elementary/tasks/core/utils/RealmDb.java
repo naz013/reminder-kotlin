@@ -794,23 +794,20 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public void getActiveReminders(RealmCallback<List<Reminder>> callback) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
-                String[] fields = new String[]{"isActive", "eventTime"};
-                Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
-                List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
-                List<Reminder> items = new ArrayList<>();
-                for (RealmReminder object : list) {
-                    WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
-                    items.add(reference.get());
-                }
-                realm.commitTransaction();
-                callback.onDataLoaded(items);
+    void getActiveReminders(RealmCallback<List<Reminder>> callback) {
+        new Thread(() -> {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            String[] fields = new String[]{"isActive", "eventTime"};
+            Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
+            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
+            List<Reminder> items = new ArrayList<>();
+            for (RealmReminder object : list) {
+                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+                items.add(reference.get());
             }
+            realm.commitTransaction();
+            callback.onDataLoaded(items);
         }).start();
     }
 
@@ -842,7 +839,7 @@ public class RealmDb {
         return items;
     }
 
-    public void getActiveReminders(String groupId, RealmCallback<List<Reminder>> callback) {
+    void getActiveReminders(String groupId, RealmCallback<List<Reminder>> callback) {
         new Thread(() -> {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -859,19 +856,21 @@ public class RealmDb {
         }).start();
     }
 
-    public List<Reminder> getArchivedReminders() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        String[] fields = new String[]{"eventTime"};
-        Sort[] orders = new Sort[]{Sort.ASCENDING};
-        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
-        List<Reminder> items = new ArrayList<>();
-        for (RealmReminder object : list) {
-            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
-            items.add(reference.get());
-        }
-        realm.commitTransaction();
-        return items;
+    void getArchivedReminders(RealmCallback<List<Reminder>> callback) {
+        new Thread(() -> {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            String[] fields = new String[]{"eventTime"};
+            Sort[] orders = new Sort[]{Sort.ASCENDING};
+            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
+            List<Reminder> items = new ArrayList<>();
+            for (RealmReminder object : list) {
+                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+                items.add(reference.get());
+            }
+            realm.commitTransaction();
+            callback.onDataLoaded(items);
+        }).start();
     }
 
     public List<Reminder> getAllReminders() {
