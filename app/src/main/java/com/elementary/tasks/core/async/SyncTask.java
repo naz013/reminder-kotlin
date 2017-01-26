@@ -77,7 +77,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
-            List<Reminder> items = RealmDb.getInstance().getAllRemindera();
+            List<Reminder> items = RealmDb.getInstance().getAllReminders();
             for (Reminder item : items) {
                 item.setGroupUuId(defUiID);
                 RealmDb.getInstance().saveObject(item);
