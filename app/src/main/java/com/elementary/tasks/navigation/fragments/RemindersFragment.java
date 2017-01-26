@@ -112,17 +112,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             showActionDialog(position, view);
         }
     };
-    private RealmCallback<List<Reminder>> mLoadCallback = new RealmCallback<List<Reminder>>() {
-        @Override
-        public void onDataLoaded(List<Reminder> result) {
-            mDataList = result;
-            mAdapter = new RemindersRecyclerAdapter(mContext, result, mFilterCallback);
-            mAdapter.setEventListener(mEventListener);
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            mRecyclerView.setAdapter(mAdapter);
-            reloadView();
-        }
-    };
+    private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
+
+    private void showData(List<Reminder> result) {
+        mDataList = result;
+        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
+        mAdapter.setEventListener(mEventListener);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+        reloadView();
+        getActivity().invalidateOptionsMenu();
+    }
 
     private void showActionDialog(int position, View view) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
@@ -181,6 +181,13 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
+        }
+        if (mDataList.size() == 0){
+            menu.findItem(R.id.action_filter).setVisible(false);
+            menu.findItem(R.id.action_search).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_filter).setVisible(true);
+            menu.findItem(R.id.action_search).setVisible(true);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }

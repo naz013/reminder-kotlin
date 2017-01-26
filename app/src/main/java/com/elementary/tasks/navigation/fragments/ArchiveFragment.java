@@ -102,18 +102,17 @@ public class ArchiveFragment extends BaseNavigationFragment {
             showActionDialog(position);
         }
     };
-    private RealmCallback<List<Reminder>> mLoadCallback = new RealmCallback<List<Reminder>>() {
-        @Override
-        public void onDataLoaded(List<Reminder> result) {
-            mDataList = result;
-            mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
-            mAdapter.setEventListener(mEventListener);
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            mRecyclerView.setAdapter(mAdapter);
-            reloadView();
-            getActivity().invalidateOptionsMenu();
-        }
-    };
+    private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
+
+    private void showData(List<Reminder> result) {
+        mDataList = result;
+        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
+        mAdapter.setEventListener(mEventListener);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
+        reloadView();
+        getActivity().invalidateOptionsMenu();
+    }
 
     private void showActionDialog(int position) {
         final String[] items = {getString(R.string.edit), getString(R.string.delete)};
