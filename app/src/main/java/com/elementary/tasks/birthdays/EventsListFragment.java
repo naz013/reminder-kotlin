@@ -36,7 +36,7 @@ import java.util.List;
 public class EventsListFragment extends Fragment implements SimpleListener {
 
     private FragmentEventsListBinding binding;
-    private List<EventsItem> mDataList;
+    private List<EventsItem> mDataList = new ArrayList<>();
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     private Context mContext;
 

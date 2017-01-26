@@ -127,7 +127,7 @@ public class MapFragment extends BaseNavigationFragment {
         mGoogleMap.setCallback(mReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()
-                .replace(binding.fragmentContainer.getId(), mGoogleMap)
+                .replace(R.id.fragment_container, mGoogleMap)
                 .addToBackStack(null)
                 .commit();
     }

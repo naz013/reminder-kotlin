@@ -57,9 +57,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
+    public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int PRESS_AGAIN_TIME = 2000;
     private static final String TAG = "MainActivity";
-    public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
+    private static final String CURRENT_SCREEN = "current_screen";
 
     private ActivityMainBinding binding;
     private Toolbar toolbar;
@@ -78,11 +79,19 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         initActionBar();
         initNavigation();
-        if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
+        if (savedInstanceState != null) {
+            openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current));
+        } else if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
             openScreen(getIntent().getIntExtra(Constants.INTENT_POSITION, 0));
         } else {
             initStartFragment();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_SCREEN, prevItem);
+        super.onSaveInstanceState(outState);
     }
 
     private void initStartFragment() {
