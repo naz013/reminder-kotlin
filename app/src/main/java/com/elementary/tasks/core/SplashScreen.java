@@ -17,10 +17,15 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initPrefs();
         initGroups();
-        runApplication();
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        runApplication();
     }
 
     private void initGroups() {
