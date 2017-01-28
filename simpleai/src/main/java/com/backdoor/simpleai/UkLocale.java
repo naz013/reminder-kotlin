@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ class UkLocale extends Worker {
 
     @Override
     protected String[] getWeekdays() {
-        return new String[]{"неділ", "понеділ", "вівтор", "середу?а?", "четвер", "п'ятниц", "субот"};
+        return new String[]{"неділ", "понеділ", "вівтор", "середу?а?и?", "четвер", "п'ятниц", "субот"};
     }
 
     @Override
@@ -48,19 +49,20 @@ class UkLocale extends Worker {
     }
 
     @Override
-    public ArrayList<Integer> getWeekDays(String input) {
+    public List<Integer> getWeekDays(String input) {
         int[] array = {0, 0, 0, 0, 0, 0, 0};
-
         String[] parts = input.split("\\s");
         String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (int i = 0; i < weekDays.length; i++) {
                 String day = weekDays[i];
-                if (part.matches(".*" + day + ".*"))
+                if (part.matches(".*" + day + ".*")) {
                     array[i] = 1;
+                    break;
+                }
             }
         }
-        ArrayList<Integer> list = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
         for (int anArray : array) list.add(anArray);
         return list;
     }
@@ -71,8 +73,10 @@ class UkLocale extends Worker {
         String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (String day : weekDays) {
-                if (part.matches(".*" + day + ".*"))
+                if (part.matches(".*" + day + ".*")) {
                     input = input.replace(part, "");
+                    break;
+                }
             }
         }
         parts = input.split("\\s");
@@ -203,20 +207,19 @@ class UkLocale extends Worker {
     }
 
     @Override
-    public int getAmpm(String input) {
-        if (input.matches(".*з?ран(ку|о)?.*") || input.matches(".*вранці.*")) return MORNING;
-        if (input.matches(".*в?веч(о|е)р.*")) return EVENING;
-        if (input.matches(".*в?день.*")) return NOON;
-        if (input.matches(".*в?ночі.*")) return NIGHT;
-        return -1;
+    public Ampm getAmpm(String input) {
+        if (input.matches(".*з?ран(ку|о)?.*") || input.matches(".*вранці.*")) return Ampm.MORNING;
+        if (input.matches(".*в?веч(о|е)р.*")) return Ampm.EVENING;
+        if (input.matches(".*в?день.*")) return Ampm.NOON;
+        if (input.matches(".*в?ночі.*")) return Ampm.NIGHT;
+        return null;
     }
 
     @Override
     public String clearAmpm(String input) {
         String[] parts = input.split("\\s");
         for (String part : parts) {
-            int ampm = getAmpm(part);
-            if (ampm != -1) {
+            if (getAmpm(part) != null) {
                 input = input.replace(part, "");
                 break;
             }

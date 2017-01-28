@@ -1,6 +1,6 @@
 package com.backdoor.simpleai;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,7 +23,7 @@ public interface WorkerInterface {
 
     String clearCalendar(String input);
 
-    ArrayList<Integer> getWeekDays(String input);
+    List<Integer> getWeekDays(String input);
 
     String clearWeekDays(String input);
 
@@ -47,11 +47,11 @@ public interface WorkerInterface {
 
     String clearMessageType(String input);
 
-    int getAmpm(String input);
+    Ampm getAmpm(String input);
 
     String clearAmpm(String input);
 
-    long getTime(String input, int ampm, String[] times);
+    long getTime(String input, Ampm ampm, String[] times);
 
     String clearTime(String input);
 
