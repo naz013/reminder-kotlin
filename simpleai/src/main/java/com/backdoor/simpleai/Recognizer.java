@@ -1,7 +1,6 @@
 package com.backdoor.simpleai;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,75 +25,48 @@ import java.util.Calendar;
 
 public class Recognizer {
 
-    public static final String WEEK = "weekday";
-    public static final String CALL = "call";
-    public static final String MESSAGE = "message";
-    public static final String REMINDER = "reminder";
-    public static final String MAIL = "e_mail";
+    private static final String TAG = "Recognizer";
 
     private Context mContext;
     private String[] times;
+    private WorkerInterface wrapper;
+    private ContactsInterface contactsInterface;
 
-    public Recognizer(Context context, String[] times) {
+    private Recognizer(Context context, String[] times, String locale, ContactsInterface contactsInterface) {
         this.mContext = context;
         this.times = times;
+        this.contactsInterface = contactsInterface;
+        wrapper = WorkerFactory.getWorker(locale);
     }
 
-    public Model parseResults(String matches, String locale) {
-        String keyStr = matches.toLowerCase().trim();
-        return parse(keyStr, locale);
-    }
-
-    private Model parse(String keyStr, String locale) {
-        Log.d("-----BEFORE------", keyStr);
-        LocaleImpl wrapper = LocaleFactory.Builder(locale);
+    public Model parse(String string) {
+        String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
-        Log.d("-----AFTER------", keyStr);
-        Model model = new Model();
         if (wrapper.hasNote(keyStr)) {
-            keyStr = StringUtils.capitalize(wrapper.clearNote(keyStr));
-            model.setSummary(keyStr);
-            model.setTypes(Types.NOTE);
-            return model;
+            return getNote(keyStr);
         }
-
-        if (wrapper.hasAction(keyStr)) {
-            int action = wrapper.getAction(keyStr);
-            model.setTypes(Types.ACTION);
-            model.setActivity(action);
-            return model;
-        }
-
         if (wrapper.hasEvent(keyStr)) {
-            int action = wrapper.getEvent(keyStr);
-            model.setTypes(Types.ACTION);
-            model.setActivity(action);
-            return model;
+            return getEvent(keyStr);
+        }
+        if (wrapper.hasAction(keyStr)) {
+            return getAction(keyStr);
         }
 
+        Action type = Action.DATE;
+        String number = null;
         boolean hasAction = false;
-        String type = REMINDER;
-        int telephony = -1;
         if (wrapper.hasCall(keyStr)) {
             keyStr = wrapper.clearCall(keyStr);
             hasAction = true;
-            telephony = 1;
-            type = CALL;
+            type = Action.CALL;
         }
-
-        int actionType = -1;
-        String message = null;
         if (wrapper.hasSender(keyStr)) {
             keyStr = wrapper.clearSender(keyStr);
-            hasAction = true;
-            actionType = wrapper.getType(keyStr);
-            if (actionType != -1) {
-                keyStr = wrapper.clearType(keyStr);
-                message = wrapper.getMessage(keyStr);
-                keyStr = wrapper.clearMessage(keyStr);
-                telephony = 2;
-                if (actionType == RecUtils.MESSAGE) type = MESSAGE;
-                else type = MAIL;
+            Action actionType = wrapper.getMessageType(keyStr);
+            if (actionType != null) {
+                hasAction = true;
+                keyStr = wrapper.clearMessageType(keyStr);
+                type = actionType;
             }
         }
 
@@ -126,11 +98,15 @@ public class Recognizer {
         for (int day : weekdays) {
             if (day == 1) {
                 hasWeekday = true;
-                type = WEEK;
                 break;
             }
         }
         keyStr = wrapper.clearWeekDays(keyStr);
+        if (hasWeekday) {
+            if (type == Action.CALL) type = Action.WEEK_CALL;
+            else if (type == Action.MESSAGE) type = Action.WEEK_SMS;
+            else type = Action.WEEK;
+        }
 
         Calendar calendar = Calendar.getInstance();
         boolean hasTimer = false;
@@ -153,9 +129,11 @@ public class Recognizer {
             calendar.setTimeInMillis(time);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(System.currentTimeMillis() + RecUtils.DAY);
+            calendar.setTimeInMillis(System.currentTimeMillis() + Worker.DAY);
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
         } else if (hasWeekday && !repeating) {
             if (time == 0) time = System.currentTimeMillis();
             calendar.setTimeInMillis(time);
@@ -164,15 +142,14 @@ public class Recognizer {
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
-
-            int day = RecUtils.getWeekday(weekdays);
-            weekdays = null;
-            type = REMINDER;
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            int day = Worker.getSelectedWeekday(weekdays);
             if (day != -1) {
                 int mDay = calendar.get(Calendar.DAY_OF_WEEK);
                 while (calendar.getTimeInMillis() < System.currentTimeMillis() || day != mDay) {
                     mDay = calendar.get(Calendar.DAY_OF_WEEK);
-                    calendar.setTimeInMillis(calendar.getTimeInMillis() + RecUtils.DAY);
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
                 }
             }
         } else if (repeating) {
@@ -183,9 +160,11 @@ public class Recognizer {
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
             if (!hasWeekday) {
                 if (calendar.getTimeInMillis() < System.currentTimeMillis())
-                    calendar.setTimeInMillis(calendar.getTimeInMillis() + RecUtils.DAY);
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
             }
         } else if (hasTimer) {
             calendar.setTimeInMillis(System.currentTimeMillis() + afterTime);
@@ -196,14 +175,27 @@ public class Recognizer {
             calendar.setTimeInMillis(date);
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
         } else return null;
 
-        String number = null;
-        if (hasAction) {
-            number = Contacts.findNumber(keyStr, mContext);
-            if (actionType == RecUtils.MAIL)
-                number = Contacts.findMail(keyStr, mContext);
-
+        String message = null;
+        if (hasAction && (type == Action.MESSAGE || type == Action.MAIL)) {
+            message = wrapper.getMessage(keyStr);
+            keyStr = wrapper.clearMessage(keyStr);
+            if (message != null) {
+                keyStr = keyStr.replace(message, "");
+            }
+        }
+        if (hasAction && contactsInterface != null) {
+            ContactOutput output = contactsInterface.findNumber(keyStr, mContext);
+            keyStr = output.getOutput();
+            number = output.getNumber();
+            if (type == Action.MAIL) {
+                output = contactsInterface.findEmail(keyStr, mContext);
+                number = output.getNumber();
+                keyStr = output.getOutput();
+            }
             if (number == null)
                 return null;
         }
@@ -211,19 +203,101 @@ public class Recognizer {
         String task = StringUtils.capitalize(keyStr);
         if (hasAction) {
             task = StringUtils.capitalize(message);
-            if (type.matches(MESSAGE) || type.matches(MAIL) && task == null)
+            if ((type == Action.MESSAGE || type == Action.MAIL) && task == null)
                 return null;
         }
-
-        model.setTypes(Types.REMINDER);
+        Model model = new Model();
+        model.setType(ActionType.REMINDER);
         model.setSummary(task);
-        model.setType(type);
         model.setDateTime(calendar.getTimeInMillis());
         model.setWeekdays(weekdays);
-        model.setRepeat(repeat);
-        model.setNumber(number);
-        model.setCalendar(isCalendar);
-        model.setAction(telephony);
+        model.setRepeatInterval(repeat);
+        model.setTarget(number);
+        model.setHasCalendar(isCalendar);
+        model.setAction(type);
         return model;
+    }
+
+    private Model getEvent(String keyStr) {
+        Model model = new Model();
+        model.setType(ActionType.ACTION);
+        model.setAction(wrapper.getEvent(keyStr));
+        return model;
+    }
+
+    private Model getAction(String keyStr) {
+        Model model = new Model();
+        model.setType(ActionType.ACTION);
+        model.setAction(wrapper.getAction(keyStr));
+        return model;
+    }
+
+    private Model getNote(String keyStr) {
+        keyStr = StringUtils.capitalize(wrapper.clearNote(keyStr));
+        Model model = new Model();
+        model.setSummary(keyStr);
+        model.setType(ActionType.NOTE);
+        return model;
+    }
+
+    public static class Builder {
+
+        public Builder() {
+        }
+
+        public LocaleBuilder with(Context context) {
+            return new LocaleBuilder(context);
+        }
+
+        public class LocaleBuilder {
+
+            private Context context;
+
+            LocaleBuilder(Context context) {
+                this.context = context;
+            }
+
+            public TimeBuilder setLocale(String locale) {
+                return new TimeBuilder(context, locale);
+            }
+        }
+
+        public class TimeBuilder {
+
+            private Context context;
+            private String locale;
+
+            TimeBuilder(Context context, String locale) {
+                this.context = context;
+                this.locale = locale;
+            }
+
+            public ExtraBuilder setTimes(String[] times) {
+                return new ExtraBuilder(context, locale, times);
+            }
+        }
+
+        public class ExtraBuilder {
+
+            private Context context;
+            private ContactsInterface contactsInterface;
+            private String[] times;
+            private String locale;
+
+            ExtraBuilder(Context context, String locale, String[] times) {
+                this.context = context;
+                this.locale = locale;
+                this.times = times;
+            }
+
+            public ExtraBuilder setContactsInterface(ContactsInterface contactsInterface) {
+                this.contactsInterface = contactsInterface;
+                return this;
+            }
+
+            public Recognizer build() {
+                return new Recognizer(context, times, locale, contactsInterface);
+            }
+        }
     }
 }

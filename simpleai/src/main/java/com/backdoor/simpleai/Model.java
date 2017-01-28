@@ -1,6 +1,6 @@
 package com.backdoor.simpleai;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,56 +20,24 @@ import java.util.ArrayList;
 
 public class Model {
 
-    private String type, number, summary;
-    private long dateTime, repeat;
-    private Types types;
-    private ArrayList<Integer> weekdays;
-    private int activity;
-    private int action;
-    private boolean calendar;
+    private String target;
+    private String summary;
+    private long dateTime;
+    private long repeatInterval;
+    private ActionType type;
+    private List<Integer> weekdays;
+    private Action action;
+    private boolean hasCalendar;
 
     public Model() {
-
     }
 
-    public int getAction() {
-        return action;
+    public String getTarget() {
+        return target;
     }
 
-    public void setAction(int action) {
-        this.action = action;
-    }
-
-    public void setCalendar(boolean calendar) {
-        this.calendar = calendar;
-    }
-
-    public boolean getCalendar() {
-        return calendar;
-    }
-
-    public ArrayList<Integer> getWeekdays() {
-        return weekdays;
-    }
-
-    public void setWeekdays(ArrayList<Integer> weekdays) {
-        this.weekdays = weekdays;
-    }
-
-    public void setActivity(int activity) {
-        this.activity = activity;
-    }
-
-    public int getActivity() {
-        return activity;
-    }
-
-    public long getRepeat() {
-        return repeat;
-    }
-
-    public void setRepeat(long repeat) {
-        this.repeat = repeat;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     public String getSummary() {
@@ -84,31 +52,52 @@ public class Model {
         return dateTime;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Types getTypes() {
-        return types;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setTypes(Types types) {
-        this.types = types;
-    }
-
     public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public long getRepeatInterval() {
+        return repeatInterval;
+    }
+
+    public void setRepeatInterval(long repeatInterval) {
+        this.repeatInterval = repeatInterval;
+    }
+
+    public ActionType getType() {
+        return type;
+    }
+
+    public void setType(ActionType type) {
+        this.type = type;
+    }
+
+    public List<Integer> getWeekdays() {
+        return weekdays;
+    }
+
+    public void setWeekdays(List<Integer> weekdays) {
+        this.weekdays = weekdays;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public boolean isHasCalendar() {
+        return hasCalendar;
+    }
+
+    public void setHasCalendar(boolean hasCalendar) {
+        this.hasCalendar = hasCalendar;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtil.getObjectPrint(this, Model.class);
     }
 }

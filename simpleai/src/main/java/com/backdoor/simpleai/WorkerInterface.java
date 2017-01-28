@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * limitations under the License.
  */
 
-public interface LocaleImpl {
+public interface WorkerInterface {
     boolean hasCalendar(String input);
 
     String clearCalendar(String input);
@@ -43,9 +43,9 @@ public interface LocaleImpl {
 
     String clearMessage(String input);
 
-    int getType(String input);
+    Action getMessageType(String input);
 
-    String clearType(String input);
+    String clearMessageType(String input);
 
     int getAmpm(String input);
 
@@ -77,11 +77,11 @@ public interface LocaleImpl {
 
     boolean hasAction(String input);
 
-    int getAction(String input);
+    Action getAction(String input);
 
     boolean hasEvent(String input);
 
-    int getEvent(String input);
+    Action getEvent(String input);
 
     long getMultiplier(String input);
 

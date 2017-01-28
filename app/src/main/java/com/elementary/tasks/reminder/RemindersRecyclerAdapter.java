@@ -63,12 +63,13 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     private List<Reminder> mDataList;
     private RecyclerListener mEventListener;
     private FilterCallback mCallback;
+    private ThemeUtil themeUtil;
 
     public RemindersRecyclerAdapter(Context context, List<Reminder> list, FilterCallback callback) {
         this.mContext = context;
         this.mCallback = callback;
+        themeUtil = ThemeUtil.getInstance(context);
         mDataList = new ArrayList<>(list);
-        setHasStableIds(true);
     }
 
     public Reminder getItem(int position) {
@@ -94,7 +95,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             super(v);
             binding = DataBindingUtil.bind(v);
             listHeader = binding.listHeader;
-            binding.reminderContainer.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
+            binding.reminderContainer.setBackgroundColor(themeUtil.getCardStyle());
             binding.itemCard.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), v);
@@ -127,7 +128,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             super(v);
             binding = DataBindingUtil.bind(v);
             listHeader = binding.listHeader;
-            binding.subBackground.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
+            binding.subBackground.setBackgroundColor(themeUtil.getCardStyle());
             binding.itemCard.setOnLongClickListener(view -> {
                 if (mEventListener != null) {
                     mEventListener.onItemLongClicked(getAdapterPosition(), v);

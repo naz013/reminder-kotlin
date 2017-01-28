@@ -1,7 +1,7 @@
 package com.backdoor.simpleai;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2017 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,26 @@ package com.backdoor.simpleai;
  * limitations under the License.
  */
 
-class LocaleFactory {
+public enum Action {
+    /**
+     * Reminder actions
+     */
+    WEEK,
+    WEEK_CALL,
+    WEEK_SMS,
+    CALL,
+    MESSAGE,
+    MAIL,
+    DATE,
 
-    static LocaleImpl Builder(String locale) {
-        if (locale.matches(Locale.EN)) {
-            return new EnLocale();
-        } else if (locale.matches(Locale.UK)) {
-            return new UkLocale();
-        } else if (locale.matches(Locale.RU)) {
-            return new RuLocale();
-        } else return new EnLocale();
-    }
+    /**
+     * App actions
+     */
+    SETTINGS,
+    APP,
+    VOLUME,
+    HELP,
+    REMINDER,
+    BIRTHDAY,
+    REPORT
 }

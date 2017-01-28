@@ -198,6 +198,9 @@
         <activity android:name=".reminder.ShoppingPreviewActivity" />
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
+        <activity android:name=".core.dialogs.VoiceHelpDialog" android:theme="@style/HomeWhiteDialog" />
+        <activity android:name=".core.dialogs.VoiceResultDialog" android:theme="@style/HomeWhiteDialog" />
+        <activity android:name=".core.dialogs.VolumeDialog" android:theme="@style/HomeWhiteDialog" />
         <activity android:name=".birthdays.AddBirthdayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
