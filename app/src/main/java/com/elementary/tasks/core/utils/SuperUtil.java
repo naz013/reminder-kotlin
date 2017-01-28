@@ -20,6 +20,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.backdoor.simpleai.ObjectUtil;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
@@ -27,11 +28,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -69,49 +65,8 @@ public class SuperUtil {
     }
 
     public static String getObjectPrint(Object o, Class<?> clazz) {
-        List<Field> fields = Arrays.asList(clazz.getDeclaredFields());
-        String toString = clazz.getName() + " -> ";
-        for (Field f : fields) {
-            f.setAccessible(true);
-            if (!Modifier.isStatic(f.getModifiers())) {
-                toString += f.getName() + ": ";
-                try {
-                    toString += getValue(f, o) + ", ";
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return toString;
+        return ObjectUtil.getObjectPrint(o, clazz);
     }
-
-    private static String getValue(Field field, Object clazz) throws IllegalAccessException {
-        Class<?> type = field.getType();
-        if (!(field.getGenericType() instanceof ParameterizedType)) {
-            if (type == Float.TYPE) {
-                return field.getFloat(clazz) + "";
-            } else if (type == Integer.TYPE) {
-                return field.getInt(clazz) + "";
-            } else if (type == Double.TYPE) {
-                return field.getDouble(clazz) + "";
-            } else if (type == Long.TYPE) {
-                return field.getLong(clazz) + "";
-            } else if (type == Boolean.TYPE) {
-                return field.getBoolean(clazz) + "";
-            } else {
-                try {
-                    return (String) field.get(clazz);
-                } catch (ClassCastException e) {
-                    return "array";
-                }
-            }
-        } else {
-            String res = "{ ";
-            res += field.get(clazz) + " }";
-            return res;
-        }
-    }
-
 
     public static void selectContact(final Activity activity, final int requestCode){
         activity.startActivityForResult(new Intent(activity, ContactsActivity.class), requestCode);

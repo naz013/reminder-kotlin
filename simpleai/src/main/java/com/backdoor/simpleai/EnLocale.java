@@ -3,7 +3,6 @@ package com.backdoor.simpleai;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,16 +23,19 @@ import java.util.regex.Pattern;
  * limitations under the License.
  */
 
-class EnLocale extends RecUtils implements LocaleImpl {
+class EnLocale extends Worker {
 
-    private final static String[] weekDays = {
-            "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
-    };
+    @Override
+    protected String[] getWeekdays() {
+        return new String[]{"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+    }
 
+    @Override
     public boolean hasCalendar(String input) {
         return input.matches(".*calendar.*");
     }
 
+    @Override
     public String clearCalendar(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -45,10 +47,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public ArrayList<Integer> getWeekDays(String input) {
         int[] array = {0, 0, 0, 0, 0, 0, 0};
 
         String[] parts = input.split("\\s");
+        String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (int i = 0; i < weekDays.length; i++) {
                 String day = weekDays[i];
@@ -61,8 +65,10 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return list;
     }
 
+    @Override
     public String clearWeekDays(String input) {
         String[] parts = input.split("\\s");
+        String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (String day : weekDays) {
                 if (part.matches(".*" + day + ".*"))
@@ -79,6 +85,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return sb.toString().trim();
     }
 
+    @Override
     public long getDaysRepeat(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
@@ -96,6 +103,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return 0;
     }
 
+    @Override
     public String clearDaysRepeat(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
@@ -113,10 +121,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public boolean hasRepeat(String input) {
         return input.matches(".*every.*");
     }
 
+    @Override
     public String clearRepeat(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -128,10 +138,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public boolean hasTomorrow(String input) {
         return input.matches(".*tomorrow.*");
     }
 
+    @Override
     public String clearTomorrow(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -143,6 +155,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public String getMessage(String input) {
         String[] parts = input.split("\\s");
         StringBuilder sb = new StringBuilder();
@@ -155,31 +168,35 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return sb.toString().trim();
     }
 
+    @Override
     public String clearMessage(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
             if (part.matches("text")) {
-                int index = input.indexOf(part);
-                input = input.replace(parts[i - 1], "");
-                input = input.substring(0, index - 1);
+                try {
+                    if (parts[i -1].matches("with")) input = input.replace(parts[i - 1], "");
+                } catch (IndexOutOfBoundsException e) {}
+                input = input.replace(part, "");
             }
         }
         return input.trim();
     }
 
-    public int getType(String input) {
-        if (input.matches(".*message.*")) return MESSAGE;
-        if (input.matches(".*letter.*")) return MAIL;
-        return -1;
+    @Override
+    public Action getMessageType(String input) {
+        if (input.matches(".*message.*")) return Action.MESSAGE;
+        else if (input.matches(".*letter.*")) return Action.MAIL;
+        return null;
     }
 
-    public String clearType(String input) {
+    @Override
+    public String clearMessageType(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            int type = getType(part);
-            if (type != -1) {
+            Action type = getMessageType(part);
+            if (type != null) {
                 input = input.replace(part, "");
                 if (parts[i + 1].matches("to")) input = input.replace(parts[i + 1], "");
                 break;
@@ -188,6 +205,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public int getAmpm(String input) {
         if (input.matches(".*morning.*")) return MORNING;
         if (input.matches(".*evening.*")) return EVENING;
@@ -202,6 +220,7 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return -1;
     }
 
+    @Override
     public String clearAmpm(String input) {
         String[] parts = input.split("\\s");
         for (String part : parts) {
@@ -214,66 +233,13 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
-    public long getTime(String input, int ampm, String[] times) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(0);
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
-            if (hasHours(part)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (NumberFormatException e) {
-                    integer = 1;
-                }
-                if (ampm == EVENING) integer += 12;
-
-                calendar.set(Calendar.HOUR_OF_DAY, integer);
-            }
-            if (hasMinutes(part)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (NumberFormatException e) {
-                    integer = 1;
-                }
-
-                calendar.set(Calendar.MINUTE, integer);
-            }
-        }
-        Date date = getShortTime(input);
-        if (date != null) {
-            calendar.setTime(date);
-            if (ampm == EVENING) {
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                calendar.set(Calendar.HOUR_OF_DAY, hour < 12 ? hour + 12 : hour);
-            }
-            return calendar.getTimeInMillis();
-        }
-        if (calendar.getTimeInMillis() == 0 && ampm != -1) {
-            try {
-                if (ampm == MORNING)
-                    calendar.setTime(mFormat.parse(times[0]));
-                if (ampm == NOON)
-                    calendar.setTime(mFormat.parse(times[1]));
-                if (ampm == EVENING)
-                    calendar.setTime(mFormat.parse(times[2]));
-                if (ampm == NIGHT)
-                    calendar.setTime(mFormat.parse(times[3]));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return calendar.getTimeInMillis();
-    }
-
-    private Date getShortTime(String input) {
+    @Override
+    protected Date getShortTime(String input) {
         Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)?(([0-5]?\\d?)?)");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
-            for (SimpleDateFormat format : RecUtils.dateTaskFormats) {
+            for (SimpleDateFormat format : Worker.dateTaskFormats) {
                 Date date;
                 try {
                     date = format.parse(time);
@@ -285,22 +251,25 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return null;
     }
 
+    @Override
     public String clearTime(String input) {
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i];
-            if (hasHours(part)) {
+            if (hasHours(part) != -1) {
+                int index = hasHours(part);
                 input = input.replace(part, "");
                 try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
+                    Integer.parseInt(parts[i - index]);
+                    input = input.replace(parts[i - index], "");
                 } catch (NumberFormatException e) {
                 }
             }
-            if (hasMinutes(part)) {
+            if (hasMinutes(part) != -1) {
+                int index = hasMinutes(part);
                 try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
+                    Integer.parseInt(parts[i - index]);
+                    input = input.replace(parts[i - index], "");
                 } catch (NumberFormatException e) {
                 }
                 input = input.replace(part, "");
@@ -321,49 +290,8 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return sb.toString().trim();
     }
 
-    public long getDate(String input) {
-        long mills = 0;
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
-            int month = getMonth(part);
-            if (month != -1) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i + 1]);
-                } catch (NumberFormatException e) {
-                    integer = 1;
-                }
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, integer);
-                mills = calendar.getTimeInMillis();
-                break;
-            }
-        }
-        return mills;
-    }
-
-    public String clearDate(String input) {
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
-            int month = getMonth(part);
-            if (month != -1) {
-                try {
-                    Integer.parseInt(parts[i + 1]);
-                    input = input.replace(parts[i + 1], "");
-                } catch (NumberFormatException e) {
-                }
-                input = input.replace(part, "");
-                break;
-            }
-        }
-        return input.trim();
-    }
-
-    private int getMonth(String input) {
+    @Override
+    protected int getMonth(String input) {
         int res = -1;
         if (input.contains("january")) res = 0;
         if (input.contains("february")) res = 1;
@@ -380,10 +308,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return res;
     }
 
+    @Override
     public boolean hasCall(String input) {
         return input.matches(".*call.*");
     }
 
+    @Override
     public String clearCall(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -395,10 +325,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public boolean isTimer(String input) {
         return input.matches(".*after.*");
     }
 
+    @Override
     public String cleanTimer(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -410,10 +342,12 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public boolean hasSender(String input) {
         return input.matches(".*send.*");
     }
 
+    @Override
     public String clearSender(String input) {
         String[] parts = input.split("\\s");
         for (String string : parts) {
@@ -425,182 +359,81 @@ class EnLocale extends RecUtils implements LocaleImpl {
         return input.trim();
     }
 
+    @Override
     public boolean hasNote(String input) {
         return input.startsWith("note");
     }
 
+    @Override
     public String clearNote(String input) {
         input = input.replace("note", "");
         return input.trim();
     }
 
+    @Override
     public boolean hasAction(String input) {
         return input.startsWith("open") || input.matches(".*help.*")
                 || input.matches(".*adjust.*") || input.matches(".*report.*") ||
                 input.matches(".*change.*");
     }
 
-    public int getAction(String input) {
+    @Override
+    public Action getAction(String input) {
         if (input.matches(".*help.*"))
-            return HELP;
+            return Action.HELP;
         else if (input.matches(".*loudness.*") || input.matches(".*volume.*"))
-            return VOLUME;
+            return Action.VOLUME;
         else if (input.matches(".*settings.*"))
-            return SETTINGS;
+            return Action.SETTINGS;
         else if (input.matches(".*report.*"))
-            return REPORT;
-        else return APP;
+            return Action.REPORT;
+        else return Action.APP;
     }
 
+    @Override
     public boolean hasEvent(String input) {
         return input.startsWith("new") || input.startsWith("add");
     }
 
-    public int getEvent(String input) {
+    @Override
+    public Action getEvent(String input) {
         if (input.matches(".*birthday.*"))
-            return BIRTHDAY;
-        else return REMINDER;
+            return Action.BIRTHDAY;
+        else return Action.REMINDER;
     }
 
-    public long getMultiplier(String input) {
-        long result = 0;
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String string = parts[i];
-            if (hasSeconds(string)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
-                }
-                result = result + integer * SECOND;
-            } else if (hasMinutes(string)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
-                }
-                result = result + integer * MINUTE;
-            } else if (hasHours(string)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
-                }
-                result = result + integer * HOUR;
-            } else if (hasDays(string)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
-                }
-                result = result + integer * DAY;
-            } else if (hasWeeks(string)) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i - 1]);
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
-                }
-                result = result + integer * DAY * 7;
-            }
-        }
-        return result;
+    @Override
+    protected int hasHours(String input) {
+        if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
+                || input.matches(".*am.*") || input.matches(".*pm.*")) return 1;
+        else if (input.matches("\\d+")) return 0;
+        return -1;
     }
 
-    public String clearMultiplier(String input) {
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String string = parts[i];
-            if (hasSeconds(string)) {
-                try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
-                input = input.replace(string, "");
-            } else if (hasMinutes(string)) {
-                try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
-                input = input.replace(string, "");
-            } else if (hasHours(string)) {
-                try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
-                input = input.replace(string, "");
-            } else if (hasDays(string)) {
-                try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
-                input = input.replace(string, "");
-            } else if (hasWeeks(string)) {
-                try {
-                    Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
-                input = input.replace(string, "");
-            }
-        }
-        return input.trim();
+    @Override
+    protected int hasMinutes(String input) {
+        if (input.matches(".*minute.*")) return 1;
+        else if (input.matches("\\d+")) return 0;
+        return -1;
     }
 
-    private boolean hasHours(String input) {
-        return input.matches(".*hour.*") || input.matches(".*o'clock.*")
-                || input.matches(".*am.*") || input.matches(".*pm.*");
-    }
-
-    private boolean hasMinutes(String input) {
-        return input.matches(".*minute.*");
-    }
-
-    private boolean hasSeconds(String input) {
+    @Override
+    protected boolean hasSeconds(String input) {
         return input.matches(".*second.*");
     }
 
-    private boolean hasDays(String input) {
+    @Override
+    protected boolean hasDays(String input) {
         return input.matches(".* day.*");
     }
 
-    private boolean hasWeeks(String input) {
+    @Override
+    protected boolean hasWeeks(String input) {
         return input.matches(".*week.*");
     }
 
-    public String replaceNumbers(String input) {
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            int number = getNumber(parts, i);
-            if (number != -1) {
-                if (number > 20 && (number % 10 > 0)) {
-                    input = input.replace(parts[i] + " " + parts[i + 1], String.valueOf(number));
-                } else input = input.replace(parts[i], String.valueOf(number));
-            }
-        }
-        return input.trim();
-    }
-
-    private int getNumber(String[] parts, int index) {
-        int number = findNumber(parts[index]);
-        if (number == -1) return -1;
-        if (number >= 20) {
-            int res = getNumber(parts, index + 1);
-            if (res != -1) return res + number;
-            else return number;
-        } else return number;
-    }
-
-    private static int findNumber(String input) {
+    @Override
+    protected int findNumber(String input) {
         int number = -1;
         if (input.matches("zero") || input.matches("nil")) number = 0;
         if (input.matches("one") || input.matches("first")) number = 1;

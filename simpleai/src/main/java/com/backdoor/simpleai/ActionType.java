@@ -1,7 +1,7 @@
 package com.backdoor.simpleai;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2017 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ package com.backdoor.simpleai;
  * limitations under the License.
  */
 
-public enum Types {
+public enum ActionType {
     REMINDER,
     NOTE,
     BIRTHDAYS,
