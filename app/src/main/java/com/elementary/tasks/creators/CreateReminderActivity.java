@@ -42,6 +42,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -65,6 +66,8 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -534,7 +537,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_create_reminder, menu);
-        if (mReminder != null) {
+        if (mReminder != null && isEditing) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete));
         }
         return true;
@@ -550,8 +553,13 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if (matches != null) {
-                String text = matches.get(0).toString();
-                taskField.setText(text);
+                Reminder model = new Recognize(this).findResults(matches);
+                if (model != null) {
+                    processModel(model);
+                } else {
+                    String text = matches.get(0).toString();
+                    taskField.setText(StringUtils.capitalize(text));
+                }
             }
         }
         if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == RESULT_OK) {
@@ -563,6 +571,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             }
         }
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void processModel(Reminder model) {
+        this.mReminder = model;
+        editReminder();
     }
 
     @Override

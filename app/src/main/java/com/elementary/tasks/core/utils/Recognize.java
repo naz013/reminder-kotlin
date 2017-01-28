@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -57,7 +58,7 @@ public class Recognize {
         this.mContext = context;
     }
 
-    public Model findResults(ArrayList matches) {
+    public Reminder findResults(ArrayList matches) {
         Prefs prefs = Prefs.getInstance(mContext);
         String language = Language.getLanguage(prefs.getVoiceLocale());
         String morning = prefs.getMorningTime();
@@ -77,7 +78,7 @@ public class Recognize {
             Model model = recognizer.parse(keyStr);
             if (model != null) {
                 LogUtil.d(TAG, "parseResults: " + model);
-                return model;
+                return createReminder(model);
             }
         }
         return null;
@@ -132,10 +133,23 @@ public class Recognize {
                 break;
             }
         }
-        Toast.makeText(mContext, R.string.failed_to_recognize_your_command, Toast.LENGTH_SHORT).show();
     }
 
     private void saveReminder(Model model, boolean widget) {
+        Reminder reminder = createReminder(model);
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.start();
+        if (widget && !isWear) {
+            mContext.startActivity(new Intent(mContext, VoiceResultDialog.class)
+                    .putExtra(Constants.INTENT_ID, reminder.getUuId())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        } else {
+            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @NonNull
+    private Reminder createReminder(Model model) {
         Action action = model.getAction();
         String number = model.getTarget();
         String summary = model.getSummary();
@@ -172,15 +186,7 @@ public class Recognize {
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setExportToCalendar(isCalendar && (isCal || isStock));
-        EventControl control = EventControlImpl.getController(mContext, reminder);
-        control.start();
-        if (widget && !isWear) {
-            mContext.startActivity(new Intent(mContext, VoiceResultDialog.class)
-                    .putExtra(Constants.INTENT_ID, reminder.getUuId())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
-        } else {
-            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
-        }
+        return reminder;
     }
 
     private void saveNote(String note) {

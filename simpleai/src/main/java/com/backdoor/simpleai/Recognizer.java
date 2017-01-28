@@ -1,11 +1,12 @@
 package com.backdoor.simpleai;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,6 +43,7 @@ public class Recognizer {
     public Model parse(String string) {
         String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
+        Log.d(TAG, "parse: " + keyStr);
         if (wrapper.hasNote(keyStr)) {
             return getNote(keyStr);
         }
@@ -91,9 +93,9 @@ public class Recognizer {
             tomorrow = true;
         }
 
-        int ampm = wrapper.getAmpm(keyStr);
-        if (ampm != -1) keyStr = wrapper.clearAmpm(keyStr);
-        ArrayList<Integer> weekdays = wrapper.getWeekDays(keyStr);
+        Ampm ampm = wrapper.getAmpm(keyStr);
+        if (ampm != null) keyStr = wrapper.clearAmpm(keyStr);
+        List<Integer> weekdays = wrapper.getWeekDays(keyStr);
         boolean hasWeekday = false;
         for (int day : weekdays) {
             if (day == 1) {
@@ -123,7 +125,7 @@ public class Recognizer {
 
         long time = wrapper.getTime(keyStr, ampm, times);
         if (time != 0) keyStr = wrapper.clearTime(keyStr);
-
+        Log.d(TAG, "parse: 0 " + keyStr);
         if (tomorrow) {
             if (time == 0) time = System.currentTimeMillis();
             calendar.setTimeInMillis(time);
@@ -139,17 +141,21 @@ public class Recognizer {
             calendar.setTimeInMillis(time);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
+            Log.d(TAG, "parse: " + time + ", " + hour + ", " + minute);
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            int day = Worker.getSelectedWeekday(weekdays);
-            if (day != -1) {
-                int mDay = calendar.get(Calendar.DAY_OF_WEEK);
-                while (calendar.getTimeInMillis() < System.currentTimeMillis() || day != mDay) {
-                    mDay = calendar.get(Calendar.DAY_OF_WEEK);
-                    calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
+            int count = Worker.getNumberOfSelectedWeekdays(weekdays);
+            if (count == 1) {
+                while (true) {
+                    int mDay = calendar.get(Calendar.DAY_OF_WEEK);
+                    if (weekdays.get(mDay - 1) == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
+                        break;
+                    }
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    Log.d(TAG, "parse: DOM: " + calendar.get(Calendar.DAY_OF_MONTH));
                 }
             }
         } else if (repeating) {

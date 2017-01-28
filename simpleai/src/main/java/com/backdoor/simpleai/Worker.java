@@ -1,10 +1,12 @@
 package com.backdoor.simpleai;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 abstract class Worker implements WorkerInterface {
@@ -21,14 +23,6 @@ abstract class Worker implements WorkerInterface {
     protected final static long DAY = HALF_DAY * 2;
 
 
-    /**
-     * Parts of a day.
-     */
-    protected static final int MORNING = 454;
-    protected static final int NOON = 935;
-    protected static final int EVENING = 565;
-    protected static final int NIGHT = 136;
-
     protected static final SimpleDateFormat[] dateTaskFormats = {
             new SimpleDateFormat("HH mm", Locale.getDefault()),
             new SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -37,18 +31,28 @@ abstract class Worker implements WorkerInterface {
     protected static SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     protected static final SimpleDateFormat simpleDate = new SimpleDateFormat("d MMMM yyyy, HH:mm", Locale.getDefault());
 
-    public static int getSelectedWeekday(ArrayList<Integer> days) {
+    static int getNumberOfSelectedWeekdays(List<Integer> days) {
+        int count = 0;
+        for (int i = 0; i < days.size(); i++) {
+            if (days.get(i) == 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    static int getSelectedWeekday(List<Integer> days) {
         for (int i = 0; i < days.size(); i++) {
             if (days.get(i) == 1) return i;
         }
         return -1;
     }
 
-    public boolean isCorrectTime(int hourOfDay, int minuteOfHour) {
+    boolean isCorrectTime(int hourOfDay, int minuteOfHour) {
         return hourOfDay < 24 && minuteOfHour < 60;
     }
 
-    public boolean isLeapYear(int year) {
+    boolean isLeapYear(int year) {
         return (year % 4 == 0) && year % 100 != 0 ||
                 (year % 4 == 0) && (year % 100 == 0) && (year % 400 == 0);
     }
@@ -238,7 +242,8 @@ abstract class Worker implements WorkerInterface {
     }
 
     @Override
-    public long getTime(String input, int ampm, String[] times) {
+    public long getTime(String input, Ampm ampm, String[] times) {
+        Log.d(TAG, "getTime: " + ampm);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         String[] parts = input.split("\\s");
@@ -254,8 +259,9 @@ abstract class Worker implements WorkerInterface {
                 } catch (NumberFormatException e) {
                     integer = 1;
                 }
-                if (ampm == EVENING) integer += 12;
+                if (ampm == Ampm.EVENING) integer += 12;
                 h = integer;
+                parts[i - index] = "";
             }
             if (hasMinutes(part) != -1) {
                 int index = hasMinutes(part);
@@ -263,7 +269,7 @@ abstract class Worker implements WorkerInterface {
                 try {
                     integer = Integer.parseInt(parts[i - index]);
                 } catch (NumberFormatException e) {
-                    integer = 1;
+                    integer = 0;
                 }
                 m = integer;
             }
@@ -271,7 +277,7 @@ abstract class Worker implements WorkerInterface {
         Date date = getShortTime(input);
         if (date != null) {
             calendar.setTime(date);
-            if (ampm == EVENING) {
+            if (ampm == Ampm.EVENING) {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 calendar.set(Calendar.HOUR_OF_DAY, hour < 12 ? hour + 12 : hour);
             }
@@ -282,17 +288,19 @@ abstract class Worker implements WorkerInterface {
             calendar.set(Calendar.HOUR_OF_DAY, h);
             if (m != -1) calendar.set(Calendar.MINUTE, m);
             else calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
             return calendar.getTimeInMillis();
         }
-        if (calendar.getTimeInMillis() == 0 && ampm != -1) {
+        if (calendar.getTimeInMillis() == 0 && ampm != null) {
             try {
-                if (ampm == MORNING)
+                if (ampm == Ampm.MORNING)
                     calendar.setTime(mFormat.parse(times[0]));
-                if (ampm == NOON)
+                if (ampm == Ampm.NOON)
                     calendar.setTime(mFormat.parse(times[1]));
-                if (ampm == EVENING)
+                if (ampm == Ampm.EVENING)
                     calendar.setTime(mFormat.parse(times[2]));
-                if (ampm == NIGHT)
+                if (ampm == Ampm.NIGHT)
                     calendar.setTime(mFormat.parse(times[3]));
             } catch (ParseException e) {
                 e.printStackTrace();
