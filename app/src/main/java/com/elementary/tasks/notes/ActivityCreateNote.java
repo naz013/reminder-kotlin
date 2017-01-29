@@ -332,7 +332,6 @@ public class ActivityCreateNote extends ThemedActivity {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;
         }
-        RealmDb.getInstance().saveObject(mReminder);
         EventControl control = EventControlImpl.getController(this, mReminder);
         if (!control.start()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();

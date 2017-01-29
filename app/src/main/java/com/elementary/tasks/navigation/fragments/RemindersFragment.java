@@ -34,9 +34,13 @@ import com.elementary.tasks.databinding.FragmentRemindersBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
+import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,11 +236,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.tasks));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> startActivity(new Intent(mContext, CreateReminderActivity.class)));
         }
+        loadData(mLastGroupId);
+    }
+
+    @Subscribe
+    public void onEvent(ReminderUpdateEvent e) {
         loadData(mLastGroupId);
     }
 
@@ -318,6 +328,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

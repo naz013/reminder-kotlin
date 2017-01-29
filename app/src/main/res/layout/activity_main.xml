@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:openDrawer="start">
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,6 +44,29 @@
                 android:layout_margin="16dp"
                 android:src="@drawable/ic_add_white_24dp"
                 app:fabSize="normal" />
+
+            <ScrollView
+                android:id="@+id/quickNoteContainer"
+                android:layout_width="match_parent"
+                android:paddingRight="88dp"
+                android:visibility="gone"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/quickNoteView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="72dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </ScrollView>
 
         </RelativeLayout>
 
