@@ -88,27 +88,27 @@ public class LocationOutFragment extends RadiusTypeFragment {
             }
         }
     };
-    private MapCallback mCallback = new MapCallback() {
-        @Override
-        public void onMapReady() {
-            if (mInterface.getReminder() != null) {
-                Reminder item = mInterface.getReminder();
-                String text = item.getSummary();
-                Place jPlace = item.getPlaces().get(0);
-                double latitude = jPlace.getLatitude();
-                double longitude = jPlace.getLongitude();
-                radius = jPlace.getRadius();
-                if (advancedMapFragment != null) {
-                    advancedMapFragment.setMarkerRadius(radius);
-                    lastPos = new LatLng(latitude, longitude);
-                    advancedMapFragment.addMarker(lastPos, text, true, true, radius);
-//                    toggleMap();
-                }
-                binding.mapLocation.setText(SuperUtil.getAddress(lastPos.latitude, lastPos.longitude));
-                binding.mapCheck.setChecked(true);
+    private MapCallback mCallback = this::showPlaceOnMap;
+
+    private void showPlaceOnMap() {
+        if (mInterface.getReminder() != null) {
+            Reminder item = mInterface.getReminder();
+            if (!Reminder.isGpsType(item.getType())) return;
+            String text = item.getSummary();
+            Place jPlace = item.getPlaces().get(0);
+            double latitude = jPlace.getLatitude();
+            double longitude = jPlace.getLongitude();
+            radius = jPlace.getRadius();
+            if (advancedMapFragment != null) {
+                advancedMapFragment.setMarkerRadius(radius);
+                lastPos = new LatLng(latitude, longitude);
+                advancedMapFragment.addMarker(lastPos, text, true, true, radius);
             }
+            binding.mapLocation.setText(SuperUtil.getAddress(lastPos.latitude, lastPos.longitude));
+            binding.mapCheck.setChecked(true);
         }
-    };
+    }
+
     private MapListener mListener = new MapListener() {
         @Override
         public void placeChanged(LatLng place, String address) {
@@ -199,7 +199,6 @@ public class LocationOutFragment extends RadiusTypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-//        RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         control.start();
         return true;

@@ -21,7 +21,6 @@ import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -96,7 +95,6 @@ public class ApplicationFragment extends RepeatableTypeFragment {
             Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-//        RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         if (control.start()) {
             return true;

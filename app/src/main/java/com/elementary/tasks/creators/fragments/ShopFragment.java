@@ -17,7 +17,6 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
@@ -94,7 +93,6 @@ public class ShopFragment extends TypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-//        RealmDb.getInstance().saveObject(reminder);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         if (control.start()) {
             return true;
