@@ -141,7 +141,6 @@ public class Recognizer {
             calendar.setTimeInMillis(time);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
-            Log.d(TAG, "parse: " + time + ", " + hour + ", " + minute);
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
@@ -155,7 +154,6 @@ public class Recognizer {
                         break;
                     }
                     calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    Log.d(TAG, "parse: DOM: " + calendar.get(Calendar.DAY_OF_MONTH));
                 }
             }
         } else if (repeating) {
