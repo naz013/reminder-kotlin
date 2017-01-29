@@ -11,7 +11,7 @@ import java.util.Locale;
 
 abstract class Worker implements WorkerInterface {
 
-    private static final String TAG = "Worker";
+    protected static final String TAG = "Worker";
 
     /**
      * Millisecond constants.

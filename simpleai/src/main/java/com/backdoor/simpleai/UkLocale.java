@@ -28,7 +28,7 @@ class UkLocale extends Worker {
 
     @Override
     protected String[] getWeekdays() {
-        return new String[]{"неділ", "понеділ", "вівтор", "середу?а?и?", "четвер", "п'ятниц", "субот"};
+        return new String[]{" неділ", "понеділ", "вівтор", "середу?а?и?", "четвер", "п'ятниц", "субот"};
     }
 
     @Override
@@ -50,13 +50,13 @@ class UkLocale extends Worker {
 
     @Override
     public List<Integer> getWeekDays(String input) {
-        int[] array = {0, 0, 0, 0, 0, 0, 0};
+        int[] array = new int[7];
         String[] parts = input.split("\\s");
         String[] weekDays = getWeekdays();
         for (String part : parts) {
             for (int i = 0; i < weekDays.length; i++) {
-                String day = weekDays[i];
-                if (part.matches(".*" + day + ".*")) {
+                String day = ".*" + weekDays[i] + ".*";
+                if (part.matches(day)) {
                     array[i] = 1;
                     break;
                 }
