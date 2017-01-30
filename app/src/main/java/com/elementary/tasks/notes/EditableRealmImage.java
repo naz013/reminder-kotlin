@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,20 +19,17 @@ import java.io.Serializable;
  * limitations under the License.
  */
 
-public class NoteImage implements Serializable {
+public class EditableRealmImage extends RealmObject {
 
     private byte[] image;
 
-    public NoteImage(RealmImage image) {
-        this.image = image.getImage();
-    }
+    @PrimaryKey
+    private int id = 0;
 
-    public NoteImage(EditableRealmImage image) {
-        this.image = image.getImage();
-    }
+    public EditableRealmImage() {}
 
-    public NoteImage(byte[] image) {
-        this.image = image;
+    public EditableRealmImage(NoteImage image) {
+        this.image = image.getImage();
     }
 
     public byte[] getImage() {

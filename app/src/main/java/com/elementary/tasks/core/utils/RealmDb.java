@@ -21,7 +21,10 @@ import com.elementary.tasks.missed_calls.CallItem;
 import com.elementary.tasks.missed_calls.RealmCallItem;
 import com.elementary.tasks.navigation.settings.additional.RealmTemplate;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.notes.EditableRealmImage;
+import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.RealmImage;
 import com.elementary.tasks.notes.RealmNote;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.RealmPlace;
@@ -95,6 +98,25 @@ public class RealmDb {
             saveMissedCall((CallItem) o);
         } else if (o instanceof BirthdayItem) {
             saveBirthday((BirthdayItem) o);
+        }
+    }
+
+    public void saveImage(NoteImage item) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(new EditableRealmImage(item));
+        realm.commitTransaction();
+    }
+
+    public NoteImage getImage() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        EditableRealmImage item = realm.where(EditableRealmImage.class).equalTo("id", 0).findFirst();
+        realm.commitTransaction();
+        if (item != null) {
+            return new NoteImage(item);
+        } else {
+            return null;
         }
     }
 

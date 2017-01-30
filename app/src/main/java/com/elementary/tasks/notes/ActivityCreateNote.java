@@ -96,6 +96,7 @@ public class ActivityCreateNote extends ThemedActivity {
     private static final String TAG = "ActivityCreateNote";
     public static final int MENU_ITEM_DELETE = 12;
     private static final int REQUEST_SD_CARD = 1112;
+    private static final int EDIT_CODE = 11223;
 
     private int mHour = 0;
     private int mMinute = 0;
@@ -105,6 +106,7 @@ public class ActivityCreateNote extends ThemedActivity {
     private int mColor = 0;
     private int mFontStyle = 0;
     private Uri mImageUri;
+    private int mEditPosition = -1;
 
     private RelativeLayout layoutContainer;
     private LinearLayout remindContainer;
@@ -243,8 +245,15 @@ public class ActivityCreateNote extends ThemedActivity {
         binding.imagesList.setHasFixedSize(true);
         binding.imagesList.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new ImagesGridAdapter(this);
-        mAdapter.setEditable(true);
+        mAdapter.setEditable(true, this::editImage);
         binding.imagesList.setAdapter(mAdapter);
+    }
+
+    private void editImage(int position) {
+        NoteImage image = mAdapter.getItem(position);
+        RealmDb.getInstance().saveImage(image);
+        startActivityForResult(new Intent(this, ImageEditActivity.class), EDIT_CODE);
+        this.mEditPosition = position;
     }
 
     private void showReminder() {
@@ -487,8 +496,16 @@ public class ActivityCreateNote extends ThemedActivity {
                 case Constants.ACTION_REQUEST_CAMERA:
                     getImageFromCamera();
                     break;
+                case EDIT_CODE:
+                    if (mEditPosition != -1) updateImage();
+                    break;
             }
         }
+    }
+
+    private void updateImage() {
+        NoteImage image = RealmDb.getInstance().getImage();
+        mAdapter.setImage(image, mEditPosition);
     }
 
     private void getImageFromGallery(Intent data) {

@@ -225,6 +225,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".reminder.AddReminderActivity" />
+        <activity android:name=".notes.ImageEditActivity" />
 
         <activity
             android:name=".core.SplashScreen"
