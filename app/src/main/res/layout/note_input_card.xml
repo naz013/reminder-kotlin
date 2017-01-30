@@ -31,7 +31,6 @@
                 android:layout_gravity="right|bottom"
                 android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
-                android:drawableLeft="@drawable/ic_done_white_24dp"
                 android:gravity="center"
                 android:text="@string/save"
                 app:font_style="roboto_light" />
