@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteImageListItemBinding;
@@ -40,18 +41,24 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     private Context mContext;
     private List<NoteImage> mDataList;
     private boolean isEditable;
+    private AdapterActions mActions;
 
     ImagesGridAdapter(Context context) {
         this.mContext = context;
         this.mDataList = new ArrayList<>();
     }
 
-    public void setEditable(boolean editable) {
+    public void setEditable(boolean editable, AdapterActions adapterActions) {
         isEditable = editable;
+        this.mActions = adapterActions;
     }
 
     List<NoteImage> getImages() {
         return mDataList;
+    }
+
+    public NoteImage getItem(int position) {
+        return mDataList.get(position);
     }
 
     @Override
@@ -86,8 +93,21 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
                         removeImage(getAdapterPosition());
                     }
                 });
+                if (mActions != null && Module.isPro()) {
+                    binding.editButton.setVisibility(View.VISIBLE);
+                    binding.editButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                    binding.editButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mActions.onItemEdit(getAdapterPosition());
+                        }
+                    });
+                } else {
+                    binding.editButton.setVisibility(View.GONE);
+                }
             } else {
                 binding.removeButton.setVisibility(View.GONE);
+                binding.editButton.setVisibility(View.GONE);
             }
         }
     }
@@ -109,6 +129,11 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
         notifyDataSetChanged();
     }
 
+    void setImage(NoteImage image, int position) {
+        mDataList.set(position, image);
+        notifyItemChanged(position);
+    }
+
     void addImage(NoteImage image) {
         mDataList.add(image);
         notifyDataSetChanged();
@@ -126,5 +151,9 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     @BindingAdapter("loadImage")
     public static void loadImage(ImageView imageView, NoteImage image) {
         Glide.with(imageView.getContext()).load(image.getImage()).crossFade().into(imageView);
+    }
+
+    public interface AdapterActions {
+        void onItemEdit(int position);
     }
 }

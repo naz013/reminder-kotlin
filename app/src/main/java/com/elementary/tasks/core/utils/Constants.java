@@ -60,4 +60,5 @@ public class Constants {
     public static final String ORDER_DEFAULT = "default";
     public static final String ORDER_NAME_A_Z = "name_az";
     public static final String ORDER_NAME_Z_A = "name_za";
+    public static final String INTENT_IMAGE = "intent_image";
 }
