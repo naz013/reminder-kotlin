@@ -136,7 +136,7 @@ public class ActivityCreateNote extends ThemedActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_note);
         initActionBar();
-
+        initMenu();
         layoutContainer = binding.layoutContainer;
         remindContainer = binding.remindContainer;
         ViewUtils.fadeInAnimation(layoutContainer);
@@ -165,6 +165,42 @@ public class ActivityCreateNote extends ThemedActivity {
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
             ReminderApp application = (ReminderApp) getApplication();
             mTracker = application.getDefaultTracker();
+        }
+    }
+
+    private void initMenu() {
+        binding.bottomBarView.setBackgroundColor(themeUtil.getBackgroundStyle());
+        if (themeUtil.isDark()) {
+            binding.colorButton.setImageResource(R.drawable.ic_palette_white_24dp);
+            binding.imageButton.setImageResource(R.drawable.ic_image_white_24dp);
+            binding.fontButton.setImageResource(R.drawable.ic_text_format_white_24dp);
+            binding.reminderButton.setImageResource(R.drawable.ic_alarm_white);
+        } else {
+            binding.colorButton.setImageResource(R.drawable.ic_palette_black_24dp);
+            binding.imageButton.setImageResource(R.drawable.ic_image_black_24dp);
+            binding.fontButton.setImageResource(R.drawable.ic_text_format_black_24dp);
+            binding.reminderButton.setImageResource(R.drawable.ic_alarm);
+        }
+        binding.colorButton.setOnClickListener(view -> showColorDialog());
+        binding.imageButton.setOnClickListener(view -> selectImages());
+        binding.reminderButton.setOnClickListener(view -> switchReminder());
+        binding.fontButton.setOnClickListener(view -> showStyleDialog());
+    }
+
+    private void switchReminder() {
+        if (!isReminderAttached()) {
+            setDateTime(null);
+            ViewUtils.expand(remindContainer);
+        } else {
+            ViewUtils.collapse(remindContainer);
+        }
+    }
+
+    private void selectImages() {
+        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            getImage();
+        } else {
+            Permissions.requestPermission(this, REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
         }
     }
 
@@ -361,27 +397,6 @@ public class ActivityCreateNote extends ThemedActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.action_color:
-                showColorDialog();
-                return true;
-            case R.id.action_image:
-                if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-                    getImage();
-                } else {
-                    Permissions.requestPermission(this, REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
-                }
-                return true;
-            case R.id.action_reminder:
-                if (!isReminderAttached()) {
-                    setDateTime(null);
-                    ViewUtils.expand(remindContainer);
-                } else {
-                    ViewUtils.collapse(remindContainer);
-                }
-                return true;
-            case R.id.action_font:
-                showStyleDialog();
                 return true;
             case R.id.action_share:
                 shareNote();
