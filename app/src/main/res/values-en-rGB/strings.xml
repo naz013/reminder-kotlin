@@ -578,4 +578,5 @@
     <string name="auto_call">Auto call</string>
     <string name="enable_making_phone_calls_automatically">Enable making phone calls automatically</string>
     <string name="enable_sending_email_automatically">Enable sending e-mail automatically</string>
+    <string name="update_available">Update available</string>
 </resources>
