@@ -17,6 +17,7 @@ import java.util.Map;
 
 public class GcmListenerService extends FirebaseMessagingService {
 
+    public static final String TOPIC_NAME = "updates";
     private static final String VERSION_NAME = "version";
     private static final String TYPE = "type";
     private static final String TAG = "GcmListenerService";

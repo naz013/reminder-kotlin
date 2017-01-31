@@ -1,1 +1,1 @@
-include ':app', ':photoPreview', ':simpleai', ':shared', ':wear'
+include ':app', ':photoPreview', ':simpleai', ':shared', ':wear', ':backend'
