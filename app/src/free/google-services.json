@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "226701179860",
-    "project_id": "mythical-geode-603"
+    "firebase_url": "https://mythical-geode-603.firebaseio.com",
+    "project_id": "mythical-geode-603",
+    "storage_bucket": "mythical-geode-603.appspot.com"
   },
   "client": [
     {
@@ -19,6 +21,18 @@
             "package_name": "com.cray.software.justreminder",
             "certificate_hash": "954A08243AF9DDA10E5DAA1E24CDF752AB6E8F68"
           }
+        },
+        {
+          "client_id": "226701179860-840s1n27u3e34a25kvs5842ll141v7ir.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "226701179860-0fgoueigvgi135s3diamg6pls2r7vjat.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "226701179860-g5ttnpap4q5ea69dq63ctqp874u8r46g.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -34,11 +48,16 @@
           }
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "226701179860-840s1n27u3e34a25kvs5842ll141v7ir.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

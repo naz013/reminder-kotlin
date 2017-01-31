@@ -139,7 +139,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     private void shareApplication() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.cray.software.justreminder");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + mContext.getPackageName());
         mContext.startActivity(Intent.createChooser(shareIntent, "Share..."));
     }
 

@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "257660336951",
-    "project_id": "future-graph-651"
+    "firebase_url": "https://future-graph-651.firebaseio.com",
+    "project_id": "future-graph-651",
+    "storage_bucket": "future-graph-651.appspot.com"
   },
   "client": [
     {
@@ -21,7 +23,15 @@
           }
         },
         {
+          "client_id": "257660336951-lhmtvfr3s2m35n9v74gd6nt6ujfkrvb7.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "257660336951-hmpoomki6j6v4ksvqa3t0ojuaije8db2.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "257660336951-hkrl4kdf4ce9i444hqgqomm437ql1fpn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -38,11 +48,16 @@
           }
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257660336951-lhmtvfr3s2m35n9v74gd6nt6ujfkrvb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

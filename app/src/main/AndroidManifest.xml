@@ -473,6 +473,17 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".core.services.GcmListenerService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".core.services.InstanceIdListenerService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
@@ -511,5 +522,4 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-
 </manifest>
