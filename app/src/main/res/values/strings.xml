@@ -565,6 +565,7 @@
     <string name="enable_sending_email_automatically">Enable sending e-mail automatically</string>
     <string name="failed_to_recognize_your_command">Failed to recognize your command</string>
     <string name="update_available">Update available</string>
+    <string name="receive_notifications_about_application_update">Receive notifications about application update</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

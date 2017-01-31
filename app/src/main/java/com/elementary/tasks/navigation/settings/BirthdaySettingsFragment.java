@@ -183,10 +183,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void changeBirthdayPermanentPrefs() {
-        boolean isChecked = !binding.birthdayPermanentPrefs.isChecked();
-        binding.birthdayPermanentPrefs.setChecked(isChecked);
-        Prefs.getInstance(mContext).setBirthdayPermanentEnabled(isChecked);
-        if (isChecked) {
+        boolean isChecked = binding.birthdayPermanentPrefs.isChecked();
+        binding.birthdayPermanentPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setBirthdayPermanentEnabled(!isChecked);
+        if (!isChecked) {
             mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
             new AlarmReceiver().enableBirthdayPermanentAlarm(mContext);
         } else {
@@ -215,10 +215,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void changeBirthdayPrefs() {
-        boolean isChecked = !binding.birthReminderPrefs.isChecked();
-        binding.birthReminderPrefs.setChecked(isChecked);
-        Prefs.getInstance(mContext).setBirthdayReminderEnabled(isChecked);
-        if (isChecked) {
+        boolean isChecked = binding.birthReminderPrefs.isChecked();
+        binding.birthReminderPrefs.setChecked(!isChecked);
+        Prefs.getInstance(mContext).setBirthdayReminderEnabled(!isChecked);
+        if (!isChecked) {
             new AlarmReceiver().enableBirthdayAlarm(mContext);
         } else {
             cleanBirthdays();

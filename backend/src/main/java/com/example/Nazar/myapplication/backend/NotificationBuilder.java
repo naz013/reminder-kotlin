@@ -20,10 +20,11 @@ import com.google.appengine.repackaged.com.google.gson.GsonBuilder;
 
 public class NotificationBuilder {
 
-    public NotificationBuilder() {}
+    public NotificationBuilder() {
+    }
 
-    public byte[] getMessengerEntity(String versionName) {
-        Data data = new Data("update", versionName);
+    public byte[] getMessengerEntity(NotificationForm form) {
+        Data data = new Data(form.getType(), form.getVersion(), form.getChanges());
         Body body = new Body(data);
         String json = new GsonBuilder().create().toJson(body);
         return json.getBytes();
@@ -32,12 +33,15 @@ public class NotificationBuilder {
     private class Data {
         String type;
         String version;
+        String changes;
 
-        Data(String type, String versionName) {
+        Data(String type, String versionName, String changes) {
             this.type = type;
             this.version = versionName;
+            this.changes = changes;
         }
     }
+
     private class Body {
         Data data;
         final String to = "/topics/updates";

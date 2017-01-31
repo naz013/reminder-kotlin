@@ -98,6 +98,7 @@ class PrefsConstants {
     static final String MAIN_IMAGE_ID = "main_image_id";
     static final String CALENDAR_IMAGES = "calendar_images";
     static final String AUTO_CALL = "auto_calls";
+    static final String GCM_ENABLED = "gcm_enabled";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String NOTE_CHANGED = "note_changed";

@@ -819,6 +819,14 @@ public class Prefs extends SharedPrefs {
         putString(TASKS_ORDER, value);
     }
 
+    public boolean isGcmEnabled() {
+        return getBoolean(GCM_ENABLED);
+    }
+
+    public void setGcmEnabled(boolean value) {
+        putBoolean(GCM_ENABLED, value);
+    }
+
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFS_NAME + ".xml");
         if (!settingsUI.exists()) {
@@ -897,6 +905,7 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(REMINDER_IMAGE_BLUR, false);
             uiEd.putBoolean(SYSTEM_VOLUME, false);
             uiEd.putBoolean(INCREASING_VOLUME, false);
+            uiEd.putBoolean(GCM_ENABLED, true);
             if (Module.isPro()) {
                 uiEd.putBoolean(BIRTHDAY_LED_STATUS, false);
                 uiEd.putBoolean(LED_STATUS, true);
@@ -1092,6 +1101,9 @@ public class Prefs extends SharedPrefs {
         }
         if (!hasKey(WAKE_STATUS)) {
             putBoolean(WAKE_STATUS, false);
+        }
+        if (!hasKey(GCM_ENABLED)) {
+            putBoolean(GCM_ENABLED, true);
         }
         if (!hasKey(MAIN_IMAGE_ID)) {
             putInt(MAIN_IMAGE_ID, -1);
