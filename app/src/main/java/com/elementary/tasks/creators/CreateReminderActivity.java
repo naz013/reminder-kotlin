@@ -276,6 +276,15 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         repeatLimit = mReminder.getRepeatLimit();
         melodyPath = mReminder.getMelodyPath();
         ledColor = mReminder.getColor();
+        updateMelodyIndicator();
+    }
+
+    private void updateMelodyIndicator() {
+        if (melodyPath != null) {
+            binding.melodyButton.setVisibility(View.VISIBLE);
+        } else {
+            binding.melodyButton.setVisibility(View.GONE);
+        }
     }
 
     private void initNavigation() {
@@ -330,6 +339,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.voiceButton.setOnClickListener(v -> openRecognizer());
         binding.customButton.setOnClickListener(v -> openCustomizationDialog());
         binding.groupButton.setOnClickListener(v -> changeGroup());
+        binding.melodyButton.setOnClickListener(view -> showCurrentMelody());
         GroupItem groupItem = RealmDb.getInstance().getDefaultGroup();
         if (groupItem != null) {
             binding.groupButton.setText(groupItem.getTitle());
@@ -564,13 +574,23 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         }
         if (requestCode == Constants.REQUEST_CODE_SELECTED_MELODY && resultCode == RESULT_OK) {
             melodyPath = data.getStringExtra(Constants.FILE_PICKED);
-            if (melodyPath != null) {
-                File musicFile = new File(melodyPath);
-                showSnackbar(String.format(getString(R.string.melody_x), musicFile.getName()),
-                        getString(R.string.cancel), v -> melodyPath = null);
-            }
+            updateMelodyIndicator();
+            showCurrentMelody();
         }
         fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showCurrentMelody() {
+        if (melodyPath != null) {
+            File musicFile = new File(melodyPath);
+            showSnackbar(String.format(getString(R.string.melody_x), musicFile.getName()),
+                    getString(R.string.delete), view -> removeMelody());
+        }
+    }
+
+    private void removeMelody() {
+        melodyPath = null;
+        updateMelodyIndicator();
     }
 
     private void processModel(Reminder model) {
