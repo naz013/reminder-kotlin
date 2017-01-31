@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -62,6 +63,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void initControls() {
+        binding.drawButton.setVisibility(View.GONE);
         if (themeUtil.isDark()) {
             binding.drawButton.setImageResource(R.drawable.ic_random_line);
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_white_24dp);
