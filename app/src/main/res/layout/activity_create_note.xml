@@ -27,12 +27,15 @@
             android:layout_height="match_parent"
             android:gravity="center|top"
             android:orientation="vertical"
-            android:padding="16dp"
             android:visibility="visible">
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingBottom="56dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,6 +100,54 @@
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
+
+            <HorizontalScrollView
+                android:id="@+id/bottomBarView"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/colorButton"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_palette_white_24dp" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_image_white_24dp" />
+
+                    <ImageButton
+                        android:id="@+id/reminderButton"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_alarm_white" />
+
+                    <ImageButton
+                        android:id="@+id/fontButton"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_text_format_white_24dp" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
         </RelativeLayout>
     </LinearLayout>
 </layout>
