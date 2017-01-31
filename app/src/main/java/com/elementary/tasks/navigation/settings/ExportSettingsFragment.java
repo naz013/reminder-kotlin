@@ -130,10 +130,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
                 mContext.getString(R.string.twelve_hours),
                 mContext.getString(R.string.one_day),
                 mContext.getString(R.string.two_days)};
-
-        builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> {
-            mItemSelect = item;
-        });
+        builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> mItemSelect = item);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             saveIntervalPrefs();
             dialog.dismiss();

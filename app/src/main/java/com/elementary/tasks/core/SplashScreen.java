@@ -21,8 +21,10 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
         initPrefs();
+        if (Prefs.getInstance(this).isGcmEnabled()) {
+            FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
+        }
         initGroups();
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));

@@ -53,6 +53,14 @@
                 app:prefs_primary_text="@string/android_wear_notification"
                 app:prefs_type="check" />
 
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/gcmPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/receive_notifications_about_application_update"
+                app:prefs_type="check" />
+
         </LinearLayout>
     </ScrollView>
 </layout>

@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
+import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -52,7 +54,24 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initMainImage();
         initSmartFold();
         initWearNotification();
+        initGcmPrefs();
         return binding.getRoot();
+    }
+
+    private void initGcmPrefs() {
+        binding.gcmPrefs.setChecked(Prefs.getInstance(mContext).isGcmEnabled());
+        binding.gcmPrefs.setOnClickListener(view -> changeGcmPrefs());
+    }
+
+    private void changeGcmPrefs() {
+        boolean isChecked = binding.gcmPrefs.isChecked();
+        Prefs.getInstance(mContext).setGcmEnabled(!isChecked);
+        binding.gcmPrefs.setChecked(!isChecked);
+        if (!isChecked) {
+            FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(GcmListenerService.TOPIC_NAME);
+        }
     }
 
     private void initAppTheme() {
