@@ -71,8 +71,8 @@ public class ImageEditActivity extends ThemedActivity {
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_black_24dp);
             binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_black_24dp);
         }
-        binding.rotateLeftButton.setOnClickListener(view -> binding.cropImageView.rotateImage(-45));
-        binding.rotateRightButton.setOnClickListener(view -> binding.cropImageView.rotateImage(45));
+        binding.rotateLeftButton.setOnClickListener(view -> binding.cropImageView.rotateImage(-90));
+        binding.rotateRightButton.setOnClickListener(view -> binding.cropImageView.rotateImage(90));
         binding.drawButton.setOnClickListener(view -> openDrawScreen());
     }
 
