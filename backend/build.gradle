@@ -1,0 +1,46 @@
+// If you would like more information on the gradle-appengine-plugin please refer to the github page
+// https://github.com/GoogleCloudPlatform/gradle-appengine-plugin
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.appengine:gradle-appengine-plugin:1.9.42'
+    }
+}
+
+repositories {
+    jcenter();
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'appengine'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.42'
+    compile 'com.google.appengine:appengine-endpoints:1.9.42'
+    compile 'com.google.appengine:appengine-endpoints-deps:1.9.42'
+    compile 'javax.servlet:servlet-api:2.5'
+    compile 'com.googlecode.objectify:objectify:5.1.13'
+    compile 'com.google.http-client:google-http-client:1.20.0'
+    compile group: 'com.google.appengine.tools', name: 'appengine-gcs-client', version: '0.6'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile 'com.google.firebase:firebase-server-sdk:3.0.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+}
+
+appengine {
+    downloadSdk = true
+    appcfg {
+        oauth2 = true
+    }
+    endpoints {
+        getClientLibsOnBuild = true
+        getDiscoveryDocsOnBuild = true
+    }
+}
