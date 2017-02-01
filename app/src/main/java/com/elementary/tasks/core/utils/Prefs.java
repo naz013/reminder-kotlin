@@ -1152,4 +1152,12 @@ public class Prefs extends SharedPrefs {
             putInt(MARKER_STYLE, 5);
         }
     }
+
+    public boolean isBetaWarmingShowed() {
+        return getBoolean(BETA_KEY);
+    }
+
+    public void setBetaWarmingShowed(boolean value) {
+        putBoolean(BETA_KEY, value);
+    }
 }
