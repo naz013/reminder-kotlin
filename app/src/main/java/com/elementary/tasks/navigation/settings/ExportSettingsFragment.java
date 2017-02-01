@@ -269,13 +269,17 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.exportToCalendarPrefs.isChecked();
         binding.exportToCalendarPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setCalendarEnabled(!isChecked);
-        if (binding.exportToCalendarPrefs.isChecked()) {
-            showSelectCalendarDialog();
+        if (binding.exportToCalendarPrefs.isChecked() && !showSelectCalendarDialog()) {
+            Prefs.getInstance(mContext).setCalendarEnabled(false);
+            binding.exportToCalendarPrefs.setChecked(false);
         }
     }
 
-    private void showSelectCalendarDialog() {
+    private boolean showSelectCalendarDialog() {
         mDataList = CalendarUtils.getInstance(mContext).getCalendarsList();
+        if (mDataList == null || mDataList.isEmpty()) {
+            return false;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle(R.string.choose_calendar);
         builder.setSingleChoiceItems(new ArrayAdapter<CalendarUtils.CalendarItem>(mContext, android.R.layout.simple_list_item_single_choice) {
@@ -299,6 +303,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             Prefs.getInstance(mContext).setCalendarId(mDataList.get(i).getId());
         });
         builder.create().show();
+        return true;
     }
 
     private int getCurrentPosition() {

@@ -148,6 +148,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             return;
         }
         binding.quickNote.setEnabled(false);
+        binding.buttonSave.setEnabled(false);
         NoteItem item = new NoteItem();
         item.setSummary(text);
         item.setDate(TimeUtil.getGmtDateTime());
@@ -394,6 +395,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             }
             if (fragment instanceof SettingsFragment) {
                 if (beforeSettings != 0) {
+                    prevItem = beforeSettings;
                     mNavigationView.setCheckedItem(beforeSettings);
                     openScreen(beforeSettings);
                 } else if (!isBackPressed) {
