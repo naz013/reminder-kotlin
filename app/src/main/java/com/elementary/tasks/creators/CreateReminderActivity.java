@@ -45,7 +45,6 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
@@ -89,7 +88,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private ActivityCreateReminderBinding binding;
     private Toolbar toolbar;
     private Spinner spinner;
-    private RoboEditText taskField;
 
     private TypeFragment fragment;
 
@@ -335,7 +333,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        taskField = binding.taskSummary;
         binding.voiceButton.setOnClickListener(v -> openRecognizer());
         binding.customButton.setOnClickListener(v -> openCustomizationDialog());
         binding.groupButton.setOnClickListener(v -> changeGroup());
@@ -568,7 +565,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     processModel(model);
                 } else {
                     String text = matches.get(0).toString();
-                    taskField.setText(StringUtils.capitalize(text));
+                    binding.taskSummary.setText(StringUtils.capitalize(text));
                 }
             }
         }
@@ -660,7 +657,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public String getSummary() {
-        return taskField.getText().toString().trim();
+        return binding.taskSummary.getText().toString().trim();
     }
 
     @Override
@@ -732,7 +729,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public void setEventHint(String hint) {
-        taskField.setHint(hint);
+        if (binding != null) binding.taskSummary.setHint(hint);
     }
 
     @Override
