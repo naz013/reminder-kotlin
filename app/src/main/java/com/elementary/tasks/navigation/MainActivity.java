@@ -1,5 +1,6 @@
 package com.elementary.tasks.navigation;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -252,7 +253,19 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             Prefs.getInstance(this).setUiChanged(false);
             recreate();
         }
+        if (!Prefs.getInstance(this).isBetaWarmingShowed()) {
+            showBetaDialog();
+        }
         showMainImage();
+    }
+
+    private void showBetaDialog() {
+        Prefs.getInstance(this).setBetaWarmingShowed(true);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Beta");
+        builder.setMessage("This version of application may work unstable!");
+        builder.setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.create().show();
     }
 
     private void showMainImage() {
