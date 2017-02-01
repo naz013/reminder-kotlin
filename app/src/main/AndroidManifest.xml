@@ -33,6 +33,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <!--<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />-->
 
     <supports-screens
         android:anyDensity="true"
@@ -245,6 +246,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--<meta-data-->
+                <!--android:name="android.app.shortcuts"-->
+                <!--android:resource="@xml/shortcuts" />-->
         </activity>
 
         <receiver
