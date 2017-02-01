@@ -296,7 +296,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Prefs.getInstance(this).isSettingsBackupEnabled()) {
+        if (Prefs.getInstance(this).isSettingsBackupEnabled() && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
             new BackupSettingTask(this).execute();
         }
     }

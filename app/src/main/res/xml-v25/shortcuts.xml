@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/add_reminder_shortcut"
+        android:shortcutId="add_reminder"
+        android:shortcutLongLabel="@string/add_reminder"
+        android:shortcutShortLabel="@string/add_reminder">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.cray.software.justreminder.creators.CreateReminderActivity"
+            android:targetPackage="com.cray.software.justreminder" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/add_note_shortcut"
+        android:shortcutId="add_note"
+        android:shortcutLongLabel="@string/add_note"
+        android:shortcutShortLabel="@string/add_note">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.cray.software.justreminder.notes.ActivityCreateNote"
+            android:targetPackage="com.cray.software.justreminder" />
+    </shortcut>
+</shortcuts>

@@ -566,6 +566,7 @@
     <string name="failed_to_recognize_your_command">Failed to recognize your command</string>
     <string name="update_available">Update available</string>
     <string name="receive_notifications_about_application_update">Receive notifications about application update</string>
+    <string name="add_note">Add note</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>
