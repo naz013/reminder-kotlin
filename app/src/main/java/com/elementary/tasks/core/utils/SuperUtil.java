@@ -24,6 +24,7 @@ import com.backdoor.simpleai.ObjectUtil;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.voice.ConversationActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
@@ -151,10 +152,11 @@ public class SuperUtil {
     }
 
     public static void startVoiceRecognitionActivity(Activity activity, int requestCode, boolean free) {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        if (free) intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        else intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).getVoiceLocale()));
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));
+//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        if (free) intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//        else intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).getVoiceLocale()));
+//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));
+        Intent intent = new Intent(activity, ConversationActivity.class);
         try {
             activity.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e){
