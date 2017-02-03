@@ -15,8 +15,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,25 +25,16 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.GoogleTasks;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.TimeCount;
-import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
-import com.elementary.tasks.databinding.NoteInputCardBinding;
-import com.elementary.tasks.databinding.NoteReminderCardBinding;
-import com.elementary.tasks.databinding.NoteStatusCardBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
@@ -63,16 +52,11 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
-import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.ReminderUpdateEvent;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.notes.QuickNoteCoordinator;
 import com.squareup.picasso.Picasso;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
@@ -86,6 +70,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private ImageView mMainImageView;
     private NavigationView mNavigationView;
     private Fragment fragment;
+    private QuickNoteCoordinator mNoteView;
 
     private int prevItem;
     private int beforeSettings;
@@ -97,11 +82,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.fab.setOnLongClickListener(view -> {
-            switchQuickNote();
+            mNoteView.switchQuickNote();
             return true;
         });
         initActionBar();
         initNavigation();
+        mNoteView = new QuickNoteCoordinator(this, binding);
         if (savedInstanceState != null) {
             openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current));
         } else if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
@@ -109,112 +95,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         } else {
             initStartFragment();
         }
-    }
-
-    private void switchQuickNote() {
-        if (isNoteVisible()) {
-            hideNoteView();
-        } else {
-            showNoteView();
-        }
-    }
-
-    private boolean isNoteVisible() {
-        return binding.quickNoteContainer.getVisibility() == View.VISIBLE;
-    }
-
-    private void hideNoteView() {
-        ViewUtils.hideReveal(binding.quickNoteContainer);
-        binding.quickNoteView.removeAllViewsInLayout();
-    }
-
-    private void showNoteView() {
-        ViewUtils.showReveal(binding.quickNoteContainer);
-        new Handler().postDelayed(this::addFirstCard, 250);
-    }
-
-    private void addFirstCard() {
-        NoteInputCardBinding binding = NoteInputCardBinding.inflate(LayoutInflater.from(this), this.binding.quickNoteView, false);
-        binding.buttonSave.setOnClickListener(view -> saveNote(binding));
-        binding.noteCard.setVisibility(View.GONE);
-        this.binding.quickNoteView.addView(binding.getRoot());
-        ViewUtils.slideInUp(this, binding.noteCard);
-    }
-
-    private void saveNote(NoteInputCardBinding binding) {
-        String text = binding.quickNote.getText().toString().trim();
-        if (TextUtils.isEmpty(text)) {
-            binding.quickNote.setError(getString(R.string.must_be_not_empty));
-            return;
-        }
-        binding.quickNote.setEnabled(false);
-        binding.buttonSave.setEnabled(false);
-        NoteItem item = new NoteItem();
-        item.setSummary(text);
-        item.setDate(TimeUtil.getGmtDateTime());
-        item.setColor(new Random().nextInt(16));
-        RealmDb.getInstance().saveObject(item);
-        if (Prefs.getInstance(this).isNoteReminderEnabled()) {
-            addReminderCard(item);
-        } else {
-            addNotificationCard(item);
-        }
-    }
-
-    private void addReminderCard(NoteItem item) {
-        NoteReminderCardBinding cardBinding = NoteReminderCardBinding.inflate(LayoutInflater.from(this), this.binding.quickNoteView, false);
-        cardBinding.buttonYes.setOnClickListener(view -> {
-            cardBinding.buttonNo.setEnabled(false);
-            cardBinding.buttonYes.setEnabled(false);
-            addReminderToNote(item);
-        });
-        cardBinding.buttonNo.setOnClickListener(view -> {
-            cardBinding.buttonNo.setEnabled(false);
-            cardBinding.buttonYes.setEnabled(false);
-            addNotificationCard(item);
-        });
-        cardBinding.noteReminderCard.setVisibility(View.GONE);
-        this.binding.quickNoteView.addView(cardBinding.getRoot());
-        new Handler().postDelayed(() -> ViewUtils.slideInUp(MainActivity.this, cardBinding.noteReminderCard), 250);
-    }
-
-    private void addReminderToNote(NoteItem item) {
-        Reminder reminder = new Reminder();
-        reminder.setType(Reminder.BY_DATE);
-        reminder.setDelay(0);
-        reminder.setEventCount(0);
-        reminder.setUseGlobal(true);
-        reminder.setNoteId(item.getKey());
-        reminder.setActive(true);
-        reminder.setRemoved(false);
-        reminder.setSummary(item.getSummary());
-        reminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
-        long prefsTime = Prefs.getInstance(this).getNoteReminderTime() * TimeCount.MINUTE;
-        long startTime = System.currentTimeMillis() + prefsTime;
-        reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
-        reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        EventControl control = EventControlImpl.getController(this, reminder);
-        control.start();
-        EventBus.getDefault().post(new ReminderUpdateEvent());
-        addNotificationCard(item);
-    }
-
-    private void addNotificationCard(NoteItem item) {
-        NoteStatusCardBinding cardBinding = NoteStatusCardBinding.inflate(LayoutInflater.from(this), binding.quickNoteView, false);
-        cardBinding.buttonYes.setOnClickListener(view -> {
-            cardBinding.buttonNo.setEnabled(false);
-            cardBinding.buttonYes.setEnabled(false);
-            showInStatusBar(item);
-        });
-        cardBinding.buttonNo.setOnClickListener(view -> hideNoteView());
-        cardBinding.noteStatusCard.setVisibility(View.GONE);
-        this.binding.quickNoteView.addView(cardBinding.getRoot());
-        new Handler().postDelayed(() -> ViewUtils.slideInUp(MainActivity.this, cardBinding.noteStatusCard), 250);
-    }
-
-    private void showInStatusBar(NoteItem item) {
-        new Notifier(this).showNoteNotification(item);
-        hideNoteView();
     }
 
     @Override
@@ -257,7 +137,34 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (!Prefs.getInstance(this).isBetaWarmingShowed()) {
             showBetaDialog();
         }
+        if (isRateDialogShowed()) {
+            showRateDialog();
+        }
         showMainImage();
+    }
+
+    private boolean isRateDialogShowed() {
+        Prefs prefs = Prefs.getInstance(this);
+        int count = prefs.getRateCount();
+        count++;
+        prefs.setRateCount(count);
+        return count >= 10;
+    }
+
+    private void showRateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.rate);
+        builder.setMessage(R.string.can_you_rate_this_application);
+        builder.setPositiveButton(R.string.rate, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            SuperUtil.launchMarket(MainActivity.this);
+        });
+        builder.setNegativeButton(R.string.never, (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setNeutralButton(R.string.later, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            Prefs.getInstance(MainActivity.this).setRateCount(0);
+        });
+        builder.create().show();
     }
 
     private void showBetaDialog() {
@@ -382,8 +289,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         DrawerLayout drawer = binding.drawerLayout;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (isNoteVisible()) {
-            hideNoteView();
+        } else if (mNoteView.isNoteVisible()) {
+            mNoteView.hideNoteView();
         } else {
             if (isBackPressed) {
                 if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
