@@ -606,6 +606,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 }
                 break;
         }
+        if (Module.isMarshmallow() && fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
