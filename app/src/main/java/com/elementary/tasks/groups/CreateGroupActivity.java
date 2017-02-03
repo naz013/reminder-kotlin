@@ -89,7 +89,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         }
     }
 
-    private void saveCategory(){
+    private void saveCroup(){
         String text = binding.editField.getText().toString().trim();
         if (text.length() == 0) {
             binding.editField.setError(getString(R.string.must_be_not_empty));
@@ -125,7 +125,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                saveCategory();
+                saveCroup();
                 return true;
             case android.R.id.home:
                 finish();

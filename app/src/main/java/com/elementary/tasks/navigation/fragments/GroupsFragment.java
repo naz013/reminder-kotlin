@@ -42,7 +42,7 @@ public class GroupsFragment extends BaseNavigationFragment {
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
         public void onItemClicked(int position, View view) {
-
+            startActivity(new Intent(mContext, CreateGroupActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getUuId()));
         }
 
         @Override

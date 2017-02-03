@@ -88,4 +88,12 @@ public interface WorkerInterface {
     String clearMultiplier(String input);
 
     String replaceNumbers(String input);
+
+    boolean hasDisableReminders(String input);
+
+    boolean hasEmptyTrash(String input);
+
+    boolean hasGroup(String input);
+
+    String clearGroup(String input);
 }

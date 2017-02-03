@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
+import com.elementary.tasks.reminder.RecyclerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class EventsListFragment extends Fragment implements SimpleListener {
+public class EventsListFragment extends Fragment implements RecyclerListener {
 
     private FragmentEventsListBinding binding;
     private List<EventsItem> mDataList = new ArrayList<>();
@@ -121,5 +121,10 @@ public class EventsListFragment extends Fragment implements SimpleListener {
 //            loaderAdapter();
 //            Messages.toast(mContext, getString(R.string.deleted));
         }
+    }
+
+    @Override
+    public void onItemSwitched(int position, View view) {
+
     }
 }

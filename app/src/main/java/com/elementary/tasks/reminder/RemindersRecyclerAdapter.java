@@ -64,12 +64,17 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     private RecyclerListener mEventListener;
     private FilterCallback mCallback;
     private ThemeUtil themeUtil;
+    private boolean isEditable = true;
 
     public RemindersRecyclerAdapter(Context context, List<Reminder> list, FilterCallback callback) {
         this.mContext = context;
         this.mCallback = callback;
         themeUtil = ThemeUtil.getInstance(context);
         mDataList = new ArrayList<>(list);
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
     }
 
     public Reminder getItem(int position) {
@@ -83,39 +88,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             mDataList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeRemoved(0, mDataList.size());
-        }
-    }
-
-    public class ReminderHolder extends RecyclerView.ViewHolder {
-
-        public RoboTextView listHeader;
-        public ReminderListItemBinding binding;
-
-        public ReminderHolder(View v) {
-            super(v);
-            binding = DataBindingUtil.bind(v);
-            listHeader = binding.listHeader;
-            binding.reminderContainer.setBackgroundColor(themeUtil.getCardStyle());
-            binding.itemCard.setOnLongClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemLongClicked(getAdapterPosition(), v);
-                }
-                return true;
-            });
-            binding.setClick(v1 -> {
-                switch (v1.getId()) {
-                    case R.id.itemCard:
-                        if (mEventListener != null) {
-                            mEventListener.onItemClicked(getAdapterPosition(), binding.itemCheck);
-                        }
-                        break;
-                    case R.id.itemCheck:
-                        if (mEventListener != null) {
-                            mEventListener.onItemSwitched(getAdapterPosition(), v1);
-                        }
-                        break;
-                }
-            });
         }
     }
 
@@ -266,7 +238,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reminder.REMINDER) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot());
+            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, themeUtil, isEditable);
         } else {
             return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot());
         }
@@ -277,8 +249,8 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Reminder item = mDataList.get(position);
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;
-            reminderHolder.binding.setItem(item);
-            initLabel(reminderHolder.listHeader, position);
+            reminderHolder.setData(item);
+            initLabel(reminderHolder.getListHeader(), position);
         } else if (holder instanceof ShoppingHolder) {
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;
             shoppingHolder.binding.setItem(item);
