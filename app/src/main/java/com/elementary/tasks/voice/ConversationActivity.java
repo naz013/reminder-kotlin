@@ -1,5 +1,7 @@
 package com.elementary.tasks.voice;
 
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 
@@ -21,6 +24,7 @@ import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
@@ -31,6 +35,7 @@ import com.elementary.tasks.reminder.AddReminderActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -52,6 +57,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private static final String TAG = "ConversationActivity";
     private static final int AUDIO_CODE = 255000;
+    private static final int CHECK_CODE = 16516161;
 
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
@@ -59,7 +65,24 @@ public class ConversationActivity extends ThemedActivity {
 
     private ConversationAdapter mAdapter;
     private Recognize recognize;
+    private TextToSpeech tts;
+    private boolean isTtsReady;
 
+    private TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
+        @Override
+        public void onInit(int status) {
+            if (status == TextToSpeech.SUCCESS) {
+                int result = tts.setLanguage(Locale.ENGLISH);
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    LogUtil.d(TAG, "This Language is not supported");
+                } else {
+                    isTtsReady = true;
+                }
+            } else {
+                LogUtil.d(TAG, "Initialization Failed!");
+            }
+        }
+    };
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
@@ -128,12 +151,12 @@ public class ConversationActivity extends ThemedActivity {
     private void showErrorMessage(int i) {
         stopView();
         String text = getErrorText(i);
-        mAdapter.addReply(new Reply(Reply.RESPONSE, text));
+        addResponse(text);
     }
 
     private void showSilentMessage() {
         stopView();
-        mAdapter.addReply(new Reply(Reply.RESPONSE, "Did you say something?"));
+        addResponse("Did you say something?");
     }
 
     private void parseResults(List<String> list) {
@@ -154,7 +177,7 @@ public class ConversationActivity extends ThemedActivity {
             performResult(model, suggestion);
         } else {
             mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
-            mAdapter.addReply(new Reply(Reply.RESPONSE, "Can not recognize your command."));
+            addResponse("Can not recognize your command");
         }
     }
 
@@ -167,13 +190,13 @@ public class ConversationActivity extends ThemedActivity {
         LogUtil.d(TAG, "performResult: " + model);
         ActionType actionType = model.getType();
         if (actionType == ActionType.REMINDER) {
-            mAdapter.addReply(new Reply(Reply.RESPONSE, "Reminder created"));
+            addResponse("Reminder created");
             Reminder reminder = recognize.createReminder(model);
             EventControl control = EventControlImpl.getController(this, reminder);
             control.start();
             mAdapter.addReply(new Reply(Reply.REMINDER, reminder));
         } else if (actionType == ActionType.NOTE) {
-            mAdapter.addReply(new Reply(Reply.RESPONSE, "Note saved"));
+            addResponse("Note saved");
             NoteItem item = recognize.saveNote(model.getSummary(), false);
             mAdapter.addReply(new Reply(Reply.NOTE, item));
         } else if (actionType == ActionType.ACTION) {
@@ -191,10 +214,15 @@ public class ConversationActivity extends ThemedActivity {
                 disableReminders();
             }
         } else if (actionType == ActionType.GROUP) {
-            mAdapter.addReply(new Reply(Reply.RESPONSE, "Group saved"));
+            addResponse("Group saved");
             GroupItem item = recognize.saveGroup(model, false);
             mAdapter.addReply(new Reply(Reply.GROUP, item));
         }
+    }
+
+    private void addResponse(String message) {
+        mAdapter.addReply(new Reply(Reply.RESPONSE, message));
+        playTts(message);
     }
 
     private void disableReminders() {
@@ -216,6 +244,31 @@ public class ConversationActivity extends ThemedActivity {
         initRecognizer();
         initList();
         binding.recordingView.setOnClickListener(view -> micClick());
+        checkTts();
+    }
+
+    private void playTts(String text) {
+        if (!isTtsReady) return;
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (Module.isLollipop()) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        } else {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    private void checkTts() {
+        Intent checkTTSIntent = new Intent();
+        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        try {
+            startActivityForResult(checkTTSIntent, CHECK_CODE);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initList() {
@@ -287,6 +340,42 @@ public class ConversationActivity extends ThemedActivity {
             speech.cancel();
             speech.destroy();
             speech = null;
+        }
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CHECK_CODE) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                tts = new TextToSpeech(this, mTextToSpeechListener);
+            } else {
+                showInstallTtsDialog();
+            }
+        }
+    }
+
+    private void showInstallTtsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.would_you_like_to_install_tts);
+        builder.setPositiveButton(R.string.install, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            installTts();
+        });
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.create().show();
+    }
+
+    private void installTts() {
+        Intent installTTSIntent = new Intent();
+        installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+        try {
+            startActivity(installTTSIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

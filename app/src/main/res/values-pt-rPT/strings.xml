@@ -580,4 +580,6 @@
     <string name="enable_sending_email_automatically">Enable sending e-mail automatically</string>
     <string name="update_available">Update available</string>
     <string name="receive_notifications_about_application_update">Receive notifications about application update</string>
+    <string name="would_you_like_to_install_tts">Would you like to install Text-to-Speech engine?</string>
+    <string name="install">Install</string>
 </resources>
