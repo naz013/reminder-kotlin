@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
-import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -88,34 +87,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             mDataList.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeRemoved(0, mDataList.size());
-        }
-    }
-
-    public class ShoppingHolder extends RecyclerView.ViewHolder {
-
-        public RoboTextView listHeader;
-        public ShoppingListItemBinding binding;
-
-        public ShoppingHolder(View v) {
-            super(v);
-            binding = DataBindingUtil.bind(v);
-            listHeader = binding.listHeader;
-            binding.subBackground.setBackgroundColor(themeUtil.getCardStyle());
-            binding.itemCard.setOnLongClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemLongClicked(getAdapterPosition(), v);
-                }
-                return true;
-            });
-            binding.setClick(v1 -> {
-                switch (v1.getId()) {
-                    case R.id.itemCard:
-                        if (mEventListener != null) {
-                            mEventListener.onItemClicked(getAdapterPosition(), binding.subBackground);
-                        }
-                        break;
-                }
-            });
         }
     }
 
@@ -240,7 +211,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         if (viewType == Reminder.REMINDER) {
             return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, themeUtil, isEditable);
         } else {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot());
+            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, themeUtil);
         }
     }
 
@@ -253,8 +224,8 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
             initLabel(reminderHolder.getListHeader(), position);
         } else if (holder instanceof ShoppingHolder) {
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;
-            shoppingHolder.binding.setItem(item);
-            initLabel(shoppingHolder.listHeader, position);
+            shoppingHolder.setData(item);
+            initLabel(shoppingHolder.getListHeader(), position);
         }
     }
 

@@ -7,7 +7,7 @@ import android.view.View;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
+import com.elementary.tasks.databinding.ShoppingListItemBinding;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -26,39 +26,33 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class ReminderHolder extends RecyclerView.ViewHolder {
+public class ShoppingHolder extends RecyclerView.ViewHolder {
 
     private RoboTextView listHeader;
-    private ReminderListItemBinding binding;
+    private ShoppingListItemBinding binding;
     private RecyclerListener mEventListener;
 
-    public ReminderHolder(View v, RecyclerListener listener, ThemeUtil themeUtil, boolean editable) {
+    public ShoppingHolder(View v, RecyclerListener listener, ThemeUtil themeUtil) {
         super(v);
         this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
         listHeader = binding.listHeader;
-        binding.reminderContainer.setBackgroundColor(themeUtil.getCardStyle());
-        if (editable) {
-            binding.itemCheck.setVisibility(View.VISIBLE);
-        } else {
-            binding.itemCheck.setVisibility(View.GONE);
-        }
-        if (mEventListener != null) {
-            binding.itemCard.setOnLongClickListener(view -> {
+        binding.subBackground.setBackgroundColor(themeUtil.getCardStyle());
+        binding.itemCard.setOnLongClickListener(view -> {
+            if (mEventListener != null) {
                 mEventListener.onItemLongClicked(getAdapterPosition(), v);
-                return true;
-            });
-            binding.setClick(v1 -> {
-                switch (v1.getId()) {
-                    case R.id.itemCard:
-                        mEventListener.onItemClicked(getAdapterPosition(), binding.itemCheck);
-                        break;
-                    case R.id.itemCheck:
-                        mEventListener.onItemSwitched(getAdapterPosition(), v1);
-                        break;
-                }
-            });
-        }
+            }
+            return true;
+        });
+        binding.setClick(v1 -> {
+            switch (v1.getId()) {
+                case R.id.itemCard:
+                    if (mEventListener != null) {
+                        mEventListener.onItemClicked(getAdapterPosition(), binding.subBackground);
+                    }
+                    break;
+            }
+        });
     }
 
     public RoboTextView getListHeader() {
