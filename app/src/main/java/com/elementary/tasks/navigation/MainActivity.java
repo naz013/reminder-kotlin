@@ -148,7 +148,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         int count = prefs.getRateCount();
         count++;
         prefs.setRateCount(count);
-        return count >= 10;
+        return count == 10;
     }
 
     private void showRateDialog() {
