@@ -1160,4 +1160,12 @@ public class Prefs extends SharedPrefs {
     public void setBetaWarmingShowed(boolean value) {
         putBoolean(BETA_KEY, value);
     }
+
+    public int getRateCount() {
+        return getInt(RATE_COUNT);
+    }
+
+    public void setRateCount(int count) {
+        putInt(RATE_COUNT, count);
+    }
 }

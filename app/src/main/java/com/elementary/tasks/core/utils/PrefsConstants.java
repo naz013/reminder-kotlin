@@ -100,6 +100,7 @@ class PrefsConstants {
     static final String AUTO_CALL = "auto_calls";
     static final String GCM_ENABLED = "gcm_enabled";
     static final String BETA_KEY = "beta_key";
+    static final String RATE_COUNT = "rate_count";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String NOTE_CHANGED = "note_changed";

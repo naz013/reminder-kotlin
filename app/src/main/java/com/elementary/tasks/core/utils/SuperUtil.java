@@ -15,7 +15,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
-import android.speech.RecognizerIntent;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -217,5 +216,15 @@ public class SuperUtil {
             e.printStackTrace();
         }
         return Base64.encodeToString(string_byted, Base64.DEFAULT).trim();
+    }
+
+    public static void launchMarket(Context context) {
+        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        try {
+            context.startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, context.getString(R.string.could_not_launch_market), Toast.LENGTH_SHORT).show();
+        }
     }
 }

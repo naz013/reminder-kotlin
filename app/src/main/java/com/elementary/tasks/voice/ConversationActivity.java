@@ -57,7 +57,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private static final String TAG = "ConversationActivity";
     private static final int AUDIO_CODE = 255000;
-    private static final int CHECK_CODE = 16516161;
+    private static final int CHECK_CODE = 1651;
 
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;

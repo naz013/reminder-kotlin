@@ -1,10 +1,8 @@
 package com.elementary.tasks.navigation.settings;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +17,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.DialogAboutLayoutBinding;
 import com.elementary.tasks.databinding.FragmentSettingsOtherBinding;
 import com.elementary.tasks.navigation.settings.other.ChangesFragment;
@@ -52,7 +51,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     private View.OnClickListener mOssClick = view -> openOssScreen();
     private View.OnClickListener mPermissionsClick = view -> openPermissionsScreen();
     private View.OnClickListener mChangesClick = view -> openChangesScreen();
-    private View.OnClickListener mRateClick = view -> launchMarket();
+    private View.OnClickListener mRateClick = view -> SuperUtil.launchMarket(mContext);
     private View.OnClickListener mShareClick = view -> shareApplication();
     private View.OnClickListener mAddClick = view -> showPermissionDialog();
 
@@ -153,16 +152,6 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
 
     private void openOssScreen() {
         replaceFragment(new OssFragment(), getString(R.string.open_source_licenses));
-    }
-
-    private void launchMarket() {
-        Uri uri = Uri.parse("market://details?id=" + mContext.getPackageName());
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-        try {
-            mContext.startActivity(goToMarket);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(mContext, mContext.getString(R.string.could_not_launch_market), Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void showPermissionDialog() {
