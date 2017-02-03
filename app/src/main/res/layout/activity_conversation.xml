@@ -6,6 +6,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/micLayout"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"
@@ -17,5 +18,14 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/conversationList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/micLayout"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
     </RelativeLayout>
 </layout>

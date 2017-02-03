@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -20,6 +19,8 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
 import com.elementary.tasks.databinding.ShoppingListItemBinding;
+import com.elementary.tasks.reminder.RecyclerListener;
+import com.elementary.tasks.reminder.ReminderHolder;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.text.ParseException;
@@ -48,44 +49,15 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<EventsItem> mDataList;
     private ThemeUtil cs;
-    private SimpleListener mEventListener;
+    private RecyclerListener mEventListener;
 
     public CalendarEventsAdapter(final Context context, List<EventsItem> list) {
         if (list != null) mDataList = new ArrayList<>(list);
         cs = ThemeUtil.getInstance(context);
     }
 
-    public final void setEventListener(final SimpleListener listener) {
+    public final void setEventListener(final RecyclerListener listener) {
         this.mEventListener = listener;
-    }
-
-    public class ReminderHolder extends RecyclerView.ViewHolder {
-
-        public RoboTextView listHeader;
-        public ReminderListItemBinding binding;
-
-        public ReminderHolder(View v) {
-            super(v);
-            binding = DataBindingUtil.bind(v);
-            listHeader = binding.listHeader;
-            binding.reminderContainer.setBackgroundColor(cs.getCardStyle());
-            binding.itemCard.setOnLongClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemLongClicked(getAdapterPosition(), v);
-                }
-                return true;
-            });
-            binding.itemCheck.setVisibility(View.GONE);
-            binding.setClick(v1 -> {
-                switch (v1.getId()) {
-                    case R.id.itemCard:
-                        if (mEventListener != null) {
-                            mEventListener.onItemClicked(getAdapterPosition(), binding.itemCheck);
-                        }
-                        break;
-                }
-            });
-        }
     }
 
     public class BirthdayHolder extends RecyclerView.ViewHolder {
@@ -149,7 +121,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public final RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == 0) {
-            return new CalendarEventsAdapter.ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot());
+            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, cs, false);
         } else if (viewType == 1) {
             return new CalendarEventsAdapter.ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot());
         } else {
@@ -168,7 +140,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else if (holder instanceof ReminderHolder) {
             Reminder item = (Reminder) mDataList.get(position).getObject();
             ReminderHolder reminderHolder = (ReminderHolder) holder;
-            reminderHolder.binding.setItem(item);
+            reminderHolder.setData(item);
         } else if (holder instanceof ShoppingHolder) {
             Reminder item = (Reminder) mDataList.get(position).getObject();
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;

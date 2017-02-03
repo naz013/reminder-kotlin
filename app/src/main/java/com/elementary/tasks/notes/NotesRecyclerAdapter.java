@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
-import android.databinding.DataBindingUtil;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,9 +21,9 @@ import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
@@ -49,7 +48,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.ViewHolder> {
+public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
 
     private List<NoteItem> mDataList;
     private SimpleListener mEventListener;
@@ -70,37 +69,15 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         notifyItemChanged(position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public NoteListItemBinding binding;
-
-        public ViewHolder(View v) {
-            super(v);
-            binding = DataBindingUtil.bind(v);
-            binding.setClick(v1 -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemClicked(getAdapterPosition(), v1);
-                }
-            });
-            binding.noteClick.setOnLongClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemLongClicked(getAdapterPosition(), view);
-                }
-                return false;
-            });
-        }
-    }
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot());
+        return new NoteHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final NoteItem item = mDataList.get(position);
-        holder.binding.setNote(item);
+    public void onBindViewHolder(final NoteHolder holder, final int position) {
+        holder.setData(mDataList.get(position));
     }
 
     public NoteItem getItem(int position) {
@@ -142,18 +119,18 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         return model;
     }
 
-    public void addItem(int position, NoteItem model) {
+    private void addItem(int position, NoteItem model) {
         mDataList.add(position, model);
         notifyItemInserted(position);
     }
 
-    public void moveItem(int fromPosition, int toPosition) {
+    private void moveItem(int fromPosition, int toPosition) {
         final NoteItem model = mDataList.remove(fromPosition);
         mDataList.add(toPosition, model);
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void animateTo(List<NoteItem> models) {
+    private void animateTo(List<NoteItem> models) {
         applyAndAnimateRemovals(models);
         applyAndAnimateAdditions(models);
         applyAndAnimateMovedItems(models);

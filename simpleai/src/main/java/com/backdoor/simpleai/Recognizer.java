@@ -47,11 +47,21 @@ public class Recognizer {
         if (wrapper.hasNote(keyStr)) {
             return getNote(keyStr);
         }
+        if (wrapper.hasGroup(keyStr)) {
+            keyStr = wrapper.clearGroup(keyStr);
+            return getGroup(keyStr);
+        }
         if (wrapper.hasEvent(keyStr)) {
             return getEvent(keyStr);
         }
         if (wrapper.hasAction(keyStr)) {
             return getAction(keyStr);
+        }
+        if (wrapper.hasEmptyTrash(keyStr)) {
+            return getEmptyTrash();
+        }
+        if (wrapper.hasDisableReminders(keyStr)) {
+            return getDisableAction();
         }
 
         Action type = Action.DATE;
@@ -219,6 +229,28 @@ public class Recognizer {
         model.setTarget(number);
         model.setHasCalendar(isCalendar);
         model.setAction(type);
+        return model;
+    }
+
+    private Model getDisableAction() {
+        Model model = new Model();
+        model.setType(ActionType.ACTION);
+        model.setAction(Action.DISABLE);
+        return model;
+    }
+
+    private Model getEmptyTrash() {
+        Model model = new Model();
+        model.setType(ActionType.ACTION);
+        model.setAction(Action.TRASH);
+        return model;
+    }
+
+    private Model getGroup(String keyStr) {
+        keyStr = StringUtils.capitalize(wrapper.clearNote(keyStr));
+        Model model = new Model();
+        model.setSummary(keyStr);
+        model.setType(ActionType.GROUP);
         return model;
     }
 

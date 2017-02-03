@@ -37,5 +37,8 @@ public enum Action {
     HELP,
     REMINDER,
     BIRTHDAY,
-    REPORT
+    REPORT,
+    DISABLE,
+    SHOW,
+    TRASH
 }

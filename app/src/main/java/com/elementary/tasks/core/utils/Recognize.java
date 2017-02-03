@@ -23,6 +23,7 @@ import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -52,13 +53,10 @@ public class Recognize {
     private static final String TAG = "Recognize";
 
     private Context mContext;
-    private boolean isWear;
+    private Recognizer recognizer;
 
     public Recognize(Context context) {
         this.mContext = context;
-    }
-
-    public Reminder findResults(ArrayList matches) {
         Prefs prefs = Prefs.getInstance(mContext);
         String language = Language.getLanguage(prefs.getVoiceLocale());
         String morning = prefs.getMorningTime();
@@ -66,12 +64,19 @@ public class Recognize {
         String evening = prefs.getEveningTime();
         String night = prefs.getNightTime();
         String[] times = new String[]{morning, day, evening, night};
-        Recognizer recognizer = new Recognizer.Builder()
+        recognizer = new Recognizer.Builder()
                 .with(mContext)
                 .setLocale(language)
                 .setTimes(times)
                 .setContactsInterface(new ContactHelper())
                 .build();
+    }
+
+    public Model findSuggestion(String suggestion) {
+        return recognizer.parse(suggestion);
+    }
+
+    public Reminder findResults(ArrayList matches) {
         for (int i = 0; i < matches.size(); i++) {
             Object key = matches.get(i);
             String keyStr = key.toString();
@@ -84,25 +89,7 @@ public class Recognize {
         return null;
     }
 
-    public void parseResults(ArrayList matches, boolean isWidget, boolean isWear) {
-        this.isWear = isWear;
-        this.parseResults(matches, isWidget);
-    }
-
     public void parseResults(ArrayList matches, boolean isWidget) {
-        Prefs prefs = Prefs.getInstance(mContext);
-        String language = Language.getLanguage(prefs.getVoiceLocale());
-        String morning = prefs.getMorningTime();
-        String day = prefs.getNoonTime();
-        String evening = prefs.getEveningTime();
-        String night = prefs.getNightTime();
-        String[] times = new String[]{morning, day, evening, night};
-        Recognizer recognizer = new Recognizer.Builder()
-                .with(mContext)
-                .setLocale(language)
-                .setTimes(times)
-                .setContactsInterface(new ContactHelper())
-                .build();
         for (int i = 0; i < matches.size(); i++) {
             Object key = matches.get(i);
             String keyStr = key.toString();
@@ -124,22 +111,46 @@ public class Recognize {
                     } else if (action == Action.VOLUME) {
                         mContext.startActivity(new Intent(mContext, VolumeDialog.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
+                    } else if (action == Action.TRASH) {
+                        emptyTrash();
+                    } else if (action == Action.DISABLE) {
+                        disableAllReminders();
                     }
                 } else if (types == ActionType.NOTE) {
-                    saveNote(model.getSummary());
+                    saveNote(model.getSummary(), true);
                 } else if (types == ActionType.REMINDER) {
                     saveReminder(model, isWidget);
+                } else if (types == ActionType.GROUP) {
+                    saveGroup(model, true);
                 }
                 break;
             }
         }
     }
 
+    @NonNull
+    public GroupItem saveGroup(Model model, boolean showToast) {
+        GroupItem item = new GroupItem(model.getSummary(), new Random().nextInt(16));
+        RealmDb.getInstance().saveObject(item);
+        if (showToast) {
+            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        }
+        return item;
+    }
+
+    public void disableAllReminders() {
+
+    }
+
+    public void emptyTrash() {
+
+    }
+
     private void saveReminder(Model model, boolean widget) {
         Reminder reminder = createReminder(model);
         EventControl control = EventControlImpl.getController(mContext, reminder);
         control.start();
-        if (widget && !isWear) {
+        if (widget) {
             mContext.startActivity(new Intent(mContext, VoiceResultDialog.class)
                     .putExtra(Constants.INTENT_ID, reminder.getUuId())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
@@ -149,7 +160,7 @@ public class Recognize {
     }
 
     @NonNull
-    private Reminder createReminder(Model model) {
+    public Reminder createReminder(Model model) {
         Action action = model.getAction();
         String number = model.getTarget();
         String summary = model.getSummary();
@@ -189,7 +200,7 @@ public class Recognize {
         return reminder;
     }
 
-    private void saveNote(String note) {
+    public NoteItem saveNote(String note, boolean showToast) {
         Prefs prefs = Prefs.getInstance(mContext);
         int color = new Random().nextInt(15);
         NoteItem item = new NoteItem();
@@ -215,8 +226,10 @@ public class Recognize {
         }
         RealmDb.getInstance().saveObject(item);
         UpdatesHelper.getInstance(mContext).updateNotesWidget();
-        if (!isWear)
+        if (showToast) {
             Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        }
+        return item;
     }
 
     private class ContactHelper implements ContactsInterface {

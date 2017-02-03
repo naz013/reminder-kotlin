@@ -108,6 +108,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mDataList = result;
         mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
+        mAdapter.setEditable(false);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
         reloadView();

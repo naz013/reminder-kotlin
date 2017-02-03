@@ -20,5 +20,6 @@ public enum ActionType {
     REMINDER,
     NOTE,
     BIRTHDAYS,
+    GROUP,
     ACTION
 }

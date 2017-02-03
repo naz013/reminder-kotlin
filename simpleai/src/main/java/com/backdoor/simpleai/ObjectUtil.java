@@ -57,13 +57,13 @@ public class ObjectUtil {
             } else if (type.isEnum()) {
                 try {
                     return field.get(clazz).toString();
-                } catch (ClassCastException e) {
+                } catch (ClassCastException | NullPointerException e) {
                     return "enum";
                 }
             } else {
                 try {
                     return (String) field.get(clazz);
-                } catch (ClassCastException e) {
+                } catch (ClassCastException | NullPointerException e) {
                     return "array";
                 }
             }

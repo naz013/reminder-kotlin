@@ -411,6 +411,39 @@ class EnLocale extends Worker {
     }
 
     @Override
+    public boolean hasEmptyTrash(String input) {
+        return input.matches(".*empty trash.*");
+    }
+
+    @Override
+    public boolean hasDisableReminders(String input) {
+        return input.matches(".*disable reminder.*");
+    }
+
+    @Override
+    public boolean hasGroup(String input) {
+        return input.matches(".*add group.*");
+    }
+
+    @Override
+    public String clearGroup(String input) {
+        StringBuilder sb = new StringBuilder();
+        String[] parts = input.split(" ");
+        boolean st = false;
+        for (String s : parts) {
+            if (s.matches(".*group.*")) {
+                st = true;
+                continue;
+            }
+            if (st) {
+                sb.append(s);
+                sb.append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    @Override
     protected int hasHours(String input) {
         if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
                 || input.matches(".*am.*") || input.matches(".*pm.*")) return 1;

@@ -390,6 +390,39 @@ class UkLocale extends Worker {
     }
 
     @Override
+    public boolean hasEmptyTrash(String input) {
+        return input.matches(".*очисти(ти)? кошик.*");
+    }
+
+    @Override
+    public boolean hasDisableReminders(String input) {
+        return input.matches(".*вимкн(и|ути)? (всі)? ?нагадування.*");
+    }
+
+    @Override
+    public boolean hasGroup(String input) {
+        return input.matches(".*дода(ти|й)? групу.*");
+    }
+
+    @Override
+    public String clearGroup(String input) {
+        StringBuilder sb = new StringBuilder();
+        String[] parts = input.split(" ");
+        boolean st = false;
+        for (String s : parts) {
+            if (s.matches(".*групу.*")) {
+                st = true;
+                continue;
+            }
+            if (st) {
+                sb.append(s);
+                sb.append(" ");
+            }
+        }
+        return sb.toString().trim();
+    }
+
+    @Override
     public Action getEvent(String input) {
         if (input.matches(".*день народжен.*"))
             return Action.BIRTHDAY;
