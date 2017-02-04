@@ -2,6 +2,7 @@ package com.elementary.tasks.voice;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -112,7 +113,9 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         VoiceHolder(View itemView, boolean right) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
-            if (right) binding.replyText.setGravity(Gravity.END);
+            if (right) {
+                binding.replyText.setGravity(Gravity.END);
+            }
         }
     }
 
