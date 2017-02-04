@@ -414,7 +414,7 @@ class RuLocale extends Worker implements WorkerInterface {
     @Override
     public String clearGroup(String input) {
         StringBuilder sb = new StringBuilder();
-        String[] parts = input.split(" ");
+        String[] parts = input.split("\\s");
         boolean st = false;
         for (String s : parts) {
             if (s.matches(".*групп.*")) {
@@ -427,6 +427,21 @@ class RuLocale extends Worker implements WorkerInterface {
             }
         }
         return sb.toString().trim();
+    }
+
+    @Override
+    public boolean hasToday(String input) {
+        return input.matches(".*сегодн.*");
+    }
+
+    @Override
+    public boolean hasAfterTomorrow(String input) {
+        return input.matches(".*послезавтр.*");
+    }
+
+    @Override
+    protected String getAfterTomorrow() {
+        return "послезавтра";
     }
 
     @Override

@@ -97,6 +97,16 @@ public class Recognizer {
             isCalendar = true;
         }
 
+        boolean today = false;
+        if (wrapper.hasToday(keyStr)) {
+            keyStr = wrapper.clearToday(keyStr);
+            today = true;
+        }
+        boolean afterTomorrow = false;
+        if (wrapper.hasAfterTomorrow(keyStr)) {
+            keyStr = wrapper.clearAfterTomorrow(keyStr);
+            afterTomorrow = true;
+        }
         boolean tomorrow = false;
         if (wrapper.hasTomorrow(keyStr)) {
             keyStr = wrapper.clearTomorrow(keyStr);
@@ -120,7 +130,6 @@ public class Recognizer {
             else type = Action.WEEK;
         }
 
-        Calendar calendar = Calendar.getInstance();
         boolean hasTimer = false;
         long afterTime = 0;
         if (wrapper.isTimer(keyStr)) {
@@ -136,61 +145,20 @@ public class Recognizer {
         long time = wrapper.getTime(keyStr, ampm, times);
         if (time != 0) keyStr = wrapper.clearTime(keyStr);
         Log.d(TAG, "parse: 0 " + keyStr);
-        if (tomorrow) {
-            if (time == 0) time = System.currentTimeMillis();
-            calendar.setTimeInMillis(time);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(System.currentTimeMillis() + Worker.DAY);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+        if (today) {
+            time = getTodayTime(time);
+        } else if (afterTomorrow) {
+            time = getAfterTomorrowTime(time);
+        } else if (tomorrow) {
+            time = getTomorrowTime(time);
         } else if (hasWeekday && !repeating) {
-            if (time == 0) time = System.currentTimeMillis();
-            calendar.setTimeInMillis(time);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            int count = Worker.getNumberOfSelectedWeekdays(weekdays);
-            if (count == 1) {
-                while (true) {
-                    int mDay = calendar.get(Calendar.DAY_OF_WEEK);
-                    if (weekdays.get(mDay - 1) == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
-                        break;
-                    }
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                }
-            }
+            time = getDayTime(time, weekdays);
         } else if (repeating) {
-            if (time == 0) time = System.currentTimeMillis();
-            calendar.setTimeInMillis(time);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-            if (!hasWeekday) {
-                if (calendar.getTimeInMillis() < System.currentTimeMillis())
-                    calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
-            }
+            time = getRepeatingTime(time, hasWeekday);
         } else if (hasTimer) {
-            calendar.setTimeInMillis(System.currentTimeMillis() + afterTime);
+            time = System.currentTimeMillis() + afterTime;
         } else if (date != 0 || time != 0) {
-            calendar.setTimeInMillis(time);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(date);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
+            time = getDateTime(date, time);
         } else return null;
 
         String message = null;
@@ -223,13 +191,115 @@ public class Recognizer {
         Model model = new Model();
         model.setType(ActionType.REMINDER);
         model.setSummary(task);
-        model.setDateTime(calendar.getTimeInMillis());
+        model.setDateTime(time);
         model.setWeekdays(weekdays);
         model.setRepeatInterval(repeat);
         model.setTarget(number);
         model.setHasCalendar(isCalendar);
         model.setAction(type);
         return model;
+    }
+
+    private long getDateTime(long date, long time) {
+        if (date == 0) date = System.currentTimeMillis();
+        if (time == 0) time = date;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
+        }
+        return calendar.getTimeInMillis();
+    }
+
+    private long getRepeatingTime(long time, boolean hasWeekday) {
+        Calendar calendar = Calendar.getInstance();
+        if (time == 0) time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (!hasWeekday) {
+            if (calendar.getTimeInMillis() < System.currentTimeMillis())
+                calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
+        }
+        return calendar.getTimeInMillis();
+    }
+
+    private long getDayTime(long time, List<Integer> weekdays) {
+        Calendar calendar = Calendar.getInstance();
+        if (time == 0) time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        int count = Worker.getNumberOfSelectedWeekdays(weekdays);
+        if (count == 1) {
+            while (true) {
+                int mDay = calendar.get(Calendar.DAY_OF_WEEK);
+                if (weekdays.get(mDay - 1) == 1 && calendar.getTimeInMillis() > System.currentTimeMillis()) {
+                    break;
+                }
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+        return calendar.getTimeInMillis();
+    }
+
+    private long getTomorrowTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        if (time == 0) time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis() + Worker.DAY);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    private long getAfterTomorrowTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        if (time == 0) time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis() + (Worker.DAY * 2));
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    private long getTodayTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        if (time == 0) time = System.currentTimeMillis();
+        calendar.setTimeInMillis(time);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
     }
 
     private Model getDisableAction() {

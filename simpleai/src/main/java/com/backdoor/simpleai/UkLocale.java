@@ -407,7 +407,7 @@ class UkLocale extends Worker {
     @Override
     public String clearGroup(String input) {
         StringBuilder sb = new StringBuilder();
-        String[] parts = input.split(" ");
+        String[] parts = input.split("\\s");
         boolean st = false;
         for (String s : parts) {
             if (s.matches(".*групу.*")) {
@@ -427,6 +427,21 @@ class UkLocale extends Worker {
         if (input.matches(".*день народжен.*"))
             return Action.BIRTHDAY;
         else return Action.REMINDER;
+    }
+
+    @Override
+    public boolean hasToday(String input) {
+        return input.matches(".*сьогодн.*");
+    }
+
+    @Override
+    public boolean hasAfterTomorrow(String input) {
+        return input.matches(".*післязавтр.*");
+    }
+
+    @Override
+    protected String getAfterTomorrow() {
+        return "післязавтра";
     }
 
     @Override

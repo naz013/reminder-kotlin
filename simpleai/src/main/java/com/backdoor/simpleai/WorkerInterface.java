@@ -96,4 +96,12 @@ public interface WorkerInterface {
     boolean hasGroup(String input);
 
     String clearGroup(String input);
+
+    boolean hasToday(String input);
+
+    String clearToday(String input);
+
+    boolean hasAfterTomorrow(String input);
+
+    String clearAfterTomorrow(String input);
 }

@@ -428,7 +428,7 @@ class EnLocale extends Worker {
     @Override
     public String clearGroup(String input) {
         StringBuilder sb = new StringBuilder();
-        String[] parts = input.split(" ");
+        String[] parts = input.split("\\s");
         boolean st = false;
         for (String s : parts) {
             if (s.matches(".*group.*")) {
@@ -441,6 +441,21 @@ class EnLocale extends Worker {
             }
         }
         return sb.toString().trim();
+    }
+
+    @Override
+    public boolean hasToday(String input) {
+        return input.matches(".*today.*");
+    }
+
+    @Override
+    public boolean hasAfterTomorrow(String input) {
+        return input.matches(".*after tomorrow.*");
+    }
+
+    @Override
+    protected String getAfterTomorrow() {
+        return "after tomorrow";
     }
 
     @Override

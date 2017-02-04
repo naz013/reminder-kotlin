@@ -293,6 +293,7 @@ abstract class Worker implements WorkerInterface {
             return calendar.getTimeInMillis();
         }
         if (calendar.getTimeInMillis() == 0 && ampm != null) {
+            calendar.setTimeInMillis(System.currentTimeMillis());
             try {
                 if (ampm == Ampm.MORNING)
                     calendar.setTime(mFormat.parse(times[0]));
@@ -310,4 +311,25 @@ abstract class Worker implements WorkerInterface {
     }
 
     protected abstract Date getShortTime(String input);
+
+    @Override
+    public String clearToday(String input) {
+        String[] parts = input.split("\\s");
+        for (String s : parts) {
+            if (hasToday(s)) {
+                input = input.replace(s, "");
+            }
+        }
+        return input.trim();
+    }
+
+    @Override
+    public String clearAfterTomorrow(String input) {
+        if (hasAfterTomorrow(input)) {
+            input = input.replace(getAfterTomorrow(), "");
+        }
+        return input;
+    }
+
+    protected abstract String getAfterTomorrow();
 }
