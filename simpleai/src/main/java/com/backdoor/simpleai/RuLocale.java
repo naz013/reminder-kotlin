@@ -474,6 +474,19 @@ class RuLocale extends Worker implements WorkerInterface {
     }
 
     @Override
+    public boolean hasAnswer(String input) {
+        return input.matches(".* ?(да|нет) ?.*");
+    }
+
+    @Override
+    public Action getAnswer(String input) {
+        if (input.matches(".* ?да ?.*")) {
+            return Action.YES;
+        }
+        return Action.NO;
+    }
+
+    @Override
     protected int findNumber(String input) {
         int number = -1;
         if (input.matches("ноль")) number = 0;

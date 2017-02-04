@@ -1,1 +1,1 @@
-include ':app', ':photoPreview', ':simpleai', ':shared', ':wear', ':backend'
+include ':app', ':photoPreview', ':simpleai', ':shared', ':wear', ':backend', ':android-animated-recording-view'

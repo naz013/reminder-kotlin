@@ -104,4 +104,8 @@ public interface WorkerInterface {
     boolean hasAfterTomorrow(String input);
 
     String clearAfterTomorrow(String input);
+
+    boolean hasAnswer(String input);
+
+    Action getAnswer(String input);
 }

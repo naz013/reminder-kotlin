@@ -40,5 +40,11 @@ public enum Action {
     REPORT,
     DISABLE,
     SHOW,
-    TRASH
+    TRASH,
+
+    /**
+     * Answer actions
+     */
+    YES,
+    NO
 }

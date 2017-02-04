@@ -489,6 +489,19 @@ class EnLocale extends Worker {
     }
 
     @Override
+    public boolean hasAnswer(String input) {
+        return input.matches(".* ?(yes|yeah|no) ?.*");
+    }
+
+    @Override
+    public Action getAnswer(String input) {
+        if (input.matches(".* ?(yes|yeah) ?.*")) {
+            return Action.YES;
+        }
+        return Action.NO;
+    }
+
+    @Override
     protected int findNumber(String input) {
         int number = -1;
         if (input.matches("zero") || input.matches("nil")) number = 0;
