@@ -44,6 +44,9 @@ public class Recognizer {
         String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
         Log.d(TAG, "parse: " + keyStr);
+        if (wrapper.hasAnswer(keyStr)) {
+            return getAnswer(keyStr);
+        }
         if (wrapper.hasNote(keyStr)) {
             return getNote(keyStr);
         }
@@ -144,7 +147,7 @@ public class Recognizer {
 
         long time = wrapper.getTime(keyStr, ampm, times);
         if (time != 0) keyStr = wrapper.clearTime(keyStr);
-        Log.d(TAG, "parse: 0 " + keyStr);
+        Log.d(TAG, "parse: " + keyStr);
         if (today) {
             time = getTodayTime(time);
         } else if (afterTomorrow) {
@@ -197,6 +200,13 @@ public class Recognizer {
         model.setTarget(number);
         model.setHasCalendar(isCalendar);
         model.setAction(type);
+        return model;
+    }
+
+    private Model getAnswer(String keyStr) {
+        Model model = new Model();
+        model.setType(ActionType.ANSWER);
+        model.setAction(wrapper.getAnswer(keyStr));
         return model;
     }
 

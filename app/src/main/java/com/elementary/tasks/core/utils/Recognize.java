@@ -150,6 +150,8 @@ public class Recognize {
 
     private void deleteReminder(Reminder reminder) {
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
+        EventControl control = EventControlImpl.getController(mContext, reminder);
+        control.stop();
         CalendarUtils.getInstance(mContext).deleteEvents(reminder.getUuId());
     }
 

@@ -474,6 +474,19 @@ class UkLocale extends Worker {
     }
 
     @Override
+    public boolean hasAnswer(String input) {
+        return input.matches(".* ?(так|ні) ?.*");
+    }
+
+    @Override
+    public Action getAnswer(String input) {
+        if (input.matches(".* ?так ?.*")) {
+            return Action.YES;
+        }
+        return Action.NO;
+    }
+
+    @Override
     protected int findNumber(String input) {
         int number = -1;
         if (input.matches("нуль")) number = 0;
