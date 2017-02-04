@@ -78,6 +78,18 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class CreateReminderActivity extends ThemedActivity implements ReminderInterface {
 
+    private static final int DATE = 0;
+    private static final int TIMER = 1;
+    private static final int WEEK = 2;
+    private static final int GPS = 3;
+    private static final int SKYPE = 4;
+    private static final int APP = 5;
+    private static final int MONTH = 6;
+    private static final int GPS_OUT = 7;
+    private static final int SHOP = 8;
+    private static final int EMAIL = 9;
+    private static final int GPS_PLACE = 10;
+
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
     private static final int CONTACTS_REQUEST_E = 501;
@@ -115,42 +127,48 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             Prefs.getInstance(CreateReminderActivity.this).setLastUsedReminder(position);
             switch (position) {
-                case 0:
+                case DATE:
                     replaceFragment(new DateFragment());
                     break;
-                case 1:
+                case TIMER:
                     replaceFragment(new TimerFragment());
                     break;
-                case 2:
+                case WEEK:
                     replaceFragment(new WeekFragment());
                     break;
-                case 3:
-                    replaceFragment(new LocationFragment());
+                case GPS:
+                    if (hasGpsPermission(GPS)) {
+                        replaceFragment(new LocationFragment());
+                    }
                     break;
-                case 4:
+                case SKYPE:
                     replaceFragment(new SkypeFragment());
                     break;
-                case 5:
+                case APP:
                     replaceFragment(new ApplicationFragment());
                     break;
-                case 6:
+                case MONTH:
                     replaceFragment(new MonthFragment());
                     break;
-                case 7:
-                    replaceFragment(new LocationOutFragment());
+                case GPS_OUT:
+                    if (hasGpsPermission(GPS_OUT)) {
+                        replaceFragment(new LocationOutFragment());
+                    }
                     break;
-                case 8:
+                case SHOP:
                     replaceFragment(new ShopFragment());
                     break;
-                case 9:
+                case EMAIL:
                     if (Permissions.checkPermission(CreateReminderActivity.this, Permissions.READ_CONTACTS)) {
                         replaceFragment(new EmailFragment());
                     } else {
                         Permissions.requestPermission(CreateReminderActivity.this, CONTACTS_REQUEST_E, Permissions.READ_CONTACTS);
                     }
                     break;
-                case 10:
-                    replaceFragment(new PlacesFragment());
+                case GPS_PLACE:
+                    if (hasGpsPermission(GPS_PLACE)) {
+                        replaceFragment(new PlacesFragment());
+                    }
                     break;
             }
         }
@@ -160,6 +178,14 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
         }
     };
+
+    private boolean hasGpsPermission(int code) {
+        if (!Permissions.checkPermission(CreateReminderActivity.this, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(CreateReminderActivity.this, code, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
+            return false;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,45 +234,45 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case Reminder.BY_DATE:
             case Reminder.BY_DATE_CALL:
             case Reminder.BY_DATE_SMS:
-                spinner.setSelection(0);
+                spinner.setSelection(DATE);
                 break;
             case Reminder.BY_TIME:
-                spinner.setSelection(1);
+                spinner.setSelection(TIMER);
                 break;
             case Reminder.BY_WEEK:
             case Reminder.BY_WEEK_CALL:
             case Reminder.BY_WEEK_SMS:
-                spinner.setSelection(2);
+                spinner.setSelection(WEEK);
                 break;
             case Reminder.BY_LOCATION:
             case Reminder.BY_LOCATION_CALL:
             case Reminder.BY_LOCATION_SMS:
-                spinner.setSelection(3);
+                spinner.setSelection(GPS);
                 break;
             case Reminder.BY_SKYPE:
             case Reminder.BY_SKYPE_CALL:
             case Reminder.BY_SKYPE_VIDEO:
-                spinner.setSelection(4);
+                spinner.setSelection(SKYPE);
                 break;
             case Reminder.BY_DATE_APP:
             case Reminder.BY_DATE_LINK:
-                spinner.setSelection(5);
+                spinner.setSelection(APP);
                 break;
             case Reminder.BY_MONTH:
             case Reminder.BY_MONTH_CALL:
             case Reminder.BY_MONTH_SMS:
-                spinner.setSelection(6);
+                spinner.setSelection(MONTH);
                 break;
             case Reminder.BY_OUT:
             case Reminder.BY_OUT_SMS:
             case Reminder.BY_OUT_CALL:
-                spinner.setSelection(7);
+                spinner.setSelection(GPS_OUT);
                 break;
             case Reminder.BY_DATE_SHOP:
-                spinner.setSelection(8);
+                spinner.setSelection(SHOP);
                 break;
             case Reminder.BY_DATE_EMAIL:
-                spinner.setSelection(9);
+                spinner.setSelection(EMAIL);
                 break;
             default:
                 if (Module.isPro()) {
@@ -254,7 +280,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                         case Reminder.BY_PLACES:
                         case Reminder.BY_PLACES_SMS:
                         case Reminder.BY_PLACES_CALL:
-                            spinner.setSelection(10);
+                            spinner.setSelection(GPS_PLACE);
                             break;
                     }
                 }
@@ -600,9 +626,30 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         switch (requestCode) {
             case CONTACTS_REQUEST_E:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    spinner.setSelection(9);
+                    spinner.setSelection(EMAIL);
                 } else {
-                    spinner.setSelection(0);
+                    spinner.setSelection(DATE);
+                }
+                break;
+            case GPS_PLACE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    spinner.setSelection(GPS_PLACE);
+                } else {
+                    spinner.setSelection(DATE);
+                }
+                break;
+            case GPS_OUT:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    spinner.setSelection(GPS_OUT);
+                } else {
+                    spinner.setSelection(DATE);
+                }
+                break;
+            case GPS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    spinner.setSelection(GPS);
+                } else {
+                    spinner.setSelection(DATE);
                 }
                 break;
         }
