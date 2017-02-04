@@ -172,17 +172,22 @@ public class ConversationActivity extends ThemedActivity {
             model = recognize.findSuggestion(s);
             if (model != null) break;
         }
-        stopView();
         if (model != null) {
             performResult(model, suggestion);
         } else {
+            stopView();
             mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
             addResponse("Can not recognize your command");
         }
     }
 
     private void stopView() {
-        binding.recordingView.stop(false);
+        binding.recordingView.stop();
+    }
+
+    private void addObjectResponse(Reply reply) {
+        stopView();
+        mAdapter.addReply(reply);
     }
 
     private void performResult(Model model, String s) {
@@ -194,18 +199,21 @@ public class ConversationActivity extends ThemedActivity {
             Reminder reminder = recognize.createReminder(model);
             EventControl control = EventControlImpl.getController(this, reminder);
             control.start();
-            mAdapter.addReply(new Reply(Reply.REMINDER, reminder));
+            addObjectResponse(new Reply(Reply.REMINDER, reminder));
         } else if (actionType == ActionType.NOTE) {
             addResponse("Note saved");
             NoteItem item = recognize.saveNote(model.getSummary(), false);
-            mAdapter.addReply(new Reply(Reply.NOTE, item));
+            addObjectResponse(new Reply(Reply.NOTE, item));
         } else if (actionType == ActionType.ACTION) {
             Action action = model.getAction();
             if (action == Action.BIRTHDAY) {
+                stopView();
                 startActivity(new Intent(this, AddBirthdayActivity.class));
             } else if (action == Action.REMINDER) {
+                stopView();
                 startActivity(new Intent(this, AddReminderActivity.class));
             } else if (action == Action.VOLUME) {
+                stopView();
                 startActivity(new Intent(this, VolumeDialog.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
             } else if (action == Action.TRASH) {
@@ -216,7 +224,7 @@ public class ConversationActivity extends ThemedActivity {
         } else if (actionType == ActionType.GROUP) {
             addResponse("Group saved");
             GroupItem item = recognize.saveGroup(model, false);
-            mAdapter.addReply(new Reply(Reply.GROUP, item));
+            addObjectResponse(new Reply(Reply.GROUP, item));
         }
     }
 
@@ -226,13 +234,16 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void disableReminders() {
-        recognize.disableAllReminders();
-        mAdapter.addReply(new Reply(Reply.RESPONSE, "All reminders were disabled"));
+        recognize.disableAllReminders(false);
+        stopView();
+        addResponse("All reminders were disabled");
     }
 
     private void clearTrash() {
-        recognize.emptyTrash();
-        mAdapter.addReply(new Reply(Reply.RESPONSE, "Trash was cleared"));
+        recognize.emptyTrash(false, () -> {
+            stopView();
+            addResponse("Trash was cleared");
+        });
     }
 
     @Override
