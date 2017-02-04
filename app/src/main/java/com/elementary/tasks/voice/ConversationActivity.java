@@ -113,6 +113,7 @@ public class ConversationActivity extends ThemedActivity {
         @Override
         public void onEndOfSpeech() {
             LogUtil.d(TAG, "onEndOfSpeech: ");
+            binding.recordingView.stop();
         }
 
         @Override
