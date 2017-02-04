@@ -569,6 +569,7 @@
     <string name="add_note">Add note</string>
     <string name="would_you_like_to_install_tts">Would you like to install Text-to-Speech engine?</string>
     <string name="install">Install</string>
+    <string name="all_reminders_were_disabled">All reminders were disabled</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

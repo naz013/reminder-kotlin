@@ -112,9 +112,9 @@ public class Recognize {
                         mContext.startActivity(new Intent(mContext, VolumeDialog.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
                     } else if (action == Action.TRASH) {
-                        emptyTrash();
+                        emptyTrash(true, null);
                     } else if (action == Action.DISABLE) {
-                        disableAllReminders();
+                        disableAllReminders(true);
                     }
                 } else if (types == ActionType.NOTE) {
                     saveNote(model.getSummary(), true);
@@ -138,12 +138,33 @@ public class Recognize {
         return item;
     }
 
-    public void disableAllReminders() {
-
+    public void disableAllReminders(boolean showToast) {
+        for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
+            EventControl control = EventControlImpl.getController(mContext, reminder);
+            control.stop();
+        }
+        if (showToast) {
+            Toast.makeText(mContext, R.string.all_reminders_were_disabled, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void emptyTrash() {
+    private void deleteReminder(Reminder reminder) {
+        RealmDb.getInstance().deleteReminder(reminder.getUuId());
+        CalendarUtils.getInstance(mContext).deleteEvents(reminder.getUuId());
+    }
 
+    public void emptyTrash(boolean showToast, ThreadCallback callback) {
+        DataLoader.loadArchivedReminder(result -> {
+            for (Reminder reminder : result) {
+                deleteReminder(reminder);
+            }
+            if (showToast) {
+                Toast.makeText(mContext, R.string.trash_cleared, Toast.LENGTH_SHORT).show();
+            }
+            if (callback != null) {
+                callback.onDone();
+            }
+        });
     }
 
     private void saveReminder(Model model, boolean widget) {
@@ -286,5 +307,9 @@ public class Recognize {
             }
             return new ContactOutput(input.trim(), number);
         }
+    }
+
+    public interface ThreadCallback {
+        void onDone();
     }
 }
