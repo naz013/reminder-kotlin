@@ -44,9 +44,6 @@ public class Recognizer {
         String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
         Log.d(TAG, "parse: " + keyStr);
-        if (wrapper.hasAnswer(keyStr)) {
-            return getAnswer(keyStr);
-        }
         if (wrapper.hasNote(keyStr)) {
             return getNote(keyStr);
         }
@@ -66,6 +63,9 @@ public class Recognizer {
         }
         if (wrapper.hasDisableReminders(keyStr)) {
             return getDisableAction();
+        }
+        if (wrapper.hasAnswer(keyStr)) {
+            return getAnswer(keyStr);
         }
 
         Action type = Action.DATE;
