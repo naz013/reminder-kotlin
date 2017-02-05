@@ -424,9 +424,11 @@ class UkLocale extends Worker {
 
     @Override
     public Action getEvent(String input) {
-        if (input.matches(".*день народжен.*"))
+        if (input.matches(".*день народжен.*")) {
             return Action.BIRTHDAY;
-        else return Action.REMINDER;
+        } else if (input.matches(".*нагадуван.*")) {
+            return Action.REMINDER;
+        } else return Action.NO_EVENT;
     }
 
     @Override

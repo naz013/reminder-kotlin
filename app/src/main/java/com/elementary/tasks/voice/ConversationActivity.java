@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.backdoor.simpleai.Action;
 import com.backdoor.simpleai.ActionType;
@@ -35,7 +35,6 @@ import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +59,6 @@ public class ConversationActivity extends ThemedActivity {
     private static final String TAG = "ConversationActivity";
     private static final int AUDIO_CODE = 255000;
     private static final int CHECK_CODE = 1651;
-    private static final long VOLUME_INTERVAL = 200;
 
     private SpeechRecognizer speech = null;
     private Intent recognizerIntent;
@@ -71,7 +69,6 @@ public class ConversationActivity extends ThemedActivity {
     private TextToSpeech tts;
     private boolean isTtsReady;
     private AskAction mAskAction;
-    private SoundMeter mSensor;
 
     private TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
@@ -91,34 +88,45 @@ public class ConversationActivity extends ThemedActivity {
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
+            Log.d(TAG, "onReadyForSpeech: ");
         }
 
         @Override
         public void onBeginningOfSpeech() {
+            Log.d(TAG, "onBeginningOfSpeech: ");
         }
 
         @Override
         public void onRmsChanged(float v) {
-
+            Log.d(TAG, "onRmsChanged: " + v);
+            v = v * 2000;
+            double db = 0;
+            if (v > 1) {
+                db = 20 * Math.log10(v);
+            }
+            binding.recordingView.setVolume((float) db);
         }
 
         @Override
         public void onBufferReceived(byte[] bytes) {
+            Log.d(TAG, "onBufferReceived: ");
         }
 
         @Override
         public void onEndOfSpeech() {
-//            binding.recordingView.stop();
+            Log.d(TAG, "onEndOfSpeech: ");
         }
 
         @Override
         public void onError(int i) {
+            Log.d(TAG, "onError: " + i);
             showErrorMessage(i);
+            initSpeech();
+            initRecognizer();
         }
 
         @Override
         public void onResults(Bundle bundle) {
-            mVolumeHandler.removeCallbacks(mVolumeTask);
             binding.recordingView.loading();
             if (bundle == null) {
                 showSilentMessage();
@@ -129,10 +137,12 @@ public class ConversationActivity extends ThemedActivity {
 
         @Override
         public void onPartialResults(Bundle bundle) {
+            Log.d(TAG, "onPartialResults: ");
         }
 
         @Override
         public void onEvent(int i, Bundle bundle) {
+            Log.d(TAG, "onEvent: ");
         }
     };
     private ConversationAdapter.InsertCallback mInsertCallback = new ConversationAdapter.InsertCallback() {
@@ -141,30 +151,16 @@ public class ConversationActivity extends ThemedActivity {
             binding.conversationList.scrollToPosition(0);
         }
     };
-    private Handler mVolumeHandler = new Handler();
-    private Runnable mVolumeTask = new Runnable() {
-        @Override
-        public void run() {
-            float v = (float) mSensor.getAmplitudeEMA();
-            v = v * 2000;
-            double db = 0;
-            if (v > 1) {
-                db = 20 * Math.log10(v);
-            }
-            binding.recordingView.setVolume((float) db);
-            mVolumeHandler.postDelayed(mVolumeTask, VOLUME_INTERVAL);
-        }
-    };
 
     private void showErrorMessage(int i) {
         stopView();
         String text = getErrorText(i);
-        addResponse(text);
+        playTts(text);
     }
 
     private void showSilentMessage() {
         stopView();
-        addResponse("Did you say something?");
+        playTts("Did you say something?");
     }
 
     private void parseResults(List<String> list) {
@@ -298,12 +294,6 @@ public class ConversationActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation);
         recognize = new Recognize(this);
-        mSensor = new SoundMeter();
-        try {
-            mSensor.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         initSpeech();
         initRecognizer();
         initList();
@@ -368,7 +358,6 @@ public class ConversationActivity extends ThemedActivity {
         }
         binding.recordingView.start();
         speech.startListening(recognizerIntent);
-        mVolumeHandler.post(mVolumeTask);
     }
 
     private String getErrorText(int errorCode) {
@@ -409,9 +398,6 @@ public class ConversationActivity extends ThemedActivity {
         if (tts != null) {
             tts.stop();
             tts.shutdown();
-        }
-        if (mSensor != null) {
-            mSensor.stop();
         }
     }
 

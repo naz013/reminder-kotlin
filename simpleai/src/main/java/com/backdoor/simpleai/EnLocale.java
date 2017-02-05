@@ -405,9 +405,11 @@ class EnLocale extends Worker {
 
     @Override
     public Action getEvent(String input) {
-        if (input.matches(".*birthday.*"))
+        if (input.matches(".*birthday.*")) {
             return Action.BIRTHDAY;
-        else return Action.REMINDER;
+        } else if (input.matches(".*reminder.*")) {
+            return Action.REMINDER;
+        } else return Action.NO_EVENT;
     }
 
     @Override
