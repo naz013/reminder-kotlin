@@ -477,7 +477,8 @@ class RuLocale extends Worker implements WorkerInterface {
 
     @Override
     public boolean hasAnswer(String input) {
-        return input.matches(".* ?(да|нет) ?.*");
+        input = " " + input + " ";
+        return input.matches(".* (да|нет) .*");
     }
 
     @Override
