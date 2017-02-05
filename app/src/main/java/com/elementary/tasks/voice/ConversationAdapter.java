@@ -2,9 +2,7 @@ package com.elementary.tasks.voice;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import com.elementary.tasks.databinding.GroupListItemBinding;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
 import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
+import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
 import com.elementary.tasks.groups.GroupHolder;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteHolder;
@@ -70,9 +69,9 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         if (viewType == Reply.REPLY) {
-            return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot(), false);
+            return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.RESPONSE) {
-            return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot(), true);
+            return new VoiceResponseHolder(SimpleResponseLayoutBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.REMINDER) {
             return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil, false);
         } else if (viewType == Reply.NOTE) {
@@ -87,6 +86,8 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VoiceHolder) {
             ((VoiceHolder) holder).binding.replyText.setText((String) mData.get(position).getObject());
+        } else if (holder instanceof VoiceResponseHolder) {
+            ((VoiceResponseHolder) holder).binding.replyText.setText((String) mData.get(position).getObject());
         } else if (holder instanceof ReminderHolder) {
             ((ReminderHolder) holder).setData((Reminder) mData.get(position).getObject());
         } else if (holder instanceof NoteHolder) {
@@ -110,12 +111,19 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         SimpleReplyLayoutBinding binding;
 
-        VoiceHolder(View itemView, boolean right) {
+        VoiceHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
-            if (right) {
-                binding.replyText.setGravity(Gravity.END);
-            }
+        }
+    }
+
+    private class VoiceResponseHolder extends RecyclerView.ViewHolder {
+
+        SimpleResponseLayoutBinding binding;
+
+        VoiceResponseHolder(View itemView) {
+            super(itemView);
+            binding = DataBindingUtil.bind(itemView);
         }
     }
 
