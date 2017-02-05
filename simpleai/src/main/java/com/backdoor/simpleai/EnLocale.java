@@ -492,7 +492,8 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasAnswer(String input) {
-        return input.matches(".* ?(yes|yeah|no) ?.*");
+        input = " " + input + " ";
+        return input.matches(".* (yes|yeah|no) .*");
     }
 
     @Override

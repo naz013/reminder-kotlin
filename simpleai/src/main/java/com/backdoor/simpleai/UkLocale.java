@@ -477,7 +477,8 @@ class UkLocale extends Worker {
 
     @Override
     public boolean hasAnswer(String input) {
-        return input.matches(".* ?(так|ні) ?.*");
+        input = " " + input + " ";
+        return input.matches(".* (так|ні) .*");
     }
 
     @Override

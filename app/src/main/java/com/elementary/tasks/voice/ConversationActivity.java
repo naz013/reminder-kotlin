@@ -183,8 +183,8 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void performAnswer(Model answer) {
+        stopView();
         if (mAskAction != null) {
-            stopView();
             if (answer.getAction() == Action.YES) {
                 mAskAction.onYes();
             } else if (answer.getAction() == Action.NO) {
@@ -388,6 +388,7 @@ public class ConversationActivity extends ThemedActivity {
         if (binding.recordingView.isWorking()) {
             speech.stopListening();
             stopView();
+            return;
         }
         if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
             Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO);
