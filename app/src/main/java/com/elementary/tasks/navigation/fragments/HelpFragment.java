@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.fragments;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.ThemeUtil;
 
 import java.util.Locale;
@@ -29,14 +30,14 @@ public class HelpFragment extends BaseWebViewFragment {
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {
-            if (isDark) url = "file:///android_asset/web_page/index.html";
-            else url = "file:///android_asset/web_page/index_light.html";
+            if (isDark) url = Constants.WEB_URL + "app_help/index.html";
+            else url = Constants.WEB_URL + "app_help/index_light.html";
         } else if (localeCheck.startsWith("ru")) {
-            if (isDark) url = "file:///android_asset/web_page/index_ru.html";
-            else url = "file:///android_asset/web_page/index_light_ru.html";
+            if (isDark) url = Constants.WEB_URL + "app_help/index_ru.html";
+            else url = Constants.WEB_URL + "app_help/index_light_ru.html";
         } else {
-            if (isDark) url = "file:///android_asset/web_page/index_en.html";
-            else url = "file:///android_asset/web_page/index_light_en.html";
+            if (isDark) url = Constants.WEB_URL + "app_help/index_en.html";
+            else url = Constants.WEB_URL + "app_help/index_light_en.html";
         }
         return url;
     }
