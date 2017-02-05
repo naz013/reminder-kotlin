@@ -221,11 +221,11 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;
             reminderHolder.setData(item);
-            initLabel(reminderHolder.getListHeader(), position);
+            if (isEditable) initLabel(reminderHolder.getListHeader(), position);
         } else if (holder instanceof ShoppingHolder) {
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;
             shoppingHolder.setData(item);
-            initLabel(shoppingHolder.getListHeader(), position);
+            if (isEditable) initLabel(shoppingHolder.getListHeader(), position);
         }
     }
 
