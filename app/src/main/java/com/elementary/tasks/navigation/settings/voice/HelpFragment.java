@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
@@ -37,11 +38,11 @@ public class HelpFragment extends BaseSettingsFragment {
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {
-            url = "file:///android_asset/files/voice_uk.html";
+            url = Constants.WEB_URL + "voice_help/voice_uk.html";
         } else if (localeCheck.startsWith("ru")) {
-            url = "file:///android_asset/files/voice_ru.html";
+            url = Constants.WEB_URL + "voice_help/voice_ru.html";
         } else {
-            url = "file:///android_asset/files/voice_en.html";
+            url = Constants.WEB_URL + "voice_help/voice_en.html";
         }
         binding.webView.loadUrl(url);
         return binding.getRoot();

@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Constants;
 
 import java.util.Locale;
 
@@ -41,11 +42,11 @@ public class VoiceHelpDialog extends BaseDialog {
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {
-            url = "file:///android_asset/files/voice_uk.html";
+            url = Constants.WEB_URL + "voice_help/voice_uk.html";
         } else if (localeCheck.startsWith("ru")) {
-            url = "file:///android_asset/files/voice_ru.html";
+            url = Constants.WEB_URL + "voice_help/voice_ru.html";
         } else {
-            url = "file:///android_asset/files/voice_en.html";
+            url = Constants.WEB_URL + "voice_help/voice_en.html";
         }
         wv.loadUrl(url);
         wv.setWebViewClient(new WebViewClient() {
