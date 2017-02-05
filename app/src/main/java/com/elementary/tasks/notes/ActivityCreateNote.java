@@ -104,7 +104,7 @@ public class ActivityCreateNote extends ThemedActivity {
     private int mMonth = 0;
     private int mDay = 1;
     private int mColor = 0;
-    private int mFontStyle = 0;
+    private int mFontStyle = 9;
     private Uri mImageUri;
     private int mEditPosition = -1;
 
