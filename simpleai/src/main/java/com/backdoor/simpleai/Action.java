@@ -47,5 +47,14 @@ public enum Action {
      * Answer actions
      */
     YES,
-    NO
+    NO,
+
+    /**
+     * Show actions
+     */
+    GROUPS,
+    NOTES,
+    REMINDERS,
+    BIRTHDAYS,
+    EVENTS
 }

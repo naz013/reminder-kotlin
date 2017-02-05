@@ -22,5 +22,6 @@ public enum ActionType {
     BIRTHDAYS,
     GROUP,
     ANSWER,
+    SHOW,
     ACTION
 }

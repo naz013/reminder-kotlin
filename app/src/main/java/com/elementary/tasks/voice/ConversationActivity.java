@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -61,7 +62,6 @@ public class ConversationActivity extends ThemedActivity {
     private static final int CHECK_CODE = 1651;
 
     private SpeechRecognizer speech = null;
-    private Intent recognizerIntent;
     private ActivityConversationBinding binding;
 
     private ConversationAdapter mAdapter;
@@ -121,8 +121,6 @@ public class ConversationActivity extends ThemedActivity {
         public void onError(int i) {
             Log.d(TAG, "onError: " + i);
             showErrorMessage(i);
-            initSpeech();
-            initRecognizer();
         }
 
         @Override
@@ -154,8 +152,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void showErrorMessage(int i) {
         stopView();
-        String text = getErrorText(i);
-        playTts(text);
+        playTts(getErrorText(i));
     }
 
     private void showSilentMessage() {
@@ -197,8 +194,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void stopView() {
-        initSpeech();
-        initRecognizer();
+        releaseSpeech();
         binding.recordingView.stop();
     }
 
@@ -214,9 +210,7 @@ public class ConversationActivity extends ThemedActivity {
         if (actionType == ActionType.REMINDER) {
             reminderAction(model);
         } else if (actionType == ActionType.NOTE) {
-            addResponse("Note saved");
-            NoteItem item = recognize.saveNote(model.getSummary(), false);
-            addObjectResponse(new Reply(Reply.NOTE, item));
+            noteAction(model);
         } else if (actionType == ActionType.ACTION) {
             Action action = model.getAction();
             if (action == Action.BIRTHDAY) {
@@ -235,12 +229,26 @@ public class ConversationActivity extends ThemedActivity {
                 disableReminders();
             }
         } else if (actionType == ActionType.GROUP) {
-            addResponse("Group saved");
-            GroupItem item = recognize.saveGroup(model, false);
-            addObjectResponse(new Reply(Reply.GROUP, item));
+            groupAction(model);
         } else if (actionType == ActionType.ANSWER) {
             performAnswer(model);
         }
+    }
+
+    private void groupAction(Model model) {
+        stopView();
+        addResponse("Group created");
+        GroupItem item = recognize.createGroup(model);
+        addObjectResponse(new Reply(Reply.GROUP, item));
+        new Handler().postDelayed(() -> askGroupAction(item), 1000);
+    }
+
+    private void noteAction(Model model) {
+        stopView();
+        addResponse("Note created");
+        NoteItem item = recognize.createNote(model.getSummary());
+        addObjectResponse(new Reply(Reply.NOTE, item));
+        new Handler().postDelayed(() -> askNoteAction(item), 1000);
     }
 
     private void reminderAction(Model model) {
@@ -248,12 +256,30 @@ public class ConversationActivity extends ThemedActivity {
         addResponse("Reminder created");
         Reminder reminder = recognize.createReminder(model);
         addObjectResponse(new Reply(Reply.REMINDER, reminder));
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        addResponse("Save it?");
+        new Handler().postDelayed(() -> askReminderAction(reminder), 1000);
+    }
+
+    private void askGroupAction(GroupItem groupItem) {
+        addResponse("Would you like to save it?");
+        mAskAction = new AskAction() {
+            @Override
+            public void onYes() {
+                recognize.saveGroup(groupItem, false);
+                addResponse("Group saved");
+                mAskAction = null;
+            }
+
+            @Override
+            public void onNo() {
+                addResponse("Group canceled");
+                mAskAction = null;
+            }
+        };
+        new Handler().postDelayed(this::micClick, 1500);
+    }
+
+    private void askReminderAction(Reminder reminder) {
+        addResponse("Would you like to save it?");
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
@@ -265,10 +291,30 @@ public class ConversationActivity extends ThemedActivity {
 
             @Override
             public void onNo() {
+                addResponse("Reminder canceled");
                 mAskAction = null;
             }
         };
-        micClick();
+        new Handler().postDelayed(this::micClick, 1500);
+    }
+
+    private void askNoteAction(NoteItem noteItem) {
+        addResponse("Would you like to save it?");
+        mAskAction = new AskAction() {
+            @Override
+            public void onYes() {
+                recognize.saveNote(noteItem, false);
+                addResponse("Note saved");
+                mAskAction = null;
+            }
+
+            @Override
+            public void onNo() {
+                addResponse("Note canceled");
+                mAskAction = null;
+            }
+        };
+        new Handler().postDelayed(this::micClick, 1500);
     }
 
     private void addResponse(String message) {
@@ -294,8 +340,6 @@ public class ConversationActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation);
         recognize = new Recognize(this);
-        initSpeech();
-        initRecognizer();
         initList();
         binding.recordingView.setOnClickListener(view -> micClick());
         checkTts();
@@ -303,11 +347,6 @@ public class ConversationActivity extends ThemedActivity {
 
     private void playTts(String text) {
         if (!isTtsReady) return;
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         if (Module.isLollipop()) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
@@ -335,16 +374,14 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void initRecognizer() {
-        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, Language.getLanguage(Prefs.getInstance(this).getVoiceLocale()));
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.getPackageName());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-    }
-
-    private void initSpeech() {
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         speech.setRecognitionListener(mRecognitionListener);
+        speech.startListening(recognizerIntent);
     }
 
     private void micClick() {
@@ -357,7 +394,7 @@ public class ConversationActivity extends ThemedActivity {
             return;
         }
         binding.recordingView.start();
-        speech.startListening(recognizerIntent);
+        initRecognizer();
     }
 
     private String getErrorText(int errorCode) {
@@ -390,14 +427,18 @@ public class ConversationActivity extends ThemedActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        releaseSpeech();
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+    }
+
+    private void releaseSpeech() {
         if (speech != null) {
             speech.cancel();
             speech.destroy();
             speech = null;
-        }
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
         }
     }
 
