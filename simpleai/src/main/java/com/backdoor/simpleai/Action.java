@@ -41,6 +41,7 @@ public enum Action {
     DISABLE,
     SHOW,
     TRASH,
+    NO_EVENT,
 
     /**
      * Answer actions

@@ -55,7 +55,8 @@ public class Recognizer {
             return getGroup(keyStr);
         }
         if (wrapper.hasEvent(keyStr)) {
-            return getEvent(keyStr);
+            Model model = getEvent(keyStr);
+            if (model != null) return model;
         }
         if (wrapper.hasAction(keyStr)) {
             return getAction(keyStr);
@@ -335,9 +336,11 @@ public class Recognizer {
     }
 
     private Model getEvent(String keyStr) {
+        Action event = wrapper.getEvent(keyStr);
+        if (event == Action.NO_EVENT) return null;
         Model model = new Model();
         model.setType(ActionType.ACTION);
-        model.setAction(wrapper.getEvent(keyStr));
+        model.setAction(event);
         return model;
     }
 

@@ -1,3 +1,9 @@
+package com.elementary.tasks.voice;
+
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+
 /*
  * Copyright (C) 2008 Google Inc.
  *
@@ -14,51 +20,34 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.voice;
-
-
-import android.media.MediaRecorder;
-
-import java.io.IOException;
-
 public class SoundMeter {
-	static final private double EMA_FILTER = 0.6;
 
-	private MediaRecorder mRecorder = null;
-	private double mEMA = 0.0;
+	private AudioRecord ar = null;
+	private int minSize;
 
-	public void start() throws IOException {
-		if (mRecorder == null) {
-			mRecorder = new MediaRecorder();
-			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		    mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-		    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-		    mRecorder.setOutputFile("/dev/null"); 
-		    mRecorder.prepare();
-		    mRecorder.start();
-		    mEMA = 0.0;
-		}
+	public void start() {
+        minSize= AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+        ar = new AudioRecord(MediaRecorder.AudioSource.MIC, 8000,AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,minSize);
+        ar.startRecording();
 	}
 	
 	public void stop() {
-		if (mRecorder != null) {
-			mRecorder.stop();	
-			mRecorder.release();
-			mRecorder = null;
-		}
+        if (ar != null) {
+            ar.stop();
+            ar.release();
+            ar = null;
+        }
 	}
 	
 	public double getAmplitude() {
-		if (mRecorder != null)
-			return  (mRecorder.getMaxAmplitude()/2700.0);
-		else
-			return 0;
-
-	}
-
-	public double getAmplitudeEMA() {
-		double amp = getAmplitude();
-		mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
-		return mEMA;
+        short[] buffer = new short[minSize];
+        ar.read(buffer, 0, minSize);
+        int max = 0;
+        for (short s : buffer) {
+            if (Math.abs(s) > max) {
+                max = Math.abs(s);
+            }
+        }
+        return max;
 	}
 }

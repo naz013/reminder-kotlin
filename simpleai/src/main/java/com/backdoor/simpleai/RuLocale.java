@@ -391,9 +391,11 @@ class RuLocale extends Worker implements WorkerInterface {
 
     @Override
     public Action getEvent(String input) {
-        if (input.matches(".*день рождения.*"))
+        if (input.matches(".*день рождения.*")) {
             return Action.BIRTHDAY;
-        else return Action.REMINDER;
+        } else if (input.matches(".*напоминан.*")) {
+            return Action.REMINDER;
+        } else return Action.NO_EVENT;
     }
 
     @Override
