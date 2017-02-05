@@ -23,5 +23,6 @@ public enum ActionType {
     GROUP,
     ANSWER,
     SHOW,
+    DELETE,
     ACTION
 }
