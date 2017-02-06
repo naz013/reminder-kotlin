@@ -23,6 +23,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -59,6 +60,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 
@@ -95,6 +97,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private int streamVol;
     private int mVolume;
     private int mStream;
+
+    private static AtomicInteger instanceCount = new AtomicInteger(0);
 
     protected TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
@@ -219,7 +223,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
+        int current = instanceCount.incrementAndGet();
+        LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         mSound = new Sound(this);
         mPrefs = Prefs.getInstance(this);
         if (mPrefs.isWearEnabled()) {
@@ -239,7 +244,9 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mPrefs.isSystemLoudnessEnabled()) {
+        int left = instanceCount.decrementAndGet();
+        Log.d(TAG, "onDestroy: " + left);
+        if (!mPrefs.isSystemLoudnessEnabled() && left == 0) {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             am.setStreamVolume(mStream, currVolume, 0);
         }
@@ -657,7 +664,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (systemVol) {
             mStream = mPrefs.getSoundStream();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            currVolume = am.getStreamVolume(mStream);
+            if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
             streamVol = currVolume;
             mVolume = currVolume;
             if (increasing) {
@@ -668,7 +675,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             mStream = 3;
-            currVolume = am.getStreamVolume(mStream);
+            if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
             int prefsVol = mPrefs.getLoudness();
             float volPercent = (float) prefsVol / Configs.MAX_VOLUME;
             int maxVol = am.getStreamMaxVolume(mStream);
