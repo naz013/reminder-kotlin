@@ -48,7 +48,7 @@ public class SettingsFragment extends BaseSettingsFragment {
     public void onResume() {
         super.onResume();
         if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.settings));
+            mCallback.onTitleChange(getString(R.string.action_settings));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(null);
         }
