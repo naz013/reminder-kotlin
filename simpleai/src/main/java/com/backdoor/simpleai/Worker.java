@@ -75,55 +75,45 @@ abstract class Worker implements WorkerInterface {
 
     @Override
     public long getMultiplier(String input) {
-        long result = 0;
         String[] parts = input.split("\\s");
+        int[] times = new int[5];
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             if (hasSeconds(string)) {
-                int integer;
                 try {
-                    integer = Integer.parseInt(parts[i - 1]);
+                    if (times[0] == 0) times[0] = Integer.parseInt(parts[i - 1]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
+                    if (times[0] == 0) times[0] = 1;
                 }
-                result = result + integer * SECOND;
             } else if (hasMinutes(string) != -1) {
                 int index = hasMinutes(string);
-                int integer;
                 try {
-                    integer = Integer.parseInt(parts[i - index]);
+                    if (times[1] == 0) times[1] = Integer.parseInt(parts[i - index]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
+                    if (times[1] == 0) times[1] = 1;
                 }
-                result = result + integer * MINUTE;
             } else if (hasHours(string) != -1) {
                 int index = hasHours(string);
-                int integer;
                 try {
-                    integer = Integer.parseInt(parts[i - index]);
+                    if (times[2] == 0) times[2] = Integer.parseInt(parts[i - index]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
+                    if (times[2] == 0) times[2] = 1;
                 }
-                result = result + integer * HOUR;
             } else if (hasDays(string)) {
-                int integer;
                 try {
-                    integer = Integer.parseInt(parts[i - 1]);
+                    if (times[3] == 0) times[3] = Integer.parseInt(parts[i - 1]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
+                    if (times[3] == 0) times[3] = 1;
                 }
-                result = result + integer * DAY;
             } else if (hasWeeks(string)) {
-                int integer;
                 try {
-                    integer = Integer.parseInt(parts[i - 1]);
+                    if (times[4] == 0) times[4] = Integer.parseInt(parts[i - 1]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    integer = 1;
+                    if (times[4] == 0) times[4] = 1;
                 }
-                result = result + integer * DAY * 7;
             }
         }
-        return result;
+        return (times[0] * SECOND) + (times[1] * MINUTE) + (times[2] * HOUR) + (times[3] * DAY) + (times[4] * 7 * DAY);
     }
 
     @Override

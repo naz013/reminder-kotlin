@@ -98,7 +98,6 @@ public class ConversationActivity extends ThemedActivity {
 
         @Override
         public void onRmsChanged(float v) {
-            Log.d(TAG, "onRmsChanged: " + v);
             v = v * 2000;
             double db = 0;
             if (v > 1) {
