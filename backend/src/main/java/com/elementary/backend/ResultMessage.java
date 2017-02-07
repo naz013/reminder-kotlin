@@ -1,4 +1,4 @@
-package com.example.Nazar.myapplication.backend;
+package com.elementary.backend;
 
 public class ResultMessage {
 
