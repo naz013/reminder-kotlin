@@ -2,7 +2,6 @@ package com.elementary.tasks.google_tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.GoogleTasks;
@@ -38,7 +37,6 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
     private TasksCallback mListener;
 
     public SyncGoogleTasksAsync(Context context, TasksCallback listener) {
-        Log.d(TAG, "SyncGoogleTasksAsync: ");
         this.mContext = context;
         this.mListener = listener;
     }

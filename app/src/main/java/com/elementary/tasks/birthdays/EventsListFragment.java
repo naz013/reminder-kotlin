@@ -3,6 +3,7 @@ package com.elementary.tasks.birthdays;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,8 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
 import com.elementary.tasks.reminder.RecyclerListener;
+import com.elementary.tasks.reminder.ReminderPreviewActivity;
+import com.elementary.tasks.reminder.ShoppingPreviewActivity;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,13 +90,13 @@ public class EventsListFragment extends Fragment implements RecyclerListener {
     @Override
     public void onResume() {
         super.onResume();
-        loaderAdapter();
+        loadAdapter();
     }
 
-    public void loaderAdapter(){
-        CalendarEventsAdapter customAdapter = new CalendarEventsAdapter(mContext, mDataList);
-        customAdapter.setEventListener(this);
-        binding.recyclerView.setAdapter(customAdapter);
+    public void loadAdapter(){
+        CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(mContext, mDataList);
+        mAdapter.setEventListener(this);
+        binding.recyclerView.setAdapter(mAdapter);
         reloadView();
     }
 
@@ -100,26 +111,79 @@ public class EventsListFragment extends Fragment implements RecyclerListener {
         }
     }
 
+    private void showBirthdayLcam(BirthdayItem birthdayItem) {
+        String[] items = {getString(R.string.edit), getString(R.string.delete)};
+        Dialogues.showLCAM(mContext, item -> {
+            switch (item){
+                case 0:
+                    editBirthday(birthdayItem);
+                    break;
+                case 1:
+                    RealmDb.getInstance().deleteBirthday(birthdayItem);
+                    loadAdapter();
+                    break;
+            }
+        }, items);
+    }
+
+    private void editBirthday(BirthdayItem item) {
+        startActivity(new Intent(mContext, AddBirthdayActivity.class)
+                .putExtra(Constants.INTENT_ID, item.getUuId()));
+    }
+
     @Override
     public void onItemClicked(int position, View view) {
-        Object object = mDataList.get(position);
+        Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
-//            startActivity(new Intent(mContext, AddBirthdayActivity.class)
-//                    .putExtra("BDid", ((BirthdayItem) object).getId())
-//                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        } else {
-//            Reminder.edit(((ReminderItem) object).getId(), mContext);
+            editBirthday((BirthdayItem) object);
+        } else if (object instanceof Reminder){
+            showReminder((Reminder) object);
         }
+    }
+
+    private void showReminder(Reminder object) {
+        if (Reminder.isSame(object.getType(), Reminder.BY_DATE_SHOP)){
+            mContext.startActivity(new Intent(mContext, ShoppingPreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, object.getUuId()));
+        } else {
+            mContext.startActivity(new Intent(mContext, ReminderPreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, object.getUuId()));
+        }
+    }
+
+    private void editReminder(String uuId) {
+        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
+    }
+
+    private void showActionDialog(Reminder reminder) {
+        final String[] items = {getString(R.string.open), getString(R.string.edit),
+                getString(R.string.move_to_trash)};
+        Dialogues.showLCAM(mContext, item -> {
+            switch (item){
+                case 0:
+                    showReminder(reminder);
+                    break;
+                case 1:
+                    editReminder(reminder.getUuId());
+                    break;
+                case 3:
+                    if (RealmDb.getInstance().moveToTrash(reminder.getUuId())) {
+                        EventControl control = EventControlImpl.getController(mContext, reminder.setRemoved(true));
+                        control.stop();
+                        loadAdapter();
+                    }
+                    break;
+            }
+        }, items);
     }
 
     @Override
     public void onItemLongClicked(int position, View view) {
-        Object object = mDataList.get(position);
+        Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
-//            BirthdayHelper.getInstance(mContext).deleteBirthday(((BirthdayItem) object).getId());
-//            mDataList.remove(position);
-//            loaderAdapter();
-//            Messages.toast(mContext, getString(R.string.deleted));
+            showBirthdayLcam((BirthdayItem) object);
+        } else if (object instanceof Reminder) {
+            showActionDialog((Reminder) object);
         }
     }
 
