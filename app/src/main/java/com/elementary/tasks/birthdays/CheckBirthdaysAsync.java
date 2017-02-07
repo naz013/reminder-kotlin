@@ -50,6 +50,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
 
     private boolean showDialog = false;
     private ProgressDialog pd;
+    private TaskCallback mCallback;
 
     public CheckBirthdaysAsync(Context context){
         this.mContext = context;
@@ -58,6 +59,17 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
     public CheckBirthdaysAsync(Context context, boolean showDialog){
         this.mContext = context;
         this.showDialog = showDialog;
+        if (showDialog){
+            pd = new ProgressDialog(context);
+            pd.setMessage(context.getString(R.string.please_wait));
+            pd.setCancelable(true);
+        }
+    }
+
+    public CheckBirthdaysAsync(Context context, boolean showDialog, TaskCallback callback){
+        this.mContext = context;
+        this.showDialog = showDialog;
+        this.mCallback = callback;
         if (showDialog){
             pd = new ProgressDialog(context);
             pd.setMessage(context.getString(R.string.please_wait));
@@ -147,5 +159,10 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
                         Toast.LENGTH_SHORT).show();
             }
         }
+        if (mCallback != null) mCallback.onFinish();
+    }
+
+    public interface TaskCallback {
+        void onFinish();
     }
 }

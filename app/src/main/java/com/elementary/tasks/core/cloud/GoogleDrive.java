@@ -50,12 +50,12 @@ public class GoogleDrive {
 
     private static final String TAG = "GoogleDrive";
 
-    private Context mContext;
+    protected Context mContext;
 
-    private final HttpTransport mTransport = AndroidHttp.newCompatibleTransport();
-    private final JsonFactory mJsonFactory = GsonFactory.getDefaultInstance();
+    final HttpTransport mTransport = AndroidHttp.newCompatibleTransport();
+    final JsonFactory mJsonFactory = GsonFactory.getDefaultInstance();
     private Drive driveService;
-    private static final String APPLICATION_NAME = "Reminder/6.0";
+    static final String APPLICATION_NAME = "Reminder/6.0";
     private static final String FOLDER_NAME = "Reminder";
 
     public GoogleDrive(Context context){
@@ -65,12 +65,16 @@ public class GoogleDrive {
     /**
      * Authorization method.
      */
-    public void authorize(){
-        GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(DriveScopes.DRIVE));
-        credential.setSelectedAccountName(SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser()));
-        driveService = new Drive.Builder(
-                mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME)
-                .build();
+    public boolean authorize(){
+        if (driveService != null) return true;
+        String user = SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser());
+        if (user.matches(".*@.*")) {
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(DriveScopes.DRIVE));
+            credential.setSelectedAccountName(user);
+            driveService = new Drive.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -93,8 +97,7 @@ public class GoogleDrive {
      * @return user info object
      */
     public UserItem getData() {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             try {
                 About about = driveService.about().get().setFields("user, storageQuota").execute();
                 About.StorageQuota quota = about.getStorageQuota();
@@ -112,9 +115,8 @@ public class GoogleDrive {
      * @return number of files in local folder.
      */
     public int countFiles() throws IOException {
-        if (!isLinked()) return 0;
+        if (!authorize()) return 0;
         int count = 0;
-        authorize();
         Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
         do {
             FileList files = request.execute();
@@ -143,8 +145,7 @@ public class GoogleDrive {
     }
 
     public void saveSettingsToDrive() throws IOException {
-        if (!isLinked()) return;
-        authorize();
+        if (!authorize()) return;
         String folderId = getFolderId();
         if (folderId == null){
             return;
@@ -286,11 +287,10 @@ public class GoogleDrive {
      * @throws IOException
      */
     private void saveToDrive(Metadata metadata) throws IOException {
-        if (!isLinked()) return;
+        if (!authorize()) return;
         if (metadata.getFolder() == null) return;
         java.io.File[] files = metadata.getFolder().listFiles();
         if (files == null) return;
-        authorize();
         String folderId = getFolderId();
         if (folderId == null){
             return;
@@ -311,10 +311,9 @@ public class GoogleDrive {
 
     public void download(boolean deleteBackup, Metadata metadata) throws IOException {
         java.io.File folder = metadata.getFolder();
-        if (!folder.exists() && !folder.mkdirs() || !isLinked()) {
+        if (!folder.exists() && !folder.mkdirs() || !authorize()) {
             return;
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + metadata.getFileExt() + "'")
                 .setFields("nextPageToken, files");
@@ -451,14 +450,13 @@ public class GoogleDrive {
      */
     public void deleteReminderFileByName(String title) throws IOException {
         LogUtil.d(TAG, "deleteReminderFileByName: " + title);
-        if (title == null || !isLinked()) {
+        if (title == null || !authorize()) {
             return;
         }
         String[] strs = title.split(".");
         if (strs.length != 0) {
             title = strs[0];
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
@@ -480,14 +478,13 @@ public class GoogleDrive {
      * @param title file name.
      */
     public void deleteNoteFileByName(String title) throws IOException {
-        if (title == null || !isLinked()) {
+        if (title == null || !authorize()) {
             return;
         }
         String[] strs = title.split(".");
         if (strs.length != 0) {
             title = strs[0];
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
@@ -509,14 +506,13 @@ public class GoogleDrive {
      * @param title file name.
      */
     public void deleteGroupFileByName(String title) throws IOException {
-        if (title == null || !isLinked()) {
+        if (title == null || !authorize()) {
             return;
         }
         String[] strs = title.split(".");
         if (strs.length != 0) {
             title = strs[0];
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
@@ -534,10 +530,9 @@ public class GoogleDrive {
     }
 
     public void deleteFileById(String id) throws IOException {
-        if (!isLinked()) {
+        if (!authorize()) {
             return;
         }
-        authorize();
         driveService.files().delete(id).execute();
     }
 
@@ -546,14 +541,13 @@ public class GoogleDrive {
      * @param title file name.
      */
     public void deleteBirthdayFileByName(String title) throws IOException {
-        if (title == null || !isLinked()) {
+        if (title == null || !authorize()) {
             return;
         }
         String[] strs = title.split(".");
         if (strs.length != 0) {
             title = strs[0];
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
@@ -575,14 +569,13 @@ public class GoogleDrive {
      * @param title file name.
      */
     public void deletePlaceFileByName(String title) throws IOException {
-        if (title == null || !isLinked()) {
+        if (title == null || !authorize()) {
             return;
         }
         String[] strs = title.split(".");
         if (strs.length != 0) {
             title = strs[0];
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
         if (request == null) return;
@@ -603,10 +596,9 @@ public class GoogleDrive {
      * Delete application folder from Google Drive.
      */
     public void clean() throws IOException {
-        if (!isLinked()) {
+        if (!authorize()) {
             return;
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
         if (request == null) return;
@@ -629,10 +621,9 @@ public class GoogleDrive {
      * @throws IOException
      */
     public void cleanFolder() throws IOException {
-        if (!isLinked()) {
+        if (!authorize()) {
             return;
         }
-        authorize();
         Drive.Files.List request = driveService.files().list()
                 .setQ("mimeType = 'text/plain' and (name contains '" + FileConfig.FILE_NAME_SETTINGS + "' " +
                         "or name contains '" + FileConfig.FILE_NAME_TEMPLATE + "' " +
@@ -710,15 +701,15 @@ public class GoogleDrive {
             return action;
         }
 
-        public String getFileExt() {
+        String getFileExt() {
             return fileExt;
         }
 
-        public java.io.File getFolder() {
+        java.io.File getFolder() {
             return folder;
         }
 
-        public String getMeta() {
+        String getMeta() {
             return meta;
         }
     }
