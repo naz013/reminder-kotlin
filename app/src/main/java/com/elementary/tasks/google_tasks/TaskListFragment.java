@@ -47,7 +47,7 @@ public class TaskListFragment extends Fragment {
 
         @Override
         public void onComplete() {
-
+            loaderAdapter();
         }
     };
 

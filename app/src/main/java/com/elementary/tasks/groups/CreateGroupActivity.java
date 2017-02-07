@@ -110,7 +110,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_group_edit, menu);
-        if (mItem != null) {
+        if (mItem != null && RealmDb.getInstance().getAllGroups().size() > 1) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete));
         }
         return true;

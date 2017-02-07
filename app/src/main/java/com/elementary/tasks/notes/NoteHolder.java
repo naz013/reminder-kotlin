@@ -41,7 +41,7 @@ public class NoteHolder extends RecyclerView.ViewHolder {
             if (mEventListener != null) {
                 mEventListener.onItemLongClicked(getAdapterPosition(), view);
             }
-            return false;
+            return true;
         });
     }
 
