@@ -1,4 +1,4 @@
-package com.example.Nazar.myapplication.backend;
+package com.elementary.backend;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;

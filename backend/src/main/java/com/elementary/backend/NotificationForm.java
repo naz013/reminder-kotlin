@@ -1,4 +1,4 @@
-package com.example.Nazar.myapplication.backend;
+package com.elementary.backend;
 
 /**
  * Copyright 2017 Nazar Suhovich
