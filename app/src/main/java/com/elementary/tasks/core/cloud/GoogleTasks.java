@@ -8,11 +8,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TaskListItem;
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.Data;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.Tasks;
@@ -42,36 +38,32 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class GoogleTasks {
+public class GoogleTasks extends GoogleDrive {
 
     private static final String TAG = "GoogleTasks";
     public static final String TASKS_NEED_ACTION = "needsAction";
     public static final String TASKS_COMPLETE = "completed";
 
-    private Context mContext;
-
-    private final HttpTransport m_transport = AndroidHttp.newCompatibleTransport();
-    private final JsonFactory m_jsonFactory = GsonFactory.getDefaultInstance();
     private Tasks service;
-    private static final String APPLICATION_NAME = "Reminder/5.0";
 
     public GoogleTasks(Context context) {
-        this.mContext = context;
+        super(context);
     }
 
-    public void authorize() {
-        GoogleAccountCredential m_credential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(TasksScopes.TASKS));
-        m_credential.setSelectedAccountName(SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser()));
-        service = new Tasks.Builder(m_transport, m_jsonFactory, m_credential).setApplicationName(APPLICATION_NAME).build();
-    }
-
-    public boolean isLinked() {
-        return SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser()).matches(".*@.*");
+    public boolean authorizeTasks() {
+        if (service != null) return true;
+        String user = SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser());
+        if (user.matches(".*@.*")) {
+            GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(TasksScopes.TASKS));
+            mCredential.setSelectedAccountName(user);
+            service = new Tasks.Builder(mTransport, mJsonFactory, mCredential).setApplicationName(APPLICATION_NAME).build();
+            return true;
+        }
+        return false;
     }
 
     public boolean insertTask(TaskItem item) throws IOException {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             Task task = new Task();
             task.setTitle(item.getTitle());
             if (item.getNotes() != null) task.setNotes(item.getNotes());
@@ -100,8 +92,7 @@ public class GoogleTasks {
     }
 
     public void updateTaskStatus(String status, String listId, String taskId) throws IOException {
-        if (isLinked() && taskId != null && listId != null) {
-            authorize();
+        if (authorize() && taskId != null && listId != null) {
             Task task = service.tasks().get(listId, taskId).execute();
             task.setStatus(status);
             if (status.matches(TASKS_NEED_ACTION)) {
@@ -113,15 +104,13 @@ public class GoogleTasks {
     }
 
     public void deleteTask(TaskItem item) throws IOException {
-        if (isLinked() && item != null) {
-            authorize();
+        if (authorize() && item != null) {
             service.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
     }
 
     public void updateTask(TaskItem item) throws IOException {
-        if (isLinked() && item != null) {
-            authorize();
+        if (authorize() && item != null) {
             Task task = service.tasks().get(item.getListId(), item.getTaskId()).execute();
             task.setStatus(TASKS_NEED_ACTION);
             task.setTitle(item.getTitle());
@@ -135,8 +124,7 @@ public class GoogleTasks {
 
     public List<Task> getTasks(String listId) {
         List<Task> taskLists = new ArrayList<>();
-        if (isLinked() && listId != null) {
-            authorize();
+        if (authorize() && listId != null) {
             try {
                 taskLists = service.tasks().list(listId).execute().getItems();
             } catch (IOException e) {
@@ -148,16 +136,14 @@ public class GoogleTasks {
 
     public TaskLists getTaskLists() throws IOException {
         TaskLists taskLists = null;
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             taskLists = service.tasklists().list().execute();
         }
         return taskLists;
     }
 
     public void insertTasksList(String listTitle, int color) {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             TaskList taskList = new TaskList();
             taskList.setTitle(listTitle);
             try {
@@ -171,8 +157,7 @@ public class GoogleTasks {
     }
 
     public void updateTasksList(final String listTitle, final String listId) throws IOException {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             TaskList taskList = service.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
             service.tasklists().update(listId, taskList).execute();
@@ -183,8 +168,7 @@ public class GoogleTasks {
     }
 
     public void deleteTaskList(final String listId) {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             try {
                 service.tasklists().delete(listId).execute();
             } catch (IOException e) {
@@ -194,8 +178,7 @@ public class GoogleTasks {
     }
 
     public void clearTaskList(final String listId) {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             try {
                 service.tasks().clear(listId).execute();
             } catch (IOException e) {
@@ -205,8 +188,7 @@ public class GoogleTasks {
     }
 
     public boolean moveTask(TaskItem item, String oldList) {
-        if (isLinked()) {
-            authorize();
+        if (authorize()) {
             try {
                 Task task = service.tasks().get(oldList, item.getTaskId()).execute();
                 if (task != null) {

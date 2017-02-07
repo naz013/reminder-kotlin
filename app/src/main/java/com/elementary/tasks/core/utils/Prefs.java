@@ -882,7 +882,7 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(IS_CALENDAR_SHOWN, false);
             uiEd.putBoolean(IS_LIST_SHOWN, false);
             uiEd.putBoolean(CONTACT_BIRTHDAYS, false);
-            uiEd.putBoolean(BIRTHDAY_REMINDER, true);
+            uiEd.putBoolean(BIRTHDAY_REMINDER, false);
             uiEd.putBoolean(CALENDAR_IMAGE, false);
             uiEd.putBoolean(EXPORT_TO_CALENDAR, false);
             uiEd.putBoolean(AUTO_CHECK_BIRTHDAYS, false);
@@ -1167,5 +1167,13 @@ public class Prefs extends SharedPrefs {
 
     public void setRateCount(int count) {
         putInt(RATE_COUNT, count);
+    }
+
+    public boolean isUserLogged() {
+        return getBoolean(USER_LOGGED);
+    }
+
+    public void setUserLogged(boolean value) {
+        putBoolean(USER_LOGGED, value);
     }
 }

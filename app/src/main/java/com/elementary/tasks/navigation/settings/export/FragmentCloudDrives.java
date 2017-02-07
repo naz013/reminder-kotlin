@@ -1,16 +1,10 @@
 package com.elementary.tasks.navigation.settings.export;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -19,11 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
-import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.cloud.DropboxLogin;
+import com.elementary.tasks.core.cloud.GoogleLogin;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -33,17 +25,6 @@ import com.elementary.tasks.databinding.FragmentCloudDrivesBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.common.AccountPicker;
-import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
-import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.tasks.TasksScopes;
-
-import java.io.IOException;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -63,28 +44,49 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragmentCloudDrives extends BaseSettingsFragment {
 
-    private static final int REQUEST_AUTHORIZATION = 1;
-    private static final int REQUEST_ACCOUNT_PICKER = 3;
-    private static final String MARKET_APP_JUSTREMINDER = "com.cray.software.justreminder";
-    private static final String MARKET_APP_JUSTREMINDER_PRO = "com.cray.software.justreminderpro";
-
-    private Dropbox mDropbox;
-    private GoogleDrive mGoogleDrive;
+    private DropboxLogin mDropbox;
+    private GoogleLogin mGoogleLogin;
 
     private FragmentCloudDrivesBinding binding;
     private RoboButton mDropboxButton, mGoogleDriveButton;
     private RoboTextView mGoogleDriveTitle, mDropboxTitle;
 
-    private String mAccountName;
     private ProgressDialog mDialog;
+    private GoogleLogin.LoginCallback mLoginCallback = new GoogleLogin.LoginCallback() {
+        @Override
+        public void onSuccess() {
+            startSync();
+        }
+
+        @Override
+        public void onFail() {
+            showErrorDialog();
+        }
+    };
+    private DropboxLogin.LoginCallback mDropboxCallback = new DropboxLogin.LoginCallback() {
+        @Override
+        public void onSuccess(boolean logged) {
+            if (logged) {
+                mDropboxButton.setText(getString(R.string.disconnect));
+            } else {
+                mDropboxButton.setText(getString(R.string.connect));
+            }
+        }
+    };
+
+    private void showErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage(getString(R.string.failed_to_login));
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.create().show();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCloudDrivesBinding.inflate(inflater, container, false);
-        mDropbox = new Dropbox(mContext);
-        mDropbox.startSession();
-        mGoogleDrive = new GoogleDrive(mContext);
+        mDropbox = new DropboxLogin(getActivity(), mDropboxCallback);
+        mGoogleLogin = new GoogleLogin(getActivity(), mLoginCallback);
         initDropboxButton();
         initGoogleDriveButton();
         initTitles();
@@ -100,9 +102,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void initGoogleDriveButton() {
         mGoogleDriveButton = binding.linkGDrive;
-        mGoogleDriveButton.setOnClickListener(v -> {
-            googleDriveButtonClick();
-        });
+        mGoogleDriveButton.setOnClickListener(v -> googleDriveButtonClick());
     }
 
     private void googleDriveButtonClick() {
@@ -119,27 +119,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void initDropboxButton() {
         mDropboxButton = binding.linkDropbox;
-        mDropboxButton.setOnClickListener(v -> dropboxClick());
-    }
-
-    private void dropboxClick() {
-        boolean isIn = isAppInstalled(MARKET_APP_JUSTREMINDER_PRO);
-        if (Module.isPro()) isIn = isAppInstalled(MARKET_APP_JUSTREMINDER);
-        if (isIn) {
-            checkDialog().show();
-        } else {
-            performDropboxLinking();
-        }
-    }
-
-    private void performDropboxLinking() {
-        if (mDropbox.isLinked()) {
-            if (mDropbox.unlink()) {
-                mDropboxButton.setText(getString(R.string.connect));
-            }
-        } else {
-            mDropbox.startLink();
-        }
+        mDropboxButton.setOnClickListener(v -> mDropbox.login());
     }
 
     private void switchGoogleStatus() {
@@ -147,21 +127,15 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
             Toast.makeText(mContext, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (mGoogleDrive.isLinked()){
+        if (mGoogleLogin.isLogged()){
             disconnectFromGoogleServices();
         } else {
-            requestGoogleConnection();
+            mGoogleLogin.login();
         }
     }
 
-    private void requestGoogleConnection() {
-        Intent intent = AccountPicker.newChooseAccountIntent(null, null,
-                new String[]{"com.google"}, false, null, null, null, null);
-        startActivityForResult(intent, REQUEST_AUTHORIZATION);
-    }
-
     private void disconnectFromGoogleServices() {
-        mGoogleDrive.unlink();
+        mGoogleLogin.logOut();
         checkGoogleStatus();
         RealmDb.getInstance().deleteTasks();
         RealmDb.getInstance().deleteTaskLists();
@@ -179,44 +153,8 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
         }
     }
 
-    private boolean isAppInstalled(String packageName) {
-        PackageManager pm = mContext.getPackageManager();
-        boolean installed;
-        try {
-            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            installed = false;
-        }
-        return installed;
-    }
-
-    protected Dialog checkDialog() {
-        return new AlertDialog.Builder(mContext)
-                .setMessage(getString(R.string.other_version_detected))
-                .setPositiveButton(getString(R.string.open), (dialog, which) -> {
-                    Intent i;
-                    PackageManager manager = mContext.getPackageManager();
-                    if (Module.isPro()) i = manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER);
-                    else i = manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO);
-                    i.addCategory(Intent.CATEGORY_LAUNCHER);
-                    startActivity(i);
-                })
-                .setNegativeButton(getString(R.string.delete), (dialog, which) -> {
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    if (Module.isPro()) intent.setData(Uri.parse("package:" + MARKET_APP_JUSTREMINDER));
-                    else intent.setData(Uri.parse("package:" + MARKET_APP_JUSTREMINDER_PRO));
-                    startActivity(intent);
-                })
-                .setNeutralButton(getString(R.string.cancel), (dialog, which) -> {
-                    dialog.dismiss();
-                })
-                .setCancelable(true)
-                .create();
-    }
-
     private void checkGoogleStatus(){
-        if (mGoogleDrive.isLinked()){
+        if (mGoogleLogin.isLogged()){
             mGoogleDriveButton.setText(R.string.disconnect);
         } else {
             mGoogleDriveButton.setText(getString(R.string.connect));
@@ -240,87 +178,18 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
             mCallback.onTitleChange(getString(R.string.cloud_services));
             mCallback.onFragmentSelect(this);
         }
-        checkDropboxStatus();
+        mDropbox.checkDropboxStatus();
         checkGoogleStatus();
-    }
-
-    private void checkDropboxStatus() {
-        if (mDropbox.checkLink() && mDropbox.isLinked()) {
-            mDropboxButton.setText(getString(R.string.disconnect));
-        } else if (mDropbox.isLinked()) {
-            mDropboxButton.setText(getString(R.string.disconnect));
-        } else {
-            mDropboxButton.setText(getString(R.string.connect));
-        }
-    }
-
-    void getAndUseAuthTokenInAsyncTask(Account account) {
-        AsyncTask<Account, String, String> task = new AsyncTask<Account, String, String>() {
-            ProgressDialog progressDlg;
-            AsyncTask<Account, String, String> me = this;
-
-            @Override
-            protected void onPreExecute() {
-                progressDlg = new ProgressDialog(mContext, ProgressDialog.STYLE_SPINNER);
-                progressDlg.setMax(100);
-                progressDlg.setMessage(getString(R.string.trying_to_log_in));
-                progressDlg.setCancelable(false);
-                progressDlg.setIndeterminate(false);
-                progressDlg.setOnCancelListener(dialog -> {
-                    progressDlg.dismiss();
-                    me.cancel(true);
-                });
-                progressDlg.show();
-            }
-
-            @Override
-            protected String doInBackground(Account... params) {
-                return getAccessToken(params[0]);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                if (s != null) {
-                    mAccountName = s;
-                }
-                progressDlg.dismiss();
-            }
-        };
-        task.execute(account);
-    }
-
-    private String getAccessToken(Account account) {
-        try {
-            return GoogleAuthUtil.getToken(mContext, account.name, "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS);
-        } catch (UserRecoverableAuthException e) {
-            startActivityForResult(e.getIntent(), REQUEST_ACCOUNT_PICKER);
-            e.printStackTrace();
-            return null;
-        } catch (GoogleAuthException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_AUTHORIZATION && resultCode == RESULT_OK) {
-            mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            GoogleAccountManager gam = new GoogleAccountManager(mContext);
-            getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName));
-            startSync(mAccountName);
-        } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
-            mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            startSync(mAccountName);
-        }
+        if (mGoogleLogin != null) mGoogleLogin.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void startSync(String accountName) {
-        Prefs.getInstance(mContext).setDriveUser(SuperUtil.encrypt(accountName));
+    private void startSync() {
+        checkGoogleStatus();
         if (mCallback != null) mCallback.refreshMenu();
         mDialog = ProgressDialog.show(mContext, null, getString(R.string.retrieving_tasks), false, true);
         new GetTaskListAsync(mContext, new TasksCallback() {

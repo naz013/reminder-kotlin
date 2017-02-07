@@ -10,6 +10,7 @@ import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.login.LoginActivity;
 import com.elementary.tasks.navigation.MainActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -25,7 +26,6 @@ public class SplashScreen extends AppCompatActivity {
         if (Prefs.getInstance(this).isGcmEnabled()) {
             FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
         }
-        initGroups();
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
@@ -34,7 +34,17 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        runApplication();
+        if (!Prefs.getInstance(this).isUserLogged()) {
+            openLoginScreen();
+        } else {
+            initGroups();
+            runApplication();
+        }
+    }
+
+    private void openLoginScreen() {
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     private void initGroups() {
