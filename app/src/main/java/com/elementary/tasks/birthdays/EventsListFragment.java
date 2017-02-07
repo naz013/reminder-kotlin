@@ -128,7 +128,7 @@ public class EventsListFragment extends Fragment implements RecyclerListener {
 
     private void editBirthday(BirthdayItem item) {
         startActivity(new Intent(mContext, AddBirthdayActivity.class)
-                .putExtra(Constants.INTENT_ID, item.getUuId()));
+                .putExtra(Constants.INTENT_ID, item.getKey()));
     }
 
     @Override

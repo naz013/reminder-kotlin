@@ -96,7 +96,6 @@ public class AddBirthdayActivity extends ThemedActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            binding.birthName.setText(mItem.getName());
             if (!TextUtils.isEmpty(mItem.getNumber())) {
                 binding.phone.setText(mItem.getNumber());
                 binding.contactCheck.setChecked(true);
