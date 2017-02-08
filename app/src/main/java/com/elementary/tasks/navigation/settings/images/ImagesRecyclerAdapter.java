@@ -147,7 +147,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
 
     @BindingAdapter("loadPhoto")
     public static void loadPhoto(ImageView imageView, long id) {
-        boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
+        boolean isDark = new ThemeUtil(imageView.getContext()).isDark();
         String url = RetrofitBuilder.getImageLink(id, 800, 480);
         PicassoTool.getInstance(imageView.getContext())
                 .getPicasso()

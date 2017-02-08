@@ -10,7 +10,6 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -65,9 +64,9 @@ public class GoogleDrive {
     /**
      * Authorization method.
      */
-    public boolean authorize(){
+    private boolean authorize(){
         if (driveService != null) return true;
-        String user = SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser());
+        String user = getUser();
         if (user.matches(".*@.*")) {
             GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(DriveScopes.DRIVE));
             credential.setSelectedAccountName(user);
@@ -77,12 +76,16 @@ public class GoogleDrive {
         return false;
     }
 
+    protected String getUser() {
+        return Prefs.getInstance(mContext).getDriveUser();
+    }
+
     /**
      * Check if user has already login to Google Drive from this application.
      * @return return true if user was already logged.
      */
     public boolean isLinked(){
-        return SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser()).matches(".*@.*");
+        return getUser().matches(".*@.*");
     }
 
     /**

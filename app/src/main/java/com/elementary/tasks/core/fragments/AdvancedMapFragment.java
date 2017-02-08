@@ -428,7 +428,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initArgs();
-        mColor = ThemeUtil.getInstance(mContext);
+        mColor = new ThemeUtil(mContext);
         binding = FragmentMapBinding.inflate(inflater, container, false);
         final Prefs prefs = Prefs.getInstance(mContext);
         markerRadius = prefs.getRadius();

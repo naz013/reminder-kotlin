@@ -74,7 +74,7 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
         minutesView = (RoboTextView) findViewById(R.id.minutesView);
         secondsView = (RoboTextView) findViewById(R.id.secondsView);
         deleteButton = (ImageButton) findViewById(R.id.deleteButton);
-        if (ThemeUtil.getInstance(context).isDark()) {
+        if (new ThemeUtil(context).isDark()) {
             deleteButton.setImageResource(R.drawable.ic_backspace_white);
         } else {
             deleteButton.setImageResource(R.drawable.ic_backspace);

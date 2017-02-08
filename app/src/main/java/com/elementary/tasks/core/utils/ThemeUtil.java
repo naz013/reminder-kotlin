@@ -1,3 +1,16 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StyleRes;
+
+import com.elementary.tasks.R;
+
+import java.util.Calendar;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -14,19 +27,6 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StyleRes;
-
-import com.elementary.tasks.R;
-
-import java.util.Calendar;
-
 public class ThemeUtil {
 
     public static final int THEME_AUTO = 0;
@@ -35,17 +35,9 @@ public class ThemeUtil {
     public static final int NUM_OF_MARKERS = 16;
 
     private Context mContext;
-    private static ThemeUtil instance;
 
-    private ThemeUtil(Context context) {
+    public ThemeUtil(Context context) {
         this.mContext = context;
-    }
-
-    public static ThemeUtil getInstance(Context context) {
-        if (instance == null) {
-            instance = new ThemeUtil(context);
-        }
-        return instance;
     }
 
     @ColorInt

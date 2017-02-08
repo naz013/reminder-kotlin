@@ -257,12 +257,11 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
 
     public void showShowcase() {
         if (!Prefs.getInstance(mContext).isShowcase(SHOWCASE)) {
-            ThemeUtil coloring = ThemeUtil.getInstance(mContext);
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
-            config.setMaskColor(coloring.getColor(coloring.colorAccent()));
-            config.setContentTextColor(coloring.getColor(R.color.whitePrimary));
-            config.setDismissTextColor(coloring.getColor(R.color.whitePrimary));
+            config.setMaskColor(mColor.getColor(mColor.colorAccent()));
+            config.setContentTextColor(mColor.getColor(R.color.whitePrimary));
+            config.setDismissTextColor(mColor.getColor(R.color.whitePrimary));
 
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(mContext);
             sequence.setConfig(config);
@@ -302,7 +301,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         mRadius = prefs.getRadius();
         mMapType = prefs.getMapType();
 
-        mColor = ThemeUtil.getInstance(mContext);
+        mColor = new ThemeUtil(mContext);
         isDark = mColor.isDark();
 
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
@@ -444,7 +443,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         for (int i = 0; i < ThemeUtil.NUM_OF_MARKERS; i++) {
             ImageButton ib = new ImageButton(mContext);
             ib.setBackgroundResource(android.R.color.transparent);
-            ib.setImageResource(ThemeUtil.getInstance(mContext).getMarkerStyle(i));
+            ib.setImageResource(new ThemeUtil(mContext).getMarkerStyle(i));
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

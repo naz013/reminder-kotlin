@@ -40,7 +40,7 @@ public class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableT
     public SelectableTemplatesAdapter(List<TemplateItem> mDataList, Context context) {
         this.mDataList = mDataList;
         this.mContext = context;
-        themeUtil = ThemeUtil.getInstance(context);
+        themeUtil = new ThemeUtil(context);
         setHasStableIds(true);
     }
 

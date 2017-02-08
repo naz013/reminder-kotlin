@@ -108,7 +108,7 @@ public class IoHelper {
      */
     public void restoreReminder(boolean delete) {
         try {
-            BackupTool.getInstance(mContext).importReminders();
+            BackupTool.getInstance().importReminders(mContext);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -181,7 +181,7 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
 
     @BindingAdapter({"loadIcon"})
     public static void loadIcon(ImageView imageView, int type) {
-        boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
+        boolean isDark = new ThemeUtil(imageView.getContext()).isDark();
         if (type == CallLog.Calls.INCOMING_TYPE) {
             imageView.setImageResource(isDark ? R.drawable.ic_call_received_white_24dp : R.drawable.ic_call_received_black_24dp);
         } else if (type == CallLog.Calls.MISSED_TYPE) {
@@ -193,7 +193,7 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
 
     @BindingAdapter({"loadCallImage"})
     public static void loadImage(ImageView imageView, String v) {
-        boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
+        boolean isDark = new ThemeUtil(imageView.getContext()).isDark();
         if (v == null) {
             imageView.setImageResource(isDark ? R.drawable.ic_perm_identity_white_24dp : R.drawable.ic_perm_identity_black_24dp);
             return;

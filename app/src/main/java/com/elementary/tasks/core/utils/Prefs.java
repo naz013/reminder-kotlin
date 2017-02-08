@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
@@ -28,15 +29,11 @@ import java.util.Locale;
 
 public class Prefs extends SharedPrefs {
 
+    private static final String TAG = "Prefs";
     public static final String DRIVE_USER_NONE = "none";
 
-    private static Prefs instance;
-
     public static Prefs getInstance(Context context) {
-        if (instance == null) {
-            instance = new Prefs(context);
-        }
-        return instance;
+        return new Prefs(context);
     }
 
     private Prefs(Context context) {
@@ -372,11 +369,14 @@ public class Prefs extends SharedPrefs {
     }
 
     public String getDriveUser() {
-        return getString(DRIVE_USER);
+        String user = SuperUtil.decrypt(getString(DRIVE_USER));
+        Log.d(TAG, "getDriveUser: " + user);
+        return user;
     }
 
     public void setDriveUser(String value) {
-        putString(DRIVE_USER, value);
+        Log.d(TAG, "setDriveUser: " + value);
+        putString(DRIVE_USER, SuperUtil.encrypt(value));
     }
 
     public String getReminderImage() {

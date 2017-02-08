@@ -157,7 +157,7 @@ public class PermanentReminderService extends Service {
             remoteViews.setTextViewText(R.id.text, getString(R.string.no_events));
             remoteViews.setViewVisibility(R.id.featured, View.GONE);
         }
-        ThemeUtil cs = ThemeUtil.getInstance(getApplicationContext());
+        ThemeUtil cs = new ThemeUtil(getApplicationContext());
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
         startForeground(PERM_ID, notification.build());
     }

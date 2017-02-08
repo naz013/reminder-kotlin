@@ -61,64 +61,66 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         GoogleDrive drive = new GoogleDrive(mContext);
-        publishProgress(mContext.getString(R.string.syncing_groups));
-        try {
-            drive.downloadGroups(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<GroupItem> list = RealmDb.getInstance().getAllGroups();
-        if (list.size() == 0) {
-            String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
-            List<Reminder> items = RealmDb.getInstance().getAllReminders();
-            for (Reminder item : items) {
-                item.setGroupUuId(defUiID);
-                RealmDb.getInstance().saveObject(item);
+        if (drive.isLinked()) {
+            publishProgress(mContext.getString(R.string.syncing_groups));
+            try {
+                drive.downloadGroups(false);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
+            List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+            if (list.size() == 0) {
+                String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
+                List<Reminder> items = RealmDb.getInstance().getAllReminders();
+                for (Reminder item : items) {
+                    item.setGroupUuId(defUiID);
+                    RealmDb.getInstance().saveObject(item);
+                }
+            }
 
-        publishProgress(mContext.getString(R.string.syncing_reminders));
-        try {
-            drive.downloadReminders(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            publishProgress(mContext.getString(R.string.syncing_reminders));
+            try {
+                drive.downloadReminders(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        //export & import notes
-        publishProgress(mContext.getString(R.string.syncing_notes));
-        try {
-            drive.downloadNotes(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            //export & import notes
+            publishProgress(mContext.getString(R.string.syncing_notes));
+            try {
+                drive.downloadNotes(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        //export & import birthdays
-        publishProgress(mContext.getString(R.string.syncing_birthdays));
-        try {
-            drive.downloadBirthdays(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            //export & import birthdays
+            publishProgress(mContext.getString(R.string.syncing_birthdays));
+            try {
+                drive.downloadBirthdays(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        //export & import places
-        publishProgress(mContext.getString(R.string.syncing_places));
-        try {
-            drive.downloadPlaces(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            //export & import places
+            publishProgress(mContext.getString(R.string.syncing_places));
+            try {
+                drive.downloadPlaces(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        //export & import templates
-        publishProgress(mContext.getString(R.string.syncing_templates));
-        try {
-            drive.downloadTemplates(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            drive.downloadSettings(false);
-        } catch (IOException e) {
-            e.printStackTrace();
+            //export & import templates
+            publishProgress(mContext.getString(R.string.syncing_templates));
+            try {
+                drive.downloadTemplates(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                drive.downloadSettings(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

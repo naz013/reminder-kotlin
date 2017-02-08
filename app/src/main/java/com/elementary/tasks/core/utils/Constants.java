@@ -15,6 +15,7 @@ package com.elementary.tasks.core.utils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class Constants {
     public static final int MAP_NORMAL = 1;
     public static final int MAP_SATELLITE = 2;

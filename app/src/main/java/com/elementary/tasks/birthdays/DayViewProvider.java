@@ -95,7 +95,7 @@ public class DayViewProvider {
 
     public void loadBirthdays(){
         List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
-        ThemeUtil cs = ThemeUtil.getInstance(mContext);
+        ThemeUtil cs = new ThemeUtil(mContext);
         int color = cs.getColor(cs.colorBirthdayCalendar());
         for (BirthdayItem item : list) {
             Date date = null;

@@ -1,3 +1,11 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+
+import java.io.File;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -14,19 +22,12 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-
-import java.io.File;
-
 public class TelephonyUtil {
 
-    public TelephonyUtil(){}
+    public TelephonyUtil() {
+    }
 
-    public static void sendNote(File file, Context context, String message){
+    public static void sendNote(File file, Context context, String message) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         String title = "Note";
@@ -49,7 +50,7 @@ public class TelephonyUtil {
     }
 
     public static void sendMail(Context context, String email, String subject,
-                                String message, String filePath){
+                                String message, String filePath) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
@@ -62,14 +63,14 @@ public class TelephonyUtil {
         context.startActivity(Intent.createChooser(intent, "Send email..."));
     }
 
-    public static void sendSms(String number, Context context){
+    public static void sendSms(String number, Context context) {
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         smsIntent.setData(Uri.parse("sms:" + number));
         context.startActivity(smsIntent);
     }
 
     @SuppressWarnings("MissingPermission")
-    public static void makeCall(String number, Context context){
+    public static void makeCall(String number, Context context) {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
         context.startActivity(callIntent);
@@ -85,21 +86,21 @@ public class TelephonyUtil {
         context.startActivity(browserIntent);
     }
 
-    public static void skypeCall(String number, Context context){
+    public static void skypeCall(String number, Context context) {
         String uri = "skype:" + number + "?call";
         Intent sky = new Intent("android.intent.action.VIEW");
         sky.setData(Uri.parse(uri));
         context.startActivity(sky);
     }
 
-    public static void skypeVideoCall(String number, Context context){
+    public static void skypeVideoCall(String number, Context context) {
         String uri = "skype:" + number + "?call&video=true";
         Intent sky = new Intent("android.intent.action.VIEW");
         sky.setData(Uri.parse(uri));
         context.startActivity(sky);
     }
 
-    public static void skypeChat(String number, Context context){
+    public static void skypeChat(String number, Context context) {
         String uri = "skype:" + number + "?chat";
         Intent sky = new Intent("android.intent.action.VIEW");
         sky.setData(Uri.parse(uri));

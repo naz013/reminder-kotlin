@@ -3,9 +3,7 @@ package com.elementary.tasks.core.cloud;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TaskListItem;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -50,9 +48,9 @@ public class GoogleTasks extends GoogleDrive {
         super(context);
     }
 
-    public boolean authorizeTasks() {
+    private boolean authorizeTasks() {
         if (service != null) return true;
-        String user = SuperUtil.decrypt(Prefs.getInstance(mContext).getDriveUser());
+        String user = getUser();
         if (user.matches(".*@.*")) {
             GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(mContext, Collections.singleton(TasksScopes.TASKS));
             mCredential.setSelectedAccountName(user);
@@ -63,7 +61,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public boolean insertTask(TaskItem item) throws IOException {
-        if (authorize()) {
+        if (authorizeTasks()) {
             Task task = new Task();
             task.setTitle(item.getTitle());
             if (item.getNotes() != null) task.setNotes(item.getNotes());
@@ -92,7 +90,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public void updateTaskStatus(String status, String listId, String taskId) throws IOException {
-        if (authorize() && taskId != null && listId != null) {
+        if (authorizeTasks() && taskId != null && listId != null) {
             Task task = service.tasks().get(listId, taskId).execute();
             task.setStatus(status);
             if (status.matches(TASKS_NEED_ACTION)) {
@@ -104,13 +102,13 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public void deleteTask(TaskItem item) throws IOException {
-        if (authorize() && item != null) {
+        if (authorizeTasks() && item != null) {
             service.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
     }
 
     public void updateTask(TaskItem item) throws IOException {
-        if (authorize() && item != null) {
+        if (authorizeTasks() && item != null) {
             Task task = service.tasks().get(item.getListId(), item.getTaskId()).execute();
             task.setStatus(TASKS_NEED_ACTION);
             task.setTitle(item.getTitle());
@@ -124,7 +122,7 @@ public class GoogleTasks extends GoogleDrive {
 
     public List<Task> getTasks(String listId) {
         List<Task> taskLists = new ArrayList<>();
-        if (authorize() && listId != null) {
+        if (authorizeTasks() && listId != null) {
             try {
                 taskLists = service.tasks().list(listId).execute().getItems();
             } catch (IOException e) {
@@ -136,14 +134,14 @@ public class GoogleTasks extends GoogleDrive {
 
     public TaskLists getTaskLists() throws IOException {
         TaskLists taskLists = null;
-        if (authorize()) {
+        if (authorizeTasks()) {
             taskLists = service.tasklists().list().execute();
         }
         return taskLists;
     }
 
     public void insertTasksList(String listTitle, int color) {
-        if (authorize()) {
+        if (authorizeTasks()) {
             TaskList taskList = new TaskList();
             taskList.setTitle(listTitle);
             try {
@@ -157,7 +155,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public void updateTasksList(final String listTitle, final String listId) throws IOException {
-        if (authorize()) {
+        if (authorizeTasks()) {
             TaskList taskList = service.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
             service.tasklists().update(listId, taskList).execute();
@@ -168,7 +166,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public void deleteTaskList(final String listId) {
-        if (authorize()) {
+        if (authorizeTasks()) {
             try {
                 service.tasklists().delete(listId).execute();
             } catch (IOException e) {
@@ -178,7 +176,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public void clearTaskList(final String listId) {
-        if (authorize()) {
+        if (authorizeTasks()) {
             try {
                 service.tasks().clear(listId).execute();
             } catch (IOException e) {
@@ -188,7 +186,7 @@ public class GoogleTasks extends GoogleDrive {
     }
 
     public boolean moveTask(TaskItem item, String oldList) {
-        if (authorize()) {
+        if (authorizeTasks()) {
             try {
                 Task task = service.tasks().get(oldList, item.getTaskId()).execute();
                 if (task != null) {

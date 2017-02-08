@@ -79,7 +79,7 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
     private void initRemindersColorPrefs() {
         binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs);
         binding.reminderColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentRemindersColor(), getString(R.string.reminders_color)));
-        binding.reminderColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getReminderColor()));
+        binding.reminderColorPrefs.setViewResource(new ThemeUtil(mContext).getIndicator(Prefs.getInstance(mContext).getReminderColor()));
     }
 
     private void initRemindersPrefs() {
@@ -129,12 +129,12 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
 
     private void initBirthdaysColorPrefs() {
         binding.selectedColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentBirthdaysColor(), getString(R.string.birthdays_color)));
-        binding.selectedColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getBirthdayColor()));
+        binding.selectedColorPrefs.setViewResource(new ThemeUtil(mContext).getIndicator(Prefs.getInstance(mContext).getBirthdayColor()));
     }
 
     private void initTodayColorPrefs() {
         binding.themeColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentTodayColor(), getString(R.string.today_color)));
-        binding.themeColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getTodayColor()));
+        binding.themeColorPrefs.setViewResource(new ThemeUtil(mContext).getIndicator(Prefs.getInstance(mContext).getTodayColor()));
     }
 
     @Override

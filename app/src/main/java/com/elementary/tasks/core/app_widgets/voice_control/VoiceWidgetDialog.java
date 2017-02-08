@@ -40,7 +40,7 @@ public class VoiceWidgetDialog extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeUtil cs = ThemeUtil.getInstance(this);
+        ThemeUtil cs = new ThemeUtil(this);
         setTheme(cs.getDialogStyle());
         if (SuperUtil.isGooglePlayServicesAvailable(this)) {
             ReminderApp application = (ReminderApp) getApplication();

@@ -360,10 +360,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
         @Override
         protected Void doInBackground(Void... params) {
-            CalendarUtils cm = CalendarUtils.getInstance(mContext);
             long currTime = System.currentTimeMillis();
             int calID = Prefs.getInstance(mContext).getEventsCalendar();
-            ArrayList<CalendarUtils.EventItem> eventItems = cm.getEvents(calID);
+            ArrayList<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
             if (eventItems != null && eventItems.size() > 0){
                 List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                 for (CalendarUtils.EventItem item : eventItems) {

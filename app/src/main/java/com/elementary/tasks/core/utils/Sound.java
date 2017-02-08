@@ -1,3 +1,14 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -14,50 +25,39 @@
  * limitations under the License.
  */
 
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-
-import java.io.File;
-import java.io.IOException;
-
 public class Sound {
-    
+
     private Context mContext;
     private MediaPlayer mMediaPlayer;
     private boolean isPaused;
     private String lastFile;
 
-    public Sound(Context context){
+    public Sound(Context context) {
         this.mContext = context;
     }
 
-    public void stop(){
+    public void stop() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             isPaused = false;
         }
     }
 
-    public void pause(){
+    public void pause() {
         if (mMediaPlayer != null) {
             mMediaPlayer.pause();
             isPaused = true;
         }
     }
 
-    public void resume(){
+    public void resume() {
         if (mMediaPlayer != null) {
             mMediaPlayer.start();
             isPaused = false;
         }
     }
 
-    public boolean isPaused(){
+    public boolean isPaused() {
         return isPaused;
     }
 
@@ -69,7 +69,7 @@ public class Sound {
         return lastFile != null && path.equalsIgnoreCase(lastFile);
     }
 
-    public void play(String path){
+    public void play(String path) {
         lastFile = path;
         File file = new File(path);
         Uri soundUri = Uri.fromFile(file);
@@ -87,12 +87,12 @@ public class Sound {
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {
             mMediaPlayer.prepareAsync();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
-    public void playAlarm(Uri path, boolean looping){
+    public void playAlarm(Uri path, boolean looping) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
@@ -116,12 +116,12 @@ public class Sound {
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {
             mMediaPlayer.prepareAsync();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
-    public void playAlarm(AssetFileDescriptor afd, boolean looping){
+    public void playAlarm(AssetFileDescriptor afd, boolean looping) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
@@ -141,7 +141,7 @@ public class Sound {
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {
             mMediaPlayer.prepareAsync();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }

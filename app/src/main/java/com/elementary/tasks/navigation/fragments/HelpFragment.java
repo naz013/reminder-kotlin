@@ -26,7 +26,7 @@ public class HelpFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        boolean isDark = ThemeUtil.getInstance(mContext).isDark();
+        boolean isDark = new ThemeUtil(mContext).isDark();
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {

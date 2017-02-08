@@ -51,10 +51,10 @@ abstract class RepeatableEventManager extends EventManager {
         }
         if (mReminder.isExportToCalendar()) {
             if (Prefs.getInstance(mContext).isStockCalendarEnabled()) {
-                CalendarUtils.getInstance(mContext).addEventToStock(mReminder.getSummary(), TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()));
+                CalendarUtils.addEventToStock(mContext, mReminder.getSummary(), TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()));
             }
             if (Prefs.getInstance(mContext).isCalendarEnabled()) {
-                CalendarUtils.getInstance(mContext).addEvent(mReminder);
+                CalendarUtils.addEvent(mContext, mReminder);
             }
 
         }

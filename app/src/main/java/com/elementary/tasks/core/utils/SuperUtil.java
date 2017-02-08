@@ -1,4 +1,3 @@
-
 package com.elementary.tasks.core.utils;
 
 import android.app.Activity;
@@ -48,7 +47,7 @@ import java.util.Locale;
 
 public class SuperUtil {
 
-    public static boolean checkLocationEnable(Context context){
+    public static boolean checkLocationEnable(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         boolean isGPSEnabled = locationManager
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -57,7 +56,7 @@ public class SuperUtil {
         return !(!isGPSEnabled && !isNetworkEnabled);
     }
 
-    public static void showLocationAlert(final Context context, ReminderInterface callbacks){
+    public static void showLocationAlert(final Context context, ReminderInterface callbacks) {
         callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings), v -> {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             context.startActivity(intent);
@@ -68,11 +67,11 @@ public class SuperUtil {
         return ObjectUtil.getObjectPrint(o, clazz);
     }
 
-    public static void selectContact(final Activity activity, final int requestCode){
+    public static void selectContact(final Activity activity, final int requestCode) {
         activity.startActivityForResult(new Intent(activity, ContactsActivity.class), requestCode);
     }
 
-    public static String getAddress(double currentLat, double currentLong){
+    public static String getAddress(double currentLat, double currentLong) {
         return String.format(Locale.getDefault(), "%.5f, %.5f", currentLat, currentLong);
     }
 
@@ -125,9 +124,9 @@ public class SuperUtil {
         return false;
     }
 
-    public static String appendString(String... strings){
+    public static String appendString(String... strings) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (String string : strings){
+        for (String string : strings) {
             if (string != null) {
                 stringBuilder.append(string);
             }
@@ -136,7 +135,7 @@ public class SuperUtil {
     }
 
     public static long getAfterTime(String timeString) {
-        if (timeString.length() == 6 && !timeString.matches("000000")){
+        if (timeString.length() == 6 && !timeString.matches("000000")) {
             String hours = timeString.substring(0, 2);
             String minutes = timeString.substring(2, 4);
             String seconds = timeString.substring(4, 6);
@@ -158,7 +157,7 @@ public class SuperUtil {
         Intent intent = new Intent(activity, ConversationActivity.class);
         try {
             activity.startActivityForResult(intent, requestCode);
-        } catch (ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             Toast.makeText(activity, activity.getString(R.string.no_recognizer_found), Toast.LENGTH_SHORT).show();
         }
     }
@@ -190,14 +189,13 @@ public class SuperUtil {
         PackageManager myPackageMgr = context.getPackageManager();
         try {
             myPackageMgr.getPackageInfo("com.skype.raider", PackageManager.GET_ACTIVITIES);
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             return (false);
         }
         return (true);
     }
 
-    public static String decrypt(String string){
+    public static String decrypt(String string) {
         String result = "";
         byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
         try {
@@ -208,7 +206,7 @@ public class SuperUtil {
         return result;
     }
 
-    public static String encrypt(String string){
+    public static String encrypt(String string) {
         byte[] string_byted = null;
         try {
             string_byted = string.getBytes("UTF-8");

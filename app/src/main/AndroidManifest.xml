@@ -256,6 +256,10 @@
             android:name=".login.LoginActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".login.LoginJavaActivity"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name=".core.services.CallReceiver"
             android:enabled="true">

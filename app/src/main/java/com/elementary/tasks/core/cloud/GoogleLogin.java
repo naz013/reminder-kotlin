@@ -135,7 +135,7 @@ public class GoogleLogin {
     }
 
     private void finishLogin() {
-        Prefs.getInstance(activity).setDriveUser(SuperUtil.encrypt(mAccountName));
+        Prefs.getInstance(activity).setDriveUser(mAccountName);
         if (mCallback != null) mCallback.onSuccess();
     }
 
