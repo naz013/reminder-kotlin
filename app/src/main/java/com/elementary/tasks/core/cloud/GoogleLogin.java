@@ -43,7 +43,7 @@ public class GoogleLogin {
     private static final int REQUEST_AUTHORIZATION = 1;
     private static final int REQUEST_ACCOUNT_PICKER = 3;
 
-    private GoogleDrive mGoogleDrive;
+    private Google mGoogle;
     private Activity activity;
     private String mAccountName;
     private LoginCallback mCallback;
@@ -51,11 +51,7 @@ public class GoogleLogin {
     public GoogleLogin(Activity activity, LoginCallback mCallback) {
         this.activity = activity;
         this.mCallback = mCallback;
-        try {
-            mGoogleDrive = GoogleDrive.getInstance(activity);
-        } catch (IllegalStateException e) {
-            mGoogleDrive = null;
-        }
+        mGoogle = Google.getInstance(activity);
     }
 
     public void logOut() {
@@ -63,7 +59,7 @@ public class GoogleLogin {
     }
 
     public boolean isLogged() {
-        return mGoogleDrive != null;
+        return mGoogle != null;
     }
 
     public void login() {

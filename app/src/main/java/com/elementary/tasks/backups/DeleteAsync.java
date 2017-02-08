@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.File;
@@ -76,7 +76,7 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                 dbx.cleanFolder();
             }
         } else if (type == UserInfoAsync.Info.Google) {
-            GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+            Google gdx = Google.getInstance(mContext);
             boolean isLinked = gdx != null;
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleDrive helper = GoogleDrive.getInstance(mContext);
+        Google helper = Google.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (taskType.matches(TasksConstants.UPDATE_TASK_LIST)) {
             if (isConnected) {

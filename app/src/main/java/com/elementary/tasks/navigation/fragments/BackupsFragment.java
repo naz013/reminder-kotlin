@@ -17,7 +17,7 @@ import com.elementary.tasks.backups.InfoAdapter;
 import com.elementary.tasks.backups.UserInfoAsync;
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.databinding.FragmentBackupsBinding;
@@ -147,7 +147,7 @@ public class BackupsFragment extends BaseNavigationFragment {
         if (dbx.isLinked()){
             list.add(UserInfoAsync.Info.Dropbox);
         }
-        GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+        Google gdx = Google.getInstance(mContext);
         if (gdx != null) {
             list.add(UserInfoAsync.Info.Google);
         }

@@ -8,7 +8,7 @@ import android.os.StatFs;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -138,7 +138,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     }
 
     private void addGoogleData(List<UserItem> list) {
-        GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+        Google gdx = Google.getInstance(mContext);
         if (gdx != null && SuperUtil.isConnected(mContext)) {
             UserItem userItem = gdx.getDrive().getData();
             if (userItem != null) {

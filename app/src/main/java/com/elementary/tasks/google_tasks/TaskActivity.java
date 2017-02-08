@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
@@ -353,7 +353,7 @@ public class TaskActivity extends ThemedActivity {
         if (action.matches(TasksConstants.EDIT) && mItem != null) {
             String initListId = mItem.getListId();
             mItem.setListId(listId);
-            mItem.setStatus(GoogleDrive.TASKS_NEED_ACTION);
+            mItem.setStatus(Google.TASKS_NEED_ACTION);
             mItem.setTitle(taskName);
             mItem.setNotes(note);
             mItem.setUuId(uuId);
@@ -384,7 +384,7 @@ public class TaskActivity extends ThemedActivity {
         } else {
             mItem = new TaskItem();
             mItem.setListId(listId);
-            mItem.setStatus(GoogleDrive.TASKS_NEED_ACTION);
+            mItem.setStatus(Google.TASKS_NEED_ACTION);
             mItem.setTitle(taskName);
             mItem.setNotes(note);
             mItem.setDueDate(due);

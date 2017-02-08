@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -60,7 +60,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        GoogleDrive drive = GoogleDrive.getInstance(mContext);
+        Google drive = Google.getInstance(mContext);
         if (drive != null) {
             publishProgress(mContext.getString(R.string.syncing_groups));
             try {
