@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -42,28 +42,28 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleTasks helper = new GoogleTasks(mContext);
+        GoogleDrive helper = GoogleDrive.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (isConnected) {
             if (taskType.matches(TasksConstants.DELETE_TASK)) {
                 try {
-                    helper.deleteTask(mItem);
+                    helper.getTasks().deleteTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.MOVE_TASK)) {
-                return helper.moveTask(mItem, oldList);
+                return helper.getTasks().moveTask(mItem, oldList);
             } else if (taskType.matches(TasksConstants.UPDATE_TASK)) {
                 try {
-                    helper.updateTask(mItem);
+                    helper.getTasks().updateTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.INSERT_TASK)) {
                 try {
-                    return helper.insertTask(mItem);
+                    return helper.getTasks().insertTask(mItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

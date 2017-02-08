@@ -147,8 +147,8 @@ public class BackupsFragment extends BaseNavigationFragment {
         if (dbx.isLinked()){
             list.add(UserInfoAsync.Info.Dropbox);
         }
-        GoogleDrive gdx = new GoogleDrive(mContext);
-        if (gdx.isLinked()) {
+        GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+        if (gdx != null) {
             list.add(UserInfoAsync.Info.Google);
         }
         UserInfoAsync.Info[] array = new UserInfoAsync.Info[list.size()];

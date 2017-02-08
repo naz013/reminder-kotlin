@@ -60,11 +60,11 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        GoogleDrive drive = new GoogleDrive(mContext);
-        if (drive.isLinked()) {
+        GoogleDrive drive = GoogleDrive.getInstance(mContext);
+        if (drive != null) {
             publishProgress(mContext.getString(R.string.syncing_groups));
             try {
-                drive.downloadGroups(false);
+                drive.getDrive().downloadGroups(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -80,7 +80,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
             publishProgress(mContext.getString(R.string.syncing_reminders));
             try {
-                drive.downloadReminders(false);
+                drive.getDrive().downloadReminders(mContext, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -88,7 +88,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             //export & import notes
             publishProgress(mContext.getString(R.string.syncing_notes));
             try {
-                drive.downloadNotes(false);
+                drive.getDrive().downloadNotes(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -96,7 +96,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             //export & import birthdays
             publishProgress(mContext.getString(R.string.syncing_birthdays));
             try {
-                drive.downloadBirthdays(false);
+                drive.getDrive().downloadBirthdays(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,7 +104,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             //export & import places
             publishProgress(mContext.getString(R.string.syncing_places));
             try {
-                drive.downloadPlaces(false);
+                drive.getDrive().downloadPlaces(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -112,12 +112,12 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             //export & import templates
             publishProgress(mContext.getString(R.string.syncing_templates));
             try {
-                drive.downloadTemplates(false);
+                drive.getDrive().downloadTemplates(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                drive.downloadSettings(false);
+                drive.getDrive().downloadSettings(mContext, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }

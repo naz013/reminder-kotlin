@@ -66,8 +66,8 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
             new Dropbox(mContext).downloadNotes(true);
             new Dropbox(mContext).uploadNotes();
             try {
-                new GoogleDrive(mContext).downloadNotes(true);
-                new GoogleDrive(mContext).saveNotesToDrive();
+                GoogleDrive.getInstance(mContext).getDrive().downloadNotes(true);
+                GoogleDrive.getInstance(mContext).getDrive().saveNotesToDrive();
             } catch (IOException e) {
                 e.printStackTrace();
             }

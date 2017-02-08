@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -52,15 +51,19 @@ public class GoogleLogin {
     public GoogleLogin(Activity activity, LoginCallback mCallback) {
         this.activity = activity;
         this.mCallback = mCallback;
-        mGoogleDrive = new GoogleDrive(activity);
+        try {
+            mGoogleDrive = GoogleDrive.getInstance(activity);
+        } catch (IllegalStateException e) {
+            mGoogleDrive = null;
+        }
     }
 
     public void logOut() {
-        mGoogleDrive.unlink();
+        Prefs.getInstance(activity).setDriveUser(Prefs.DRIVE_USER_NONE);
     }
 
     public boolean isLogged() {
-        return mGoogleDrive.isLinked();
+        return mGoogleDrive != null;
     }
 
     public void login() {

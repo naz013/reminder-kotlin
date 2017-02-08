@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -40,12 +40,12 @@ public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleTasks helper = new GoogleTasks(mContext);
+        GoogleDrive helper = GoogleDrive.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (isConnected) {
             try {
-                if (status) helper.updateTaskStatus(GoogleTasks.TASKS_COMPLETE, listId, taskId);
-                else helper.updateTaskStatus(GoogleTasks.TASKS_NEED_ACTION, listId, taskId);
+                if (status) helper.getTasks().updateTaskStatus(GoogleDrive.TASKS_COMPLETE, listId, taskId);
+                else helper.getTasks().updateTaskStatus(GoogleDrive.TASKS_NEED_ACTION, listId, taskId);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

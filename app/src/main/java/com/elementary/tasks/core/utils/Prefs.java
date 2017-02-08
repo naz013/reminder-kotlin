@@ -32,12 +32,22 @@ public class Prefs extends SharedPrefs {
     private static final String TAG = "Prefs";
     public static final String DRIVE_USER_NONE = "none";
 
-    public static Prefs getInstance(Context context) {
-        return new Prefs(context);
-    }
+    private static Prefs instance = null;
 
     private Prefs(Context context) {
         super(context);
+    }
+
+    public static Prefs getInstance() {
+        if (instance != null) return instance;
+        throw new IllegalArgumentException("Use Prefs(Context context) constructor!");
+    }
+
+    public static Prefs getInstance(Context context) {
+        if (instance == null) {
+            instance = new Prefs(context.getApplicationContext());
+        }
+        return instance;
     }
 
     public int getLastUsedReminder() {

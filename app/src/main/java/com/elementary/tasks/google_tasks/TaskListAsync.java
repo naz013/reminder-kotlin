@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -43,12 +43,12 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleTasks helper = new GoogleTasks(mContext);
+        GoogleDrive helper = GoogleDrive.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (taskType.matches(TasksConstants.UPDATE_TASK_LIST)) {
             if (isConnected) {
                 try {
-                    helper.updateTasksList(title, listId);
+                    helper.getTasks().updateTasksList(title, listId);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -59,21 +59,21 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
             }
         } else if (taskType.matches(TasksConstants.INSERT_TASK_LIST)) {
             if (isConnected) {
-                helper.insertTasksList(title, color);
+                helper.getTasks().insertTasksList(title, color);
                 return true;
             } else {
                 return false;
             }
         } else if (taskType.matches(TasksConstants.DELETE_TASK_LIST)) {
             if (isConnected) {
-                helper.deleteTaskList(listId);
+                helper.getTasks().deleteTaskList(listId);
                 return true;
             } else {
                 return false;
             }
         } else if (taskType.matches(TasksConstants.CLEAR_TASK_LIST)) {
             if (isConnected) {
-                helper.clearTaskList(listId);
+                helper.getTasks().clearTaskList(listId);
                 return true;
             } else {
                 return false;

@@ -76,8 +76,8 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                 dbx.cleanFolder();
             }
         } else if (type == UserInfoAsync.Info.Google) {
-            GoogleDrive gdx = new GoogleDrive(mContext);
-            boolean isLinked = gdx.isLinked();
+            GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+            boolean isLinked = gdx != null;
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {
                 if (filePath == null) continue;
@@ -96,7 +96,7 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             }
             if (isLinked && isConnected) {
                 try {
-                    gdx.cleanFolder();
+                    gdx.getDrive().cleanFolder();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
