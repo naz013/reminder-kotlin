@@ -1,3 +1,13 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Prefs;
+
+import java.util.ArrayList;
+import java.util.Locale;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,16 +23,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
-
-import java.util.ArrayList;
-import java.util.Locale;
 
 public class Language {
     public static final String ENGLISH = "en";

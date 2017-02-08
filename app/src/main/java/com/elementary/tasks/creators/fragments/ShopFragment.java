@@ -126,7 +126,7 @@ public class ShopFragment extends TypeFragment {
             return false;
         });
         ImageButton addButton = binding.addButton;
-        if (ThemeUtil.getInstance(mContext).isDark()) addButton.setImageResource(R.drawable.ic_add_white_24dp);
+        if (new ThemeUtil(mContext).isDark()) addButton.setImageResource(R.drawable.ic_add_white_24dp);
         else addButton.setImageResource(R.drawable.ic_add_black_24dp);
         addButton.setOnClickListener(v -> addNewItem());
         switchDate();

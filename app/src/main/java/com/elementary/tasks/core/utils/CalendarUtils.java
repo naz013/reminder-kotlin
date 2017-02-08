@@ -37,34 +37,20 @@ import java.util.TimeZone;
 
 public class CalendarUtils {
 
-    private Context mContext;
-    private static CalendarUtils instance;
-
-    private CalendarUtils(Context context){
-        this.mContext = context;
-    }
-
-    public static CalendarUtils getInstance(Context context) {
-        if (instance == null) {
-            instance = new CalendarUtils(context);
-        }
-        return instance;
-    }
-
     /**
      * Add event to calendar.
      */
-    public void addEvent(Reminder reminder){
-        int mId = Prefs.getInstance(mContext).getCalendarId();
-        if (mId != 0){
+    public static void addEvent(Context context, Reminder reminder) {
+        int mId = Prefs.getInstance(context).getCalendarId();
+        if (mId != 0) {
             TimeZone tz = TimeZone.getDefault();
             String timeZone = tz.getDisplayName();
-            ContentResolver cr = mContext.getContentResolver();
+            ContentResolver cr = context.getContentResolver();
             ContentValues values = new ContentValues();
             long startTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
             values.put(CalendarContract.Events.DTSTART, startTime);
             values.put(CalendarContract.Events.DTEND, startTime +
-                    (60 * 1000 * Prefs.getInstance(mContext).getCalendarEventDuration()));
+                    (60 * 1000 * Prefs.getInstance(context).getCalendarEventDuration()));
             if (!TextUtils.isEmpty(reminder.getSummary())) {
                 values.put(CalendarContract.Events.TITLE, reminder.getSummary());
             }
@@ -72,7 +58,7 @@ public class CalendarUtils {
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone);
             values.put(CalendarContract.Events.ALL_DAY, 0);
             values.put(CalendarContract.Events.STATUS, CalendarContract.Events.STATUS_CONFIRMED);
-            values.put(CalendarContract.Events.DESCRIPTION, mContext.getString(R.string.from_reminder));
+            values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder));
             Uri l_eventUri = Uri.parse("content://com.android.calendar/events");
             Uri event;
             try {
@@ -82,19 +68,20 @@ public class CalendarUtils {
                     RealmDb.getInstance().saveObject(new CalendarEvent(reminder.getUuId(), event.toString(), eventID));
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.no_calendars_found, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.no_calendars_found, Toast.LENGTH_LONG).show();
             }
         }
     }
 
     /**
      * Delete event from calendar.
+     *
      * @param id event identifier inside application.
      */
     @SuppressWarnings("MissingPermission")
-    public void deleteEvents(String id){
+    public static void deleteEvents(Context context, String id) {
         List<CalendarEvent> events = RealmDb.getInstance().getCalendarEvents(id);
-        ContentResolver cr = mContext.getContentResolver();
+        ContentResolver cr = context.getContentResolver();
         for (int i = events.size() - 1; i >= 0; i--) {
             CalendarEvent event = events.remove(i);
             cr.delete(CalendarContract.Events.CONTENT_URI,
@@ -105,33 +92,35 @@ public class CalendarUtils {
 
     /**
      * Add event to stock Android calendar.
-     * @param summary summary.
+     *
+     * @param summary   summary.
      * @param startTime event start time in milliseconds.
      */
-    public void addEventToStock(String summary, long startTime){
+    public static void addEventToStock(Context context, String summary, long startTime) {
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime +
-                        (60 * 1000 * Prefs.getInstance(mContext).getCalendarEventDuration()))
+                        (60 * 1000 * Prefs.getInstance(context).getCalendarEventDuration()))
                 .putExtra(CalendarContract.Events.TITLE, summary)
-                .putExtra(CalendarContract.Events.DESCRIPTION, mContext.getString(R.string.from_reminder));
+                .putExtra(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder));
         try {
-            mContext.startActivity(intent);
+            context.startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(mContext, R.string.stock_android_calendar_not_found, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.stock_android_calendar_not_found, Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * Get list of available Google calendars.
+     *
      * @return List of calendar identifiers.
      */
-    public ArrayList<String> getCalendars() {
+    public static ArrayList<String> getCalendars(Context context) {
         ArrayList<String> ids = new ArrayList<>();
         ids.clear();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String[] mProjection = new String[] {
+        String[] mProjection = new String[]{
                 CalendarContract.Calendars._ID,                           // 0
                 CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
                 CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
@@ -139,8 +128,8 @@ public class CalendarUtils {
         };
         Cursor c = null;
         try {
-            c = mContext.getContentResolver().query(uri, mProjection, null, null, null);
-        } catch (Exception e){
+            c = context.getContentResolver().query(uri, mProjection, null, null, null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (c != null && c.moveToFirst()) {
@@ -157,13 +146,14 @@ public class CalendarUtils {
 
     /**
      * Get list of available Google calendars.
+     *
      * @return List of CalendarItem's.
      */
-    public ArrayList<CalendarItem> getCalendarsList() {
+    public static ArrayList<CalendarItem> getCalendarsList(Context context) {
         ArrayList<CalendarItem> ids = new ArrayList<>();
         ids.clear();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String[] mProjection = new String[] {
+        String[] mProjection = new String[]{
                 CalendarContract.Calendars._ID,                           // 0
                 CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
                 CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
@@ -171,8 +161,8 @@ public class CalendarUtils {
         };
         Cursor c = null;
         try {
-            c = mContext.getContentResolver().query(uri, mProjection, null, null, null);
-        } catch (Exception e){
+            c = context.getContentResolver().query(uri, mProjection, null, null, null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (c != null && c.moveToFirst()) {
@@ -190,12 +180,13 @@ public class CalendarUtils {
 
     /**
      * Get list of events for calendar.
+     *
      * @param id calendar identifier.
      * @return List of EventItem's.
      */
-    public ArrayList<EventItem> getEvents(int id) throws SecurityException {
+    public static ArrayList<EventItem> getEvents(Context context, int id) throws SecurityException {
         ArrayList<EventItem> list = new ArrayList<>();
-        ContentResolver contentResolver = mContext.getContentResolver();
+        ContentResolver contentResolver = context.getContentResolver();
         Cursor c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
                 new String[]{CalendarContract.Events.TITLE,
                         CalendarContract.Events.DESCRIPTION,
@@ -208,7 +199,7 @@ public class CalendarUtils {
                         CalendarContract.Events.ALL_DAY},
                 CalendarContract.Events.CALENDAR_ID + "='" + id + "'",
                 null, "dtstart ASC");
-        if (c != null && c.moveToFirst()){
+        if (c != null && c.moveToFirst()) {
             do {
                 String title = c.getString(c.getColumnIndex(CalendarContract.Events.TITLE));
                 String description = c.getString(c.getColumnIndex(CalendarContract.Events.DESCRIPTION));
@@ -226,13 +217,13 @@ public class CalendarUtils {
         return list;
     }
 
-    public class EventItem{
+    public static class EventItem {
         private String title, description, rrule, rDate;
         private int calendarID, allDay;
         private long dtStart, dtEnd, id;
 
         public EventItem(String title, String description, String rrule, String rDate, int calendarID,
-                         int allDay, long dtStart, long dtEnd, long id){
+                         int allDay, long dtStart, long dtEnd, long id) {
             this.title = title;
             this.description = description;
             this.rrule = rrule;
@@ -244,57 +235,57 @@ public class CalendarUtils {
             this.id = id;
         }
 
-        public String getTitle(){
+        public String getTitle() {
             return title;
         }
 
-        public String getDescription(){
+        public String getDescription() {
             return description;
         }
 
-        public String getRrule(){
+        public String getRrule() {
             return rrule;
         }
 
-        public String getrDate(){
+        public String getrDate() {
             return rDate;
         }
 
-        public int getCalendarID(){
+        public int getCalendarID() {
             return calendarID;
         }
 
-        public int getAllDay(){
+        public int getAllDay() {
             return allDay;
         }
 
-        public long getDtStart(){
+        public long getDtStart() {
             return dtStart;
         }
 
-        public long getDtEnd(){
+        public long getDtEnd() {
             return dtEnd;
         }
 
-        public long getId(){
+        public long getId() {
             return id;
         }
     }
 
-    public class CalendarItem{
+    public static class CalendarItem {
         private String name;
         private int id;
 
-        public CalendarItem(String name, int id){
+        public CalendarItem(String name, int id) {
             this.name = name;
             this.id = id;
         }
 
-        public String getName(){
+        public String getName() {
             return name;
         }
 
-        public int getId(){
+        public int getId() {
             return id;
         }
     }

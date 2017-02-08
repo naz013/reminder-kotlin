@@ -5,6 +5,7 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
@@ -12,9 +13,9 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync
-import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
+import com.elementary.tasks.core.cloud.GoogleTasks
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.RealmDb
@@ -23,7 +24,7 @@ import com.elementary.tasks.google_tasks.GetTaskListAsync
 import com.elementary.tasks.google_tasks.TasksCallback
 import com.elementary.tasks.navigation.MainActivity
 
-class LoginActivity : ThemedActivity() {
+class LoginActivity : AppCompatActivity() {
 
     companion object {
         const val PERM: Int = 103
@@ -156,6 +157,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loadGoogleTasks() {
+        Log.d(TAG, "loadGoogleTasks: " + GoogleTasks(this).isLinked)
         GetTaskListAsync(this, object : TasksCallback {
             override fun onComplete() {
                 openApplication()

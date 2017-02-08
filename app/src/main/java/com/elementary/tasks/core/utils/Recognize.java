@@ -155,7 +155,7 @@ public class Recognize {
         EventControl control = EventControlImpl.getController(mContext, reminder);
         control.stop();
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
-        CalendarUtils.getInstance(mContext).deleteEvents(reminder.getUuId());
+        CalendarUtils.deleteEvents(mContext, reminder.getUuId());
     }
 
     public void emptyTrash(boolean showToast, ThreadCallback callback) {

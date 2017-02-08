@@ -29,7 +29,7 @@ public abstract class BaseDialog extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        themeUtil = ThemeUtil.getInstance(this);
+        themeUtil = new ThemeUtil(this);
         setTheme(themeUtil.getDialogStyle());
     }
 }

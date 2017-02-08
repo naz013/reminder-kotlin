@@ -136,7 +136,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initThemeColor() {
-        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getAppThemeColor()));
+        binding.themePrefs.setViewResource(new ThemeUtil(mContext).getIndicator(Prefs.getInstance(mContext).getAppThemeColor()));
         binding.themePrefs.setOnClickListener(mThemeClick);
     }
 

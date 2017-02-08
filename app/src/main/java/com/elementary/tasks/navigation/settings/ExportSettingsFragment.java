@@ -276,7 +276,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private boolean showSelectCalendarDialog() {
-        mDataList = CalendarUtils.getInstance(mContext).getCalendarsList();
+        mDataList = CalendarUtils.getCalendarsList(mContext);
         if (mDataList == null || mDataList.isEmpty()) {
             return false;
         }

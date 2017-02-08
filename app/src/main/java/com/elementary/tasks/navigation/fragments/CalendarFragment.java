@@ -84,7 +84,7 @@ public class CalendarFragment extends BaseCalendarFragment {
     }
 
     private void showCalendar() {
-        ThemeUtil themeUtil = ThemeUtil.getInstance(mContext);
+        ThemeUtil themeUtil = new ThemeUtil(mContext);
         FlextCalendarFragment calendarView = new FlextCalendarFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();

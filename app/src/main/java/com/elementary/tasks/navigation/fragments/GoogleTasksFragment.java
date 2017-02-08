@@ -268,7 +268,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
 
     private void updateScreen(int pos) {
         if (mCallback != null) {
-            ThemeUtil mColor = ThemeUtil.getInstance(mContext);
+            ThemeUtil mColor = new ThemeUtil(mContext);
             if (pos == 0) {
                 mCallback.onTitleChange(getString(R.string.all));
                 mCallback.onThemeChange(ViewUtils.getColor(mContext, mColor.colorPrimary()),

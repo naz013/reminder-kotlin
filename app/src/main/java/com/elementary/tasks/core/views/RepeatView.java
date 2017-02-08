@@ -122,7 +122,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         repeatViewSeek.setProgress(0);
         repeatTitle.setText(String.valueOf(0));
         ImageView iconView = (ImageView) findViewById(R.id.viewIcon);
-        if (ThemeUtil.getInstance(context).isDark()) {
+        if (new ThemeUtil(context).isDark()) {
             iconView.setImageResource(R.drawable.ic_refresh_white);
         } else {
             iconView.setImageResource(R.drawable.ic_refresh);

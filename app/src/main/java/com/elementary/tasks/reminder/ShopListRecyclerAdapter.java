@@ -46,7 +46,7 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
         this.mContext = context;
         this.mDataList = new ArrayList<>(list);
         this.listener = listener;
-        isDark = ThemeUtil.getInstance(context).isDark();
+        isDark = new ThemeUtil(context).isDark();
         Collections.sort(mDataList, (item, t1) -> t1.getCreateTime().compareTo(item.getCreateTime()));
         sort(mDataList);
     }

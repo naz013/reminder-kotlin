@@ -47,30 +47,14 @@ public class BackupTool {
 
     private static final String TAG = "BackupTool";
     private static BackupTool instance;
-    private Context mContext;
 
     private BackupTool() {}
-
-    private BackupTool(Context context) {
-        this.mContext = context;
-    }
 
     public static BackupTool getInstance() {
         if (instance == null) {
             instance = new BackupTool();
         }
         return instance;
-    }
-
-    public static BackupTool getInstance(Context context) {
-        if (instance == null || instance.getContext() == null) {
-            instance = new BackupTool(context);
-        }
-        return instance;
-    }
-
-    public Context getContext() {
-        return mContext;
     }
 
     public void exportTemplates() {
@@ -281,7 +265,7 @@ public class BackupTool {
         }
     }
 
-    public void importReminders() throws IOException {
+    public void importReminders(Context mContext) throws IOException {
         File dir = MemoryUtil.getRemindersDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();

@@ -162,7 +162,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     }
 
     private void setImage(){
-        if (ThemeUtil.getInstance(mContext).isDark()){
+        if (new ThemeUtil(mContext).isDark()){
             mDropboxTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dropbox_white, 0, 0, 0);
             mGoogleDriveTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google_white, 0, 0, 0);
         } else {

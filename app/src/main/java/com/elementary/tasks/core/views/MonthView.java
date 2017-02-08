@@ -105,7 +105,7 @@ public class MonthView extends View implements View.OnTouchListener {
         this.paint.setAntiAlias(true);
         this.circlePaint = new Paint();
         this.circlePaint.setAntiAlias(true);
-        ThemeUtil themeUtil = ThemeUtil.getInstance(context);
+        ThemeUtil themeUtil = new ThemeUtil(context);
         if (themeUtil.isDark()) {
             mDefaultColor = Color.WHITE;
         } else {

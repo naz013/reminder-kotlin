@@ -75,7 +75,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCalendarWidgetPreviewBinding.inflate(inflater, container, false);
-        themeUtil = ThemeUtil.getInstance(mContext);
+        themeUtil = new ThemeUtil(mContext);
         CalendarTheme calendarTheme = list.get(pageNumber);
         int windowColor = calendarTheme.getWindowColor();
         binding.previewView.widgetBg.setBackgroundResource(windowColor);

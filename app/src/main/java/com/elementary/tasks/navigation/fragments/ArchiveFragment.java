@@ -133,7 +133,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
     private void deleteReminder(Reminder reminder) {
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
-        CalendarUtils.getInstance(mContext).deleteEvents(reminder.getUuId());
+        CalendarUtils.deleteEvents(mContext, reminder.getUuId());
     }
 
     @Override

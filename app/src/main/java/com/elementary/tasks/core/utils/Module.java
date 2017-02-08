@@ -1,3 +1,9 @@
+package com.elementary.tasks.core.utils;
+
+import android.os.Build;
+
+import com.elementary.tasks.BuildConfig;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,12 +19,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.os.Build;
-
-import com.elementary.tasks.BuildConfig;
 
 public class Module {
 

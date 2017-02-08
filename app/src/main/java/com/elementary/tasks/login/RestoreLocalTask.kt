@@ -66,11 +66,10 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
 
         publishProgress(mContext.getString(R.string.syncing_reminders))
         try {
-            BackupTool.getInstance().importReminders()
+            BackupTool.getInstance().importReminders(mContext)
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
 
         //export & import notes
         publishProgress(mContext.getString(R.string.syncing_notes))
@@ -80,7 +79,6 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             e.printStackTrace()
         }
 
-
         //export & import birthdays
         publishProgress(mContext.getString(R.string.syncing_birthdays))
         try {
@@ -89,7 +87,6 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             e.printStackTrace()
         }
 
-
         //export & import places
         publishProgress(mContext.getString(R.string.syncing_places))
         try {
@@ -97,7 +94,6 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
 
         //export & import templates
         publishProgress(mContext.getString(R.string.syncing_templates))

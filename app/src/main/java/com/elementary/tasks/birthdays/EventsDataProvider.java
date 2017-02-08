@@ -67,7 +67,7 @@ public class EventsDataProvider {
     }
 
     public HashMap<DateTime, Events> getEvents() {
-        ThemeUtil cs = ThemeUtil.getInstance(mContext);
+        ThemeUtil cs = new ThemeUtil(mContext);
         int bColor = cs.getColor(cs.colorBirthdayCalendar());
         TimeCount timeCount = TimeCount.getInstance(mContext);
         if (isReminder) {

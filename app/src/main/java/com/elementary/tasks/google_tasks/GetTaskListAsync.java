@@ -30,7 +30,7 @@ import java.util.Random;
  * limitations under the License.
  */
 
-public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
+public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
 
     private static final String TAG = "GetTasksListsAsync";
     private Context mContext;
@@ -42,51 +42,55 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Boolean doInBackground(Void... params) {
         GoogleTasks helper = new GoogleTasks(mContext);
-        TaskLists lists = null;
-        try {
-            lists = helper.getTaskLists();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (lists != null && lists.size() > 0) {
-            for (TaskList item : lists.getItems()) {
-                String listId = item.getId();
-                TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
-                if (taskList != null) {
-                    taskList.update(item);
-                } else {
-                    Random r = new Random();
-                    int color = r.nextInt(15);
-                    taskList = new TaskListItem(item, color);
-                }
-                RealmDb.getInstance().saveObject(taskList);
-                TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
-                RealmDb.getInstance().setDefault(listItem.getListId());
-                RealmDb.getInstance().setSystemDefault(listItem.getListId());
-                List<Task> tasks = helper.getTasks(listId);
-                for (Task task : tasks) {
-                    TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                    if (taskItem != null) {
-                        taskItem.update(task);
-                        taskItem.setListId(task.getId());
+        if (helper.isLinked()) {
+            TaskLists lists = null;
+            try {
+                lists = helper.getTaskLists();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (lists != null && lists.size() > 0) {
+                for (TaskList item : lists.getItems()) {
+                    String listId = item.getId();
+                    TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
+                    if (taskList != null) {
+                        taskList.update(item);
                     } else {
-                        taskItem = new TaskItem(task, listId);
+                        Random r = new Random();
+                        int color = r.nextInt(15);
+                        taskList = new TaskListItem(item, color);
                     }
-                    RealmDb.getInstance().saveObject(taskItem);
+                    RealmDb.getInstance().saveObject(taskList);
+                    TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
+                    RealmDb.getInstance().setDefault(listItem.getListId());
+                    RealmDb.getInstance().setSystemDefault(listItem.getListId());
+                    List<Task> tasks = helper.getTasks(listId);
+                    for (Task task : tasks) {
+                        TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
+                        if (taskItem != null) {
+                            taskItem.update(task);
+                            taskItem.setListId(task.getId());
+                        } else {
+                            taskItem = new TaskItem(task, listId);
+                        }
+                        RealmDb.getInstance().saveObject(taskItem);
+                    }
                 }
             }
+            return true;
         }
-        return null;
+        return false;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Boolean aVoid) {
         super.onPostExecute(aVoid);
         UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (mListener != null) {
-            mListener.onComplete();
+            if (aVoid) mListener.onComplete();
+            else mListener.onFailed();
         }
     }
 }

@@ -86,7 +86,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
             binding.photoView.setOnClickListener(view -> performClick(getAdapterPosition()));
             if (isEditable) {
                 binding.removeButton.setVisibility(View.VISIBLE);
-                binding.removeButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                binding.removeButton.setBackgroundResource(new ThemeUtil(mContext).getIndicator());
                 binding.removeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -95,7 +95,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
                 });
                 if (mActions != null && Module.isPro()) {
                     binding.editButton.setVisibility(View.VISIBLE);
-                    binding.editButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                    binding.editButton.setBackgroundResource(new ThemeUtil(mContext).getIndicator());
                     binding.editButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

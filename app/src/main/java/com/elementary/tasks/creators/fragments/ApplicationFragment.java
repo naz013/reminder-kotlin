@@ -139,7 +139,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderApplicationBinding.inflate(inflater, container, false);
         binding.pickApplication.setOnClickListener(appClick);
-        if (ThemeUtil.getInstance(mContext).isDark()) binding.pickApplication.setImageResource(R.drawable.ic_launch_white_24dp);
+        if (new ThemeUtil(mContext).isDark()) binding.pickApplication.setImageResource(R.drawable.ic_launch_white_24dp);
         else binding.pickApplication.setImageResource(R.drawable.ic_launch_black_24dp);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());

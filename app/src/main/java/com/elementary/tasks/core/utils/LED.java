@@ -1,3 +1,9 @@
+package com.elementary.tasks.core.utils;
+
+import android.content.Context;
+
+import com.elementary.tasks.R;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,12 +19,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.content.Context;
-
-import com.elementary.tasks.R;
 
 public class LED {
     public static final int NUM_OF_LEDS = 17;

@@ -46,7 +46,7 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             mDialog.dismiss();
             addReminder();
         });
-        if (ThemeUtil.getInstance(mContext).isDark()) {
+        if (new ThemeUtil(mContext).isDark()) {
             binding.addEvent.setImageResource(R.drawable.ic_alarm_white);
             binding.addBirth.setImageResource(R.drawable.ic_cake_white_24dp);
         } else {

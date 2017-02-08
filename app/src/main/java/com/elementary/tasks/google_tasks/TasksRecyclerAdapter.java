@@ -101,13 +101,13 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     @BindingAdapter({"loadMarker"})
     public static void loadMarker(View view, String listId) {
         if (colors.containsKey(listId)) {
-            view.setBackgroundColor(ThemeUtil.getInstance(view.getContext()).getNoteColor(colors.get(listId)));
+            view.setBackgroundColor(new ThemeUtil(view.getContext()).getNoteColor(colors.get(listId)));
         }
     }
 
     @BindingAdapter({"loadTaskCard"})
     public static void loadTaskCard(CardView cardView, int i) {
-        cardView.setCardBackgroundColor(ThemeUtil.getInstance(cardView.getContext()).getCardStyle());
+        cardView.setCardBackgroundColor(new ThemeUtil(cardView.getContext()).getCardStyle());
         if (Module.isLollipop()) {
             cardView.setCardElevation(Configs.CARD_ELEVATION);
         }

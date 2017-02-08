@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.google.gson.Gson;
@@ -32,17 +33,19 @@ import java.util.Map;
 
 abstract class SharedPrefs extends PrefsConstants {
 
+    private static final String TAG = "SharedPrefs";
     private SharedPreferences prefs;
 
     private SharedPrefs() {
     }
 
     SharedPrefs(Context context){
+        Log.d(TAG, "SharedPrefs: " + context);
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     void putString(String stringToSave, String value){
-        prefs.edit().putString(stringToSave, value).apply();
+        prefs.edit().putString(stringToSave, value).commit();
     }
 
     void putInt(String stringToSave, int value){

@@ -164,7 +164,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void loadCalendars() {
-        list = CalendarUtils.getInstance(mContext).getCalendarsList();
+        list = CalendarUtils.getCalendarsList(mContext);
         if (list == null || list.size() == 0) {
             Toast.makeText(mContext, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show();
         }
@@ -308,12 +308,11 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             if (params == null) {
                 return 0;
             }
-            CalendarUtils cm = CalendarUtils.getInstance(mContext);
             long currTime = System.currentTimeMillis();
             int eventsCount = 0;
             HashMap<String, Integer> map = params[0];
             if (map.containsKey(EVENT_KEY)) {
-                ArrayList<CalendarUtils.EventItem> eventItems = cm.getEvents(map.get(EVENT_KEY));
+                ArrayList<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, map.get(EVENT_KEY));
                 if (eventItems != null && eventItems.size() > 0) {
                     List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                     for (CalendarUtils.EventItem item : eventItems) {

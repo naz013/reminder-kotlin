@@ -1,3 +1,11 @@
+package com.elementary.tasks.core.utils;
+
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -13,14 +21,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks.core.utils;
-
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.M)
 public class Permissions {
@@ -48,14 +48,12 @@ public class Permissions {
 
     public static boolean checkPermission(Activity a, String... permissions) {
         if (!Module.isMarshmallow()) return true;
-
         boolean res = true;
         for (String string : permissions) {
             if (a.checkSelfPermission(string) != PackageManager.PERMISSION_GRANTED) {
                 res = false;
             }
         }
-
         return res;
     }
 
