@@ -86,6 +86,10 @@ public class Google {
         } else throw new IllegalArgumentException("Not logged to Google");
     }
 
+    void logOut() {
+        instance = null;
+    }
+
     public static Google getInstance(Context context) {
         if (instance == null) {
             try {

@@ -136,10 +136,9 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void disconnectFromGoogleServices() {
         mGoogleLogin.logOut();
-        checkGoogleStatus();
         RealmDb.getInstance().deleteTasks();
         RealmDb.getInstance().deleteTaskLists();
-        if (mCallback != null) mCallback.refreshMenu();
+        finishSync();
     }
 
     @Override
@@ -189,19 +188,23 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     }
 
     private void startSync() {
-        checkGoogleStatus();
-        if (mCallback != null) mCallback.refreshMenu();
         mDialog = ProgressDialog.show(mContext, null, getString(R.string.retrieving_tasks), false, true);
         new GetTaskListAsync(mContext, new TasksCallback() {
             @Override
             public void onFailed() {
-                if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+                finishSync();
             }
 
             @Override
             public void onComplete() {
-                if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+                finishSync();
             }
         }).execute();
+    }
+
+    private void finishSync() {
+        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+        checkGoogleStatus();
+        if (mCallback != null) mCallback.refreshMenu();
     }
 }
