@@ -56,6 +56,8 @@ public class GoogleLogin {
 
     public void logOut() {
         Prefs.getInstance(activity).setDriveUser(Prefs.DRIVE_USER_NONE);
+        mGoogle.logOut();
+        mGoogle = null;
     }
 
     public boolean isLogged() {
@@ -135,6 +137,7 @@ public class GoogleLogin {
 
     private void finishLogin() {
         Prefs.getInstance(activity).setDriveUser(mAccountName);
+        mGoogle = Google.getInstance(activity);
         if (mCallback != null) mCallback.onSuccess();
     }
 
