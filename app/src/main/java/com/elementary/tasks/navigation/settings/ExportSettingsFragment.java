@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
@@ -92,7 +92,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             File dir = MemoryUtil.getParent();
             deleteRecursive(dir);
             new Thread(() -> {
-                GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+                Google gdx = Google.getInstance(mContext);
                 Dropbox dbx = new Dropbox(mContext);
                 if (SuperUtil.isConnected(mContext)) {
                     try {

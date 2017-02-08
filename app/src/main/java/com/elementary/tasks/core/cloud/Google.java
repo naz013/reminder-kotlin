@@ -56,11 +56,11 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class GoogleDrive {
+public class Google {
 
     public static final String TASKS_NEED_ACTION = "needsAction";
     public static final String TASKS_COMPLETE = "completed";
-    private static final String TAG = "GoogleDrive";
+    private static final String TAG = "Google";
     private static final String APPLICATION_NAME = "Reminder/6.0";
     private static final String FOLDER_NAME = "Reminder";
 
@@ -70,9 +70,9 @@ public class GoogleDrive {
     private Tasks mTasks;
     private Drives mDrives;
 
-    private static GoogleDrive instance = null;
+    private static Google instance = null;
 
-    private GoogleDrive(Context context) throws IllegalStateException {
+    private Google(Context context) throws IllegalStateException {
         String user = Prefs.getInstance(context).getDriveUser();
         if (user.matches(".*@.*")) {
             GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS));
@@ -86,10 +86,10 @@ public class GoogleDrive {
         } else throw new IllegalArgumentException("Not logged to Google");
     }
 
-    public static GoogleDrive getInstance(Context context) {
+    public static Google getInstance(Context context) {
         if (instance == null) {
             try {
-                instance = new GoogleDrive(context.getApplicationContext());
+                instance = new Google(context.getApplicationContext());
             } catch (IllegalArgumentException e) {
                 LogUtil.d(TAG, "getInstance: " + e.getLocalizedMessage());
             }

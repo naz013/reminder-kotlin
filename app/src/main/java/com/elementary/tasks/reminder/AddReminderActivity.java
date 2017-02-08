@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.Constants;
@@ -111,7 +111,7 @@ public class AddReminderActivity extends ThemedActivity {
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (GoogleDrive.getInstance(this) != null) {
+        if (Google.getInstance(this) != null) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);

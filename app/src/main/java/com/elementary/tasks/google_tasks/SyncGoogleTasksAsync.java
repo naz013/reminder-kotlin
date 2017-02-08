@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
@@ -43,7 +43,7 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleDrive helper = GoogleDrive.getInstance(mContext);
+        Google helper = Google.getInstance(mContext);
         TaskLists lists = null;
         try {
             lists = helper.getTasks().getTaskLists();

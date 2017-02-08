@@ -3,7 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 
 import java.io.IOException;
 
@@ -27,13 +27,13 @@ public class IoHelper {
 
     private Context mContext;
     private boolean isConnected;
-    private GoogleDrive mDrive;
+    private Google mDrive;
     private Dropbox mDropbox;
 
     public IoHelper(Context context) {
         this.mContext = context;
         isConnected = SuperUtil.isConnected(context);
-        mDrive = GoogleDrive.getInstance(context);
+        mDrive = Google.getInstance(context);
         mDropbox = new Dropbox(context);
     }
 

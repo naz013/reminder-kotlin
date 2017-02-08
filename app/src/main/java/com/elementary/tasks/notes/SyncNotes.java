@@ -8,7 +8,7 @@ import android.support.v7.app.NotificationCompat;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -66,8 +66,8 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
             new Dropbox(mContext).downloadNotes(true);
             new Dropbox(mContext).uploadNotes();
             try {
-                GoogleDrive.getInstance(mContext).getDrive().downloadNotes(true);
-                GoogleDrive.getInstance(mContext).getDrive().saveNotesToDrive();
+                Google.getInstance(mContext).getDrive().downloadNotes(true);
+                Google.getInstance(mContext).getDrive().saveNotesToDrive();
             } catch (IOException e) {
                 e.printStackTrace();
             }

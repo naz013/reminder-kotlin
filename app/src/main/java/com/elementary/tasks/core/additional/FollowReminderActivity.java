@@ -21,7 +21,7 @@ import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.GoogleDrive;
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Prefs;
@@ -77,7 +77,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private boolean mStock = true;
     private boolean mTasks = true;
 
-    private GoogleDrive mGoogleTasks = GoogleDrive.getInstance(this);
+    private Google mGoogleTasks = Google.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
