@@ -8,7 +8,7 @@ import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.RealmBirthdayItem;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.calendar.RealmCalendarEvent;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.google_tasks.RealmTask;
 import com.elementary.tasks.google_tasks.RealmTaskList;
@@ -24,7 +24,6 @@ import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.EditableRealmImage;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.notes.RealmImage;
 import com.elementary.tasks.notes.RealmNote;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.RealmPlace;
@@ -658,7 +657,7 @@ public class RealmDb {
     public void deleteCompletedTasks(String listId) {
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(realm1 -> {
-            RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).equalTo("status", GoogleTasks.TASKS_COMPLETE).findAll();
+            RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).equalTo("status", GoogleDrive.TASKS_COMPLETE).findAll();
             list.deleteAllFromRealm();
         });
     }
@@ -749,10 +748,10 @@ public class RealmDb {
         realm.beginTransaction();
         RealmTask object = realm.where(RealmTask.class).equalTo("taskId", id).findFirst();
         if (status) {
-            object.setStatus(GoogleTasks.TASKS_COMPLETE);
+            object.setStatus(GoogleDrive.TASKS_COMPLETE);
             object.setCompleteDate(System.currentTimeMillis());
         } else {
-            object.setStatus(GoogleTasks.TASKS_NEED_ACTION);
+            object.setStatus(GoogleDrive.TASKS_NEED_ACTION);
             object.setCompleteDate(0);
         }
         realm.commitTransaction();

@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.google.gson.Gson;
@@ -40,7 +39,6 @@ abstract class SharedPrefs extends PrefsConstants {
     }
 
     SharedPrefs(Context context){
-        Log.d(TAG, "SharedPrefs: " + context);
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 

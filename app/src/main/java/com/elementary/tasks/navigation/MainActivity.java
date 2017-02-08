@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -282,7 +282,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     private void setMenuVisible() {
         Menu menu = mNavigationView.getMenu();
-        menu.getItem(4).setVisible(new GoogleTasks(this).isLinked());
+        menu.getItem(4).setVisible(GoogleDrive.getInstance(this) != null);
     }
 
     @Override

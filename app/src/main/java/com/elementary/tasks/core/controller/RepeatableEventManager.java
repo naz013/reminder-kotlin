@@ -3,7 +3,7 @@ package com.elementary.tasks.core.controller;
 import android.content.Context;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
@@ -42,7 +42,7 @@ abstract class RepeatableEventManager extends EventManager {
             long due = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime());
             TaskItem mItem = new TaskItem();
             mItem.setListId(null);
-            mItem.setStatus(GoogleTasks.TASKS_NEED_ACTION);
+            mItem.setStatus(GoogleDrive.TASKS_NEED_ACTION);
             mItem.setTitle(mReminder.getSummary());
             mItem.setDueDate(due);
             mItem.setNotes(mContext.getString(R.string.from_reminder));

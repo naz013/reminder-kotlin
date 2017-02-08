@@ -138,9 +138,9 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     }
 
     private void addGoogleData(List<UserItem> list) {
-        GoogleDrive gdx = new GoogleDrive(mContext);
-        if (gdx.isLinked() && SuperUtil.isConnected(mContext)) {
-            UserItem userItem = gdx.getData();
+        GoogleDrive gdx = GoogleDrive.getInstance(mContext);
+        if (gdx != null && SuperUtil.isConnected(mContext)) {
+            UserItem userItem = gdx.getDrive().getData();
             if (userItem != null) {
                 userItem.kind = Info.Google;
                 list.add(userItem);

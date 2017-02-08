@@ -92,11 +92,11 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             File dir = MemoryUtil.getParent();
             deleteRecursive(dir);
             new Thread(() -> {
-                GoogleDrive gdx = new GoogleDrive(mContext);
+                GoogleDrive gdx = GoogleDrive.getInstance(mContext);
                 Dropbox dbx = new Dropbox(mContext);
                 if (SuperUtil.isConnected(mContext)) {
                     try {
-                        gdx.clean();
+                        gdx.getDrive().clean();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

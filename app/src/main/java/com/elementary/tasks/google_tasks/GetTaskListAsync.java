@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
@@ -43,11 +43,11 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        GoogleTasks helper = new GoogleTasks(mContext);
-        if (helper.isLinked()) {
+        GoogleDrive helper = GoogleDrive.getInstance(mContext);
+        if (helper != null) {
             TaskLists lists = null;
             try {
-                lists = helper.getTaskLists();
+                lists = helper.getTasks().getTaskLists();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -66,7 +66,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
                     TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
                     RealmDb.getInstance().setDefault(listItem.getListId());
                     RealmDb.getInstance().setSystemDefault(listItem.getListId());
-                    List<Task> tasks = helper.getTasks(listId);
+                    List<Task> tasks = helper.getTasks().getTasks(listId);
                     for (Task task : tasks) {
                         TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
                         if (taskItem != null) {

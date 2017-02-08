@@ -30,7 +30,7 @@ import android.widget.Spinner;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
@@ -192,7 +192,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         super.onCreate(savedInstanceState);
         loadReminder();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder);
-        isExportToTasks = new GoogleTasks(this).isLinked();
+        isExportToTasks = GoogleDrive.getInstance(this) != null;
         initActionBar();
         initNavigation();
         editReminder();

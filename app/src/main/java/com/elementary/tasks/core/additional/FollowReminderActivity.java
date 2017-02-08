@@ -21,7 +21,7 @@ import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.cloud.GoogleTasks;
+import com.elementary.tasks.core.cloud.GoogleDrive;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Prefs;
@@ -77,15 +77,14 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private boolean mStock = true;
     private boolean mTasks = true;
 
-    private GoogleTasks mGoogleTasks = new GoogleTasks(FollowReminderActivity.this);
-    private String mNumber;
+    private GoogleDrive mGoogleTasks = GoogleDrive.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
         long receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0);
-        mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
+        String mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
         String name = Contacts.getNameFromNumber(mNumber, FollowReminderActivity.this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_follow_layout);
         initActionBar();
@@ -203,7 +202,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private void initPrefs() {
         mCalendar = Prefs.getInstance(this).isCalendarEnabled();
         mStock = Prefs.getInstance(this).isStockCalendarEnabled();
-        mTasks = mGoogleTasks.isLinked();
+        mTasks = mGoogleTasks != null;
         mIs24Hour = Prefs.getInstance(this).is24HourFormatEnabled();
     }
 
