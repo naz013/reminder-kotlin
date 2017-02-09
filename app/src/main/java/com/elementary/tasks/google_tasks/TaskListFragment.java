@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.LinearLayout;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.FragmentGoogleListBinding;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class TaskListFragment extends Fragment {
 
     private RecyclerView currentList;
@@ -42,11 +46,12 @@ public class TaskListFragment extends Fragment {
     private TasksCallback mTasksCallback = new TasksCallback() {
         @Override
         public void onFailed() {
-
+            loaderAdapter();
         }
 
         @Override
         public void onComplete() {
+            EventBus.getDefault().post(new UpdateEvent());
             loaderAdapter();
         }
     };

@@ -30,6 +30,10 @@ import com.elementary.tasks.google_tasks.TaskListWrapperItem;
 import com.elementary.tasks.google_tasks.TaskPagerAdapter;
 import com.elementary.tasks.google_tasks.TasksCallback;
 import com.elementary.tasks.google_tasks.TasksConstants;
+import com.elementary.tasks.google_tasks.UpdateEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,11 +151,23 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().register(this);
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.google_tasks));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> addNewTask());
         }
+        loadData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(UpdateEvent event) {
         loadData();
     }
 
