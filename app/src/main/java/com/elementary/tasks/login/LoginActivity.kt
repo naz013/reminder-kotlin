@@ -6,6 +6,14 @@ import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.URLSpan
+import android.view.View
+import android.webkit.WebView
+import android.widget.CheckBox
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.animation.GlideAnimation
@@ -29,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
         const val PERM_DROPBOX: Int = 104
         const val PERM_LOCAL: Int = 105
         const val PERM_BIRTH: Int = 106
+        private const val TERMS_URL = "termsopen.com"
         private const val TAG: String = "LoginActivity"
     }
 
@@ -56,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
         })
         initButtons()
         loadPhotoView()
+        initCheckbox()
     }
 
     private fun loadPhotoView() {
@@ -181,6 +191,55 @@ class LoginActivity : AppCompatActivity() {
             Permissions.requestPermission(this, PERM, Permissions.GET_ACCOUNTS,
                     Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
         }
+    }
+
+    private fun initCheckbox() {
+        setViewHTML(binding.termsCheckBox, getString(R.string.i_accept))
+        binding.termsCheckBox.setOnCheckedChangeListener { p0, p1 -> setEnabling(p1) }
+        binding.termsCheckBox.isChecked = true
+    }
+
+    private fun setEnabling(b: Boolean) {
+        binding.dropboxButton.isEnabled = b
+        binding.googleButton.isEnabled = b
+        binding.localButton.isEnabled = b
+        binding.skipButton.isEnabled = b
+    }
+
+    private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {
+        val start = strBuilder.getSpanStart(span)
+        val end = strBuilder.getSpanEnd(span)
+        val flags = strBuilder.getSpanFlags(span)
+        val clickable = object : ClickableSpan() {
+            override fun onClick(view: View) {
+                if (span.url.contains(TERMS_URL)) {
+                    openTermsScreen()
+                }
+            }
+        }
+        strBuilder.setSpan(clickable, start, end, flags)
+        strBuilder.removeSpan(span)
+    }
+
+    private fun openTermsScreen() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.privacy_policy))
+        val webView = WebView(this)
+        webView.loadUrl("https://craysoftware.wordpress.com/privacy-policy/")
+        builder.setView(webView)
+        builder.setPositiveButton(R.string.ok, { dialogInterface, i -> dialogInterface.dismiss() })
+        builder.create().show()
+    }
+
+    private fun setViewHTML(text: CheckBox, html: String) {
+        val sequence = Html.fromHtml(html)
+        val strBuilder = SpannableStringBuilder(sequence)
+        val urls = strBuilder.getSpans(0, sequence.length, URLSpan::class.java)
+        for (span in urls) {
+            makeLinkClickable(strBuilder, span)
+        }
+        text.text = strBuilder
+        text.movementMethod = LinkMovementMethod.getInstance()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

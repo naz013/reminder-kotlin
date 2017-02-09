@@ -588,4 +588,6 @@
     <string name="failed_to_login">Failed to login</string>
     <string name="would_you_like_to_import_birthdays">Would you like to import birthdays?</string>
     <string name="open_app">Open app</string>
+    <string name="i_accept"><![CDATA[I accept <a href=\\\'termsopen.com\\\'>Privacy Policy</a>]]></string>
+    <string name="privacy_policy">Privacy policy</string>
 </resources>
