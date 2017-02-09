@@ -4,11 +4,9 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -56,30 +54,21 @@ public class ImageEditActivity extends ThemedActivity {
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        Log.d(TAG, "onResourceReady: ");
                         binding.cropImageView.setImageBitmap(resource);
                     }
                 });
     }
 
     private void initControls() {
-        binding.drawButton.setVisibility(View.GONE);
         if (themeUtil.isDark()) {
-            binding.drawButton.setImageResource(R.drawable.ic_random_line);
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_white_24dp);
             binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_white_24dp);
         } else {
-            binding.drawButton.setImageResource(R.drawable.ic_random_line_black);
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_black_24dp);
             binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_black_24dp);
         }
         binding.rotateLeftButton.setOnClickListener(view -> binding.cropImageView.rotateImage(-90));
         binding.rotateRightButton.setOnClickListener(view -> binding.cropImageView.rotateImage(90));
-        binding.drawButton.setOnClickListener(view -> openDrawScreen());
-    }
-
-    private void openDrawScreen() {
-
     }
 
     private void initActionBar() {
