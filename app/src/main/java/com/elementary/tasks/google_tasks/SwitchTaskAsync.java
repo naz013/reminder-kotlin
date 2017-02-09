@@ -24,13 +24,13 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
+class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     private Context mContext;
     private String taskId, listId;
     private TasksCallback mListener;
     private boolean status;
 
-    public SwitchTaskAsync(Context context, String listId, String taskId, boolean status, TasksCallback listener) {
+    SwitchTaskAsync(Context context, String listId, String taskId, boolean status, TasksCallback listener) {
         this.mContext = context;
         this.listId = listId;
         this.taskId = taskId;
@@ -42,7 +42,7 @@ public class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
-        if (isConnected) {
+        if (isConnected && helper != null) {
             try {
                 if (status) helper.getTasks().updateTaskStatus(Google.TASKS_COMPLETE, listId, taskId);
                 else helper.getTasks().updateTaskStatus(Google.TASKS_NEED_ACTION, listId, taskId);
