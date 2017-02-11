@@ -62,6 +62,7 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
+import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;

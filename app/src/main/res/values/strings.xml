@@ -576,6 +576,24 @@
     <string name="open_app">Open app</string>
     <string name="i_accept"><![CDATA[I accept <a href=\\\'termsopen.com\\\'>Privacy Policy</a>]]></string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="original">Original</string>
+    <string name="cropped">Cropped</string>
+    <string name="which_image_you_want_to_use">Which image you want to use?</string>
+    <string name="edited">Edited</string>
+    <string name="pen">Pen</string>
+    <string name="text">Text</string>
+    <string name="line">Line</string>
+    <string name="rectangle">Rectangle</string>
+    <string name="circle">Circle</string>
+    <string name="ellipse">Ellipse</string>
+    <string name="curve">Curve</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="clear">Clear</string>
+    <string name="fill">Fill</string>
+    <string name="grey">Grey</string>
+    <string name="stroke">Stroke</string>
+    <string name="move_image">Move image</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>

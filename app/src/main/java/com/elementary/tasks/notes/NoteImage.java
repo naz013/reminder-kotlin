@@ -22,6 +22,8 @@ public class NoteImage implements Serializable {
 
     private byte[] image;
 
+    public NoteImage() {}
+
     public NoteImage(RealmImage image) {
         this.image = image.getImage();
     }

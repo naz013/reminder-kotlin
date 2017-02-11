@@ -1,20 +1,19 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.editor;
 
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.databinding.ActivityImageEditBinding;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.databinding.CropFragmentBinding;
+import com.elementary.tasks.notes.NoteImage;
 
 import java.io.ByteArrayOutputStream;
 
@@ -34,20 +33,40 @@ import java.io.ByteArrayOutputStream;
  * limitations under the License.
  */
 
-public class ImageEditActivity extends ThemedActivity {
+public class CropFragment extends BitmapFragment {
 
-    private static final String TAG = "ImageEditActivity";
+    private static final String IMAGE = "image";
 
-    private ActivityImageEditBinding binding;
+    private CropFragmentBinding binding;
     private NoteImage mItem;
 
+    public static CropFragment newInstance(NoteImage image) {
+        CropFragment fragment = new CropFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(IMAGE, image);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mItem = RealmDb.getInstance().getImage();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_image_edit);
-        initActionBar();
+        if (getArguments() != null) {
+            mItem = (NoteImage) getArguments().getSerializable(IMAGE);
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        binding = CropFragmentBinding.inflate(inflater, container, false);
+        binding.background.setBackgroundColor(new ThemeUtil(mContext).getBackgroundStyle());
         initControls();
+        loadImage();
+        return binding.getRoot();
+    }
+
+    private void loadImage() {
         Glide.with(this)
                 .load(mItem.getImage())
                 .asBitmap()
@@ -60,7 +79,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void initControls() {
-        if (themeUtil.isDark()) {
+        if (new ThemeUtil(mContext).isDark()) {
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_white_24dp);
             binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_white_24dp);
         } else {
@@ -71,48 +90,17 @@ public class ImageEditActivity extends ThemedActivity {
         binding.rotateRightButton.setOnClickListener(view -> binding.cropImageView.rotateImage(90));
     }
 
-    private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.edit));
-    }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_palce_edit, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                setResult(RESULT_CANCELED);
-                finish();
-                return true;
-            case R.id.action_add:
-                saveImage();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void saveImage() {
+    public NoteImage getImage() {
         Bitmap cropped = binding.cropImageView.getCroppedImage();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         mItem.setImage(outputStream.toByteArray());
-        RealmDb.getInstance().saveImage(mItem);
-        setResult(RESULT_OK);
-        finish();
+        return mItem;
+    }
+
+    @Override
+    public NoteImage getOriginalImage() {
+        return mItem;
     }
 }

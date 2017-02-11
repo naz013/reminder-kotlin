@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
-import android.widget.RadioButton;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -26,7 +26,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * limitations under the License.
  */
 
-public class RoboRadioButton extends RadioButton {
+public class RoboRadioButton extends AppCompatRadioButton {
 
     private Typeface mTypeface;
 
