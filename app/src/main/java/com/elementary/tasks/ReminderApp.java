@@ -19,6 +19,7 @@ package com.elementary.tasks;
 import android.support.multidex.MultiDexApplication;
 
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
@@ -36,6 +37,7 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Prefs.getInstance(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
                 .schemaVersion(1)
                 .deleteRealmIfMigrationNeeded()

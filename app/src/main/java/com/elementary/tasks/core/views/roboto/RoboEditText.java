@@ -3,8 +3,8 @@ package com.elementary.tasks.core.views.roboto;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.widget.EditText;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -25,7 +25,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * limitations under the License.
  */
 
-public class RoboEditText extends EditText {
+public class RoboEditText extends AppCompatEditText {
 
     private Typeface mTypeface;
 

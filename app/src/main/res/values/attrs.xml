@@ -28,6 +28,15 @@
         <attr name="repeat_type_text" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="IconRadioButton">
+        <attr name="ir_text_size" format="dimension"/>
+        <attr name="ir_text" format="string"/>
+        <attr name="ir_icon" format="reference"/>
+        <attr name="ir_icon_light" format="reference"/>
+        <attr name="ir_checked" format="boolean"/>
+        <attr name="ir_checkable" format="boolean"/>
+    </declare-styleable>
+
     <declare-styleable name="ActionView">
     </declare-styleable>
 

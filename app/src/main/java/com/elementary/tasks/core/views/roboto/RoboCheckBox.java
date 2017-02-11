@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -26,7 +26,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * limitations under the License.
  */
 
-public class RoboCheckBox extends CheckBox {
+public class RoboCheckBox extends AppCompatCheckBox {
 
     private Typeface mTypeface;
 

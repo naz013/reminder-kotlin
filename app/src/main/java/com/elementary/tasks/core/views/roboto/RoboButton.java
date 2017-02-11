@@ -3,8 +3,8 @@ package com.elementary.tasks.core.views.roboto;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -25,7 +25,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * limitations under the License.
  */
 
-public class RoboButton extends Button {
+public class RoboButton extends AppCompatButton {
 
     private Typeface mTypeface;
 

@@ -1,24 +1,26 @@
 package com.elementary.tasks.core.views;
 
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.ArrayList;
-
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathEffect;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.PorterDuff;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.MotionEvent;
+import android.view.View;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CanvasView.java
@@ -36,6 +38,7 @@ public class DrawView extends View {
     public enum Mode {
         DRAW,
         TEXT,
+        MOVE,
         ERASER
     }
 
@@ -50,16 +53,13 @@ public class DrawView extends View {
         QUBIC_BEZIER
     }
 
-    private Context context = null;
     private Canvas canvas = null;
     private Bitmap bitmap = null;
 
     private List<Path> pathLists = new ArrayList<>();
     private List<Paint> paintLists = new ArrayList<>();
 
-    private final Paint emptyPaint = new Paint();
-
-    // for Eraser
+    @ColorInt
     private int baseColor = Color.WHITE;
 
     // for Undo, Redo
@@ -72,12 +72,15 @@ public class DrawView extends View {
 
     // for Paint
     private Paint.Style paintStyle = Paint.Style.STROKE;
+    @ColorInt
     private int paintStrokeColor = Color.BLACK;
+    @ColorInt
     private int paintFillColor = Color.BLACK;
     private float paintStrokeWidth = 3F;
     private int opacity = 255;
     private float blur = 0F;
     private Paint.Cap lineCap = Paint.Cap.ROUND;
+    private PathEffect drawPathEffect = null;
 
     // for Text
     private String text = "";
@@ -93,6 +96,12 @@ public class DrawView extends View {
     private float startY = 0F;
     private float controlX = 0F;
     private float controlY = 0F;
+    private float bitmapX = 0F;
+    private float bitmapY = 0F;
+    private float bmpStartX = 0F;
+    private float bmpStartY = 0F;
+
+    private DrawCallback mCallback;
 
     /**
      * Copy Constructor
@@ -103,7 +112,7 @@ public class DrawView extends View {
      */
     public DrawView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.setup(context);
+        this.setup();
     }
 
     /**
@@ -114,7 +123,7 @@ public class DrawView extends View {
      */
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setup(context);
+        this.setup();
     }
 
     /**
@@ -124,21 +133,19 @@ public class DrawView extends View {
      */
     public DrawView(Context context) {
         super(context);
-        this.setup(context);
+        this.setup();
     }
 
     /**
      * Common initialization.
-     *
-     * @param context
      */
-    private void setup(Context context) {
-        this.context = context;
-
+    private void setup() {
+        this.historyPointer = 0;
+        this.paintLists.clear();
+        this.pathLists.clear();
         this.pathLists.add(new Path());
         this.paintLists.add(this.createPaint());
         this.historyPointer++;
-
         this.textPaint.setARGB(0, 255, 255, 255);
     }
 
@@ -150,13 +157,11 @@ public class DrawView extends View {
      */
     private Paint createPaint() {
         Paint paint = new Paint();
-
         paint.setAntiAlias(true);
         paint.setStyle(this.paintStyle);
         paint.setStrokeWidth(this.paintStrokeWidth);
         paint.setStrokeCap(this.lineCap);
         paint.setStrokeJoin(Paint.Join.MITER);  // fixed
-
         // for Text
         if (this.mode == Mode.TEXT) {
             paint.setTypeface(this.fontFamily);
@@ -164,21 +169,19 @@ public class DrawView extends View {
             paint.setTextAlign(this.textAlign);
             paint.setStrokeWidth(0F);
         }
-
         if (this.mode == Mode.ERASER) {
             // Eraser
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
             paint.setARGB(0, 0, 0, 0);
-
-            // paint.setColor(this.baseColor);
+            paint.setColor(this.baseColor);
             // paint.setShadowLayer(this.blur, 0F, 0F, this.baseColor);
         } else {
             // Otherwise
             paint.setColor(this.paintStrokeColor);
             paint.setShadowLayer(this.blur, 0F, 0F, this.paintStrokeColor);
             paint.setAlpha(this.opacity);
+            paint.setPathEffect(this.drawPathEffect);
         }
-
         return paint;
     }
 
@@ -192,13 +195,10 @@ public class DrawView extends View {
      */
     private Path createPath(MotionEvent event) {
         Path path = new Path();
-
         // Save for ACTION_MOVE
         this.startX = event.getX();
         this.startY = event.getY();
-
         path.moveTo(this.startX, this.startY);
-
         return path;
     }
 
@@ -218,7 +218,6 @@ public class DrawView extends View {
             this.pathLists.set(this.historyPointer, path);
             this.paintLists.set(this.historyPointer, this.createPaint());
             this.historyPointer++;
-
             for (int i = this.historyPointer, size = this.paintLists.size(); i < size; i++) {
                 this.pathLists.remove(this.historyPointer);
                 this.paintLists.remove(this.historyPointer);
@@ -266,17 +265,21 @@ public class DrawView extends View {
         float y = textY;
 
         for (int i = 0, len = this.text.length(); i < len; i += modNumChars) {
-            String substring = "";
-
+            String substring;
             if ((i + modNumChars) < len) {
                 substring = this.text.substring(i, (i + modNumChars));
             } else {
                 substring = this.text.substring(i, len);
             }
-
             y += this.fontSize;
-
             canvas.drawText(substring, textX, y, this.textPaint);
+        }
+        sendCallback();
+    }
+
+    private void sendCallback() {
+        if (mCallback != null) {
+            mCallback.onDrawEnd();
         }
     }
 
@@ -302,16 +305,16 @@ public class DrawView extends View {
                         // The 2nd tap
                         this.controlX = event.getX();
                         this.controlY = event.getY();
-
                         this.isDown = true;
                     }
                 }
-
                 break;
             case TEXT:
+            case MOVE:
                 this.startX = event.getX();
                 this.startY = event.getY();
-
+                this.bmpStartX = bitmapX;
+                this.bmpStartY = bitmapY;
                 break;
             default:
                 break;
@@ -326,18 +329,17 @@ public class DrawView extends View {
     private void onActionMove(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-
         switch (this.mode) {
+            case MOVE:
+                moveBitmap(x, y);
+                break;
             case DRAW:
             case ERASER:
-
                 if ((this.drawer != Drawer.QUADRATIC_BEZIER) && (this.drawer != Drawer.QUBIC_BEZIER)) {
                     if (!isDown) {
                         return;
                     }
-
                     Path path = this.getCurrentPath();
-
                     switch (this.drawer) {
                         case PEN:
                             path.lineTo(x, y);
@@ -349,19 +351,21 @@ public class DrawView extends View {
                             break;
                         case RECTANGLE:
                             path.reset();
-                            path.addRect(this.startX, this.startY, x, y, Path.Direction.CCW);
+                            float left = Math.min(this.startX, x);
+                            float right = Math.max(this.startX, x);
+                            float top = Math.min(this.startY, y);
+                            float bottom = Math.max(this.startY, y);
+                            path.addRect(left, top, right, bottom, Path.Direction.CCW);
                             break;
                         case CIRCLE:
                             double distanceX = Math.abs((double) (this.startX - x));
-                            double distanceY = Math.abs((double) (this.startX - y));
+                            double distanceY = Math.abs((double)(this.startY - y));
                             double radius = Math.sqrt(Math.pow(distanceX, 2.0) + Math.pow(distanceY, 2.0));
-
                             path.reset();
                             path.addCircle(this.startX, this.startY, (float) radius, Path.Direction.CCW);
                             break;
                         case ELLIPSE:
                             RectF rect = new RectF(this.startX, this.startY, x, y);
-
                             path.reset();
                             path.addOval(rect, Path.Direction.CCW);
                             break;
@@ -372,23 +376,26 @@ public class DrawView extends View {
                     if (!isDown) {
                         return;
                     }
-
                     Path path = this.getCurrentPath();
-
                     path.reset();
                     path.moveTo(this.startX, this.startY);
                     path.quadTo(this.controlX, this.controlY, x, y);
                 }
-
                 break;
             case TEXT:
                 this.startX = x;
                 this.startY = y;
-
                 break;
             default:
                 break;
         }
+    }
+
+    private void moveBitmap(float x, float y) {
+        if (bitmap == null) return;
+        bitmapX = bmpStartX - (startX - x);
+        bitmapY = bmpStartY - (startY - y);
+        this.invalidate();
     }
 
     /**
@@ -402,6 +409,7 @@ public class DrawView extends View {
             this.startY = 0F;
             this.isDown = false;
         }
+        sendCallback();
     }
 
     /**
@@ -412,23 +420,17 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         // Before "drawPath"
         canvas.drawColor(this.baseColor);
-
         if (this.bitmap != null) {
-            canvas.drawBitmap(this.bitmap, 0F, 0F, emptyPaint);
+            canvas.drawBitmap(this.bitmap, bitmapX, bitmapY, new Paint());
         }
-
         for (int i = 0; i < this.historyPointer; i++) {
             Path path = this.pathLists.get(i);
             Paint paint = this.paintLists.get(i);
-
             canvas.drawPath(path, paint);
         }
-
         this.drawText(canvas);
-
         this.canvas = canvas;
     }
 
@@ -453,11 +455,17 @@ public class DrawView extends View {
             default:
                 break;
         }
-
         // Re draw
         this.invalidate();
-
         return true;
+    }
+
+    public boolean hasImage() {
+        return bitmap != null;
+    }
+
+    public void setCallback(DrawCallback mCallback) {
+        this.mCallback = mCallback;
     }
 
     /**
@@ -497,15 +505,33 @@ public class DrawView extends View {
     }
 
     /**
+     * This method checks if Undo is available
+     *
+     * @return If Undo is available, this is returned as true. Otherwise, this is returned as false.
+     */
+    public boolean canUndo() {
+        return this.historyPointer > 1;
+    }
+
+    /**
+     * This method checks if Redo is available
+     *
+     * @return If Redo is available, this is returned as true. Otherwise, this is returned as false.
+     */
+    public boolean canRedo() {
+        return this.historyPointer < this.pathLists.size();
+    }
+
+    /**
      * This method draws canvas again for Undo.
      *
      * @return If Undo is enabled, this is returned as true. Otherwise, this is returned as false.
      */
     public boolean undo() {
-        if (this.historyPointer > 1) {
+        if (canUndo()) {
             this.historyPointer--;
             this.invalidate();
-
+            sendCallback();
             return true;
         } else {
             return false;
@@ -518,10 +544,10 @@ public class DrawView extends View {
      * @return If Redo is enabled, this is returned as true. Otherwise, this is returned as false.
      */
     public boolean redo() {
-        if (this.historyPointer < this.pathLists.size()) {
+        if (canRedo()) {
             this.historyPointer++;
             this.invalidate();
-
+            sendCallback();
             return true;
         } else {
             return false;
@@ -534,35 +560,12 @@ public class DrawView extends View {
      * @return
      */
     public void clear() {
-        Path path = new Path();
-        path.moveTo(0F, 0F);
-        path.addRect(0F, 0F, 1000F, 1000F, Path.Direction.CCW);
-        path.close();
-
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setStyle(Paint.Style.FILL);
-
-        if (this.historyPointer == this.pathLists.size()) {
-            this.pathLists.add(path);
-            this.paintLists.add(paint);
-            this.historyPointer++;
-        } else {
-            // On the way of Undo or Redo
-            this.pathLists.set(this.historyPointer, path);
-            this.paintLists.set(this.historyPointer, paint);
-            this.historyPointer++;
-
-            for (int i = this.historyPointer, size = this.paintLists.size(); i < size; i++) {
-                this.pathLists.remove(this.historyPointer);
-                this.paintLists.remove(this.historyPointer);
-            }
-        }
-
+        bitmap = null;
+        this.setup();
         this.text = "";
-
         // Clear
         this.invalidate();
+        sendCallback();
     }
 
     /**
@@ -570,6 +573,7 @@ public class DrawView extends View {
      *
      * @return
      */
+    @ColorInt
     public int getBaseColor() {
         return this.baseColor;
     }
@@ -579,8 +583,9 @@ public class DrawView extends View {
      *
      * @param color
      */
-    public void setBaseColor(int color) {
+    public void setBaseColor(@ColorInt int color) {
         this.baseColor = color;
+        this.invalidate();
     }
 
     /**
@@ -624,6 +629,7 @@ public class DrawView extends View {
      *
      * @return
      */
+    @ColorInt
     public int getPaintStrokeColor() {
         return this.paintStrokeColor;
     }
@@ -633,8 +639,11 @@ public class DrawView extends View {
      *
      * @param color
      */
-    public void setPaintStrokeColor(int color) {
+    public void setPaintStrokeColor(@ColorInt int color) {
         this.paintStrokeColor = color;
+        if (this.mode == Mode.TEXT) {
+            this.invalidate();
+        }
     }
 
     /**
@@ -643,11 +652,10 @@ public class DrawView extends View {
      *
      * @return
      */
+    @ColorInt
     public int getPaintFillColor() {
         return this.paintFillColor;
     }
-
-    ;
 
     /**
      * This method is setter for fill color.
@@ -655,7 +663,7 @@ public class DrawView extends View {
      *
      * @param color
      */
-    public void setPaintFillColor(int color) {
+    public void setPaintFillColor(@ColorInt int color) {
         this.paintFillColor = color;
     }
 
@@ -746,6 +754,24 @@ public class DrawView extends View {
     }
 
     /**
+     * This method is getter for path effect of drawing.
+     *
+     * @return drawPathEffect
+     */
+    public PathEffect getDrawPathEffect() {
+        return drawPathEffect;
+    }
+
+    /**
+     * This method is setter for path effect of drawing.
+     *
+     * @param drawPathEffect
+     */
+    public void setDrawPathEffect(PathEffect drawPathEffect) {
+        this.drawPathEffect = drawPathEffect;
+    }
+
+    /**
      * This method is getter for font size,
      *
      * @return
@@ -794,7 +820,6 @@ public class DrawView extends View {
     public Bitmap getBitmap() {
         this.setDrawingCacheEnabled(false);
         this.setDrawingCacheEnabled(true);
-
         return Bitmap.createBitmap(this.getDrawingCache());
     }
 
@@ -806,7 +831,6 @@ public class DrawView extends View {
     public Bitmap getScaleBitmap(int w, int h) {
         this.setDrawingCacheEnabled(false);
         this.setDrawingCacheEnabled(true);
-
         return Bitmap.createScaledBitmap(this.getDrawingCache(), w, h, true);
     }
 
@@ -840,7 +864,6 @@ public class DrawView extends View {
     public static byte[] getBitmapAsByteArray(Bitmap bitmap, CompressFormat format, int quality) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(format, quality, byteArrayOutputStream);
-
         return byteArrayOutputStream.toByteArray();
     }
 
@@ -854,7 +877,6 @@ public class DrawView extends View {
     public byte[] getBitmapAsByteArray(CompressFormat format, int quality) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         this.getBitmap().compress(format, quality, byteArrayOutputStream);
-
         return byteArrayOutputStream.toByteArray();
     }
 
@@ -868,4 +890,7 @@ public class DrawView extends View {
         return this.getBitmapAsByteArray(CompressFormat.PNG, 100);
     }
 
+    public interface DrawCallback {
+        void onDrawEnd();
+    }
 }

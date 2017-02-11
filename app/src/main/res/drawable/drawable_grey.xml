@@ -8,4 +8,8 @@
 
     <solid android:color="#EEEEEE" />
 
+    <size
+        android:width="24dp"
+        android:height="24dp" />
+
 </shape>
