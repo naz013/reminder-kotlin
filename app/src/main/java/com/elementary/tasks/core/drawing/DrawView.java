@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.views;
+package com.elementary.tasks.core.drawing;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -49,15 +49,10 @@ public class DrawView extends View {
         RECTANGLE,
         CIRCLE,
         ELLIPSE,
-        QUADRATIC_BEZIER,
-        QUBIC_BEZIER
+        QUADRATIC_BEZIER
     }
 
-    private Canvas canvas = null;
-    private Bitmap bitmap = null;
-
-    private List<Path> pathLists = new ArrayList<>();
-    private List<Paint> paintLists = new ArrayList<>();
+    private List<Drawing> elements = new ArrayList<>();
 
     @ColorInt
     private int baseColor = Color.WHITE;
@@ -82,55 +77,32 @@ public class DrawView extends View {
     private Paint.Cap lineCap = Paint.Cap.ROUND;
     private PathEffect drawPathEffect = null;
 
-    // for Text
-    private String text = "";
     private Typeface fontFamily = Typeface.DEFAULT;
     private float fontSize = 32F;
     private Paint.Align textAlign = Paint.Align.RIGHT;  // fixed
     private Paint textPaint = new Paint();
-    private float textX = 0F;
-    private float textY = 0F;
 
     // for Drawer
     private float startX = 0F;
     private float startY = 0F;
     private float controlX = 0F;
     private float controlY = 0F;
-    private float bitmapX = 0F;
-    private float bitmapY = 0F;
     private float bmpStartX = 0F;
     private float bmpStartY = 0F;
 
+    private Drawing currentItem;
     private DrawCallback mCallback;
 
-    /**
-     * Copy Constructor
-     *
-     * @param context
-     * @param attrs
-     * @param defStyle
-     */
     public DrawView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.setup();
     }
 
-    /**
-     * Copy Constructor
-     *
-     * @param context
-     * @param attrs
-     */
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setup();
     }
 
-    /**
-     * Copy Constructor
-     *
-     * @param context
-     */
     public DrawView(Context context) {
         super(context);
         this.setup();
@@ -141,10 +113,8 @@ public class DrawView extends View {
      */
     private void setup() {
         this.historyPointer = 0;
-        this.paintLists.clear();
-        this.pathLists.clear();
-        this.pathLists.add(new Path());
-        this.paintLists.add(this.createPaint());
+        this.elements.clear();
+        this.elements.add(new Background(baseColor));
         this.historyPointer++;
         this.textPaint.setARGB(0, 255, 255, 255);
     }
@@ -209,18 +179,14 @@ public class DrawView extends View {
      * @param path the instance of Path
      */
     private void updateHistory(Path path) {
-        if (this.historyPointer == this.pathLists.size()) {
-            this.pathLists.add(path);
-            this.paintLists.add(this.createPaint());
+        if (this.historyPointer == this.elements.size()) {
+            this.elements.add(new Figure(path, createPaint()));
             this.historyPointer++;
         } else {
-            // On the way of Undo or Redo
-            this.pathLists.set(this.historyPointer, path);
-            this.paintLists.set(this.historyPointer, this.createPaint());
+            this.elements.set(this.historyPointer, new Figure(path, createPaint()));
             this.historyPointer++;
-            for (int i = this.historyPointer, size = this.paintLists.size(); i < size; i++) {
-                this.pathLists.remove(this.historyPointer);
-                this.paintLists.remove(this.historyPointer);
+            for (int i = this.historyPointer, size = this.elements.size(); i < size; i++) {
+                this.elements.remove(this.historyPointer);
             }
         }
     }
@@ -231,50 +197,15 @@ public class DrawView extends View {
      * @return the instance of Path
      */
     private Path getCurrentPath() {
-        return this.pathLists.get(this.historyPointer - 1);
+        Drawing drawing = this.elements.get(this.historyPointer - 1);
+        if (drawing instanceof Figure) {
+            return ((Figure) drawing).getPath();
+        }
+        return null;
     }
 
-    /**
-     * This method draws text.
-     *
-     * @param canvas the instance of Canvas
-     */
-    private void drawText(Canvas canvas) {
-        if (this.text.length() <= 0) {
-            return;
-        }
-
-        if (this.mode == Mode.TEXT) {
-            this.textX = this.startX;
-            this.textY = this.startY;
-
-            this.textPaint = this.createPaint();
-        }
-
-        float textX = this.textX;
-        float textY = this.textY;
-
-        Paint paintForMeasureText = new Paint();
-
-        // Line break automatically
-        float textLength = paintForMeasureText.measureText(this.text);
-        float lengthOfChar = textLength / (float) this.text.length();
-        float restWidth = this.canvas.getWidth() - textX;  // text-align : right
-        int numChars = (lengthOfChar <= 0) ? 1 : (int) Math.floor((double) (restWidth / lengthOfChar));  // The number of characters at 1 line
-        int modNumChars = (numChars < 1) ? 1 : numChars;
-        float y = textY;
-
-        for (int i = 0, len = this.text.length(); i < len; i += modNumChars) {
-            String substring;
-            if ((i + modNumChars) < len) {
-                substring = this.text.substring(i, (i + modNumChars));
-            } else {
-                substring = this.text.substring(i, len);
-            }
-            y += this.fontSize;
-            canvas.drawText(substring, textX, y, this.textPaint);
-        }
-        sendCallback();
+    private Drawing getCurrent() {
+        return this.elements.get(this.historyPointer - 1);
     }
 
     private void sendCallback() {
@@ -292,7 +223,7 @@ public class DrawView extends View {
         switch (this.mode) {
             case DRAW:
             case ERASER:
-                if ((this.drawer != Drawer.QUADRATIC_BEZIER) && (this.drawer != Drawer.QUBIC_BEZIER)) {
+                if ((this.drawer != Drawer.QUADRATIC_BEZIER)) {
                     // Oherwise
                     this.updateHistory(this.createPath(event));
                     this.isDown = true;
@@ -313,8 +244,8 @@ public class DrawView extends View {
             case MOVE:
                 this.startX = event.getX();
                 this.startY = event.getY();
-                this.bmpStartX = bitmapX;
-                this.bmpStartY = bitmapY;
+                this.bmpStartX = currentItem.getX();
+                this.bmpStartY = currentItem.getY();
                 break;
             default:
                 break;
@@ -335,11 +266,12 @@ public class DrawView extends View {
                 break;
             case DRAW:
             case ERASER:
-                if ((this.drawer != Drawer.QUADRATIC_BEZIER) && (this.drawer != Drawer.QUBIC_BEZIER)) {
+                if ((this.drawer != Drawer.QUADRATIC_BEZIER)) {
                     if (!isDown) {
                         return;
                     }
                     Path path = this.getCurrentPath();
+                    if (path == null) return;
                     switch (this.drawer) {
                         case PEN:
                             path.lineTo(x, y);
@@ -377,25 +309,36 @@ public class DrawView extends View {
                         return;
                     }
                     Path path = this.getCurrentPath();
+                    if (path == null) return;
                     path.reset();
                     path.moveTo(this.startX, this.startY);
                     path.quadTo(this.controlX, this.controlY, x, y);
                 }
                 break;
             case TEXT:
-                this.startX = x;
-                this.startY = y;
+                moveText(x, y);
                 break;
             default:
                 break;
         }
     }
 
+    private void moveText(float x, float y) {
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Text) {
+            drawing.setX(x);
+            drawing.setY(y);
+            this.invalidate();
+        }
+    }
+
     private void moveBitmap(float x, float y) {
-        if (bitmap == null) return;
-        bitmapX = bmpStartX - (startX - x);
-        bitmapY = bmpStartY - (startY - y);
-        this.invalidate();
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Image) {
+            drawing.setX(bmpStartX - (startX - x));
+            drawing.setY(bmpStartY - (startY - y));
+            this.invalidate();
+        }
     }
 
     /**
@@ -420,18 +363,11 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        // Before "drawPath"
-        canvas.drawColor(this.baseColor);
-        if (this.bitmap != null) {
-            canvas.drawBitmap(this.bitmap, bitmapX, bitmapY, new Paint());
+        if (this.elements != null && !this.elements.isEmpty()) {
+            for (int i = 0; i < historyPointer; i++) {
+                elements.get(i).draw(canvas);
+            }
         }
-        for (int i = 0; i < this.historyPointer; i++) {
-            Path path = this.pathLists.get(i);
-            Paint paint = this.paintLists.get(i);
-            canvas.drawPath(path, paint);
-        }
-        this.drawText(canvas);
-        this.canvas = canvas;
     }
 
     /**
@@ -458,10 +394,6 @@ public class DrawView extends View {
         // Re draw
         this.invalidate();
         return true;
-    }
-
-    public boolean hasImage() {
-        return bitmap != null;
     }
 
     public void setCallback(DrawCallback mCallback) {
@@ -519,7 +451,7 @@ public class DrawView extends View {
      * @return If Redo is available, this is returned as true. Otherwise, this is returned as false.
      */
     public boolean canRedo() {
-        return this.historyPointer < this.pathLists.size();
+        return this.historyPointer < this.elements.size();
     }
 
     /**
@@ -530,6 +462,7 @@ public class DrawView extends View {
     public boolean undo() {
         if (canUndo()) {
             this.historyPointer--;
+            this.currentItem = getCurrent();
             this.invalidate();
             sendCallback();
             return true;
@@ -546,6 +479,7 @@ public class DrawView extends View {
     public boolean redo() {
         if (canRedo()) {
             this.historyPointer++;
+            this.currentItem = getCurrent();
             this.invalidate();
             sendCallback();
             return true;
@@ -560,10 +494,7 @@ public class DrawView extends View {
      * @return
      */
     public void clear() {
-        bitmap = null;
         this.setup();
-        this.text = "";
-        // Clear
         this.invalidate();
         sendCallback();
     }
@@ -585,16 +516,11 @@ public class DrawView extends View {
      */
     public void setBaseColor(@ColorInt int color) {
         this.baseColor = color;
+        Drawing element = elements.get(0);
+        if (element instanceof Background) {
+            ((Background) element).setColor(baseColor);
+        }
         this.invalidate();
-    }
-
-    /**
-     * This method is getter for drawn text.
-     *
-     * @return
-     */
-    public String getText() {
-        return this.text;
     }
 
     /**
@@ -602,8 +528,25 @@ public class DrawView extends View {
      *
      * @param text
      */
+    public void addText(String text) {
+        this.currentItem = new Text(text, fontFamily, fontSize, createPaint());
+        this.currentItem.setX(startX);
+        this.currentItem.setY(startY);
+        if (this.historyPointer == this.elements.size()) {
+            this.elements.add(currentItem);
+        } else {
+            this.elements.add(historyPointer, currentItem);
+        }
+        this.historyPointer++;
+        this.invalidate();
+    }
+
     public void setText(String text) {
-        this.text = text;
+        this.currentItem = getCurrent();
+        if (currentItem instanceof Text) {
+            ((Text) currentItem).setText(text);
+            this.invalidate();
+        }
     }
 
     /**
@@ -642,7 +585,11 @@ public class DrawView extends View {
     public void setPaintStrokeColor(@ColorInt int color) {
         this.paintStrokeColor = color;
         if (this.mode == Mode.TEXT) {
-            this.invalidate();
+            Drawing drawing = getCurrent();
+            if (drawing instanceof Text) {
+                ((Text) drawing).setTextColor(color);
+                this.invalidate();
+            }
         }
     }
 
@@ -839,8 +786,22 @@ public class DrawView extends View {
      *
      * @param bitmap
      */
-    public void drawBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void addBitmap(Bitmap bitmap) {
+        this.currentItem = new Image(bitmap);
+        if (this.historyPointer == this.elements.size()) {
+            this.elements.add(currentItem);
+        } else {
+            this.elements.add(historyPointer , currentItem);
+        }
+        this.historyPointer++;
+        this.invalidate();
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.currentItem = getCurrent();
+        if (currentItem instanceof Image) {
+            ((Image) currentItem).setBitmap(bitmap);
+        }
         this.invalidate();
     }
 
@@ -849,8 +810,12 @@ public class DrawView extends View {
      *
      * @param byteArray This is returned as byte array of bitmap.
      */
-    public void drawBitmap(byte[] byteArray) {
-        this.drawBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
+    public void addBitmap(byte[] byteArray) {
+        this.addBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
+    }
+
+    public void setBitmap(byte[] byteArray) {
+        this.setBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
     }
 
     /**

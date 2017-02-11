@@ -608,4 +608,5 @@
     <string name="grey">Grey</string>
     <string name="stroke">Stroke</string>
     <string name="move_image">Move image</string>
+    <string name="add_text">Add text</string>
 </resources>
