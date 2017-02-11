@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.elementary.tasks.core.views.DrawView
+        <com.elementary.tasks.core.drawing.DrawView
             android:id="@+id/draw_view"
             android:layout_width="match_parent"
             android:layout_height="256dp"
@@ -46,9 +46,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:ir_icon="@drawable/ic_cursor_move"
-                    app:ir_icon_light="@drawable/ic_cursor_move_white"
-                    app:ir_text="@string/move_image"
+                    app:ir_icon="@drawable/ic_image_black_24dp"
+                    app:ir_icon_light="@drawable/ic_image_white_24dp"
+                    app:ir_text="@string/image"
                     app:ir_text_size="6sp" />
 
                 <com.elementary.tasks.core.views.IconRadioButton

@@ -594,6 +594,7 @@
     <string name="grey">Grey</string>
     <string name="stroke">Stroke</string>
     <string name="move_image">Move image</string>
+    <string name="add_text">Add text</string>
     <array name="month_list">
         <item>@string/january</item>
         <item>@string/february</item>
