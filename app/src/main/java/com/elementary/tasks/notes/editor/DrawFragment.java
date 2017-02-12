@@ -35,7 +35,7 @@ import com.elementary.tasks.notes.NoteImage;
  * limitations under the License.
  */
 
-public class DrawFragment extends BitmapFragment implements View.OnClickListener {
+public class DrawFragment extends BitmapFragment {
 
     private static final String IMAGE = "image";
 
@@ -93,6 +93,87 @@ public class DrawFragment extends BitmapFragment implements View.OnClickListener
         isFillPicker = true;
         setColor(R.color.whitePrimary);
         setCurrentColor(binding.colorWhiteButton);
+        binding.colorGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            hideColorPanel();
+            switch (i) {
+                case R.id.colorAmberButton:
+                    setColor(R.color.amberPrimary);
+                    setCurrentColor(binding.colorAmberButton);
+                    break;
+                case R.id.colorBlackButton:
+                    setColor(R.color.blackPrimary);
+                    setCurrentColor(binding.colorBlackButton);
+                    break;
+                case R.id.colorBlueButton:
+                    setColor(R.color.bluePrimary);
+                    setCurrentColor(binding.colorBlueButton);
+                    break;
+                case R.id.colorBlueLightButton:
+                    setColor(R.color.blueLightPrimary);
+                    setCurrentColor(binding.colorBlueLightButton);
+                    break;
+                case R.id.colorCyanButton:
+                    setColor(R.color.cyanPrimary);
+                    setCurrentColor(binding.colorCyanButton);
+                    break;
+                case R.id.colorDeepOrangeButton:
+                    setColor(R.color.orangeDeepPrimary);
+                    setCurrentColor(binding.colorDeepOrangeButton);
+                    break;
+                case R.id.colorDeepPurpleButton:
+                    setColor(R.color.purpleDeepPrimary);
+                    setCurrentColor(binding.colorDeepPurpleButton);
+                    break;
+                case R.id.colorGreenButton:
+                    setColor(R.color.greenPrimary);
+                    setCurrentColor(binding.colorGreenButton);
+                    break;
+                case R.id.colorGreenLightButton:
+                    setColor(R.color.greenLightPrimary);
+                    setCurrentColor(binding.colorGreenLightButton);
+                    break;
+                case R.id.colorGreyButton:
+                    setColor(R.color.material_divider);
+                    setCurrentColor(binding.colorGreyButton);
+                    break;
+                case R.id.colorIndigoButton:
+                    setColor(R.color.indigoPrimary);
+                    setCurrentColor(binding.colorIndigoButton);
+                    break;
+                case R.id.colorLimeButton:
+                    setColor(R.color.limePrimary);
+                    setCurrentColor(binding.colorLimeButton);
+                    break;
+                case R.id.colorOrangeButton:
+                    setColor(R.color.orangePrimary);
+                    setCurrentColor(binding.colorOrangeButton);
+                    break;
+                case R.id.colorPinkButton:
+                    setColor(R.color.pinkPrimary);
+                    setCurrentColor(binding.colorPinkButton);
+                    break;
+                case R.id.colorPurpleButton:
+                    setColor(R.color.purplePrimary);
+                    setCurrentColor(binding.colorPurpleButton);
+                    break;
+                case R.id.colorRedButton:
+                    setColor(R.color.redPrimary);
+                    setCurrentColor(binding.colorRedButton);
+                    break;
+                case R.id.colorTealButton:
+                    setColor(R.color.tealPrimary);
+                    setCurrentColor(binding.colorTealButton);
+                    break;
+                case R.id.colorWhiteButton:
+                    setColor(R.color.whitePrimary);
+                    setCurrentColor(binding.colorWhiteButton);
+                    break;
+                case R.id.colorYellowButton:
+                    setColor(R.color.yellowPrimary);
+                    setCurrentColor(binding.colorYellowButton);
+                    break;
+            }
+        });
     }
 
     private void setColor(@ColorRes int color) {
@@ -295,89 +376,6 @@ public class DrawFragment extends BitmapFragment implements View.OnClickListener
     @Override
     public NoteImage getOriginalImage() {
         return mItem;
-    }
-
-    @Override
-    public void onClick(View view) {
-        hideColorPanel();
-        switch (view.getId()) {
-            case R.id.colorAmberButton:
-                setColor(R.color.amberPrimary);
-                setCurrentColor(binding.colorAmberButton);
-                break;
-            case R.id.colorBlackButton:
-                setColor(R.color.blackPrimary);
-                setCurrentColor(binding.colorBlackButton);
-                break;
-            case R.id.colorBlueButton:
-                setColor(R.color.bluePrimary);
-                setCurrentColor(binding.colorBlueButton);
-                break;
-            case R.id.colorBlueLightButton:
-                setColor(R.color.blueLightPrimary);
-                setCurrentColor(binding.colorBlueLightButton);
-                break;
-            case R.id.colorCyanButton:
-                setColor(R.color.cyanPrimary);
-                setCurrentColor(binding.colorCyanButton);
-                break;
-            case R.id.colorDeepOrangeButton:
-                setColor(R.color.orangeDeepPrimary);
-                setCurrentColor(binding.colorDeepOrangeButton);
-                break;
-            case R.id.colorDeepPurpleButton:
-                setColor(R.color.purpleDeepPrimary);
-                setCurrentColor(binding.colorDeepPurpleButton);
-                break;
-            case R.id.colorGreenButton:
-                setColor(R.color.greenPrimary);
-                setCurrentColor(binding.colorGreenButton);
-                break;
-            case R.id.colorGreenLightButton:
-                setColor(R.color.greenLightPrimary);
-                setCurrentColor(binding.colorGreenLightButton);
-                break;
-            case R.id.colorGreyButton:
-                setColor(R.color.material_divider);
-                setCurrentColor(binding.colorGreyButton);
-                break;
-            case R.id.colorIndigoButton:
-                setColor(R.color.indigoPrimary);
-                setCurrentColor(binding.colorIndigoButton);
-                break;
-            case R.id.colorLimeButton:
-                setColor(R.color.limePrimary);
-                setCurrentColor(binding.colorLimeButton);
-                break;
-            case R.id.colorOrangeButton:
-                setColor(R.color.orangePrimary);
-                setCurrentColor(binding.colorOrangeButton);
-                break;
-            case R.id.colorPinkButton:
-                setColor(R.color.pinkPrimary);
-                setCurrentColor(binding.colorPinkButton);
-                break;
-            case R.id.colorPurpleButton:
-                setColor(R.color.purplePrimary);
-                setCurrentColor(binding.colorPurpleButton);
-                break;
-            case R.id.colorRedButton:
-                setColor(R.color.redPrimary);
-                setCurrentColor(binding.colorRedButton);
-                break;
-            case R.id.colorTealButton:
-                setColor(R.color.tealPrimary);
-                setCurrentColor(binding.colorTealButton);
-                break;
-            case R.id.colorWhiteButton:
-                setColor(R.color.whitePrimary);
-                setCurrentColor(binding.colorWhiteButton);
-                break;
-            case R.id.colorYellowButton:
-                setColor(R.color.yellowPrimary);
-                setCurrentColor(binding.colorYellowButton);
-                break;
-        }
     }
 
     private int getId(@ColorRes int color) {
