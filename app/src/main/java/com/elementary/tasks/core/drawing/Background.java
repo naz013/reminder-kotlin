@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.drawing;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.annotation.ColorInt;
 
 /**
@@ -23,6 +24,7 @@ class Background implements Drawing {
 
     @ColorInt
     private int color;
+    private int opacity = 255;
 
     Background(int color) {
         this.color = color;
@@ -38,7 +40,10 @@ class Background implements Drawing {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawColor(this.color);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        canvas.drawColor(Color.argb(opacity, red, green, blue));
     }
 
     @Override
@@ -59,5 +64,25 @@ class Background implements Drawing {
     @Override
     public void setY(float y) {
 
+    }
+
+    @Override
+    public void setOpacity(int opacity) {
+        this.opacity = opacity;
+    }
+
+    @Override
+    public int getOpacity() {
+        return opacity;
+    }
+
+    @Override
+    public void setStrokeWidth(float width) {
+
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return 0;
     }
 }

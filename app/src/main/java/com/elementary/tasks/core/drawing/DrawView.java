@@ -38,7 +38,7 @@ public class DrawView extends View {
     public enum Mode {
         DRAW,
         TEXT,
-        MOVE,
+        IMAGE,
         ERASER
     }
 
@@ -241,7 +241,7 @@ public class DrawView extends View {
                 }
                 break;
             case TEXT:
-            case MOVE:
+            case IMAGE:
                 this.startX = event.getX();
                 this.startY = event.getY();
                 this.bmpStartX = currentItem.getX();
@@ -261,7 +261,7 @@ public class DrawView extends View {
         float x = event.getX();
         float y = event.getY();
         switch (this.mode) {
-            case MOVE:
+            case IMAGE:
                 moveBitmap(x, y);
                 break;
             case DRAW:
@@ -620,7 +620,12 @@ public class DrawView extends View {
      * @return
      */
     public float getPaintStrokeWidth() {
-        return this.paintStrokeWidth;
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Figure) {
+            return drawing.getStrokeWidth();
+        } else {
+            return this.paintStrokeWidth;
+        }
     }
 
     /**
@@ -634,6 +639,11 @@ public class DrawView extends View {
         } else {
             this.paintStrokeWidth = 3F;
         }
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Figure) {
+            drawing.setStrokeWidth(this.paintStrokeWidth);
+            this.invalidate();
+        }
     }
 
     /**
@@ -642,7 +652,9 @@ public class DrawView extends View {
      * @return
      */
     public int getOpacity() {
-        return this.opacity;
+        Drawing drawing = getCurrent();
+        return drawing.getOpacity();
+//        return this.opacity;
     }
 
     /**
@@ -657,6 +669,9 @@ public class DrawView extends View {
         } else {
             this.opacity = 255;
         }
+        Drawing drawing = getCurrent();
+        drawing.setOpacity(this.opacity);
+        this.invalidate();
     }
 
     /**
@@ -724,6 +739,10 @@ public class DrawView extends View {
      * @return
      */
     public float getFontSize() {
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Text) {
+            return ((Text) drawing).getFontSize();
+        }
         return this.fontSize;
     }
 
@@ -738,6 +757,11 @@ public class DrawView extends View {
             this.fontSize = size;
         } else {
             this.fontSize = 32F;
+        }
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Text) {
+            ((Text) drawing).setFontSize(this.fontSize);
+            this.invalidate();
         }
     }
 
@@ -757,6 +781,7 @@ public class DrawView extends View {
      */
     public void setFontFamily(Typeface face) {
         this.fontFamily = face;
+
     }
 
     /**

@@ -37,6 +37,11 @@ public class Text implements Drawing {
         this.textPaint = textPaint;
     }
 
+    public void setFontSize(float fontSize) {
+        this.fontSize = fontSize;
+        this.textPaint.setTextSize(fontSize);
+    }
+
     public void setText(String text) {
         this.text = text;
     }
@@ -48,6 +53,10 @@ public class Text implements Drawing {
     public void setFontFamily(Typeface fontFamily) {
         this.fontFamily = fontFamily;
         textPaint.setTypeface(fontFamily);
+    }
+
+    public float getFontSize() {
+        return fontSize;
     }
 
     @Override
@@ -73,6 +82,26 @@ public class Text implements Drawing {
     @Override
     public void setY(float y) {
         this.textY = y;
+    }
+
+    @Override
+    public void setOpacity(int opacity) {
+        this.textPaint.setAlpha(opacity);
+    }
+
+    @Override
+    public int getOpacity() {
+        return this.textPaint.getAlpha();
+    }
+
+    @Override
+    public void setStrokeWidth(float width) {
+        this.textPaint.setStrokeWidth(width);
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return this.textPaint.getStrokeWidth();
     }
 
     private void drawText(Canvas canvas) {

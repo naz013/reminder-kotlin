@@ -2,8 +2,10 @@ package com.elementary.tasks.notes.editor;
 
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -175,6 +177,18 @@ public class ImageEditActivity extends ThemedActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (fragment != null) fragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void saveImage() {

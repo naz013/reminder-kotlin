@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.drawing;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.annotation.ColorInt;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -59,5 +57,25 @@ class Figure implements Drawing {
     @Override
     public void setY(float y) {
 
+    }
+
+    @Override
+    public void setOpacity(int opacity) {
+        this.paint.setAlpha(opacity);
+    }
+
+    @Override
+    public int getOpacity() {
+        return this.paint.getAlpha();
+    }
+
+    @Override
+    public void setStrokeWidth(float width) {
+        this.paint.setStrokeWidth(width);
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return this.paint.getStrokeWidth();
     }
 }

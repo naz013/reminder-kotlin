@@ -25,6 +25,7 @@ public class Image implements Drawing {
     private Bitmap bitmap = null;
     private float bitmapX = 0F;
     private float bitmapY = 0F;
+    private int opacity = 255;
 
     public Image(Bitmap bitmap) {
         this.bitmap = bitmap;
@@ -36,7 +37,9 @@ public class Image implements Drawing {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(this.bitmap, bitmapX, bitmapY, new Paint());
+        Paint paint = new Paint();
+        paint.setAlpha(opacity);
+        canvas.drawBitmap(this.bitmap, bitmapX, bitmapY, paint);
     }
 
     @Override
@@ -57,5 +60,25 @@ public class Image implements Drawing {
     @Override
     public void setY(float y) {
         this.bitmapY = y;
+    }
+
+    @Override
+    public void setOpacity(int opacity) {
+        this.opacity = opacity;
+    }
+
+    @Override
+    public int getOpacity() {
+        return opacity;
+    }
+
+    @Override
+    public void setStrokeWidth(float width) {
+
+    }
+
+    @Override
+    public float getStrokeWidth() {
+        return 0;
     }
 }

@@ -28,4 +28,12 @@ public interface Drawing {
     void setX(float x);
 
     void setY(float y);
+
+    void setOpacity(int opacity);
+
+    int getOpacity();
+
+    void setStrokeWidth(float width);
+
+    float getStrokeWidth();
 }
