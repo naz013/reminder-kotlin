@@ -15,6 +15,8 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
 import com.elementary.tasks.notes.NoteImage;
@@ -188,7 +190,7 @@ public class ImageEditActivity extends ThemedActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Module.isMarshmallow() && fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void saveImage() {
