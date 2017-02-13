@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -387,7 +388,7 @@ public class DrawFragment extends BitmapFragment {
 
     private void showImagePickerDialog() {
         if (!Permissions.checkPermission(getActivity(), Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(getActivity(), REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
+            Permissions.requestPermission(getActivity(), REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS);
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -397,10 +398,13 @@ public class DrawFragment extends BitmapFragment {
                 (dialog, which) -> {
                     switch (which) {
                         case 0: {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            Intent chooser = Intent.createChooser(intent, getString(R.string.image));
-                            startActivityForResult(chooser, Constants.ACTION_REQUEST_GALLERY);
+                            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                            getIntent.setType("image/*");
+                            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            pickIntent.setType("image/*");
+                            Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+                            startActivityForResult(chooserIntent, 1555);
                         }
                         break;
                         case 1: {
@@ -411,13 +415,13 @@ public class DrawFragment extends BitmapFragment {
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                            startActivityForResult(intent, Constants.ACTION_REQUEST_CAMERA);
+                            startActivityForResult(intent, 1556);
                         }
                         break;
                     }
                 });
 
-        builder.show();
+        builder.create().show();
     }
 
     private TextPrefsBinding getTextPanel() {
@@ -634,28 +638,31 @@ public class DrawFragment extends BitmapFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case Constants.ACTION_REQUEST_GALLERY:
-                    addImageFromUri(data.getData());
-                    break;
-                case Constants.ACTION_REQUEST_CAMERA:
-                    getImageFromCamera();
-                    break;
-            }
-        }
+        Log.d(TAG, "onActivityResult: " + requestCode + ", " + resultCode + ", " + data.getData());
+//        if (resultCode == RESULT_OK) {
+//            switch (requestCode) {
+//                case Constants.ACTION_REQUEST_GALLERY:
+//                    addImageFromUri(data.getData());
+//                    break;
+//                case Constants.ACTION_REQUEST_CAMERA:
+//                    getImageFromCamera();
+//                    break;
+//            }
+//        }
     }
 
     private void addImageFromUri(Uri uri) {
         if (uri == null) return;
+        LogUtil.d(TAG, "addImageFromUri: 1");
         Bitmap bitmapImage = null;
         try {
             bitmapImage = BitmapUtils.decodeUriToBitmap(mContext, uri);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        LogUtil.d(TAG, "addImageFromUri: 2");
         if (bitmapImage != null) {
-            LogUtil.d(TAG, "addImageFromUri: ");
+            LogUtil.d(TAG, "addImageFromUri: 3");
             mView.addBitmap(bitmapImage);
         }
     }

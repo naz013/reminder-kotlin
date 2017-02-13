@@ -15,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -33,6 +34,8 @@ import java.util.List;
  * This class defines fields and methods for drawing.
  */
 public class DrawView extends View {
+
+    private static final String TAG = "DrawView";
 
     // Enumeration for Mode
     public enum Mode {
@@ -81,6 +84,7 @@ public class DrawView extends View {
     private float fontSize = 32F;
     private Paint.Align textAlign = Paint.Align.RIGHT;  // fixed
     private Paint textPaint = new Paint();
+    private Canvas mCanvas;
 
     // for Drawer
     private float startX = 0F;
@@ -224,16 +228,12 @@ public class DrawView extends View {
             case DRAW:
             case ERASER:
                 if ((this.drawer != Drawer.QUADRATIC_BEZIER)) {
-                    // Oherwise
                     this.updateHistory(this.createPath(event));
                     this.isDown = true;
                 } else {
-                    // Bezier
                     if ((this.startX == 0F) && (this.startY == 0F)) {
-                        // The 1st tap
                         this.updateHistory(this.createPath(event));
                     } else {
-                        // The 2nd tap
                         this.controlX = event.getX();
                         this.controlY = event.getY();
                         this.isDown = true;
@@ -368,6 +368,7 @@ public class DrawView extends View {
                 elements.get(i).draw(canvas);
             }
         }
+        this.mCanvas = canvas;
     }
 
     /**
@@ -819,6 +820,9 @@ public class DrawView extends View {
             this.elements.add(historyPointer , currentItem);
         }
         this.historyPointer++;
+        if (mCanvas != null) {
+            Log.d(TAG, "addBitmap: " + bitmap.getWidth() + ", " + bitmap.getHeight() + ", " + mCanvas.getWidth() + ", " + mCanvas.getHeight());
+        }
         this.invalidate();
     }
 
