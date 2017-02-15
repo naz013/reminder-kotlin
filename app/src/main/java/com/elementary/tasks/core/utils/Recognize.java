@@ -117,7 +117,7 @@ public class Recognize {
                         disableAllReminders(true);
                     }
                 } else if (types == ActionType.NOTE) {
-                    saveNote(createNote(model.getSummary()), true);
+                    saveNote(createNote(model.getSummary()), true, true);
                 } else if (types == ActionType.REMINDER) {
                     saveReminder(model, isWidget);
                 } else if (types == ActionType.GROUP) {
@@ -236,30 +236,34 @@ public class Recognize {
         return item;
     }
 
-    public void saveNote(NoteItem note, boolean showToast) {
+    public void saveNote(NoteItem note, boolean showToast, boolean addQuickNote) {
         Prefs prefs = Prefs.getInstance(mContext);
-        if (prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)) {
-            long after = prefs.getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
-            long due = System.currentTimeMillis() + after;
-            Reminder mReminder = new Reminder();
-            mReminder.setType(Reminder.BY_DATE);
-            mReminder.setDelay(0);
-            mReminder.setEventCount(0);
-            mReminder.setUseGlobal(true);
-            mReminder.setNoteId(note.getKey());
-            mReminder.setSummary(note.getSummary());
-            mReminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
-            mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
-            mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
-            RealmDb.getInstance().saveObject(mReminder);
-            EventControl control = EventControlImpl.getController(mContext, mReminder);
-            control.start();
+        if (addQuickNote && prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)) {
+            saveQuickReminder(note.getKey(), note.getSummary());
         }
         RealmDb.getInstance().saveObject(note);
         UpdatesHelper.getInstance(mContext).updateNotesWidget();
         if (showToast) {
             Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void saveQuickReminder(String key, String summary) {
+        long after = Prefs.getInstance(mContext).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
+        long due = System.currentTimeMillis() + after;
+        Reminder mReminder = new Reminder();
+        mReminder.setType(Reminder.BY_DATE);
+        mReminder.setDelay(0);
+        mReminder.setEventCount(0);
+        mReminder.setUseGlobal(true);
+        mReminder.setNoteId(key);
+        mReminder.setSummary(summary);
+        mReminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+        mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
+        mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
+        RealmDb.getInstance().saveObject(mReminder);
+        EventControl control = EventControlImpl.getController(mContext, mReminder);
+        control.start();
     }
 
     private class ContactHelper implements ContactsInterface {

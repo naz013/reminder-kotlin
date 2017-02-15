@@ -13,7 +13,6 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 
 import com.backdoor.simpleai.Action;
 import com.backdoor.simpleai.ActionType;
@@ -303,14 +302,36 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                recognize.saveNote(noteItem, false);
+                recognize.saveNote(noteItem, false, false);
                 addResponse("Note saved");
-                mAskAction = null;
+                if (Prefs.getInstance(ConversationActivity.this).isNoteReminderEnabled()) {
+                    new Handler().postDelayed(() -> askQuickReminder(noteItem), 1500);
+                } else {
+                    mAskAction = null;
+                }
             }
 
             @Override
             public void onNo() {
                 addResponse("Note canceled");
+                mAskAction = null;
+            }
+        };
+        new Handler().postDelayed(this::micClick, 1500);
+    }
+
+    private void askQuickReminder(NoteItem noteItem) {
+        addResponse("Add quick reminder?");
+        mAskAction = new AskAction() {
+            @Override
+            public void onYes() {
+                recognize.saveQuickReminder(noteItem.getKey(), noteItem.getSummary());
+                addResponse("Reminder saved");
+                mAskAction = null;
+            }
+
+            @Override
+            public void onNo() {
                 mAskAction = null;
             }
         };
