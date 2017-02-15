@@ -492,12 +492,18 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         cancelTasks();
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
             sendSMS();
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_CALL)) {
-            TelephonyUtil.skypeCall(mReminder.getTarget(), this);
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
-            TelephonyUtil.skypeVideoCall(mReminder.getTarget(), this);
-        } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)) {
-            TelephonyUtil.skypeChat(mReminder.getTarget(), this);
+        } else if (Reminder.isBase(mReminder.getType(), Reminder.BY_SKYPE)) {
+            if (!SuperUtil.isSkypeClientInstalled(this)) {
+                showInstallSkypeDialog();
+                return;
+            }
+            if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_CALL)) {
+                TelephonyUtil.skypeCall(mReminder.getTarget(), this);
+            } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
+                TelephonyUtil.skypeVideoCall(mReminder.getTarget(), this);
+            } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)) {
+                TelephonyUtil.skypeChat(mReminder.getTarget(), this);
+            }
         } else if (isAppType()) {
             openApplication();
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)) {
@@ -508,6 +514,17 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (!Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS)) {
             finish();
         }
+    }
+
+    private void showInstallSkypeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.skype_is_not_installed);
+        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            SuperUtil.installSkype(this);
+        });
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.create().show();
     }
 
     private void makeCall() {

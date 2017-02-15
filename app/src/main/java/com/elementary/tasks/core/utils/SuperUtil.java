@@ -14,12 +14,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.backdoor.simpleai.ObjectUtil;
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
 import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.voice.ConversationActivity;
@@ -149,12 +151,20 @@ public class SuperUtil {
         } else return 0;
     }
 
-    public static void startVoiceRecognitionActivity(Activity activity, int requestCode, boolean free) {
-//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//        if (free) intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//        else intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).getVoiceLocale()));
-//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));
-        Intent intent = new Intent(activity, ConversationActivity.class);
+    public static void startVoiceRecognitionActivity(Activity activity, int requestCode, boolean isLive) {
+        Intent intent;
+        if (isLive) {
+            intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));
+        } else if (Prefs.getInstance(activity).isLiveEnabled()) {
+            if (activity instanceof VoiceWidgetDialog) activity.finish();
+            intent = new Intent(activity, ConversationActivity.class);
+        }else {
+            intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).getVoiceLocale()));
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));
+        }
         try {
             activity.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e) {

@@ -35,6 +35,15 @@
                 app:prefs_primary_text="@string/help"
                 app:prefs_type="none" />
 
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/conversationPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/live_conversation"
+                app:prefs_secondary_text="@string/enable_an_experimental_voice_control"
+                app:prefs_type="check" />
+
         </LinearLayout>
     </ScrollView>
 </layout>
