@@ -27,7 +27,6 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.Google;
-import com.elementary.tasks.core.cloud.GoogleLogin;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
