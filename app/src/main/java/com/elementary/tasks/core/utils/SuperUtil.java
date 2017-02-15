@@ -16,7 +16,6 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.backdoor.simpleai.ObjectUtil;
@@ -48,6 +47,8 @@ import java.util.Locale;
  */
 
 public class SuperUtil {
+
+    private static final String TAG = "SuperUtil";
 
     public static boolean checkLocationEnable(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -95,7 +96,7 @@ public class SuperUtil {
             dialog.show();
             return false;
         } else {
-            Log.d("GooglePlayServicesUtil", "Result is: " + resultCode);
+            LogUtil.d(TAG, "Result is: " + resultCode);
             return true;
         }
     }

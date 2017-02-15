@@ -2,11 +2,11 @@ package com.elementary.tasks.birthdays;
 
 import android.app.AlarmManager;
 import android.content.Context;
-import android.util.Log;
 
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.calendar.FlextHelper;
 import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -129,7 +129,7 @@ public class EventsDataProvider {
             }
         }
         List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
-        Log.d(TAG, "Count BD" + list.size());
+        LogUtil.d(TAG, "Count BD" + list.size());
         for (BirthdayItem item : list) {
             Date date = null;
             try {

@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.drawing.DrawView;
 import com.elementary.tasks.core.utils.BitmapUtils;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -35,8 +33,6 @@ import com.elementary.tasks.notes.NoteImage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -638,7 +634,7 @@ public class DrawFragment extends BitmapFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + ", " + resultCode + ", " + data.getData());
+        LogUtil.d(TAG, "onActivityResult: " + requestCode + ", " + resultCode + ", " + data.getData());
 //        if (resultCode == RESULT_OK) {
 //            switch (requestCode) {
 //                case Constants.ACTION_REQUEST_GALLERY:

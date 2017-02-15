@@ -1,7 +1,6 @@
 package com.elementary.tasks.places;
 
-import android.util.Log;
-
+import com.elementary.tasks.core.utils.LogUtil;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -44,7 +43,7 @@ public class PlaceParser {
     public GooglePlaceItem getDetails(JSONObject jsonObject) {
         GooglePlaceItem model = new GooglePlaceItem();
         try {
-            Log.d(TAG, "Details " + jsonObject.toString());
+            LogUtil.d(TAG, "Details " + jsonObject.toString());
             if (jsonObject.has(NAME)) {
                 model.setName(jsonObject.getString(NAME));
             }

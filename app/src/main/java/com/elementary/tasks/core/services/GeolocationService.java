@@ -8,11 +8,11 @@ import android.location.Location;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -55,7 +55,7 @@ public class GeolocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mTracker.removeUpdates();
-        Log.d(TAG, "geo service stop");
+        LogUtil.d(TAG, "geo service stop");
     }
 
     @Override
@@ -65,7 +65,7 @@ public class GeolocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "geo service started");
+        LogUtil.d(TAG, "geo service started");
         isNotificationEnabled = Prefs.getInstance(getApplicationContext()).isDistanceNotificationEnabled();
         stockRadius = Prefs.getInstance(getApplicationContext()).getRadius();
         mTracker = new LocationTracker(getApplicationContext(), mLocationCallback);

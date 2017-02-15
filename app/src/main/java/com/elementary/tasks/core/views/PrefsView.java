@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class PrefsView extends RelativeLayout {
                 viewType = a.getInt(R.styleable.PrefsView_prefs_type, check);
                 res = a.getInt(R.styleable.PrefsView_prefs_view_resource, 0);
             } catch (Exception e) {
-                Log.e("PrefsView", "There was an error loading attributes.");
+                LogUtil.e("PrefsView", "There was an error loading attributes.", e);
             } finally {
                 a.recycle();
             }

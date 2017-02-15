@@ -1,7 +1,8 @@
 package com.elementary.tasks.places;
 
 import android.os.AsyncTask;
-import android.util.Log;
+
+import com.elementary.tasks.core.utils.LogUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,15 +51,15 @@ public class PlaceSearchTask extends AsyncTask<Void, Void, List<GooglePlaceItem>
     protected List<GooglePlaceItem> doInBackground(Void... place) {
         String result = "";
         String query = RequestBuilder.getSearch(request);
-        Log.d(TAG, "doInBackground: " + lat + ", " + lng);
+        LogUtil.d(TAG, "doInBackground: " + lat + ", " + lng);
         if (lat != 0.0 && lng != 0.0) {
             query = RequestBuilder.getNearby(lat, lng, request);
         }
-        Log.d(TAG, "Request " + query);
+        LogUtil.d(TAG, "Request " + query);
         try {
             result = downloadUrl(query);
         } catch(Exception e) {
-            Log.d(TAG, e.toString());
+            LogUtil.d(TAG, e.toString());
         }
         List<GooglePlaceItem> places = new ArrayList<>();
         if (result != null) {
@@ -73,7 +74,7 @@ public class PlaceSearchTask extends AsyncTask<Void, Void, List<GooglePlaceItem>
                     }
                 }
             } catch(Exception e) {
-                Log.d(TAG,e.toString());
+                LogUtil.d(TAG,e.toString());
             }
         }
         return places;
@@ -105,7 +106,7 @@ public class PlaceSearchTask extends AsyncTask<Void, Void, List<GooglePlaceItem>
             data = sb.toString();
             br.close();
         } catch(Exception e) {
-            Log.d(TAG, e.toString());
+            LogUtil.d(TAG, e.toString());
         } finally {
             if (iStream != null) {
                 iStream.close();

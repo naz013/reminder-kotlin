@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.WindowManager;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
@@ -73,7 +73,7 @@ public class QuickSmsActivity extends ThemedActivity {
         int position = mAdapter.getSelectedPosition();
         TemplateItem item = mAdapter.getItem(position);
         if (item != null) {
-            Log.d("TAG", "startSending: " + item.getTitle());
+            LogUtil.d("TAG", "startSending: " + item.getTitle());
             sendSMS(number, item.getTitle());
         }
         removeFlags();

@@ -55,7 +55,19 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initSmartFold();
         initWearNotification();
         initGcmPrefs();
+        init24TimePrefs();
         return binding.getRoot();
+    }
+
+    private void init24TimePrefs() {
+        binding.time24hourPrefs.setChecked(Prefs.getInstance(mContext).is24HourFormatEnabled());
+        binding.time24hourPrefs.setOnClickListener(view -> change24Prefs());
+    }
+
+    private void change24Prefs() {
+        boolean is24 = binding.time24hourPrefs.isChecked();
+        Prefs.getInstance(mContext).set24HourFormatEnabled(!is24);
+        binding.time24hourPrefs.setChecked(!is24);
     }
 
     private void initGcmPrefs() {

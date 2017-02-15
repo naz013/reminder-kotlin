@@ -30,8 +30,6 @@
 
     <string name="blur">Blur</string>
     <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="something_went_wrong">Something went wrong!</string>
 
     <string name="got_it">GOT IT</string>
     <string name="select_style_for_marker">Select style for marker</string>
@@ -66,8 +64,6 @@
     <string name="check_automatically">Check automatically</string>
     <string name="interval">Interval</string>
     <string name="import_string">Import</string>
-    <string name="select_melody">Select melody</string>
-    <string name="connect_to_cloud">Connect to cloud</string>
     <string name="google_drive">Google Drive</string>
     <string name="dropbox">Dropbox</string>
     <string name="import_birthdays">Import birthdays</string>
@@ -80,7 +76,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="add_reminder">Add reminder?</string>
-    <string name="show_hidden">Show hidden</string>
     <string name="name">Name</string>
     <string name="contact">Contact</string>
     <string name="background">Background</string>
@@ -102,28 +97,19 @@
     <string name="permanent_status_bar_notification">Permanent notification in status bar</string>
     <string name="show_in_home_screen">Show in home screen widget</string>
     <string name="birthday_reminder">Birthday reminder</string>
-    <string name="backup">Backup</string>
     <string name="contacts">Contacts</string>
     <string name="scan">Scan</string>
     <string name="no_events">No events</string>
-    <string name="custom">Customize</string>
     <string name="theme">Theme</string>
-    <string name="text_color">Text color</string>
-    <string name="button_color">Button color</string>
     <string name="calendar">Calendar</string>
     <string name="title">Title</string>
     <string name="color">Color</string>
     <string name="files">Files</string>
-    <string name="list">List</string>
     <string name="delete_all">Delete all</string>
     <string name="connect">Connect</string>
     <string name="google">Google</string>
     <string name="search">Search</string>
     <string name="text_size">Text size</string>
-    <string name="transparency">Transparency</string>
-    <string name="header">Header</string>
-    <string name="body">Body</string>
-    <string name="item">Item</string>
     <string name="exclusion">Exclusion</string>
     <string name="hours">Hours</string>
     <string name="ok">OK</string>
@@ -141,7 +127,6 @@
     <string name="address">Address</string>
     <string name="no_places">No places</string>
     <string name="tasks">Tasks</string>
-    <string name="directions">Directions</string>
     <string name="groups">Groups</string>
     <string name="places">Places</string>
     <string name="messages">Messages</string>
@@ -152,7 +137,6 @@
     <string name="buy_pro">Buy PRO</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="last_modified">Last modified</string>
     <string name="no_notes">No notes</string>
     <string name="next_event">Next event</string>
     <string name="remind_me">Remind me...</string>
@@ -160,7 +144,6 @@
     <string name="days">days</string>
     <string name="send">Send</string>
     <string name="radius">Radius</string>
-    <string name="i_use_transport">I use transport</string>
     <string name="can_you_rate_this_application">Can you rate this application?</string>
     <string name="rate">Rate</string>
     <string name="later">Later</string>
@@ -209,22 +192,15 @@
     <string name="show_quick_answer_window">Show answer window after call rejection</string>
     <string name="after_call_reminder">Reminder after call</string>
     <string name="_24_hour_time_format">24 hour time format</string>
-    <string name="dark_mode">Dark mode</string>
-    <string name="screen_orientation">Screen orientation</string>
     <string name="smart_fold">Intelligent folding</string>
     <string name="enable_folding_reminder_window">Enable intelligent folding of reminder window</string>
     <string name="android_wear_notification">Android Wear notification</string>
-    <string name="preview">Preview</string>
-    <string name="enable_reminder_preview">Enable preview of reminder</string>
     <string name="distance_notification">Notification about distance</string>
     <string name="map_type">Type of map</string>
     <string name="style_of_marker">Style of marker</string>
     <string name="tracking_settings">Tracking settings</string>
-    <string name="encrypt">Encrypt</string>
     <string name="enable_creating_reminder_for_quick_note">Create reminder for quick note</string>
     <string name="quick_note_reminder">Reminder</string>
-    <string name="delete_backup">Delete backup file</string>
-    <string name="delete_backup_file_when_remove_note">Delete backup file when remove note</string>
     <string name="appearance">Appearance</string>
     <string name="status_bar">Status bar</string>
     <string name="manual_remove">Remove manually</string>
@@ -249,7 +225,6 @@
     <string name="changes">Changes</string>
     <string name="open_source_licenses">Open source software</string>
     <string name="tell_friends">Tell friends</string>
-    <string name="auto_language">Automatic language</string>
     <string name="default_string">Default</string>
     <string name="morning">Morning</string>
     <string name="day">Day</string>
@@ -257,7 +232,6 @@
     <string name="night">Night</string>
     <string name="for_lower_battery_usage_set_bigger_values">For lower battery usage, set higher values!</string>
     <string name="saved">Saved</string>
-    <string name="month">Month</string>
     <string name="voice_control">Voice control</string>
     <string name="image">Image</string>
     <string name="font_style">Font style</string>
@@ -273,7 +247,6 @@
     <string name="active_reminders">Active reminders</string>
     <string name="events">Events</string>
     <string name="must_be_not_empty">Must be not empty!</string>
-    <string name="local_sync">Local sync</string>
     <string name="other_version_detected">Other application detected!</string>
     <string name="open">Open</string>
     <string name="trying_to_log_in">Trying to log in...</string>
@@ -282,7 +255,6 @@
     <string name="syncing_notes">Syncing notes...</string>
     <string name="syncing_birthdays">Syncing birthdays...</string>
     <string name="done">Done</string>
-    <string name="syncing_google_tasks">Syncing Google Tasks</string>
     <string name="note_deleted">Note deleted</string>
     <string name="error_sending">Error sending!</string>
     <string name="delete_this_note">Delete this note?</string>

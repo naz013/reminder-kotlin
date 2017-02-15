@@ -8,13 +8,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
@@ -121,7 +121,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void switchTab(int position) {
-        Log.d(TAG, "switchTab: " + position);
+        LogUtil.d(TAG, "switchTab: " + position);
         if (position == 1) {
             openDrawFragment();
         } else {

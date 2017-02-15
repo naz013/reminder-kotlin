@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -133,7 +133,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             try {
                 titleText = a.getString(R.styleable.RepeatView_repeat_type_text);
             } catch (Exception e) {
-                Log.e("RepeatView", "There was an error loading attributes.");
+                LogUtil.e(TAG, "There was an error loading attributes.", e);
             } finally {
                 a.recycle();
             }
@@ -230,7 +230,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
 
     public long getRepeat() {
         long rep = repeat * mMultiplier;
-        Log.d(TAG, "getRepeat: " + rep);
+        LogUtil.d(TAG, "getRepeat: " + rep);
         return rep;
     }
 

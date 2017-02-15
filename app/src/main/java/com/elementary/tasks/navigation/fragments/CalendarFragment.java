@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +11,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.calendar.FlextCalendarFragment;
 import com.elementary.tasks.core.calendar.FlextListener;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
@@ -99,20 +99,20 @@ public class CalendarFragment extends BaseCalendarFragment {
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark());
         args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, Prefs.getInstance(mContext).isCalendarImagesEnabled());
         MonthImage monthImage = Prefs.getInstance(mContext).getCalendarImages();
-        Log.d(TAG, "showCalendar: " + Arrays.toString(monthImage.getPhotos()));
+        LogUtil.d(TAG, "showCalendar: " + Arrays.toString(monthImage.getPhotos()));
         args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.getPhotos());
         calendarView.setArguments(args);
         final FlextListener listener = new FlextListener() {
             @Override
             public void onClickDate(Date date) {
-                Log.d(TAG, "onClick: " + date);
+                LogUtil.d(TAG, "onClick: " + date);
                 saveTime(date);
                 replaceFragment(DayViewFragment.newInstance(dateMills, 0), "");
             }
 
             @Override
             public void onLongClickDate(Date date) {
-                Log.d(TAG, "onLongClickDate: " + date);
+                LogUtil.d(TAG, "onLongClickDate: " + date);
                 saveTime(date);
                 showActionDialog();
             }

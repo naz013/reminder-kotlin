@@ -29,6 +29,14 @@
                 app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/time24hourPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/_24_hour_time_format"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/mainImagePrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

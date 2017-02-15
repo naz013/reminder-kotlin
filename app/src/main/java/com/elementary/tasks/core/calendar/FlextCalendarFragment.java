@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
@@ -393,7 +393,7 @@ public class FlextCalendarFragment extends Fragment {
          */
         @Override
         public void onPageSelected(int position) {
-            Log.d(TAG, "onPageSelected: " + position);
+            LogUtil.d(TAG, "onPageSelected: " + position);
             refreshAdapters(position);
             setCalendarDateTime(currentDateTime);
         }
