@@ -3,8 +3,10 @@ package com.elementary.tasks.navigation;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
@@ -284,6 +286,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private void setMenuVisible() {
         Menu menu = mNavigationView.getMenu();
         menu.getItem(4).setVisible(Google.getInstance(this) != null);
+        if (!Module.isPro() && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")){
+            menu.getItem(13).setVisible(true);
+        } else {
+            menu.getItem(13).setVisible(false);
+        }
     }
 
     @Override
@@ -358,11 +365,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         drawer.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(() -> {
             if (prevItem == item.getItemId() && (item.getItemId() != R.id.nav_feedback ||
-                    item.getItemId() != R.id.nav_help)) {
+                    item.getItemId() != R.id.nav_help && item.getItemId() != R.id.nav_pro)) {
                 return;
             }
             openScreen(item.getItemId());
-            if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help) {
+            if (item.getItemId() != R.id.nav_feedback && item.getItemId() != R.id.nav_help && item.getItemId() != R.id.nav_pro) {
                 prevItem = item.getItemId();
             }
         }, 250);
@@ -412,6 +419,39 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             case R.id.nav_help:
                 replaceFragment(new HelpFragment(), getString(R.string.help));
                 break;
+            case R.id.nav_pro:
+                showProDialog();
+                break;
         }
+    }
+
+    private void openMarket() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=" + "com.cray.software.justreminderpro"));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showProDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.buy_pro))
+                .setMessage(getString(R.string.pro_advantages) + "\n" +
+                        getString(R.string.different_settings_for_birthdays) + "\n" +
+                        getString(R.string.additional_reminder) + "\n" +
+                        getString(R.string._led_notification_) + "\n" +
+                        getString(R.string.led_color_for_each_reminder) + "\n" +
+                        getString(R.string.styles_for_marker) + "\n" +
+                        getString(R.string.option_for_image_blurring) + "\n" +
+                        getString(R.string.additional_app_themes))
+                .setPositiveButton(R.string.buy, (dialog, which) -> {
+                    dialog.dismiss();
+                    openMarket();
+                })
+                .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
+                .setCancelable(true)
+                .create().show();
     }
 }

@@ -119,7 +119,7 @@ public class ConversationActivity extends ThemedActivity {
         @Override
         public void onError(int i) {
             LogUtil.d(TAG, "onError: " + i);
-            showErrorMessage(i);
+            showSilentMessage();
         }
 
         @Override
@@ -321,7 +321,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void askQuickReminder(NoteItem noteItem) {
-        addResponse("Add quick reminder?");
+        addResponse("Would you like to add quick reminder?");
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
@@ -332,6 +332,7 @@ public class ConversationActivity extends ThemedActivity {
 
             @Override
             public void onNo() {
+                addResponse("Note saved without reminder");
                 mAskAction = null;
             }
         };
