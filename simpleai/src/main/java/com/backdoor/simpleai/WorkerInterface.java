@@ -108,4 +108,10 @@ public interface WorkerInterface {
     boolean hasAnswer(String input);
 
     Action getAnswer(String input);
+
+    boolean hasShowAction(String input);
+
+    Action getShowAction(String input);
+
+    boolean hasNextModifier(String input);
 }

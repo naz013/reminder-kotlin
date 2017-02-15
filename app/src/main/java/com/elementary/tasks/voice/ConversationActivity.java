@@ -114,6 +114,7 @@ public class ConversationActivity extends ThemedActivity {
         @Override
         public void onEndOfSpeech() {
             LogUtil.d(TAG, "onEndOfSpeech: ");
+
         }
 
         @Override
@@ -231,7 +232,46 @@ public class ConversationActivity extends ThemedActivity {
             groupAction(model);
         } else if (actionType == ActionType.ANSWER) {
             performAnswer(model);
+        } else if (actionType == ActionType.SHOW) {
+            Action action = model.getAction();
+            if (action == Action.REMINDERS) {
+                showActiveReminders();
+            } else if (action == Action.NOTES) {
+                showNotes();
+            } else if (action == Action.GROUPS) {
+                showGroups();
+            } else if (action == Action.ACTIVE_REMINDERS) {
+                showEnabledReminders();
+            } else if (action == Action.BIRTHDAYS) {
+                showBirthdays();
+            } else if (action == Action.EVENTS) {
+                showEvents();
+            }
         }
+    }
+
+    private void showEvents() {
+
+    }
+
+    private void showBirthdays() {
+
+    }
+
+    private void showEnabledReminders() {
+
+    }
+
+    private void showGroups() {
+
+    }
+
+    private void showNotes() {
+
+    }
+
+    private void showActiveReminders() {
+
     }
 
     private void groupAction(Model model) {

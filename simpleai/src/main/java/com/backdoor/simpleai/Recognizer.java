@@ -44,6 +44,24 @@ public class Recognizer {
         String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
         Log.d(TAG, "parse: " + keyStr);
+        if (wrapper.hasShowAction(keyStr)) {
+            String local = keyStr + "";
+            Action action = wrapper.getShowAction(local);
+            if (action != null) {
+                boolean hasNext = wrapper.hasNextModifier(local);
+                long date;
+                if (hasNext) {
+                    date = System.currentTimeMillis() + wrapper.getMultiplier(local);
+                } else {
+                    date = wrapper.getDate(local);
+                }
+                Model model = new Model();
+                model.setAction(action);
+                model.setType(ActionType.SHOW);
+                model.setDateTime(date);
+                return model;
+            }
+        }
         if (wrapper.hasNote(keyStr)) {
             return getNote(keyStr);
         }

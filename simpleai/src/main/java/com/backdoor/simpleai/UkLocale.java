@@ -550,4 +550,32 @@ class UkLocale extends Worker {
         if (input.matches("дев'яностого")) number = 90;
         return number;
     }
+
+    @Override
+    public boolean hasShowAction(String input) {
+        return input.matches(".*пока(зати|жи)?.*");
+    }
+
+    @Override
+    public Action getShowAction(String input) {
+        if (input.matches(".*дні народження.*")) {
+            return Action.BIRTHDAYS;
+        } else if (input.matches(".*активні нагадуван.*")) {
+            return Action.ACTIVE_REMINDERS;
+        } else if (input.matches(".*нагадуван.*")) {
+            return Action.REMINDERS;
+        } else if (input.matches(".*події.*")) {
+            return Action.EVENTS;
+        } else if (input.matches(".*нотатки.*")) {
+            return Action.NOTES;
+        } else if (input.matches(".*групи.*")) {
+            return Action.GROUPS;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasNextModifier(String input) {
+        return input.matches(".*наступн.*");
+    }
 }

@@ -537,4 +537,32 @@ class EnLocale extends Worker {
         if (input.matches("ninety") || input.matches("ninetieth")) number = 90;
         return number;
     }
+
+    @Override
+    public boolean hasShowAction(String input) {
+        return input.matches(".*show.*");
+    }
+
+    @Override
+    public Action getShowAction(String input) {
+        if (input.matches(".*birthdays.*")) {
+            return Action.BIRTHDAYS;
+        } else if (input.matches(".*active reminders.*")) {
+            return Action.ACTIVE_REMINDERS;
+        } else if (input.matches(".*reminders.*")) {
+            return Action.REMINDERS;
+        } else if (input.matches(".*events.*")) {
+            return Action.EVENTS;
+        } else if (input.matches(".*notes.*")) {
+            return Action.NOTES;
+        } else if (input.matches(".*groups.*")) {
+            return Action.GROUPS;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasNextModifier(String input) {
+        return input.matches(".*next.*");
+    }
 }
