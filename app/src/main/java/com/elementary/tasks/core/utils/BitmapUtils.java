@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,13 +32,13 @@ public class BitmapUtils {
     public static Bitmap compressBitmap(Bitmap bitmap) {
         if (bitmap != null) {
             int length = bitmap.getByteCount();
-            Log.d(TAG, "compressBitmap: " + length);
+            LogUtil.d(TAG, "compressBitmap: " + length);
             if (length > MAX_SIZE) {
                 double scalar = (double) length / MAX_SIZE;
                 int coefficient = (int) ((double) 100 / scalar);
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, coefficient, byteStream);
-                Log.d(TAG, "compressBitmap: " + byteStream.toByteArray().length);
+                LogUtil.d(TAG, "compressBitmap: " + byteStream.toByteArray().length);
                 return BitmapFactory.decodeStream(new ByteArrayInputStream(byteStream.toByteArray()));
             } else {
                 return bitmap;

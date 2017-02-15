@@ -1,19 +1,11 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="main_drawer_fragment_main_p_left">20dp</dimen>
-    <dimen name="main_drawer_fragment_main_p_top">8dp</dimen>
-    <dimen name="main_drawer_fragment_main_p_bottom">8dp</dimen>
-    <dimen name="main_drawer_fragment_main_drawable_p">10dp</dimen>
-    <dimen name="main_drawer_fragment_settings_t_size">19sp</dimen>
-
     <dimen name="drawable_circle_width">4dp</dimen>
 
     <dimen name="about_app_title_size">20sp</dimen>
     <dimen name="about_secondary_text_size">15sp</dimen>
 
-    <dimen name="wrapper_padding_right">15dp</dimen>
-    <dimen name="wrapper_padding_left">15dp</dimen>
     <dimen name="view_margin_top">15dp</dimen>
 
     <dimen name="widget_config_text_size">16sp</dimen>
@@ -28,10 +20,6 @@
     <dimen name="create_text_size_primary">25sp</dimen>
     <dimen name="create_text_size_secondary">20sp</dimen>
 
-    <dimen name="backup_manager_padding">10dp</dimen>
-    <dimen name="backup_card_height_normal">75dp</dimen>
-
-    <dimen name="settings_margin">15dp</dimen>
     <dimen name="settings_text_size_primary">18sp</dimen>
     <dimen name="settings_text_size_secondary">14sp</dimen>
     <dimen name="settings_view_size">25dp</dimen>
@@ -41,9 +29,6 @@
     <dimen name="clouds_padding">10dp</dimen>
     <dimen name="clouds_text_size">20sp</dimen>
     <dimen name="clouds_margin_top">15dp</dimen>
-    <dimen name="contact_margin_top">10dp</dimen>
-    <dimen name="contact_margin">10dp</dimen>
-    <dimen name="create_note_padding">10dp</dimen>
     <dimen name="create_note_text_size">20sp</dimen>
     <dimen name="create_note_image_button_size">40dp</dimen>
     <dimen name="create_note_text_size_secondary">20sp</dimen>
@@ -56,25 +41,9 @@
     <dimen name="reminder_margin_top">10dp</dimen>
     <dimen name="reminder_text_size_normal">20sp</dimen>
     <dimen name="reminder_photo_size">175dp</dimen>
-    <dimen name="times_margin">10dp</dimen>
     <dimen name="create_text_size_small">15sp</dimen>
-    <dimen name="create_toggle_margin_left">5dp</dimen>
     <dimen name="reminder_preview_container_padding">15dp</dimen>
     <dimen name="reminder_preview_margin_top">15dp</dimen>
-    <dimen name="dimen_log_in_padding">15dp</dimen>
-    <dimen name="dimen_log_in_progress_margin_top">5dp</dimen>
-    <dimen name="log_in_progress_text_size">16sp</dimen>
-    <dimen name="log_in_circle_margin_top">20dp</dimen>
-    <dimen name="log_in_circle_size">40dp</dimen>
-    <dimen name="log_in_skip_text_size">18sp</dimen>
-    <dimen name="log_in_skip_margin_top">10dp</dimen>
-    <dimen name="log_in_check_margin_top">20dp</dimen>
-    <dimen name="log_in_button_height">54dp</dimen>
-    <dimen name="log_in_button_text_size">16sp</dimen>
-    <dimen name="log_in_button_margin_top">30dp</dimen>
-    <dimen name="log_in_button_corner_radius">5dp</dimen>
-    <dimen name="log_in_first_button_margin_top">35dp</dimen>
-    <dimen name="log_in_title_text_size">25sp</dimen>
     <dimen name="toolbar_elevation">3dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
@@ -82,11 +51,6 @@
     <dimen name="add_birthday_text_size_primary">20sp</dimen>
 
     <dimen name="create_imagebutton_size_ext">60dp</dimen>
-    <dimen name="app_bar_height">256dp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="recycler_margin_l_r">0dp</dimen>
     <dimen name="grid_item_spacing">2dp</dimen>
 
 </resources>

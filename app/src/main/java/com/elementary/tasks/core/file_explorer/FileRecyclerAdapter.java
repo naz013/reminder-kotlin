@@ -4,13 +4,13 @@ import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemFileLayoutBinding;
 
@@ -171,30 +171,30 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     }
 
     private static int getFileIcon(String file, boolean isDark){
-        Log.d(TAG, "getFileIcon: " + file);
+        LogUtil.d(TAG, "getFileIcon: " + file);
         if (isMelody(file)) {
-            Log.d(TAG, "getFileIcon: isMelody");
+            LogUtil.d(TAG, "getFileIcon: isMelody");
             return isDark ? R.drawable.ic_music_note_white_24dp : R.drawable.ic_music_note_black_24dp;
         } else if (isPicture(file)) {
-            Log.d(TAG, "getFileIcon: isPicture");
+            LogUtil.d(TAG, "getFileIcon: isPicture");
             return isDark ? R.drawable.ic_image_white_24dp : R.drawable.ic_image_black_24dp;
         } else if (isMovie(file)) {
-            Log.d(TAG, "getFileIcon: isMovie");
+            LogUtil.d(TAG, "getFileIcon: isMovie");
             return isDark ? R.drawable.ic_movie_white_24dp : R.drawable.ic_movie_black_24dp;
         } else if (isGif(file)) {
-            Log.d(TAG, "getFileIcon: isGif");
+            LogUtil.d(TAG, "getFileIcon: isGif");
             return isDark ? R.drawable.ic_gif_white_24dp : R.drawable.ic_gif_black_24dp;
         } else if (isArchive(file)) {
-            Log.d(TAG, "getFileIcon: isArchive");
+            LogUtil.d(TAG, "getFileIcon: isArchive");
             return isDark ? R.drawable.ic_storage_white_24dp : R.drawable.ic_storage_black_24dp;
         } else if (isAndroid(file)) {
-            Log.d(TAG, "getFileIcon: isAndroid");
+            LogUtil.d(TAG, "getFileIcon: isAndroid");
             return isDark ? R.drawable.ic_android_white_24dp : R.drawable.ic_android_black_24dp;
         } else if (!file.contains(".")) {
-            Log.d(TAG, "getFileIcon: folder");
+            LogUtil.d(TAG, "getFileIcon: folder");
             return isDark ? R.drawable.ic_folder_white_24dp : R.drawable.ic_folder_black_24dp;
         } else {
-            Log.d(TAG, "getFileIcon: else");
+            LogUtil.d(TAG, "getFileIcon: else");
             return isDark ? R.drawable.ic_insert_drive_file_white_24dp : R.drawable.ic_insert_drive_file_black_24dp;
         }
     }

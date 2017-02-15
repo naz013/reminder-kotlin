@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
@@ -379,13 +378,10 @@ public class Prefs extends SharedPrefs {
     }
 
     public String getDriveUser() {
-        String user = SuperUtil.decrypt(getString(DRIVE_USER));
-        Log.d(TAG, "getDriveUser: " + user);
-        return user;
+        return SuperUtil.decrypt(getString(DRIVE_USER));
     }
 
     public void setDriveUser(String value) {
-        Log.d(TAG, "setDriveUser: " + value);
         putString(DRIVE_USER, SuperUtil.encrypt(value));
     }
 

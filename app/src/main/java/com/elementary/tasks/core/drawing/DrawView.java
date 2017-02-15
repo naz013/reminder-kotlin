@@ -15,9 +15,10 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.elementary.tasks.core.utils.LogUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -821,7 +822,7 @@ public class DrawView extends View {
         }
         this.historyPointer++;
         if (mCanvas != null) {
-            Log.d(TAG, "addBitmap: " + bitmap.getWidth() + ", " + bitmap.getHeight() + ", " + mCanvas.getWidth() + ", " + mCanvas.getHeight());
+            LogUtil.d(TAG, "addBitmap: " + bitmap.getWidth() + ", " + bitmap.getHeight() + ", " + mCanvas.getWidth() + ", " + mCanvas.getHeight());
         }
         this.invalidate();
     }

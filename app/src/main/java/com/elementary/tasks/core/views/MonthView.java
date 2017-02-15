@@ -7,12 +7,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.utils.AssetsUtil;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 
@@ -205,7 +205,7 @@ public class MonthView extends View implements View.OnTouchListener {
             }
             drawRectText(dateTime.getDay().toString(), canvas, rect, color);
         }
-        Log.d(TAG, "onDraw: " + (System.currentTimeMillis() - start));
+        LogUtil.d(TAG, "onDraw: " + (System.currentTimeMillis() - start));
     }
 
     private void drawEvents(Canvas canvas, Events events, Rect rect) {

@@ -23,7 +23,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -245,7 +244,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     protected void onDestroy() {
         super.onDestroy();
         int left = instanceCount.decrementAndGet();
-        Log.d(TAG, "onDestroy: " + left);
+        LogUtil.d(TAG, "onDestroy: " + left);
         if (!mPrefs.isSystemLoudnessEnabled() && left == 0) {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             am.setStreamVolume(mStream, currVolume, 0);

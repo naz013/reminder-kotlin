@@ -79,6 +79,7 @@ public class ConversationActivity extends ThemedActivity {
                     LogUtil.d(TAG, "This Language is not supported");
                 } else {
                     isTtsReady = true;
+                    addResponse("Hi, how can I help you?");
                 }
             } else {
                 LogUtil.d(TAG, "Initialization Failed!");
@@ -88,12 +89,12 @@ public class ConversationActivity extends ThemedActivity {
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
-            Log.d(TAG, "onReadyForSpeech: ");
+            LogUtil.d(TAG, "onReadyForSpeech: ");
         }
 
         @Override
         public void onBeginningOfSpeech() {
-            Log.d(TAG, "onBeginningOfSpeech: ");
+            LogUtil.d(TAG, "onBeginningOfSpeech: ");
         }
 
         @Override
@@ -108,17 +109,17 @@ public class ConversationActivity extends ThemedActivity {
 
         @Override
         public void onBufferReceived(byte[] bytes) {
-            Log.d(TAG, "onBufferReceived: ");
+            LogUtil.d(TAG, "onBufferReceived: ");
         }
 
         @Override
         public void onEndOfSpeech() {
-            Log.d(TAG, "onEndOfSpeech: ");
+            LogUtil.d(TAG, "onEndOfSpeech: ");
         }
 
         @Override
         public void onError(int i) {
-            Log.d(TAG, "onError: " + i);
+            LogUtil.d(TAG, "onError: " + i);
             showErrorMessage(i);
         }
 
@@ -134,12 +135,12 @@ public class ConversationActivity extends ThemedActivity {
 
         @Override
         public void onPartialResults(Bundle bundle) {
-            Log.d(TAG, "onPartialResults: ");
+            LogUtil.d(TAG, "onPartialResults: ");
         }
 
         @Override
         public void onEvent(int i, Bundle bundle) {
-            Log.d(TAG, "onEvent: ");
+            LogUtil.d(TAG, "onEvent: ");
         }
     };
     private ConversationAdapter.InsertCallback mInsertCallback = new ConversationAdapter.InsertCallback() {

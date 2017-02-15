@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.async.SyncTask;
@@ -315,7 +314,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     public void cancelReminder(Context context, int id) {
-        Log.d(TAG, "cancelReminder: " + id);
+        LogUtil.d(TAG, "cancelReminder: " + id);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_REMINDER);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);

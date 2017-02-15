@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -70,7 +70,7 @@ class TimerEvent extends RepeatableEventManager {
                 mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
                 time = calculateTime(false);
             }
-            Log.d(TAG, "next: " + TimeUtil.getFullDateTime(time, true, true));
+            LogUtil.d(TAG, "next: " + TimeUtil.getFullDateTime(time, true, true));
             mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
             mReminder.setEventCount(mReminder.getEventCount() + 1);
             return start();
