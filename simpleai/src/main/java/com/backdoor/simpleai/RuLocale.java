@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * limitations under the License.
  */
 
-class RuLocale extends Worker implements WorkerInterface {
+class RuLocale extends Worker {
 
     @Override
     protected String[] getWeekdays() {
@@ -549,5 +549,33 @@ class RuLocale extends Worker implements WorkerInterface {
         if (input.matches("восьмидесятого")) number = 80;
         if (input.matches("девяностого")) number = 90;
         return number;
+    }
+
+    @Override
+    public boolean hasShowAction(String input) {
+        return input.matches(".*пока(зать|жы?)?.*");
+    }
+
+    @Override
+    public Action getShowAction(String input) {
+        if (input.matches(".*дни рожден.*")) {
+            return Action.BIRTHDAYS;
+        } else if (input.matches(".*активные напомин.*")) {
+            return Action.ACTIVE_REMINDERS;
+        } else if (input.matches(".*напомин.*")) {
+            return Action.REMINDERS;
+        } else if (input.matches(".*события.*")) {
+            return Action.EVENTS;
+        } else if (input.matches(".*заметки.*")) {
+            return Action.NOTES;
+        } else if (input.matches(".*группы.*")) {
+            return Action.GROUPS;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasNextModifier(String input) {
+        return input.matches(".*следу.*");
     }
 }

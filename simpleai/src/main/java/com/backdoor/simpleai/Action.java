@@ -54,6 +54,7 @@ public enum Action {
      */
     GROUPS,
     NOTES,
+    ACTIVE_REMINDERS,
     REMINDERS,
     BIRTHDAYS,
     EVENTS
