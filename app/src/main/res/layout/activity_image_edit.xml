@@ -34,7 +34,8 @@
                     android:id="@+id/drawItem"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:icon="@drawable/ic_random_line" />
+                    android:icon="@drawable/ic_random_line"
+                    android:visibility="gone" />
 
             </android.support.design.widget.TabLayout>
 
@@ -42,9 +43,9 @@
 
         <LinearLayout
             android:id="@+id/container"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
 
     </LinearLayout>
 </layout>

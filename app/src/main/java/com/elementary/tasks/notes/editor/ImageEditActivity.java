@@ -15,7 +15,6 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
@@ -71,12 +70,13 @@ public class ImageEditActivity extends ThemedActivity {
 
             }
         });
-        binding.tabLayout.getTabAt(0).select();
+        if (binding.tabLayout.getTabAt(0) != null) {
+            binding.tabLayout.getTabAt(0).select();
+        }
         openCropFragment();
     }
 
     private void selectTab(int position) {
-        Log.d(TAG, "selectTab: " + fragment);
         if (fragment != null) {
             if (fragment instanceof CropFragment) {
                 askCrop(position);
