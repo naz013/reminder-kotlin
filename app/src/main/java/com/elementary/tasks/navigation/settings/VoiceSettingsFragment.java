@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 public class VoiceSettingsFragment extends BaseSettingsFragment {
 
+    private FragmentSettingsVoiceBinding binding;
 
     private View.OnClickListener mVoiceClick = view -> showLanguageDialog();
     private View.OnClickListener mTimeClick = view -> replaceFragment(new TimeOfDayFragment(), getString(R.string.time));
@@ -43,11 +44,19 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsVoiceBinding binding = FragmentSettingsVoiceBinding.inflate(inflater, container, false);
+        binding = FragmentSettingsVoiceBinding.inflate(inflater, container, false);
         binding.languagePrefs.setOnClickListener(mVoiceClick);
         binding.timePrefs.setOnClickListener(mTimeClick);
         binding.helpPrefs.setOnClickListener(mHelpClick);
+        binding.conversationPrefs.setOnClickListener(view -> changeLivePrefs());
+        binding.conversationPrefs.setChecked(Prefs.getInstance(mContext).isLiveEnabled());
         return binding.getRoot();
+    }
+
+    private void changeLivePrefs() {
+        boolean isChecked = binding.conversationPrefs.isChecked();
+        Prefs.getInstance(mContext).setLiveEnabled(!isChecked);
+        binding.conversationPrefs.setChecked(!isChecked);
     }
 
     @Override

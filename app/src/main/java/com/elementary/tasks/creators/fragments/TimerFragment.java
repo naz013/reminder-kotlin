@@ -249,7 +249,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         }
     }
 
-    protected void fromTime(RoboTextView textView) {
+    private void fromTime(RoboTextView textView) {
         new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
             fromHour = hourOfDay;
             fromMinute = minute;
@@ -261,7 +261,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         }, fromHour, fromMinute, true).show();
     }
 
-    protected void toTime(RoboTextView textView) {
+    private void toTime(RoboTextView textView) {
         new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
             toHour = hourOfDay;
             toMinute = minute;

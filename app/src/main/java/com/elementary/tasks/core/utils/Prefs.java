@@ -916,6 +916,7 @@ public class Prefs extends SharedPrefs {
             uiEd.putBoolean(SYSTEM_VOLUME, false);
             uiEd.putBoolean(INCREASING_VOLUME, false);
             uiEd.putBoolean(GCM_ENABLED, true);
+            uiEd.putBoolean(LIVE_CONVERSATION, true);
             if (Module.isPro()) {
                 uiEd.putBoolean(BIRTHDAY_LED_STATUS, false);
                 uiEd.putBoolean(LED_STATUS, true);
@@ -1115,6 +1116,9 @@ public class Prefs extends SharedPrefs {
         if (!hasKey(GCM_ENABLED)) {
             putBoolean(GCM_ENABLED, true);
         }
+        if (!hasKey(LIVE_CONVERSATION)) {
+            putBoolean(LIVE_CONVERSATION, true);
+        }
         if (!hasKey(MAIN_IMAGE_ID)) {
             putInt(MAIN_IMAGE_ID, -1);
         }
@@ -1185,5 +1189,13 @@ public class Prefs extends SharedPrefs {
 
     public void setUserLogged(boolean value) {
         putBoolean(USER_LOGGED, value);
+    }
+
+    public void setLiveEnabled(boolean value) {
+        putBoolean(LIVE_CONVERSATION, value);
+    }
+
+    public boolean isLiveEnabled() {
+        return getBoolean(LIVE_CONVERSATION);
     }
 }

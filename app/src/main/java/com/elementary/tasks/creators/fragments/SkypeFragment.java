@@ -1,5 +1,6 @@
 package com.elementary.tasks.creators.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderSkypeBinding;
@@ -48,6 +50,10 @@ public class SkypeFragment extends RepeatableTypeFragment {
     @Override
     public boolean save() {
         if (mInterface == null) return false;
+        if (!SuperUtil.isSkypeClientInstalled(mContext)) {
+            showInstallSkypeDialog();
+            return false;
+        }
         Reminder reminder = mInterface.getReminder();
         int type = getType(binding.skypeGroup.getCheckedRadioButtonId());
         if (TextUtils.isEmpty(mInterface.getSummary())) {
@@ -84,6 +90,17 @@ public class SkypeFragment extends RepeatableTypeFragment {
             Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
+    }
+
+    private void showInstallSkypeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage(R.string.skype_is_not_installed);
+        builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            SuperUtil.installSkype(mContext);
+        });
+        builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.create().show();
     }
 
     @Override

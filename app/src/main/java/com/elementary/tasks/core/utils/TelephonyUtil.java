@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -78,12 +79,18 @@ public class TelephonyUtil {
 
     public static void openApp(String appPackage, Context context) {
         Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackage);
-        context.startActivity(LaunchIntent);
+        try {
+            context.startActivity(LaunchIntent);
+        } catch (ActivityNotFoundException ignored) {
+        }
     }
 
     public static void openLink(String link, Context context) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        context.startActivity(browserIntent);
+        try {
+            context.startActivity(browserIntent);
+        } catch (ActivityNotFoundException ignored) {
+        }
     }
 
     public static void skypeCall(String number, Context context) {
