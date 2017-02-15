@@ -30,12 +30,11 @@
                     android:layout_height="match_parent"
                     android:icon="@drawable/ic_crop_white_24dp" />
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/drawItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:icon="@drawable/ic_random_line"
-                    android:visibility="gone" />
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:id="@+id/drawItem"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:icon="@drawable/ic_random_line" />-->
 
             </android.support.design.widget.TabLayout>
 
