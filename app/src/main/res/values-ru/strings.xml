@@ -628,4 +628,5 @@
     <string name="live_conversation">Live conversation</string>
     <string name="enable_an_experimental_voice_control">Enable an experimental voice control screen</string>
     <string name="skype_is_not_installed">Skype is not installed! Would you like to install it?</string>
+    <string name="show_more">Show more</string>
 </resources>

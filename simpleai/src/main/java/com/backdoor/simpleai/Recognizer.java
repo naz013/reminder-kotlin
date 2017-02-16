@@ -50,8 +50,9 @@ public class Recognizer {
             if (action != null) {
                 boolean hasNext = wrapper.hasNextModifier(local);
                 long date;
+                long multi = wrapper.getMultiplier(local);
                 if (hasNext) {
-                    date = System.currentTimeMillis() + wrapper.getMultiplier(local);
+                    date = System.currentTimeMillis() + multi;
                 } else {
                     date = wrapper.getDate(local);
                 }

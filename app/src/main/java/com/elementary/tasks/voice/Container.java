@@ -1,4 +1,7 @@
-package com.backdoor.simpleai;
+package com.elementary.tasks.voice;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -16,47 +19,29 @@ package com.backdoor.simpleai;
  * limitations under the License.
  */
 
-public enum Action {
-    /**
-     * Reminder actions
-     */
-    WEEK,
-    WEEK_CALL,
-    WEEK_SMS,
-    CALL,
-    MESSAGE,
-    MAIL,
-    DATE,
+class Container<V> {
 
-    /**
-     * App actions
-     */
-    SETTINGS,
-    APP,
-    VOLUME,
-    HELP,
-    REMINDER,
-    BIRTHDAY,
-    REPORT,
-    DISABLE,
-    SHOW,
-    TRASH,
-    NO_EVENT,
+    private List<V> list = new ArrayList<>();
+    private V type;
 
-    /**
-     * Answer actions
-     */
-    YES,
-    NO,
+    Container( List<V> list) {
+        this.list = list;
+        if (!list.isEmpty()) this.type = list.get(0);
+    }
 
-    /**
-     * Show actions
-     */
-    GROUPS,
-    NOTES,
-    ACTIVE_REMINDERS,
-    REMINDERS,
-    BIRTHDAYS,
-    SHOP_LISTS,
-    EVENTS
+    public V getType() {
+        return type;
+    }
+
+    public List<V> getList() {
+        return list;
+    }
+
+    public void setList(List<V> list) {
+        this.list = list;
+    }
+
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
 }

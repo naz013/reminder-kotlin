@@ -7,6 +7,7 @@ import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 
+import java.util.Calendar;
 import java.util.Random;
 import java.util.UUID;
 
@@ -151,6 +152,17 @@ public class BirthdayItem implements RecyclerInterface, EventInterface {
 
     public void setDayMonth(String dayMonth) {
         this.dayMonth = dayMonth;
+    }
+
+    public long getDateTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int year = calendar.get(Calendar.YEAR);
+        calendar.setTimeInMillis(time);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        return calendar.getTimeInMillis();
     }
 
     @Override

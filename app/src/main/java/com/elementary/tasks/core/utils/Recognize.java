@@ -248,7 +248,7 @@ public class Recognize {
         }
     }
 
-    public void saveQuickReminder(String key, String summary) {
+    public Reminder saveQuickReminder(String key, String summary) {
         long after = Prefs.getInstance(mContext).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
         long due = System.currentTimeMillis() + after;
         Reminder mReminder = new Reminder();
@@ -264,6 +264,7 @@ public class Recognize {
         RealmDb.getInstance().saveObject(mReminder);
         EventControl control = EventControlImpl.getController(mContext, mReminder);
         control.start();
+        return mReminder;
     }
 
     private class ContactHelper implements ContactsInterface {

@@ -146,6 +146,7 @@ public class TimeUtil {
     }
 
     public static String getRealDateTime(String gmt, int delay, boolean is24) {
+        if (TextUtils.isEmpty(gmt)) return "";
         Calendar calendar = Calendar.getInstance();
         try {
             gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));

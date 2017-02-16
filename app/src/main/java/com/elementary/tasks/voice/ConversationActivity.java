@@ -19,6 +19,7 @@ import com.backdoor.simpleai.ActionType;
 import com.backdoor.simpleai.Model;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
@@ -29,6 +30,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteItem;
@@ -79,6 +81,7 @@ public class ConversationActivity extends ThemedActivity {
                 } else {
                     isTtsReady = true;
                     addResponse("Hi, how can I help you?");
+                    new Handler().postDelayed(() -> micClick(), 1500);
                 }
             } else {
                 LogUtil.d(TAG, "Initialization Failed!");
@@ -233,45 +236,122 @@ public class ConversationActivity extends ThemedActivity {
         } else if (actionType == ActionType.ANSWER) {
             performAnswer(model);
         } else if (actionType == ActionType.SHOW) {
+            stopView();
+            LogUtil.d(TAG, "performResult: " + TimeUtil.getFullDateTime(model.getDateTime(), true, true));
             Action action = model.getAction();
             if (action == Action.REMINDERS) {
-                showActiveReminders();
+                showActiveReminders(model.getDateTime());
             } else if (action == Action.NOTES) {
                 showNotes();
             } else if (action == Action.GROUPS) {
                 showGroups();
             } else if (action == Action.ACTIVE_REMINDERS) {
-                showEnabledReminders();
+                showEnabledReminders(model.getDateTime());
             } else if (action == Action.BIRTHDAYS) {
-                showBirthdays();
-            } else if (action == Action.EVENTS) {
-                showEvents();
+                showBirthdays(model.getDateTime());
+            } else if (action == Action.SHOP_LISTS) {
+                showShoppingLists();
             }
         }
     }
 
-    private void showEvents() {
-
+    private void showShoppingLists() {
+        Container<Reminder> items = new Container<>(DataProvider.getShoppingReminders());
+        if (items.isEmpty()) {
+            addResponse("No shopping lists found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one shopping list");
+            } else {
+                addResponse("Found " + items.getList().size() + " shopping lists");
+            }
+            addReminderObject(items.getList().remove(0));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
     }
 
-    private void showBirthdays() {
-
+    private void showBirthdays(long dateTime) {
+        long time = TimeUtil.getBirthdayTime(Prefs.getInstance(this).getBirthdayTime());
+        Container<BirthdayItem> items = new Container<>(DataProvider.getBirthdays(dateTime, time));
+        if (items.isEmpty()) {
+            addResponse("No birthdays found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one birthday");
+            } else {
+                addResponse("Found " + items.getList().size() + " birthdays");
+            }
+            addObjectResponse(new Reply(Reply.BIRTHDAY, items.getList().remove(0)));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
     }
 
-    private void showEnabledReminders() {
-
+    private void showEnabledReminders(long dateTime) {
+        Container<Reminder> items = new Container<>(DataProvider.getActiveReminders(dateTime));
+        if (items.isEmpty()) {
+            addResponse("No reminders found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one reminder");
+            } else {
+                addResponse("Found " + items.getList().size() + " reminders");
+            }
+            addReminderObject(items.getList().remove(0));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
     }
 
     private void showGroups() {
-
+        Container<GroupItem> items = new Container<>(DataProvider.getGroups());
+        if (items.isEmpty()) {
+            addResponse("No groups found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one group");
+            } else {
+                addResponse("Found " + items.getList().size() + " groups");
+            }
+            addObjectResponse(new Reply(Reply.GROUP, items.getList().remove(0)));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
     }
 
     private void showNotes() {
-
+        Container<NoteItem> items = new Container<>(DataProvider.getNotes());
+        if (items.isEmpty()) {
+            addResponse("No notes found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one note");
+            } else {
+                addResponse("Found " + items.getList().size() + " notes");
+            }
+            addObjectResponse(new Reply(Reply.NOTE, items.getList().remove(0)));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
     }
 
-    private void showActiveReminders() {
+    private void showActiveReminders(long dateTime) {
+        Container<Reminder> items = new Container<>(DataProvider.getReminders(dateTime));
+        if (items.isEmpty()) {
+            addResponse("No reminders found");
+        } else {
+            if (items.getList().size() == 1) {
+                addResponse("Found one reminder");
+            } else {
+                addResponse("Found " + items.getList().size() + " reminders");
+            }
+            addReminderObject(items.getList().remove(0));
+            if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
+        }
+    }
 
+    private void addReminderObject(Reminder reminder) {
+        if (reminder.getViewType() == Reminder.REMINDER) {
+            addObjectResponse(new Reply(Reply.REMINDER, reminder));
+        } else {
+            addObjectResponse(new Reply(Reply.SHOPPING, reminder));
+        }
     }
 
     private void groupAction(Model model) {
@@ -361,12 +441,21 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void askQuickReminder(NoteItem noteItem) {
-        addResponse("Would you like to add quick reminder?");
+        addResponse("Would you like to add reminder?");
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                recognize.saveQuickReminder(noteItem.getKey(), noteItem.getSummary());
+                Model model = recognize.findSuggestion(noteItem.getSummary());
                 addResponse("Reminder saved");
+                if (model != null && model.getType() == ActionType.REMINDER) {
+                    Reminder reminder = recognize.createReminder(model);
+                    EventControl control = EventControlImpl.getController(ConversationActivity.this, reminder);
+                    control.start();
+                    addObjectResponse(new Reply(Reply.REMINDER, reminder));
+                } else {
+                    Reminder reminder = recognize.saveQuickReminder(noteItem.getKey(), noteItem.getSummary());
+                    addObjectResponse(new Reply(Reply.REMINDER, reminder));
+                }
                 mAskAction = null;
             }
 

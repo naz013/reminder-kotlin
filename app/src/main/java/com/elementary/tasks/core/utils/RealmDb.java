@@ -34,6 +34,8 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -151,7 +153,14 @@ public class RealmDb {
     public List<BirthdayItem> getAllBirthdays() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        List<RealmBirthdayItem> list = realm.where(RealmBirthdayItem.class).findAll();
+        List<RealmBirthdayItem> list = new ArrayList<>(realm.where(RealmBirthdayItem.class).findAll());
+        Collections.sort(list, (realmBirthdayItem, t1) -> {
+            int res = realmBirthdayItem.getMonth() - t1.getMonth();
+            if (res == 0) {
+                res = realmBirthdayItem.getDay() - t1.getDay();
+            }
+            return res;
+        });
         List<BirthdayItem> items = new ArrayList<>();
         for (RealmBirthdayItem item : list) {
             WeakReference<BirthdayItem> reference = new WeakReference<>(new BirthdayItem(item));
@@ -855,6 +864,19 @@ public class RealmDb {
                 WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
                 items.add(reference.get());
             }
+        }
+        realm.commitTransaction();
+        return items;
+    }
+
+    public List<Reminder> getActiveReminders() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAll();
+        List<Reminder> items = new ArrayList<>();
+        for (RealmReminder object : list) {
+            WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+            items.add(reference.get());
         }
         realm.commitTransaction();
         return items;

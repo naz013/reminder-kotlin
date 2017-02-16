@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
@@ -53,13 +52,11 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     private List<NoteItem> mDataList;
     private SimpleListener mEventListener;
     private FilterCallback mCallback;
-    private static Activity a;
 
 
-    public NotesRecyclerAdapter(Activity activity, List<NoteItem> list, FilterCallback callback) {
+    public NotesRecyclerAdapter(List<NoteItem> list, FilterCallback callback) {
         this.mDataList = list;
         this.mCallback = callback;
-        this.a = activity;
     }
 
     public void notifyChanged(int position, String id) {
@@ -195,11 +192,12 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     }
 
     private static void setImage(ImageView imageView, byte[] image) {
-        Glide.with(a).load(image).crossFade().override(768, 500).into(imageView);
+        Glide.with(imageView.getContext().getApplicationContext()).load(image).crossFade().override(768, 500).into(imageView);
     }
 
     private static void setClick(ImageView imageView, int position, String key) {
-        imageView.setOnClickListener(view -> a.startActivity(new Intent(a, ImagePreviewActivity.class)
+        Context context = imageView.getContext().getApplicationContext();
+        imageView.setOnClickListener(view -> context.startActivity(new Intent(context, ImagePreviewActivity.class)
                 .putExtra(Constants.INTENT_ID, key)
                 .putExtra(Constants.INTENT_DELETE, false)
                 .putExtra(Constants.INTENT_POSITION, position)));
