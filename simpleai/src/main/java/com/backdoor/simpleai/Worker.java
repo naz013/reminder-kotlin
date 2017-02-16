@@ -71,12 +71,14 @@ abstract class Worker implements WorkerInterface {
 
     protected abstract boolean hasWeeks(String input);
 
+    protected abstract boolean hasMonth(String input);
+
     protected abstract int getMonth(String input);
 
     @Override
     public long getMultiplier(String input) {
         String[] parts = input.split("\\s");
-        int[] times = new int[5];
+        int[] times = new int[6];
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             if (hasSeconds(string)) {
@@ -86,16 +88,14 @@ abstract class Worker implements WorkerInterface {
                     if (times[0] == 0) times[0] = 1;
                 }
             } else if (hasMinutes(string) != -1) {
-                int index = hasMinutes(string);
                 try {
-                    if (times[1] == 0) times[1] = Integer.parseInt(parts[i - index]);
+                    if (times[1] == 0) times[1] = Integer.parseInt(parts[i - 1]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                     if (times[1] == 0) times[1] = 1;
                 }
             } else if (hasHours(string) != -1) {
-                int index = hasHours(string);
                 try {
-                    if (times[2] == 0) times[2] = Integer.parseInt(parts[i - index]);
+                    if (times[2] == 0) times[2] = Integer.parseInt(parts[i - 1]);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                     if (times[2] == 0) times[2] = 1;
                 }
@@ -111,9 +111,15 @@ abstract class Worker implements WorkerInterface {
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                     if (times[4] == 0) times[4] = 1;
                 }
+            } else if (hasMonth(string)) {
+                try {
+                    if (times[5] == 0) times[5] = Integer.parseInt(parts[i - 1]);
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                    if (times[5] == 0) times[5] = 1;
+                }
             }
         }
-        return (times[0] * SECOND) + (times[1] * MINUTE) + (times[2] * HOUR) + (times[3] * DAY) + (times[4] * 7 * DAY);
+        return (times[0] * SECOND) + (times[1] * MINUTE) + (times[2] * HOUR) + (times[3] * DAY) + (times[4] * 7 * DAY) + (times[5] * 30 * DAY);
     }
 
     @Override
@@ -129,18 +135,16 @@ abstract class Worker implements WorkerInterface {
                 }
                 input = input.replace(string, "");
             } else if (hasMinutes(string) != -1) {
-                int index = hasMinutes(string);
                 try {
-                    Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
+                    Integer.parseInt(parts[i - 1]);
+                    input = input.replace(parts[i - 1], "");
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                 }
                 input = input.replace(string, "");
             } else if (hasHours(string) != -1) {
-                int index = hasHours(string);
                 try {
-                    Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
+                    Integer.parseInt(parts[i - 1]);
+                    input = input.replace(parts[i - 1], "");
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                 }
                 input = input.replace(string, "");
@@ -152,6 +156,13 @@ abstract class Worker implements WorkerInterface {
                 }
                 input = input.replace(string, "");
             } else if (hasWeeks(string)) {
+                try {
+                    Integer.parseInt(parts[i - 1]);
+                    input = input.replace(parts[i - 1], "");
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+                }
+                input = input.replace(string, "");
+            } else if (hasMonth(string)) {
                 try {
                     Integer.parseInt(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
@@ -198,7 +209,7 @@ abstract class Worker implements WorkerInterface {
                 int integer;
                 try {
                     integer = Integer.parseInt(parts[i + 1]);
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
                     integer = 1;
                 }
                 Calendar calendar = Calendar.getInstance();

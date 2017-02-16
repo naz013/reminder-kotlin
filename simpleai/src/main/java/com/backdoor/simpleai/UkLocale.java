@@ -449,14 +449,12 @@ class UkLocale extends Worker {
     @Override
     protected int hasHours(String input) {
         if (input.matches(".*годині?у?.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
     @Override
     protected int hasMinutes(String input) {
         if (input.matches(".*хвилин.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
@@ -473,6 +471,11 @@ class UkLocale extends Worker {
     @Override
     protected boolean hasWeeks(String input) {
         return input.matches(".*тиждень.*") || input.matches(".*тижні.*");
+    }
+
+    @Override
+    protected boolean hasMonth(String input) {
+        return input.matches(".*місяц.*");
     }
 
     @Override
@@ -558,7 +561,7 @@ class UkLocale extends Worker {
 
     @Override
     public Action getShowAction(String input) {
-        if (input.matches(".*дні народження.*")) {
+        if (input.matches(".*д?е?н?і?ь? народжен.*")) {
             return Action.BIRTHDAYS;
         } else if (input.matches(".*активні нагадуван.*")) {
             return Action.ACTIVE_REMINDERS;
@@ -570,6 +573,8 @@ class UkLocale extends Worker {
             return Action.NOTES;
         } else if (input.matches(".*групи.*")) {
             return Action.GROUPS;
+        } else if (input.matches(".*списо?ки? покупок.*")) {
+            return Action.SHOP_LISTS;
         }
         return null;
     }

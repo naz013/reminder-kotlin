@@ -464,14 +464,12 @@ class EnLocale extends Worker {
     protected int hasHours(String input) {
         if (input.matches(".*hour.*") || input.matches(".*o'clock.*")
                 || input.matches(".*am.*") || input.matches(".*pm.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
     @Override
     protected int hasMinutes(String input) {
         if (input.matches(".*minute.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
@@ -488,6 +486,11 @@ class EnLocale extends Worker {
     @Override
     protected boolean hasWeeks(String input) {
         return input.matches(".*week.*");
+    }
+
+    @Override
+    protected boolean hasMonth(String input) {
+        return input.matches(".*month.*");
     }
 
     @Override
@@ -557,6 +560,8 @@ class EnLocale extends Worker {
             return Action.NOTES;
         } else if (input.matches(".*groups.*")) {
             return Action.GROUPS;
+        } else if (input.matches(".*shopping lists?.*")) {
+            return Action.SHOP_LISTS;
         }
         return null;
     }

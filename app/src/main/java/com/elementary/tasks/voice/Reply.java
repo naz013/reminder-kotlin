@@ -24,6 +24,9 @@ public class Reply {
     public static final int PREFS = 3;
     public static final int GROUP = 4;
     public static final int RESPONSE = 5;
+    public static final int SHOW_MORE = 6;
+    public static final int BIRTHDAY = 7;
+    public static final int SHOPPING = 8;
 
     private int viewType;
     private Object object;

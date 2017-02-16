@@ -449,14 +449,12 @@ class RuLocale extends Worker {
     @Override
     protected int hasHours(String input) {
         if (input.matches(".*час.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
     @Override
     protected int hasMinutes(String input) {
         if (input.matches(".*минуту?.*")) return 1;
-        else if (input.matches("\\d+")) return 0;
         return -1;
     }
 
@@ -473,6 +471,11 @@ class RuLocale extends Worker {
     @Override
     protected boolean hasWeeks(String input) {
         return input.matches(".*недел.*");
+    }
+
+    @Override
+    protected boolean hasMonth(String input) {
+        return input.matches(".*месяц.*");
     }
 
     @Override
@@ -558,7 +561,7 @@ class RuLocale extends Worker {
 
     @Override
     public Action getShowAction(String input) {
-        if (input.matches(".*дни рожден.*")) {
+        if (input.matches(".*рожден.*")) {
             return Action.BIRTHDAYS;
         } else if (input.matches(".*активные напомин.*")) {
             return Action.ACTIVE_REMINDERS;
@@ -570,6 +573,8 @@ class RuLocale extends Worker {
             return Action.NOTES;
         } else if (input.matches(".*группы.*")) {
             return Action.GROUPS;
+        } else if (input.matches(".*списо?ки? покуп.*")) {
+            return Action.SHOP_LISTS;
         }
         return null;
     }
