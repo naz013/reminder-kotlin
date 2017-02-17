@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -355,6 +356,7 @@ public class ActivityCreateNote extends ThemedActivity {
             calendar.set(mYear, mMonth, mDay, mHour, mMinute);
             createReminder(mItem.getKey(), calendar);
         }
+        UpdatesHelper.getInstance(this).updateNotesWidget();
         finish();
     }
 
