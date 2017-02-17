@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="map_types">
+        <item>@string/normal</item>
+        <item>@string/satellite</item>
+        <item>@string/terrain</item>
+        <item>@string/hybrid</item>
+    </string-array>
+
+    <string-array name="repeat_times">
+        <item>@string/seconds</item>
+        <item>@string/minutes</item>
+        <item>@string/hours</item>
+        <item>@string/days</item>
+        <item>@string/weeks</item>
+    </string-array>
+
+    <string-array name="color_list">
+        <item>@string/red</item>
+        <item>@string/purple</item>
+        <item>@string/green_light</item>
+        <item>@string/green</item>
+        <item>@string/blue_light</item>
+        <item>@string/blue</item>
+        <item>@string/yellow</item>
+        <item>@string/orange</item>
+        <item>@string/cyan</item>
+        <item>@string/pink</item>
+        <item>@string/dark_green</item>
+        <item>@string/amber</item>
+        <item>@string/transparent</item>
+    </string-array>
+
+    <string-array name="month_list">
+        <item>@string/january</item>
+        <item>@string/february</item>
+        <item>@string/march</item>
+        <item>@string/april</item>
+        <item>@string/may</item>
+        <item>@string/june</item>
+        <item>@string/july</item>
+        <item>@string/august</item>
+        <item>@string/september</item>
+        <item>@string/october</item>
+        <item>@string/november</item>
+        <item>@string/december</item>
+    </string-array>
+
+</resources>
