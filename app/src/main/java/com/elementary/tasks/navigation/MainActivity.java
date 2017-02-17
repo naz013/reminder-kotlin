@@ -315,8 +315,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                     prevItem = beforeSettings;
                     mNavigationView.setCheckedItem(beforeSettings);
                     openScreen(beforeSettings);
-                } else if (!isBackPressed) {
-                    firstBackPress();
+                } else {
+                    initStartFragment();
                 }
             } else if (fragment instanceof BaseSettingsFragment) {
                 super.onBackPressed();
