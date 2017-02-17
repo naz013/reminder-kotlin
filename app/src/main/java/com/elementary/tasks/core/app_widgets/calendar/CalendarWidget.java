@@ -86,8 +86,7 @@ public class CalendarWidget extends AppWidgetProvider {
         int theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + widgetID, 0);
         CalendarTheme item = CalendarTheme.getThemes(context).get(theme);
 
-        RemoteViews rv = new RemoteViews(context.getPackageName(),
-                R.layout.calendar_widget_layout);
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.calendar_widget_layout);
         rv.setTextViewText(R.id.currentDate, date);
         rv.setTextColor(R.id.currentDate, item.getTitleColor());
 
