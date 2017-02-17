@@ -1,10 +1,14 @@
 package com.elementary.tasks.navigation.settings.other;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
@@ -34,6 +38,16 @@ public class ChangesFragment extends BaseSettingsFragment {
         FragmentSettingsWebViewLayoutBinding binding = FragmentSettingsWebViewLayoutBinding.inflate(inflater, container, false);
         String url = "file:///android_asset/files/change_log.html";
         binding.webView.loadUrl(url);
+        binding.webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.contains("craysoftware.wordpress.com")) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    return true;
+                }
+                return false;
+            }
+        });
         return binding.getRoot();
     }
 
