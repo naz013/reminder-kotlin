@@ -24,8 +24,6 @@
     </declare-styleable>
 
     <declare-styleable name="RepeatView">
-        <attr name="number_text_size" format="dimension"/>
-        <attr name="repeat_type_text" format="string"/>
     </declare-styleable>
 
     <declare-styleable name="IconRadioButton">

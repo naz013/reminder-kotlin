@@ -5,29 +5,6 @@
     <string name="action_settings">"Configurações"</string>
     <string name="copyright">"2016 \u00A9 Nazar Suhovich"</string>
 
-    <array name="map_types">
-        <item>@string/normal</item>
-        <item>@string/satellite</item>
-        <item>@string/terrain</item>
-        <item>@string/hybrid</item>
-    </array>
-
-    <array name="color_list">
-        <item>@string/red</item>
-        <item>@string/purple</item>
-        <item>@string/green_light</item>
-        <item>@string/green</item>
-        <item>@string/blue_light</item>
-        <item>@string/blue</item>
-        <item>@string/yellow</item>
-        <item>@string/orange</item>
-        <item>@string/cyan</item>
-        <item>@string/pink</item>
-        <item>@string/dark_green</item>
-        <item>@string/amber</item>
-        <item>@string/transparent</item>
-    </array>
-
     <string name="blur">"Borrão"</string>
     <string name="next">"Próximo"</string>
     <string name="previous">"Anterior"</string>
@@ -545,20 +522,6 @@
     <string name="once">Once</string>
     <string name="times">times</string>
     <string name="no_groups">No groups</string>
-    <array name="month_list">
-        <item>@string/january</item>
-        <item>@string/february</item>
-        <item>@string/march</item>
-        <item>@string/april</item>
-        <item>@string/may</item>
-        <item>@string/june</item>
-        <item>@string/july</item>
-        <item>@string/august</item>
-        <item>@string/september</item>
-        <item>@string/october</item>
-        <item>@string/november</item>
-        <item>@string/december</item>
-    </array>
     <string name="retrieving_tasks">Retrieving tasks...</string>
     <string name="saving">Saving...</string>
     <string name="moving_task">Moving task...</string>
@@ -613,4 +576,6 @@
     <string name="enable_an_experimental_voice_control">Enable an experimental voice control screen</string>
     <string name="skype_is_not_installed">Skype is not installed! Would you like to install it?</string>
     <string name="show_more">Show more</string>
+    <string name="weeks">weeks</string>
+    <string name="seconds">seconds</string>
 </resources>

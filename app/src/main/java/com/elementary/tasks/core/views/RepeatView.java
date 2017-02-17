@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views;
 
 import android.app.AlarmManager;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -97,7 +96,6 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         View.inflate(context, R.layout.repeat_view_layout, this);
         setOrientation(VERTICAL);
         repeatTitle = (RoboEditText) findViewById(R.id.repeatTitle);
-        RoboTextView repeatType = (RoboTextView) findViewById(R.id.repeatType);
         eventView = (RoboTextView) findViewById(R.id.eventView);
         predictionView = (LinearLayout) findViewById(R.id.predictionView);
         repeatViewSeek = (SeekBar) findViewById(R.id.repeatViewSeek);
@@ -126,18 +124,6 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             iconView.setImageResource(R.drawable.ic_refresh_white);
         } else {
             iconView.setImageResource(R.drawable.ic_refresh);
-        }
-        if (attrs != null) {
-            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0);
-            String titleText = "";
-            try {
-                titleText = a.getString(R.styleable.RepeatView_repeat_type_text);
-            } catch (Exception e) {
-                LogUtil.e(TAG, "There was an error loading attributes.", e);
-            } finally {
-                a.recycle();
-            }
-            repeatType.setText(titleText);
         }
         this.mContext = context;
         initDateTime(System.currentTimeMillis());
@@ -170,13 +156,11 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, hour, minute, 0);
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
-        if (progress == 0) {
-//            predictionView.setVisibility(INVISIBLE);
-        } else {
-            if (showPrediction) predictionView.setVisibility(VISIBLE);
-        }
         if (showPrediction) {
+            predictionView.setVisibility(VISIBLE);
             eventView.setText(TimeUtil.getFullDateTime(calendar.getTimeInMillis() + progress * mMultiplier, is24, false));
+        } else {
+            predictionView.setVisibility(INVISIBLE);
         }
     }
 
@@ -222,10 +206,6 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             updateEditField();
         }
         updatePrediction(repeat);
-    }
-
-    public int getRepeatCode() {
-        return repeat;
     }
 
     public long getRepeat() {
