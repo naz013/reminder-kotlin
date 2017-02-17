@@ -23,7 +23,7 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -117,7 +117,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.valueOf(progress));
+                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                        String.valueOf(progress)));
             }
 
             @Override
@@ -130,12 +131,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int loudness = Prefs.getInstance(mContext).getNotificationRepeatTime();
-        b.seekBar.setProgress(loudness);
-        b.titleView.setText(String.valueOf(loudness));
+        int repeatTime = Prefs.getInstance(mContext).getNotificationRepeatTime();
+        b.seekBar.setProgress(repeatTime);
+        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(repeatTime)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             Prefs.getInstance(mContext).setNotificationRepeatTime(b.seekBar.getProgress());
+            showRepeatTime();
             initRepeatTimePrefs();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -146,6 +149,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         binding.repeatIntervalPrefs.setValue(Prefs.getInstance(mContext).getNotificationRepeatTime());
         binding.repeatIntervalPrefs.setOnClickListener(mRepeatTimeClick);
         binding.repeatIntervalPrefs.setDependentView(binding.repeatNotificationOptionPrefs);
+        showRepeatTime();
+    }
+
+    private void showRepeatTime() {
+        binding.repeatIntervalPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(Prefs.getInstance(mContext).getNotificationRepeatTime())));
     }
 
     private void changeRepeatPrefs() {
@@ -163,18 +172,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.led_color));
-        String[] colors = new String[LED.NUM_OF_LEDS];
-        for (int i = 0; i < LED.NUM_OF_LEDS; i++) {
-            colors[i] = LED.getTitle(mContext, i);
-        }
+        String[] colors = LED.getAllNames(mContext);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, colors);
         mItemSelect = Prefs.getInstance(mContext).getLedColor();
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setLedColor(LED.getLED(mItemSelect));
+            Prefs.getInstance(mContext).setLedColor(mItemSelect);
+            showLedColor();
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -183,9 +188,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         dialog.show();
     }
 
+    private void showLedColor() {
+        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(mContext, Prefs.getInstance(mContext).getLedColor()));
+    }
+
     private void initLedColorPrefs() {
         binding.chooseLedColorPrefs.setOnClickListener(mLedColorClick);
         binding.chooseLedColorPrefs.setDependentView(binding.ledPrefs);
+        showLedColor();
     }
 
     private void changeLedPrefs() {
@@ -202,6 +212,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void initSnoozeTimePrefs() {
         binding.delayForPrefs.setOnClickListener(mSnoozeClick);
         binding.delayForPrefs.setValue(Prefs.getInstance(mContext).getSnoozeTime());
+        showSnooze();
+    }
+
+    private void showSnooze() {
+        binding.delayForPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(Prefs.getInstance(mContext).getSnoozeTime())));
     }
 
     private void showSnoozeDialog() {
@@ -212,7 +228,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.valueOf(progress));
+                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                        String.valueOf(progress)));
             }
 
             @Override
@@ -225,12 +242,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int loudness = Prefs.getInstance(mContext).getSnoozeTime();
-        b.seekBar.setProgress(loudness);
-        b.titleView.setText(String.valueOf(loudness));
+        int snoozeTime = Prefs.getInstance(mContext).getSnoozeTime();
+        b.seekBar.setProgress(snoozeTime);
+        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(snoozeTime)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             Prefs.getInstance(mContext).setSnoozeTime(b.seekBar.getProgress());
+            showSnooze();
             initSnoozeTimePrefs();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -297,18 +316,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.language));
         String locale = Prefs.getInstance(mContext).getTtsLocale();
-        if (locale.matches(Language.ENGLISH)) mItemSelect = 0;
-        if (locale.matches(Language.FRENCH)) mItemSelect = 1;
-        if (locale.matches(Language.GERMAN)) mItemSelect = 2;
-        if (locale.matches(Language.ITALIAN)) mItemSelect = 3;
-        if (locale.matches(Language.JAPANESE)) mItemSelect = 4;
-        if (locale.matches(Language.KOREAN)) mItemSelect = 5;
-        if (locale.matches(Language.POLISH)) mItemSelect = 6;
-        if (locale.matches(Language.RUSSIAN)) mItemSelect = 7;
-        if (locale.matches(Language.SPANISH)) mItemSelect = 8;
-        builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        mItemSelect = Language.getLocalePosition(locale);
+        builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             saveTtsLocalePrefs();
             dialog.dismiss();
@@ -319,18 +328,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         dialog.show();
     }
 
+    private void showTtsLocale() {
+        String locale = Prefs.getInstance(mContext).getTtsLocale();
+        int i = Language.getLocalePosition(locale);
+        binding.localePrefs.setDetailText(Language.getLocaleNames(mContext).get(i));
+    }
+
     private ArrayAdapter<String> getLocaleAdapter() {
-        ArrayList<String> names = new ArrayList<>();
-        names.add(mContext.getString(R.string.english));
-        names.add(mContext.getString(R.string.french));
-        names.add(mContext.getString(R.string.german));
-        names.add(mContext.getString(R.string.italian));
-        names.add(mContext.getString(R.string.japanese));
-        names.add(mContext.getString(R.string.korean));
-        names.add(mContext.getString(R.string.polish));
-        names.add(mContext.getString(R.string.russian));
-        names.add(mContext.getString(R.string.spanish));
-        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, names);
+        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, Language.getLocaleNames(mContext));
     }
 
     private void saveTtsLocalePrefs() {
@@ -345,11 +350,13 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         if (mItemSelect == 7) locale = Language.RUSSIAN;
         if (mItemSelect == 8) locale = Language.SPANISH;
         Prefs.getInstance(mContext).setTtsLocale(locale);
+        showTtsLocale();
     }
 
     private void initTtsLocalePrefs() {
         binding.localePrefs.setOnClickListener(mTtsLocaleClick);
         binding.localePrefs.setDependentView(binding.ttsPrefs);
+        showTtsLocale();
     }
 
     private void changeTtsPrefs() {
@@ -399,7 +406,10 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         b.seekBar.setProgress(loudness);
         b.titleView.setText(String.valueOf(loudness));
         builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> Prefs.getInstance(mContext).setLoudness(b.seekBar.getProgress()));
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            Prefs.getInstance(mContext).setLoudness(b.seekBar.getProgress());
+            showLoudness();
+        });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
@@ -407,6 +417,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void initLoudnessPrefs() {
         binding.volumePrefs.setOnClickListener(mLoudnessClick);
         binding.volumePrefs.setReverseDependentView(binding.systemPrefs);
+        showLoudness();
+    }
+
+    private void showLoudness() {
+        binding.volumePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.loudness) + " %d",
+                Prefs.getInstance(mContext).getLoudness()));
     }
 
     private void showStreamDialog() {
@@ -427,6 +443,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             Prefs.getInstance(mContext).setSoundStream(mItemSelect + 3);
+            showStream();
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -438,6 +455,14 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void initSoundStreamPrefs() {
         binding.streamPrefs.setOnClickListener(mStreamClick);
         binding.streamPrefs.setDependentView(binding.systemPrefs);
+        showStream();
+    }
+
+    private void showStream() {
+        String[] types = new String[]{mContext.getString(R.string.music),
+                mContext.getString(R.string.alarm),
+                mContext.getString(R.string.notification)};
+        binding.streamPrefs.setDetailText(types[Prefs.getInstance(mContext).getSoundStream() - 3]);
     }
 
     private void changeSystemLoudnessPrefs() {
@@ -484,9 +509,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         } else {
             mItemSelect = 1;
         }
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             if (mItemSelect == 0) {
                 Prefs.getInstance(mContext).setMelodyFile(Constants.DEFAULT);

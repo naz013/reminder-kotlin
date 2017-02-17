@@ -45,12 +45,29 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsVoiceBinding.inflate(inflater, container, false);
-        binding.languagePrefs.setOnClickListener(mVoiceClick);
-        binding.timePrefs.setOnClickListener(mTimeClick);
+        initLanguagePrefs();
+        initTimePrefs();
         binding.helpPrefs.setOnClickListener(mHelpClick);
+        initConversationPrefs();
+        return binding.getRoot();
+    }
+
+    private void initTimePrefs() {
+        binding.timePrefs.setOnClickListener(mTimeClick);
+    }
+
+    private void initLanguagePrefs() {
+        binding.languagePrefs.setOnClickListener(mVoiceClick);
+        showLanguage();
+    }
+
+    private void showLanguage() {
+        binding.languagePrefs.setDetailText(Language.getLanguages(mContext).get(Prefs.getInstance(mContext).getVoiceLocale()));
+    }
+
+    private void initConversationPrefs() {
         binding.conversationPrefs.setOnClickListener(view -> changeLivePrefs());
         binding.conversationPrefs.setChecked(Prefs.getInstance(mContext).isLiveEnabled());
-        return binding.getRoot();
     }
 
     private void changeLivePrefs() {
@@ -72,8 +89,8 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.language));
-        final ArrayList<String> locales = Language.getLanguages(mContext);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+        ArrayList<String> locales = Language.getLanguages(mContext);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, locales);
         int language = Prefs.getInstance(mContext).getVoiceLocale();
         builder.setSingleChoiceItems(adapter, language, (dialog, which) -> {
@@ -83,6 +100,7 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
+        dialog.setOnDismissListener(dialogInterface -> showLanguage());
         dialog.show();
     }
 }

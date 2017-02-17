@@ -12,7 +12,7 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.views.PrefsView;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding;
@@ -40,8 +40,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
     private int mItemSelect;
 
-    private PrefsView mRadiusPrefs;
-    private PrefsView mNotificationPrefs;
+    private FragmentSettingsLocationBinding binding;
     private View.OnClickListener mRadiusClick = view -> showRadiusPickerDialog();
     private View.OnClickListener mNotificationClick = view -> changeNotificationPrefs();
     private View.OnClickListener mMapTypeClick = view -> showMapTypeDialog();
@@ -51,22 +50,44 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsLocationBinding binding = FragmentSettingsLocationBinding.inflate(inflater, container, false);
-        binding.mapTypePrefs.setOnClickListener(mMapTypeClick);
-        binding.markerStylePrefs.setOnClickListener(mStyleClick);
+        binding = FragmentSettingsLocationBinding.inflate(inflater, container, false);
+        initMapTypePrefs();
+        initMarkerStylePrefs();
         binding.trackerPrefs.setOnClickListener(mTrackClick);
-        mNotificationPrefs = binding.notificationOptionPrefs;
-        mNotificationPrefs.setOnClickListener(mNotificationClick);
-        mNotificationPrefs.setChecked(Prefs.getInstance(mContext).isDistanceNotificationEnabled());
-        mRadiusPrefs = binding.radiusPrefs;
-        mRadiusPrefs.setOnClickListener(mRadiusClick);
-        showRadius();
+        binding.notificationOptionPrefs.setOnClickListener(mNotificationClick);
+        binding.notificationOptionPrefs.setChecked(Prefs.getInstance(mContext).isDistanceNotificationEnabled());
+        initRadiusPrefs();
         return binding.getRoot();
+    }
+
+    private void initMarkerStylePrefs() {
+        binding.markerStylePrefs.setOnClickListener(mStyleClick);
+        showMarkerStyle();
+    }
+
+    private void showMarkerStyle() {
+        binding.markerStylePrefs.setViewResource(new ThemeUtil(mContext).getMarkerStyle());
+    }
+
+    private void initMapTypePrefs() {
+        binding.mapTypePrefs.setOnClickListener(mMapTypeClick);
+        showMapType();
+    }
+
+    private void showMapType() {
+        String[] types = getResources().getStringArray(R.array.map_types);
+        binding.mapTypePrefs.setDetailText(types[getPosition(Prefs.getInstance(mContext).getMapType())]);
+    }
+
+    private void initRadiusPrefs() {
+        binding.radiusPrefs.setOnClickListener(mRadiusClick);
+        showRadius();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        showMarkerStyle();
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.location));
             mCallback.onFragmentSelect(this);
@@ -131,6 +152,21 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext, R.array.map_types,
                 android.R.layout.simple_list_item_single_choice);
         int type = Prefs.getInstance(mContext).getMapType();
+        mItemSelect = getPosition(type);
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
+        builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
+            Prefs.getInstance(mContext).setMapType(mItemSelect + 1);
+            showMapType();
+            dialogInterface.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
+        dialog.show();
+    }
+
+    private int getPosition(int type) {
+        int mItemSelect;
         if (type == Constants.MAP_SATELLITE){
             mItemSelect = 1;
         } else if (type == Constants.MAP_TERRAIN){
@@ -140,27 +176,18 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         } else {
             mItemSelect = 0;
         }
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setMapType(mItemSelect + 1);
-            dialogInterface.dismiss();
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
-        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
-        dialog.show();
+        return mItemSelect;
     }
 
     private void changeNotificationPrefs() {
-        boolean isChecked = mNotificationPrefs.isChecked();
-        mNotificationPrefs.setChecked(!isChecked);
+        boolean isChecked = binding.notificationOptionPrefs.isChecked();
+        binding.notificationOptionPrefs.setChecked(!isChecked);
         Prefs.getInstance(mContext).setDistanceNotificationEnabled(!isChecked);
     }
 
     private void showRadius() {
-        mRadiusPrefs.setValue(Prefs.getInstance(mContext).getRadius());
+        binding.radiusPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
+                String.valueOf(Prefs.getInstance(mContext).getRadius())));
     }
 
     private void showRadiusPickerDialog(){

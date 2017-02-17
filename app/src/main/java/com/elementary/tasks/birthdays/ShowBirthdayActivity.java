@@ -16,6 +16,7 @@ import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
@@ -305,9 +306,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        int ledColor = mPrefs.getLedColor();
+        int ledColor = LED.getLED(mPrefs.getLedColor());
         if (Module.isPro() && !isGlobal()) {
-            ledColor = mPrefs.getBirthdayLedColor();
+            ledColor = LED.getLED(mPrefs.getBirthdayLedColor());
         }
         return ledColor;
     }

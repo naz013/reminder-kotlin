@@ -13,6 +13,7 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -124,7 +125,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
                 if (reminder.getColor() != 0) {
                     builder.setLights(reminder.getColor(), 500, 1000);
                 } else {
-                    builder.setLights(Prefs.getInstance(context).getLedColor(), 500, 1000);
+                    builder.setLights(LED.getLED(Prefs.getInstance(context).getLedColor()), 500, 1000);
                 }
             }
         }

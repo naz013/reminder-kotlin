@@ -11,15 +11,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.LED;
-import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LED;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.FragmentBirthdayNotificationsBinding;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -66,24 +65,24 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         binding.chooseLedColorPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.chooseLedColorPrefs.setDependentView(binding.ledPrefs);
         binding.chooseLedColorPrefs.setOnClickListener(view -> showLedColorDialog());
+        showLedColor();
+    }
+
+    private void showLedColor() {
+        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(mContext, Prefs.getInstance(mContext).getBirthdayLedColor()));
     }
 
     private void showLedColorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.led_color));
-        String[] colors = new String[LED.NUM_OF_LEDS];
-        for (int i = 0; i < LED.NUM_OF_LEDS; i++) {
-            colors[i] = LED.getTitle(mContext, i);
-        }
+        String[] colors = LED.getAllNames(mContext);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, colors);
         mItemSelect = Prefs.getInstance(mContext).getBirthdayLedColor();
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setBirthdayLedColor(LED.getLED(mItemSelect));
+            Prefs.getInstance(mContext).setBirthdayLedColor(mItemSelect);
+            showLedColor();
             dialog.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -138,9 +137,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         } else {
             mItemSelect = 1;
         }
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             if (mItemSelect == 0) {
                 Prefs.getInstance(mContext).setBirthdayMelody(Constants.DEFAULT);
@@ -161,6 +158,13 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         binding.localePrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.localePrefs.setDependentView(binding.ttsPrefs);
         binding.localePrefs.setOnClickListener(view -> showTtsLocaleDialog());
+        showTtsLocale();
+    }
+
+    private void showTtsLocale() {
+        String locale = Prefs.getInstance(mContext).getBirthdayTtsLocale();
+        int i = Language.getLocalePosition(locale);
+        binding.localePrefs.setDetailText(Language.getLocaleNames(mContext).get(i));
     }
 
     private void showTtsLocaleDialog() {
@@ -168,18 +172,8 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.language));
         String locale = Prefs.getInstance(mContext).getBirthdayTtsLocale();
-        if (locale.matches(Language.ENGLISH)) mItemSelect = 0;
-        if (locale.matches(Language.FRENCH)) mItemSelect = 1;
-        if (locale.matches(Language.GERMAN)) mItemSelect = 2;
-        if (locale.matches(Language.ITALIAN)) mItemSelect = 3;
-        if (locale.matches(Language.JAPANESE)) mItemSelect = 4;
-        if (locale.matches(Language.KOREAN)) mItemSelect = 5;
-        if (locale.matches(Language.POLISH)) mItemSelect = 6;
-        if (locale.matches(Language.RUSSIAN)) mItemSelect = 7;
-        if (locale.matches(Language.SPANISH)) mItemSelect = 8;
-        builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        mItemSelect = Language.getLocalePosition(locale);
+        builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             saveTtsLocalePrefs();
             dialog.dismiss();
@@ -190,18 +184,9 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         dialog.show();
     }
 
+
     private ArrayAdapter<String> getLocaleAdapter() {
-        ArrayList<String> names = new ArrayList<>();
-        names.add(mContext.getString(R.string.english));
-        names.add(mContext.getString(R.string.french));
-        names.add(mContext.getString(R.string.german));
-        names.add(mContext.getString(R.string.italian));
-        names.add(mContext.getString(R.string.japanese));
-        names.add(mContext.getString(R.string.korean));
-        names.add(mContext.getString(R.string.polish));
-        names.add(mContext.getString(R.string.russian));
-        names.add(mContext.getString(R.string.spanish));
-        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, names);
+        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, Language.getLocaleNames(mContext));
     }
 
     private void saveTtsLocalePrefs() {
@@ -216,6 +201,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         if (mItemSelect == 7) locale = Language.RUSSIAN;
         if (mItemSelect == 8) locale = Language.SPANISH;
         Prefs.getInstance(mContext).setBirthdayTtsLocale(locale);
+        showTtsLocale();
     }
 
     private void initTtsPrefs() {

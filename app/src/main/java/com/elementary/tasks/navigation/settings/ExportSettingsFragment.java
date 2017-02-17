@@ -28,6 +28,7 @@ import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -119,13 +120,23 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     private void initAutoBackupIntervalPrefs() {
         binding.syncIntervalPrefs.setOnClickListener(view -> showIntervalDialog());
         binding.syncIntervalPrefs.setDependentView(binding.autoBackupPrefs);
+        showBackupInterval();
+    }
+
+    private void showBackupInterval() {
+        CharSequence[] items = {mContext.getString(R.string.one_hour),
+                mContext.getString(R.string.six_hours),
+                mContext.getString(R.string.twelve_hours),
+                mContext.getString(R.string.one_day),
+                mContext.getString(R.string.two_days)};
+        binding.syncIntervalPrefs.setDetailText(items[getIntervalPosition()].toString());
     }
 
     private void showIntervalDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(true);
         builder.setTitle(mContext.getString(R.string.interval));
-        final CharSequence[] items = {mContext.getString(R.string.one_hour),
+        CharSequence[] items = {mContext.getString(R.string.one_hour),
                 mContext.getString(R.string.six_hours),
                 mContext.getString(R.string.twelve_hours),
                 mContext.getString(R.string.one_day),
@@ -154,6 +165,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             Prefs.getInstance(mContext).setAutoBackupInterval(48);
         }
         new AlarmReceiver().enableAutoSync(mContext);
+        showBackupInterval();
     }
 
     private int getIntervalPosition() {
@@ -229,6 +241,12 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     private void initEventDurationPrefs() {
         binding.eventDurationPrefs.setOnClickListener(view -> showEventDurationDialog());
         binding.eventDurationPrefs.setDependentView(binding.exportToCalendarPrefs);
+        showEventDuration();
+    }
+
+    private void showEventDuration() {
+        binding.eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(Prefs.getInstance(mContext).getCalendarEventDuration())));
     }
 
     private void showEventDurationDialog() {
@@ -239,7 +257,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.valueOf(progress));
+                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(progress)));
             }
 
             @Override
@@ -252,11 +270,14 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int loudness = Prefs.getInstance(mContext).getCalendarEventDuration();
-        b.seekBar.setProgress(loudness);
-        b.titleView.setText(String.valueOf(loudness));
+        int duration = Prefs.getInstance(mContext).getCalendarEventDuration();
+        b.seekBar.setProgress(duration);
+        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(duration)));
         builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> Prefs.getInstance(mContext).setCalendarEventDuration(b.seekBar.getProgress()));
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            Prefs.getInstance(mContext).setCalendarEventDuration(b.seekBar.getProgress());
+            showEventDuration();
+        });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
