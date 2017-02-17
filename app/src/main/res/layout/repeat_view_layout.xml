@@ -54,16 +54,14 @@
                     android:textSize="@dimen/create_text_size_normal"
                     app:edit_font_style="roboto_medium" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <Spinner
                     android:id="@+id/repeatType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/repeatTitle"
                     android:gravity="center|left"
-                    android:text="@string/days"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:font_style="roboto_light" />
+                    android:entries="@array/repeat_times" />
 
             </RelativeLayout>
 

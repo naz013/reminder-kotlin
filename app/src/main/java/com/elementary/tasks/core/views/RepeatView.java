@@ -1,20 +1,23 @@
 package com.elementary.tasks.core.views;
 
-import android.app.AlarmManager;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
@@ -41,6 +44,12 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
 
     private static final String TAG = "RepeatView";
 
+    private int seconds = 0;
+    private int minutes = 1;
+    private int hours = 2;
+    private int days = 3;
+    private int weeks = 4;
+
     private LinearLayout predictionView;
     private RoboTextView eventView;
     private RoboEditText repeatTitle;
@@ -49,8 +58,8 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     private OnRepeatListener listener;
     private InputMethodManager imm;
 
-    private long mMultiplier = AlarmManager.INTERVAL_DAY;
     private boolean showPrediction = true;
+    private int mState = days;
     private int day;
     private int month;
     private int year;
@@ -99,6 +108,18 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         eventView = (RoboTextView) findViewById(R.id.eventView);
         predictionView = (LinearLayout) findViewById(R.id.predictionView);
         repeatViewSeek = (SeekBar) findViewById(R.id.repeatViewSeek);
+        Spinner mRepeatType = (Spinner) findViewById(R.id.repeatType);
+        mRepeatType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                setState(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         repeatViewSeek.setOnSeekBarChangeListener(this);
         repeatTitle.addTextChangedListener(this);
         repeatTitle.setOnFocusChangeListener((v, hasFocus) -> {
@@ -125,7 +146,18 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         } else {
             iconView.setImageResource(R.drawable.ic_refresh);
         }
+        if (attrs != null) {
+            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0);
+            try {
+                mState = a.getInt(R.styleable.RepeatView_repeat_type, days);
+            } catch (Exception e) {
+                LogUtil.e(TAG, "There was an error loading attributes.", e);
+            } finally {
+                a.recycle();
+            }
+        }
         this.mContext = context;
+        mRepeatType.setSelection(mState);
         initDateTime(System.currentTimeMillis());
     }
 
@@ -158,7 +190,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
         if (showPrediction) {
             predictionView.setVisibility(VISIBLE);
-            eventView.setText(TimeUtil.getFullDateTime(calendar.getTimeInMillis() + progress * mMultiplier, is24, false));
+            eventView.setText(TimeUtil.getFullDateTime(calendar.getTimeInMillis() + progress * getMultiplier(), is24, false));
         } else {
             predictionView.setVisibility(INVISIBLE);
         }
@@ -173,8 +205,8 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         this.showPrediction = enable;
     }
 
-    public void setMultiplier(long multiplier) {
-        this.mMultiplier = multiplier;
+    private void setState(int state) {
+        this.mState = state;
         updatePrediction(repeatViewSeek.getProgress());
     }
 
@@ -186,7 +218,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         repeatViewSeek.setMax(max);
     }
 
-    public void setProgress(int progress){
+    private void setProgress(int progress){
         this.repeat = progress;
         if (progress < repeatViewSeek.getMax()) {
             repeatViewSeek.setProgress(progress);
@@ -199,17 +231,45 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         repeatTitle.setSelection(repeatTitle.getText().length());
     }
 
-    public void setProgress(long mills){
-        repeat = (int) (mills / AlarmManager.INTERVAL_DAY);
-        if (repeat < repeatViewSeek.getMax()) {
-            repeatViewSeek.setProgress(repeat);
-            updateEditField();
+    public void setRepeat(long mills){
+        if (mills == 0) {
+            setProgress(0);
+            return;
         }
-        updatePrediction(repeat);
+        if (mills % (TimeCount.DAY * 7) == 0) {
+            long progress = mills / (TimeCount.DAY * 7);
+            setProgress((int) progress);
+            setState(weeks);
+        } else if (mills % TimeCount.DAY == 0) {
+            long progress = mills / TimeCount.DAY;
+            setProgress((int) progress);
+            setState(days);
+        } else if (mills % TimeCount.HOUR == 0) {
+            long progress = mills / TimeCount.HOUR;
+            setProgress((int) progress);
+            setState(hours);
+        } else if (mills % TimeCount.MINUTE == 0) {
+            long progress = mills / TimeCount.MINUTE;
+            setProgress((int) progress);
+            setState(minutes);
+        } else if (mills % TimeCount.SECOND == 0) {
+            long progress = mills / TimeCount.SECOND;
+            setProgress((int) progress);
+            setState(seconds);
+        }
+    }
+
+    private long getMultiplier() {
+        if (mState == seconds) return TimeCount.SECOND;
+        else if (mState == minutes) return TimeCount.MINUTE;
+        else if (mState == hours) return TimeCount.HOUR;
+        else if (mState == days) return TimeCount.DAY;
+        else if (mState == weeks) return TimeCount.DAY * 7;
+        return TimeCount.DAY;
     }
 
     public long getRepeat() {
-        long rep = repeat * mMultiplier;
+        long rep = repeat * getMultiplier();
         LogUtil.d(TAG, "getRepeat: " + rep);
         return rep;
     }

@@ -129,7 +129,6 @@ public class TimerFragment extends RepeatableTypeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTimerBinding.inflate(inflater, container, false);
-        binding.repeatView.setMultiplier(TimeCount.MINUTE);
         binding.timerPickerView.setListener(binding.repeatView.getTimerListener());
         mInterface.setExclusionAction(view -> openExclusionDialog());
         if (mInterface.isExportToCalendar()) {
@@ -151,7 +150,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         Reminder reminder = mInterface.getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
-        binding.repeatView.setProgress(reminder.getRepeatInterval());
+        binding.repeatView.setRepeat(reminder.getRepeatInterval());
         binding.timerPickerView.setTimerValue(reminder.getAfter());
         this.mFrom = reminder.getFrom();
         this.mTo = reminder.getTo();
