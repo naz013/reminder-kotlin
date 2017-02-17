@@ -1,7 +1,7 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
 
-    <dimen name="drawable_circle_width">4dp</dimen>
+    <dimen name="drawable_circle_width">1dp</dimen>
 
     <dimen name="about_app_title_size">20sp</dimen>
     <dimen name="about_secondary_text_size">15sp</dimen>

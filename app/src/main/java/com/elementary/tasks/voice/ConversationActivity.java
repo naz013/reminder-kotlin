@@ -230,6 +230,8 @@ public class ConversationActivity extends ThemedActivity {
                 clearTrash();
             } else if (action == Action.DISABLE) {
                 disableReminders();
+            } else {
+                showUnsupportedMessage();
             }
         } else if (actionType == ActionType.GROUP) {
             groupAction(model);
@@ -251,8 +253,17 @@ public class ConversationActivity extends ThemedActivity {
                 showBirthdays(model.getDateTime());
             } else if (action == Action.SHOP_LISTS) {
                 showShoppingLists();
+            } else {
+                showUnsupportedMessage();
             }
+        } else {
+            showUnsupportedMessage();
         }
+    }
+
+    private void showUnsupportedMessage() {
+        stopView();
+        addResponse("This command not supported on that screen");
     }
 
     private void showShoppingLists() {
