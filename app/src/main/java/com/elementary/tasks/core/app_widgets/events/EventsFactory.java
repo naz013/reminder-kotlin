@@ -77,6 +77,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
         List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
         for (Reminder item : reminderItems) {
+            if (item.getViewType() == Reminder.SHOPPING) continue;
             int type = item.getType();
             String summary = item.getSummary();
             long eventTime = item.getDateTime();
