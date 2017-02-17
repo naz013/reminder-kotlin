@@ -24,6 +24,7 @@ import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -115,6 +116,14 @@ public class Recognize {
                         emptyTrash(true, null);
                     } else if (action == Action.DISABLE) {
                         disableAllReminders(true);
+                    } else if (action == Action.SETTINGS) {
+                        Intent startActivityIntent = new Intent(mContext, MainActivity.class);
+                        startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings);
+                        mContext.startActivity(startActivityIntent);
+                    } else if (action == Action.REPORT) {
+                        Intent startActivityIntent = new Intent(mContext, MainActivity.class);
+                        startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback);
+                        mContext.startActivity(startActivityIntent);
                     }
                 } else if (types == ActionType.NOTE) {
                     saveNote(createNote(model.getSummary()), true, true);
