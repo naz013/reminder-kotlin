@@ -93,7 +93,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (savedInstanceState != null) {
             openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current));
         } else if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
-            openScreen(getIntent().getIntExtra(Constants.INTENT_POSITION, 0));
+            prevItem = getIntent().getIntExtra(Constants.INTENT_POSITION, 0);
+            mNavigationView.setCheckedItem(prevItem);
+            openScreen(prevItem);
         } else {
             initStartFragment();
         }
