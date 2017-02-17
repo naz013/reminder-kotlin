@@ -176,7 +176,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());
         binding.repeatView.setDateTime(reminder.getEventTime());
-        binding.repeatView.setProgress(reminder.getRepeatInterval());
+        binding.repeatView.setRepeat(reminder.getRepeatInterval());
         if (reminder.getTarget() != null) {
             if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_APP)) {
                 binding.application.setChecked(true);

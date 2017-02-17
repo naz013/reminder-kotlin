@@ -577,4 +577,7 @@
     <string name="show_more">Show more</string>
     <string name="weeks">weeks</string>
     <string name="seconds">seconds</string>
+    <string name="_minutes">minutes</string>
+    <string name="_hours">hours</string>
+
 </resources>

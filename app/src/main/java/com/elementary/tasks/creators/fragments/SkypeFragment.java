@@ -175,7 +175,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());
         binding.repeatView.setDateTime(reminder.getEventTime());
-        binding.repeatView.setProgress(reminder.getRepeatInterval());
+        binding.repeatView.setRepeat(reminder.getRepeatInterval());
         int type = reminder.getType();
         if(type == Reminder.BY_SKYPE_CALL) binding.skypeCall.setChecked(true);
         else if(type == Reminder.BY_SKYPE_VIDEO) binding.skypeVideo.setChecked(true);

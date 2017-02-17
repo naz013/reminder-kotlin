@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                app:repeat_type_text="@string/minutes" />
+                app:repeat_type="minutes"/>
 
         </LinearLayout>
     </ScrollView>

@@ -10,8 +10,8 @@
 
     <string-array name="repeat_times">
         <item>@string/seconds</item>
-        <item>@string/minutes</item>
-        <item>@string/hours</item>
+        <item>@string/_minutes</item>
+        <item>@string/_hours</item>
         <item>@string/days</item>
         <item>@string/weeks</item>
     </string-array>
@@ -46,5 +46,4 @@
         <item>@string/november</item>
         <item>@string/december</item>
     </string-array>
-
 </resources>
