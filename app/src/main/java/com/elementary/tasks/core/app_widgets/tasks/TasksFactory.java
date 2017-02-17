@@ -113,7 +113,7 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         } else rView.setViewVisibility(R.id.taskDate, View.GONE);
 
         Intent fillInIntent = new Intent();
-        fillInIntent.putExtra(Constants.INTENT_ID, mData.get(i).getUuId());
+        fillInIntent.putExtra(Constants.INTENT_ID, mData.get(i).getTaskId());
         fillInIntent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT);
         rView.setOnClickFillInIntent(R.id.task, fillInIntent);
         rView.setOnClickFillInIntent(R.id.note, fillInIntent);
