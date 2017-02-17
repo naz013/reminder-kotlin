@@ -31,6 +31,7 @@ import com.elementary.tasks.core.services.SendReceiver;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
@@ -615,7 +616,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     protected int getLedColor() {
         int ledColor = mReminder.getColor();
         if (ledColor == -1) {
-            ledColor = mPrefs.getLedColor();
+            ledColor = LED.getLED(mPrefs.getLedColor());
         }
         return ledColor;
     }

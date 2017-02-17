@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.elementary.tasks.core.views.PrefsView;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding;
 import com.elementary.tasks.navigation.settings.additional.TemplatesFragment;
+
+import java.util.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -74,9 +77,14 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initMissedTimePrefs() {
-        PrefsView mMissedTimePrefs = binding.missedTimePrefs;
-        mMissedTimePrefs.setOnClickListener(mMissedTimeClick);
-        mMissedTimePrefs.setDependentView(mMissedPrefs);
+        binding.missedTimePrefs.setOnClickListener(mMissedTimeClick);
+        binding.missedTimePrefs.setDependentView(mMissedPrefs);
+        showTime();
+    }
+
+    private void showTime() {
+        binding.missedTimePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                String.valueOf(Prefs.getInstance(mContext).getMissedReminderTime())));
     }
 
     private void initMissedPrefs() {
@@ -123,7 +131,8 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.valueOf(progress));
+                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                        String.valueOf(progress)));
             }
 
             @Override
@@ -138,9 +147,12 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         });
         int time = Prefs.getInstance(mContext).getMissedReminderTime();
         b.seekBar.setProgress(time);
-        b.titleView.setText(String.valueOf(time));
+        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(time)));
         builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> Prefs.getInstance(mContext).setMissedReminderTime(b.seekBar.getProgress()));
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            Prefs.getInstance(mContext).setMissedReminderTime(b.seekBar.getProgress());
+            showTime();
+        });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
@@ -155,7 +167,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MISSED:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){

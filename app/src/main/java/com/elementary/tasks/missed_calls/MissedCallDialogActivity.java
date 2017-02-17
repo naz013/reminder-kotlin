@@ -18,6 +18,7 @@ import com.elementary.tasks.core.services.MissedCallReceiver;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -267,7 +268,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        return mPrefs.getLedColor();
+        return LED.getLED(mPrefs.getLedColor());
     }
 
     @Override

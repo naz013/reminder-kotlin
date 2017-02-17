@@ -52,6 +52,13 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
 
     private void initFirstDayPrefs() {
         binding.startDayPrefs.setOnClickListener(view -> showFirstDayDialog());
+        showFirstDay();
+    }
+
+    private void showFirstDay() {
+        String[] items = {mContext.getString(R.string.sunday),
+                mContext.getString(R.string.monday)};
+        binding.startDayPrefs.setDetailText(items[Prefs.getInstance(mContext).getStartDay()]);
     }
 
     private void showFirstDayDialog() {
@@ -63,11 +70,10 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, items);
         mItemSelect = Prefs.getInstance(mContext).getStartDay();
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
             Prefs.getInstance(mContext).setStartDay(mItemSelect);
+            showFirstDay();
             dialogInterface.dismiss();
         });
         AlertDialog dialog = builder.create();
@@ -135,12 +141,5 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
     private void initTodayColorPrefs() {
         binding.themeColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentTodayColor(), getString(R.string.today_color)));
         binding.themeColorPrefs.setViewResource(new ThemeUtil(mContext).getIndicator(Prefs.getInstance(mContext).getTodayColor()));
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-
-        }
     }
 }

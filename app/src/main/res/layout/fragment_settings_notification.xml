@@ -237,7 +237,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/snooze_time"
-                app:prefs_type="text" />
+                app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/ledPrefs"
@@ -271,7 +271,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/interval"
-                app:prefs_type="text" />
+                app:prefs_type="none" />
 
         </LinearLayout>
     </ScrollView>

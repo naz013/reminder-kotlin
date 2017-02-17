@@ -102,6 +102,14 @@ public class LED {
         return color;
     }
 
+    public static String[] getAllNames(Context context) {
+        String[] colors = new String[LED.NUM_OF_LEDS];
+        for (int i = 0; i < LED.NUM_OF_LEDS; i++) {
+            colors[i] = LED.getTitle(context, i);
+        }
+        return colors;
+    }
+
     public static String getTitle(Context context, int code) {
         String color;
         switch (code) {

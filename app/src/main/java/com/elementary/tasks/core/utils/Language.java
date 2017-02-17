@@ -6,6 +6,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -58,6 +59,34 @@ public class Language {
             default:
                 return EN;
         }
+    }
+
+    public static int getLocalePosition(String locale) {
+        int mItemSelect = 0;
+        if (locale.matches(Language.ENGLISH)) mItemSelect = 0;
+        else if (locale.matches(Language.FRENCH)) mItemSelect = 1;
+        else if (locale.matches(Language.GERMAN)) mItemSelect = 2;
+        else if (locale.matches(Language.ITALIAN)) mItemSelect = 3;
+        else if (locale.matches(Language.JAPANESE)) mItemSelect = 4;
+        else if (locale.matches(Language.KOREAN)) mItemSelect = 5;
+        else if (locale.matches(Language.POLISH)) mItemSelect = 6;
+        else if (locale.matches(Language.RUSSIAN)) mItemSelect = 7;
+        else if (locale.matches(Language.SPANISH)) mItemSelect = 8;
+        return mItemSelect;
+    }
+
+    public static List<String> getLocaleNames(Context mContext) {
+        ArrayList<String> names = new ArrayList<>();
+        names.add(mContext.getString(R.string.english));
+        names.add(mContext.getString(R.string.french));
+        names.add(mContext.getString(R.string.german));
+        names.add(mContext.getString(R.string.italian));
+        names.add(mContext.getString(R.string.japanese));
+        names.add(mContext.getString(R.string.korean));
+        names.add(mContext.getString(R.string.polish));
+        names.add(mContext.getString(R.string.russian));
+        names.add(mContext.getString(R.string.spanish));
+        return names;
     }
 
     /**
