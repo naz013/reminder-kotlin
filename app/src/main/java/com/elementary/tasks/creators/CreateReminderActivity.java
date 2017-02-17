@@ -466,8 +466,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     startActivityForResult(new Intent(this, FileExplorerActivity.class),
                             Constants.REQUEST_CODE_SELECTED_MELODY);
                 } else {
-                    Permissions.requestPermission(this, 330,
-                            Permissions.READ_EXTERNAL);
+                    Permissions.requestPermission(this, 330, Permissions.READ_EXTERNAL);
                 }
                 return true;
             case R.id.action_custom_color:
