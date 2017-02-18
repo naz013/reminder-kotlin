@@ -178,7 +178,7 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         int prefsMonth = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + mWidgetId, 0);
         RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.month_view_grid);
 
-        ThemeUtil cs = new ThemeUtil(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(mContext);
 
         int selDay = mDateTimeList.get(i).getDay();
         int selMonth = mDateTimeList.get(i).getMonth();

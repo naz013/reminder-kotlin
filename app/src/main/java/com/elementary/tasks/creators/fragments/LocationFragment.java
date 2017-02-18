@@ -213,7 +213,7 @@ public class LocationFragment extends RadiusTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderLocationBinding.inflate(inflater, container, false);
         advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
-                Prefs.getInstance(mContext).getMarkerStyle(), new ThemeUtil(mContext).isDark());
+                Prefs.getInstance(mContext).getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
         advancedMapFragment.setListener(mListener);
         advancedMapFragment.setCallback(mCallback);
         getFragmentManager().beginTransaction()
@@ -234,7 +234,7 @@ public class LocationFragment extends RadiusTypeFragment {
 
         ImageButton clearField = binding.clearButton;
         ImageButton mapButton = binding.mapButton;
-        if (new ThemeUtil(mContext).isDark()){
+        if (ThemeUtil.getInstance(mContext).isDark()){
             clearField.setImageResource(R.drawable.ic_backspace_white);
             mapButton.setImageResource(R.drawable.ic_map_white);
         } else {

@@ -147,7 +147,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
 
     private void setColor(int i){
         color = i;
-        ThemeUtil cs = new ThemeUtil(this);
+        ThemeUtil cs = ThemeUtil.getInstance(this);
         binding.appBar.setBackgroundColor(cs.getColor(cs.getCategoryColor(i)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(cs.getNoteDarkColor(i));

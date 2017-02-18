@@ -29,7 +29,7 @@ public interface RootInterface {
     int addNode(Object object);
 
     /**
-     * Get node by position
+     * Holder node by position
      *
      * @param position position of node
      * @return object
@@ -70,14 +70,14 @@ public interface RootInterface {
     void remove(int position);
 
     /**
-     * Get size of tree.
+     * Holder size of tree.
      *
      * @return number of nodes.
      */
     int size();
 
     /**
-     * Get object position in the tree.
+     * Holder object position in the tree.
      * @param object object.
      * @return current position.
      */

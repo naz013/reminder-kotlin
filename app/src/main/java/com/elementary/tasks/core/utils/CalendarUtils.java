@@ -112,7 +112,7 @@ public class CalendarUtils {
     }
 
     /**
-     * Get list of available Google calendars.
+     * Holder list of available Google calendars.
      *
      * @return List of calendar identifiers.
      */
@@ -145,7 +145,7 @@ public class CalendarUtils {
     }
 
     /**
-     * Get list of available Google calendars.
+     * Holder list of available Google calendars.
      *
      * @return List of CalendarItem's.
      */
@@ -179,7 +179,7 @@ public class CalendarUtils {
     }
 
     /**
-     * Get list of events for calendar.
+     * Holder list of events for calendar.
      *
      * @param id calendar identifier.
      * @return List of EventItem's.

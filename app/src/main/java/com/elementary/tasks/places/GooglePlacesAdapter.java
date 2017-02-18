@@ -39,7 +39,7 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
 
     public GooglePlacesAdapter(final Context context, List<GooglePlaceItem> array) {
         this.array = array;
-        isDark = new ThemeUtil(context).isDark();
+        isDark = ThemeUtil.getInstance(context).isDark();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

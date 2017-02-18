@@ -93,7 +93,7 @@ public class DateTimeView extends RelativeLayout implements
     }
 
     private void setIcons() {
-        if (new ThemeUtil(mContext).isDark()) {
+        if (ThemeUtil.getInstance(mContext).isDark()) {
             date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_white, 0, 0, 0);
             time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_white_24dp, 0, 0, 0);
         } else {

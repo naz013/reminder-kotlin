@@ -36,7 +36,7 @@ public class IconRadioButton extends AppCompatRadioButton {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        ThemeUtil themeUtil = new ThemeUtil(context);
+        ThemeUtil themeUtil = ThemeUtil.getInstance(context);
         isDark = themeUtil.isDark();
         selectedBg = getResources().getColor(themeUtil.colorAccent());
         if (Module.isMarshmallow()) {

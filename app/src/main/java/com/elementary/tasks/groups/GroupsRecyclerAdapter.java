@@ -71,6 +71,6 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupHolder> {
 
     @BindingAdapter({"loadIndicator"})
     public static void loadIndicator(View view, int color) {
-        view.setBackgroundResource(new ThemeUtil(view.getContext()).getCategoryIndicator(color));
+        view.setBackgroundResource(ThemeUtil.getInstance(view.getContext()).getCategoryIndicator(color));
     }
 }

@@ -67,7 +67,7 @@ public class InfoAdapter {
 
     private void fillInfo(BackupItemLayoutBinding binding, UserItem model) {
         if (model != null) {
-            if (new ThemeUtil(mContext).isDark()) {
+            if (ThemeUtil.getInstance(mContext).isDark()) {
                 binding.moreButton.setImageResource(R.drawable.ic_more_vert_white_24dp);
             } else {
                 binding.moreButton.setImageResource(R.drawable.ic_more_vert_black_24dp);

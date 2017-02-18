@@ -66,7 +66,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showMarkerStyle() {
-        binding.markerStylePrefs.setViewResource(new ThemeUtil(mContext).getMarkerStyle());
+        binding.markerStylePrefs.setViewResource(ThemeUtil.getInstance(mContext).getMarkerStyle());
     }
 
     private void initMapTypePrefs() {

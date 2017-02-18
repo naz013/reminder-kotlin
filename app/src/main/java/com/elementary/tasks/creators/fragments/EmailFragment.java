@@ -139,7 +139,7 @@ public class EmailFragment extends RepeatableTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderEmailBinding.inflate(inflater, container, false);
         binding.chooseFile.setOnClickListener(fileClick);
-        if (new ThemeUtil(mContext).isDark()) binding.chooseFile.setImageResource(R.drawable.ic_attach_file_white_24dp);
+        if (ThemeUtil.getInstance(mContext).isDark()) binding.chooseFile.setImageResource(R.drawable.ic_attach_file_white_24dp);
         else binding.chooseFile.setImageResource(R.drawable.ic_attach_file_black_24dp);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());

@@ -230,7 +230,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             hideFab();
         } else {
             showFab();
-            binding.fab.setOnClickListener(listener);
+            binding.fab.setOnClickListener(view -> {
+                if (mNoteView.isNoteVisible()) mNoteView.hideNoteView();
+                listener.onClick(view);
+            });
         }
     }
 

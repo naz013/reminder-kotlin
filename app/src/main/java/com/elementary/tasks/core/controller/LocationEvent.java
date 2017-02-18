@@ -63,19 +63,29 @@ class LocationEvent extends EventManager {
     }
 
     private void stopTracking(boolean isPaused) {
-        List<Reminder> list = RealmDb.getInstance().getEnabledReminders();
+        List<Reminder> list = RealmDb.getInstance().getGpsReminders();
         if (list.size() == 0) {
             mContext.stopService(new Intent(mContext, GeolocationService.class));
         }
         boolean hasActive = false;
         for (Reminder item : list) {
-            if (Reminder.isGpsType(item.getType()) && (isPaused && item.getUniqueId() != mReminder.getUniqueId())) {
-                if (!TextUtils.isEmpty(item.getEventTime())) {
-                    if (TimeCount.isCurrent(item.getEventTime())) {
-                        hasActive = !item.isNotificationShown();
+            if (isPaused) {
+                if (item.getUniqueId() == mReminder.getUniqueId()) continue;
+                if (TextUtils.isEmpty(item.getEventTime()) || !TimeCount.isCurrent(item.getEventTime())) {
+                    if (!item.isNotificationShown()) {
+                        hasActive = true;
+                        break;
                     }
                 } else {
-                    hasActive = !item.isNotificationShown();
+                    if (!item.isNotificationShown()) {
+                        hasActive = true;
+                        break;
+                    }
+                }
+            } else {
+                if (!item.isNotificationShown()) {
+                    hasActive = true;
+                    break;
                 }
             }
         }

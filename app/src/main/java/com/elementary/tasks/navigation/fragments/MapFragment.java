@@ -123,7 +123,7 @@ public class MapFragment extends BaseNavigationFragment {
 
     private void initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                Prefs.getInstance(mContext).getMarkerStyle(), new ThemeUtil(mContext).isDark());
+                Prefs.getInstance(mContext).getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
         mGoogleMap.setCallback(mReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()
@@ -137,7 +137,7 @@ public class MapFragment extends BaseNavigationFragment {
         mEventsList = bottomSheet.recyclerView;
         mEventsList.setLayoutManager(new LinearLayoutManager(mContext));
         mEmptyItem = bottomSheet.emptyItem;
-        binding.sheetLayout.setBackgroundColor(new ThemeUtil(mContext).getCardStyle());
+        binding.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
         mBottomSheetBehavior = BottomSheetBehavior.from(binding.sheetLayout);
         mBottomSheetBehavior.setBottomSheetCallback(mSheetCallback);
     }

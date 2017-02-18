@@ -206,7 +206,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void setUiTheme() {
-        int bgColor = new ThemeUtil(mContext).getBackgroundStyle();
+        int bgColor = ThemeUtil.getInstance(mContext).getBackgroundStyle();
         binding.background.setBackgroundColor(bgColor);
         binding.drawTools.setBackgroundColor(bgColor);
         binding.colorView.setBackgroundColor(bgColor);

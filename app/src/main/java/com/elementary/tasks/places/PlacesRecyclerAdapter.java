@@ -97,6 +97,6 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
 
     @BindingAdapter({"loadMarker"})
     public static void loadMarker(ImageView view, int color) {
-        view.setImageResource(new ThemeUtil(view.getContext()).getMarkerStyle(color));
+        view.setImageResource(ThemeUtil.getInstance(view.getContext()).getMarkerStyle(color));
     }
 }

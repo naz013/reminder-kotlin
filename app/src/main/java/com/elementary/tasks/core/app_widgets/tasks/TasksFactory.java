@@ -57,7 +57,7 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onCreate() {
         mData = new ArrayList<>();
-        cs = new ThemeUtil(mContext);
+        cs = ThemeUtil.getInstance(mContext);
         map = new HashMap<>();
     }
 

@@ -236,7 +236,7 @@ public class TimerFragment extends RepeatableTypeFragment {
 
     private void setId(ToggleButton... buttons) {
         int i = 100;
-        ThemeUtil cs = new ThemeUtil(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(mContext);
         this.buttons = new ArrayList<>();
         List<Integer> selected = new ArrayList<>(mHours);
         for (ToggleButton button : buttons) {

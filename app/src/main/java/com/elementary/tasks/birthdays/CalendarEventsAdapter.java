@@ -49,7 +49,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     CalendarEventsAdapter(final Context context, List<EventsItem> list) {
         if (list != null) mDataList = new ArrayList<>(list);
-        cs = new ThemeUtil(context);
+        cs = ThemeUtil.getInstance(context);
     }
 
     public final void setEventListener(final RecyclerListener listener) {

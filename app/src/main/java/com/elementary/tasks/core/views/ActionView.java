@@ -76,7 +76,7 @@ public class ActionView extends LinearLayout {
         actionBlock = (LinearLayout) findViewById(R.id.actionBlock);
         actionBlock.setVisibility(View.GONE);
         selectNumber = (ImageButton) findViewById(R.id.selectNumber);
-        if (new ThemeUtil(mContext).isDark()) {
+        if (ThemeUtil.getInstance(mContext).isDark()) {
             selectNumber.setImageResource(R.drawable.ic_contacts_white);
         } else {
             selectNumber.setImageResource(R.drawable.ic_contacts);
