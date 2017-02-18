@@ -1,12 +1,10 @@
 package com.elementary.tasks.google_tasks;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,7 @@ import android.widget.LinearLayout;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.FragmentGoogleListBinding;
+import com.elementary.tasks.navigation.fragments.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,7 +36,7 @@ import java.util.Map;
  * limitations under the License.
  */
 
-public class TaskListFragment extends Fragment {
+public class TaskListFragment extends BaseFragment {
 
     private RecyclerView currentList;
     private LinearLayout emptyItem;
@@ -85,6 +84,9 @@ public class TaskListFragment extends Fragment {
         currentList.setAdapter(customAdapter);
         currentList.setItemAnimator(new DefaultItemAnimator());
         reloadView();
+        if (mCallback != null) {
+            mCallback.onScrollChanged(currentList);
+        }
     }
 
     private void reloadView() {

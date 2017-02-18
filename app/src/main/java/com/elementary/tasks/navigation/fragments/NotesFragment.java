@@ -252,6 +252,7 @@ public class NotesFragment extends BaseNavigationFragment {
             mCallback.onTitleChange(getString(R.string.notes));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> startActivity(new Intent(mContext, ActivityCreateNote.class)));
+            mCallback.onScrollChanged(binding.recyclerView);
         }
         showData();
     }

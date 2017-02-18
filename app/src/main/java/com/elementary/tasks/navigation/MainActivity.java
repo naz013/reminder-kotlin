@@ -16,6 +16,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +29,14 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.ReturnScrollListener;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.navigation.fragments.ArchiveFragment;
@@ -41,7 +44,6 @@ import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.navigation.fragments.FeedbackFragment;
-import com.elementary.tasks.navigation.fragments.FragmentCallback;
 import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
 import com.elementary.tasks.navigation.fragments.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.HelpFragment;
@@ -72,6 +74,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private NavigationView mNavigationView;
     private Fragment fragment;
     private QuickNoteCoordinator mNoteView;
+    private ReturnScrollListener returnScrollListener;
+    private RecyclerView mPrevList;
 
     private int prevItem;
     private int beforeSettings;
@@ -248,6 +252,28 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     public void refreshMenu() {
         setMenuVisible();
+    }
+
+    @Override
+    public void onScrollChanged(RecyclerView recyclerView) {
+        if (returnScrollListener != null && mPrevList != null) {
+            mPrevList.removeOnScrollListener(returnScrollListener);
+        }
+        if (recyclerView != null) {
+            returnScrollListener = new ReturnScrollListener.Builder(ReturnScrollListener.QuickReturnViewType.FOOTER)
+                    .footer(binding.fab)
+//                    .header(binding.appBar)
+                    .minFooterTranslation(MeasureUtils.dp2px(this, 88))
+//                    .minHeaderTranslation(MeasureUtils.dp2px(this, -56))
+                    .isSnappable(true)
+                    .build();
+            if (Module.isLollipop()) {
+                recyclerView.addOnScrollListener(returnScrollListener);
+            } else {
+                recyclerView.setOnScrollListener(returnScrollListener);
+            }
+            mPrevList = recyclerView;
+        }
     }
 
     @Override

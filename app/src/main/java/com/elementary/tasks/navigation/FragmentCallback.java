@@ -1,6 +1,7 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.navigation;
 
 import android.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
@@ -35,4 +36,6 @@ public interface FragmentCallback {
     void onVoiceAction();
 
     void onMenuSelect(int menu);
+
+    void onScrollChanged(RecyclerView recyclerView);
 }

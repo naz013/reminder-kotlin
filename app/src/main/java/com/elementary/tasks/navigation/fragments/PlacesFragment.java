@@ -85,6 +85,7 @@ public class PlacesFragment extends BaseNavigationFragment {
             mCallback.onTitleChange(getString(R.string.places));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> startActivity(new Intent(mContext, CreatePlaceActivity.class)));
+            mCallback.onScrollChanged(binding.recyclerView);
         }
         showData();
     }
