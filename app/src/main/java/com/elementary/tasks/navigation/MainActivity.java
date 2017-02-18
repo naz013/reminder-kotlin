@@ -262,9 +262,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (recyclerView != null) {
             returnScrollListener = new ReturnScrollListener.Builder(ReturnScrollListener.QuickReturnViewType.FOOTER)
                     .footer(binding.fab)
-//                    .header(binding.appBar)
                     .minFooterTranslation(MeasureUtils.dp2px(this, 88))
-//                    .minHeaderTranslation(MeasureUtils.dp2px(this, -56))
                     .isSnappable(true)
                     .build();
             if (Module.isLollipop()) {
