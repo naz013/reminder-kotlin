@@ -19,11 +19,10 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -131,7 +130,7 @@ public class AddReminderActivity extends ThemedActivity {
     }
 
     private boolean isExportToCalendar() {
-        return Prefs.getInstance(this).isCalendarEnabled() || Prefs.getInstance(this).isStockCalendarEnabled();
+        return mPrefs.isCalendarEnabled() || mPrefs.isStockCalendarEnabled();
     }
 
     private void save() {
@@ -173,7 +172,7 @@ public class AddReminderActivity extends ThemedActivity {
             return;
         }
         RealmDb.getInstance().saveObject(reminder);
-        EventControl control = EventControlImpl.getController(this, reminder);
+        EventControl control = EventControlFactory.getController(this, reminder);
         if (!control.start()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;

@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Prefs;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,6 +30,7 @@ public abstract class BaseNavigationFragment extends Fragment {
 
     protected Context mContext;
     protected FragmentCallback mCallback;
+    protected Prefs mPrefs;
 
     @Override
     public void onAttach(Context context) {
@@ -52,6 +56,12 @@ public abstract class BaseNavigationFragment extends Fragment {
                 mCallback = (FragmentCallback) activity;
             } catch (ClassCastException e) {}
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPrefs = Prefs.getInstance(mContext);
     }
 
     @Override

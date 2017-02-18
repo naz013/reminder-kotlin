@@ -43,14 +43,13 @@ import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
@@ -212,7 +211,7 @@ public class ActivityCreateNote extends ThemedActivity {
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         taskField = binding.taskMessage;
-        taskField.setTextSize(Prefs.getInstance(this).getNoteTextSize() + 12);
+        taskField.setTextSize(mPrefs.getNoteTextSize() + 12);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -307,7 +306,7 @@ public class ActivityCreateNote extends ThemedActivity {
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
         mMinute = calendar.get(Calendar.MINUTE);
         remindDate.setText(TimeUtil.getDate(calendar.getTimeInMillis()));
-        remindTime.setText(TimeUtil.getTime(calendar.getTime(), Prefs.getInstance(this).is24HourFormatEnabled()));
+        remindTime.setText(TimeUtil.getTime(calendar.getTime(), mPrefs.is24HourFormatEnabled()));
     }
 
     private boolean isReminderAttached() {
@@ -365,7 +364,7 @@ public class ActivityCreateNote extends ThemedActivity {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;
         }
-        EventControl control = EventControlImpl.getController(this, mReminder);
+        EventControl control = EventControlFactory.getController(this, mReminder);
         if (!control.start()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
@@ -374,7 +373,7 @@ public class ActivityCreateNote extends ThemedActivity {
     private void removeNoteFromReminder(String key) {
         mReminder = RealmDb.getInstance().getReminderByNote(key);
         if (mReminder != null) {
-            EventControl control = EventControlImpl.getController(this, mReminder);
+            EventControl control = EventControlFactory.getController(this, mReminder);
             control.stop();
             RealmDb.getInstance().deleteReminder(mReminder.getUuId());
         }
@@ -620,8 +619,7 @@ public class ActivityCreateNote extends ThemedActivity {
     };
 
     protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute,
-                Prefs.getInstance(this).is24HourFormatEnabled());
+        return new TimePickerDialog(this, myCallBack, mHour, mMinute, mPrefs.is24HourFormatEnabled());
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
@@ -631,8 +629,7 @@ public class ActivityCreateNote extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            remindTime.setText(TimeUtil.getTime(c.getTime(),
-                    Prefs.getInstance(ActivityCreateNote.this).is24HourFormatEnabled()));
+            remindTime.setText(TimeUtil.getTime(c.getTime(), mPrefs.is24HourFormatEnabled()));
         }
     };
 

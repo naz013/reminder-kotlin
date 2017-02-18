@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.calendar;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,12 +21,12 @@ import com.elementary.tasks.core.utils.Prefs;
 public class FragmentRemindersColor extends FragmentStyle {
     @Override
     protected int getSelectedColor() {
-        return Prefs.getInstance(mContext).getReminderColor();
+        return mPrefs.getReminderColor();
     }
 
     @Override
     protected void saveToPrefs(int code) {
-        Prefs.getInstance(mContext).setReminderColor(code);
+        mPrefs.setReminderColor(code);
     }
 
     @Override

@@ -4,7 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -33,7 +33,7 @@ public class TasksService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlImpl.getController(getApplicationContext(), item);
+            EventControl control = EventControlFactory.getController(getApplicationContext(), item);
             control.start();
         }
         stopSelf();

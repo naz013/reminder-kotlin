@@ -17,7 +17,7 @@ import com.dropbox.client2.exception.DropboxUnlinkedException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
@@ -541,7 +541,7 @@ public class Dropbox {
                     Reminder reminder = backupTool.getReminder(localFile.toString(), null);
                     if (reminder.isRemoved() || !reminder.isActive()) continue;
                     realmDb.saveObject(reminder);
-                    EventControl control = EventControlImpl.getController(mContext, reminder);
+                    EventControl control = EventControlFactory.getController(mContext, reminder);
                     control.next();
                     if (deleteFile) {
                         if (localFile.exists()) {

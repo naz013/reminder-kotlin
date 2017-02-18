@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotesLayoutBinding;
 
@@ -54,12 +53,12 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTextSize() {
-        binding.textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", (Prefs.getInstance(mContext).getNoteTextSize() + 12)));
+        binding.textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", (mPrefs.getNoteTextSize() + 12)));
     }
 
     private void initNoteReminderPrefs() {
         binding.noteReminderPrefs.setOnClickListener(mNoteReminderClick);
-        binding.noteReminderPrefs.setChecked(Prefs.getInstance(mContext).isNoteReminderEnabled());
+        binding.noteReminderPrefs.setChecked(mPrefs.isNoteReminderEnabled());
     }
 
     private void initNoteTime() {
@@ -70,7 +69,7 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
     private void showNoteTime() {
         binding.noteReminderTime.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(Prefs.getInstance(mContext).getNoteReminderTime())));
+                String.valueOf(mPrefs.getNoteReminderTime())));
     }
 
     @Override
@@ -85,7 +84,7 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     private void changeNoteReminder() {
         boolean isChecked = binding.noteReminderPrefs.isChecked();
         binding.noteReminderPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setNoteReminderEnabled(!isChecked);
+        mPrefs.setNoteReminderEnabled(!isChecked);
     }
 
     private void showTextSizePickerDialog(){
@@ -109,12 +108,12 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int textSize = Prefs.getInstance(mContext).getNoteTextSize();
+        int textSize = mPrefs.getNoteTextSize();
         b.seekBar.setProgress(textSize);
         b.titleView.setText(String.format(Locale.getDefault(), "%d pt", (textSize + 12)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setNoteTextSize(b.seekBar.getProgress());
+            mPrefs.setNoteTextSize(b.seekBar.getProgress());
             showTextSize();
             dialogInterface.dismiss();
         });
@@ -144,13 +143,13 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int time = Prefs.getInstance(mContext).getNoteReminderTime();
+        int time = mPrefs.getNoteReminderTime();
         b.seekBar.setProgress(time);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 String.valueOf(time)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setNoteReminderTime(b.seekBar.getProgress());
+            mPrefs.setNoteReminderTime(b.seekBar.getProgress());
             showNoteTime();
             dialogInterface.dismiss();
         });

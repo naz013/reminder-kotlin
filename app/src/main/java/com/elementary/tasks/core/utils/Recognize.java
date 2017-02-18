@@ -19,7 +19,7 @@ import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
@@ -152,7 +152,7 @@ public class Recognize {
 
     public void disableAllReminders(boolean showToast) {
         for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlImpl.getController(mContext, reminder);
+            EventControl control = EventControlFactory.getController(mContext, reminder);
             control.stop();
         }
         if (showToast) {
@@ -161,7 +161,7 @@ public class Recognize {
     }
 
     private void deleteReminder(Reminder reminder) {
-        EventControl control = EventControlImpl.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(mContext, reminder);
         control.stop();
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
         CalendarUtils.deleteEvents(mContext, reminder.getUuId());
@@ -183,7 +183,7 @@ public class Recognize {
 
     private void saveReminder(Model model, boolean widget) {
         Reminder reminder = createReminder(model);
-        EventControl control = EventControlImpl.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(mContext, reminder);
         control.start();
         if (widget) {
             mContext.startActivity(new Intent(mContext, VoiceResultDialog.class)
@@ -271,7 +271,7 @@ public class Recognize {
         mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
         RealmDb.getInstance().saveObject(mReminder);
-        EventControl control = EventControlImpl.getController(mContext, mReminder);
+        EventControl control = EventControlFactory.getController(mContext, mReminder);
         control.start();
         return mReminder;
     }

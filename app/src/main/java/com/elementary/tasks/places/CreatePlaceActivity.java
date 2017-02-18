@@ -17,7 +17,6 @@ import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding;
 import com.google.android.gms.maps.model.LatLng;
@@ -61,7 +60,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
+                mPrefs.getMarkerStyle(), themeUtil.isDark());
         mGoogleMap.setListener(this);
         mGoogleMap.setCallback(this);
 
@@ -116,7 +115,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
                 mItem.setLat(latitude);
                 mItem.setLng(longitude);
             } else {
-                mItem = new PlaceItem(name, UUID.randomUUID().toString(), latitude, longitude, 0, Prefs.getInstance(this).getRadius());
+                mItem = new PlaceItem(name, UUID.randomUUID().toString(), latitude, longitude, 0, mPrefs.getRadius());
             }
             RealmDb.getInstance().saveObject(mItem);
             finish();

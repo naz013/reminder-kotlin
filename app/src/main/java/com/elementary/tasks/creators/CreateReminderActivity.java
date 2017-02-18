@@ -32,7 +32,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -40,7 +40,6 @@ import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -125,7 +124,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private AdapterView.OnItemSelectedListener mOnTypeSelectListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Prefs.getInstance(CreateReminderActivity.this).setLastUsedReminder(position);
+            mPrefs.setLastUsedReminder(position);
             switch (position) {
                 case DATE:
                     replaceFragment(new DateFragment());
@@ -222,7 +221,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private EventControl getControl() {
-        return EventControlImpl.getController(this, mReminder);
+        return EventControlFactory.getController(this, mReminder);
     }
 
     private void editReminder() {
@@ -344,7 +343,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         TitleNavigationAdapter adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(mOnTypeSelectListener);
-        int lastPos = Prefs.getInstance(this).getLastUsedReminder();
+        int lastPos = mPrefs.getLastUsedReminder();
         if (lastPos >= navSpinner.size()) lastPos = 0;
         spinner.setSelection(lastPos);
     }
@@ -662,8 +661,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     public void showShowcase() {
-        if (!Prefs.getInstance(this).isShowcase(SHOWCASE)) {
-            Prefs.getInstance(this).setShowcase(SHOWCASE, true);
+        if (!mPrefs.isShowcase(SHOWCASE)) {
+            mPrefs.setShowcase(SHOWCASE, true);
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
             config.setMaskColor(themeUtil.getColor(themeUtil.colorAccent()));
@@ -781,7 +780,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public boolean isExportToCalendar() {
-        return Prefs.getInstance(this).isCalendarEnabled() || Prefs.getInstance(this).isStockCalendarEnabled();
+        return mPrefs.isCalendarEnabled() || mPrefs.isStockCalendarEnabled();
     }
 
     @Override

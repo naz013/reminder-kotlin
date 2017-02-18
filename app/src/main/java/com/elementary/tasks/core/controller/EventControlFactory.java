@@ -21,9 +21,9 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class EventControlImpl {
+public class EventControlFactory {
 
-    private static final String TAG = "EventControlImpl";
+    private static final String TAG = "EventControlFactory";
 
     public static EventControl getController(Context context, Reminder reminder) {
         EventControl control;

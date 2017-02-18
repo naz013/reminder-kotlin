@@ -11,7 +11,7 @@ import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -416,7 +416,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
             RealmDb.getInstance().saveObject(reminder);
-            EventControl control = EventControlImpl.getController(mContext, reminder);
+            EventControl control = EventControlFactory.getController(mContext, reminder);
             control.start();
             CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
             RealmDb.getInstance().saveObject(event);

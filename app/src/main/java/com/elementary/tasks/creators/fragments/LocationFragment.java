@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
@@ -180,7 +180,7 @@ public class LocationFragment extends RadiusTypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        EventControl control = EventControlImpl.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(mContext, reminder);
         control.start();
         return true;
     }

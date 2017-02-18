@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 
+import com.elementary.tasks.core.interfaces.LCAMListener;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>

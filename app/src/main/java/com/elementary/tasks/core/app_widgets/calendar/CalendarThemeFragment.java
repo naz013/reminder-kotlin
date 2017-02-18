@@ -52,7 +52,6 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     private int pageNumber;
     private ArrayList<CalendarTheme> list;
 
-    private FragmentCalendarWidgetPreviewBinding binding;
     private ThemeUtil themeUtil;
 
     public static CalendarThemeFragment newInstance(int page, ArrayList<CalendarTheme> list) {
@@ -74,7 +73,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCalendarWidgetPreviewBinding.inflate(inflater, container, false);
+        FragmentCalendarWidgetPreviewBinding binding = FragmentCalendarWidgetPreviewBinding.inflate(inflater, container, false);
         themeUtil = ThemeUtil.getInstance(mContext);
         CalendarTheme calendarTheme = list.get(pageNumber);
         int windowColor = calendarTheme.getWindowColor();
@@ -136,7 +135,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         LayoutInflater inflater;
         int textColor;
 
-        public WeekdayAdapter(Context context, int textColor){
+        WeekdayAdapter(Context context, int textColor){
             this.context = context;
             this.textColor = textColor;
             inflater = LayoutInflater.from(context);
@@ -147,7 +146,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             // 17 Feb 2013 is Sunday
             DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
             DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
-            if (Prefs.getInstance(context).getStartDay() == 1){
+            if (mPrefs.getStartDay() == 1){
                 nextDay = nextDay.plusDays(1);
             }
             for (int i = 0; i < 7; i++) {
@@ -207,7 +206,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         LayoutInflater inflater;
         int textColor, widgetBgColor, cMark, bMark, rMark;
 
-        public MonthGridAdapter(Context context, int[] resources){
+        MonthGridAdapter(Context context, int[] resources){
             this.context = context;
             this.textColor = resources[0];
             this.widgetBgColor = resources[1];

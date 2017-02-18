@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
@@ -509,7 +509,7 @@ public class Google {
                     Reminder reminder = backupTool.getReminder(file.toString(), null);
                     if (reminder.isRemoved() || !reminder.isActive()) return;
                     realmDb.saveObject(reminder);
-                    EventControl control = EventControlImpl.getController(context, reminder);
+                    EventControl control = EventControlFactory.getController(context, reminder);
                     control.next();
                 } catch (IOException e) {
                     LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());

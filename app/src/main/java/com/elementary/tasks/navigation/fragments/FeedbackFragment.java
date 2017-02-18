@@ -39,10 +39,9 @@ public class FeedbackFragment extends BaseWebViewFragment {
     @Override
     protected void setExtraParams(WebView webView) {
         super.setExtraParams(webView);
-        webView.getSettings().setJavaScriptEnabled(true); // enable javascript
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-
             }
 
             @Override

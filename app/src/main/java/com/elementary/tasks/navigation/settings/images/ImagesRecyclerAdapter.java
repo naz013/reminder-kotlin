@@ -45,11 +45,13 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     private List<ImageItem> mDataList;
     private int prevSelected = -1;
     private SelectListener mListener;
+    private Prefs mPrefs;
 
     ImagesRecyclerAdapter(Context context, List<ImageItem> dataItemList, SelectListener listener) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(dataItemList);
         this.mListener = listener;
+        this.mPrefs = Prefs.getInstance(context);
     }
 
     void deselectLast() {
@@ -113,8 +115,8 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
             mDataList.get(prevSelected).setSelected(false);
             notifyItemChanged(prevSelected);
             prevSelected = -1;
-            Prefs.getInstance(mContext).setImageId(-1);
-            Prefs.getInstance(mContext).setImagePath("");
+            mPrefs.setImageId(-1);
+            mPrefs.setImagePath("");
             if (mListener != null) mListener.onImageSelected(false);
         } else {
             if (prevSelected != -1) {
@@ -128,8 +130,8 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
             prevSelected = position;
             mDataList.get(position).setSelected(true);
             ImageItem item = mDataList.get(position);
-            Prefs.getInstance(mContext).setImageId(position);
-            Prefs.getInstance(mContext).setImagePath(RetrofitBuilder.getImageLink(item.getId()));
+            mPrefs.setImageId(position);
+            mPrefs.setImagePath(RetrofitBuilder.getImageLink(item.getId()));
             notifyItemChanged(position);
             if (mListener != null) mListener.onImageSelected(true);
         }

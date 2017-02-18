@@ -19,7 +19,6 @@ import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsExportBinding;
@@ -111,9 +110,11 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
                 deleteRecursive(child);
+            }
+        }
         fileOrDirectory.delete();
     }
 
@@ -154,15 +155,15 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private void saveIntervalPrefs() {
         if (mItemSelect == 0) {
-            Prefs.getInstance(mContext).setAutoBackupInterval(1);
+            mPrefs.setAutoBackupInterval(1);
         } else if (mItemSelect == 1) {
-            Prefs.getInstance(mContext).setAutoBackupInterval(6);
+            mPrefs.setAutoBackupInterval(6);
         } else if (mItemSelect == 2) {
-            Prefs.getInstance(mContext).setAutoBackupInterval(12);
+            mPrefs.setAutoBackupInterval(12);
         } else if (mItemSelect == 3) {
-            Prefs.getInstance(mContext).setAutoBackupInterval(24);
+            mPrefs.setAutoBackupInterval(24);
         } else if (mItemSelect == 4) {
-            Prefs.getInstance(mContext).setAutoBackupInterval(48);
+            mPrefs.setAutoBackupInterval(48);
         }
         new AlarmReceiver().enableAutoSync(mContext);
         showBackupInterval();
@@ -170,7 +171,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private int getIntervalPosition() {
         int position;
-        int interval = Prefs.getInstance(mContext).getAutoBackupInterval();
+        int interval = mPrefs.getAutoBackupInterval();
         switch (interval){
             case 1:
                 position = 0;
@@ -196,14 +197,14 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initAutoBackupPrefs() {
-        binding.autoBackupPrefs.setChecked(Prefs.getInstance(mContext).isAutoBackupEnabled());
+        binding.autoBackupPrefs.setChecked(mPrefs.isAutoBackupEnabled());
         binding.autoBackupPrefs.setOnClickListener(view -> changeAutoBackupPrefs());
     }
 
     private void changeAutoBackupPrefs() {
         boolean isChecked = binding.autoBackupPrefs.isChecked();
         binding.autoBackupPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setAutoBackupEnabled(!isChecked);
+        mPrefs.setAutoBackupEnabled(!isChecked);
         if (binding.autoBackupPrefs.isChecked()) {
             new AlarmReceiver().enableAutoSync(mContext);
         } else {
@@ -212,25 +213,25 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initSettingsBackupPrefs() {
-        binding.syncSettingsPrefs.setChecked(Prefs.getInstance(mContext).isSettingsBackupEnabled());
+        binding.syncSettingsPrefs.setChecked(mPrefs.isSettingsBackupEnabled());
         binding.syncSettingsPrefs.setOnClickListener(view -> changeSettingsBackupPrefs());
     }
 
     private void changeSettingsBackupPrefs() {
         boolean isChecked = binding.syncSettingsPrefs.isChecked();
         binding.syncSettingsPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setSettingsBackupEnabled(!isChecked);
+        mPrefs.setSettingsBackupEnabled(!isChecked);
     }
 
     private void initExportToStockPrefs() {
-        binding.exportToStockPrefs.setChecked(Prefs.getInstance(mContext).isStockCalendarEnabled());
+        binding.exportToStockPrefs.setChecked(mPrefs.isStockCalendarEnabled());
         binding.exportToStockPrefs.setOnClickListener(view -> changeExportToStockPrefs());
     }
 
     private void changeExportToStockPrefs() {
         boolean isChecked = binding.exportToStockPrefs.isChecked();
         binding.exportToStockPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setStockCalendarEnabled(!isChecked);
+        mPrefs.setStockCalendarEnabled(!isChecked);
     }
 
     private void initSelectCalendarPrefs() {
@@ -246,7 +247,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private void showEventDuration() {
         binding.eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(Prefs.getInstance(mContext).getCalendarEventDuration())));
+                String.valueOf(mPrefs.getCalendarEventDuration())));
     }
 
     private void showEventDurationDialog() {
@@ -270,12 +271,12 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int duration = Prefs.getInstance(mContext).getCalendarEventDuration();
+        int duration = mPrefs.getCalendarEventDuration();
         b.seekBar.setProgress(duration);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(duration)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setCalendarEventDuration(b.seekBar.getProgress());
+            mPrefs.setCalendarEventDuration(b.seekBar.getProgress());
             showEventDuration();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -289,9 +290,9 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = binding.exportToCalendarPrefs.isChecked();
         binding.exportToCalendarPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setCalendarEnabled(!isChecked);
+        mPrefs.setCalendarEnabled(!isChecked);
         if (binding.exportToCalendarPrefs.isChecked() && !showSelectCalendarDialog()) {
-            Prefs.getInstance(mContext).setCalendarEnabled(false);
+            mPrefs.setCalendarEnabled(false);
             binding.exportToCalendarPrefs.setChecked(false);
         }
     }
@@ -321,7 +322,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             }
         }, getCurrentPosition(), (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            Prefs.getInstance(mContext).setCalendarId(mDataList.get(i).getId());
+            mPrefs.setCalendarId(mDataList.get(i).getId());
         });
         builder.create().show();
         return true;
@@ -329,7 +330,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private int getCurrentPosition() {
         int position = 0;
-        int id = Prefs.getInstance(mContext).getCalendarId();
+        int id = mPrefs.getCalendarId();
         for (int i = 0; i < mDataList.size(); i++) {
             CalendarUtils.CalendarItem item = mDataList.get(i);
             if (item.getId() == id) {
@@ -342,7 +343,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private void initExportToCalendarPrefs() {
         binding.exportToCalendarPrefs.setOnClickListener(mCalendarClick);
-        binding.exportToCalendarPrefs.setChecked(Prefs.getInstance(mContext).isCalendarEnabled());
+        binding.exportToCalendarPrefs.setChecked(mPrefs.isCalendarEnabled());
     }
 
     @Override

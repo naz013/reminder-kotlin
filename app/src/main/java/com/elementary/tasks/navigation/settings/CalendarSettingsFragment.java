@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentCalendarSettingsBinding;
 import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor;
@@ -58,7 +57,7 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
     private void showFirstDay() {
         String[] items = {mContext.getString(R.string.sunday),
                 mContext.getString(R.string.monday)};
-        binding.startDayPrefs.setDetailText(items[Prefs.getInstance(mContext).getStartDay()]);
+        binding.startDayPrefs.setDetailText(items[mPrefs.getStartDay()]);
     }
 
     private void showFirstDayDialog() {
@@ -69,10 +68,10 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
                 mContext.getString(R.string.monday)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, items);
-        mItemSelect = Prefs.getInstance(mContext).getStartDay();
+        mItemSelect = mPrefs.getStartDay();
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setStartDay(mItemSelect);
+            mPrefs.setStartDay(mItemSelect);
             showFirstDay();
             dialogInterface.dismiss();
         });
@@ -85,40 +84,40 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
     private void initRemindersColorPrefs() {
         binding.reminderColorPrefs.setDependentView(binding.reminderInCalendarPrefs);
         binding.reminderColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentRemindersColor(), getString(R.string.reminders_color)));
-        binding.reminderColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getReminderColor()));
+        binding.reminderColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(mPrefs.getReminderColor()));
     }
 
     private void initRemindersPrefs() {
-        binding.reminderInCalendarPrefs.setChecked(Prefs.getInstance(mContext).isRemindersInCalendarEnabled());
+        binding.reminderInCalendarPrefs.setChecked(mPrefs.isRemindersInCalendarEnabled());
         binding.reminderInCalendarPrefs.setOnClickListener(view -> changeRemindersPrefs());
     }
 
     private void changeRemindersPrefs() {
         boolean isChecked = binding.reminderInCalendarPrefs.isChecked();
         binding.reminderInCalendarPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setRemindersInCalendarEnabled(!isChecked);
+        mPrefs.setRemindersInCalendarEnabled(!isChecked);
     }
 
     private void initFuturePrefs() {
-        binding.featureRemindersPrefs.setChecked(Prefs.getInstance(mContext).isFutureEventEnabled());
+        binding.featureRemindersPrefs.setChecked(mPrefs.isFutureEventEnabled());
         binding.featureRemindersPrefs.setOnClickListener(view -> changeFuturePrefs());
     }
 
     private void changeFuturePrefs() {
         boolean isChecked = binding.featureRemindersPrefs.isChecked();
         binding.featureRemindersPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setFutureEventEnabled(!isChecked);
+        mPrefs.setFutureEventEnabled(!isChecked);
     }
 
     private void initBackgroundPrefs() {
-        binding.bgImagePrefs.setChecked(Prefs.getInstance(mContext).isCalendarImagesEnabled());
+        binding.bgImagePrefs.setChecked(mPrefs.isCalendarImagesEnabled());
         binding.bgImagePrefs.setOnClickListener(view -> changeBackgroundPrefs());
     }
 
     private void changeBackgroundPrefs() {
         boolean isChecked = binding.bgImagePrefs.isChecked();
         binding.bgImagePrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setCalendarImagesEnabled(!isChecked);
+        mPrefs.setCalendarImagesEnabled(!isChecked);
     }
 
     @Override
@@ -135,11 +134,11 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
 
     private void initBirthdaysColorPrefs() {
         binding.selectedColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentBirthdaysColor(), getString(R.string.birthdays_color)));
-        binding.selectedColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getBirthdayColor()));
+        binding.selectedColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(mPrefs.getBirthdayColor()));
     }
 
     private void initTodayColorPrefs() {
         binding.themeColorPrefs.setOnClickListener(view -> replaceFragment(new FragmentTodayColor(), getString(R.string.today_color)));
-        binding.themeColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getTodayColor()));
+        binding.themeColorPrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(mPrefs.getTodayColor()));
     }
 }

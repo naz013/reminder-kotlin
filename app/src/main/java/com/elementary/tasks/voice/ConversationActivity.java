@@ -22,13 +22,12 @@ import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
@@ -282,7 +281,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showBirthdays(long dateTime) {
-        long time = TimeUtil.getBirthdayTime(Prefs.getInstance(this).getBirthdayTime());
+        long time = TimeUtil.getBirthdayTime(mPrefs.getBirthdayTime());
         Container<BirthdayItem> items = new Container<>(DataProvider.getBirthdays(dateTime, time));
         if (items.isEmpty()) {
             addResponse("No birthdays found");
@@ -413,7 +412,7 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                EventControl control = EventControlImpl.getController(ConversationActivity.this, reminder);
+                EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
                 control.start();
                 addResponse("Reminder saved");
                 mAskAction = null;
@@ -435,7 +434,7 @@ public class ConversationActivity extends ThemedActivity {
             public void onYes() {
                 recognize.saveNote(noteItem, false, false);
                 addResponse("Note saved");
-                if (Prefs.getInstance(ConversationActivity.this).isNoteReminderEnabled()) {
+                if (mPrefs.isNoteReminderEnabled()) {
                     new Handler().postDelayed(() -> askQuickReminder(noteItem), 1500);
                 } else {
                     mAskAction = null;
@@ -460,7 +459,7 @@ public class ConversationActivity extends ThemedActivity {
                 addResponse("Reminder saved");
                 if (model != null && model.getType() == ActionType.REMINDER) {
                     Reminder reminder = recognize.createReminder(model);
-                    EventControl control = EventControlImpl.getController(ConversationActivity.this, reminder);
+                    EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
                     control.start();
                     addObjectResponse(new Reply(Reply.REMINDER, reminder));
                 } else {
@@ -537,7 +536,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void initRecognizer() {
         Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(this).getVoiceLocale()));
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(mPrefs.getVoiceLocale()));
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.getPackageName());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);

@@ -37,7 +37,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -85,7 +84,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private static final int MY_DATA_CHECK_CODE = 111;
 
     protected Sound mSound;
-    protected Prefs mPrefs;
     protected Tracker mTracker;
     protected GoogleApiClient mGoogleApiClient;
     private TextToSpeech tts;
@@ -225,7 +223,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         mSound = new Sound(this);
-        mPrefs = Prefs.getInstance(this);
         if (mPrefs.isWearEnabled()) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Wearable.API)

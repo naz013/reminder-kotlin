@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -168,7 +168,7 @@ public class EventsListFragment extends Fragment implements RecyclerListener {
                     break;
                 case 3:
                     if (RealmDb.getInstance().moveToTrash(reminder.getUuId())) {
-                        EventControl control = EventControlImpl.getController(mContext, reminder.setRemoved(true));
+                        EventControl control = EventControlFactory.getController(mContext, reminder.setRemoved(true));
                         control.stop();
                         loadAdapter();
                     }

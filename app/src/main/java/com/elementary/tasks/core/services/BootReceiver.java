@@ -32,26 +32,27 @@ public class BootReceiver extends BroadcastReceiver {
         LogUtil.d(TAG, "onReceive: ");
         context.startService(new Intent(context, TasksService.class));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
-        if (Prefs.getInstance(context).isBirthdayReminderEnabled()){
+        Prefs prefs = Prefs.getInstance(context);
+        if (prefs.isBirthdayReminderEnabled()){
             alarmReceiver.enableBirthdayAlarm(context);
         }
-        if (Prefs.getInstance(context).isSbNotificationEnabled()){
+        if (prefs.isSbNotificationEnabled()){
             context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
-        if (Prefs.getInstance(context).isContactAutoCheckEnabled()){
+        if (prefs.isContactAutoCheckEnabled()){
             alarmReceiver.enableBirthdayCheckAlarm(context);
         }
-        if (Prefs.getInstance(context).isAutoEventsCheckEnabled()){
+        if (prefs.isAutoEventsCheckEnabled()){
             alarmReceiver.enableEventCheck(context);
         }
-        if (Prefs.getInstance(context).isAutoBackupEnabled()){
+        if (prefs.isAutoBackupEnabled()){
             alarmReceiver.enableAutoSync(context);
         }
-        if (Prefs.getInstance(context).isBirthdayPermanentEnabled()){
+        if (prefs.isBirthdayPermanentEnabled()){
             alarmReceiver.enableBirthdayPermanentAlarm(context);
             context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
         }
-//        if (Prefs.getInstance(context).isWearEnabled()) {
+//        if (prefs.isWearEnabled()) {
 //            context.startService(new Intent(context, WearService.class));
 //        }
     }

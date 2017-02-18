@@ -131,13 +131,13 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int repeatTime = Prefs.getInstance(mContext).getNotificationRepeatTime();
+        int repeatTime = mPrefs.getNotificationRepeatTime();
         b.seekBar.setProgress(repeatTime);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 String.valueOf(repeatTime)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setNotificationRepeatTime(b.seekBar.getProgress());
+            mPrefs.setNotificationRepeatTime(b.seekBar.getProgress());
             showRepeatTime();
             initRepeatTimePrefs();
         });
@@ -146,7 +146,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initRepeatTimePrefs() {
-        binding.repeatIntervalPrefs.setValue(Prefs.getInstance(mContext).getNotificationRepeatTime());
+        binding.repeatIntervalPrefs.setValue(mPrefs.getNotificationRepeatTime());
         binding.repeatIntervalPrefs.setOnClickListener(mRepeatTimeClick);
         binding.repeatIntervalPrefs.setDependentView(binding.repeatNotificationOptionPrefs);
         showRepeatTime();
@@ -154,18 +154,18 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private void showRepeatTime() {
         binding.repeatIntervalPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(Prefs.getInstance(mContext).getNotificationRepeatTime())));
+                String.valueOf(mPrefs.getNotificationRepeatTime())));
     }
 
     private void changeRepeatPrefs() {
         boolean isChecked = binding.repeatNotificationOptionPrefs.isChecked();
         binding.repeatNotificationOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setNotificationRepeatEnabled(!isChecked);
+        mPrefs.setNotificationRepeatEnabled(!isChecked);
     }
 
     private void initRepeatPrefs() {
         binding.repeatNotificationOptionPrefs.setOnClickListener(mRepeatClick);
-        binding.repeatNotificationOptionPrefs.setChecked(Prefs.getInstance(mContext).isNotificationRepeatEnabled());
+        binding.repeatNotificationOptionPrefs.setChecked(mPrefs.isNotificationRepeatEnabled());
     }
 
     private void showLedColorDialog() {
@@ -175,10 +175,10 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         String[] colors = LED.getAllNames(mContext);
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, colors);
-        mItemSelect = Prefs.getInstance(mContext).getLedColor();
+        mItemSelect = mPrefs.getLedColor();
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setLedColor(mItemSelect);
+            mPrefs.setLedColor(mItemSelect);
             showLedColor();
             dialog.dismiss();
         });
@@ -189,7 +189,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLedColor() {
-        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(mContext, Prefs.getInstance(mContext).getLedColor()));
+        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(mContext, mPrefs.getLedColor()));
     }
 
     private void initLedColorPrefs() {
@@ -201,23 +201,23 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void changeLedPrefs() {
         boolean isChecked = binding.ledPrefs.isChecked();
         binding.ledPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setLedEnabled(!isChecked);
+        mPrefs.setLedEnabled(!isChecked);
     }
 
     private void initLedPrefs() {
         binding.ledPrefs.setOnClickListener(mLedClick);
-        binding.ledPrefs.setChecked(Prefs.getInstance(mContext).isLedEnabled());
+        binding.ledPrefs.setChecked(mPrefs.isLedEnabled());
     }
 
     private void initSnoozeTimePrefs() {
         binding.delayForPrefs.setOnClickListener(mSnoozeClick);
-        binding.delayForPrefs.setValue(Prefs.getInstance(mContext).getSnoozeTime());
+        binding.delayForPrefs.setValue(mPrefs.getSnoozeTime());
         showSnooze();
     }
 
     private void showSnooze() {
         binding.delayForPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(Prefs.getInstance(mContext).getSnoozeTime())));
+                String.valueOf(mPrefs.getSnoozeTime())));
     }
 
     private void showSnoozeDialog() {
@@ -242,13 +242,13 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int snoozeTime = Prefs.getInstance(mContext).getSnoozeTime();
+        int snoozeTime = mPrefs.getSnoozeTime();
         b.seekBar.setProgress(snoozeTime);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 String.valueOf(snoozeTime)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setSnoozeTime(b.seekBar.getProgress());
+            mPrefs.setSnoozeTime(b.seekBar.getProgress());
             showSnooze();
             initSnoozeTimePrefs();
         });
@@ -259,63 +259,63 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void changeAutoCallPrefs() {
         boolean isChecked = binding.autoCallPrefs.isChecked();
         binding.autoCallPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setAutoCallEnabled(!isChecked);
+        mPrefs.setAutoCallEnabled(!isChecked);
     }
 
     private void initAutoCallPrefs() {
         binding.autoCallPrefs.setOnClickListener(mAutoCallClick);
-        binding.autoCallPrefs.setChecked(Prefs.getInstance(mContext).isAutoCallEnabled());
+        binding.autoCallPrefs.setChecked(mPrefs.isAutoCallEnabled());
     }
 
     private void changeAutoLaunchPrefs() {
         boolean isChecked = binding.autoLaunchPrefs.isChecked();
         binding.autoLaunchPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setAutoLaunchEnabled(!isChecked);
+        mPrefs.setAutoLaunchEnabled(!isChecked);
     }
 
     private void initAutoLaunchPrefs() {
         binding.autoLaunchPrefs.setOnClickListener(mAutoLaunchClick);
-        binding.autoLaunchPrefs.setChecked(Prefs.getInstance(mContext).isAutoLaunchEnabled());
+        binding.autoLaunchPrefs.setChecked(mPrefs.isAutoLaunchEnabled());
     }
 
     private void changeAutoSmsPrefs() {
         boolean isChecked = binding.silentSMSOptionPrefs.isChecked();
         binding.silentSMSOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setAutoSmsEnabled(!isChecked);
+        mPrefs.setAutoSmsEnabled(!isChecked);
     }
 
     private void initAutoSmsPrefs() {
         binding.silentSMSOptionPrefs.setOnClickListener(mAutoSmsClick);
-        binding.silentSMSOptionPrefs.setChecked(Prefs.getInstance(mContext).isAutoSmsEnabled());
+        binding.silentSMSOptionPrefs.setChecked(mPrefs.isAutoSmsEnabled());
     }
 
     private void changeUnlockPrefs() {
         boolean isChecked = binding.unlockScreenPrefs.isChecked();
         binding.unlockScreenPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setDeviceUnlockEnabled(!isChecked);
+        mPrefs.setDeviceUnlockEnabled(!isChecked);
     }
 
     private void initUnlockPrefs() {
         binding.unlockScreenPrefs.setOnClickListener(mUnlockClick);
-        binding.unlockScreenPrefs.setChecked(Prefs.getInstance(mContext).isDeviceUnlockEnabled());
+        binding.unlockScreenPrefs.setChecked(mPrefs.isDeviceUnlockEnabled());
     }
 
     private void changeWakePrefs() {
         boolean isChecked = binding.wakeScreenOptionPrefs.isChecked();
         binding.wakeScreenOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setDeviceAwakeEnabled(!isChecked);
+        mPrefs.setDeviceAwakeEnabled(!isChecked);
     }
 
     private void initWakePrefs() {
         binding.wakeScreenOptionPrefs.setOnClickListener(mWakeClick);
-        binding.wakeScreenOptionPrefs.setChecked(Prefs.getInstance(mContext).isDeviceAwakeEnabled());
+        binding.wakeScreenOptionPrefs.setChecked(mPrefs.isDeviceAwakeEnabled());
     }
 
     private void showTtsLocaleDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(false);
         builder.setTitle(mContext.getString(R.string.language));
-        String locale = Prefs.getInstance(mContext).getTtsLocale();
+        String locale = mPrefs.getTtsLocale();
         mItemSelect = Language.getLocalePosition(locale);
         builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
@@ -329,7 +329,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTtsLocale() {
-        String locale = Prefs.getInstance(mContext).getTtsLocale();
+        String locale = mPrefs.getTtsLocale();
         int i = Language.getLocalePosition(locale);
         binding.localePrefs.setDetailText(Language.getLocaleNames(mContext).get(i));
     }
@@ -349,7 +349,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         if (mItemSelect == 6) locale = Language.POLISH;
         if (mItemSelect == 7) locale = Language.RUSSIAN;
         if (mItemSelect == 8) locale = Language.SPANISH;
-        Prefs.getInstance(mContext).setTtsLocale(locale);
+        mPrefs.setTtsLocale(locale);
         showTtsLocale();
     }
 
@@ -362,23 +362,23 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void changeTtsPrefs() {
         boolean isChecked = binding.ttsPrefs.isChecked();
         binding.ttsPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setTtsEnabled(!isChecked);
+        mPrefs.setTtsEnabled(!isChecked);
     }
 
     private void initTtsPrefs() {
         binding.ttsPrefs.setOnClickListener(mTtsClick);
-        binding.ttsPrefs.setChecked(Prefs.getInstance(mContext).isTtsEnabled());
+        binding.ttsPrefs.setChecked(mPrefs.isTtsEnabled());
     }
 
     private void changeIncreasePrefs() {
         boolean isChecked = binding.increasePrefs.isChecked();
         binding.increasePrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setIncreasingLoudnessEnabled(!isChecked);
+        mPrefs.setIncreasingLoudnessEnabled(!isChecked);
     }
 
     private void initIncreasingLoudnessPrefs() {
         binding.increasePrefs.setOnClickListener(mIncreaseClick);
-        binding.increasePrefs.setChecked(Prefs.getInstance(mContext).isIncreasingLoudnessEnabled());
+        binding.increasePrefs.setChecked(mPrefs.isIncreasingLoudnessEnabled());
     }
 
     private void showLoudnessDialog() {
@@ -402,12 +402,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int loudness = Prefs.getInstance(mContext).getLoudness();
+        int loudness = mPrefs.getLoudness();
         b.seekBar.setProgress(loudness);
         b.titleView.setText(String.valueOf(loudness));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setLoudness(b.seekBar.getProgress());
+            mPrefs.setLoudness(b.seekBar.getProgress());
             showLoudness();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -422,7 +422,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private void showLoudness() {
         binding.volumePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.loudness) + " %d",
-                Prefs.getInstance(mContext).getLoudness()));
+                mPrefs.getLoudness()));
     }
 
     private void showStreamDialog() {
@@ -434,7 +434,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 mContext.getString(R.string.notification)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, types);
-        int stream = Prefs.getInstance(mContext).getSoundStream();
+        int stream = mPrefs.getSoundStream();
         mItemSelect = stream - 3;
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
             if (which != -1) {
@@ -442,7 +442,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
             }
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setSoundStream(mItemSelect + 3);
+            mPrefs.setSoundStream(mItemSelect + 3);
             showStream();
             dialog.dismiss();
         });
@@ -462,18 +462,18 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         String[] types = new String[]{mContext.getString(R.string.music),
                 mContext.getString(R.string.alarm),
                 mContext.getString(R.string.notification)};
-        binding.streamPrefs.setDetailText(types[Prefs.getInstance(mContext).getSoundStream() - 3]);
+        binding.streamPrefs.setDetailText(types[mPrefs.getSoundStream() - 3]);
     }
 
     private void changeSystemLoudnessPrefs() {
         boolean isChecked = binding.systemPrefs.isChecked();
         binding.systemPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setSystemLoudnessEnabled(!isChecked);
+        mPrefs.setSystemLoudnessEnabled(!isChecked);
     }
 
     private void initSystemLoudnessPrefs() {
         binding.systemPrefs.setOnClickListener(mSystemLoudnessClick);
-        binding.systemPrefs.setChecked(Prefs.getInstance(mContext).isSystemLoudnessEnabled());
+        binding.systemPrefs.setChecked(mPrefs.isSystemLoudnessEnabled());
     }
 
     private void initMelodyPrefs() {
@@ -482,7 +482,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showMelody(){
-        String filePath = Prefs.getInstance(mContext).getMelodyFile();
+        String filePath = mPrefs.getMelodyFile();
         if (filePath == null || filePath.matches(Constants.DEFAULT)) {
             binding.chooseSoundPrefs.setDetailText(getResources().getString(R.string.default_string));
         } else if (!filePath.matches("")) {
@@ -504,7 +504,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 mContext.getString(R.string.choose_file)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, types);
-        if (Prefs.getInstance(mContext).getMelodyFile().matches(Constants.DEFAULT)) {
+        if (mPrefs.getMelodyFile().matches(Constants.DEFAULT)) {
             mItemSelect = 0;
         } else {
             mItemSelect = 1;
@@ -512,7 +512,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             if (mItemSelect == 0) {
-                Prefs.getInstance(mContext).setMelodyFile(Constants.DEFAULT);
+                mPrefs.setMelodyFile(Constants.DEFAULT);
                 showMelody();
             } else {
                 dialog.dismiss();
@@ -529,66 +529,66 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     private void changeInfiniteSoundPrefs() {
         boolean isChecked = binding.infiniteSoundOptionPrefs.isChecked();
         binding.infiniteSoundOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setInfiniteSoundEnabled(!isChecked);
+        mPrefs.setInfiniteSoundEnabled(!isChecked);
     }
 
     private void initInfiniteSoundPrefs() {
         binding.infiniteSoundOptionPrefs.setOnClickListener(mInfiniteSoundClick);
-        binding.infiniteSoundOptionPrefs.setChecked(Prefs.getInstance(mContext).isInfiniteSoundEnabled());
+        binding.infiniteSoundOptionPrefs.setChecked(mPrefs.isInfiniteSoundEnabled());
     }
 
     private void changeSoundPrefs() {
         boolean isChecked = binding.soundOptionPrefs.isChecked();
         binding.soundOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setSoundInSilentModeEnabled(!isChecked);
+        mPrefs.setSoundInSilentModeEnabled(!isChecked);
     }
 
     private void initSoundInSilentModePrefs() {
         binding.soundOptionPrefs.setOnClickListener(mSoundClick);
-        binding.soundOptionPrefs.setChecked(Prefs.getInstance(mContext).isSoundInSilentModeEnabled());
+        binding.soundOptionPrefs.setChecked(mPrefs.isSoundInSilentModeEnabled());
     }
 
     private void changeInfiniteVibratePrefs() {
         boolean isChecked = binding.infiniteVibrateOptionPrefs.isChecked();
         binding.infiniteVibrateOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setInfiniteVibrateEnabled(!isChecked);
+        mPrefs.setInfiniteVibrateEnabled(!isChecked);
     }
 
     private void initInfiniteVibratePrefs() {
         binding.infiniteVibrateOptionPrefs.setOnClickListener(mInfiniteVibrateClick);
-        binding.infiniteVibrateOptionPrefs.setChecked(Prefs.getInstance(mContext).isInfiniteVibrateEnabled());
+        binding.infiniteVibrateOptionPrefs.setChecked(mPrefs.isInfiniteVibrateEnabled());
         binding.infiniteVibrateOptionPrefs.setDependentView(binding.vibrationOptionPrefs);
     }
 
     private void changeVibratePrefs() {
         boolean isChecked = binding.vibrationOptionPrefs.isChecked();
         binding.vibrationOptionPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setVibrateEnabled(!isChecked);
+        mPrefs.setVibrateEnabled(!isChecked);
     }
 
     private void initVibratePrefs() {
         binding.vibrationOptionPrefs.setOnClickListener(mVibrateClick);
-        binding.vibrationOptionPrefs.setChecked(Prefs.getInstance(mContext).isVibrateEnabled());
+        binding.vibrationOptionPrefs.setChecked(mPrefs.isVibrateEnabled());
     }
 
     private void changeSbIconPrefs() {
         boolean isChecked = binding.statusIconPrefs.isChecked();
         binding.statusIconPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setSbIconEnabled(!isChecked);
+        mPrefs.setSbIconEnabled(!isChecked);
         mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
     }
 
     private void initSbIconPrefs() {
         binding.statusIconPrefs.setOnClickListener(mSbIconClick);
-        binding.statusIconPrefs.setChecked(Prefs.getInstance(mContext).isSbIconEnabled());
+        binding.statusIconPrefs.setChecked(mPrefs.isSbIconEnabled());
         binding.statusIconPrefs.setDependentView(binding.permanentNotificationPrefs);
     }
 
     private void changeSbPrefs() {
         boolean isChecked = binding.permanentNotificationPrefs.isChecked();
         binding.permanentNotificationPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setSbNotificationEnabled(!isChecked);
-        if (Prefs.getInstance(mContext).isSbNotificationEnabled()) {
+        mPrefs.setSbNotificationEnabled(!isChecked);
+        if (mPrefs.isSbNotificationEnabled()) {
             mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         } else {
             mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_HIDE));
@@ -597,29 +597,29 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private void initSbPrefs() {
         binding.permanentNotificationPrefs.setOnClickListener(mSbClick);
-        binding.permanentNotificationPrefs.setChecked(Prefs.getInstance(mContext).isSbNotificationEnabled());
+        binding.permanentNotificationPrefs.setChecked(mPrefs.isSbNotificationEnabled());
     }
 
     private void changeManualPrefs() {
         boolean isChecked = binding.notificationDismissPrefs.isChecked();
         binding.notificationDismissPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setManualRemoveEnabled(!isChecked);
+        mPrefs.setManualRemoveEnabled(!isChecked);
     }
 
     private void initManualPrefs() {
         binding.notificationDismissPrefs.setOnClickListener(mManualClick);
-        binding.notificationDismissPrefs.setChecked(Prefs.getInstance(mContext).isManualRemoveEnabled());
+        binding.notificationDismissPrefs.setChecked(mPrefs.isManualRemoveEnabled());
     }
 
     private void initBlurPrefs() {
         binding.blurPrefs.setOnClickListener(mBlurClick);
-        binding.blurPrefs.setChecked(Prefs.getInstance(mContext).isBlurEnabled());
+        binding.blurPrefs.setChecked(mPrefs.isBlurEnabled());
     }
 
     private void changeBlurPrefs() {
         boolean isChecked = binding.blurPrefs.isChecked();
         binding.blurPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setBlurEnabled(!isChecked);
+        mPrefs.setBlurEnabled(!isChecked);
     }
 
     private void showImageDialog() {
@@ -631,7 +631,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 mContext.getString(R.string.choose_file)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, types);
-        String image = Prefs.getInstance(mContext).getReminderImage();
+        String image = mPrefs.getReminderImage();
         int selection;
         if (image.matches(Constants.NONE)) {
             selection = 0;
@@ -655,7 +655,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void saveImagePrefs(int which) {
-        Prefs prefs = Prefs.getInstance(mContext);
+        Prefs prefs = mPrefs;
         if (which == 0) {
             prefs.setReminderImage(Constants.NONE);
         } else if (which == 1) {
@@ -691,7 +691,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                     if (filePath != null) {
                         File file = new File(filePath);
                         if (file.exists()) {
-                            Prefs.getInstance(mContext).setMelodyFile(file.toString());
+                            mPrefs.setMelodyFile(file.toString());
                         }
                     }
                     showMelody();

@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Language;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding;
 import com.elementary.tasks.navigation.settings.voice.HelpFragment;
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment;
@@ -62,17 +61,17 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLanguage() {
-        binding.languagePrefs.setDetailText(Language.getLanguages(mContext).get(Prefs.getInstance(mContext).getVoiceLocale()));
+        binding.languagePrefs.setDetailText(Language.getLanguages(mContext).get(mPrefs.getVoiceLocale()));
     }
 
     private void initConversationPrefs() {
         binding.conversationPrefs.setOnClickListener(view -> changeLivePrefs());
-        binding.conversationPrefs.setChecked(Prefs.getInstance(mContext).isLiveEnabled());
+        binding.conversationPrefs.setChecked(mPrefs.isLiveEnabled());
     }
 
     private void changeLivePrefs() {
         boolean isChecked = binding.conversationPrefs.isChecked();
-        Prefs.getInstance(mContext).setLiveEnabled(!isChecked);
+        mPrefs.setLiveEnabled(!isChecked);
         binding.conversationPrefs.setChecked(!isChecked);
     }
 
@@ -92,10 +91,10 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
         ArrayList<String> locales = Language.getLanguages(mContext);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, locales);
-        int language = Prefs.getInstance(mContext).getVoiceLocale();
+        int language = mPrefs.getVoiceLocale();
         builder.setSingleChoiceItems(adapter, language, (dialog, which) -> {
             if (which != -1) {
-                Prefs.getInstance(mContext).setVoiceLocale(which);
+                mPrefs.setVoiceLocale(which);
             }
         });
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> dialog.dismiss());
