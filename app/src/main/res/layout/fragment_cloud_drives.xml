@@ -20,17 +20,18 @@
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/dropboxTitle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.65"
-                    android:drawableLeft="@drawable/ic_dropbox_white"
                     android:drawablePadding="10dp"
                     android:gravity="center|left"
                     android:text="@string/dropbox"
                     android:textSize="@dimen/clouds_text_size"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_dropbox"
+                    app:tv_icon_light="@drawable/ic_dropbox_white" />
 
                 <com.elementary.tasks.core.views.roboto.RoboButton
                     android:id="@+id/linkDropbox"
@@ -48,17 +49,18 @@
                 android:layout_marginTop="@dimen/clouds_margin_top"
                 android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/gDriveTitle"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.65"
-                    android:drawableLeft="@drawable/ic_google"
                     android:drawablePadding="10dp"
                     android:gravity="center|left"
                     android:text="@string/google"
                     android:textSize="@dimen/clouds_text_size"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_google"
+                    app:tv_icon_light="@drawable/ic_google_white" />
 
                 <com.elementary.tasks.core.views.roboto.RoboButton
                     android:id="@+id/linkGDrive"

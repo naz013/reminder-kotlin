@@ -18,9 +18,7 @@ import com.elementary.tasks.core.cloud.GoogleLogin;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.FragmentCloudDrivesBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;
@@ -49,7 +47,6 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private FragmentCloudDrivesBinding binding;
     private RoboButton mDropboxButton, mGoogleDriveButton;
-    private RoboTextView mGoogleDriveTitle, mDropboxTitle;
 
     private ProgressDialog mDialog;
     private GoogleLogin.LoginCallback mLoginCallback = new GoogleLogin.LoginCallback() {
@@ -89,15 +86,8 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
         mGoogleLogin = new GoogleLogin(getActivity(), mLoginCallback);
         initDropboxButton();
         initGoogleDriveButton();
-        initTitles();
         checkGoogleStatus();
-        setImage();
         return binding.getRoot();
-    }
-
-    private void initTitles() {
-        mDropboxTitle = binding.dropboxTitle;
-        mGoogleDriveTitle = binding.gDriveTitle;
     }
 
     private void initGoogleDriveButton() {
@@ -152,21 +142,11 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
         }
     }
 
-    private void checkGoogleStatus(){
-        if (mGoogleLogin.isLogged()){
+    private void checkGoogleStatus() {
+        if (mGoogleLogin.isLogged()) {
             mGoogleDriveButton.setText(R.string.disconnect);
         } else {
             mGoogleDriveButton.setText(getString(R.string.connect));
-        }
-    }
-
-    private void setImage(){
-        if (ThemeUtil.getInstance(mContext).isDark()){
-            mDropboxTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dropbox_white, 0, 0, 0);
-            mGoogleDriveTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google_white, 0, 0, 0);
-        } else {
-            mDropboxTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_dropbox, 0, 0, 0);
-            mGoogleDriveTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_google, 0, 0, 0);
         }
     }
 
