@@ -1,8 +1,5 @@
 package com.elementary.tasks.birthdays;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +17,7 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
+import com.elementary.tasks.navigation.fragments.BaseFragment;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
@@ -44,12 +42,11 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class EventsListFragment extends Fragment implements RecyclerListener {
+public class EventsListFragment extends BaseFragment implements RecyclerListener {
 
     private FragmentEventsListBinding binding;
     private List<EventsItem> mDataList = new ArrayList<>();
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
-    private Context mContext;
 
     public void setData(List<EventsItem> datas){
         this.mDataList = new ArrayList<>(datas);
@@ -64,26 +61,13 @@ public class EventsListFragment extends Fragment implements RecyclerListener {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (mContext == null) {
-            mContext = context;
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (mContext == null) {
-            mContext = activity;
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentEventsListBinding.inflate(inflater, container, false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        if (mCallback != null) {
+            mCallback.onScrollChanged(binding.recyclerView);
+        }
         return binding.getRoot();
     }
 

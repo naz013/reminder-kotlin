@@ -241,6 +241,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             mCallback.onTitleChange(getString(R.string.tasks));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> startActivity(new Intent(mContext, CreateReminderActivity.class)));
+            mCallback.onScrollChanged(binding.recyclerView);
         }
         loadData(mLastGroupId);
     }

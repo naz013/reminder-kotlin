@@ -1,15 +1,5 @@
 package com.elementary.tasks.navigation.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
-
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -26,43 +16,7 @@ import com.elementary.tasks.core.utils.Prefs;
  * limitations under the License.
  */
 
-public abstract class BaseNavigationFragment extends Fragment {
-
-    protected Context mContext;
-    protected FragmentCallback mCallback;
-    protected Prefs mPrefs;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (mContext == null) {
-            mContext = context;
-        }
-        if (mCallback == null) {
-            try {
-                mCallback = (FragmentCallback) context;
-            } catch (ClassCastException e) {}
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (mContext == null) {
-            mContext = activity;
-        }
-        if (mCallback == null) {
-            try {
-                mCallback = (FragmentCallback) activity;
-            } catch (ClassCastException e) {}
-        }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPrefs = Prefs.getInstance(mContext);
-    }
+public abstract class BaseNavigationFragment extends BaseFragment {
 
     @Override
     public void onResume() {
@@ -70,18 +24,7 @@ public abstract class BaseNavigationFragment extends Fragment {
         if (mCallback != null) {
             mCallback.setClick(null);
             mCallback.onThemeChange(0, 0, 0);
-        }
-    }
-
-    protected void replaceFragment(Fragment fragment, String title) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.main_container, fragment, title);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.addToBackStack(title);
-        ft.commit();
-        if (mCallback != null) {
-            mCallback.onTitleChange(title);
-            mCallback.onFragmentSelect(fragment);
+            mCallback.onScrollChanged(null);
         }
     }
 }

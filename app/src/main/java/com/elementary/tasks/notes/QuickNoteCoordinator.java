@@ -10,6 +10,8 @@ import android.view.View;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -86,6 +88,7 @@ public class QuickNoteCoordinator {
         NoteInputCardBinding binding = NoteInputCardBinding.inflate(LayoutInflater.from(mContext), this.binding.quickNoteView, false);
         binding.buttonSave.setOnClickListener(view -> saveNote(binding));
         binding.noteCard.setVisibility(View.GONE);
+        if (Module.isLollipop()) binding.noteCard.setElevation(Configs.CARD_ELEVATION);
         this.binding.quickNoteView.addView(binding.getRoot());
         ViewUtils.slideInUp(mContext, binding.noteCard);
     }
@@ -112,6 +115,7 @@ public class QuickNoteCoordinator {
 
     private void addReminderCard(NoteItem item) {
         NoteReminderCardBinding cardBinding = NoteReminderCardBinding.inflate(LayoutInflater.from(mContext), this.binding.quickNoteView, false);
+        if (Module.isLollipop()) cardBinding.noteReminderCard.setElevation(Configs.CARD_ELEVATION);
         cardBinding.buttonYes.setOnClickListener(view -> {
             cardBinding.buttonNo.setEnabled(false);
             cardBinding.buttonYes.setEnabled(false);
@@ -150,6 +154,7 @@ public class QuickNoteCoordinator {
 
     private void addNotificationCard(NoteItem item) {
         NoteStatusCardBinding cardBinding = NoteStatusCardBinding.inflate(LayoutInflater.from(mContext), binding.quickNoteView, false);
+        if (Module.isLollipop()) cardBinding.noteStatusCard.setElevation(Configs.CARD_ELEVATION);
         cardBinding.buttonYes.setOnClickListener(view -> {
             cardBinding.buttonNo.setEnabled(false);
             cardBinding.buttonYes.setEnabled(false);

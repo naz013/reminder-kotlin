@@ -112,6 +112,7 @@ public class GroupsFragment extends BaseNavigationFragment {
             mCallback.onTitleChange(getString(R.string.groups));
             mCallback.onFragmentSelect(this);
             mCallback.setClick(view -> startActivity(new Intent(mContext, CreateGroupActivity.class)));
+            mCallback.onScrollChanged(binding.recyclerView);
         }
         showTemplates();
     }
