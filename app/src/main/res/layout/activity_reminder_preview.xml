@@ -21,9 +21,11 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </android.support.design.widget.AppBarLayout>
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,10 +150,10 @@
                 <LinearLayout
                     android:id="@+id/mapContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginLeft="@dimen/reminder_preview_container_padding"
-                    android:layout_marginRight="@dimen/reminder_preview_container_padding"
-                    android:layout_marginTop="@dimen/reminder_preview_margin_top"
+                    android:layout_height="320dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -166,6 +168,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 </layout>
