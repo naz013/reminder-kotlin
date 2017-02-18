@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Prefs;
@@ -34,7 +34,6 @@ import com.elementary.tasks.reminder.models.Place;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.elementary.tasks.reminder.models.ShopItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,49 +53,32 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String, RecyclerView.ViewHolder> {
 
     private static final String TAG = "RRA";
 
     private Context mContext;
-    private List<Reminder> mDataList;
     private RecyclerListener mEventListener;
-    private FilterCallback mCallback;
     private ThemeUtil themeUtil;
     private boolean isEditable = true;
 
-    public RemindersRecyclerAdapter(Context context, List<Reminder> list, FilterCallback callback) {
+    public RemindersRecyclerAdapter(Context context, List<Reminder> list, Filter<Reminder, String> filter) {
+        super(list, filter);
         this.mContext = context;
-        this.mCallback = callback;
         themeUtil = ThemeUtil.getInstance(context);
-        mDataList = new ArrayList<>(list);
     }
 
     public void setEditable(boolean editable) {
         isEditable = editable;
     }
 
-    public Reminder getItem(int position) {
-        if (position < mDataList.size()) {
-            return mDataList.get(position);
-        } return null;
-    }
-
-    public void removeItem(int position) {
-        if (position < mDataList.size()) {
-            mDataList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeRemoved(0, mDataList.size());
-        }
-    }
-
     private void initLabel(RoboTextView listHeader, int position) {
-        Reminder item = mDataList.get(position);
+        Reminder item = getUsedData().get(position);
         long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         String simpleDate = TimeUtil.getSimpleDate(due);
         Reminder prevItem = null;
         try {
-            prevItem = mDataList.get(position - 1);
+            prevItem = getUsedData().get(position - 1);
         } catch (ArrayIndexOutOfBoundsException ignored) {}
         if (!item.isActive() && position > 0 && (prevItem != null && prevItem.isActive())) {
             simpleDate = mContext.getString(R.string.disabled);
@@ -125,86 +107,6 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public void filter(String q, List<Reminder> list) {
-        List<Reminder> res = filter(list, q);
-        animateTo(res);
-        if (mCallback != null) mCallback.filter(res.size());
-    }
-
-    private List<Reminder> filter(List<Reminder> mData, String q) {
-        q = q.toLowerCase();
-        if (mData == null) mData = new ArrayList<>();
-        List<Reminder> filteredModelList = new ArrayList<>();
-        if (q.matches("")) {
-            filteredModelList = new ArrayList<>(mData);
-        } else {
-            filteredModelList.addAll(getFiltered(mData, q));
-        }
-        return filteredModelList;
-    }
-
-    private List<Reminder> getFiltered(List<Reminder> models, String query) {
-        List<Reminder> list = new ArrayList<>();
-        for (Reminder model : models) {
-            final String text = model.getSummary().toLowerCase();
-            if (text.contains(query)) {
-                list.add(model);
-            }
-        }
-        return list;
-    }
-
-    private Reminder remove(int position) {
-        final Reminder model = mDataList.remove(position);
-        notifyItemRemoved(position);
-        return model;
-    }
-
-    private void addItem(int position, Reminder model) {
-        mDataList.add(position, model);
-        notifyItemInserted(position);
-    }
-
-    private void moveItem(int fromPosition, int toPosition) {
-        final Reminder model = mDataList.remove(fromPosition);
-        mDataList.add(toPosition, model);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
-    private void animateTo(List<Reminder> models) {
-        applyAndAnimateRemovals(models);
-        applyAndAnimateAdditions(models);
-        applyAndAnimateMovedItems(models);
-    }
-
-    private void applyAndAnimateRemovals(List<Reminder> newModels) {
-        for (int i = mDataList.size() - 1; i >= 0; i--) {
-            final Reminder model = mDataList.get(i);
-            if (!newModels.contains(model)) {
-                remove(i);
-            }
-        }
-    }
-
-    private void applyAndAnimateAdditions(List<Reminder> newModels) {
-        for (int i = 0, count = newModels.size(); i < count; i++) {
-            final Reminder model = newModels.get(i);
-            if (!mDataList.contains(model)) {
-                addItem(i, model);
-            }
-        }
-    }
-
-    private void applyAndAnimateMovedItems(List<Reminder> newModels) {
-        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final Reminder model = newModels.get(toPosition);
-            final int fromPosition = mDataList.indexOf(model);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -217,7 +119,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Reminder item = mDataList.get(position);
+        Reminder item = getUsedData().get(position);
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;
             reminderHolder.setData(item);
@@ -231,17 +133,12 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        return mDataList.get(position).getViewType();
+        return getUsedData().get(position).getViewType();
     }
 
     @Override
     public long getItemId(int position) {
-        return mDataList.get(position).getUniqueId();
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataList != null ? mDataList.size() : 0;
+        return getUsedData().get(position).getUniqueId();
     }
 
     public void setEventListener(RecyclerListener eventListener) {

@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
@@ -31,7 +31,7 @@ import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -56,7 +56,6 @@ public class ArchiveFragment extends BaseNavigationFragment {
     private RecyclerView mRecyclerView;
 
     private RemindersRecyclerAdapter mAdapter;
-    private List<Reminder> mDataList = new ArrayList<>();
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
@@ -64,7 +63,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) mAdapter.filter(query, mDataList);
+            if (mAdapter != null) mAdapter.filter(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -73,15 +72,8 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) mAdapter.filter(newText, mDataList);
+            if (mAdapter != null) mAdapter.filter(newText);
             return false;
-        }
-    };
-    private FilterCallback mFilterCallback = new FilterCallback() {
-        @Override
-        public void filter(int size) {
-            mRecyclerView.scrollToPosition(0);
-            reloadView();
         }
     };
     private SearchView.OnCloseListener mSearchCloseListener = () -> false;
@@ -93,7 +85,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
         @Override
         public void onItemClicked(int position, View view) {
-            Reminder reminder = mDataList.get(position);
+            Reminder reminder = mAdapter.getItem(position);
             editReminder(reminder.getUuId());
         }
 
@@ -103,16 +95,97 @@ public class ArchiveFragment extends BaseNavigationFragment {
         }
     };
     private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
+    private FilterableAdapter.Filter<Reminder, String> mFilter = new FilterableAdapter.Filter<Reminder, String>() {
+        @Override
+        public boolean filter(Reminder reminder, String query) {
+            return reminder.getSummary().toLowerCase().contains(query.toLowerCase());
+        }
+
+        @Override
+        public void onFilterEnd(List<Reminder> list, int size, String query) {
+            mRecyclerView.scrollToPosition(0);
+            reloadView();
+        }
+    };
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.archive_menu, menu);
+        mSearchMenu = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (mSearchMenu != null) {
+            mSearchView = (SearchView) mSearchMenu.getActionView();
+        }
+        if (mSearchView != null) {
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            mSearchView.setOnQueryTextListener(queryTextListener);
+            mSearchView.setOnCloseListener(mSearchCloseListener);
+        }
+        if (mAdapter == null || mAdapter.getItemCount() == 0){
+            menu.findItem(R.id.action_delete_all).setVisible(false);
+            menu.findItem(R.id.action_search).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_delete_all).setVisible(true);
+            menu.findItem(R.id.action_search).setVisible(true);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete_all:
+                deleteAll();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentTrashBinding.inflate(inflater, container, false);
+        initList();
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCallback != null) {
+            mCallback.onTitleChange(getString(R.string.trash));
+            mCallback.onFragmentSelect(this);
+            mCallback.setClick(null);
+        }
+        loadData();
+    }
+
+    private void editReminder(String uuId) {
+        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
+    }
+
+    private void deleteAll(){
+        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+            WeakReference<Reminder> reminder = new WeakReference<>(mAdapter.getItem(i));
+            deleteReminder(reminder.get());
+        }
+        Toast.makeText(mContext, getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
+        reloadView();
+    }
 
     private void showData(List<Reminder> result) {
-        mDataList = result;
-        mAdapter = new RemindersRecyclerAdapter(mContext, mDataList, mFilterCallback);
+        mAdapter = new RemindersRecyclerAdapter(mContext, result, mFilter);
         mAdapter.setEventListener(mEventListener);
         mAdapter.setEditable(false);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
         reloadView();
-        getActivity().invalidateOptionsMenu();
     }
 
     private void showActionDialog(int position) {
@@ -136,82 +209,10 @@ public class ArchiveFragment extends BaseNavigationFragment {
         CalendarUtils.deleteEvents(mContext, reminder.getUuId());
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.archive_menu, menu);
-        mSearchMenu = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        if (mSearchMenu != null) {
-            mSearchView = (SearchView) mSearchMenu.getActionView();
-        }
-        if (mSearchView != null) {
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            mSearchView.setOnQueryTextListener(queryTextListener);
-            mSearchView.setOnCloseListener(mSearchCloseListener);
-        }
-        if (mDataList.size() == 0){
-            menu.findItem(R.id.action_delete_all).setVisible(false);
-            menu.findItem(R.id.action_search).setVisible(false);
-        } else {
-            menu.findItem(R.id.action_delete_all).setVisible(true);
-            menu.findItem(R.id.action_search).setVisible(true);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete_all:
-                deleteAll();
-                loadData();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void editReminder(String uuId) {
-        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
-    }
-
-    private void deleteAll(){
-        for (Reminder reminder : mDataList) {
-            deleteReminder(reminder);
-        }
-        Toast.makeText(mContext, getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
-        loadData();
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentTrashBinding.inflate(inflater, container, false);
-        initList();
-        return binding.getRoot();
-    }
-
     private void initList() {
         mRecyclerView = binding.recyclerView;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.trash));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(null);
-        }
-        loadData();
     }
 
     private void loadData() {
@@ -226,6 +227,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         } else {
             mRecyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
+            getActivity().invalidateOptionsMenu();
         }
     }
 }
