@@ -30,7 +30,7 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
 
     public FilterableAdapter(List<V> data, Filter<V, Q> filter) {
         this.originalData = data;
-        this.usedData = new ArrayList<V>(data);
+        this.usedData = new ArrayList<>(data);
         this.filter = filter;
     }
 
@@ -56,6 +56,8 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
             V v = usedData.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(0, usedData.size());
+            int index = originalData.indexOf(v);
+            if (index != -1) originalData.remove(index);
             return v;
         }
         return null;

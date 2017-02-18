@@ -1,22 +1,32 @@
 package com.elementary.tasks.navigation.fragments;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentPlacesBinding;
 import com.elementary.tasks.places.CreatePlaceActivity;
+import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.PlacesRecyclerAdapter;
+
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,6 +48,27 @@ public class PlacesFragment extends BaseNavigationFragment {
 
     private FragmentPlacesBinding binding;
     private PlacesRecyclerAdapter mAdapter;
+
+    private SearchView mSearchView = null;
+    private MenuItem mSearchMenu = null;
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            if (mAdapter != null) mAdapter.filter(query);
+            if (mSearchMenu != null) {
+                mSearchMenu.collapseActionView();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (mAdapter != null) mAdapter.filter(newText);
+            return false;
+        }
+    };
+    private SearchView.OnCloseListener mSearchCloseListener = () -> false;
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
         public void onItemClicked(int position, View view) {
@@ -58,9 +89,54 @@ public class PlacesFragment extends BaseNavigationFragment {
             }, items);
         }
     };
+    private FilterableAdapter.Filter<PlaceItem, String> mFilter = new FilterableAdapter.Filter<PlaceItem, String>() {
+        @Override
+        public boolean filter(PlaceItem placeItem, String query) {
+            return placeItem.getTitle().toLowerCase().contains(query.toLowerCase());
+        }
 
-    private void editPlace(int position) {
-        mContext.startActivity(new Intent(mContext, CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
+        @Override
+        public void onFilterEnd(List<PlaceItem> list, int size, String query) {
+            binding.recyclerView.scrollToPosition(0);
+            refreshView();
+        }
+    };
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.archive_menu, menu);
+        mSearchMenu = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (mSearchMenu != null) {
+            mSearchView = (SearchView) mSearchMenu.getActionView();
+        }
+        if (mSearchView != null) {
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            mSearchView.setOnQueryTextListener(queryTextListener);
+            mSearchView.setOnCloseListener(mSearchCloseListener);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete_all:
+                deleteAll();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAll() {
+
+        refreshView();
     }
 
     @Nullable
@@ -69,13 +145,6 @@ public class PlacesFragment extends BaseNavigationFragment {
         binding = FragmentPlacesBinding.inflate(inflater, container, false);
         initList();
         return binding.getRoot();
-    }
-
-    private void initList() {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        refreshView();
     }
 
     @Override
@@ -90,8 +159,19 @@ public class PlacesFragment extends BaseNavigationFragment {
         showData();
     }
 
+    private void editPlace(int position) {
+        mContext.startActivity(new Intent(mContext, CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
+    }
+
+    private void initList() {
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        refreshView();
+    }
+
     private void showData() {
-        mAdapter = new PlacesRecyclerAdapter(mContext, RealmDb.getInstance().getAllPlaces(), mEventListener);
+        mAdapter = new PlacesRecyclerAdapter(mContext, RealmDb.getInstance().getAllPlaces(), mEventListener, mFilter);
         binding.recyclerView.setAdapter(mAdapter);
         refreshView();
     }

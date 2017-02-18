@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.PlaceListItemBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,20 +33,15 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder> {
+public class PlacesRecyclerAdapter extends FilterableAdapter<PlaceItem, String, PlacesRecyclerAdapter.ViewHolder> {
 
-    private List<PlaceItem> mDataList = new ArrayList<>();
     private SimpleListener mEventListener;
     private Context mContext;
 
-    public PlacesRecyclerAdapter(Context context, List<PlaceItem> list, SimpleListener listener) {
-        this.mDataList = new ArrayList<>(list);
+    public PlacesRecyclerAdapter(Context context, List<PlaceItem> list, SimpleListener listener, Filter<PlaceItem, String> filter) {
+        super(list, filter);
         this.mContext = context;
         this.mEventListener = listener;
-    }
-
-    public List<PlaceItem> getData() {
-        return mDataList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -69,9 +64,9 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
     }
 
     public void deleteItem(int position) {
-        RealmDb.getInstance().deletePlace(mDataList.remove(position));
+        RealmDb.getInstance().deletePlace(getUsedData().remove(position));
         notifyItemRemoved(position);
-        notifyItemRangeChanged(0, mDataList.size());
+        notifyItemRangeChanged(0, getUsedData().size());
     }
 
     @Override
@@ -82,17 +77,8 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        PlaceItem item = mDataList.get(position);
+        PlaceItem item = getUsedData().get(position);
         holder.binding.setItem(item);
-    }
-
-    public PlaceItem getItem(int position) {
-        return mDataList.get(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataList.size();
     }
 
     @BindingAdapter({"loadMarker"})

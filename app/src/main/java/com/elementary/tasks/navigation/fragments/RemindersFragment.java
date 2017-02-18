@@ -63,6 +63,8 @@ import java.util.List;
 
 public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener {
 
+    private static final String TAG = "RemindersFragment";
+
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
 
@@ -140,13 +142,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
-        }
-        if (mAdapter == null || mAdapter.getItemCount() == 0){
-            menu.findItem(R.id.action_filter).setVisible(false);
-            menu.findItem(R.id.action_search).setVisible(false);
-        } else {
-            menu.findItem(R.id.action_filter).setVisible(true);
-            menu.findItem(R.id.action_search).setVisible(true);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -279,7 +274,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         } else {
             mRecyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
-            getActivity().invalidateOptionsMenu();
         }
     }
 

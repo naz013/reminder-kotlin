@@ -127,13 +127,6 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
         }
-        if (mAdapter == null || mAdapter.getItemCount() == 0){
-            menu.findItem(R.id.action_delete_all).setVisible(false);
-            menu.findItem(R.id.action_search).setVisible(false);
-        } else {
-            menu.findItem(R.id.action_delete_all).setVisible(true);
-            menu.findItem(R.id.action_search).setVisible(true);
-        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -220,14 +213,12 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void reloadView() {
-        int size = mAdapter.getItemCount();
-        if (size > 0){
+        if (mAdapter != null && mAdapter.getItemCount() > 0){
             mRecyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {
             mRecyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
-            getActivity().invalidateOptionsMenu();
         }
     }
 }
