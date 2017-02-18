@@ -104,14 +104,15 @@
                             android:layout_toRightOf="@+id/mapCheck"
                             app:font_style="roboto_medium" />
 
-                        <ImageButton
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/mapButton"
                             android:layout_width="@dimen/create_imagebutton_size"
                             android:layout_height="@dimen/create_imagebutton_size"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="5dp"
-                            android:src="@drawable/ic_map" />
+                            app:tb_icon="@drawable/ic_map"
+                            app:tb_icon_light="@drawable/ic_map_white" />
 
                     </RelativeLayout>
 

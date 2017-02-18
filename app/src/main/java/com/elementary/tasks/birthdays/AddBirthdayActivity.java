@@ -68,13 +68,6 @@ public class AddBirthdayActivity extends ThemedActivity {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        if (themeUtil.isDark()){
-            binding.dateIcon.setImageResource(R.drawable.ic_calendar_white);
-            binding.pickContact.setImageResource(R.drawable.ic_perm_identity_white_24dp);
-        } else {
-            binding.dateIcon.setImageResource(R.drawable.ic_calendar);
-            binding.pickContact.setImageResource(R.drawable.ic_perm_identity_black_24dp);
-        }
         binding.container.setVisibility(View.GONE);
         binding.contactCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) binding.container.setVisibility(View.VISIBLE);
@@ -88,6 +81,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     private void showBirthday() {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+        binding.toolbar.setTitle(R.string.add_birthday);
         if (mItem != null) {
             binding.birthName.setText(mItem.getName());
             try {

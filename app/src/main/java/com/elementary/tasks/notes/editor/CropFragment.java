@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.CropFragmentBinding;
 import com.elementary.tasks.notes.NoteImage;
@@ -79,13 +78,6 @@ public class CropFragment extends BitmapFragment {
     }
 
     private void initControls() {
-        if (ThemeUtil.getInstance(mContext).isDark()) {
-            binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_white_24dp);
-            binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_white_24dp);
-        } else {
-            binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_black_24dp);
-            binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_black_24dp);
-        }
         binding.rotateLeftButton.setOnClickListener(view -> binding.cropImageView.rotateImage(-90));
         binding.rotateRightButton.setOnClickListener(view -> binding.cropImageView.rotateImage(90));
     }

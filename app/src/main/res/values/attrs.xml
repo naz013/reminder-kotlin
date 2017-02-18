@@ -45,6 +45,11 @@
     <declare-styleable name="ActionView">
     </declare-styleable>
 
+    <declare-styleable name="ThemedImageButton">
+        <attr name="tb_icon" format="reference"/>
+        <attr name="tb_icon_light" format="reference"/>
+    </declare-styleable>
+
     <!-- Declare custom theme attributes that allow changing which styles are
          used for button bars depending on the API level.
          ?android:attr/buttonBarStyle is new as of API 11 so this is

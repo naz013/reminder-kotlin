@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
@@ -232,18 +231,8 @@ public class LocationFragment extends RadiusTypeFragment {
             else binding.delayLayout.setVisibility(View.GONE);
         });
 
-        ImageButton clearField = binding.clearButton;
-        ImageButton mapButton = binding.mapButton;
-        if (ThemeUtil.getInstance(mContext).isDark()){
-            clearField.setImageResource(R.drawable.ic_backspace_white);
-            mapButton.setImageResource(R.drawable.ic_map_white);
-        } else {
-            clearField.setImageResource(R.drawable.ic_backspace);
-            mapButton.setImageResource(R.drawable.ic_map);
-        }
-
-        clearField.setOnClickListener(v -> binding.searchField.setText(""));
-        mapButton.setOnClickListener(v -> toggleMap());
+        binding.clearButton.setOnClickListener(v -> binding.searchField.setText(""));
+        binding.mapButton.setOnClickListener(v -> toggleMap());
         binding.searchField.setOnItemClickListener((parent, view1, position, id) -> {
             Address sel = binding.searchField.getAddress(position);
             double lat = sel.getLatitude();

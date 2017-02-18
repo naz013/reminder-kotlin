@@ -32,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -113,7 +112,6 @@ public class ActivityCreateNote extends ThemedActivity {
     private RelativeLayout layoutContainer;
     private LinearLayout remindContainer;
     private RoboTextView remindDate, remindTime;
-    private ImageButton discardReminder;
 
     private ActivityCreateNoteBinding binding;
     private ImagesGridAdapter mAdapter;
@@ -146,10 +144,8 @@ public class ActivityCreateNote extends ThemedActivity {
         remindDate.setOnClickListener(v -> dateDialog().show());
         remindTime = binding.remindTime;
         remindTime.setOnClickListener(v -> timeDialog().show());
-        discardReminder = binding.discardReminder;
-        discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
+        binding.discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
         initImagesList();
-        setImages();
         loadNote();
         if (mItem != null) {
             String note = mItem.getSummary();
@@ -172,17 +168,6 @@ public class ActivityCreateNote extends ThemedActivity {
 
     private void initMenu() {
         binding.bottomBarView.setBackgroundColor(themeUtil.getBackgroundStyle());
-        if (themeUtil.isDark()) {
-            binding.colorButton.setImageResource(R.drawable.ic_palette_white_24dp);
-            binding.imageButton.setImageResource(R.drawable.ic_image_white_24dp);
-            binding.fontButton.setImageResource(R.drawable.ic_text_format_white_24dp);
-            binding.reminderButton.setImageResource(R.drawable.ic_alarm_white);
-        } else {
-            binding.colorButton.setImageResource(R.drawable.ic_palette_black_24dp);
-            binding.imageButton.setImageResource(R.drawable.ic_image_black_24dp);
-            binding.fontButton.setImageResource(R.drawable.ic_text_format_black_24dp);
-            binding.reminderButton.setImageResource(R.drawable.ic_alarm);
-        }
         binding.colorButton.setOnClickListener(view -> showColorDialog());
         binding.imageButton.setOnClickListener(view -> selectImages());
         binding.reminderButton.setOnClickListener(view -> switchReminder());
@@ -442,14 +427,6 @@ public class ActivityCreateNote extends ThemedActivity {
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    private void setImages() {
-        if (themeUtil.isDark()) {
-            discardReminder.setImageResource(R.drawable.ic_clear_white_24dp);
-        } else {
-            discardReminder.setImageResource(R.drawable.ic_clear_black_24dp);
-        }
     }
 
     @Override

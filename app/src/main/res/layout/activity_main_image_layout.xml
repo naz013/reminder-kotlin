@@ -120,20 +120,22 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <ImageButton
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/downloadButton"
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:background="@null"
-                            android:src="@drawable/ic_get_app_white_24dp" />
+                            app:tb_icon="@drawable/ic_get_app_black_24dp"
+                            app:tb_icon_light="@drawable/ic_get_app_white_24dp" />
 
-                        <ImageButton
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/setToMonthButton"
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="16dp"
                             android:background="@null"
-                            android:src="@drawable/ic_calendar_white" />
+                            app:tb_icon="@drawable/ic_calendar"
+                            app:tb_icon_light="@drawable/ic_calendar_white" />
 
                     </LinearLayout>
                 </LinearLayout>

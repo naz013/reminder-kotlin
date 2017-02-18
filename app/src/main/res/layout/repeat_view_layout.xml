@@ -8,13 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/viewIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_refresh" />
+            android:background="@null"
+            app:tb_icon="@drawable/ic_refresh"
+            app:tb_icon_light="@drawable/ic_refresh_white" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,8 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/repeatTitle"
-                    android:gravity="center|left"
-                    android:entries="@array/repeat_times" />
+                    android:entries="@array/repeat_times"
+                    android:gravity="center|left" />
 
             </RelativeLayout>
 

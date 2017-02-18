@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.view.LayoutInflater;
 
-import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
 import com.elementary.tasks.reminder.AddReminderActivity;
 
@@ -46,13 +44,6 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             mDialog.dismiss();
             addReminder();
         });
-        if (ThemeUtil.getInstance(mContext).isDark()) {
-            binding.addEvent.setImageResource(R.drawable.ic_alarm_white);
-            binding.addBirth.setImageResource(R.drawable.ic_cake_white_24dp);
-        } else {
-            binding.addEvent.setImageResource(R.drawable.ic_alarm);
-            binding.addBirth.setImageResource(R.drawable.ic_cake_black_24dp);
-        }
         builder.setView(binding.getRoot());
         mDialog = builder.create();
         mDialog.show();
