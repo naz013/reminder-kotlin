@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.elementary.tasks.R;
@@ -50,6 +51,13 @@ public class QuickNoteCoordinator {
     public QuickNoteCoordinator(Context context, ActivityMainBinding binding) {
         this.binding = binding;
         this.mContext = context;
+        this.binding.quickNoteContainer.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if (isNoteVisible()) hideNoteView();
+                return true;
+            }
+            return false;
+        });
     }
 
     public void switchQuickNote() {

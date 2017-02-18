@@ -54,7 +54,6 @@ public class MapFragment extends BaseNavigationFragment {
     private AdvancedMapFragment mGoogleMap;
     private RecyclerView mEventsList;
     private LinearLayout mEmptyItem;
-    private BottomSheetBehavior mBottomSheetBehavior;
 
     private List<Reminder> mData = new ArrayList<>();
     private int clickedPosition;
@@ -138,7 +137,7 @@ public class MapFragment extends BaseNavigationFragment {
         mEventsList.setLayoutManager(new LinearLayoutManager(mContext));
         mEmptyItem = bottomSheet.emptyItem;
         binding.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
-        mBottomSheetBehavior = BottomSheetBehavior.from(binding.sheetLayout);
+        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(binding.sheetLayout);
         mBottomSheetBehavior.setBottomSheetCallback(mSheetCallback);
     }
 

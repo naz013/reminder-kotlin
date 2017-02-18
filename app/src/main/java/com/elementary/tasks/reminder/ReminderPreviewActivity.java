@@ -19,6 +19,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
+import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -38,12 +39,15 @@ import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.reminder.models.Place;
 import com.elementary.tasks.reminder.models.Reminder;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -70,6 +74,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private List<Long> list = new ArrayList<>();
     private NoteItem mNoteItem;
     private TaskItem mTaskItem;
+
     private ReadyListener mReadyCallback = object -> {
         if (object == null) return;
         if (object instanceof NoteItem) {
@@ -78,6 +83,36 @@ public class ReminderPreviewActivity extends ThemedActivity {
             showTask((TaskItem) object);
         }
     };
+    private MapCallback mMapReadyCallback = new MapCallback() {
+        @Override
+        public void onMapReady() {
+            mGoogleMap.setSearchEnabled(false);
+            showMapData();
+        }
+    };
+    private GoogleMap.OnMarkerClickListener mOnMarkerClick = new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            mGoogleMap.moveCamera(marker.getPosition(), 0, 0, 0, 0);
+            return false;
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        String id = getIntent().getStringExtra(Constants.INTENT_ID);
+        item = RealmDb.getInstance().getReminder(id);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_preview);
+        initActionBar();
+        initViews();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadInfo();
+    }
 
     private void showTask(TaskItem taskItem) {
         this.mTaskItem = taskItem;
@@ -98,21 +133,14 @@ public class ReminderPreviewActivity extends ThemedActivity {
         this.binding.dataContainer.addView(binding.getRoot());
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
-        item = RealmDb.getInstance().getReminder(id);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_preview);
-        initActionBar();
-        initViews();
-//        initMap();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadInfo();
+    private void showMapData() {
+        Place place = item.getPlaces().get(0);
+        double lat = place.getLatitude();
+        double lon = place.getLongitude();
+        binding.mapContainer.setVisibility(View.VISIBLE);
+        binding.location.setVisibility(View.VISIBLE);
+        binding.location.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), item.getPlaces().size()));
+        mGoogleMap.addMarker(new LatLng(lat, lon), item.getSummary(), true, true, place.getRadius());
     }
 
     private void loadInfo() {
@@ -143,12 +171,6 @@ public class ReminderPreviewActivity extends ThemedActivity {
             }
             if (Reminder.isGpsType(item.getType())) {
                 initMap();
-                Place place = item.getPlaces().get(0);
-                double lat = place.getLatitude();
-                double lon = place.getLongitude();
-                binding.mapContainer.setVisibility(View.VISIBLE);
-                binding.location.setVisibility(View.VISIBLE);
-                mGoogleMap.addMarker(new LatLng(lat, lon), item.getSummary(), true, false, place.getRadius());
             } else {
                 binding.location.setVisibility(View.GONE);
                 binding.mapContainer.setVisibility(View.GONE);
@@ -333,6 +355,8 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
+        mGoogleMap.setCallback(mMapReadyCallback);
+        mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()
                 .replace(binding.mapContainer.getId(), mGoogleMap)
                 .addToBackStack(null)
