@@ -129,7 +129,6 @@ public class TaskItem {
         long complete = completeDate != null ? completeDate.getValue() : 0;
         DateTime updateDate = task.getUpdated();
         long update = updateDate != null ? updateDate.getValue() : 0;
-        String taskId = task.getId();
         boolean isDeleted = false;
         try {
             isDeleted = task.getDeleted();
@@ -144,7 +143,7 @@ public class TaskItem {
         this.kind = task.getKind();
         this.eTag = task.getEtag();
         this.title = task.getTitle();
-        this.taskId = taskId;
+        this.taskId = task.getId();
         this.completeDate = complete;
         this.del = isDeleted ? 1 : 0;
         this.hidden = isHidden ? 1 : 0;
