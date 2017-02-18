@@ -11,9 +11,7 @@ import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
 
 import java.util.Calendar;
 
@@ -36,14 +34,13 @@ import java.util.Calendar;
 public class DateTimeView extends RelativeLayout implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private RoboTextView date;
-    private RoboTextView time;
+    private TextViewWithIcon date;
+    private TextViewWithIcon time;
     private int mHour;
     private int mMinute;
     private int mYear;
     private int mMonth;
     private int mDay;
-    private boolean isSingleMode;
     private Context mContext;
     private AttributeSet attrs;
     private OnSelectListener mListener;
@@ -77,11 +74,10 @@ public class DateTimeView extends RelativeLayout implements
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
-        date = (RoboTextView) findViewById(R.id.dateField);
-        time = (RoboTextView) findViewById(R.id.timeField);
+        date = (TextViewWithIcon) findViewById(R.id.dateField);
+        time = (TextViewWithIcon) findViewById(R.id.timeField);
         date.setOnClickListener(mDateClick);
         time.setOnClickListener(v -> selectTime());
-        setIcons();
         this.mContext = context;
         updateDateTime(0);
     }
@@ -92,18 +88,8 @@ public class DateTimeView extends RelativeLayout implements
         time.setOnLongClickListener(l);
     }
 
-    private void setIcons() {
-        if (ThemeUtil.getInstance(mContext).isDark()) {
-            date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_white, 0, 0, 0);
-            time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_white_24dp, 0, 0, 0);
-        } else {
-            date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar, 0, 0, 0);
-            time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_access_time_black_24dp, 0, 0, 0);
-        }
-    }
-
     public void setSingleText(String text) {
-        isSingleMode = text != null;
+        boolean isSingleMode = text != null;
         if (!isSingleMode) {
             time.setVisibility(VISIBLE);
             date.setOnClickListener(mDateClick);

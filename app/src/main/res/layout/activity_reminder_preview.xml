@@ -63,89 +63,96 @@
 
                 </RelativeLayout>
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_access_time_black_24dp"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_alarm"
+                    app:tv_icon_light="@drawable/ic_alarm_white" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_navigation_black_24dp"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_navigation_black_24dp"
+                    app:tv_icon_light="@drawable/ic_navigation_white_24dp" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_local_offer_black_24dp"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_local_offer_black_24dp"
+                    app:tv_icon_light="@drawable/ic_local_offer_white_24dp" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_format_list_bulleted_type"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_format_list_bulleted_type"
+                    app:tv_icon_light="@drawable/ic_format_list_bulleted_type_white" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_account_black"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_account_black"
+                    app:tv_icon_light="@drawable/ic_account_white" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/melody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_music_note_black_24dp"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_music_note_black_24dp"
+                    app:tv_icon_light="@drawable/ic_music_note_white_24dp" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/repeat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:drawableLeft="@drawable/ic_refresh"
                     android:drawablePadding="16dp"
                     android:textSize="18sp"
-                    app:font_style="roboto_regular" />
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_refresh"
+                    app:tv_icon_light="@drawable/ic_refresh_white" />
 
                 <LinearLayout
                     android:id="@+id/mapContainer"

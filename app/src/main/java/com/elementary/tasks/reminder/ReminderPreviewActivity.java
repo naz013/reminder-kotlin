@@ -323,23 +323,6 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void initViews() {
         binding.switchWrapper.setOnClickListener(v -> switchClick());
         binding.mapContainer.setVisibility(View.GONE);
-        if (themeUtil.isDark()) {
-            binding.time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alarm_white, 0, 0, 0);
-            binding.type.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_format_list_bulleted_type_white, 0, 0, 0);
-            binding.group.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_local_offer_white_24dp, 0, 0, 0);
-            binding.location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_navigation_white_24dp, 0, 0, 0);
-            binding.number.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_account_white, 0, 0, 0);
-            binding.repeat.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_refresh_white, 0, 0, 0);
-            binding.melody.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_music_note_white_24dp, 0, 0, 0);
-        } else {
-            binding.time.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alarm, 0, 0, 0);
-            binding.type.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_format_list_bulleted_type, 0, 0, 0);
-            binding.group.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_local_offer_black_24dp, 0, 0, 0);
-            binding.location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_navigation_black_24dp, 0, 0, 0);
-            binding.number.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_account_black, 0, 0, 0);
-            binding.repeat.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_refresh, 0, 0, 0);
-            binding.melody.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_music_note_black_24dp, 0, 0, 0);
-        }
     }
 
     private void switchClick() {
