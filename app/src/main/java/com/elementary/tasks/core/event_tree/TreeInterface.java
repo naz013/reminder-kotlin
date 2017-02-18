@@ -27,7 +27,7 @@ public interface TreeInterface {
     boolean isEmpty();
 
     /**
-     * Get size of current node.
+     * Holder size of current node.
      *
      * @return number of nodes.
      */

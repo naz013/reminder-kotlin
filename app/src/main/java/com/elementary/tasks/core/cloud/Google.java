@@ -231,7 +231,7 @@ public class Google {
 
     public class Drives {
         /**
-         * Get information about user.
+         * Holder information about user.
          *
          * @return user info object
          */
@@ -783,7 +783,7 @@ public class Google {
         }
 
         /**
-         * Get application folder identifier on Google Drive.
+         * Holder application folder identifier on Google Drive.
          *
          * @return Drive folder identifier.
          */

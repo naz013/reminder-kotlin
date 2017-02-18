@@ -93,7 +93,7 @@ public class Dropbox {
     }
 
     /**
-     * Get Dropbox user name.
+     * Holder Dropbox user name.
      *
      * @return String user name
      */
@@ -108,7 +108,7 @@ public class Dropbox {
     }
 
     /**
-     * Get user all apace on Dropbox.
+     * Holder user all apace on Dropbox.
      *
      * @return Long - user quota
      */

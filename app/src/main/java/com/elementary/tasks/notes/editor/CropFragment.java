@@ -60,7 +60,7 @@ public class CropFragment extends BitmapFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = CropFragmentBinding.inflate(inflater, container, false);
-        binding.background.setBackgroundColor(new ThemeUtil(mContext).getBackgroundStyle());
+        binding.background.setBackgroundColor(ThemeUtil.getInstance(mContext).getBackgroundStyle());
         initControls();
         loadImage();
         return binding.getRoot();
@@ -79,7 +79,7 @@ public class CropFragment extends BitmapFragment {
     }
 
     private void initControls() {
-        if (new ThemeUtil(mContext).isDark()) {
+        if (ThemeUtil.getInstance(mContext).isDark()) {
             binding.rotateLeftButton.setImageResource(R.drawable.ic_rotate_left_white_24dp);
             binding.rotateRightButton.setImageResource(R.drawable.ic_rotate_right_white_24dp);
         } else {

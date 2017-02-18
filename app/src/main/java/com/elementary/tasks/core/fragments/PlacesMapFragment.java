@@ -23,10 +23,10 @@ import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -183,14 +183,14 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                     .title(title)
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
             float strokeWidth = 3f;
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(mRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(ViewUtils.getColor(mContext, circleColors[0]))
-                    .strokeColor(ViewUtils.getColor(mContext, circleColors[1])));
+                    .fillColor(mColor.getColor(marker.getFillColor()))
+                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
             if (animate) {
                 animate(pos);
             }
@@ -301,7 +301,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         mRadius = prefs.getRadius();
         mMapType = prefs.getMapType();
 
-        mColor = new ThemeUtil(mContext);
+        mColor = ThemeUtil.getInstance(mContext);
         isDark = mColor.isDark();
 
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
@@ -443,7 +443,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         for (int i = 0; i < ThemeUtil.NUM_OF_MARKERS; i++) {
             ImageButton ib = new ImageButton(mContext);
             ib.setBackgroundResource(android.R.color.transparent);
-            ib.setImageResource(new ThemeUtil(mContext).getMarkerStyle(i));
+            ib.setImageResource(mColor.getMarkerStyle(i));
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

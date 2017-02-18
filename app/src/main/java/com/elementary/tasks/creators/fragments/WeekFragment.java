@@ -214,7 +214,7 @@ public class WeekFragment extends RepeatableTypeFragment {
     }
 
     private void setToggleTheme() {
-        ThemeUtil cs = new ThemeUtil(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(mContext);
         binding.mondayCheck.setBackgroundDrawable(cs.toggleDrawable());
         binding.tuesdayCheck.setBackgroundDrawable(cs.toggleDrawable());
         binding.wednesdayCheck.setBackgroundDrawable(cs.toggleDrawable());

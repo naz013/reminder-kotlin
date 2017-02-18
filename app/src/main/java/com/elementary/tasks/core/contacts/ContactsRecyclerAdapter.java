@@ -171,7 +171,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     @BindingAdapter({"loadContactImage"})
     public static void loadImage(ImageView imageView, String v) {
-        boolean isDark = new ThemeUtil(imageView.getContext()).isDark();
+        boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         if (v == null) {
             imageView.setImageResource(isDark ? R.drawable.ic_perm_identity_white_24dp : R.drawable.ic_perm_identity_black_24dp);
             return;

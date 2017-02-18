@@ -185,7 +185,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
 
     @BindingAdapter({"loadNoteCard"})
     public static void loadNoteCard(CardView cardView, int color) {
-        cardView.setCardBackgroundColor(new ThemeUtil(cardView.getContext()).getNoteLightColor(color));
+        cardView.setCardBackgroundColor(ThemeUtil.getInstance(cardView.getContext()).getNoteLightColor(color));
         if (Module.isLollipop()) {
             cardView.setCardElevation(Configs.CARD_ELEVATION);
         }

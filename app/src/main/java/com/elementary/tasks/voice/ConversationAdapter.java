@@ -57,7 +57,7 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     ConversationAdapter(Context context) {
         this.mContext = context;
         mData = new LinkedList<>();
-        themeUtil = new ThemeUtil(context);
+        themeUtil = ThemeUtil.getInstance(context);
     }
 
     void setInsertListener(InsertCallback callback) {

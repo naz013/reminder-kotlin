@@ -33,7 +33,7 @@ public class Contacts {
     }
 
     /**
-     * Get photo of contact.
+     * Holder photo of contact.
      * @param contactId contact identifier.
      * @return Contact photo
      */
@@ -43,7 +43,7 @@ public class Contacts {
     }
 
     /**
-     * Get contact identifier by contact phoneNumber.
+     * Holder contact identifier by contact phoneNumber.
      * @param phoneNumber contact phoneNumber.
      * @param context application context.
      * @return Contact identifier
@@ -68,7 +68,7 @@ public class Contacts {
     }
 
     /**
-     * Get contact identifier by contact e-mail.
+     * Holder contact identifier by contact e-mail.
      * @param e_mail contact e-mail.
      * @param context application context.
      * @return Contact identifier
@@ -95,7 +95,7 @@ public class Contacts {
     }
 
     /**
-     * Get contact name by contact e_mail.
+     * Holder contact name by contact e_mail.
      * @param e_mail contact e-mail.
      * @param context application context.
      * @return Contact name
@@ -122,7 +122,7 @@ public class Contacts {
     }
 
     /**
-     * Get contact name by contact number.
+     * Holder contact name by contact number.
      * @param contactNumber contact number.
      * @param context application context.
      * @return Contact name
@@ -149,7 +149,7 @@ public class Contacts {
     }
 
     /**
-     * Get e=mail for contact.
+     * Holder e=mail for contact.
      * @param id contact identifier.
      * @return e-mail
      */
@@ -171,7 +171,7 @@ public class Contacts {
     }
 
     /**
-     * Get contact number by contact name.
+     * Holder contact number by contact name.
      * @param name contact name.
      * @param context application context.
      * @return Phone number

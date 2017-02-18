@@ -90,7 +90,7 @@ public class Language {
     }
 
     /**
-     * Get locale for tts.
+     * Holder locale for tts.
      * @param context application context.
      * @param birth flag for birthdays.
      * @return Locale

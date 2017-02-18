@@ -224,13 +224,13 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     .title(title)
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
+                    .fillColor(mColor.getColor(marker.getFillColor()))
+                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
             if (animate) animate(pos);
         }
     }
@@ -252,13 +252,13 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     .title(title)
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
+                    .fillColor(mColor.getColor(marker.getFillColor()))
+                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
             if (animate) animate(pos);
             return true;
         } else {
@@ -282,13 +282,13 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     .title(markerTitle)
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(true));
-            int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(lastPos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(circleColors[0]))
-                    .strokeColor(mColor.getColor(circleColors[1])));
+                    .fillColor(mColor.getColor(marker.getFillColor()))
+                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
             animate(lastPos);
         }
     }
@@ -307,7 +307,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
                     .draggable(true));
             if (markerStyle >= 0) {
-                int[] circleColors = mColor.getMarkerRadiusStyle(markerStyle);
+                ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
                 if (markerRadius == -1) {
                     markerRadius = Prefs.getInstance(mContext).getRadius();
                 }
@@ -315,8 +315,8 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                         .center(lastPos)
                         .radius(markerRadius)
                         .strokeWidth(strokeWidth)
-                        .fillColor(mColor.getColor(circleColors[0]))
-                        .strokeColor(mColor.getColor(circleColors[1])));
+                        .fillColor(mColor.getColor(marker.getFillColor()))
+                        .strokeColor(mColor.getColor(marker.getStrokeColor())));
             }
             animate(lastPos);
         }
@@ -428,7 +428,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initArgs();
-        mColor = new ThemeUtil(mContext);
+        mColor = ThemeUtil.getInstance(mContext);
         binding = FragmentMapBinding.inflate(inflater, container, false);
         final Prefs prefs = Prefs.getInstance(mContext);
         markerRadius = prefs.getRadius();

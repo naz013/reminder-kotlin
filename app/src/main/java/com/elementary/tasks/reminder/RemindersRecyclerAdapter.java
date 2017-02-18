@@ -68,7 +68,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public RemindersRecyclerAdapter(Context context, List<Reminder> list, FilterCallback callback) {
         this.mContext = context;
         this.mCallback = callback;
-        themeUtil = new ThemeUtil(context);
+        themeUtil = ThemeUtil.getInstance(context);
         mDataList = new ArrayList<>(list);
     }
 
@@ -97,7 +97,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         Reminder prevItem = null;
         try {
             prevItem = mDataList.get(position - 1);
-        } catch (ArrayIndexOutOfBoundsException e) {}
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
         if (!item.isActive() && position > 0 && (prevItem != null && prevItem.isActive())) {
             simpleDate = mContext.getString(R.string.disabled);
             listHeader.setText(simpleDate);
@@ -284,7 +284,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadItems"})
     public static void loadItems(LinearLayout container, List<ShopItem> shoppings) {
-        boolean isDark = new ThemeUtil(container.getContext()).isDark();
+        boolean isDark = ThemeUtil.getInstance(container.getContext()).isDark();
         container.setFocusableInTouchMode(false);
         container.setFocusable(false);
         container.removeAllViewsInLayout();
@@ -318,7 +318,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @BindingAdapter({"loadCard"})
     public static void loadCard(CardView cardView, String groupId) {
-        ThemeUtil cs = new ThemeUtil(cardView.getContext());
+        ThemeUtil cs = ThemeUtil.getInstance(cardView.getContext());
         GroupItem item = RealmDb.getInstance().getGroup(groupId);
         if (item != null) {
             cardView.setCardBackgroundColor(cs.getColor(cs.getCategoryColor(item.getColor())));

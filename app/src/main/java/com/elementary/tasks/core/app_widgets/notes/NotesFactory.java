@@ -43,7 +43,7 @@ public class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     NotesFactory(Context ctx, Intent intent) {
         mContext = ctx;
-        themeUtil = new ThemeUtil(ctx);
+        themeUtil = ThemeUtil.getInstance(ctx);
         int widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 

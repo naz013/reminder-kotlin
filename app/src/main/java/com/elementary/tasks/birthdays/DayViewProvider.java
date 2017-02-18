@@ -93,9 +93,9 @@ public class DayViewProvider {
         if (isReminders) loadReminders();
     }
 
-    public void loadBirthdays(){
+    private void loadBirthdays(){
         List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
-        ThemeUtil cs = new ThemeUtil(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int color = cs.getColor(cs.colorBirthdayCalendar());
         for (BirthdayItem item : list) {
             Date date = null;
@@ -120,7 +120,7 @@ public class DayViewProvider {
         }
     }
 
-    public void loadReminders(){
+    private void loadReminders(){
         List<GroupItem> allGroups = RealmDb.getInstance().getAllGroups();
         Map<String, Integer> map = new HashMap<>();
         for (GroupItem item : allGroups) {

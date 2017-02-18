@@ -13,7 +13,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        themeUtil = new ThemeUtil(this);
+        themeUtil = ThemeUtil.getInstance(this);
         setTheme(themeUtil.getStyle());
         if (Module.isLollipop()) {
             getWindow().setStatusBarColor(themeUtil.getColor(themeUtil.colorPrimaryDark()));
