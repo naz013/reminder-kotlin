@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.FragmentTimeOfDayLayoutBinding;
@@ -59,7 +58,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
         morningTime = binding.morningTime;
         morningTime.setOnClickListener(this);
 
-        is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
+        is24 = mPrefs.is24HourFormatEnabled();
 
         initMorningTime();
         initNoonTime();
@@ -69,7 +68,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initNoonTime() {
-        String noonTime = Prefs.getInstance(mContext).getNoonTime();
+        String noonTime = mPrefs.getNoonTime();
         Date date = null;
         try {
             date = format.parse(noonTime);
@@ -84,7 +83,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initEveningTime() {
-        String evening = Prefs.getInstance(mContext).getEveningTime();
+        String evening = mPrefs.getEveningTime();
         Date date = null;
         try {
             date = format.parse(evening);
@@ -99,7 +98,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initNightTime() {
-        String night = Prefs.getInstance(mContext).getNightTime();
+        String night = mPrefs.getNightTime();
         Date date = null;
         try {
             date = format.parse(night);
@@ -115,7 +114,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initMorningTime() {
-        String morning = Prefs.getInstance(mContext).getMorningTime();
+        String morning = mPrefs.getMorningTime();
         Date date = null;
         try {
             date = format.parse(morning);
@@ -147,7 +146,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            Prefs.getInstance(mContext).setMorningTime(time);
+            mPrefs.setMorningTime(time);
             morningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, morningHour, morningMinute, is24).show();
     }
@@ -160,7 +159,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            Prefs.getInstance(mContext).setNoonTime(time);
+            mPrefs.setNoonTime(time);
             dayTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, dayHour, dayMinute, is24).show();
     }
@@ -173,7 +172,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            Prefs.getInstance(mContext).setNightTime(time);
+            mPrefs.setNightTime(time);
             nightTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, nightHour, nightMinute, is24).show();
     }
@@ -186,7 +185,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            Prefs.getInstance(mContext).setEveningTime(time);
+            mPrefs.setEveningTime(time);
             eveningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, eveningHour, eveningMinute,is24).show();
     }

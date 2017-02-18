@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.services.GcmListenerService;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
@@ -60,24 +59,24 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void init24TimePrefs() {
-        binding.time24hourPrefs.setChecked(Prefs.getInstance(mContext).is24HourFormatEnabled());
+        binding.time24hourPrefs.setChecked(mPrefs.is24HourFormatEnabled());
         binding.time24hourPrefs.setOnClickListener(view -> change24Prefs());
     }
 
     private void change24Prefs() {
         boolean is24 = binding.time24hourPrefs.isChecked();
-        Prefs.getInstance(mContext).set24HourFormatEnabled(!is24);
+        mPrefs.set24HourFormatEnabled(!is24);
         binding.time24hourPrefs.setChecked(!is24);
     }
 
     private void initGcmPrefs() {
-        binding.gcmPrefs.setChecked(Prefs.getInstance(mContext).isGcmEnabled());
+        binding.gcmPrefs.setChecked(mPrefs.isGcmEnabled());
         binding.gcmPrefs.setOnClickListener(view -> changeGcmPrefs());
     }
 
     private void changeGcmPrefs() {
         boolean isChecked = binding.gcmPrefs.isChecked();
-        Prefs.getInstance(mContext).setGcmEnabled(!isChecked);
+        mPrefs.setGcmEnabled(!isChecked);
         binding.gcmPrefs.setChecked(!isChecked);
         if (!isChecked) {
             FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
@@ -92,7 +91,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private String getCurrentTheme() {
-        int theme = Prefs.getInstance(mContext).getAppTheme();
+        int theme = mPrefs.getAppTheme();
         if (theme == ThemeUtil.THEME_AUTO) return getString(R.string.auto);
         else if (theme == ThemeUtil.THEME_WHITE) return getString(R.string.light);
         else return getString(R.string.dark);
@@ -114,13 +113,11 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
                 android.R.layout.simple_list_item_single_choice, colors);
-        int initTheme = Prefs.getInstance(mContext).getAppTheme();
+        int initTheme = mPrefs.getAppTheme();
         mItemSelect = initTheme;
-        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
-            mItemSelect = which;
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            Prefs.getInstance(mContext).setAppTheme(mItemSelect);
+            mPrefs.setAppTheme(mItemSelect);
             dialog.dismiss();
             if (initTheme != mItemSelect) restartApp();
         });
@@ -148,29 +145,29 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void initThemeColor() {
-        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(Prefs.getInstance(mContext).getAppThemeColor()));
+        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(mPrefs.getAppThemeColor()));
         binding.themePrefs.setOnClickListener(mThemeClick);
     }
 
     private void initSmartFold() {
-        binding.smartFoldPrefs.setChecked(Prefs.getInstance(mContext).isFoldingEnabled());
+        binding.smartFoldPrefs.setChecked(mPrefs.isFoldingEnabled());
         binding.smartFoldPrefs.setOnClickListener(mFoldingClick);
     }
 
     private void initWearNotification() {
-        binding.wearPrefs.setChecked(Prefs.getInstance(mContext).isWearEnabled());
+        binding.wearPrefs.setChecked(mPrefs.isWearEnabled());
         binding.wearPrefs.setOnClickListener(mWearClick);
     }
 
     private void changeWearNotification() {
         boolean isChecked = binding.wearPrefs.isChecked();
-        Prefs.getInstance(mContext).setWearEnabled(!isChecked);
+        mPrefs.setWearEnabled(!isChecked);
         binding.wearPrefs.setChecked(!isChecked);
     }
 
     private void changeSmartFoldMode() {
         boolean isChecked = binding.smartFoldPrefs.isChecked();
-        Prefs.getInstance(mContext).setFoldingEnabled(!isChecked);
+        mPrefs.setFoldingEnabled(!isChecked);
         binding.smartFoldPrefs.setChecked(!isChecked);
     }
 }

@@ -12,7 +12,6 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.views.PrefsView;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsAdditionalBinding;
@@ -60,7 +59,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         initQuickSmsPrefs();
         initMessagesPrefs();
         binding.followReminderPrefs.setOnClickListener(mFollowClick);
-        binding.followReminderPrefs.setChecked(Prefs.getInstance(mContext).isFollowReminderEnabled());
+        binding.followReminderPrefs.setChecked(mPrefs.isFollowReminderEnabled());
         return binding.getRoot();
     }
 
@@ -73,7 +72,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     private void initQuickSmsPrefs() {
         mQuickSmsPrefs = binding.quickSMSPrefs;
         mQuickSmsPrefs.setOnClickListener(mQuickSmsClick);
-        mQuickSmsPrefs.setChecked(Prefs.getInstance(mContext).isQuickSmsEnabled());
+        mQuickSmsPrefs.setChecked(mPrefs.isQuickSmsEnabled());
     }
 
     private void initMissedTimePrefs() {
@@ -84,13 +83,13 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
 
     private void showTime() {
         binding.missedTimePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(Prefs.getInstance(mContext).getMissedReminderTime())));
+                String.valueOf(mPrefs.getMissedReminderTime())));
     }
 
     private void initMissedPrefs() {
         mMissedPrefs = binding.missedPrefs;
         mMissedPrefs.setOnClickListener(mMissedClick);
-        mMissedPrefs.setChecked(Prefs.getInstance(mContext).isMissedReminderEnabled());
+        mMissedPrefs.setChecked(mPrefs.isMissedReminderEnabled());
     }
 
     private void changeFollowPrefs() {
@@ -100,7 +99,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = binding.followReminderPrefs.isChecked();
         binding.followReminderPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setFollowReminderEnabled(!isChecked);
+        mPrefs.setFollowReminderEnabled(!isChecked);
     }
 
     private void changeMissedPrefs() {
@@ -110,7 +109,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = mMissedPrefs.isChecked();
         mMissedPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setMissedReminderEnabled(!isChecked);
+        mPrefs.setMissedReminderEnabled(!isChecked);
     }
 
     private void changeQuickSmsPrefs() {
@@ -120,7 +119,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = mQuickSmsPrefs.isChecked();
         mQuickSmsPrefs.setChecked(!isChecked);
-        Prefs.getInstance(mContext).setQuickSmsEnabled(!isChecked);
+        mPrefs.setQuickSmsEnabled(!isChecked);
     }
 
     private void showTimePickerDialog(){
@@ -145,12 +144,12 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int time = Prefs.getInstance(mContext).getMissedReminderTime();
+        int time = mPrefs.getMissedReminderTime();
         b.seekBar.setProgress(time);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(time)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            Prefs.getInstance(mContext).setMissedReminderTime(b.seekBar.getProgress());
+            mPrefs.setMissedReminderTime(b.seekBar.getProgress());
             showTime();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());

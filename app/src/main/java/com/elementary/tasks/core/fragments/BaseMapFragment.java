@@ -7,10 +7,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -33,6 +37,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 public abstract class BaseMapFragment extends Fragment {
 
     protected Activity mContext;
+    protected ThemeUtil mColor;
+    protected Prefs mPrefs;
 
     @Override
     public void onAttach(Context context) {
@@ -48,6 +54,13 @@ public abstract class BaseMapFragment extends Fragment {
         if (mContext == null) {
             mContext = activity;
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mColor = ThemeUtil.getInstance(mContext);
+        mPrefs = Prefs.getInstance(mContext);
     }
 
     protected BitmapDescriptor getDescriptor(int resId) {

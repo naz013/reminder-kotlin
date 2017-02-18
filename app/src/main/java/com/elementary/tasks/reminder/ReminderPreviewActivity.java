@@ -17,13 +17,12 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -155,7 +154,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             binding.type.setText(ReminderUtils.getTypeString(this, item.getType()));
             long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
             if (due > 0) {
-                binding.time.setText(TimeUtil.getFullDateTime(due, Prefs.getInstance(this).is24HourFormatEnabled(), false));
+                binding.time.setText(TimeUtil.getFullDateTime(due, mPrefs.is24HourFormatEnabled(), false));
                 String repeatStr = IntervalUtil.getInterval(this, item.getRepeatInterval());
                 if (Reminder.isBase(item.getType(), Reminder.BY_WEEK)) {
                     repeatStr = ReminderUtils.getRepeatString(this, item.getWeekdays());
@@ -187,7 +186,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             if (!TextUtils.isEmpty(melodyStr)) {
                 file = new File(melodyStr);
             } else {
-                String path = Prefs.getInstance(this).getMelodyFile();
+                String path = mPrefs.getMelodyFile();
                 if (path != null) {
                     file = new File(path);
                 } else {
@@ -247,7 +246,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void removeReminder() {
         if (RealmDb.getInstance().moveToTrash(item.getUuId())) {
-            EventControl control = EventControlImpl.getController(this, item.setRemoved(true));
+            EventControl control = EventControlFactory.getController(this, item.setRemoved(true));
             control.stop();
         }
         closeWindow();
@@ -281,7 +280,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
         int minute = 0;
         list = new ArrayList<>();
         List<String> time = new ArrayList<>();
-        boolean is24 = Prefs.getInstance(this).is24HourFormatEnabled();
+        boolean is24 = mPrefs.is24HourFormatEnabled();
         do {
             if (hour == 23 && minute == 30) {
                 hour = -1;
@@ -316,7 +315,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
         newItem.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
         newItem.setStartTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
         RealmDb.getInstance().saveObject(newItem);
-        EventControl control = EventControlImpl.getController(this, newItem);
+        EventControl control = EventControlFactory.getController(this, newItem);
         control.start();
         Toast.makeText(this, R.string.reminder_created, Toast.LENGTH_SHORT).show();
     }
@@ -344,7 +343,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void switchClick() {
-        EventControl control = EventControlImpl.getController(this, item);
+        EventControl control = EventControlFactory.getController(this, item);
         if (!control.onOff()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
@@ -354,7 +353,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
 
     private void initMap() {
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, Prefs.getInstance(this).getMarkerStyle(), themeUtil.isDark());
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, mPrefs.getMarkerStyle(), themeUtil.isDark());
         mGoogleMap.setCallback(mMapReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()

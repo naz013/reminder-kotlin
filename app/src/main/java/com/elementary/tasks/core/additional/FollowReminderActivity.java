@@ -24,7 +24,6 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
@@ -200,10 +199,10 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     private void initPrefs() {
-        mCalendar = Prefs.getInstance(this).isCalendarEnabled();
-        mStock = Prefs.getInstance(this).isStockCalendarEnabled();
+        mCalendar = mPrefs.isCalendarEnabled();
+        mStock = mPrefs.isStockCalendarEnabled();
         mTasks = mGoogleTasks != null;
-        mIs24Hour = Prefs.getInstance(this).is24HourFormatEnabled();
+        mIs24Hour = mPrefs.is24HourFormatEnabled();
     }
 
     private void initActionBar() {

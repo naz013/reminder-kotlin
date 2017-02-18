@@ -31,7 +31,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -134,11 +133,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onResume() {
         super.onResume();
-        if (Prefs.getInstance(this).isUiChanged()) {
-            Prefs.getInstance(this).setUiChanged(false);
+        if (mPrefs.isUiChanged()) {
+            mPrefs.setUiChanged(false);
             recreate();
         }
-        if (!Prefs.getInstance(this).isBetaWarmingShowed()) {
+        if (!mPrefs.isBetaWarmingShowed()) {
             showBetaDialog();
         }
         if (isRateDialogShowed()) {
@@ -148,10 +147,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private boolean isRateDialogShowed() {
-        Prefs prefs = Prefs.getInstance(this);
-        int count = prefs.getRateCount();
+        int count = mPrefs.getRateCount();
         count++;
-        prefs.setRateCount(count);
+        mPrefs.setRateCount(count);
         return count == 10;
     }
 
@@ -166,13 +164,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         builder.setNegativeButton(R.string.never, (dialogInterface, i) -> dialogInterface.dismiss());
         builder.setNeutralButton(R.string.later, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            Prefs.getInstance(MainActivity.this).setRateCount(0);
+            mPrefs.setRateCount(0);
         });
         builder.create().show();
     }
 
     private void showBetaDialog() {
-        Prefs.getInstance(this).setBetaWarmingShowed(true);
+        mPrefs.setBetaWarmingShowed(true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Beta");
         builder.setMessage("This version of application may work unstable!");
@@ -181,7 +179,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void showMainImage() {
-        String path = Prefs.getInstance(this).getImagePath();
+        String path = mPrefs.getImagePath();
         if (!path.isEmpty()) {
             String fileName = path;
             if (path.contains("=")) {
@@ -208,7 +206,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Prefs.getInstance(this).isAutoBackupEnabled() && Prefs.getInstance(this).isSettingsBackupEnabled()
+        if (mPrefs.isAutoBackupEnabled() && mPrefs.isSettingsBackupEnabled()
                 && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
             new BackupSettingTask(this).execute();
         }

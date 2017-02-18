@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.utils;
+package com.elementary.tasks.core.interfaces;
 
 /**
  * Copyright 2016 Nazar Suhovich

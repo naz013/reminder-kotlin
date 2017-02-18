@@ -65,10 +65,6 @@ public class Prefs extends SharedPrefs {
         putInt(MARKER_STYLE, value);
     }
 
-    public boolean hasScreenOrientation() {
-        return hasKey(SCREEN);
-    }
-
     public int getScreenOrientation() {
         return getInt(SCREEN);
     }
@@ -99,10 +95,6 @@ public class Prefs extends SharedPrefs {
 
     public void setBirthdayColor(int value) {
         putInt(BIRTH_COLOR, value);
-    }
-
-    public boolean hasAppTheme() {
-        return hasKey(APP_THEME);
     }
 
     public int getAppTheme() {

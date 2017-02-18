@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.core.utils.Constants;
@@ -145,7 +145,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                     break;
                 case 3:
                     if (RealmDb.getInstance().moveToTrash(item1.getUuId())) {
-                        EventControl control = EventControlImpl.getController(mContext, item1.setRemoved(true));
+                        EventControl control = EventControlFactory.getController(mContext, item1.setRemoved(true));
                         control.stop();
                         mAdapter.removeItem(position);
                         reloadView();
@@ -160,7 +160,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void switchReminder(int position) {
-        EventControl control = EventControlImpl.getController(mContext, mAdapter.getItem(position));
+        EventControl control = EventControlFactory.getController(mContext, mAdapter.getItem(position));
         if (!control.onOff()) {
             Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }

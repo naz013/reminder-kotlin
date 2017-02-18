@@ -8,7 +8,7 @@ import android.util.Base64;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.NoteItem;
@@ -276,7 +276,7 @@ public class BackupTool {
                         Reminder reminder = getReminder(file.toString(), null);
                         if (reminder.isRemoved() || !reminder.isActive()) continue;
                         realmDb.saveObject(reminder);
-                        EventControl control = EventControlImpl.getController(mContext, reminder);
+                        EventControl control = EventControlFactory.getController(mContext, reminder);
                         control.next();
                     }
                 }

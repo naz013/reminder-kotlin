@@ -10,7 +10,6 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ColorPickerView;
 
@@ -44,7 +43,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle(getString(R.string.theme_color));
-        int loaded = Prefs.getInstance(this).getAppThemeColor();
+        int loaded = mPrefs.getAppThemeColor();
         ColorPickerView pickerView = (ColorPickerView) findViewById(R.id.pickerView);
         pickerView.setListener(this);
         pickerView.setSelectedColor(loaded);
@@ -54,8 +53,8 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     }
 
     private void saveColor(int code) {
-        Prefs.getInstance(this).setAppThemeColor(code);
-        Prefs.getInstance(this).setUiChanged(true);
+        mPrefs.setAppThemeColor(code);
+        mPrefs.setUiChanged(true);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     }
 
     private void updateNotification() {
-        if (Prefs.getInstance(this).isSbNotificationEnabled()) {
+        if (mPrefs.isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
     }

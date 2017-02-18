@@ -12,7 +12,6 @@ import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.calendar.FlextCalendarFragment;
 import com.elementary.tasks.core.calendar.FlextListener;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
 
@@ -91,14 +90,14 @@ public class CalendarFragment extends BaseCalendarFragment {
         cal.setTimeInMillis(System.currentTimeMillis());
         args.putInt(FlextCalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1);
         args.putInt(FlextCalendarFragment.YEAR, cal.get(Calendar.YEAR));
-        if (Prefs.getInstance(mContext).getStartDay() == 0) {
+        if (mPrefs.getStartDay() == 0) {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.SUNDAY);
         } else {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.MONDAY);
         }
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark());
-        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, Prefs.getInstance(mContext).isCalendarImagesEnabled());
-        MonthImage monthImage = Prefs.getInstance(mContext).getCalendarImages();
+        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, mPrefs.isCalendarImagesEnabled());
+        MonthImage monthImage = mPrefs.getCalendarImages();
         LogUtil.d(TAG, "showCalendar: " + Arrays.toString(monthImage.getPhotos()));
         args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.getPhotos());
         calendarView.setArguments(args);
@@ -134,8 +133,8 @@ public class CalendarFragment extends BaseCalendarFragment {
         calendarView.setListener(listener);
         calendarView.refreshView();
         replaceFragment(calendarView, getString(R.string.calendar));
-        boolean isReminder = Prefs.getInstance(mContext).isRemindersInCalendarEnabled();
-        boolean isFeature = Prefs.getInstance(mContext).isFutureEventEnabled();
+        boolean isReminder = mPrefs.isRemindersInCalendarEnabled();
+        boolean isFeature = mPrefs.isFutureEventEnabled();
         calendarView.setEvents(new EventsDataProvider(mContext, isReminder, isFeature).getEvents());
         getActivity().invalidateOptionsMenu();
     }

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.views.ColorPickerView;
 import com.elementary.tasks.databinding.FragmentCalendarStyleBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
@@ -49,7 +49,7 @@ public abstract class FragmentStyle extends BaseSettingsFragment implements Colo
 
     void saveColor(int code) {
         saveToPrefs(code);
-//        UpdatesHelper.getInstance(this).updateCalendarWidget();
+        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
     }
 
     protected abstract void saveToPrefs(int code);

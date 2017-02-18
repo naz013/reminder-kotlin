@@ -29,7 +29,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
@@ -200,7 +199,7 @@ public class NotesFragment extends BaseNavigationFragment {
                 break;
             case R.id.action_list:
                 enableGrid = !enableGrid;
-                Prefs.getInstance(mContext).setNotesGridEnabled(enableGrid);
+                mPrefs.setNotesGridEnabled(enableGrid);
                 showData();
                 getActivity().invalidateOptionsMenu();
                 break;
@@ -238,7 +237,7 @@ public class NotesFragment extends BaseNavigationFragment {
             } else if (which == 3) {
                 value = Constants.ORDER_NAME_Z_A;
             }
-            Prefs.getInstance(mContext).setNoteOrder(value);
+            mPrefs.setNoteOrder(value);
             dialog.dismiss();
             showData();
         });
@@ -259,12 +258,12 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void showData() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-        enableGrid = Prefs.getInstance(mContext).isNotesGridEnabled();
+        enableGrid = mPrefs.isNotesGridEnabled();
         if (enableGrid) {
             layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         }
         binding.recyclerView.setLayoutManager(layoutManager);
-        mDataList = RealmDb.getInstance().getAllNotes(Prefs.getInstance(mContext).getNoteOrder());
+        mDataList = RealmDb.getInstance().getAllNotes(mPrefs.getNoteOrder());
         mAdapter = new NotesRecyclerAdapter(mDataList, mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
@@ -282,7 +281,6 @@ public class NotesFragment extends BaseNavigationFragment {
             deleteAll();
             showData();
         });
-
         AlertDialog dialog = builder.create();
         dialog.show();
     }

@@ -17,14 +17,13 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -194,7 +193,7 @@ public class NotePreviewActivity extends ThemedActivity {
     private void showReminder() {
         mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
         if (mReminder != null){
-            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), Prefs.getInstance(this).is24HourFormatEnabled());
+            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), mPrefs.is24HourFormatEnabled());
             binding.reminderTime.setText(dateTime);
             binding.reminderContainer.setVisibility(View.VISIBLE);
         }
@@ -278,7 +277,7 @@ public class NotePreviewActivity extends ThemedActivity {
         builder.setMessage(R.string.delete_this_reminder);
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
-            EventControl control = EventControlImpl.getController(this, mReminder);
+            EventControl control = EventControlFactory.getController(this, mReminder);
             control.stop();
             RealmDb.getInstance().deleteReminder(mReminder.getUuId());
             binding.reminderContainer.setVisibility(View.GONE);

@@ -19,7 +19,6 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PicassoTool;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
@@ -154,8 +153,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private void initRadios() {
         binding.defaultCheck.setOnCheckedChangeListener(this);
         binding.noneCheck.setOnCheckedChangeListener(this);
-        position = Prefs.getInstance(this).getImageId();
-        String path = Prefs.getInstance(this).getImagePath();
+        position = mPrefs.getImageId();
+        String path = mPrefs.getImagePath();
         if (path.matches(NONE_PHOTO)) {
             binding.noneCheck.setChecked(true);
         } else if (position == -1 || path.matches(DEFAULT_PHOTO)) {
@@ -182,7 +181,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         binding.fullImageView.setOnTouchListener((view, motionEvent) -> true);
         binding.downloadButton.setOnClickListener(view -> showDownloadDialog());
         binding.setToMonthButton.setOnClickListener(view -> showMonthDialog());
-        if (!Prefs.getInstance(this).isCalendarImagesEnabled()) {
+        if (!mPrefs.isCalendarImagesEnabled()) {
             binding.setToMonthButton.setVisibility(View.GONE);
         }
     }
@@ -266,9 +265,9 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void setImageFotMonth(int month) {
-        MonthImage monthImage = Prefs.getInstance(this).getCalendarImages();
+        MonthImage monthImage = mPrefs.getCalendarImages();
         monthImage.setPhoto(month, mSelectedItem.getId());
-        Prefs.getInstance(this).setCalendarImages(monthImage);
+        mPrefs.setCalendarImages(monthImage);
         hideImage();
     }
 
@@ -328,8 +327,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void setImageUrl(String imageUrl, int id) {
-        Prefs.getInstance(this).setImagePath(imageUrl);
-        Prefs.getInstance(this).setImageId(id);
+        mPrefs.setImagePath(imageUrl);
+        mPrefs.setImageId(id);
         if (mAdapter != null) mAdapter.deselectLast();
     }
 

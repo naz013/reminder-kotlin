@@ -231,6 +231,7 @@ class LoginActivity : AppCompatActivity() {
         builder.create().show()
     }
 
+    @Suppress("DEPRECATION")
     private fun setViewHTML(text: CheckBox, html: String) {
         val sequence = Html.fromHtml(html)
         val strBuilder = SpannableStringBuilder(sequence)

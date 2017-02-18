@@ -21,10 +21,9 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -156,7 +155,7 @@ public class TaskActivity extends ThemedActivity {
         if (item != null){
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
-            timeField.setText(TimeUtil.getTime(calendar.getTime(), Prefs.getInstance(this).is24HourFormatEnabled()));
+            timeField.setText(TimeUtil.getTime(calendar.getTime(), mPrefs.is24HourFormatEnabled()));
             isReminder = true;
         }
     }
@@ -387,7 +386,7 @@ public class TaskActivity extends ThemedActivity {
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
         RealmDb.getInstance().saveObject(reminder);
-        EventControl control = EventControlImpl.getController(this, reminder);
+        EventControl control = EventControlFactory.getController(this, reminder);
         control.start();
         return reminder.getUuId();
     }
@@ -478,7 +477,7 @@ public class TaskActivity extends ThemedActivity {
     };
 
     protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute, Prefs.getInstance(this).is24HourFormatEnabled());
+        return new TimePickerDialog(this, myCallBack, mHour, mMinute, mPrefs.is24HourFormatEnabled());
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
@@ -488,7 +487,7 @@ public class TaskActivity extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            timeField.setText(TimeUtil.getTime(c.getTime(), Prefs.getInstance(TaskActivity.this).is24HourFormatEnabled()));
+            timeField.setText(TimeUtil.getTime(c.getTime(), mPrefs.is24HourFormatEnabled()));
         }
     };
 

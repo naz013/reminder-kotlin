@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
@@ -91,7 +91,7 @@ public class ShopFragment extends TypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        EventControl control = EventControlImpl.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(mContext, reminder);
         if (control.start()) {
             return true;
         } else {

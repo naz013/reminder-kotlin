@@ -27,7 +27,6 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -100,8 +99,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastPos;
     private float strokeWidth = 3f;
-
-    private ThemeUtil mColor;
 
     private MapListener mListener;
     private MapCallback mCallback;
@@ -213,7 +210,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mMap != null) {
             markerRadius = radius;
             if (markerRadius == -1)
-                markerRadius = Prefs.getInstance(mContext).getRadius();
+                markerRadius = mPrefs.getRadius();
             if (clear) mMap.clear();
             if (title == null || title.matches("")) title = pos.toString();
             if (!Module.isPro()) markerStyle = 5;
@@ -239,7 +236,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mMap != null) {
             markerRadius = radius;
             if (markerRadius == -1) {
-                markerRadius = Prefs.getInstance(mContext).getRadius();
+                markerRadius = mPrefs.getRadius();
             }
             if (!Module.isPro()) markerStyle = 5;
             this.markerStyle = markerStyle;
@@ -270,7 +267,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     public void recreateMarker(int radius) {
         markerRadius = radius;
         if (markerRadius == -1)
-            markerRadius = Prefs.getInstance(mContext).getRadius();
+            markerRadius = mPrefs.getRadius();
         if (mMap != null && lastPos != null) {
             mMap.clear();
             if (markerTitle == null || markerTitle.matches(""))
@@ -309,7 +306,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             if (markerStyle >= 0) {
                 ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
                 if (markerRadius == -1) {
-                    markerRadius = Prefs.getInstance(mContext).getRadius();
+                    markerRadius = mPrefs.getRadius();
                 }
                 mMap.addCircle(new CircleOptions()
                         .center(lastPos)
@@ -383,7 +380,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mContext == null) {
             return;
         }
-        if (!Prefs.getInstance(mContext).isShowcase(SHOWCASE) && isBack) {
+        if (!mPrefs.isShowcase(SHOWCASE) && isBack) {
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
             config.setMaskColor(mColor.getColor(mColor.colorAccent()));
@@ -406,7 +403,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     mContext.getString(R.string.select_place_from_list),
                     mContext.getString(R.string.got_it));
             sequence.start();
-            Prefs.getInstance(mContext).setShowcase(SHOWCASE, true);
+            mPrefs.setShowcase(SHOWCASE, true);
         }
     }
 
@@ -420,7 +417,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             isBack = args.getBoolean(ENABLE_BACK, true);
             isZoom = args.getBoolean(ENABLE_ZOOM, true);
             isDark = args.getBoolean(THEME_MODE, false);
-            markerStyle = args.getInt(MARKER_STYLE, Prefs.getInstance(mContext).getMarkerStyle());
+            markerStyle = args.getInt(MARKER_STYLE, mPrefs.getMarkerStyle());
         }
     }
 
@@ -428,13 +425,11 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initArgs();
-        mColor = ThemeUtil.getInstance(mContext);
         binding = FragmentMapBinding.inflate(inflater, container, false);
-        final Prefs prefs = Prefs.getInstance(mContext);
-        markerRadius = prefs.getRadius();
-        mMapType = prefs.getMapType();
+        markerRadius = mPrefs.getRadius();
+        mMapType = mPrefs.getMapType();
         if (!Module.isPro()) {
-            markerStyle = prefs.getMarkerStyle();
+            markerStyle = mPrefs.getMarkerStyle();
         }
         isDark = mColor.isDark();
         setOnMapClickListener(onMapClickListener = latLng -> {
@@ -609,7 +604,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private void setMapType(int type) {
         if (mMap != null) {
             mMap.setMapType(type);
-            Prefs.getInstance(mContext).setMapType(type);
+            mPrefs.setMapType(type);
             ViewUtils.hideOver(layersContainer);
         }
     }

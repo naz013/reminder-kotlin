@@ -16,7 +16,6 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.MeasureUtils;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.BottomSheetLayoutBinding;
@@ -122,7 +121,7 @@ public class MapFragment extends BaseNavigationFragment {
 
     private void initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                Prefs.getInstance(mContext).getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
+                mPrefs.getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
         mGoogleMap.setCallback(mReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()

@@ -22,12 +22,11 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
@@ -67,8 +66,6 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     public static final String EVENT_KEY = "Events";
     private static final int CALENDAR_PERM = 500;
 
-    private FragmentEventsImportBinding binding;
-
     private RoboCheckBox eventsCheck;
     private Spinner eventCalendar;
     private RoboButton syncInterval;
@@ -79,7 +76,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentEventsImportBinding.inflate(inflater, container, false);
+        FragmentEventsImportBinding binding = FragmentEventsImportBinding.inflate(inflater, container, false);
         binding.button.setOnClickListener(this);
 
         syncInterval = binding.syncInterval;
@@ -89,7 +86,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         RoboCheckBox autoCheck = binding.autoCheck;
         eventsCheck.setOnCheckedChangeListener(this);
         autoCheck.setOnCheckedChangeListener(this);
-        autoCheck.setChecked(Prefs.getInstance(mContext).isAutoEventsCheckEnabled());
+        autoCheck.setChecked(mPrefs.isAutoEventsCheckEnabled());
 
         if (autoCheck.isChecked()) syncInterval.setEnabled(true);
         else syncInterval.setEnabled(false);
@@ -108,9 +105,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
                 mContext.getString(R.string.one_day),
                 mContext.getString(R.string.two_days)};
 
-        builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> {
-            mItemSelect = item;
-        });
+        builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> mItemSelect = item);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             saveIntervalPrefs();
             dialog.dismiss();
@@ -123,22 +118,22 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
     private void saveIntervalPrefs() {
         if (mItemSelect == 0) {
-            Prefs.getInstance(mContext).setAutoCheckInterval(1);
+            mPrefs.setAutoCheckInterval(1);
         } else if (mItemSelect == 1) {
-            Prefs.getInstance(mContext).setAutoCheckInterval(6);
+            mPrefs.setAutoCheckInterval(6);
         } else if (mItemSelect == 2) {
-            Prefs.getInstance(mContext).setAutoCheckInterval(12);
+            mPrefs.setAutoCheckInterval(12);
         } else if (mItemSelect == 3) {
-            Prefs.getInstance(mContext).setAutoCheckInterval(24);
+            mPrefs.setAutoCheckInterval(24);
         } else if (mItemSelect == 4) {
-            Prefs.getInstance(mContext).setAutoCheckInterval(48);
+            mPrefs.setAutoCheckInterval(48);
         }
         new AlarmReceiver().enableEventCheck(mContext);
     }
 
     private int getIntervalPosition() {
         int position;
-        int interval = Prefs.getInstance(mContext).getAutoCheckInterval();
+        int interval = mPrefs.getAutoCheckInterval();
         switch (interval){
             case 1:
                 position = 0;
@@ -228,12 +223,12 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         if (eventsCheck.isChecked()) {
             int selectedPosition = eventCalendar.getSelectedItemPosition() - 1;
             map.put(EVENT_KEY, list.get(selectedPosition).getId());
-            boolean isEnabled = Prefs.getInstance(mContext).isCalendarEnabled();
+            boolean isEnabled = mPrefs.isCalendarEnabled();
             if (!isEnabled) {
-                Prefs.getInstance(mContext).setCalendarEnabled(true);
-                Prefs.getInstance(mContext).setCalendarId(list.get(selectedPosition).getId());
+                mPrefs.setCalendarEnabled(true);
+                mPrefs.setCalendarId(list.get(selectedPosition).getId());
             }
-            Prefs.getInstance(mContext).setEventsCalendar(list.get(selectedPosition).getId());
+            mPrefs.setEventsCalendar(list.get(selectedPosition).getId());
         }
 
         new Import(mContext).execute(map);
@@ -280,19 +275,19 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void autoCheck(boolean isChecked) {
-        Prefs.getInstance(mContext).setAutoEventsCheckEnabled(isChecked);
+        mPrefs.setAutoEventsCheckEnabled(isChecked);
         syncInterval.setEnabled(isChecked);
         AlarmReceiver alarm = new AlarmReceiver();
         if (isChecked) alarm.enableEventCheck(mContext);
         else alarm.cancelEventCheck(mContext);
     }
 
-    public class Import extends AsyncTask<HashMap<String, Integer>, Void, Integer> {
+    private class Import extends AsyncTask<HashMap<String, Integer>, Void, Integer> {
 
         private Context mContext;
         private ProgressDialog dialog;
 
-        public Import(Context context) {
+        Import(Context context) {
             this.mContext = context;
         }
 
@@ -370,7 +365,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
             RealmDb.getInstance().saveObject(reminder);
-            EventControl control = EventControlImpl.getController(mContext, reminder);
+            EventControl control = EventControlFactory.getController(mContext, reminder);
             control.start();
             CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
             RealmDb.getInstance().saveObject(event);

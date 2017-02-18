@@ -17,7 +17,6 @@ import com.elementary.tasks.birthdays.DayViewProvider;
 import com.elementary.tasks.birthdays.EventsItem;
 import com.elementary.tasks.birthdays.EventsPagerItem;
 import com.elementary.tasks.core.utils.Configs;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentDayViewBinding;
 
@@ -147,10 +146,9 @@ public class DayViewFragment extends BaseCalendarFragment {
 
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        Prefs prefs = Prefs.getInstance(mContext);
-        String time = prefs.getBirthdayTime();
-        boolean isFeature = prefs.isFutureEventEnabled();
-        boolean isRemindersEnabled = prefs.isRemindersInCalendarEnabled();
+        String time = mPrefs.getBirthdayTime();
+        boolean isFeature = mPrefs.isFutureEventEnabled();
+        boolean isRemindersEnabled = mPrefs.isRemindersInCalendarEnabled();
 
         DayViewProvider provider = new DayViewProvider(mContext);
         provider.setBirthdays(true);

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.FragmentMarkerStyleLayoutBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
@@ -85,7 +84,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
     }
 
     public void setUpRadio(){
-        int loaded = Prefs.getInstance(mContext).getMarkerStyle();
+        int loaded = mPrefs.getMarkerStyle();
         if (loaded == 0){
             red.setChecked(true);
         } else if (loaded == 1){
@@ -177,7 +176,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
     }
 
     void saveColor(int style) {
-        Prefs.getInstance(mContext).setMarkerStyle(style);
+        mPrefs.setMarkerStyle(style);
     }
 
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {

@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -142,7 +142,7 @@ public class QuickNoteCoordinator {
         long startTime = System.currentTimeMillis() + prefsTime;
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        EventControl control = EventControlImpl.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(mContext, reminder);
         control.start();
         EventBus.getDefault().post(new ReminderUpdateEvent());
         addNotificationCard(item);

@@ -26,7 +26,6 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ThemedImageButton;
@@ -92,8 +91,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private int markerStyle = -1;
     private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private double mLat, mLng;
-
-    private ThemeUtil mColor;
 
     private PlaceSearchTask mPlacesAsync;
     private LocationTracker mLocList;
@@ -171,7 +168,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return;
             mRadius = radius;
             if (mRadius == -1) {
-                mRadius = Prefs.getInstance(mContext).getRadius();
+                mRadius = mPrefs.getRadius();
             }
             if (clear) {
                 mMap.clear();
@@ -201,7 +198,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void recreateMarker(int radius) {
         mRadius = radius;
         if (mRadius == -1) {
-            mRadius = Prefs.getInstance(mContext).getRadius();
+            mRadius = mPrefs.getRadius();
         }
         if (mMap != null) {
             addMarkers();
@@ -257,7 +254,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     public void showShowcase() {
-        if (!Prefs.getInstance(mContext).isShowcase(SHOWCASE)) {
+        if (!mPrefs.isShowcase(SHOWCASE)) {
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
             config.setMaskColor(mColor.getColor(mColor.colorAccent()));
@@ -279,7 +276,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                     mContext.getString(R.string.select_place_from_list),
                     mContext.getString(R.string.got_it));
             sequence.start();
-            Prefs.getInstance(mContext).setShowcase(SHOWCASE, true);
+            mPrefs.setShowcase(SHOWCASE, true);
         }
     }
 
@@ -288,8 +285,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         if (args != null) {
             isZoom = args.getBoolean(ENABLE_ZOOM, true);
             isDark = args.getBoolean(THEME_MODE, false);
-            markerStyle = args.getInt(MARKER_STYLE,
-                    Prefs.getInstance(mContext).getMarkerStyle());
+            markerStyle = args.getInt(MARKER_STYLE, mPrefs.getMarkerStyle());
         }
     }
 
@@ -298,11 +294,8 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         initArgs();
         binding = FragmentPlacesMapBinding.inflate(inflater, container, false);
-        final Prefs prefs = Prefs.getInstance(mContext);
-        mRadius = prefs.getRadius();
-        mMapType = prefs.getMapType();
-
-        mColor = ThemeUtil.getInstance(mContext);
+        mRadius = mPrefs.getRadius();
+        mMapType = mPrefs.getMapType();
         isDark = mColor.isDark();
 
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
@@ -442,7 +435,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private void setMapType(int type) {
         if (mMap != null) {
             mMap.setMapType(type);
-            Prefs.getInstance(mContext).setMapType(type);
+            mPrefs.setMapType(type);
             ViewUtils.hideOver(layersContainer);
         }
     }

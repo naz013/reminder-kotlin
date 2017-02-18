@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -141,7 +141,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
 
     private void removeReminder() {
         if (RealmDb.getInstance().moveToTrash(mReminder.getUuId())) {
-            EventControl control = EventControlImpl.getController(this, mReminder.setRemoved(true));
+            EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
             control.stop();
         }
         closeWindow();
@@ -160,7 +160,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     }
 
     private void switchClick() {
-        EventControl control = EventControlImpl.getController(this, mReminder);
+        EventControl control = EventControlFactory.getController(this, mReminder);
         if (!control.onOff()) {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }

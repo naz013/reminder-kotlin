@@ -25,7 +25,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
 import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlImpl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.services.SendReceiver;
 import com.elementary.tasks.core.utils.Configs;
@@ -90,7 +90,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
         mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
-        mControl = EventControlImpl.getController(this, mReminder);
+        mControl = EventControlFactory.getController(this, mReminder);
         super.onCreate(savedInstanceState);
         LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(mReminder.getEventTime()));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
