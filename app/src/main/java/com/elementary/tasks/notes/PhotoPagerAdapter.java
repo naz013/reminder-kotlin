@@ -58,6 +58,9 @@ class PhotoPagerAdapter extends PagerAdapter {
 
     private void loadPhoto(ImageView imageView, int position) {
         NoteImage image = mPhotosUrl.get(position);
-        Glide.with(imageView.getContext()).load(image.getImage()).crossFade().into(imageView);
+        Glide.with(imageView.getContext().getApplicationContext())
+                .load(image.getImage())
+                .crossFade()
+                .into(imageView);
     }
 }
