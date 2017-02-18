@@ -124,9 +124,14 @@ public class Google {
             } else {
                 TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();
                 if (taskListItem != null) {
+                    item.setListId(taskListItem.getListId());
                     result = service.tasks().insert(taskListItem.getListId(), task).execute();
                 } else {
                     result = service.tasks().insert("@default", task).execute();
+                    TaskList list = service.tasklists().get("@default").execute();
+                    if (list != null) {
+                        item.setListId(list.getId());
+                    }
                 }
             }
             if (result != null) {
@@ -148,6 +153,7 @@ public class Google {
         }
 
         public void deleteTask(TaskItem item) throws IOException {
+            if (item.getListId() == null) return;
             service.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
 
