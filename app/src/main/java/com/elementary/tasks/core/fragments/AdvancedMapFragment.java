@@ -643,7 +643,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     public void onItemLongClicked(int position, View view) {
 
                     }
-                });
+                }, null);
                 placesList.setAdapter(placeRecyclerAdapter);
             }
         } else {
@@ -651,7 +651,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 emptyItem.setVisibility(View.GONE);
                 placesList.setVisibility(View.VISIBLE);
                 placesList.setAdapter(placeRecyclerAdapter);
-                addMarkers(placeRecyclerAdapter.getData());
+                addMarkers(placeRecyclerAdapter.getUsedData());
             } else {
                 placesList.setVisibility(View.GONE);
                 emptyItem.setVisibility(View.VISIBLE);
