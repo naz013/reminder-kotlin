@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.ListItemTaskItemCardBinding;
 import com.elementary.tasks.reminder.models.ShopItem;
@@ -38,7 +37,6 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
 
     private Context mContext;
     private List<ShopItem> mDataList = new ArrayList<>();
-    private boolean isDark;
     private ActionListener listener;
     private boolean onBind;
 
@@ -46,7 +44,6 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
         this.mContext = context;
         this.mDataList = new ArrayList<>(list);
         this.listener = listener;
-        isDark = ThemeUtil.getInstance(context).isDark();
         Collections.sort(mDataList, (item, t1) -> t1.getCreateTime().compareTo(item.getCreateTime()));
         sort(mDataList);
     }
@@ -133,11 +130,6 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
             holder.binding.itemCheck.setEnabled(false);
             holder.binding.shopText.setTextColor(ViewUtils.getColor(mContext, R.color.blackPrimary));
         } else {
-            if (isDark) {
-                holder.binding.clearButton.setImageResource(R.drawable.ic_clear_white_24dp);
-            } else {
-                holder.binding.clearButton.setImageResource(R.drawable.ic_clear_black_24dp);
-            }
             holder.binding.itemCheck.setVisibility(View.VISIBLE);
             holder.binding.clearButton.setVisibility(View.VISIBLE);
         }

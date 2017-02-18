@@ -26,14 +26,15 @@
             android:textSize="16sp"
             app:font_style="roboto_light" />
 
-        <ImageButton
+        <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_clear_white_24dp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:tb_icon="@drawable/ic_clear_black_24dp"
+            app:tb_icon_light="@drawable/ic_clear_white_24dp" />
     </RelativeLayout>
 </layout>

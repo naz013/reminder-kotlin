@@ -90,12 +90,13 @@
                             android:textSize="@dimen/create_note_text_size_secondary"
                             app:font_style="roboto_medium" />
 
-                        <ImageButton
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/discardReminder"
                             android:layout_width="@dimen/create_note_image_button_size"
                             android:layout_height="@dimen/create_note_image_button_size"
                             android:background="@null"
-                            android:src="@drawable/ic_clear_white_24dp" />
+                            app:tb_icon="@drawable/ic_clear_black_24dp"
+                            app:tb_icon_light="@drawable/ic_clear_white_24dp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -114,37 +115,41 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/colorButton"
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="16dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_palette_white_24dp" />
+                        app:tb_icon="@drawable/ic_palette_black_24dp"
+                        app:tb_icon_light="@drawable/ic_palette_white_24dp" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/imageButton"
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="16dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_image_white_24dp" />
+                        app:tb_icon="@drawable/ic_image_black_24dp"
+                        app:tb_icon_light="@drawable/ic_image_white_24dp" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/reminderButton"
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_alarm_white" />
+                        app:tb_icon="@drawable/ic_alarm"
+                        app:tb_icon_light="@drawable/ic_alarm_white" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/fontButton"
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_text_format_white_24dp" />
+                        app:tb_icon="@drawable/ic_text_format_black_24dp"
+                        app:tb_icon_light="@drawable/ic_text_format_white_24dp" />
 
                 </LinearLayout>
             </HorizontalScrollView>

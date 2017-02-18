@@ -106,55 +106,55 @@ public class ThemeUtil {
         int color;
         if (isDark()) {
             switch (code) {
-                case 0:
+                case Color.RED:
                     color = R.color.indigoAccent;
                     break;
-                case 1:
+                case Color.PURPLE:
                     color = R.color.amberAccent;
                     break;
-                case 2:
+                case Color.LIGHT_GREEN:
                     color = R.color.pinkAccent;
                     break;
-                case 3:
+                case Color.GREEN:
                     color = R.color.purpleAccent;
                     break;
-                case 4:
+                case Color.LIGHT_BLUE:
                     color = R.color.yellowAccent;
                     break;
-                case 5:
+                case Color.BLUE:
                     color = R.color.redAccent;
                     break;
-                case 6:
+                case Color.YELLOW:
                     color = R.color.redAccent;
                     break;
-                case 7:
+                case Color.ORANGE:
                     color = R.color.greenAccent;
                     break;
-                case 8:
+                case Color.CYAN:
                     color = R.color.purpleDeepAccent;
                     break;
-                case 9:
+                case Color.PINK:
                     color = R.color.blueLightAccent;
                     break;
-                case 10:
+                case Color.TEAL:
                     color = R.color.pinkAccent;
                     break;
-                case 11:
+                case Color.AMBER:
                     color = R.color.blueAccent;
                     break;
                 default:
                     if (Module.isPro()) {
                         switch (code) {
-                            case 12:
+                            case Color.DEEP_PURPLE:
                                 color = R.color.greenAccent;
                                 break;
-                            case 13:
+                            case Color.DEEP_ORANGE:
                                 color = R.color.purpleAccent;
                                 break;
-                            case 14:
+                            case Color.LIME:
                                 color = R.color.redAccent;
                                 break;
-                            case 15:
+                            case Color.INDIGO:
                                 color = R.color.pinkAccent;
                                 break;
                             default:
@@ -166,55 +166,55 @@ public class ThemeUtil {
             }
         } else {
             switch (code) {
-                case 0:
+                case Color.RED:
                     color = R.color.indigoAccent;
                     break;
-                case 1:
+                case Color.PURPLE:
                     color = R.color.amberAccent;
                     break;
-                case 2:
+                case Color.LIGHT_GREEN:
                     color = R.color.purpleDeepAccent;
                     break;
-                case 3:
+                case Color.GREEN:
                     color = R.color.cyanAccent;
                     break;
-                case 4:
+                case Color.LIGHT_BLUE:
                     color = R.color.pinkAccent;
                     break;
-                case 5:
+                case Color.BLUE:
                     color = R.color.yellowAccent;
                     break;
-                case 6:
+                case Color.YELLOW:
                     color = R.color.cyanAccent;
                     break;
-                case 7:
+                case Color.ORANGE:
                     color = R.color.pinkAccent;
                     break;
-                case 8:
+                case Color.CYAN:
                     color = R.color.redAccent;
                     break;
-                case 9:
+                case Color.PINK:
                     color = R.color.cyanAccent;
                     break;
-                case 10:
+                case Color.TEAL:
                     color = R.color.redAccent;
                     break;
-                case 11:
+                case Color.AMBER:
                     color = R.color.indigoAccent;
                     break;
                 default:
                     if (Module.isPro()) {
                         switch (code) {
-                            case 12:
+                            case Color.DEEP_PURPLE:
                                 color = R.color.greenLightAccent;
                                 break;
-                            case 13:
+                            case Color.DEEP_ORANGE:
                                 color = R.color.purpleDeepAccent;
                                 break;
-                            case 14:
+                            case Color.LIME:
                                 color = R.color.purpleAccent;
                                 break;
-                            case 15:
+                            case Color.INDIGO:
                                 color = R.color.pinkAccent;
                                 break;
                             default:

@@ -62,13 +62,14 @@
                         android:singleLine="true"
                         app:edit_font_style="roboto_light" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/addButton"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_alignParentRight="true"
                         android:background="@android:color/transparent"
-                        android:src="@drawable/ic_add_white_24dp" />
+                        app:tb_icon="@drawable/ic_add_black_24dp"
+                        app:tb_icon_light="@drawable/ic_add_white_24dp" />
 
                 </RelativeLayout>
             </LinearLayout>

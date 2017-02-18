@@ -185,13 +185,6 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         if (!Prefs.getInstance(this).isCalendarImagesEnabled()) {
             binding.setToMonthButton.setVisibility(View.GONE);
         }
-        if (themeUtil.isDark()) {
-            binding.downloadButton.setImageResource(R.drawable.ic_get_app_white_24dp);
-            binding.setToMonthButton.setImageResource(R.drawable.ic_calendar_white);
-        } else {
-            binding.downloadButton.setImageResource(R.drawable.ic_get_app_black_24dp);
-            binding.setToMonthButton.setImageResource(R.drawable.ic_calendar);
-        }
     }
 
     private void showMonthDialog() {

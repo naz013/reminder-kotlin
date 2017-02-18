@@ -192,23 +192,11 @@ public class FileExplorerActivity extends ThemedActivity {
     }
 
     private void initButtons() {
-        ImageButton playButton = binding.playButton;
-        ImageButton stopButton = binding.stopButton;
-        ImageButton pauseButton = binding.pauseButton;
         ImageButton clearButton = binding.clearButton;
-        if (isDark) {
-            playButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-            stopButton.setImageResource(R.drawable.ic_stop_white_24dp);
-            pauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-        } else {
-            playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-            stopButton.setImageResource(R.drawable.ic_stop_black_24dp);
-            pauseButton.setImageResource(R.drawable.ic_pause_black_24dp);
-        }
         binding.fab.setOnClickListener(mListener);
-        pauseButton.setOnClickListener(mListener);
-        stopButton.setOnClickListener(mListener);
-        playButton.setOnClickListener(mListener);
+        binding.pauseButton.setOnClickListener(mListener);
+        binding.stopButton.setOnClickListener(mListener);
+        binding.playButton.setOnClickListener(mListener);
         clearButton.setOnClickListener(mListener);
     }
 

@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
@@ -248,13 +247,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
             if (isChecked) binding.delayLayout.setVisibility(View.VISIBLE);
             else binding.delayLayout.setVisibility(View.GONE);
         });
-        ImageButton mapButton = binding.mapButton;
-        if (ThemeUtil.getInstance(mContext).isDark()){
-            mapButton.setImageResource(R.drawable.ic_map_white);
-        } else {
-            mapButton.setImageResource(R.drawable.ic_map);
-        }
-        mapButton.setOnClickListener(view -> {
+        binding.mapButton.setOnClickListener(view -> {
             if (binding.mapCheck.isChecked()) {
                 toggleMap();
             }

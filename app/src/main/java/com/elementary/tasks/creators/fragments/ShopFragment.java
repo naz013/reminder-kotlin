@@ -10,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlImpl;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
 import com.elementary.tasks.reminder.ShopListRecyclerAdapter;
@@ -125,10 +123,7 @@ public class ShopFragment extends TypeFragment {
             }
             return false;
         });
-        ImageButton addButton = binding.addButton;
-        if (ThemeUtil.getInstance(mContext).isDark()) addButton.setImageResource(R.drawable.ic_add_white_24dp);
-        else addButton.setImageResource(R.drawable.ic_add_black_24dp);
-        addButton.setOnClickListener(v -> addNewItem());
+        binding.addButton.setOnClickListener(v -> addNewItem());
         switchDate();
         editReminder();
         return binding.getRoot();
@@ -165,9 +160,7 @@ public class ShopFragment extends TypeFragment {
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, types);
         int selection = 0;
         if (isReminder) selection = 1;
-        builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> {
-            mSelectedPosition = which;
-        });
+        builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> mSelectedPosition = which);
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             makeAction();
             dialogInterface.dismiss();

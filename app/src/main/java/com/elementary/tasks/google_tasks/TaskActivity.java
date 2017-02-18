@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -101,7 +100,6 @@ public class TaskActivity extends ThemedActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_google_task);
         initToolbar();
         initFields();
-        setIcons();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -179,24 +177,6 @@ public class TaskActivity extends ThemedActivity {
                 listText.setText(listItem.getTitle());
                 setColor(listItem.getColor());
             }
-        }
-    }
-
-    private void setIcons() {
-        ImageView noteIcon = binding.noteIcon;
-        ImageView dateIcon = binding.dateIcon;
-        ImageView timeIcon = binding.timeIcon;
-        ImageView listIcon = binding.listIcon;
-        if (themeUtil.isDark()) {
-            noteIcon.setImageResource(R.drawable.ic_note_white);
-            dateIcon.setImageResource(R.drawable.ic_calendar_white);
-            timeIcon.setImageResource(R.drawable.ic_alarm_white);
-            listIcon.setImageResource(R.drawable.ic_view_list_white_24dp);
-        } else {
-            noteIcon.setImageResource(R.drawable.ic_note);
-            dateIcon.setImageResource(R.drawable.ic_calendar);
-            timeIcon.setImageResource(R.drawable.ic_alarm);
-            listIcon.setImageResource(R.drawable.ic_view_list_black_24dp);
         }
     }
 

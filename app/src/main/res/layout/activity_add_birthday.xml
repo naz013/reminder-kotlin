@@ -56,13 +56,14 @@
                         android:layout_width="match_parent"
                         android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/dateIcon"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
                             android:scaleType="center"
-                            android:src="@drawable/ic_calendar_white" />
+                            app:tb_icon="@drawable/ic_calendar"
+                            app:tb_icon_light="@drawable/ic_calendar_white" />
 
                         <com.elementary.tasks.core.views.roboto.RoboTextView
                             android:id="@+id/birthDate"
@@ -104,7 +105,7 @@
                     android:orientation="horizontal"
                     android:visibility="visible">
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/pickContact"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -113,8 +114,9 @@
                         android:clickable="false"
                         android:foreground="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        android:src="@drawable/ic_perm_identity_white_24dp"
-                        android:textSize="@dimen/add_birthday_text_size_primary" />
+                        android:textSize="@dimen/add_birthday_text_size_primary"
+                        app:tb_icon="@drawable/ic_perm_identity_black_24dp"
+                        app:tb_icon_light="@drawable/ic_perm_identity_white_24dp" />
 
                     <com.elementary.tasks.core.views.roboto.RoboEditText
                         android:id="@+id/phone"

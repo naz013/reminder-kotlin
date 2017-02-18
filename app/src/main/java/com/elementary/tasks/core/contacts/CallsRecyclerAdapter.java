@@ -41,6 +41,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdapter.ContactViewHolder> {
 
     private Context mContext;
@@ -49,7 +50,7 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
     private RecyclerClickListener mListener;
     private FilterCallback mCallback;
 
-    public CallsRecyclerAdapter(Context context, List<CallsItem> dataItemList, RecyclerClickListener listener, FilterCallback callback) {
+    CallsRecyclerAdapter(Context context, List<CallsItem> dataItemList, RecyclerClickListener listener, FilterCallback callback) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(dataItemList);
         this.mListener = listener;
@@ -73,11 +74,11 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
         return mDataList != null ? mDataList.size() : 0;
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
+    class ContactViewHolder extends RecyclerView.ViewHolder {
 
         CallsListItemBinding binding;
 
-        public ContactViewHolder(View itemView) {
+        ContactViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
             binding.setClick(view -> {

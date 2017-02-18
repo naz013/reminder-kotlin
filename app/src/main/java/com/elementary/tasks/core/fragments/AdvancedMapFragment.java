@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -33,6 +32,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.AddressAutoCompleteView;
+import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.databinding.FragmentMapBinding;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.PlacesRecyclerAdapter;
@@ -75,10 +75,10 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private CardView styleCard;
     private CardView placesListCard;
     private AddressAutoCompleteView cardSearch;
-    private ImageButton zoomOut;
-    private ImageButton backButton;
-    private ImageButton places;
-    private ImageButton markers;
+    private ThemedImageButton zoomOut;
+    private ThemedImageButton backButton;
+    private ThemedImageButton places;
+    private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
     private RecyclerView placesList;
     private LinearLayout emptyItem;
@@ -334,6 +334,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mMap != null) mMap.animateCamera(update);
     }
 
+    @SuppressWarnings("MissingPermission")
     public void moveToMyLocation() {
         if (mMap != null) {
             LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -349,8 +350,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
                         animate(pos);
                     }
-                } catch (IllegalStateException e) {
-
+                } catch (IllegalStateException ignored) {
                 }
             }
         }
@@ -488,12 +488,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         groupTwo = binding.groupTwo;
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
-        ImageView emptyImage = binding.emptyImage;
-        if (isDark) {
-            emptyImage.setImageResource(R.drawable.ic_directions_white_24dp);
-        } else {
-            emptyImage.setImageResource(R.drawable.ic_directions_black_24dp);
-        }
         placesList = binding.placesList;
         placesList.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -554,24 +548,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         markers = binding.markers;
         places = binding.places;
         backButton = binding.backButton;
-
-        if (isDark) {
-            cardClear.setImageResource(R.drawable.ic_clear_white_24dp);
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
-            layers.setImageResource(R.drawable.ic_layers_white_24dp);
-            myLocation.setImageResource(R.drawable.ic_my_location_white_24dp);
-            markers.setImageResource(R.drawable.ic_palette_white_24dp);
-            places.setImageResource(R.drawable.ic_directions_white_24dp);
-            backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_white_24dp);
-        } else {
-            cardClear.setImageResource(R.drawable.ic_clear_black_24dp);
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
-            layers.setImageResource(R.drawable.ic_layers_black_24dp);
-            myLocation.setImageResource(R.drawable.ic_my_location_black_24dp);
-            markers.setImageResource(R.drawable.ic_palette_black_24dp);
-            places.setImageResource(R.drawable.ic_directions_black_24dp);
-            backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_black_24dp);
-        }
 
         cardClear.setOnClickListener(this);
         zoomOut.setOnClickListener(this);
@@ -774,8 +750,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             if (isDark) zoomOut.setImageResource(R.drawable.ic_arrow_downward_white_24dp);
             else zoomOut.setImageResource(R.drawable.ic_arrow_downward_black_24dp);
         } else {
-            if (isDark) zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
-            else zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
+            restoreScaleButton();
         }
     }
 
@@ -850,10 +825,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     }
 
     private void restoreScaleButton() {
-        if (isDark) {
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
-        } else {
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
-        }
+        if (isDark) zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
+        else zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
     }
 }

@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding;
 import com.elementary.tasks.places.GooglePlaceItem;
@@ -75,9 +76,9 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private CardView styleCard;
     private CardView placesListCard;
     private RoboEditText cardSearch;
-    private ImageButton zoomOut;
-    private ImageButton places;
-    private ImageButton markers;
+    private ThemedImageButton zoomOut;
+    private ThemedImageButton places;
+    private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
     private RecyclerView placesList;
     private LinearLayout emptyItem;
@@ -329,13 +330,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         groupTwo = binding.groupTwo;
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
-
-        if (isDark) {
-            binding.emptyImage.setImageResource(R.drawable.ic_directions_white_24dp);
-        } else {
-            binding.emptyImage.setImageResource(R.drawable.ic_directions_black_24dp);
-        }
-
         placesList = binding.placesList;
         placesList.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -391,23 +385,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         ImageButton layers = binding.layers;
         markers = binding.markers;
         places = binding.places;
-        ImageButton backButton = binding.backButton;
-
-        if (isDark) {
-            cardClear.setImageResource(R.drawable.ic_search_white_24dp);
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_white_24dp);
-            layers.setImageResource(R.drawable.ic_layers_white_24dp);
-            markers.setImageResource(R.drawable.ic_palette_white_24dp);
-            places.setImageResource(R.drawable.ic_directions_white_24dp);
-            backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_white_24dp);
-        } else {
-            cardClear.setImageResource(R.drawable.ic_search_black_24dp);
-            zoomOut.setImageResource(R.drawable.ic_arrow_upward_black_24dp);
-            layers.setImageResource(R.drawable.ic_layers_black_24dp);
-            markers.setImageResource(R.drawable.ic_palette_black_24dp);
-            places.setImageResource(R.drawable.ic_directions_black_24dp);
-            backButton.setImageResource(R.drawable.ic_keyboard_arrow_left_black_24dp);
-        }
 
         cardClear.setOnClickListener(this);
         zoomOut.setOnClickListener(this);

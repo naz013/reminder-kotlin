@@ -837,7 +837,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         private String title;
         private int icon;
 
-        public SpinnerItem(String title, int icon) {
+        SpinnerItem(String title, int icon) {
             this.title = title;
             this.icon = icon;
         }

@@ -54,13 +54,15 @@
 
                     <TableRow android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/noteIcon"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
+                            android:background="@null"
                             android:scaleType="center"
-                            android:src="@drawable/ic_note" />
+                            app:tb_icon="@drawable/ic_note"
+                            app:tb_icon_light="@drawable/ic_note_white" />
 
                         <com.elementary.tasks.core.views.roboto.RoboEditText
                             android:id="@+id/noteField"
@@ -85,13 +87,15 @@
 
                     <TableRow android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/dateIcon"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
+                            android:background="@null"
                             android:scaleType="center"
-                            android:src="@drawable/ic_access_time_white_24dp" />
+                            app:tb_icon="@drawable/ic_access_time_black_24dp"
+                            app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
 
                         <com.elementary.tasks.core.views.roboto.RoboTextView
                             android:id="@+id/dateField"
@@ -113,13 +117,15 @@
 
                     <TableRow android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/timeIcon"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
+                            android:background="@null"
                             android:scaleType="center"
-                            android:src="@drawable/ic_alarm_white" />
+                            app:tb_icon="@drawable/ic_alarm"
+                            app:tb_icon_light="@drawable/ic_alarm_white" />
 
                         <com.elementary.tasks.core.views.roboto.RoboTextView
                             android:id="@+id/timeField"
@@ -141,13 +147,15 @@
 
                     <TableRow android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
+                        <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/listIcon"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginRight="15dp"
+                            android:background="@null"
                             android:scaleType="center"
-                            android:src="@drawable/ic_view_list_black_24dp" />
+                            app:tb_icon="@drawable/ic_view_list_black_24dp"
+                            app:tb_icon_light="@drawable/ic_view_list_white_24dp" />
 
                         <com.elementary.tasks.core.views.roboto.RoboTextView
                             android:id="@+id/listText"

@@ -12,7 +12,6 @@ import android.widget.PopupMenu;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.chart.PieSlice;
 import com.elementary.tasks.core.utils.MemoryUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.BackupItemLayoutBinding;
 import com.squareup.picasso.Picasso;
@@ -67,11 +66,6 @@ public class InfoAdapter {
 
     private void fillInfo(BackupItemLayoutBinding binding, UserItem model) {
         if (model != null) {
-            if (ThemeUtil.getInstance(mContext).isDark()) {
-                binding.moreButton.setImageResource(R.drawable.ic_more_vert_white_24dp);
-            } else {
-                binding.moreButton.setImageResource(R.drawable.ic_more_vert_black_24dp);
-            }
             binding.moreButton.setOnClickListener(view -> showPopup(model.kind, view));
             if (model.kind == UserInfoAsync.Info.Local) {
                 binding.userContainer.setVisibility(View.GONE);

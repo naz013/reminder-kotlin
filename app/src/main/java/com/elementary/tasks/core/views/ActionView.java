@@ -5,13 +5,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -44,7 +42,7 @@ public class ActionView extends LinearLayout {
     private RadioGroup radioGroup;
     private RoboRadioButton callAction;
     private RoboRadioButton messageAction;
-    private ImageButton selectNumber;
+    private ThemedImageButton selectNumber;
     private RoboEditText numberView;
     private InputMethodManager imm;
 
@@ -75,12 +73,7 @@ public class ActionView extends LinearLayout {
         setOrientation(VERTICAL);
         actionBlock = (LinearLayout) findViewById(R.id.actionBlock);
         actionBlock.setVisibility(View.GONE);
-        selectNumber = (ImageButton) findViewById(R.id.selectNumber);
-        if (ThemeUtil.getInstance(mContext).isDark()) {
-            selectNumber.setImageResource(R.drawable.ic_contacts_white);
-        } else {
-            selectNumber.setImageResource(R.drawable.ic_contacts);
-        }
+        selectNumber = (ThemedImageButton) findViewById(R.id.selectNumber);
 
         numberView = (RoboEditText) findViewById(R.id.numberView);
         numberView.setFocusableInTouchMode(true);

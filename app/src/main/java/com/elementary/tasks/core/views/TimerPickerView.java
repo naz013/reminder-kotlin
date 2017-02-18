@@ -3,12 +3,10 @@ package com.elementary.tasks.core.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
@@ -32,7 +30,7 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 public class TimerPickerView extends LinearLayout implements View.OnClickListener {
 
     private RoboTextView hoursView, minutesView, secondsView;
-    private ImageButton deleteButton;
+    private ThemedImageButton deleteButton;
 
     private String timeString = "000000";
 
@@ -73,12 +71,7 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
         hoursView = (RoboTextView) findViewById(R.id.hoursView);
         minutesView = (RoboTextView) findViewById(R.id.minutesView);
         secondsView = (RoboTextView) findViewById(R.id.secondsView);
-        deleteButton = (ImageButton) findViewById(R.id.deleteButton);
-        if (ThemeUtil.getInstance(context).isDark()) {
-            deleteButton.setImageResource(R.drawable.ic_backspace_white);
-        } else {
-            deleteButton.setImageResource(R.drawable.ic_backspace);
-        }
+        deleteButton = (ThemedImageButton) findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(v -> {
             timeString = timeString.substring(0, timeString.length() - 1);
             timeString = "0" + timeString;

@@ -29,14 +29,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/moreButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_more_vert_white_24dp" />
+                        app:tb_icon="@drawable/ic_more_vert_black_24dp"
+                        app:tb_icon_light="@drawable/ic_more_vert_white_24dp" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/sourceName"

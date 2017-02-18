@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -16,7 +15,6 @@ import android.widget.Spinner;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
@@ -140,12 +138,6 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         });
         repeatViewSeek.setProgress(0);
         repeatTitle.setText(String.valueOf(0));
-        ImageView iconView = (ImageView) findViewById(R.id.viewIcon);
-        if (ThemeUtil.getInstance(context).isDark()) {
-            iconView.setImageResource(R.drawable.ic_refresh_white);
-        } else {
-            iconView.setImageResource(R.drawable.ic_refresh);
-        }
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0);
             try {

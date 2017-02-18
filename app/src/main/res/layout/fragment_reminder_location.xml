@@ -22,10 +22,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
                     android:text="@string/delay_tracking"
                     android:textSize="@dimen/checkbox_text_size"
-                    android:layout_marginTop="16dp"
                     app:check_font_style="roboto_light" />
 
                 <LinearLayout
@@ -61,23 +61,25 @@
                         android:maxLines="1"
                         android:textSize="@dimen/create_text_size_normal" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/clearButton"
                         android:layout_width="@dimen/create_imagebutton_size"
                         android:layout_height="@dimen/create_imagebutton_size"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
                         android:layout_toLeftOf="@+id/mapButton"
-                        android:src="@drawable/ic_clear_white_24dp" />
+                        app:tb_icon="@drawable/ic_clear_black_24dp"
+                        app:tb_icon_light="@drawable/ic_clear_white_24dp" />
 
-                    <ImageButton
+                    <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/mapButton"
                         android:layout_width="@dimen/create_imagebutton_size"
                         android:layout_height="@dimen/create_imagebutton_size"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
-                        android:src="@drawable/ic_map_white" />
+                        app:tb_icon="@drawable/ic_map"
+                        app:tb_icon_light="@drawable/ic_map_white" />
 
                 </RelativeLayout>
 
