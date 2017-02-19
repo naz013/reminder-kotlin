@@ -27,6 +27,7 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
     private List<V> originalData = new ArrayList<>();
     private List<V> usedData = new ArrayList<>();
     private Filter<V, Q> filter;
+    private Q lastQuery;
 
     public FilterableAdapter(List<V> data, Filter<V, Q> filter) {
         this.originalData = data;
@@ -42,9 +43,61 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
         return usedData.get(position);
     }
 
-    public void filter(Q q) {
+    public void addItem(V v) {
+        originalData.add(v);
         if (filter != null) {
-            List<V> res = getFiltered(originalData, q);
+            if (lastQuery != null) {
+                if (filter.filter(v, lastQuery)) {
+                    addToList(v);
+                }
+            } else {
+                addToList(v);
+            }
+        } else {
+            notifyItemInserted(originalData.size() - 1);
+            notifyItemRangeChanged(0, originalData.size());
+        }
+    }
+
+    private void addToList(V v) {
+        usedData.add(v);
+        notifyItemInserted(usedData.size() - 1);
+        notifyItemRangeChanged(0, usedData.size());
+    }
+
+    public void addItem(int position, V v) {
+        if (position == originalData.size()) {
+            addItem(v);
+            return;
+        }
+        V current = originalData.get(position);
+        originalData.add(position, v);
+        if (filter != null) {
+            if (lastQuery != null) {
+                if (filter.filter(v, lastQuery)) {
+                    int index = usedData.indexOf(current);
+                    addToList(index, v);
+                }
+            } else {
+                int index = usedData.indexOf(current);
+                addToList(index, v);
+            }
+        } else {
+            notifyItemInserted(position);
+            notifyItemRangeChanged(0, originalData.size());
+        }
+    }
+
+    private void addToList(int position, V v) {
+        usedData.add(position, v);
+        notifyItemInserted(position);
+        notifyItemRangeChanged(0, usedData.size());
+    }
+
+    public void filter(Q q) {
+        this.lastQuery = q;
+        if (filter != null) {
+            List<V> res = getFiltered(q);
             animateTo(res);
             filter.onFilterEnd(res, res.size(), q);
         }
@@ -68,9 +121,10 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
         return usedData.size();
     }
 
-    private List<V> getFiltered(List<V> models, Q query) {
+    private List<V> getFiltered(Q query) {
+        if (query == null) return originalData;
         List<V> list = new ArrayList<>();
-        for (V model : models) {
+        for (V model : originalData) {
             if (filter.filter(model, query)) {
                 list.add(model);
             }
@@ -84,7 +138,7 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
         return model;
     }
 
-    private void addItem(int position, V model) {
+    private void add(int position, V model) {
         usedData.add(position, model);
         notifyItemInserted(position);
     }
@@ -114,7 +168,7 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
         for (int i = 0, count = newModels.size(); i < count; i++) {
             V model = newModels.get(i);
             if (!usedData.contains(model)) {
-                addItem(i, model);
+                add(i, model);
             }
         }
     }
