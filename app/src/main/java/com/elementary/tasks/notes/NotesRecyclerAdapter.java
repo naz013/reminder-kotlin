@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
@@ -28,7 +27,6 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,22 +45,17 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
+public class NotesRecyclerAdapter extends FilterableAdapter<NoteItem, String, NoteHolder> {
 
-    private List<NoteItem> mDataList;
     private SimpleListener mEventListener;
-    private FilterCallback mCallback;
 
-
-    public NotesRecyclerAdapter(List<NoteItem> list, FilterCallback callback) {
-        this.mDataList = list;
-        this.mCallback = callback;
+    public NotesRecyclerAdapter(List<NoteItem> list, Filter<NoteItem, String> filter) {
+        super(list, filter);
     }
 
     public void notifyChanged(int position, String id) {
         NoteItem newItem = RealmDb.getInstance().getNote(id);
-        mDataList.remove(position);
-        mDataList.add(position, newItem);
+        getUsedData().set(position, newItem);
         notifyItemChanged(position);
     }
 
@@ -74,96 +67,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
 
     @Override
     public void onBindViewHolder(final NoteHolder holder, final int position) {
-        holder.setData(mDataList.get(position));
-    }
-
-    public NoteItem getItem(int position) {
-        return mDataList.get(position);
-    }
-
-    public void filter(String q, List<NoteItem> list) {
-        List<NoteItem> res = filter(list, q);
-        animateTo(res);
-        if (mCallback != null) mCallback.filter(res.size());
-    }
-
-    private List<NoteItem> filter(List<NoteItem> mData, String q) {
-        q = q.toLowerCase();
-        if (mData == null) mData = new ArrayList<>();
-        List<NoteItem> filteredModelList = new ArrayList<>();
-        if (q.matches("")) {
-            filteredModelList = new ArrayList<>(mData);
-        } else {
-            filteredModelList.addAll(getFiltered(mData, q));
-        }
-        return filteredModelList;
-    }
-
-    private List<NoteItem> getFiltered(List<NoteItem> models, String query) {
-        List<NoteItem> list = new ArrayList<>();
-        for (NoteItem model : models) {
-            String text = model.getSummary();
-            if (text.toLowerCase().contains(query)) {
-                list.add(model);
-            }
-        }
-        return list;
-    }
-
-    public NoteItem remove(int position) {
-        final NoteItem model = mDataList.remove(position);
-        notifyItemRemoved(position);
-        return model;
-    }
-
-    private void addItem(int position, NoteItem model) {
-        mDataList.add(position, model);
-        notifyItemInserted(position);
-    }
-
-    private void moveItem(int fromPosition, int toPosition) {
-        final NoteItem model = mDataList.remove(fromPosition);
-        mDataList.add(toPosition, model);
-        notifyItemMoved(fromPosition, toPosition);
-    }
-
-    private void animateTo(List<NoteItem> models) {
-        applyAndAnimateRemovals(models);
-        applyAndAnimateAdditions(models);
-        applyAndAnimateMovedItems(models);
-    }
-
-    private void applyAndAnimateRemovals(List<NoteItem> newModels) {
-        for (int i = mDataList.size() - 1; i >= 0; i--) {
-            final NoteItem model = mDataList.get(i);
-            if (!newModels.contains(model)) {
-                remove(i);
-            }
-        }
-    }
-
-    private void applyAndAnimateAdditions(List<NoteItem> newModels) {
-        for (int i = 0, count = newModels.size(); i < count; i++) {
-            final NoteItem model = newModels.get(i);
-            if (!mDataList.contains(model)) {
-                addItem(i, model);
-            }
-        }
-    }
-
-    private void applyAndAnimateMovedItems(List<NoteItem> newModels) {
-        for (int toPosition = newModels.size() - 1; toPosition >= 0; toPosition--) {
-            final NoteItem model = newModels.get(toPosition);
-            final int fromPosition = mDataList.indexOf(model);
-            if (fromPosition >= 0 && fromPosition != toPosition) {
-                moveItem(fromPosition, toPosition);
-            }
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataList.size();
+        holder.setData(getItem(position));
     }
 
     @BindingAdapter({"loadNote"})
@@ -201,7 +105,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
                 .putExtra(Constants.INTENT_ID, key)
                 .putExtra(Constants.INTENT_DELETE, false)
                 .putExtra(Constants.INTENT_POSITION, position)));
-
     }
 
     @BindingAdapter({"loadImage"})

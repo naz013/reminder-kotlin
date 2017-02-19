@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.file_explorer.FilterCallback;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -39,7 +39,6 @@ import com.elementary.tasks.notes.NotesRecyclerAdapter;
 import com.elementary.tasks.notes.SyncNotes;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +63,6 @@ public class NotesFragment extends BaseNavigationFragment {
     private FragmentNotesBinding binding;
     private NotesRecyclerAdapter mAdapter;
     private boolean enableGrid = false;
-    private List<NoteItem> mDataList = new ArrayList<>();
 
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
@@ -101,18 +99,11 @@ public class NotesFragment extends BaseNavigationFragment {
                         break;
                     case 5:
                         RealmDb.getInstance().deleteNote(noteItem);
-                        mAdapter.remove(position);
+                        mAdapter.removeItem(position);
                         refreshView();
                         break;
                 }
             }, items);
-        }
-    };
-    private FilterCallback mFilterCallback = new FilterCallback() {
-        @Override
-        public void filter(int size) {
-            binding.recyclerView.scrollToPosition(0);
-            refreshView();
         }
     };
     private SearchView mSearchView = null;
@@ -121,7 +112,7 @@ public class NotesFragment extends BaseNavigationFragment {
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) mAdapter.filter(query, mDataList);
+            if (mAdapter != null) mAdapter.filter(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -130,7 +121,7 @@ public class NotesFragment extends BaseNavigationFragment {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) mAdapter.filter(newText, mDataList);
+            if (mAdapter != null) mAdapter.filter(newText);
             return false;
         }
     };
@@ -140,6 +131,18 @@ public class NotesFragment extends BaseNavigationFragment {
         return true;
     };
     private SyncNotes.SyncListener mSyncListener = b -> showData();
+    private FilterableAdapter.Filter<NoteItem, String> mFilterCallback = new FilterableAdapter.Filter<NoteItem, String>() {
+        @Override
+        public boolean filter(NoteItem noteItem, String query) {
+            return noteItem.getSummary().toLowerCase().contains(query.toLowerCase());
+        }
+
+        @Override
+        public void onFilterEnd(List<NoteItem> list, int size, String query) {
+            binding.recyclerView.scrollToPosition(0);
+            refreshView();
+        }
+    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -264,8 +267,7 @@ public class NotesFragment extends BaseNavigationFragment {
             layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         }
         binding.recyclerView.setLayoutManager(layoutManager);
-        mDataList = RealmDb.getInstance().getAllNotes(mPrefs.getNoteOrder());
-        mAdapter = new NotesRecyclerAdapter(mDataList, mFilterCallback);
+        mAdapter = new NotesRecyclerAdapter(RealmDb.getInstance().getAllNotes(mPrefs.getNoteOrder()), mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
