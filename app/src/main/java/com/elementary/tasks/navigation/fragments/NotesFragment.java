@@ -139,7 +139,7 @@ public class NotesFragment extends BaseNavigationFragment {
 
         @Override
         public void onFilterEnd(List<NoteItem> list, int size, String query) {
-            binding.recyclerView.scrollToPosition(0);
+            binding.recyclerView.smoothScrollToPosition(0);
             refreshView();
         }
     };

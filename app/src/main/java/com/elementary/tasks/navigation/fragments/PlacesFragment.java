@@ -97,7 +97,7 @@ public class PlacesFragment extends BaseNavigationFragment {
 
         @Override
         public void onFilterEnd(List<PlaceItem> list, int size, String query) {
-            binding.recyclerView.scrollToPosition(0);
+            binding.recyclerView.smoothScrollToPosition(0);
             refreshView();
         }
     };

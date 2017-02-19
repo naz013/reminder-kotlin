@@ -103,7 +103,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
         @Override
         public void onFilterEnd(List<Reminder> list, int size, String query) {
-            mRecyclerView.scrollToPosition(0);
+            mRecyclerView.smoothScrollToPosition(0);
             reloadView();
         }
     };

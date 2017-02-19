@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.ListItemMessageBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,13 +33,12 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder> {
+class TemplatesAdapter extends FilterableAdapter<TemplateItem, String, TemplatesAdapter.ViewHolder> {
 
-    private List<TemplateItem> mDataList = new ArrayList<>();
     private Context mContext;
 
-    public TemplatesAdapter(List<TemplateItem> mDataList, Context mContext) {
-        this.mDataList = mDataList;
+    TemplatesAdapter(Context mContext, List<TemplateItem> mDataList, Filter<TemplateItem, String> filter) {
+        super(mDataList, filter);
         this.mContext = mContext;
     }
 
@@ -50,12 +49,7 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.binding.setItem(mDataList.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return mDataList.size();
+        holder.binding.setItem(getItem(position));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -88,13 +82,11 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.View
     }
 
     private void deleteTemplate(int position) {
-        RealmDb.getInstance().deleteTemplates(mDataList.get(position));
-        mDataList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(0, mDataList.size());
+        RealmDb.getInstance().deleteTemplates(getItem(position));
+        removeItem(position);
     }
 
     private void openTemplate(int position) {
-        mContext.startActivity(new Intent(mContext, TemplateActivity.class).putExtra(Constants.INTENT_ID, mDataList.get(position).getKey()));
+        mContext.startActivity(new Intent(mContext, TemplateActivity.class).putExtra(Constants.INTENT_ID, getItem(position).getKey()));
     }
 }

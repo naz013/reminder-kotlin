@@ -65,8 +65,7 @@ public class PlacesRecyclerAdapter extends FilterableAdapter<PlaceItem, String, 
 
     public void deleteItem(int position) {
         RealmDb.getInstance().deletePlace(getUsedData().remove(position));
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(0, getUsedData().size());
+        removeItem(position);
     }
 
     @Override

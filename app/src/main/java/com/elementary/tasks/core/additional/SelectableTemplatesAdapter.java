@@ -30,18 +30,17 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder> {
+class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder> {
 
     private List<TemplateItem> mDataList = new ArrayList<>();
     private Context mContext;
     private int selectedPosition = -1;
     private ThemeUtil themeUtil;
 
-    public SelectableTemplatesAdapter(List<TemplateItem> mDataList, Context context) {
+    SelectableTemplatesAdapter(List<TemplateItem> mDataList, Context context) {
         this.mDataList = mDataList;
         this.mContext = context;
         themeUtil = ThemeUtil.getInstance(context);
-        setHasStableIds(true);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableT
         }
     }
 
-    public int getSelectedPosition() {
+    int getSelectedPosition() {
         return selectedPosition;
     }
 
@@ -84,7 +83,7 @@ public class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableT
         return mDataList.get(position);
     }
 
-    public void selectItem(int position) {
+    void selectItem(int position) {
         if (position == selectedPosition) return;
         if (selectedPosition != -1 && selectedPosition < mDataList.size()) {
             mDataList.get(selectedPosition).setSelected(false);
