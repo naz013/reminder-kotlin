@@ -1,18 +1,27 @@
 package com.elementary.tasks.navigation.settings.additional;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentTemplatesListBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
+
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,11 +44,74 @@ public class TemplatesFragment extends BaseSettingsFragment {
     private FragmentTemplatesListBinding binding;
     private TemplatesAdapter adapter;
 
+    private SearchView mSearchView = null;
+    private MenuItem mSearchMenu = null;
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            if (adapter != null) adapter.filter(query);
+            if (mSearchMenu != null) {
+                mSearchMenu.collapseActionView();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (adapter != null) adapter.filter(newText);
+            return false;
+        }
+    };
+
+    private SearchView.OnCloseListener mCloseListener = () -> {
+        showTemplates();
+        return true;
+    };
+    private FilterableAdapter.Filter<TemplateItem, String> mFilter = new FilterableAdapter.Filter<TemplateItem, String>() {
+        @Override
+        public boolean filter(TemplateItem templateItem, String query) {
+            return templateItem.getTitle().toLowerCase().contains(query.toLowerCase());
+        }
+
+        @Override
+        public void onFilterEnd(List<TemplateItem> list, int size, String query) {
+            binding.templatesList.smoothScrollToPosition(0);
+            refreshView();
+        }
+    };
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.templates_menu, menu);
+        mSearchMenu = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        if (mSearchMenu != null) {
+            mSearchView = (SearchView) mSearchMenu.getActionView();
+        }
+        if (mSearchView != null) {
+            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            mSearchView.setOnQueryTextListener(queryTextListener);
+            mSearchView.setOnCloseListener(mCloseListener);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTemplatesListBinding.inflate(inflater, container, false);
-        binding.fab.setOnClickListener(view -> openCreateScreen());
         initTemplateList();
         return binding.getRoot();
     }
@@ -61,12 +133,14 @@ public class TemplatesFragment extends BaseSettingsFragment {
         if (mCallback != null) {
             mCallback.onTitleChange(getString(R.string.messages));
             mCallback.onFragmentSelect(this);
+            mCallback.setClick(view -> openCreateScreen());
+            mCallback.onScrollChanged(binding.templatesList);
         }
         showTemplates();
     }
 
     private void showTemplates() {
-        adapter = new TemplatesAdapter(RealmDb.getInstance().getAllTemplates(), mContext);
+        adapter = new TemplatesAdapter(mContext, RealmDb.getInstance().getAllTemplates(), mFilter);
         binding.templatesList.setAdapter(adapter);
         refreshView();
     }
