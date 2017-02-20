@@ -71,7 +71,11 @@ public class ThemeUtil {
 
     public static ThemeUtil getInstance(Context context) {
         if (instance == null) {
-            instance = new ThemeUtil(context.getApplicationContext());
+            synchronized (ThemeUtil.class) {
+                if (instance == null) {
+                    instance = new ThemeUtil(context.getApplicationContext());
+                }
+            }
         }
         return instance;
     }
