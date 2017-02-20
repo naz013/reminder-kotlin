@@ -44,7 +44,9 @@ public class Prefs extends SharedPrefs {
 
     public static Prefs getInstance(Context context) {
         if (instance == null) {
-            instance = new Prefs(context.getApplicationContext());
+            synchronized (Prefs.class) {
+                if (instance == null) instance = new Prefs(context.getApplicationContext());
+            }
         }
         return instance;
     }

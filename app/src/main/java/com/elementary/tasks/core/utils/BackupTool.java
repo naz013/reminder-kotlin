@@ -52,7 +52,9 @@ public class BackupTool {
 
     public static BackupTool getInstance() {
         if (instance == null) {
-            instance = new BackupTool();
+            synchronized (BackupTool.class) {
+                if (instance == null) instance = new BackupTool();
+            }
         }
         return instance;
     }

@@ -70,7 +70,9 @@ public class RealmDb {
 
     public static RealmDb getInstance() {
         if (instance == null) {
-            instance = new RealmDb();
+            synchronized (RealmDb.class) {
+                if (instance == null) instance = new RealmDb();
+            }
         }
         return instance;
     }
