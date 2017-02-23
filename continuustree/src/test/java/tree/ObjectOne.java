@@ -33,6 +33,10 @@ public class ObjectOne implements TreeObject<String, Integer> {
         this.uuId = UUID.randomUUID().toString();
     }
 
+    public String getSummary() {
+        return summary;
+    }
+
     @Override
     public String getUniqueId() {
         return uuId;

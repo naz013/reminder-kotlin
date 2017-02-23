@@ -16,27 +16,6 @@ package com.naz013.tree;
  * limitations under the License.
  */
 
-public class Node<I, K, V extends TreeObject<I, K>> {
-
-    private V object;
-    private I uuId;
-    private K[] keys;
-
-    public Node(V object) {
-        this.uuId = object.getUniqueId();
-        this.keys = object.getKeys();
-        this.object = object;
-    }
-
-    public I getUuId() {
-        return uuId;
-    }
-
-    public K[] getKeys() {
-        return keys;
-    }
-
-    public V getObject() {
-        return object;
-    }
+public interface ElementFactory<I, K> {
+    Element<I, K> getElement(int level, K value, Element<I, K> parent, boolean isLast);
 }
