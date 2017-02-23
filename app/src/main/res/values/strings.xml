@@ -511,19 +511,19 @@
     <string name="personal">Personal</string>
     <string name="auto_call">Auto call</string>
     <string name="enable_making_phone_calls_automatically">Enable making phone calls automatically</string>
-    <string name="enable_sending_email_automatically">Enable sending e-mail automatically</string>
-    <string name="failed_to_recognize_your_command">Failed to recognize your command</string>
+    <string name="enable_sending_email_automatically">Enable sending email automatically</string>
+    <string name="failed_to_recognize_your_command">Failed to recognize your speech</string>
     <string name="update_available">Update available</string>
     <string name="receive_notifications_about_application_update">Receive notifications about application update</string>
     <string name="add_note">Add note</string>
     <string name="would_you_like_to_install_tts">Would you like to install Text-to-Speech engine?</string>
     <string name="install">Install</string>
-    <string name="all_reminders_were_disabled">All reminders were disabled</string>
+    <string name="all_reminders_were_disabled">All reminders are disabled</string>
     <string name="log_in">Log In</string>
     <string name="failed_to_login">Failed to login</string>
     <string name="would_you_like_to_import_birthdays">Would you like to import birthdays?</string>
     <string name="open_app">Open app</string>
-    <string name="i_accept"><![CDATA[I accept <a href=\\\'termsopen.com\\\'>Privacy Policy</a>]]></string>
+    <string name="i_accept"><![CDATA[I accept <a href=\'termsopen.com\'>Privacy Policy</a>]]></string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="original">Original</string>
     <string name="cropped">Cropped</string>
@@ -554,5 +554,20 @@
     <string name="seconds">seconds</string>
     <string name="_minutes">minutes</string>
     <string name="_hours">hours</string>
+    <string name="auto_language">Automatic language</string>
+    <string name="connect_to_cloud">Connect to cloud</string>
+    <string name="custom">Customize</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="delete_backup">Delete backup file</string>
+    <string name="delete_backup_file_when_remove_note">Delete backup file when remove note</string>
+    <string name="directions">Directions</string>
+    <string name="enable_reminder_preview">Enable preview of reminder</string>
+    <string name="encrypt">Encrypt</string>
+    <string name="header">Header</string>
+    <string name="i_use_transport">I use transport</string>
+    <string name="item">Item</string>
+    <string name="last_modified">Last modified</string>
+    <string name="list">List</string>
+    <string name="local_sync">Local sync</string>
 
 </resources>

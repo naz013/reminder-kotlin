@@ -17,6 +17,7 @@ import com.elementary.tasks.backups.InfoAdapter;
 import com.elementary.tasks.backups.UserInfoAsync;
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.cloud.Dropbox;
+import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
