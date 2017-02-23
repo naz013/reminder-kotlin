@@ -18,14 +18,16 @@ import java.util.List;
  * limitations under the License.
  */
 
-public interface ElementInterface<I, K, V extends TreeObject<I, K>> {
-    void add(V v);
+public interface ElementInterface<I, K> {
+    void add(K[] k, I i);
 
     void remove(K[] k);
 
-    void remove(V v);
+    void remove(K[] k, I i);
 
     List<I> get(K[] k);
+
+    List<I> getAll();
 
     int size();
 }

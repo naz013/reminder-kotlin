@@ -35,4 +35,6 @@ public interface TreeInterface<I, K, V extends TreeObject<I, K>>  {
     V get(I i);
 
     boolean contains(V v);
+
+    void clear();
 }
