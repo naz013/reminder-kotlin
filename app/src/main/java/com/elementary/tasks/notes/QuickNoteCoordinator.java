@@ -49,10 +49,12 @@ public class QuickNoteCoordinator {
 
     private Context mContext;
     private ActivityMainBinding binding;
+    private Callback mCallback;
 
-    public QuickNoteCoordinator(Context context, ActivityMainBinding binding) {
+    public QuickNoteCoordinator(Context context, ActivityMainBinding binding, Callback callback) {
         this.binding = binding;
         this.mContext = context;
+        this.mCallback = callback;
         this.binding.quickNoteContainer.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 if (isNoteVisible()) hideNoteView();
@@ -77,6 +79,7 @@ public class QuickNoteCoordinator {
     public void hideNoteView() {
         ViewUtils.hideReveal(binding.quickNoteContainer);
         binding.quickNoteView.removeAllViewsInLayout();
+        if (mCallback != null) mCallback.onClose();
     }
 
     private void showNoteView() {
@@ -91,6 +94,7 @@ public class QuickNoteCoordinator {
         if (Module.isLollipop()) binding.noteCard.setElevation(Configs.CARD_ELEVATION);
         this.binding.quickNoteView.addView(binding.getRoot());
         ViewUtils.slideInUp(mContext, binding.noteCard);
+        if (mCallback != null) mCallback.onOpen();
     }
 
     private void saveNote(NoteInputCardBinding binding) {
@@ -169,5 +173,11 @@ public class QuickNoteCoordinator {
     private void showInStatusBar(NoteItem item) {
         new Notifier(mContext).showNoteNotification(item);
         hideNoteView();
+    }
+
+    public interface Callback {
+        void onOpen();
+
+        void onClose();
     }
 }

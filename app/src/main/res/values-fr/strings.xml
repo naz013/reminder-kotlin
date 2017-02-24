@@ -549,7 +549,7 @@
     <string name="failed_to_login">Échec de connexion</string>
     <string name="would_you_like_to_import_birthdays">Would you like to import birthdays?</string>
     <string name="open_app">Open app</string>
-    <string name="i_accept"><![CDATA[J'accepte <a href=\'termsopen.com\'>Politique de confidentialité</a>]]></string>
+    <string name="i_accept"><![CDATA[J\'accepte <a href=\'termsopen.com\'>Politique de confidentialité</a>]]></string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="original">Original</string>
     <string name="cropped">Tondu</string>
