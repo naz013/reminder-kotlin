@@ -533,7 +533,7 @@
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
     <string name="decoding_images">Decoding images</string>
-    <string name="failed_to_sync_google_tasks">Failed to sync Google Tasks</string>
+    <string name="failed_to_sync_google_tasks">Failed to synchronize Google Tasks</string>
     <string name="syncing_places">Syncing places...</string>
     <string name="syncing_templates">Syncing message templates...</string>
     <string name="work">Work</string>
@@ -554,7 +554,7 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="original">Original</string>
     <string name="cropped">Cropped</string>
-    <string name="which_image_you_want_to_use">Which image you want to use?</string>
+    <string name="which_image_you_want_to_use">Which picture you want to use??</string>
     <string name="edited">Edited</string>
     <string name="pen">Pen</string>
     <string name="text">Text</string>
@@ -582,5 +582,6 @@
     <string name="_hours">hours</string>
     <string name="add_note">Add note</string>
     <string name="failed_to_recognize_your_command">Failed to recognize your speech</string>
+    <string name="opacity">Opacity</string>
 
 </resources>
