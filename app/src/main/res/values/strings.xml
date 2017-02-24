@@ -504,7 +504,7 @@
     <string name="dark">Dark</string>
     <string name="x_out_of_x" formatted="false">%d out of %d</string>
     <string name="decoding_images">Decoding images</string>
-    <string name="failed_to_sync_google_tasks">Failed to sync Google Tasks</string>
+    <string name="failed_to_sync_google_tasks">Failed to synchronize Google Tasks</string>
     <string name="syncing_places">Syncing places...</string>
     <string name="syncing_templates">Syncing message templates...</string>
     <string name="work">Work</string>
@@ -527,7 +527,7 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="original">Original</string>
     <string name="cropped">Cropped</string>
-    <string name="which_image_you_want_to_use">Which image you want to use?</string>
+    <string name="which_image_you_want_to_use">Which picture you want to use?</string>
     <string name="edited">Edited</string>
     <string name="pen">Pen</string>
     <string name="text">Text</string>
@@ -569,5 +569,15 @@
     <string name="last_modified">Last modified</string>
     <string name="list">List</string>
     <string name="local_sync">Local sync</string>
+    <string name="month">Month</string>
+    <string name="screen_orientation">Screen orientation</string>
+    <string name="select_melody">Select melody</string>
+    <string name="show_hidden">Show hidden</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="syncing_google_tasks">Syncing Google Tasks</string>
+    <string name="transparency">Transparency</string>
+    <string name="text_color">Text color</string>
+    <string name="previous">Previous</string>
+    <string name="preview">Preview</string>
 
 </resources>
