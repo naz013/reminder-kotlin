@@ -81,6 +81,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private int beforeSettings;
     private boolean isBackPressed;
     private long pressedTime;
+    private QuickNoteCoordinator.Callback mQuickCallback = new QuickNoteCoordinator.Callback() {
+        @Override
+        public void onOpen() {
+            binding.fab.setImageResource(R.drawable.ic_clear_white_24dp);
+        }
+
+        @Override
+        public void onClose() {
+            binding.fab.setImageResource(R.drawable.ic_add_white_24dp);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +103,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         });
         initActionBar();
         initNavigation();
-        mNoteView = new QuickNoteCoordinator(this, binding);
+        mNoteView = new QuickNoteCoordinator(this, binding, mQuickCallback);
         if (savedInstanceState != null) {
             openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current));
         } else if (getIntent().getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
@@ -233,7 +244,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         } else {
             showFab();
             binding.fab.setOnClickListener(view -> {
-                if (mNoteView.isNoteVisible()) mNoteView.hideNoteView();
+                if (mNoteView.isNoteVisible()) {
+                    mNoteView.hideNoteView();
+                    return;
+                }
                 listener.onClick(view);
             });
         }
