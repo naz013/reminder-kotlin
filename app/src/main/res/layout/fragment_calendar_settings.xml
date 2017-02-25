@@ -34,8 +34,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/today_color"
-                app:prefs_type="view"
-                app:prefs_view_resource="@drawable/drawable_blue" />
+                app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/selectedColorPrefs"
@@ -43,8 +42,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/birthdays_color"
-                app:prefs_type="view"
-                app:prefs_view_resource="@drawable/drawable_blue" />
+                app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/reminderInCalendarPrefs"
@@ -60,8 +58,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/reminders_color"
-                app:prefs_type="view"
-                app:prefs_view_resource="@drawable/drawable_blue" />
+                app:prefs_type="view" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/featureRemindersPrefs"
