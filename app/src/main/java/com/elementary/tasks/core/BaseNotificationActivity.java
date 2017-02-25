@@ -399,50 +399,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         return true;
     }
 
-    public void showNotification(int years, String name){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentTitle(name);
-        builder.setContentText(TimeUtil.getAgeFormatted(this, years));
-        builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
-        if (Module.isLollipop()) {
-            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
-        }
-        if (!isScreenResumed()) {
-            Uri soundUri = getSoundUri();
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-                mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
-            } else {
-                if (mPrefs.isSoundInSilentModeEnabled()) {
-                    mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
-                }
-            }
-        }
-        if (isVibrate()){
-            long[] pattern = new long[]{150, 86400000};
-            if (isBirthdayInfiniteVibration()){
-                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
-            }
-            builder.setVibrate(pattern);
-        }
-        if (Module.isPro()){
-            builder.setLights(getLedColor(), 500, 1000);
-        }
-        boolean isWear = mPrefs.isWearEnabled();
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
-        }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.notify(getId(), builder.build());
-        if (isWear) {
-            showWearNotification(name);
-        }
-    }
-
     protected void showMissedReminder(CallItem callItem, String name){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
@@ -727,7 +683,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         mSound.stop();
     }
 
-    private void showWearNotification(String secondaryText) {
+    protected void showWearNotification(String secondaryText) {
         if (Module.isJellyMR2()) {
             final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this);
             wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);

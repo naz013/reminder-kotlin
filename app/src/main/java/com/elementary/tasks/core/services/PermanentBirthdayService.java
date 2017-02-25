@@ -43,7 +43,6 @@ public class PermanentBirthdayService extends Service {
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        LogUtil.d(TAG, "onStartCommand: ");
         if (!Prefs.getInstance(getApplicationContext()).isBirthdayPermanentEnabled()) {
             hidePermanent();
         }

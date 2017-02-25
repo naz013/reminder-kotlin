@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
 import com.elementary.tasks.navigation.fragments.BaseFragment;
+import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
@@ -95,7 +96,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         }
     }
 
-    private void showBirthdayLcam(BirthdayItem birthdayItem) {
+    private void showBirthdayLcam(BirthdayItem birthdayItem, int position) {
         String[] items = {getString(R.string.edit), getString(R.string.delete)};
         Dialogues.showLCAM(mContext, item -> {
             switch (item){
@@ -104,10 +105,14 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     break;
                 case 1:
                     RealmDb.getInstance().deleteBirthday(birthdayItem);
-                    loadAdapter();
+                    reopenFragment();
                     break;
             }
         }, items);
+    }
+
+    private void reopenFragment() {
+        mCallback.replaceFragment(new DayViewFragment(), getString(R.string.events));;
     }
 
     private void editBirthday(BirthdayItem item) {
@@ -139,7 +144,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void showActionDialog(Reminder reminder) {
+    private void showActionDialog(Reminder reminder, int position) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.move_to_trash)};
         Dialogues.showLCAM(mContext, item -> {
@@ -154,7 +159,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     if (RealmDb.getInstance().moveToTrash(reminder.getUuId())) {
                         EventControl control = EventControlFactory.getController(mContext, reminder.setRemoved(true));
                         control.stop();
-                        loadAdapter();
+                        reopenFragment();
                     }
                     break;
             }
@@ -165,9 +170,9 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     public void onItemLongClicked(int position, View view) {
         Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
-            showBirthdayLcam((BirthdayItem) object);
+            showBirthdayLcam((BirthdayItem) object, position);
         } else if (object instanceof Reminder) {
-            showActionDialog((Reminder) object);
+            showActionDialog((Reminder) object, position);
         }
     }
 
