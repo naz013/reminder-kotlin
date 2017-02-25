@@ -11,6 +11,7 @@ import android.provider.CalendarContract;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.backdoor.simpleai.ObjectUtil;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -36,6 +37,8 @@ import java.util.TimeZone;
  */
 
 public class CalendarUtils {
+
+    private static final String TAG = "CalendarUtils";
 
     /**
      * Add event to calendar.
@@ -213,6 +216,7 @@ public class CalendarUtils {
                 list.add(new EventItem(title, description, rrule, rDate,
                         calendarId, allDay, dtStart, dtEnd, eventID));
             } while (c.moveToNext());
+            c.close();
         }
         return list;
     }
@@ -270,6 +274,11 @@ public class CalendarUtils {
         public long getId() {
             return id;
         }
+
+        @Override
+        public String toString() {
+            return ObjectUtil.getObjectPrint(this, EventItem.class);
+        }
     }
 
     public static class CalendarItem {
@@ -287,6 +296,11 @@ public class CalendarUtils {
 
         public int getId() {
             return id;
+        }
+
+        @Override
+        public String toString() {
+            return ObjectUtil.getObjectPrint(this, CalendarItem.class);
         }
     }
 }

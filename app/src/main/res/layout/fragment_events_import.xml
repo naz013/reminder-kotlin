@@ -17,32 +17,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TableLayout
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:textColor="?attr/colorAccent"
+                    android:text="@string/calendar"/>
+
+                <Spinner
+                    android:id="@+id/eventCalendar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TableRow
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="20dp">
-
-                        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                            android:id="@+id/eventsCheck"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center|left"
-                            android:layout_weight="1"
-                            android:text="@string/birthdays"
-                            app:check_font_style="roboto_light" />
-
-                        <Spinner
-                            android:id="@+id/eventCalendar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1" />
-                    </TableRow>
-
-                </TableLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1" />
 
                 <View
                     android:layout_width="match_parent"
@@ -53,7 +42,8 @@
                     android:id="@+id/autoCheck"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/check_automatically"
                     app:check_font_style="roboto_light" />
 
@@ -63,6 +53,7 @@
                     android:layout_height="56dp"
                     android:text="@string/interval"
                     android:textSize="16sp"
+                    android:layout_margin="16dp"
                     app:button_font_style="roboto_regular" />
 
                 <View

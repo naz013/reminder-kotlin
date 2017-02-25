@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
@@ -60,14 +59,14 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class FragmentEventsImport extends BaseSettingsFragment implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+public class FragmentEventsImport extends BaseSettingsFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+
+    private static final String TAG = "FragmentEventsImport";
 
     public static final String EVENT_KEY = "Events";
     private static final int CALENDAR_PERM = 500;
 
-    private RoboCheckBox eventsCheck;
-    private Spinner eventCalendar;
+    private FragmentEventsImportBinding binding;
     private RoboButton syncInterval;
 
     private int mItemSelect;
@@ -76,22 +75,16 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentEventsImportBinding binding = FragmentEventsImportBinding.inflate(inflater, container, false);
+        binding = FragmentEventsImportBinding.inflate(inflater, container, false);
         binding.button.setOnClickListener(this);
 
         syncInterval = binding.syncInterval;
         syncInterval.setOnClickListener(v -> showIntervalDialog());
 
-        eventsCheck = binding.eventsCheck;
         RoboCheckBox autoCheck = binding.autoCheck;
-        eventsCheck.setOnCheckedChangeListener(this);
         autoCheck.setOnCheckedChangeListener(this);
         autoCheck.setChecked(mPrefs.isAutoEventsCheckEnabled());
-
-        if (autoCheck.isChecked()) syncInterval.setEnabled(true);
-        else syncInterval.setEnabled(false);
-
-        eventCalendar = binding.eventCalendar;
+        syncInterval.setEnabled(false);
         return binding.getRoot();
     }
 
@@ -104,7 +97,6 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
                 mContext.getString(R.string.twelve_hours),
                 mContext.getString(R.string.one_day),
                 mContext.getString(R.string.two_days)};
-
         builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> mItemSelect = item);
         builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
             saveIntervalPrefs();
@@ -172,8 +164,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         }
         ArrayAdapter<String> spinnerArrayAdapter =
                 new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
-        eventCalendar.setAdapter(spinnerArrayAdapter);
-        eventCalendar.setEnabled(false);
+        binding.eventCalendar.setAdapter(spinnerArrayAdapter);
     }
 
     @Override
@@ -211,36 +202,25 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void importEvents() {
-        if (!eventsCheck.isChecked()) {
-            Toast.makeText(mContext, getString(R.string.no_action_selected), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (eventCalendar.getSelectedItemPosition() == 0) {
+        if (binding.eventCalendar.getSelectedItemPosition() == 0) {
             Toast.makeText(mContext, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show();
             return;
         }
         HashMap<String, Integer> map = new HashMap<>();
-        if (eventsCheck.isChecked()) {
-            int selectedPosition = eventCalendar.getSelectedItemPosition() - 1;
-            map.put(EVENT_KEY, list.get(selectedPosition).getId());
-            boolean isEnabled = mPrefs.isCalendarEnabled();
-            if (!isEnabled) {
-                mPrefs.setCalendarEnabled(true);
-                mPrefs.setCalendarId(list.get(selectedPosition).getId());
-            }
-            mPrefs.setEventsCalendar(list.get(selectedPosition).getId());
+        int selectedPosition = binding.eventCalendar.getSelectedItemPosition() - 1;
+        map.put(EVENT_KEY, list.get(selectedPosition).getId());
+        boolean isEnabled = mPrefs.isCalendarEnabled();
+        if (!isEnabled) {
+            mPrefs.setCalendarEnabled(true);
+            mPrefs.setCalendarId(list.get(selectedPosition).getId());
         }
-
+        mPrefs.setEventsCalendar(list.get(selectedPosition).getId());
         new Import(mContext).execute(map);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.eventsCheck:
-                if (isChecked) eventCalendar.setEnabled(true);
-                else eventCalendar.setEnabled(false);
-                break;
             case R.id.autoCheck:
                 if (isChecked) {
                     if (Permissions.checkPermission(getActivity(), Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
@@ -383,6 +363,4 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             }
         }
     }
-
-
 }
