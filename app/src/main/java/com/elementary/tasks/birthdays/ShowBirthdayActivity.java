@@ -1,10 +1,14 @@
 package com.elementary.tasks.birthdays;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
@@ -24,6 +28,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding;
 import com.google.android.gms.analytics.HitBuilders;
@@ -117,6 +122,58 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         }
     }
 
+    public void showNotification(int years, String name){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle(name);
+        builder.setContentText(TimeUtil.getAgeFormatted(this, years));
+        builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        }
+        if (!isScreenResumed()) {
+            Uri soundUri = getSoundUri();
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
+            } else {
+                if (isBirthdaySilentEnabled()) {
+                    mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
+                }
+            }
+        }
+        if (isVibrate()){
+            long[] pattern = new long[]{150, 86400000};
+            if (isBirthdayInfiniteVibration()){
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        if (Module.isPro()){
+            builder.setLights(getLedColor(), 500, 1000);
+        }
+        boolean isWear = mPrefs.isWearEnabled();
+        if (isWear) {
+            if (Module.isJellyMR2()) {
+                builder.setOnlyAlertOnce(true);
+                builder.setGroup("GROUP");
+                builder.setGroupSummary(true);
+            }
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.notify(getId(), builder.build());
+        if (isWear) {
+            showWearNotification(name);
+        }
+    }
+
+    private boolean isBirthdaySilentEnabled() {
+        boolean is = mPrefs.isSoundInSilentModeEnabled();
+        if (Module.isPro() && !isGlobal()) {
+            is = mPrefs.isBirthdaySilentEnabled();
+        }
+        return is;
+    }
+
     private boolean isTtsEnabled() {
         boolean is = mPrefs.isTtsEnabled();
         if (Module.isPro() && !isGlobal()) {
@@ -191,8 +248,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected void delay() {
-        removeFlags();
-        finish();
+        close();
     }
 
     @Override
@@ -211,8 +267,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected void favourite() {
-        removeFlags();
-        finish();
+        close();
     }
 
     @Override
@@ -226,7 +281,12 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         int year = calendar.get(Calendar.YEAR);
         mBirthdayItem.setShowedYear(year);
         RealmDb.getInstance().saveObject(mBirthdayItem);
+        close();
+    }
+
+    private void close() {
         removeFlags();
+        discardNotification(getId());
         finish();
     }
 
@@ -250,10 +310,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected String getMelody() {
-        if (!Module.isPro()) {
-            return mPrefs.getMelodyFile();
-        } else {
+        if (Module.isPro() && !isGlobal()) {
             return mPrefs.getBirthdayMelody();
+        } else {
+            return mPrefs.getMelodyFile();
         }
     }
 
@@ -303,8 +363,6 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     protected int getId() {
         return mBirthdayItem.getUniqueId();
     }
-
-
 
     @Override
     protected int getLedColor() {
