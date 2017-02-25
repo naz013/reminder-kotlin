@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -239,34 +238,11 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void initImagesList() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 6);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                int size = mAdapter.getItemCount();
-                switch (size % 3) {
-                    case 1:
-                        if (position == 0) {
-                            return 6;
-                        } else {
-                            return 2;
-                        }
-                    case 2:
-                        if (position < 2) {
-                            return 3;
-                        } else {
-                            return 2;
-                        }
-                    default:
-                        return 2;
-                }
-            }
-        });
-        binding.imagesList.setLayoutManager(gridLayoutManager);
+        mAdapter = new ImagesGridAdapter(this);
+        binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
         binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
         binding.imagesList.setHasFixedSize(true);
         binding.imagesList.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new ImagesGridAdapter(this);
         mAdapter.setEditable(true, this::editImage);
         binding.imagesList.setAdapter(mAdapter);
     }
