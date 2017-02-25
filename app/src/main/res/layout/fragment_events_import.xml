@@ -4,9 +4,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="56dp">
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/button">
@@ -71,19 +72,12 @@
 
             </LinearLayout>
 
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@+id/button"
-            android:background="@color/material_divider" />
-
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <com.elementary.tasks.core.views.roboto.RoboButton
             android:id="@+id/button"
-            style="?android:borderlessButtonStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_alignParentBottom="true"
             android:layout_margin="0dp"
             android:padding="0dp"
