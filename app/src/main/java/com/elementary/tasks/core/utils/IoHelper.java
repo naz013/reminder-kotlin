@@ -69,7 +69,7 @@ public class IoHelper {
         BackupTool.getInstance().exportGroups();
         if (isConnected) {
             mDropbox.uploadGroups();
-            mDrive.getDrive().saveGroupsToDrive();
+            if (mDrive != null) mDrive.getDrive().saveGroupsToDrive();
         }
     }
 
@@ -85,7 +85,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadGroups(delete);
             try {
-                mDrive.getDrive().downloadGroups(delete);
+                if (mDrive != null) mDrive.getDrive().downloadGroups(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -99,7 +99,7 @@ public class IoHelper {
         BackupTool.getInstance().exportReminders();
         if (isConnected) {
             mDropbox.uploadReminder(null);
-            mDrive.getDrive().saveRemindersToDrive();
+            if (mDrive != null) mDrive.getDrive().saveRemindersToDrive();
         }
     }
 
@@ -115,7 +115,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadReminders(delete);
             try {
-                mDrive.getDrive().downloadReminders(mContext, delete);
+                if (mDrive != null) mDrive.getDrive().downloadReminders(mContext, delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -129,7 +129,7 @@ public class IoHelper {
         BackupTool.getInstance().exportNotes();
         if (isConnected) {
             mDropbox.uploadNotes();
-            mDrive.getDrive().saveNotesToDrive();
+            if (mDrive != null) mDrive.getDrive().saveNotesToDrive();
         }
     }
 
@@ -145,7 +145,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadNotes(delete);
             try {
-                mDrive.getDrive().downloadNotes(delete);
+                if (mDrive != null) mDrive.getDrive().downloadNotes(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -159,7 +159,7 @@ public class IoHelper {
         BackupTool.getInstance().exportBirthdays();
         if (isConnected) {
             mDropbox.uploadBirthdays();
-            mDrive.getDrive().saveBirthdaysToDrive();
+            if (mDrive != null) mDrive.getDrive().saveBirthdaysToDrive();
         }
     }
 
@@ -175,7 +175,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadBirthdays(delete);
             try {
-                mDrive.getDrive().downloadBirthdays(delete);
+                if (mDrive != null) mDrive.getDrive().downloadBirthdays(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -189,7 +189,7 @@ public class IoHelper {
         BackupTool.getInstance().exportPlaces();
         if (isConnected) {
             mDropbox.uploadPlaces();
-            mDrive.getDrive().savePlacesToDrive();
+            if (mDrive != null) mDrive.getDrive().savePlacesToDrive();
         }
     }
 
@@ -205,7 +205,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadPlaces(delete);
             try {
-                mDrive.getDrive().downloadPlaces(delete);
+                if (mDrive != null) mDrive.getDrive().downloadPlaces(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -219,7 +219,7 @@ public class IoHelper {
         BackupTool.getInstance().exportTemplates();
         if (isConnected) {
             mDropbox.uploadTemplates();
-            mDrive.getDrive().saveTemplatesToDrive();
+            if (mDrive != null) mDrive.getDrive().saveTemplatesToDrive();
         }
     }
 
@@ -235,7 +235,7 @@ public class IoHelper {
         if (isConnected) {
             mDropbox.downloadTemplates(delete);
             try {
-                mDrive.getDrive().downloadTemplates(delete);
+                if (mDrive != null) mDrive.getDrive().downloadTemplates(delete);
             } catch (IOException e) {
                 e.printStackTrace();
             }
