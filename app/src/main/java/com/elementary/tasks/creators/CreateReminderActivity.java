@@ -753,10 +753,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public int getLedColor() {
-        if (ledColor != -1) {
-            return LED.getLED(ledColor);
-        }
-        return 0;
+        return ledColor;
     }
 
     public int getRepeatLimit() {

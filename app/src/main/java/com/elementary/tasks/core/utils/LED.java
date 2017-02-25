@@ -42,6 +42,9 @@ public class LED {
     public static final int TEAL = 0xff009688;
 
     public static int getLED(int code) {
+        if (!Module.isPro()) {
+            return CYAN;
+        }
         int color;
         switch (code) {
             case 0:
