@@ -287,6 +287,11 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     }
 
     @Override
+    protected int getMaxVolume() {
+        return mPrefs.getLoudness();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case CALL_PERM:

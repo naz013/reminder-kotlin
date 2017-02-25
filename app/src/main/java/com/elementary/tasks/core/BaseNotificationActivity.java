@@ -217,6 +217,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected abstract boolean isGlobal();
 
+    protected abstract int getMaxVolume();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -405,7 +407,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (isScreenResumed()) {
+        if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
@@ -672,8 +674,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             mStream = 3;
             if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
-            int prefsVol = mPrefs.getLoudness();
-            float volPercent = (float) prefsVol / Configs.MAX_VOLUME;
+            float volPercent = (float) getMaxVolume() / Configs.MAX_VOLUME;
             int maxVol = am.getStreamMaxVolume(mStream);
             streamVol = (int) (maxVol * volPercent);
             mVolume = streamVol;

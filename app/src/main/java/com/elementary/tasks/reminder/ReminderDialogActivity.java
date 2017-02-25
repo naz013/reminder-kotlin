@@ -614,11 +614,14 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        int ledColor = mReminder.getColor();
-        if (ledColor == -1) {
-            ledColor = LED.getLED(mPrefs.getLedColor());
+        if (Module.isPro()) {
+            if (mReminder.getColor() != -1) {
+                return LED.getLED(mReminder.getColor());
+            } else {
+                return LED.getLED(mPrefs.getLedColor());
+            }
         }
-        return ledColor;
+        return LED.getLED(0);
     }
 
     @Override
@@ -638,6 +641,12 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         boolean is = mPrefs.isDeviceUnlockEnabled();
         if (!isGlobal()) is = mReminder.isUnlock();
         return is;
+    }
+
+    @Override
+    protected int getMaxVolume() {
+        if (!isGlobal()) return mReminder.getVolume();
+        return mPrefs.getLoudness();
     }
 
     @Override

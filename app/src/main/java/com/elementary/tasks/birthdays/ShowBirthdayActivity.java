@@ -304,6 +304,8 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         return mBirthdayItem.getUniqueId();
     }
 
+
+
     @Override
     protected int getLedColor() {
         int ledColor = LED.getLED(mPrefs.getLedColor());
@@ -320,6 +322,11 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
             isWake = mPrefs.isBirthdayWakeEnabled();
         }
         return isWake;
+    }
+
+    @Override
+    protected int getMaxVolume() {
+        return mPrefs.getLoudness();
     }
 
     @Override
