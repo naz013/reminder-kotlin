@@ -68,17 +68,17 @@ public class EmailFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_DATE_EMAIL;
         String email = binding.mail.getText().toString().trim();
         if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*")) {
-            mInterface.showSnackbar(getString(R.string.email_is_incorrect));
+            getInterface().showSnackbar(getString(R.string.email_is_incorrect));
             return false;
         }
         String subjectString = binding.subject.getText().toString().trim();
         if (TextUtils.isEmpty(subjectString)) {
-            mInterface.showSnackbar(getString(R.string.you_dont_insert_any_message));
+            getInterface().showSnackbar(getString(R.string.you_dont_insert_any_message));
             return false;
         }
         if (reminder == null) {
@@ -86,27 +86,27 @@ public class EmailFragment extends RepeatableTypeFragment {
         }
         reminder.setAttachmentFile(attachment);
         reminder.setSubject(subjectString);
-        reminder.setSummary(mInterface.getSummary());
+        reminder.setSummary(getInterface().getSummary());
         reminder.setTarget(email);
         reminder.setType(type);
         long repeat = binding.repeatView.getRepeat();
         reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -140,14 +140,14 @@ public class EmailFragment extends RepeatableTypeFragment {
         binding.chooseFile.setOnClickListener(fileClick);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
-        mInterface.setEventHint(getString(R.string.message));
-        mInterface.setHasAutoExtra(true, getString(R.string.enable_sending_email_automatically));
-        if (mInterface.isExportToCalendar()) {
+        getInterface().setEventHint(getString(R.string.message));
+        getInterface().setHasAutoExtra(true, getString(R.string.enable_sending_email_automatically));
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -161,8 +161,8 @@ public class EmailFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         attachment = reminder.getAttachmentFile();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
@@ -189,7 +189,7 @@ public class EmailFragment extends RepeatableTypeFragment {
                 if (attachment != null) {
                     File file = new File(attachment);
                     binding.fileName.setText(file.getPath());
-                    mInterface.showSnackbar(String.format(getString(R.string.file_x_attached), file.getName()),
+                    getInterface().showSnackbar(String.format(getString(R.string.file_x_attached), file.getName()),
                             getString(R.string.cancel), v -> {
                                 attachment = null;
                                 binding.fileName.setText(null);
@@ -204,7 +204,7 @@ public class EmailFragment extends RepeatableTypeFragment {
         switch (requestCode) {
             case 331:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivityForResult(new Intent(mContext, FileExplorerActivity.class)
+                    startActivityForResult(new Intent(getContext(), FileExplorerActivity.class)
                             .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
                 }
                 break;

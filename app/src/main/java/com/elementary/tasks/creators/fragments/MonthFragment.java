@@ -69,19 +69,19 @@ public class MonthFragment extends RepeatableTypeFragment {
         @Override
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(false, null);
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(false, null);
             }
         }
 
         @Override
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
-                mInterface.setEventHint(getString(R.string.message));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
+                getInterface().setEventHint(getString(R.string.message));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
             } else {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
             }
         }
     };
@@ -106,7 +106,7 @@ public class MonthFragment extends RepeatableTypeFragment {
             final Calendar cal = Calendar.getInstance();
             cal.set(year, monthOfYear, dayOfMonth);
             if (mDay > 28) {
-                mInterface.showSnackbar(getString(R.string.max_day_supported));
+                getInterface().showSnackbar(getString(R.string.max_day_supported));
             }
             String dayStr;
             if (mDay > 28) mDay = 28;
@@ -124,19 +124,19 @@ public class MonthFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_MONTH;
         boolean isAction = binding.actionView.hasAction();
-        if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
-            mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
+        if (TextUtils.isEmpty(getInterface().getSummary()) && !isAction) {
+            getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
             return false;
         }
         String number = null;
         if (isAction) {
             number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
-                mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
+                getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
                 return false;
             }
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
@@ -155,21 +155,21 @@ public class MonthFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(0);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(getTime()));
-        long startTime = TimeCount.getInstance(mContext).getNextMonthDayTime(reminder);
+        long startTime = TimeCount.getInstance(getContext()).getNextMonthDayTime(reminder);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -218,12 +218,12 @@ public class MonthFragment extends RepeatableTypeFragment {
         binding.actionView.setActivity(getActivity());
         binding.actionView.setContactClickListener(view -> selectContact());
         binding.lastCheck.setOnCheckedChangeListener((compoundButton, b) -> changeUi(b));
-        if (mInterface.isExportToCalendar()) {
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -269,8 +269,8 @@ public class MonthFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.timeField.setText(TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.getEventTime())),

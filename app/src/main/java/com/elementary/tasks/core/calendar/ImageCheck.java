@@ -20,7 +20,7 @@ import java.io.File;
  * limitations under the License.
  */
 
-public class ImageCheck {
+public final class ImageCheck {
 
     public static final String BASE_URL = "https://unsplash.it/1920/1080?image=";
     private long[] photos = new long[]{

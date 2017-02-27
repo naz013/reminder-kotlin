@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -37,13 +38,13 @@ public class EventsThemeFragment extends Fragment{
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_DATA = "arg_data";
     private int mPageNumber;
-    private ArrayList<EventsTheme> mList;
+    private List<EventsTheme> mList;
 
-    public static EventsThemeFragment newInstance(int page, ArrayList<EventsTheme> list) {
+    public static EventsThemeFragment newInstance(int page, List<EventsTheme> list) {
         EventsThemeFragment pageFragment = new EventsThemeFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
-        arguments.putParcelableArrayList(ARGUMENT_DATA, list);
+        arguments.putParcelableArrayList(ARGUMENT_DATA, new ArrayList<>(list));
         pageFragment.setArguments(arguments);
         return pageFragment;
     }
@@ -96,10 +97,10 @@ public class EventsThemeFragment extends Fragment{
 
         StringBuilder monthYearStringBuilder = new StringBuilder(50);
         Formatter monthYearFormatter = new Formatter(monthYearStringBuilder, Locale.getDefault());
-        int MONTH_YEAR_FLAG = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY | DateUtils.FORMAT_SHOW_YEAR;
+        int monthYearFlag = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY | DateUtils.FORMAT_SHOW_YEAR;
         Calendar cal = new GregorianCalendar();
         String monthTitle = DateUtils.formatDateRange(getActivity(),
-                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), MONTH_YEAR_FLAG).toString();
+                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), monthYearFlag).toString();
         binding.widgetDate.setText(monthTitle.toUpperCase());
         return binding.getRoot();
     }

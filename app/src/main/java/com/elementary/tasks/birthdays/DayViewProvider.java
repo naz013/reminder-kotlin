@@ -100,7 +100,7 @@ public class DayViewProvider {
         for (BirthdayItem item : list) {
             Date date = null;
             try {
-                date = CheckBirthdaysAsync.dateFormat.parse(item.getDate());
+                date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.getDate());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

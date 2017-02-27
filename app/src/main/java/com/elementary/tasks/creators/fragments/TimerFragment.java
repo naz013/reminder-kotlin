@@ -64,11 +64,11 @@ public class TimerFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         long after = binding.timerPickerView.getTimerValue();
         if (after == 0) {
-            Toast.makeText(mContext, getString(R.string.you_dont_insert_timer_time), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.you_dont_insert_timer_time), Toast.LENGTH_SHORT).show();
             return false;
         }
         if (reminder == null) {
@@ -85,20 +85,20 @@ public class TimerFragment extends RepeatableTypeFragment {
         reminder.setFrom(mFrom);
         reminder.setTo(mTo);
         reminder.setHours(mHours);
-        reminder.setClear(mInterface);
-        long startTime = TimeCount.getInstance(mContext).generateNextTimer(reminder, true);
+        reminder.setClear(getInterface());
+        long startTime = TimeCount.getInstance(getContext()).generateNextTimer(reminder, true);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -130,13 +130,13 @@ public class TimerFragment extends RepeatableTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentTimerBinding.inflate(inflater, container, false);
         binding.timerPickerView.setListener(binding.repeatView.getTimerListener());
-        mInterface.setExclusionAction(view -> openExclusionDialog());
-        if (mInterface.isExportToCalendar()) {
+        getInterface().setExclusionAction(view -> openExclusionDialog());
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -146,8 +146,8 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.repeatView.setRepeat(reminder.getRepeatInterval());
@@ -158,7 +158,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void openExclusionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.exclusion);
         DialogExclusionPickerBinding b = getCustomizationView();
         builder.setView(b.getRoot());
@@ -178,7 +178,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         if (b.selectHours.isChecked()) {
             mHours = getSelectedList();
             if (mHours.size() == 0) {
-                Toast.makeText(mContext, getString(R.string.you_dont_select_any_hours), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.you_dont_select_any_hours), Toast.LENGTH_SHORT).show();
             }
         } else if (b.selectInterval.isChecked()) {
             mFrom = getHour(fromHour, fromMinute);
@@ -199,7 +199,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private DialogExclusionPickerBinding getCustomizationView() {
-        DialogExclusionPickerBinding binding = DialogExclusionPickerBinding.inflate(LayoutInflater.from(mContext));
+        DialogExclusionPickerBinding binding = DialogExclusionPickerBinding.inflate(LayoutInflater.from(getContext()));
         binding.selectInterval.setChecked(true);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -236,7 +236,7 @@ public class TimerFragment extends RepeatableTypeFragment {
 
     private void setId(ToggleButton... buttons) {
         int i = 100;
-        ThemeUtil cs = ThemeUtil.getInstance(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(getContext());
         this.buttons = new ArrayList<>();
         List<Integer> selected = new ArrayList<>(mHours);
         for (ToggleButton button : buttons) {
@@ -249,7 +249,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void fromTime(RoboTextView textView) {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             fromHour = hourOfDay;
             fromMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -261,7 +261,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void toTime(RoboTextView textView) {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             toHour = hourOfDay;
             toMinute = minute;
             Calendar calendar = Calendar.getInstance();

@@ -21,20 +21,20 @@ import com.elementary.tasks.R;
 public class FragmentBirthdaysColor extends FragmentStyle {
     @Override
     protected int getSelectedColor() {
-        return mPrefs.getBirthdayColor();
+        return getPrefs().getBirthdayColor();
     }
 
     @Override
     protected void saveToPrefs(int code) {
-        mPrefs.setBirthdayColor(code);
+        getPrefs().setBirthdayColor(code);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.birthdays_color));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.birthdays_color));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

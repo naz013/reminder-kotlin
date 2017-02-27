@@ -98,13 +98,11 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         builder.setContentTitle(reminder.getSummary());
         builder.setAutoCancel(false);
         builder.setPriority(5);
-        if (Prefs.getInstance(context).isFoldingEnabled()) {
-            if (!Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
-                Intent notificationIntent = new Intent(context, ReminderDialogActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                builder.setContentIntent(intent);
-            }
+        if (Prefs.getInstance(context).isFoldingEnabled() && !Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
+            Intent notificationIntent = new Intent(context, ReminderDialogActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder.setContentIntent(intent);
         }
         if (Module.isPro()){
             builder.setContentText(context.getString(R.string.app_name_pro));
@@ -120,13 +118,11 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
             }
             builder.setVibrate(pattern);
         }
-        if (Module.isPro()){
-            if (Prefs.getInstance(context).isLedEnabled()){
-                if (reminder.getColor() != 0) {
-                    builder.setLights(reminder.getColor(), 500, 1000);
-                } else {
-                    builder.setLights(LED.getLED(Prefs.getInstance(context).getLedColor()), 500, 1000);
-                }
+        if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()){
+            if (reminder.getColor() != 0) {
+                builder.setLights(reminder.getColor(), 500, 1000);
+            } else {
+                builder.setLights(LED.getLED(Prefs.getInstance(context).getLedColor()), 500, 1000);
             }
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);

@@ -116,9 +116,9 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
         }
         long totalSize = blockSize * totalBlocks;
         UserItem userItem = new UserItem();
-        userItem.quota = totalSize;
-        userItem.used = totalSize - (availableBlocks * blockSize);
-        userItem.kind = Info.Local;
+        userItem.setQuota(totalSize);
+        userItem.setUsed(totalSize - (availableBlocks * blockSize));
+        userItem.setKind(Info.Local);
         getCountFiles(userItem);
         list.add(userItem);
     }
@@ -132,7 +132,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
             String name = dbx.userName();
             long count = dbx.countFiles();
             UserItem userItem = new UserItem(name, quota, quotaUsed, count, null);
-            userItem.kind = Info.Dropbox;
+            userItem.setKind(Info.Dropbox);
             list.add(userItem);
         }
     }
@@ -142,7 +142,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
         if (gdx != null && SuperUtil.isConnected(mContext)) {
             UserItem userItem = gdx.getDrive().getData();
             if (userItem != null) {
-                userItem.kind = Info.Google;
+                userItem.setKind(Info.Google);
                 list.add(userItem);
             }
         }
@@ -192,7 +192,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
                 count += files.length;
             }
         }
-        item.count = count;
+        item.setCount(count);
     }
 
     public interface DataListener {

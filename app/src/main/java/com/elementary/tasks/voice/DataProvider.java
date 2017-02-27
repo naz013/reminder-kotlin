@@ -27,6 +27,8 @@ import java.util.List;
 
 class DataProvider {
 
+    private DataProvider() {}
+
     static List<GroupItem> getGroups() {
         return RealmDb.getInstance().getAllGroups();
     }

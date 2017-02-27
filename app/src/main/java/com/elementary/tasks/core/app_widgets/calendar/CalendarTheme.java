@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.elementary.tasks.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -138,7 +139,7 @@ public class CalendarTheme implements Parcelable {
         return ctx.getResources().getColor(res);
     }
 
-    public static ArrayList<CalendarTheme> getThemes(Context context) {
+    public static List<CalendarTheme> getThemes(Context context) {
         ArrayList<CalendarTheme> list = new ArrayList<>();
         list.clear();
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,

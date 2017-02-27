@@ -69,27 +69,27 @@ public class LocationFragment extends RadiusTypeFragment {
         @Override
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(false, null);
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(false, null);
             }
         }
 
         @Override
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
-                mInterface.setEventHint(getString(R.string.message));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
+                getInterface().setEventHint(getString(R.string.message));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
             } else {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
             }
         }
     };
     private MapCallback mCallback = this::showPlaceOnMap;
 
     private void showPlaceOnMap() {
-        if (mInterface.getReminder() != null) {
-            Reminder item = mInterface.getReminder();
+        if (getInterface().getReminder() != null) {
+            Reminder item = getInterface().getReminder();
             if (!Reminder.isGpsType(item.getType())) return;
             String text = item.getSummary();
             Place jPlace = item.getPlaces().get(0);
@@ -113,14 +113,14 @@ public class LocationFragment extends RadiusTypeFragment {
 
         @Override
         public void onZoomClick(boolean isFull) {
-            mInterface.setFullScreenMode(isFull);
+            getInterface().setFullScreenMode(isFull);
         }
 
         @Override
         public void onBackClick() {
             if (advancedMapFragment.isFullscreen()) {
                 advancedMapFragment.setFullscreen(false);
-                mInterface.setFullScreenMode(true);
+                getInterface().setFullScreenMode(true);
             }
             ViewUtils.fadeOutAnimation(binding.mapContainer);
             ViewUtils.fadeInAnimation(binding.specsContainer);
@@ -135,23 +135,23 @@ public class LocationFragment extends RadiusTypeFragment {
     @Override
     public boolean save() {
         super.save();
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_LOCATION;
         boolean isAction = binding.actionView.hasAction();
-        if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
-            mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
+        if (TextUtils.isEmpty(getInterface().getSummary()) && !isAction) {
+            getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
             return false;
         }
         if (lastPos == null) {
-            mInterface.showSnackbar(getString(R.string.you_dont_select_place));
+            getInterface().showSnackbar(getString(R.string.you_dont_select_place));
             return false;
         }
         String number = null;
         if (isAction) {
             number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
-                mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
+                getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
                 return false;
             }
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
@@ -164,13 +164,13 @@ public class LocationFragment extends RadiusTypeFragment {
             reminder = new Reminder();
         }
         List<Place> places = new ArrayList<>();
-        places.add(new Place(radius, advancedMapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, mInterface.getSummary(), number, null));
+        places.add(new Place(radius, advancedMapFragment.getMarkerStyle(), lastPos.latitude, lastPos.longitude, getInterface().getSummary(), number, null));
         reminder.setPlaces(places);
         reminder.setTarget(number);
         reminder.setType(type);
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         if (binding.attackDelay.isChecked()) {
             long startTime = binding.dateView.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -180,7 +180,7 @@ public class LocationFragment extends RadiusTypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         control.start();
         return true;
     }
@@ -212,7 +212,7 @@ public class LocationFragment extends RadiusTypeFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderLocationBinding.inflate(inflater, container, false);
         advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
-                Prefs.getInstance(mContext).getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
+                Prefs.getInstance(getContext()).getMarkerStyle(), ThemeUtil.getInstance(getContext()).isDark());
         advancedMapFragment.setListener(mListener);
         advancedMapFragment.setCallback(mCallback);
         getFragmentManager().beginTransaction()
@@ -238,7 +238,7 @@ public class LocationFragment extends RadiusTypeFragment {
             double lat = sel.getLatitude();
             double lon = sel.getLongitude();
             LatLng pos = new LatLng(lat, lon);
-            String title = mInterface.getSummary();
+            String title = getInterface().getSummary();
             if (title != null && title.matches("")) title = pos.toString();
             if (advancedMapFragment != null) advancedMapFragment.addMarker(pos, title, true, true, radius);
         });
@@ -265,8 +265,8 @@ public class LocationFragment extends RadiusTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         if (reminder.getEventTime() != null) {
             binding.dateView.setDateTime(reminder.getEventTime());
             binding.attackDelay.setChecked(true);

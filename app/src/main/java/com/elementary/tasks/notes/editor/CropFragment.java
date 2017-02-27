@@ -59,7 +59,7 @@ public class CropFragment extends BitmapFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = CropFragmentBinding.inflate(inflater, container, false);
-        binding.background.setBackgroundColor(ThemeUtil.getInstance(mContext).getBackgroundStyle());
+        binding.background.setBackgroundColor(ThemeUtil.getInstance(getContext()).getBackgroundStyle());
         initControls();
         loadImage();
         return binding.getRoot();

@@ -97,7 +97,7 @@ public class Events {
         BIRTHDAY
     }
 
-    public class Event {
+    public static class Event {
         private String task;
         private int color;
         private Type type;
@@ -151,9 +151,8 @@ public class Events {
 
         @Override
         public String toString() {
-            String string = "Event: task " + task + "" +
+            return "Event: task " + task + "" +
                     " || color: " + color + " || type " + type;
-            return string;
         }
     }
 

@@ -70,7 +70,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         mCallItem = RealmDb.getInstance().getMissedCall(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
-        binding.card.setCardBackgroundColor(themeUtil.getCardStyle());
+        binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
         binding.singleContainer.setVisibility(View.VISIBLE);
         binding.container.setVisibility(View.GONE);
@@ -93,11 +93,11 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
 
         CircleImageView contactPhoto = binding.contactPhoto;
-        contactPhoto.setBorderColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
         TextView remText = (TextView) findViewById(R.id.remText);
-        String formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), mPrefs.is24HourFormatEnabled());
+        String formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), getPrefs().is24HourFormatEnabled());
         String name = Contacts.getNameFromNumber(mCallItem.getNumber(), this);
         wearMessage = name + "\n" + mCallItem.getNumber();
         if (mCallItem.getNumber() != null) {
@@ -127,7 +127,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
             mTracker.setScreenName("Missed call Reminder ");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }
     }
@@ -135,7 +135,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
@@ -150,7 +150,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (mPrefs.isFoldingEnabled()){
+        if (getPrefs().isFoldingEnabled()){
             removeFlags();
             finish();
         } else {
@@ -163,8 +163,8 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_BIRTHDAY);
         DataMap map = putDataMapReq.getDataMap();
         map.putString(SharedConst.KEY_TASK, wearMessage);
-        map.putInt(SharedConst.KEY_COLOR, themeUtil.colorAccent());
-        map.putBoolean(SharedConst.KEY_THEME, themeUtil.isDark());
+        map.putInt(SharedConst.KEY_COLOR, getThemeUtil().colorAccent());
+        map.putBoolean(SharedConst.KEY_THEME, getThemeUtil().isDark());
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
@@ -248,7 +248,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isVibrate() {
-        return mPrefs.isVibrateEnabled();
+        return getPrefs().isVibrateEnabled();
     }
 
     @Override
@@ -268,12 +268,12 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        return LED.getLED(mPrefs.getLedColor());
+        return LED.getLED(getPrefs().getLedColor());
     }
 
     @Override
     protected boolean isAwakeDevice() {
-        return mPrefs.isDeviceAwakeEnabled();
+        return getPrefs().isDeviceAwakeEnabled();
     }
 
     @Override
@@ -283,12 +283,12 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isUnlockDevice() {
-        return mPrefs.isDeviceUnlockEnabled();
+        return getPrefs().isDeviceUnlockEnabled();
     }
 
     @Override
     protected int getMaxVolume() {
-        return mPrefs.getLoudness();
+        return getPrefs().getLoudness();
     }
 
     @Override

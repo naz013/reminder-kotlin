@@ -29,9 +29,21 @@ import com.elementary.tasks.navigation.FragmentCallback;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected Context mContext;
-    protected FragmentCallback mCallback;
-    protected Prefs mPrefs;
+    private Context mContext;
+    private FragmentCallback mCallback;
+    private Prefs mPrefs;
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public FragmentCallback getCallback() {
+        return mCallback;
+    }
+
+    public Prefs getPrefs() {
+        return mPrefs;
+    }
 
     @Override
     public void onAttach(Context context) {

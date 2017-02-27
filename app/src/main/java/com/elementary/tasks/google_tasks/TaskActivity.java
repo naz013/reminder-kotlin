@@ -155,7 +155,7 @@ public class TaskActivity extends ThemedActivity {
         if (item != null){
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
-            timeField.setText(TimeUtil.getTime(calendar.getTime(), mPrefs.is24HourFormatEnabled()));
+            timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
             isReminder = true;
         }
     }
@@ -423,9 +423,9 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void setColor(int i) {
-        binding.appBar.setBackgroundColor(themeUtil.getNoteColor(i));
+        binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(i));
         if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(i));
+            getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(i));
         }
     }
 
@@ -477,7 +477,7 @@ public class TaskActivity extends ThemedActivity {
     };
 
     protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute, mPrefs.is24HourFormatEnabled());
+        return new TimePickerDialog(this, myCallBack, mHour, mMinute, getPrefs().is24HourFormatEnabled());
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
@@ -487,7 +487,7 @@ public class TaskActivity extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            timeField.setText(TimeUtil.getTime(c.getTime(), mPrefs.is24HourFormatEnabled()));
+            timeField.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
         }
     };
 

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.calendar;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -29,7 +28,7 @@ import java.util.List;
  */
 
 public class WeekdayArrayAdapter extends ArrayAdapter<String> {
-    public static int textColor = Color.LTGRAY;
+
     private boolean isDark;
 
     public WeekdayArrayAdapter(Context context, int textViewResourceId,
@@ -58,6 +57,7 @@ public class WeekdayArrayAdapter extends ArrayAdapter<String> {
         } else {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
         }
+        int textColor;
         if (isDark){
             textColor = getContext().getResources().getColor(android.R.color.white);
         } else textColor = getContext().getResources().getColor(android.R.color.black);

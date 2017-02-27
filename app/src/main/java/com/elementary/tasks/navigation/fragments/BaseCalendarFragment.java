@@ -34,8 +34,8 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     private AlertDialog mDialog;
 
     protected void showActionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        DialogActionPickerBinding binding = DialogActionPickerBinding.inflate(LayoutInflater.from(mContext));
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        DialogActionPickerBinding binding = DialogActionPickerBinding.inflate(LayoutInflater.from(getContext()));
         binding.addBirth.setOnClickListener(view -> {
             mDialog.dismiss();
             addBirthday();
@@ -50,10 +50,10 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     }
 
     private void addReminder() {
-        getActivity().startActivityForResult(new Intent(mContext, AddReminderActivity.class).putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE);
+        getActivity().startActivityForResult(new Intent(getContext(), AddReminderActivity.class).putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE);
     }
 
     private void addBirthday() {
-        getActivity().startActivityForResult(new Intent(mContext, AddBirthdayActivity.class).putExtra(Constants.INTENT_DATE, dateMills), BD_CODE);
+        getActivity().startActivityForResult(new Intent(getContext(), AddBirthdayActivity.class).putExtra(Constants.INTENT_DATE, dateMills), BD_CODE);
     }
 }

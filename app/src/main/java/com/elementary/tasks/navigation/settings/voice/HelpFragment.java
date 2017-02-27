@@ -51,9 +51,9 @@ public class HelpFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.help));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.help));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

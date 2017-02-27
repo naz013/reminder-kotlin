@@ -49,20 +49,20 @@ public class SkypeFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        if (!SuperUtil.isSkypeClientInstalled(mContext)) {
+        if (getInterface() == null) return false;
+        if (!SuperUtil.isSkypeClientInstalled(getContext())) {
             showInstallSkypeDialog();
             return false;
         }
-        Reminder reminder = mInterface.getReminder();
+        Reminder reminder = getInterface().getReminder();
         int type = getType(binding.skypeGroup.getCheckedRadioButtonId());
-        if (TextUtils.isEmpty(mInterface.getSummary())) {
-            mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
+        if (TextUtils.isEmpty(getInterface().getSummary())) {
+            getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
             return false;
         }
         String number = binding.skypeContact.getText().toString().trim();
         if (TextUtils.isEmpty(number)) {
-            mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
+            getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
             return false;
         }
         if (reminder == null) {
@@ -74,30 +74,30 @@ public class SkypeFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
 
     private void showInstallSkypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(R.string.skype_is_not_installed);
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            SuperUtil.installSkype(mContext);
+            SuperUtil.installSkype(getContext());
         });
         builder.setNegativeButton(R.string.cancel, (dialogInterface, i) -> dialogInterface.dismiss());
         builder.create().show();
@@ -133,17 +133,17 @@ public class SkypeFragment extends RepeatableTypeFragment {
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
         binding.skypeChat.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                mInterface.setEventHint(getString(R.string.message));
+                getInterface().setEventHint(getString(R.string.message));
             } else {
-                mInterface.setEventHint(getString(R.string.remind_me));
+                getInterface().setEventHint(getString(R.string.remind_me));
             }
         });
-        if (mInterface.isExportToCalendar()) {
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -169,8 +169,8 @@ public class SkypeFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());

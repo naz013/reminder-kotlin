@@ -54,9 +54,9 @@ public class ChangesFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.changes));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.changes));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

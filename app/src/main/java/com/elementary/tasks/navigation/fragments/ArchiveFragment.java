@@ -151,16 +151,16 @@ public class ArchiveFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.trash));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(null);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.trash));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(null);
         }
         loadData();
     }
 
     private void editReminder(String uuId) {
-        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
+        startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
     private void deleteAll(){
@@ -168,12 +168,12 @@ public class ArchiveFragment extends BaseNavigationFragment {
             WeakReference<Reminder> reminder = new WeakReference<>(mAdapter.getItem(i));
             deleteReminder(reminder.get());
         }
-        Toast.makeText(mContext, getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         reloadView();
     }
 
     private void showData(List<Reminder> result) {
-        mAdapter = new RemindersRecyclerAdapter(mContext, result, mFilter);
+        mAdapter = new RemindersRecyclerAdapter(getContext(), result, mFilter);
         mAdapter.setEventListener(mEventListener);
         mAdapter.setEditable(false);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -183,7 +183,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
     private void showActionDialog(int position) {
         final String[] items = {getString(R.string.edit), getString(R.string.delete)};
-        Dialogues.showLCAM(mContext, item -> {
+        Dialogues.showLCAM(getContext(), item -> {
             Reminder item1 = mAdapter.getItem(position);
             if (item == 0) {
                 editReminder(item1.getUuId());
@@ -191,7 +191,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
             if (item == 1) {
                 deleteReminder(item1);
                 mAdapter.removeItem(position);
-                Toast.makeText(mContext, R.string.deleted, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                 reloadView();
             }
         }, items);
@@ -199,12 +199,12 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
     private void deleteReminder(Reminder reminder) {
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
-        CalendarUtils.deleteEvents(mContext, reminder.getUuId());
+        CalendarUtils.deleteEvents(getContext(), reminder.getUuId());
     }
 
     private void initList() {
         mRecyclerView = binding.recyclerView;
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 

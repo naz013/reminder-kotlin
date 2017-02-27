@@ -53,9 +53,4 @@ public class InfiniteViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent event) {
         return enabled && super.onTouchEvent(event);
     }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return super.onInterceptTouchEvent(event);
-    }
 }

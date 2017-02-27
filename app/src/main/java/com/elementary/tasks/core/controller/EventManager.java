@@ -27,8 +27,16 @@ import com.elementary.tasks.reminder.models.Reminder;
 
 public abstract class EventManager implements EventControl {
 
-    protected Reminder mReminder;
-    protected Context mContext;
+    private Reminder mReminder;
+    private Context mContext;
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public Reminder getReminder() {
+        return mReminder;
+    }
 
     public EventManager(Reminder reminder, Context context) {
         this.mReminder = reminder;

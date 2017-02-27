@@ -51,12 +51,10 @@ public class Notifier {
         builder.setSmallIcon(R.drawable.ic_note_white);
         builder.setContentTitle(content);
         boolean isWear = sPrefs.getBoolean(Prefs.WEAR_NOTIFICATION);
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
         }
         if (!item.getImages().isEmpty()) {
             NoteImage image = item.getImages().get(0);
@@ -69,21 +67,19 @@ public class Notifier {
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(mContext);
         mNotifyMgr.notify(item.getUniqueId(), builder.build());
-        if (isWear){
-            if (Module.isJellyMR2()) {
-                final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
-                wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-                wearableNotificationBuilder.setContentTitle(content);
-                wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));
-                wearableNotificationBuilder.setOngoing(false);
-                if (Module.isLollipop()) {
-                    wearableNotificationBuilder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
-                }
-                wearableNotificationBuilder.setOnlyAlertOnce(true);
-                wearableNotificationBuilder.setGroup("GROUP");
-                wearableNotificationBuilder.setGroupSummary(false);
-                mNotifyMgr.notify(item.getUniqueId(), wearableNotificationBuilder.build());
+        if (isWear && Module.isJellyMR2()){
+            final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
+            wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            wearableNotificationBuilder.setContentTitle(content);
+            wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));
+            wearableNotificationBuilder.setOngoing(false);
+            if (Module.isLollipop()) {
+                wearableNotificationBuilder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
             }
+            wearableNotificationBuilder.setOnlyAlertOnce(true);
+            wearableNotificationBuilder.setGroup("GROUP");
+            wearableNotificationBuilder.setGroupSummary(false);
+            mNotifyMgr.notify(item.getUniqueId(), wearableNotificationBuilder.build());
         }
     }
 }

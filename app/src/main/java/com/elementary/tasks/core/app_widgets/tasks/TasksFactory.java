@@ -66,7 +66,9 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         mData.clear();
         map.clear();
         List<TaskListItem> list = RealmDb.getInstance().getTaskLists();
-        for (TaskListItem item : list) map.put(item.getListId(), item.getColor());
+        for (TaskListItem item : list) {
+            map.put(item.getListId(), item.getColor());
+        }
         mData = RealmDb.getInstance().getTasks(null);
     }
 

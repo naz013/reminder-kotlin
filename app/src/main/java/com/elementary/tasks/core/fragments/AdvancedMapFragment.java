@@ -210,7 +210,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mMap != null) {
             markerRadius = radius;
             if (markerRadius == -1)
-                markerRadius = mPrefs.getRadius();
+                markerRadius = getPrefs().getRadius();
             if (clear) mMap.clear();
             if (title == null || title.matches("")) title = pos.toString();
             if (!Module.isPro()) markerStyle = 5;
@@ -219,15 +219,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(getThemeUtil().getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = getThemeUtil().getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(marker.getFillColor()))
-                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
+                    .fillColor(getThemeUtil().getColor(marker.getFillColor()))
+                    .strokeColor(getThemeUtil().getColor(marker.getStrokeColor())));
             if (animate) animate(pos);
         }
     }
@@ -236,7 +236,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (mMap != null) {
             markerRadius = radius;
             if (markerRadius == -1) {
-                markerRadius = mPrefs.getRadius();
+                markerRadius = getPrefs().getRadius();
             }
             if (!Module.isPro()) markerStyle = 5;
             this.markerStyle = markerStyle;
@@ -247,15 +247,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(getThemeUtil().getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = getThemeUtil().getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(marker.getFillColor()))
-                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
+                    .fillColor(getThemeUtil().getColor(marker.getFillColor()))
+                    .strokeColor(getThemeUtil().getColor(marker.getStrokeColor())));
             if (animate) animate(pos);
             return true;
         } else {
@@ -267,7 +267,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     public void recreateMarker(int radius) {
         markerRadius = radius;
         if (markerRadius == -1)
-            markerRadius = mPrefs.getRadius();
+            markerRadius = getPrefs().getRadius();
         if (mMap != null && lastPos != null) {
             mMap.clear();
             if (markerTitle == null || markerTitle.matches(""))
@@ -277,15 +277,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             mMap.addMarker(new MarkerOptions()
                     .position(lastPos)
                     .title(markerTitle)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(getThemeUtil().getMarkerStyle(markerStyle)))
                     .draggable(true));
-            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = getThemeUtil().getMarkerRadiusStyle(markerStyle);
             mMap.addCircle(new CircleOptions()
                     .center(lastPos)
                     .radius(markerRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(marker.getFillColor()))
-                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
+                    .fillColor(getThemeUtil().getColor(marker.getFillColor()))
+                    .strokeColor(getThemeUtil().getColor(marker.getStrokeColor())));
             animate(lastPos);
         }
     }
@@ -301,19 +301,19 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             mMap.addMarker(new MarkerOptions()
                     .position(lastPos)
                     .title(markerTitle)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(getThemeUtil().getMarkerStyle(markerStyle)))
                     .draggable(true));
             if (markerStyle >= 0) {
-                ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
+                ThemeUtil.Marker marker = getThemeUtil().getMarkerRadiusStyle(markerStyle);
                 if (markerRadius == -1) {
-                    markerRadius = mPrefs.getRadius();
+                    markerRadius = getPrefs().getRadius();
                 }
                 mMap.addCircle(new CircleOptions()
                         .center(lastPos)
                         .radius(markerRadius)
                         .strokeWidth(strokeWidth)
-                        .fillColor(mColor.getColor(marker.getFillColor()))
-                        .strokeColor(mColor.getColor(marker.getStrokeColor())));
+                        .fillColor(getThemeUtil().getColor(marker.getFillColor()))
+                        .strokeColor(getThemeUtil().getColor(marker.getStrokeColor())));
             }
             animate(lastPos);
         }
@@ -334,7 +334,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     @SuppressWarnings("MissingPermission")
     public void moveToMyLocation() {
         if (mMap != null) {
-            LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+            LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
             if (location != null) {
@@ -377,33 +377,33 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     }
 
     public void showShowcase() {
-        if (mContext == null) {
+        if (getContext() == null) {
             return;
         }
-        if (!mPrefs.isShowcase(SHOWCASE) && isBack) {
+        if (!getPrefs().isShowcase(SHOWCASE) && isBack) {
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
-            config.setMaskColor(mColor.getColor(mColor.colorAccent()));
-            config.setContentTextColor(mColor.getColor(R.color.whitePrimary));
-            config.setDismissTextColor(mColor.getColor(R.color.whitePrimary));
-            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(mContext);
+            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
+            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
             sequence.setConfig(config);
             sequence.addSequenceItem(zoomOut,
-                    mContext.getString(R.string.click_to_expand_collapse_map),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.click_to_expand_collapse_map),
+                    getContext().getString(R.string.got_it));
             sequence.addSequenceItem(backButton,
-                    mContext.getString(R.string.click_when_add_place),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.click_when_add_place),
+                    getContext().getString(R.string.got_it));
             if (Module.isPro()) {
                 sequence.addSequenceItem(markers,
-                        mContext.getString(R.string.select_style_for_marker),
-                        mContext.getString(R.string.got_it));
+                        getContext().getString(R.string.select_style_for_marker),
+                        getContext().getString(R.string.got_it));
             }
             sequence.addSequenceItem(places,
-                    mContext.getString(R.string.select_place_from_list),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.select_place_from_list),
+                    getContext().getString(R.string.got_it));
             sequence.start();
-            mPrefs.setShowcase(SHOWCASE, true);
+            getPrefs().setShowcase(SHOWCASE, true);
         }
     }
 
@@ -417,7 +417,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             isBack = args.getBoolean(ENABLE_BACK, true);
             isZoom = args.getBoolean(ENABLE_ZOOM, true);
             isDark = args.getBoolean(THEME_MODE, false);
-            markerStyle = args.getInt(MARKER_STYLE, mPrefs.getMarkerStyle());
+            markerStyle = args.getInt(MARKER_STYLE, getPrefs().getMarkerStyle());
         }
     }
 
@@ -426,12 +426,12 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                              Bundle savedInstanceState) {
         initArgs();
         binding = FragmentMapBinding.inflate(inflater, container, false);
-        markerRadius = mPrefs.getRadius();
-        mMapType = mPrefs.getMapType();
+        markerRadius = getPrefs().getRadius();
+        mMapType = getPrefs().getMapType();
         if (!Module.isPro()) {
-            markerStyle = mPrefs.getMarkerStyle();
+            markerStyle = getPrefs().getMarkerStyle();
         }
-        isDark = mColor.isDark();
+        isDark = getThemeUtil().isDark();
         setOnMapClickListener(onMapClickListener = latLng -> {
             hideLayers();
             hidePlaces();
@@ -484,7 +484,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
         placesList = binding.placesList;
-        placesList.setLayoutManager(new LinearLayoutManager(mContext));
+        placesList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
@@ -497,19 +497,19 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         CardView markersCard = binding.markersCard;
         placesListCard.setVisibility(View.GONE);
         styleCard.setVisibility(View.GONE);
-        zoomCard.setCardBackgroundColor(mColor.getCardStyle());
-        searchCard.setCardBackgroundColor(mColor.getCardStyle());
-        myCard.setCardBackgroundColor(mColor.getCardStyle());
-        layersCard.setCardBackgroundColor(mColor.getCardStyle());
-        placesCard.setCardBackgroundColor(mColor.getCardStyle());
-        styleCard.setCardBackgroundColor(mColor.getCardStyle());
-        placesListCard.setCardBackgroundColor(mColor.getCardStyle());
-        markersCard.setCardBackgroundColor(mColor.getCardStyle());
-        backCard.setCardBackgroundColor(mColor.getCardStyle());
+        zoomCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        searchCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        myCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        layersCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        placesCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        styleCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        placesListCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        markersCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        backCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
 
         layersContainer = binding.layersContainer;
         layersContainer.setVisibility(View.GONE);
-        layersContainer.setCardBackgroundColor(mColor.getCardStyle());
+        layersContainer.setCardBackgroundColor(getThemeUtil().getCardStyle());
 
         if (Module.isLollipop()) {
             zoomCard.setCardElevation(Configs.CARD_ELEVATION);
@@ -524,7 +524,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             backCard.setCardElevation(Configs.CARD_ELEVATION);
         }
 
-        int style = mColor.getCardStyle();
+        int style = getThemeUtil().getCardStyle();
         zoomCard.setCardBackgroundColor(style);
         searchCard.setCardBackgroundColor(style);
         myCard.setCardBackgroundColor(style);
@@ -580,15 +580,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         groupTwo.removeAllViewsInLayout();
         groupThree.removeAllViewsInLayout();
         for (int i = 0; i < ThemeUtil.NUM_OF_MARKERS; i++) {
-            ImageButton ib = new ImageButton(mContext);
+            ImageButton ib = new ImageButton(getContext());
             ib.setBackgroundResource(android.R.color.transparent);
-            ib.setImageResource(mColor.getMarkerStyle(i));
+            ib.setImageResource(getThemeUtil().getMarkerStyle(i));
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    MeasureUtils.dp2px(mContext, 35),
-                    MeasureUtils.dp2px(mContext, 35));
-            int px = MeasureUtils.dp2px(mContext, 2);
+                    MeasureUtils.dp2px(getContext(), 35),
+                    MeasureUtils.dp2px(getContext(), 35));
+            int px = MeasureUtils.dp2px(getContext(), 2);
             params.setMargins(px, px, px, px);
             ib.setLayoutParams(params);
             if (i < 5) {
@@ -604,14 +604,14 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private void setMapType(int type) {
         if (mMap != null) {
             mMap.setMapType(type);
-            mPrefs.setMapType(type);
+            getPrefs().setMapType(type);
             ViewUtils.hideOver(layersContainer);
         }
     }
 
     private void setMyLocation() {
-        if (!Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(mContext, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
+        if (!Permissions.checkPermission(getContext(), Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(getContext(), 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
         } else {
             mMap.setMyLocationEnabled(true);
         }
@@ -628,7 +628,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 emptyItem.setVisibility(View.GONE);
                 binding.placesCard.setVisibility(View.VISIBLE);
                 placesList.setVisibility(View.VISIBLE);
-                placeRecyclerAdapter = new PlacesRecyclerAdapter(mContext, list, new SimpleListener() {
+                placeRecyclerAdapter = new PlacesRecyclerAdapter(getContext(), list, new SimpleListener() {
                     @Override
                     public void onItemClicked(int position, View view) {
                         hideLayers();
@@ -678,13 +678,13 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (isMarkersVisible()) {
             hideStyles();
         } else {
-            ViewUtils.slideInUp(mContext, styleCard);
+            ViewUtils.slideInUp(getContext(), styleCard);
         }
     }
 
     private void hideStyles() {
         if (isMarkersVisible()) {
-            ViewUtils.slideOutDown(mContext, styleCard);
+            ViewUtils.slideOutDown(getContext(), styleCard);
         }
     }
 
@@ -702,13 +702,13 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         if (isPlacesVisible()) {
             hidePlaces();
         } else {
-            ViewUtils.slideInUp(mContext, placesListCard);
+            ViewUtils.slideInUp(getContext(), placesListCard);
         }
     }
 
     private void hidePlaces() {
         if (isPlacesVisible()) {
-            ViewUtils.slideOutDown(mContext, placesListCard);
+            ViewUtils.slideOutDown(getContext(), placesListCard);
         }
     }
 
@@ -765,7 +765,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setMyLocation();
                 } else {
-                    Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

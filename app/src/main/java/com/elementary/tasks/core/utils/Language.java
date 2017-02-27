@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils;
 import android.content.Context;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Prefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +39,8 @@ public class Language {
     public static final String RU = "ru-RU";
     public static final String UK = "uk-UA";
 
-    public static ArrayList<String> getLanguages(Context context) {
-        ArrayList<String> locales = new ArrayList<>();
+    public static List<String> getLanguages(Context context) {
+        List<String> locales = new ArrayList<>();
         locales.add(context.getString(R.string.english) + " (" + EN + ")");
         locales.add(context.getString(R.string.russian) + " (" + RU + ")");
         locales.add(context.getString(R.string.ukrainian) + " (" + UK + ")");

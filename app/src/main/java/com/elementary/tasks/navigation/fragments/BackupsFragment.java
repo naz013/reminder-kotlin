@@ -17,7 +17,6 @@ import com.elementary.tasks.backups.InfoAdapter;
 import com.elementary.tasks.backups.UserInfoAsync;
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
@@ -61,7 +60,7 @@ public class BackupsFragment extends BaseNavigationFragment {
     private DeleteAsync.DeleteCallback mDeleteCallback = this::loadUserInfo;
 
     private void deleteFiles(UserInfoAsync.Info info) {
-        new DeleteAsync(mContext, mDeleteCallback, info).execute(getFolders(info));
+        new DeleteAsync(getContext(), mDeleteCallback, info).execute(getFolders(info));
     }
 
     @Override
@@ -90,7 +89,7 @@ public class BackupsFragment extends BaseNavigationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentBackupsBinding.inflate(inflater, container, false);
-        mAdapter = new InfoAdapter(binding.itemsContainer, mContext, mActionCallback);
+        mAdapter = new InfoAdapter(binding.itemsContainer, getContext(), mActionCallback);
         return binding.getRoot();
     }
 
@@ -98,10 +97,10 @@ public class BackupsFragment extends BaseNavigationFragment {
     public void onResume() {
         super.onResume();
         loadUserInfo();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.backup_files));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(null);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.backup_files));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(null);
         }
     }
 
@@ -143,12 +142,12 @@ public class BackupsFragment extends BaseNavigationFragment {
         }
         List<UserInfoAsync.Info> list = new ArrayList<>();
         list.add(UserInfoAsync.Info.Local);
-        Dropbox dbx = new Dropbox(mContext);
+        Dropbox dbx = new Dropbox(getContext());
         dbx.startSession();
         if (dbx.isLinked()){
             list.add(UserInfoAsync.Info.Dropbox);
         }
-        Google gdx = Google.getInstance(mContext);
+        Google gdx = Google.getInstance(getContext());
         if (gdx != null) {
             list.add(UserInfoAsync.Info.Google);
         }
@@ -156,7 +155,7 @@ public class BackupsFragment extends BaseNavigationFragment {
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
-        new UserInfoAsync(mContext, mDataCallback, list.size()).execute(array);
+        new UserInfoAsync(getContext(), mDataCallback, list.size()).execute(array);
     }
 
     @Override

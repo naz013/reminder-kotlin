@@ -21,20 +21,20 @@ import com.elementary.tasks.R;
 public class FragmentTodayColor extends FragmentStyle {
     @Override
     protected int getSelectedColor() {
-        return mPrefs.getTodayColor();
+        return getPrefs().getTodayColor();
     }
 
     @Override
     protected void saveToPrefs(int code) {
-        mPrefs.setTodayColor(code);
+        getPrefs().setTodayColor(code);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.today_color));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.today_color));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

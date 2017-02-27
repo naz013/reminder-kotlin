@@ -16,7 +16,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.databinding.TasksWidgetConfigLayoutBinding;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,7 +41,7 @@ public class TasksWidgetConfig extends ThemedActivity {
     public final static String TASKS_WIDGET_PREF = "tasks_pref";
     public final static String TASKS_WIDGET_THEME = "tasks_theme_";
 
-    private ArrayList<TasksTheme> mThemes;
+    private List<TasksTheme> mThemes;
     private TasksWidgetConfigLayoutBinding binding;
 
     @Override
@@ -121,9 +121,9 @@ public class TasksWidgetConfig extends ThemedActivity {
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        ArrayList<TasksTheme> arrayList;
+        private List<TasksTheme> arrayList;
 
-        public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<TasksTheme> list) {
+        MyFragmentPagerAdapter(FragmentManager fm, List<TasksTheme> list) {
             super(fm);
             this.arrayList = list;
         }

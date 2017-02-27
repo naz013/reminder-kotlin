@@ -58,7 +58,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
         morningTime = binding.morningTime;
         morningTime.setOnClickListener(this);
 
-        is24 = mPrefs.is24HourFormatEnabled();
+        is24 = getPrefs().is24HourFormatEnabled();
 
         initMorningTime();
         initNoonTime();
@@ -68,7 +68,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initNoonTime() {
-        String noonTime = mPrefs.getNoonTime();
+        String noonTime = getPrefs().getNoonTime();
         Date date = null;
         try {
             date = format.parse(noonTime);
@@ -83,7 +83,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initEveningTime() {
-        String evening = mPrefs.getEveningTime();
+        String evening = getPrefs().getEveningTime();
         Date date = null;
         try {
             date = format.parse(evening);
@@ -98,7 +98,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initNightTime() {
-        String night = mPrefs.getNightTime();
+        String night = getPrefs().getNightTime();
         Date date = null;
         try {
             date = format.parse(night);
@@ -114,7 +114,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void initMorningTime() {
-        String morning = mPrefs.getMorningTime();
+        String morning = getPrefs().getMorningTime();
         Date date = null;
         try {
             date = format.parse(morning);
@@ -132,60 +132,60 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.time));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.time));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     private void morningDialog() {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             morningHour = hourOfDay;
             morningMinute = minute;
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            mPrefs.setMorningTime(time);
+            getPrefs().setMorningTime(time);
             morningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, morningHour, morningMinute, is24).show();
     }
 
     private void dayDialog() {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             dayHour = hourOfDay;
             dayMinute = minute;
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            mPrefs.setNoonTime(time);
+            getPrefs().setNoonTime(time);
             dayTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, dayHour, dayMinute, is24).show();
     }
 
     private void nightDialog() {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             nightHour = hourOfDay;
             nightMinute = minute;
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            mPrefs.setNightTime(time);
+            getPrefs().setNightTime(time);
             nightTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, nightHour, nightMinute, is24).show();
     }
 
     private void eveningDialog() {
-        new TimePickerDialog(mContext, (view, hourOfDay, minute) -> {
+        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
             eveningHour = hourOfDay;
             eveningMinute = minute;
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             String time = format.format(calendar.getTime());
-            mPrefs.setEveningTime(time);
+            getPrefs().setEveningTime(time);
             eveningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
         }, eveningHour, eveningMinute,is24).show();
     }

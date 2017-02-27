@@ -60,9 +60,9 @@ public class FeedbackFragment extends BaseWebViewFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.feedback));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.feedback));
+            getCallback().onFragmentSelect(this);
         }
     }
 

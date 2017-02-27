@@ -10,6 +10,7 @@ import android.support.annotation.DrawableRes;
 import com.elementary.tasks.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -124,8 +125,8 @@ public class EventsTheme implements Parcelable {
         return ctx.getResources().getColor(res);
     }
 
-    public static ArrayList<EventsTheme> getThemes(Context context) {
-        ArrayList<EventsTheme> list = new ArrayList<>();
+    public static List<EventsTheme> getThemes(Context context) {
+        List<EventsTheme> list = new ArrayList<>();
         list.clear();
         list.add(new EventsTheme(R.color.indigoPrimary, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,

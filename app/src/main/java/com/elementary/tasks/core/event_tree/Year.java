@@ -2,6 +2,7 @@ package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -23,8 +24,7 @@ import java.util.TreeMap;
 class Year implements TreeInterface, MonthInterface {
 
     private int year;
-    private int maxNodes = 11;
-    private TreeMap<Integer, Month> nodes = new TreeMap<>();
+    private Map<Integer, Month> nodes = new TreeMap<>();
 
     public Year(int year) {
         this.year = year;

@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import hirondelle.date4j.DateTime;
@@ -103,13 +105,13 @@ public class FlextCalendarFragment extends Fragment {
      * Declare views
      */
     private TextView monthTitleTextView;
-    private ArrayList<DateGridFragment> fragments;
+    private List<DateGridFragment> fragments;
     private KenBurnsView image;
 
     /**
      * caldroidData belongs to Caldroid
      */
-    protected HashMap<DateTime, Events> eventsMap = new HashMap<>();
+    protected Map<DateTime, Events> eventsMap = new HashMap<>();
 
     private long[] photosList = new long[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
@@ -125,11 +127,11 @@ public class FlextCalendarFragment extends Fragment {
                 getDaysOfWeek(), isDark);
     }
 
-    public ArrayList<DateGridFragment> getFragments() {
+    public List<DateGridFragment> getFragments() {
         return fragments;
     }
 
-    public void setEvents(HashMap<DateTime, Events> eventsMap) {
+    public void setEvents(Map<DateTime, Events> eventsMap) {
         this.eventsMap = eventsMap;
     }
 
@@ -309,9 +311,9 @@ public class FlextCalendarFragment extends Fragment {
     public class DatePageChangeListener implements ViewPager.OnPageChangeListener {
         private int currentPage = InfiniteViewPager.OFFSET;
         private DateTime currentDateTime;
-        private ArrayList<DateGridFragment> flextGridAdapters;
+        private List<DateGridFragment> flextGridAdapters;
 
-        public void setFlextGridAdapters(ArrayList<DateGridFragment> flextGridAdapters) {
+        public void setFlextGridAdapters(List<DateGridFragment> flextGridAdapters) {
             this.flextGridAdapters = flextGridAdapters;
         }
 

@@ -24,12 +24,16 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 
 public abstract class BaseDialog extends Activity {
 
-    protected ThemeUtil themeUtil;
+    private ThemeUtil themeUtil;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         themeUtil = ThemeUtil.getInstance(this);
         setTheme(themeUtil.getDialogStyle());
+    }
+
+    public ThemeUtil getThemeUtil() {
+        return themeUtil;
     }
 }

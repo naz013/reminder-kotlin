@@ -66,28 +66,28 @@ public class InfoAdapter {
 
     private void fillInfo(BackupItemLayoutBinding binding, UserItem model) {
         if (model != null) {
-            binding.moreButton.setOnClickListener(view -> showPopup(model.kind, view));
-            if (model.kind == UserInfoAsync.Info.Local) {
+            binding.moreButton.setOnClickListener(view -> showPopup(model.getKind(), view));
+            if (model.getKind() == UserInfoAsync.Info.Local) {
                 binding.userContainer.setVisibility(View.GONE);
                 binding.sourceName.setText(mContext.getString(R.string.local));
             } else {
                 binding.userContainer.setVisibility(View.VISIBLE);
-                if (model.kind == UserInfoAsync.Info.Google) {
+                if (model.getKind() == UserInfoAsync.Info.Google) {
                     binding.sourceName.setText(mContext.getString(R.string.google_drive));
-                } else if (model.kind == UserInfoAsync.Info.Dropbox) {
+                } else if (model.getKind() == UserInfoAsync.Info.Dropbox) {
                     binding.sourceName.setText(mContext.getString(R.string.dropbox));
                 }
             }
-            String name = model.name;
+            String name = model.getName();
             if (!TextUtils.isEmpty(name)) {
                 binding.cloudUser.setText(name);
             }
-            String photoLink = model.photo;
+            String photoLink = model.getPhoto();
             if (photoLink != null) {
                 loadImage(photoLink, binding.userPhoto);
             }
             showQuota(binding, model);
-            binding.cloudCount.setText(String.valueOf(model.count));
+            binding.cloudCount.setText(String.valueOf(model.getCount()));
         }
     }
 
@@ -106,11 +106,11 @@ public class InfoAdapter {
     }
 
     private void showQuota(BackupItemLayoutBinding binding, UserItem model) {
-        long quota = model.quota;
+        long quota = model.getQuota();
         if (quota != 0) {
-            final long availQ = quota - (model.used);
+            final long availQ = quota - (model.getUsed());
             final float free = (int) ((availQ * 100.0f) / quota);
-            final float used = (int) ((model.used * 100.0f) / quota);
+            final float used = (int) ((model.getUsed() * 100.0f) / quota);
             binding.usedSizeGraph.removeSlices();
             PieSlice slice = new PieSlice();
             final String usTitle = String.format(mContext.getString(R.string.used_x), String.valueOf(used));
@@ -125,7 +125,7 @@ public class InfoAdapter {
             slice.setValue(free);
             binding.usedSizeGraph.addSlice(slice);
             binding.usedSpace.setText(String.format(mContext.getString(R.string.used_x),
-                    MemoryUtil.humanReadableByte(model.used, false)));
+                    MemoryUtil.humanReadableByte(model.getUsed(), false)));
             binding.freeSpace.setText(String.format(mContext.getString(R.string.available_x),
                     MemoryUtil.humanReadableByte(availQ, false)));
         }

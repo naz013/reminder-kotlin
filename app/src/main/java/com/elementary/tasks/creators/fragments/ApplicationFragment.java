@@ -57,20 +57,20 @@ public class ApplicationFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = getType();
         String number;
         if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
             number = selectedPackage;
             if (TextUtils.isEmpty(number)) {
-                mInterface.showSnackbar(getString(R.string.you_dont_select_application));
+                getInterface().showSnackbar(getString(R.string.you_dont_select_application));
                 return false;
             }
         } else {
             number = binding.phoneNumber.getText().toString().trim();
             if (TextUtils.isEmpty(number) || number.matches(".*https?://")) {
-                mInterface.showSnackbar(getString(R.string.you_dont_insert_link));
+                getInterface().showSnackbar(getString(R.string.you_dont_insert_link));
                 return false;
             }
             if (!number.startsWith("http://") && !number.startsWith("https://"))
@@ -85,20 +85,20 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(repeat);
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -140,14 +140,14 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         binding.pickApplication.setOnClickListener(appClick);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
-        mInterface.setEventHint(getString(R.string.subject));
-        mInterface.setHasAutoExtra(true, getString(R.string.enable_launching_application_automatically));
-        if (mInterface.isExportToCalendar()) {
+        getInterface().setEventHint(getString(R.string.subject));
+        getInterface().setHasAutoExtra(true, getString(R.string.enable_launching_application_automatically));
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -167,8 +167,8 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());
@@ -187,7 +187,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     }
 
     private String getAppName() {
-        PackageManager packageManager = mContext.getPackageManager();
+        PackageManager packageManager = getContext().getPackageManager();
         ApplicationInfo applicationInfo = null;
         try {
             applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0);

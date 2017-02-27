@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import hirondelle.date4j.DateTime;
@@ -36,7 +37,7 @@ import hirondelle.date4j.DateTime;
 
 public class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<String> mWeekdaysList;
+    private List<String> mWeekdaysList;
     private Context mContext;
     private int mWidgetId;
     private int SUNDAY = 1;

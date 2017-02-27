@@ -138,7 +138,7 @@ public class FileExplorerActivity extends ThemedActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_file_explorer);
         filType = getIntent().getStringExtra(Constants.FILE_TYPE);
         if (filType == null) filType = "music";
-        isDark = themeUtil.isDark();
+        isDark = getThemeUtil().isDark();
         initActionBar();
         initRecyclerView();
         initPlayer();

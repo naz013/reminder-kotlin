@@ -25,6 +25,8 @@ public class EventControlFactory {
 
     private static final String TAG = "EventControlFactory";
 
+    private EventControlFactory() {}
+
     public static EventControl getController(Context context, Reminder reminder) {
         EventControl control;
         if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_SHOP)) {

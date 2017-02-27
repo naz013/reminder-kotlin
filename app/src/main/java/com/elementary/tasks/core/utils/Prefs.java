@@ -26,7 +26,7 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class Prefs extends SharedPrefs {
+public final class Prefs extends SharedPrefs {
 
     private static final String TAG = "Prefs";
     public static final String DRIVE_USER_NONE = "none";

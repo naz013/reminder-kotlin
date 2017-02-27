@@ -38,7 +38,7 @@ public class VoiceHelpDialog extends BaseDialog {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getString(R.string.help));
         WebView wv = new WebView(this);
-        wv.setBackgroundColor(themeUtil.getBackgroundStyle());
+        wv.setBackgroundColor(getThemeUtil().getBackgroundStyle());
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {

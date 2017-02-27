@@ -46,7 +46,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
             new SimpleDateFormat("MMM dd, yyyy", Locale.US),
             new SimpleDateFormat("yy/MM/dd", Locale.US),
     };
-    public static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private boolean showDialog = false;
     private ProgressDialog pd;
@@ -124,7 +124,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
                             calendar.setTime(date);
                             int day = calendar.get(Calendar.DAY_OF_MONTH);
                             int month = calendar.get(Calendar.MONTH);
-                            BirthdayItem birthdayItem = new BirthdayItem(name, dateFormat.format(calendar.getTime()), number, 0, id, day, month);
+                            BirthdayItem birthdayItem = new BirthdayItem(name, DATE_FORMAT.format(calendar.getTime()), number, 0, id, day, month);
                             if (!contacts.contains(birthdayItem)) {
                                 i = i + 1;
                             }

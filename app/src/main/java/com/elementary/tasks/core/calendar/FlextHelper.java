@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import hirondelle.date4j.DateTime;
@@ -30,7 +31,8 @@ import hirondelle.date4j.DateTime;
  */
 
 public class FlextHelper {
-    public static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat(
+
+    private static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat(
             "yyyy-MM-dd", Locale.ENGLISH);
 
     public FlextHelper(){
@@ -42,7 +44,7 @@ public class FlextHelper {
         else return context.getResources().getColor(res);
     }
 
-    public static ArrayList<DateTime> getFullWeeks(int month, int year, int startDayOfWeek) {
+    public static List<DateTime> getFullWeeks(int month, int year, int startDayOfWeek) {
         ArrayList<DateTime> datetimeList = new ArrayList<>();
 
         DateTime firstDateOfMonth = new DateTime(year, month, 1, 0, 0, 0, 0);

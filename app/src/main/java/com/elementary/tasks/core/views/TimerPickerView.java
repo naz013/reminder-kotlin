@@ -34,9 +34,6 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
 
     private String timeString = "000000";
 
-    private Context mContext;
-    private AttributeSet attrs;
-
     private TimerListener mListener;
 
     public TimerPickerView(Context context) {
@@ -65,7 +62,6 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
 
     private void init(Context context, AttributeSet attrs) {
         if (isInEditMode()) return;
-        this.attrs = attrs;
         setOrientation(VERTICAL);
         View.inflate(context, R.layout.timer_picker_view_layout, this);
         hoursView = (RoboTextView) findViewById(R.id.hoursView);
@@ -83,7 +79,6 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
             return true;
         });
         initButtons();
-        this.mContext = context;
         updateTimeView();
     }
 

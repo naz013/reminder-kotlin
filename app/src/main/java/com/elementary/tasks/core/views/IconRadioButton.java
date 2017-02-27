@@ -104,12 +104,6 @@ public class IconRadioButton extends AppCompatRadioButton {
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-
-    }
-
-    @Override
     public void setChecked(boolean checked) {
         if (!isCheckable) return;
         super.setChecked(checked);

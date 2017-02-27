@@ -43,18 +43,18 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle(getString(R.string.theme_color));
-        int loaded = mPrefs.getAppThemeColor();
+        int loaded = getPrefs().getAppThemeColor();
         ColorPickerView pickerView = (ColorPickerView) findViewById(R.id.pickerView);
         pickerView.setListener(this);
         pickerView.setSelectedColor(loaded);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mFab.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary()));
+        mFab.setBackgroundTintList(ViewUtils.getFabState(this, getThemeUtil().colorAccent(), getThemeUtil().colorPrimary()));
     }
 
     private void saveColor(int code) {
-        mPrefs.setAppThemeColor(code);
-        mPrefs.setUiChanged(true);
+        getPrefs().setAppThemeColor(code);
+        getPrefs().setUiChanged(true);
     }
 
     @Override
@@ -76,18 +76,18 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     }
 
     private void updateNotification() {
-        if (mPrefs.isSbNotificationEnabled()) {
+        if (getPrefs().isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
     }
 
     private void refreshUi() {
-        toolbar.setBackgroundColor(ViewUtils.getColor(this, themeUtil.colorPrimary()));
+        toolbar.setBackgroundColor(ViewUtils.getColor(this, getThemeUtil().colorPrimary()));
         if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(ViewUtils.getColor(this, themeUtil.colorPrimaryDark()));
+            getWindow().setStatusBarColor(ViewUtils.getColor(this, getThemeUtil().colorPrimaryDark()));
         }
-        mFab.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary()));
-        mFab.setRippleColor(ViewUtils.getColor(this, themeUtil.colorPrimary()));
+        mFab.setBackgroundTintList(ViewUtils.getFabState(this, getThemeUtil().colorAccent(), getThemeUtil().colorPrimary()));
+        mFab.setRippleColor(ViewUtils.getColor(this, getThemeUtil().colorPrimary()));
     }
 
     @Override

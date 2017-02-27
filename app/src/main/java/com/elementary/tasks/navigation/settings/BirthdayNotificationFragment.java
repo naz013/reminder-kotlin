@@ -68,19 +68,19 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showLedColor() {
-        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(mContext, mPrefs.getBirthdayLedColor()));
+        binding.chooseLedColorPrefs.setDetailText(LED.getTitle(getContext(), getPrefs().getBirthdayLedColor()));
     }
 
     private void showLedColorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getString(R.string.led_color));
-        String[] colors = LED.getAllNames(mContext);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.led_color));
+        String[] colors = LED.getAllNames(getContext());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, colors);
-        mItemSelect = mPrefs.getBirthdayLedColor();
+        mItemSelect = getPrefs().getBirthdayLedColor();
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            mPrefs.setBirthdayLedColor(mItemSelect);
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            getPrefs().setBirthdayLedColor(mItemSelect);
             showLedColor();
             dialog.dismiss();
         });
@@ -91,7 +91,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void initLedPrefs() {
-        binding.ledPrefs.setChecked(mPrefs.isBirthdayLedEnabled());
+        binding.ledPrefs.setChecked(getPrefs().isBirthdayLedEnabled());
         binding.ledPrefs.setOnClickListener(view -> changeLedPrefs());
         binding.ledPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
@@ -99,7 +99,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeLedPrefs() {
         boolean isChecked = binding.ledPrefs.isChecked();
         binding.ledPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayLedEnabled(!isChecked);
+        getPrefs().setBirthdayLedEnabled(!isChecked);
     }
 
     private void initMelodyPrefs() {
@@ -109,7 +109,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showMelody(){
-        String filePath = mPrefs.getBirthdayMelody();
+        String filePath = getPrefs().getBirthdayMelody();
         if (filePath == null || filePath.matches(Constants.DEFAULT)) {
             binding.chooseSoundPrefs.setDetailText(getResources().getString(R.string.default_string));
         } else if (!filePath.matches("")) {
@@ -124,26 +124,26 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showSoundDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
-        builder.setTitle(mContext.getString(R.string.melody));
-        String[] types = new String[]{mContext.getString(R.string.default_string),
-                mContext.getString(R.string.choose_file)};
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+        builder.setTitle(getString(R.string.melody));
+        String[] types = new String[]{getString(R.string.default_string),
+                getString(R.string.choose_file)};
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, types);
-        if (mPrefs.getBirthdayMelody().matches(Constants.DEFAULT)) {
+        if (getPrefs().getBirthdayMelody().matches(Constants.DEFAULT)) {
             mItemSelect = 0;
         } else {
             mItemSelect = 1;
         }
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
             if (mItemSelect == 0) {
-                mPrefs.setBirthdayMelody(Constants.DEFAULT);
+                getPrefs().setBirthdayMelody(Constants.DEFAULT);
                 showMelody();
             } else {
                 dialog.dismiss();
-                startActivityForResult(new Intent(mContext, FileExplorerActivity.class), MELODY_CODE);
+                startActivityForResult(new Intent(getContext(), FileExplorerActivity.class), MELODY_CODE);
             }
             dialog.dismiss();
         });
@@ -161,19 +161,19 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showTtsLocale() {
-        String locale = mPrefs.getBirthdayTtsLocale();
+        String locale = getPrefs().getBirthdayTtsLocale();
         int i = Language.getLocalePosition(locale);
-        binding.localePrefs.setDetailText(Language.getLocaleNames(mContext).get(i));
+        binding.localePrefs.setDetailText(Language.getLocaleNames(getContext()).get(i));
     }
 
     private void showTtsLocaleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
-        builder.setTitle(mContext.getString(R.string.language));
-        String locale = mPrefs.getBirthdayTtsLocale();
+        builder.setTitle(getString(R.string.language));
+        String locale = getPrefs().getBirthdayTtsLocale();
         mItemSelect = Language.getLocalePosition(locale);
         builder.setSingleChoiceItems(getLocaleAdapter(), mItemSelect, (dialog, which) -> mItemSelect = which);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
             saveTtsLocalePrefs();
             dialog.dismiss();
         });
@@ -185,7 +185,8 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
 
 
     private ArrayAdapter<String> getLocaleAdapter() {
-        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, Language.getLocaleNames(mContext));
+        return new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_single_choice,
+                Language.getLocaleNames(getContext()));
     }
 
     private void saveTtsLocalePrefs() {
@@ -199,12 +200,12 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
         if (mItemSelect == 6) locale = Language.POLISH;
         if (mItemSelect == 7) locale = Language.RUSSIAN;
         if (mItemSelect == 8) locale = Language.SPANISH;
-        mPrefs.setBirthdayTtsLocale(locale);
+        getPrefs().setBirthdayTtsLocale(locale);
         showTtsLocale();
     }
 
     private void initTtsPrefs() {
-        binding.ttsPrefs.setChecked(mPrefs.isBirthdayTtsEnabled());
+        binding.ttsPrefs.setChecked(getPrefs().isBirthdayTtsEnabled());
         binding.ttsPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.ttsPrefs.setOnClickListener(view -> changeTtsPrefs());
     }
@@ -212,11 +213,11 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeTtsPrefs() {
         boolean isChecked = binding.ttsPrefs.isChecked();
         binding.ttsPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayTtsEnabled(!isChecked);
+        getPrefs().setBirthdayTtsEnabled(!isChecked);
     }
 
     private void initWakePrefs() {
-        binding.wakeScreenOptionPrefs.setChecked(mPrefs.isBirthdayWakeEnabled());
+        binding.wakeScreenOptionPrefs.setChecked(getPrefs().isBirthdayWakeEnabled());
         binding.wakeScreenOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
         binding.wakeScreenOptionPrefs.setOnClickListener(view -> changeWakePrefs());
     }
@@ -224,23 +225,23 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeWakePrefs() {
         boolean isChecked = binding.wakeScreenOptionPrefs.isChecked();
         binding.wakeScreenOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayWakeEnabled(!isChecked);
+        getPrefs().setBirthdayWakeEnabled(!isChecked);
     }
 
     private void initInfiniteSoundPrefs() {
         binding.infiniteSoundOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
-        binding.infiniteSoundOptionPrefs.setChecked(mPrefs.isBirthdayInfiniteSoundEnabled());
+        binding.infiniteSoundOptionPrefs.setChecked(getPrefs().isBirthdayInfiniteSoundEnabled());
         binding.infiniteSoundOptionPrefs.setOnClickListener(view -> changeInfiniteSoundPrefs());
     }
 
     private void changeInfiniteSoundPrefs() {
         boolean isChecked = binding.infiniteSoundOptionPrefs.isChecked();
         binding.infiniteSoundOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayInfiniteSoundEnabled(!isChecked);
+        getPrefs().setBirthdayInfiniteSoundEnabled(!isChecked);
     }
 
     private void initSilentPrefs() {
-        binding.soundOptionPrefs.setChecked(mPrefs.isBirthdaySilentEnabled());
+        binding.soundOptionPrefs.setChecked(getPrefs().isBirthdaySilentEnabled());
         binding.soundOptionPrefs.setOnClickListener(view -> changeSilentPrefs());
         binding.soundOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
@@ -248,11 +249,11 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeSilentPrefs() {
         boolean isChecked = binding.soundOptionPrefs.isChecked();
         binding.soundOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdaySilentEnabled(!isChecked);
+        getPrefs().setBirthdaySilentEnabled(!isChecked);
     }
 
     private void initInfiniteVibratePrefs() {
-        binding.infiniteVibrateOptionPrefs.setChecked(mPrefs.isBirthdayInfiniteVibrationEnabled());
+        binding.infiniteVibrateOptionPrefs.setChecked(getPrefs().isBirthdayInfiniteVibrationEnabled());
         binding.infiniteVibrateOptionPrefs.setOnClickListener(view -> changeInfiniteVibrationPrefs());
         binding.infiniteVibrateOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
@@ -260,11 +261,11 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeInfiniteVibrationPrefs() {
         boolean isChecked = binding.infiniteVibrateOptionPrefs.isChecked();
         binding.infiniteVibrateOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayInfiniteVibrationEnabled(!isChecked);
+        getPrefs().setBirthdayInfiniteVibrationEnabled(!isChecked);
     }
 
     private void initVibratePrefs() {
-        binding.vibrationOptionPrefs.setChecked(mPrefs.isBirthdayVibrationEnabled());
+        binding.vibrationOptionPrefs.setChecked(getPrefs().isBirthdayVibrationEnabled());
         binding.vibrationOptionPrefs.setOnClickListener(view -> changeVibrationPrefs());
         binding.vibrationOptionPrefs.setReverseDependentView(binding.globalOptionPrefs);
     }
@@ -272,26 +273,26 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     private void changeVibrationPrefs() {
         boolean isChecked = binding.vibrationOptionPrefs.isChecked();
         binding.vibrationOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayVibrationEnabled(!isChecked);
+        getPrefs().setBirthdayVibrationEnabled(!isChecked);
     }
 
     private void initGlobalPrefs() {
-        binding.globalOptionPrefs.setChecked(mPrefs.isBirthdayGlobalEnabled());
+        binding.globalOptionPrefs.setChecked(getPrefs().isBirthdayGlobalEnabled());
         binding.globalOptionPrefs.setOnClickListener(view -> changeGlobalPrefs());
     }
 
     private void changeGlobalPrefs() {
         boolean isChecked = binding.globalOptionPrefs.isChecked();
         binding.globalOptionPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayGlobalEnabled(!isChecked);
+        getPrefs().setBirthdayGlobalEnabled(!isChecked);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.birthday_notification));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.birthday_notification));
+            getCallback().onFragmentSelect(this);
         }
     }
 
@@ -304,7 +305,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
                     if (filePath != null) {
                         File file = new File(filePath);
                         if (file.exists()) {
-                            mPrefs.setBirthdayMelody(file.toString());
+                            getPrefs().setBirthdayMelody(file.toString());
                         }
                     }
                     showMelody();

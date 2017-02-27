@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import hirondelle.date4j.DateTime;
@@ -50,15 +51,15 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_DATA = "arg_data";
     private int pageNumber;
-    private ArrayList<CalendarTheme> list;
+    private List<CalendarTheme> list;
 
     private ThemeUtil themeUtil;
 
-    public static CalendarThemeFragment newInstance(int page, ArrayList<CalendarTheme> list) {
+    public static CalendarThemeFragment newInstance(int page, List<CalendarTheme> list) {
         CalendarThemeFragment pageFragment = new CalendarThemeFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
-        arguments.putParcelableArrayList(ARGUMENT_DATA, list);
+        arguments.putParcelableArrayList(ARGUMENT_DATA, new ArrayList<>(list));
         pageFragment.setArguments(arguments);
         return pageFragment;
     }
@@ -74,7 +75,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentCalendarWidgetPreviewBinding binding = FragmentCalendarWidgetPreviewBinding.inflate(inflater, container, false);
-        themeUtil = ThemeUtil.getInstance(mContext);
+        themeUtil = ThemeUtil.getInstance(getContext());
         CalendarTheme calendarTheme = list.get(pageNumber);
         int windowColor = calendarTheme.getWindowColor();
         binding.previewView.widgetBg.setBackgroundResource(windowColor);
@@ -112,10 +113,10 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
 
         StringBuilder monthYearStringBuilder = new StringBuilder(50);
         Formatter monthYearFormatter = new Formatter(monthYearStringBuilder, Locale.getDefault());
-        int MONTH_YEAR_FLAG = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY | DateUtils.FORMAT_SHOW_YEAR;
+        int monthYearFlag = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY | DateUtils.FORMAT_SHOW_YEAR;
         Calendar cal = new GregorianCalendar();
         String monthTitle = DateUtils.formatDateRange(getActivity(),
-                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), MONTH_YEAR_FLAG).toString();
+                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), monthYearFlag).toString();
         binding.previewView.currentDate.setText(monthTitle.toUpperCase());
 
         binding.themeTitle.setText(calendarTheme.getTitle());
@@ -128,12 +129,12 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
 
     private class WeekdayAdapter extends BaseAdapter{
 
-        ArrayList<String> weekdays;
-        int SUNDAY = 1;
-        int startDayOfWeek = SUNDAY;
-        Context context;
-        LayoutInflater inflater;
-        int textColor;
+        private List<String> weekdays;
+        private int SUNDAY = 1;
+        private int startDayOfWeek = SUNDAY;
+        private Context context;
+        private LayoutInflater inflater;
+        private int textColor;
 
         WeekdayAdapter(Context context, int textColor){
             this.context = context;
@@ -146,7 +147,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             // 17 Feb 2013 is Sunday
             DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
             DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
-            if (mPrefs.getStartDay() == 1){
+            if (getPrefs().getStartDay() == 1){
                 nextDay = nextDay.plusDays(1);
             }
             for (int i = 0; i < 7; i++) {
@@ -198,13 +199,17 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
 
     private class MonthGridAdapter extends BaseAdapter{
 
-        ArrayList<DateTime> datetimeList;
+        List<DateTime> datetimeList;
         int SUNDAY = 1;
         int startDayOfWeek = SUNDAY;
-        int mDay, mMonth, mYear, prefsMonth;
+        int prefsMonth;
         Context context;
         LayoutInflater inflater;
-        int textColor, widgetBgColor, cMark, bMark, rMark;
+        int textColor;
+        int widgetBgColor;
+        int cMark;
+        int bMark;
+        int rMark;
 
         MonthGridAdapter(Context context, int[] resources){
             this.context = context;
@@ -220,9 +225,6 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int year = calendar.get(Calendar.YEAR);
-            mDay = calendar.get(Calendar.DAY_OF_MONTH);
-            mMonth = calendar.get(Calendar.MONTH) + 1;
-            mYear = year;
 
             DateTime firstDateOfMonth = new DateTime(year, prefsMonth + 1, 1, 0, 0, 0, 0);
             DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.getNumDaysInMonth() - 1);

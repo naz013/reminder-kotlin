@@ -53,12 +53,12 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTextSize() {
-        binding.textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", (mPrefs.getNoteTextSize() + 12)));
+        binding.textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", (getPrefs().getNoteTextSize() + 12)));
     }
 
     private void initNoteReminderPrefs() {
         binding.noteReminderPrefs.setOnClickListener(mNoteReminderClick);
-        binding.noteReminderPrefs.setChecked(mPrefs.isNoteReminderEnabled());
+        binding.noteReminderPrefs.setChecked(getPrefs().isNoteReminderEnabled());
     }
 
     private void initNoteTime() {
@@ -69,28 +69,28 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
     private void showNoteTime() {
         binding.noteReminderTime.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(mPrefs.getNoteReminderTime())));
+                String.valueOf(getPrefs().getNoteReminderTime())));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.notes));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.notes));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     private void changeNoteReminder() {
         boolean isChecked = binding.noteReminderPrefs.isChecked();
         binding.noteReminderPrefs.setChecked(!isChecked);
-        mPrefs.setNoteReminderEnabled(!isChecked);
+        getPrefs().setNoteReminderEnabled(!isChecked);
     }
 
     private void showTextSizePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.text_size);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(18);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -108,12 +108,12 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int textSize = mPrefs.getNoteTextSize();
+        int textSize = getPrefs().getNoteTextSize();
         b.seekBar.setProgress(textSize);
         b.titleView.setText(String.format(Locale.getDefault(), "%d pt", (textSize + 12)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            mPrefs.setNoteTextSize(b.seekBar.getProgress());
+            getPrefs().setNoteTextSize(b.seekBar.getProgress());
             showTextSize();
             dialogInterface.dismiss();
         });
@@ -122,9 +122,9 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTimePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.time);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(120);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -143,13 +143,13 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int time = mPrefs.getNoteReminderTime();
+        int time = getPrefs().getNoteReminderTime();
         b.seekBar.setProgress(time);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 String.valueOf(time)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            mPrefs.setNoteReminderTime(b.seekBar.getProgress());
+            getPrefs().setNoteReminderTime(b.seekBar.getProgress());
             showNoteTime();
             dialogInterface.dismiss();
         });

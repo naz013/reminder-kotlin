@@ -199,9 +199,9 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
 
     private void setColor(int i) {
         color = i;
-        binding.appBar.setBackgroundColor(themeUtil.getNoteColor(i));
+        binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(i));
         if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(i));
+            getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(i));
         }
     }
 

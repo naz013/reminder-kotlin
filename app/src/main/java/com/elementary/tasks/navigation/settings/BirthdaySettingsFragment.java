@@ -88,7 +88,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void initContactsAutoPrefs() {
-        binding.autoScanPrefs.setChecked(mPrefs.isContactAutoCheckEnabled());
+        binding.autoScanPrefs.setChecked(getPrefs().isContactAutoCheckEnabled());
         binding.autoScanPrefs.setOnClickListener(view -> changeAutoPrefs());
         binding.autoScanPrefs.setDependentView(binding.useContactsPrefs);
         binding.autoScanPrefs.setDependentView(binding.birthReminderPrefs);
@@ -97,16 +97,16 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void changeAutoPrefs() {
         boolean isChecked = binding.autoScanPrefs.isChecked();
         binding.autoScanPrefs.setChecked(!isChecked);
-        mPrefs.setContactAutoCheckEnabled(!isChecked);
+        getPrefs().setContactAutoCheckEnabled(!isChecked);
         if (!isChecked) {
-            new AlarmReceiver().enableBirthdayCheckAlarm(mContext);
+            new AlarmReceiver().enableBirthdayCheckAlarm(getContext());
         } else {
-            new AlarmReceiver().cancelBirthdayCheckAlarm(mContext);
+            new AlarmReceiver().cancelBirthdayCheckAlarm(getContext());
         }
     }
 
     private void initContactsPrefs() {
-        binding.useContactsPrefs.setChecked(mPrefs.isContactBirthdaysEnabled());
+        binding.useContactsPrefs.setChecked(getPrefs().isContactBirthdaysEnabled());
         binding.useContactsPrefs.setOnClickListener(view -> changeContactsPrefs());
         binding.useContactsPrefs.setDependentView(binding.birthReminderPrefs);
     }
@@ -118,32 +118,32 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         }
         boolean isChecked = binding.useContactsPrefs.isChecked();
         binding.useContactsPrefs.setChecked(!isChecked);
-        mPrefs.setContactBirthdaysEnabled(!isChecked);
+        getPrefs().setContactBirthdaysEnabled(!isChecked);
     }
 
     private void initBirthdayTimePrefs() {
         binding.reminderTimePrefs.setOnClickListener(view -> showTimeDialog());
-        binding.reminderTimePrefs.setValueText(mPrefs.getBirthdayTime());
+        binding.reminderTimePrefs.setValueText(getPrefs().getBirthdayTime());
         binding.reminderTimePrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void showTimeDialog() {
-        Calendar calendar = TimeUtil.getBirthdayCalendar(mPrefs.getBirthdayTime());
+        Calendar calendar = TimeUtil.getBirthdayCalendar(getPrefs().getBirthdayTime());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        new TimePickerDialog(mContext, this, hour, minute, mPrefs.is24HourFormatEnabled()).show();
+        new TimePickerDialog(getContext(), this, hour, minute, getPrefs().is24HourFormatEnabled()).show();
     }
 
     private void initDaysToPrefs() {
         binding.daysToPrefs.setOnClickListener(view -> showDaysToDialog());
-        binding.daysToPrefs.setValue(mPrefs.getDaysToBirthday());
+        binding.daysToPrefs.setValue(getPrefs().getDaysToBirthday());
         binding.daysToPrefs.setDependentView(binding.birthReminderPrefs);
     }
 
     private void showDaysToDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.days_to_birthday);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -161,7 +161,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
 
             }
         });
-        int daysToBirthday = mPrefs.getDaysToBirthday();
+        int daysToBirthday = getPrefs().getDaysToBirthday();
         b.seekBar.setProgress(daysToBirthday);
         b.titleView.setText(String.valueOf(daysToBirthday));
         builder.setView(b.getRoot());
@@ -171,12 +171,12 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void saveDays(int progress) {
-        mPrefs.setDaysToBirthday(progress);
+        getPrefs().setDaysToBirthday(progress);
         initDaysToPrefs();
     }
 
     private void initPermanentPrefs() {
-        binding.birthdayPermanentPrefs.setChecked(mPrefs.isBirthdayPermanentEnabled());
+        binding.birthdayPermanentPrefs.setChecked(getPrefs().isBirthdayPermanentEnabled());
         binding.birthdayPermanentPrefs.setOnClickListener(view -> changeBirthdayPermanentPrefs());
         binding.birthdayPermanentPrefs.setDependentView(binding.birthReminderPrefs);
     }
@@ -184,18 +184,18 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void changeBirthdayPermanentPrefs() {
         boolean isChecked = binding.birthdayPermanentPrefs.isChecked();
         binding.birthdayPermanentPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayPermanentEnabled(!isChecked);
+        getPrefs().setBirthdayPermanentEnabled(!isChecked);
         if (!isChecked) {
-            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
-            new AlarmReceiver().enableBirthdayPermanentAlarm(mContext);
+            getContext().startService(new Intent(getContext(), PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            new AlarmReceiver().enableBirthdayPermanentAlarm(getContext());
         } else {
-            mContext.startService(new Intent(mContext, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_HIDE));
-            new AlarmReceiver().cancelBirthdayPermanentAlarm(mContext);
+            getContext().startService(new Intent(getContext(), PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_HIDE));
+            new AlarmReceiver().cancelBirthdayPermanentAlarm(getContext());
         }
     }
 
     private void initBirthdaysWidgetPrefs() {
-        binding.widgetShowPrefs.setChecked(mPrefs.isBirthdayInWidgetEnabled());
+        binding.widgetShowPrefs.setChecked(getPrefs().isBirthdayInWidgetEnabled());
         binding.widgetShowPrefs.setOnClickListener(view -> changeWidgetPrefs());
         binding.widgetShowPrefs.setDependentView(binding.birthReminderPrefs);
     }
@@ -203,25 +203,25 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void changeWidgetPrefs() {
         boolean isChecked = binding.widgetShowPrefs.isChecked();
         binding.widgetShowPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayInWidgetEnabled(!isChecked);
-        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
-        UpdatesHelper.getInstance(mContext).updateWidget();
+        getPrefs().setBirthdayInWidgetEnabled(!isChecked);
+        UpdatesHelper.getInstance(getContext()).updateCalendarWidget();
+        UpdatesHelper.getInstance(getContext()).updateWidget();
     }
 
     private void initBirthdayReminderPrefs() {
         binding.birthReminderPrefs.setOnClickListener(view -> changeBirthdayPrefs());
-        binding.birthReminderPrefs.setChecked(mPrefs.isBirthdayReminderEnabled());
+        binding.birthReminderPrefs.setChecked(getPrefs().isBirthdayReminderEnabled());
     }
 
     private void changeBirthdayPrefs() {
         boolean isChecked = binding.birthReminderPrefs.isChecked();
         binding.birthReminderPrefs.setChecked(!isChecked);
-        mPrefs.setBirthdayReminderEnabled(!isChecked);
+        getPrefs().setBirthdayReminderEnabled(!isChecked);
         if (!isChecked) {
-            new AlarmReceiver().enableBirthdayAlarm(mContext);
+            new AlarmReceiver().enableBirthdayAlarm(getContext());
         } else {
             cleanBirthdays();
-            new AlarmReceiver().cancelBirthdayAlarm(mContext);
+            new AlarmReceiver().cancelBirthdayAlarm(getContext());
         }
     }
 
@@ -238,18 +238,18 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.birthdays));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.birthdays));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-        mPrefs.setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
+        getPrefs().setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
         initBirthdayTimePrefs();
-        if (mPrefs.isBirthdayReminderEnabled()) {
-            new AlarmReceiver().enableBirthdayAlarm(mContext);
+        if (getPrefs().isBirthdayReminderEnabled()) {
+            new AlarmReceiver().enableBirthdayAlarm(getContext());
         }
     }
 

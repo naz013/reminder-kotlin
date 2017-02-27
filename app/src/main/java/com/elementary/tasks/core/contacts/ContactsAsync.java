@@ -57,13 +57,11 @@ public class ContactsAsync extends AsyncTask<Void, Void, Void> {
                     hasPhone = "true";
                 else
                     hasPhone = "false";
-                if (name != null) {
-                    if (Boolean.parseBoolean(hasPhone)) {
-                        ContactItem data = new ContactItem(name, photo, id);
-                        int pos = getPosition(name);
-                        if (pos == -1) mList.add(data);
-                        else mList.add(pos, data);
-                    }
+                if (name != null && Boolean.parseBoolean(hasPhone)) {
+                    ContactItem data = new ContactItem(name, photo, id);
+                    int pos = getPosition(name);
+                    if (pos == -1) mList.add(data);
+                    else mList.add(pos, data);
                 }
             }
             cursor.close();

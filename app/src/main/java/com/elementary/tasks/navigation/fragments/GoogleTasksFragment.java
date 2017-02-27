@@ -69,7 +69,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     private TasksCallback mTasksCallback = new TasksCallback() {
         @Override
         public void onFailed() {
-            Toast.makeText(mContext, R.string.failed_to_sync_google_tasks, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.failed_to_sync_google_tasks, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -105,14 +105,14 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sync:
-                new SyncGoogleTasksAsync(mContext, mTasksCallback).execute();
+                new SyncGoogleTasksAsync(getContext(), mTasksCallback).execute();
                 return true;
             case R.id.action_add_list:
-                startActivity(new Intent(mContext, TaskListActivity.class));
+                startActivity(new Intent(getContext(), TaskListActivity.class));
                 return true;
             case MENU_ITEM_EDIT:
                 if (currentPos != 0) {
-                    startActivity(new Intent(mContext, TaskListActivity.class)
+                    startActivity(new Intent(getContext(), TaskListActivity.class)
                             .putExtra(Constants.INTENT_ID, taskListDatum.get(currentPos).getTaskList().getListId()));
                 }
                 return true;
@@ -137,7 +137,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     }
 
     private void showProgressDialog(String title) {
-        mDialog = ProgressDialog.show(mContext, null, title, true, false);
+        mDialog = ProgressDialog.show(getContext(), null, title, true, false);
     }
 
     private void hideDialog() {
@@ -150,10 +150,10 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     public void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.google_tasks));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> addNewTask());
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.google_tasks));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> addNewTask());
         }
         loadData();
     }
@@ -170,7 +170,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     }
 
     private void addNewTask() {
-        mContext.startActivity(new Intent(mContext, TaskActivity.class)
+        getContext().startActivity(new Intent(getContext(), TaskActivity.class)
                 .putExtra(Constants.INTENT_ID, taskListDatum.get(currentPos).getTaskList().getListId())
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE));
     }
@@ -181,19 +181,19 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
                 getString(R.string.by_date_za),
                 getString(R.string.active_first),
                 getString(R.string.completed_first)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.order));
         builder.setItems(items, (dialog, which) -> {
             if (which == 0) {
-                mPrefs.setTasksOrder(Constants.ORDER_DEFAULT);
+                getPrefs().setTasksOrder(Constants.ORDER_DEFAULT);
             } else if (which == 1) {
-                mPrefs.setTasksOrder(Constants.ORDER_DATE_A_Z);
+                getPrefs().setTasksOrder(Constants.ORDER_DATE_A_Z);
             } else if (which == 2) {
-                mPrefs.setTasksOrder(Constants.ORDER_DATE_Z_A);
+                getPrefs().setTasksOrder(Constants.ORDER_DATE_Z_A);
             } else if (which == 3) {
-                mPrefs.setTasksOrder(Constants.ORDER_COMPLETED_Z_A);
+                getPrefs().setTasksOrder(Constants.ORDER_COMPLETED_Z_A);
             } else if (which == 4) {
-                mPrefs.setTasksOrder(Constants.ORDER_COMPLETED_A_Z);
+                getPrefs().setTasksOrder(Constants.ORDER_COMPLETED_A_Z);
             }
             dialog.dismiss();
             loadData();
@@ -203,7 +203,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
         builder.setMessage(getString(R.string.delete_this_list));
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
@@ -220,7 +220,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         if (taskListItem != null) {
             String listId = taskListItem.getListId();
             showProgressDialog(getString(R.string.deleting_list));
-            new TaskListAsync(mContext, null, 0, listId, TasksConstants.DELETE_TASK_LIST, new TasksCallback() {
+            new TaskListAsync(getContext(), null, 0, listId, TasksConstants.DELETE_TASK_LIST, new TasksCallback() {
                 @Override
                 public void onFailed() {
                     hideDialog();
@@ -235,7 +235,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
                         TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
                         RealmDb.getInstance().setDefault(listItem.getListId());
                     }
-                    mPrefs.setLastGoogleList(0);
+                    getPrefs().setLastGoogleList(0);
                     hideDialog();
                     loadData();
                 }
@@ -253,7 +253,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
             taskListDatum.add(new TaskListWrapperItem(item, getList(item.getListId()), i));
             if (i > 0) colors.put(item.getListId(), item.getColor());
         }
-        int pos = mPrefs.getLastGoogleList();
+        int pos = getPrefs().getLastGoogleList();
         final TaskPagerAdapter pagerAdapter = new TaskPagerAdapter(getFragmentManager(), taskListDatum, colors);
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -265,7 +265,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
             @Override
             public void onPageSelected(int i) {
                 updateScreen(i);
-                mPrefs.setLastGoogleList(i);
+                getPrefs().setLastGoogleList(i);
                 currentPos = i;
                 getActivity().invalidateOptionsMenu();
             }
@@ -280,18 +280,18 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     }
 
     private void updateScreen(int pos) {
-        if (mCallback != null) {
-            ThemeUtil mColor = ThemeUtil.getInstance(mContext);
+        if (getCallback() != null) {
+            ThemeUtil mColor = ThemeUtil.getInstance(getContext());
             if (pos == 0) {
-                mCallback.onTitleChange(getString(R.string.all));
-                mCallback.onThemeChange(mColor.getColor(mColor.colorPrimary()),
+                getCallback().onTitleChange(getString(R.string.all));
+                getCallback().onThemeChange(mColor.getColor(mColor.colorPrimary()),
                         mColor.getColor(mColor.colorPrimaryDark()),
                         mColor.getColor(mColor.colorAccent()));
             } else {
                 TaskListItem taskList = taskListDatum.get(pos).getTaskList();
-                mCallback.onTitleChange(taskList.getTitle());
+                getCallback().onTitleChange(taskList.getTitle());
                 int tmp = taskList.getColor();
-                mCallback.onThemeChange(mColor.getColor(mColor.colorPrimary(tmp)),
+                getCallback().onThemeChange(mColor.getColor(mColor.colorPrimary(tmp)),
                         mColor.getColor(mColor.colorPrimaryDark(tmp)),
                         mColor.getColor(mColor.colorAccent(tmp)));
             }
@@ -310,7 +310,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
 
     private List<TaskItem> getList(String listId) {
         List<TaskItem> mData = new ArrayList<>();
-        String orderPrefs = mPrefs.getTasksOrder();
+        String orderPrefs = getPrefs().getTasksOrder();
         if (listId == null) {
             List<TaskItem> list = RealmDb.getInstance().getTasks(orderPrefs);
             mData.addAll(list);
@@ -324,6 +324,6 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     private void clearList() {
         String listId = taskListDatum.get(currentPos).getTaskList().getListId();
         RealmDb.getInstance().deleteCompletedTasks(listId);
-        new TaskListAsync(mContext, null, 0, listId, TasksConstants.CLEAR_TASK_LIST, mTasksCallback).execute();
+        new TaskListAsync(getContext(), null, 0, listId, TasksConstants.CLEAR_TASK_LIST, mTasksCallback).execute();
     }
 }

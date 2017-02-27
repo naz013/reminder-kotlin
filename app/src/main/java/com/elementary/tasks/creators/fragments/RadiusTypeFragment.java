@@ -30,12 +30,12 @@ import java.util.Locale;
 
 abstract class RadiusTypeFragment extends TypeFragment {
 
-    protected int radius = Prefs.getInstance(mContext).getRadius();
+    protected int radius = Prefs.getInstance(getContext()).getRadius();
 
     protected final void showRadiusPickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.radius);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5001);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -76,8 +76,8 @@ abstract class RadiusTypeFragment extends TypeFragment {
 
     @Override
     public boolean save() {
-        if (!SuperUtil.checkLocationEnable(mContext)) {
-            SuperUtil.showLocationAlert(mContext, mInterface);
+        if (!SuperUtil.checkLocationEnable(getContext())) {
+            SuperUtil.showLocationAlert(getContext(), getInterface());
             return false;
         }
         return true;

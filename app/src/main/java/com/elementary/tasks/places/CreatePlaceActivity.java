@@ -60,7 +60,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                mPrefs.getMarkerStyle(), themeUtil.isDark());
+                getPrefs().getMarkerStyle(), getThemeUtil().isDark());
         mGoogleMap.setListener(this);
         mGoogleMap.setCallback(this);
 
@@ -115,7 +115,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
                 mItem.setLat(latitude);
                 mItem.setLng(longitude);
             } else {
-                mItem = new PlaceItem(name, UUID.randomUUID().toString(), latitude, longitude, 0, mPrefs.getRadius());
+                mItem = new PlaceItem(name, UUID.randomUUID().toString(), latitude, longitude, 0, getPrefs().getRadius());
             }
             RealmDb.getInstance().saveObject(mItem);
             finish();
@@ -156,11 +156,6 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete));
         }
         return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

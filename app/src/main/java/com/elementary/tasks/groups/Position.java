@@ -17,10 +17,18 @@ package com.elementary.tasks.groups;
  */
 
 public class Position {
-    public int i;
+    private int i;
 
     public Position() {
         i = 0;
+    }
+
+    public int getI() {
+        return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
     }
 
     @Override

@@ -1,12 +1,19 @@
 package com.elementary.tasks.core.views;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 
-public class TextDrawable extends ShapeDrawable {
+public final class TextDrawable extends ShapeDrawable {
 
     private final Paint textPaint;
     private final Paint borderPaint;
@@ -148,7 +155,7 @@ public class TextDrawable extends ShapeDrawable {
 
         private RectShape shape;
 
-        public int textColor;
+        private int textColor;
 
         private int fontSize;
 
@@ -156,7 +163,7 @@ public class TextDrawable extends ShapeDrawable {
 
         private boolean toUpperCase;
 
-        public float radius;
+        private float radius;
 
         private Builder() {
             text = "";
@@ -222,19 +229,16 @@ public class TextDrawable extends ShapeDrawable {
             return this;
         }
 
-        @Override
         public IBuilder rect() {
             this.shape = new RectShape();
             return this;
         }
 
-        @Override
         public IBuilder round() {
             this.shape = new OvalShape();
             return this;
         }
 
-        @Override
         public IBuilder roundRect(int radius) {
             this.radius = radius;
             float[] radii = {radius, radius, radius, radius, radius, radius, radius, radius};
@@ -288,20 +292,14 @@ public class TextDrawable extends ShapeDrawable {
         public IShapeBuilder endConfig();
     }
 
-    public static interface IBuilder {
+    public interface IBuilder {
 
-        public TextDrawable build(String text, int color);
+        TextDrawable build(String text, int color);
     }
 
-    public static interface IShapeBuilder {
+    public interface IShapeBuilder {
 
         public IConfigBuilder beginConfig();
-
-        public IBuilder rect();
-
-        public IBuilder round();
-
-        public IBuilder roundRect(int radius);
 
         public TextDrawable buildRect(String text, int color);
 

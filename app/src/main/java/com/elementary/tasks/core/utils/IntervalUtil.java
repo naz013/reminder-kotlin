@@ -32,6 +32,8 @@ public class IntervalUtil {
     public static final int INTERVAL_THREE_WEEKS = INTERVAL_WEEK * 3;
     public static final int INTERVAL_FOUR_WEEKS = INTERVAL_WEEK * 4;
 
+    private IntervalUtil() {}
+
     public static List<Integer> getWeekRepeat(boolean mon, boolean tue, boolean wed, boolean thu, boolean fri,
                                                    boolean sat, boolean sun){
         List<Integer> sb = new ArrayList<>(7);

@@ -31,21 +31,11 @@ class DateEvent extends RepeatableEventManager {
 
     @Override
     public boolean start() {
-        mReminder.setActive(true);
+        getReminder().setActive(true);
         super.save();
-        new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+        new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
         super.export();
         return true;
-    }
-
-    @Override
-    public boolean stop() {
-        return super.stop();
-    }
-
-    @Override
-    public boolean pause() {
-        return super.pause();
     }
 
     @Override
@@ -54,17 +44,12 @@ class DateEvent extends RepeatableEventManager {
     }
 
     @Override
-    public boolean resume() {
-        return super.resume();
-    }
-
-    @Override
     public boolean next() {
-        mReminder.setDelay(0);
+        getReminder().setDelay(0);
         if (canSkip()) {
             long time = calculateTime(false);
-            mReminder.setEventTime(TimeUtil.getGmtFromDateTime(time));
-            mReminder.setEventCount(mReminder.getEventCount() + 1);
+            getReminder().setEventTime(TimeUtil.getGmtFromDateTime(time));
+            getReminder().setEventCount(getReminder().getEventCount() + 1);
             return start();
         } else return stop();
     }
@@ -81,17 +66,17 @@ class DateEvent extends RepeatableEventManager {
 
     @Override
     public boolean isActive() {
-        return mReminder.isActive();
+        return getReminder().isActive();
     }
 
     @Override
     public boolean canSkip() {
-        return isRepeatable() && (mReminder.getRepeatLimit() == -1 || mReminder.getRepeatLimit() - mReminder.getEventCount() - 1 > 0);
+        return isRepeatable() && (getReminder().getRepeatLimit() == -1 || getReminder().getRepeatLimit() - getReminder().getEventCount() - 1 > 0);
     }
 
     @Override
     public boolean isRepeatable() {
-        return mReminder.getRepeatInterval() > 0;
+        return getReminder().getRepeatInterval() > 0;
     }
 
     @Override
@@ -100,13 +85,13 @@ class DateEvent extends RepeatableEventManager {
             next();
             return;
         }
-        mReminder.setDelay(delay);
+        getReminder().setDelay(delay);
         super.save();
-        new AlarmReceiver().enableDelay(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+        new AlarmReceiver().enableDelay(getContext(), getReminder().getUniqueId(), delay, getReminder().getUuId());
     }
 
     @Override
     public long calculateTime(boolean isNew) {
-        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
+        return TimeCount.getInstance(getContext()).generateDateTime(getReminder().getEventTime(), getReminder().getRepeatInterval());
     }
 }

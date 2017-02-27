@@ -124,7 +124,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private AdapterView.OnItemSelectedListener mOnTypeSelectListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            mPrefs.setLastUsedReminder(position);
+            getPrefs().setLastUsedReminder(position);
             switch (position) {
                 case DATE:
                     replaceFragment(new DateFragment());
@@ -313,7 +313,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private void initNavigation() {
         spinner = binding.navSpinner;
         ArrayList<SpinnerItem> navSpinner = new ArrayList<>();
-        if (themeUtil.isDark()) {
+        if (getThemeUtil().isDark()) {
             navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar_white));
             navSpinner.add(new SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white));
             navSpinner.add(new SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white));
@@ -343,7 +343,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         TitleNavigationAdapter adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinner);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(mOnTypeSelectListener);
-        int lastPos = mPrefs.getLastUsedReminder();
+        int lastPos = getPrefs().getLastUsedReminder();
         if (lastPos >= navSpinner.size()) lastPos = 0;
         spinner.setSelection(lastPos);
     }
@@ -376,7 +376,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.choose_group);
         builder.setSingleChoiceItems(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_single_choice, categories), position.i, (dialog, which) -> {
+                android.R.layout.simple_list_item_single_choice, categories), position.getI(), (dialog, which) -> {
             dialog.dismiss();
             showGroup(list.get(which));
         });
@@ -661,13 +661,13 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     public void showShowcase() {
-        if (!mPrefs.isShowcase(SHOWCASE)) {
-            mPrefs.setShowcase(SHOWCASE, true);
+        if (!getPrefs().isShowcase(SHOWCASE)) {
+            getPrefs().setShowcase(SHOWCASE, true);
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
-            config.setMaskColor(themeUtil.getColor(themeUtil.colorAccent()));
-            config.setContentTextColor(themeUtil.getColor(R.color.whitePrimary));
-            config.setDismissTextColor(themeUtil.getColor(R.color.whitePrimary));
+            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
+            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
             sequence.setConfig(config);
             sequence.addSequenceItem(binding.navSpinner,
@@ -777,7 +777,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public boolean isExportToCalendar() {
-        return mPrefs.isCalendarEnabled() || mPrefs.isStockCalendarEnabled();
+        return getPrefs().isCalendarEnabled() || getPrefs().isStockCalendarEnabled();
     }
 
     @Override
@@ -829,7 +829,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         }
     }
 
-    private class SpinnerItem {
+    private static class SpinnerItem {
         private String title;
         private int icon;
 
@@ -899,14 +899,14 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 convertView = mInflater.inflate(R.layout.list_item_navigation, null);
             }
             RelativeLayout itemBg = (RelativeLayout) convertView.findViewById(R.id.itemBg);
-            itemBg.setBackgroundColor(themeUtil.getSpinnerStyle());
+            itemBg.setBackgroundColor(getThemeUtil().getSpinnerStyle());
             imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
             txtTitle = (RoboTextView) convertView.findViewById(R.id.txtTitle);
             imgIcon.setImageResource(spinnerNavItem.get(position).getIcon());
-            if (themeUtil.isDark()) {
-                txtTitle.setTextColor(themeUtil.getColor(R.color.whitePrimary));
+            if (getThemeUtil().isDark()) {
+                txtTitle.setTextColor(getThemeUtil().getColor(R.color.whitePrimary));
             } else {
-                txtTitle.setTextColor(themeUtil.getColor(R.color.blackPrimary));
+                txtTitle.setTextColor(getThemeUtil().getColor(R.color.blackPrimary));
             }
             txtTitle.setText(spinnerNavItem.get(position).getTitle());
             return convertView;

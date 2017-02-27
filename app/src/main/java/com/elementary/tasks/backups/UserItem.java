@@ -18,9 +18,12 @@ package com.elementary.tasks.backups;
 
 public class UserItem {
 
-    public String name, photo;
-    public long quota, used, count;
-    public UserInfoAsync.Info kind;
+    private String name;
+    private String photo;
+    private long quota;
+    private long used;
+    private long count;
+    private UserInfoAsync.Info kind;
 
     public UserItem() {}
 
@@ -30,5 +33,53 @@ public class UserItem {
         this.used = used;
         this.count = count;
         this.photo = photo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public long getQuota() {
+        return quota;
+    }
+
+    public void setQuota(long quota) {
+        this.quota = quota;
+    }
+
+    public long getUsed() {
+        return used;
+    }
+
+    public void setUsed(long used) {
+        this.used = used;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+    public UserInfoAsync.Info getKind() {
+        return kind;
+    }
+
+    public void setKind(UserInfoAsync.Info kind) {
+        this.kind = kind;
     }
 }

@@ -75,7 +75,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         mBirthdayItem = RealmDb.getInstance().getBirthday(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_birthday);
-        binding.card.setCardBackgroundColor(themeUtil.getCardStyle());
+        binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
         binding.singleContainer.setVisibility(View.VISIBLE);
         loadImage(binding.bgImage);
@@ -90,7 +90,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         binding.buttonSend.setImageResource(R.drawable.ic_send_black_24dp);
 
         CircleImageView contactPhoto = binding.contactPhoto;
-        contactPhoto.setBorderColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
         if (TextUtils.isEmpty(mBirthdayItem.getNumber())) {
@@ -151,7 +151,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (Module.isPro()){
             builder.setLights(getLedColor(), 500, 1000);
         }
-        boolean isWear = mPrefs.isWearEnabled();
+        boolean isWear = getPrefs().isWearEnabled();
         if (isWear) {
             if (Module.isJellyMR2()) {
                 builder.setOnlyAlertOnce(true);
@@ -167,17 +167,17 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     private boolean isBirthdaySilentEnabled() {
-        boolean is = mPrefs.isSoundInSilentModeEnabled();
+        boolean is = getPrefs().isSoundInSilentModeEnabled();
         if (Module.isPro() && !isGlobal()) {
-            is = mPrefs.isBirthdaySilentEnabled();
+            is = getPrefs().isBirthdaySilentEnabled();
         }
         return is;
     }
 
     private boolean isTtsEnabled() {
-        boolean is = mPrefs.isTtsEnabled();
+        boolean is = getPrefs().isTtsEnabled();
         if (Module.isPro() && !isGlobal()) {
-            is = mPrefs.isBirthdayTtsEnabled();
+            is = getPrefs().isBirthdayTtsEnabled();
         }
         return is;
     }
@@ -189,7 +189,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
             mTracker.setScreenName("Birthday Reminder ");
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }
     }
@@ -197,7 +197,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
@@ -207,7 +207,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     protected void onDestroy() {
         super.onDestroy();
         removeFlags();
-        if (mPrefs.isAutoBackupEnabled()) {
+        if (getPrefs().isAutoBackupEnabled()) {
             new BackupTask(this).execute();
         }
     }
@@ -215,7 +215,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (mPrefs.isFoldingEnabled()){
+        if (getPrefs().isFoldingEnabled()){
             removeFlags();
             finish();
         } else {
@@ -311,26 +311,26 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected String getMelody() {
         if (Module.isPro() && !isGlobal()) {
-            return mPrefs.getBirthdayMelody();
+            return getPrefs().getBirthdayMelody();
         } else {
-            return mPrefs.getMelodyFile();
+            return getPrefs().getMelodyFile();
         }
     }
 
     @Override
     protected boolean isBirthdayInfiniteVibration() {
-        boolean vibrate = mPrefs.isInfiniteVibrateEnabled();
+        boolean vibrate = getPrefs().isInfiniteVibrateEnabled();
         if (Module.isPro() && !isGlobal()){
-            vibrate = mPrefs.isBirthdayInfiniteVibrationEnabled();
+            vibrate = getPrefs().isBirthdayInfiniteVibrationEnabled();
         }
         return vibrate;
     }
 
     @Override
     protected boolean isBirthdayInfiniteSound() {
-        boolean isLooping = mPrefs.isInfiniteSoundEnabled();
+        boolean isLooping = getPrefs().isInfiniteSoundEnabled();
         if (Module.isPro() && !isGlobal()){
-            isLooping = mPrefs.isBirthdayInfiniteSoundEnabled();
+            isLooping = getPrefs().isBirthdayInfiniteSoundEnabled();
         }
         return isLooping;
     }
@@ -342,9 +342,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isVibrate() {
-        boolean vibrate = mPrefs.isVibrateEnabled();
+        boolean vibrate = getPrefs().isVibrateEnabled();
         if (Module.isPro() && !isGlobal()){
-            vibrate = mPrefs.isBirthdayVibrationEnabled();
+            vibrate = getPrefs().isBirthdayVibrationEnabled();
         }
         return vibrate;
     }
@@ -366,35 +366,35 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected int getLedColor() {
-        int ledColor = LED.getLED(mPrefs.getLedColor());
+        int ledColor = LED.getLED(getPrefs().getLedColor());
         if (Module.isPro() && !isGlobal()) {
-            ledColor = LED.getLED(mPrefs.getBirthdayLedColor());
+            ledColor = LED.getLED(getPrefs().getBirthdayLedColor());
         }
         return ledColor;
     }
 
     @Override
     protected boolean isAwakeDevice() {
-        boolean isWake = mPrefs.isDeviceAwakeEnabled();
+        boolean isWake = getPrefs().isDeviceAwakeEnabled();
         if (Module.isPro() && !isGlobal()) {
-            isWake = mPrefs.isBirthdayWakeEnabled();
+            isWake = getPrefs().isBirthdayWakeEnabled();
         }
         return isWake;
     }
 
     @Override
     protected int getMaxVolume() {
-        return mPrefs.getLoudness();
+        return getPrefs().getLoudness();
     }
 
     @Override
     protected boolean isGlobal() {
-        return mPrefs.isBirthdayGlobalEnabled();
+        return getPrefs().isBirthdayGlobalEnabled();
     }
 
     @Override
     protected boolean isUnlockDevice() {
-        return mPrefs.isDeviceUnlockEnabled();
+        return getPrefs().isDeviceUnlockEnabled();
     }
 
     @Override

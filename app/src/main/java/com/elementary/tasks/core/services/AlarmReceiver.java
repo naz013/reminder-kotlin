@@ -28,7 +28,6 @@ import org.dmfs.rfc5545.recur.Freq;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -63,7 +62,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     private static final String ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO";
     private static final String ACTION_DELAY = "com.elementary.alarm.DELAY";
     private static final String ACTION_POSITION_DELAY = "com.elementary.alarm.DELAY_POSITION";
-    private static final String ACTION_NOTIFICATION = "com.elementary.alarm.NOTIFICATION";
     private static final String ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK";
 
     private static final String TAG = "AlarmReceiver";
@@ -349,7 +347,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         }
     }
 
-    private class CheckEventsAsync extends AsyncTask<Void, Void, Void> {
+    private static class CheckEventsAsync extends AsyncTask<Void, Void, Void> {
 
         private Context mContext;
 
@@ -361,7 +359,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         protected Void doInBackground(Void... params) {
             long currTime = System.currentTimeMillis();
             int calID = Prefs.getInstance(mContext).getEventsCalendar();
-            ArrayList<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
+            List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
             if (eventItems != null && eventItems.size() > 0){
                 List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                 for (CalendarUtils.EventItem item : eventItems) {

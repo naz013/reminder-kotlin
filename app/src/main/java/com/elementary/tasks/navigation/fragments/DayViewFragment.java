@@ -88,8 +88,8 @@ public class DayViewFragment extends BaseCalendarFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_voice:
-                if (mCallback != null){
-                    mCallback.onVoiceAction();
+                if (getCallback() != null){
+                    getCallback().onVoiceAction();
                 }
                 return true;
         }
@@ -110,17 +110,17 @@ public class DayViewFragment extends BaseCalendarFragment {
             calendar.setTimeInMillis(dateMills);
         }
         String dayString = TimeUtil.getDate(calendar.getTimeInMillis());
-        if (mCallback != null) mCallback.onTitleChange(dayString);
+        if (getCallback() != null) getCallback().onTitleChange(dayString);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.calendar));
-            mCallback.onFragmentSelect(this);
-            mCallback.onMenuSelect(R.id.nav_day_view);
-            mCallback.setClick(view -> showActionDialog());
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.calendar));
+            getCallback().onFragmentSelect(this);
+            getCallback().onMenuSelect(R.id.nav_day_view);
+            getCallback().setClick(view -> showActionDialog());
         }
         loadData();
     }
@@ -146,11 +146,11 @@ public class DayViewFragment extends BaseCalendarFragment {
 
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        String time = mPrefs.getBirthdayTime();
-        boolean isFeature = mPrefs.isFutureEventEnabled();
-        boolean isRemindersEnabled = mPrefs.isRemindersInCalendarEnabled();
+        String time = getPrefs().getBirthdayTime();
+        boolean isFeature = getPrefs().isFutureEventEnabled();
+        boolean isRemindersEnabled = getPrefs().isRemindersInCalendarEnabled();
 
-        DayViewProvider provider = new DayViewProvider(mContext);
+        DayViewProvider provider = new DayViewProvider(getContext());
         provider.setBirthdays(true);
         provider.setTime(TimeUtil.getBirthdayTime(time));
         provider.setReminders(isRemindersEnabled);

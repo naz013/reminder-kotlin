@@ -49,7 +49,7 @@ public abstract class FragmentStyle extends BaseSettingsFragment implements Colo
 
     void saveColor(int code) {
         saveToPrefs(code);
-        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
+        UpdatesHelper.getInstance(getContext()).updateCalendarWidget();
     }
 
     protected abstract void saveToPrefs(int code);

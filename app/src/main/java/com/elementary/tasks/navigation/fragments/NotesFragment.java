@@ -78,7 +78,7 @@ public class NotesFragment extends BaseNavigationFragment {
             final String[] items = {getString(R.string.open), getString(R.string.share),
                     showIn, getString(R.string.change_color), getString(R.string.edit),
                     getString(R.string.delete)};
-            Dialogues.showLCAM(mContext, item -> {
+            Dialogues.showLCAM(getContext(), item -> {
                 NoteItem noteItem = mAdapter.getItem(position);
                 switch (item) {
                     case 0:
@@ -94,7 +94,7 @@ public class NotesFragment extends BaseNavigationFragment {
                         selectColor(position, noteItem.getKey());
                         break;
                     case 4:
-                        mContext.startActivity(new Intent(mContext, ActivityCreateNote.class)
+                        getContext().startActivity(new Intent(getContext(), ActivityCreateNote.class)
                                 .putExtra(Constants.INTENT_ID, noteItem.getKey()));
                         break;
                     case 5:
@@ -161,7 +161,7 @@ public class NotesFragment extends BaseNavigationFragment {
         MenuItem item = menu.findItem(R.id.action_list);
         if (item != null) {
             item.setIcon(!enableGrid ? R.drawable.ic_view_quilt_white_24dp : R.drawable.ic_view_list_white_24dp);
-            item.setTitle(!enableGrid ? mContext.getString(R.string.grid_view) : mContext.getString(R.string.list_view));
+            item.setTitle(!enableGrid ? getString(R.string.grid_view) : getString(R.string.list_view));
         }
         if (RealmDb.getInstance().getAllNotes(null).size() != 0) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete_all));
@@ -182,17 +182,17 @@ public class NotesFragment extends BaseNavigationFragment {
     private void shareNote(NoteItem noteItem){
         File file = BackupTool.getInstance().createNote(noteItem);
         if (!file.exists() || !file.canRead()) {
-            Toast.makeText(mContext, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
         }
-        TelephonyUtil.sendNote(file, mContext, noteItem.getSummary());
+        TelephonyUtil.sendNote(file, getContext(), noteItem.getSummary());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sync:
-                new SyncNotes(mContext, mSyncListener).execute();
+                new SyncNotes(getContext(), mSyncListener).execute();
                 break;
             case R.id.action_order:
                 showDialog();
@@ -202,7 +202,7 @@ public class NotesFragment extends BaseNavigationFragment {
                 break;
             case R.id.action_list:
                 enableGrid = !enableGrid;
-                mPrefs.setNotesGridEnabled(enableGrid);
+                getPrefs().setNotesGridEnabled(enableGrid);
                 showData();
                 getActivity().invalidateOptionsMenu();
                 break;
@@ -223,11 +223,11 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void showDialog() {
-        final CharSequence[] items = {mContext.getString(R.string.by_date_az),
-                mContext.getString(R.string.by_date_za),
-                mContext.getString(R.string.name_az),
-                mContext.getString(R.string.name_za)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final CharSequence[] items = {getString(R.string.by_date_az),
+                getString(R.string.by_date_za),
+                getString(R.string.name_az),
+                getString(R.string.name_za)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.order));
         builder.setItems(items, (dialog, which) -> {
             String value = null;
@@ -240,7 +240,7 @@ public class NotesFragment extends BaseNavigationFragment {
             } else if (which == 3) {
                 value = Constants.ORDER_NAME_Z_A;
             }
-            mPrefs.setNoteOrder(value);
+            getPrefs().setNoteOrder(value);
             dialog.dismiss();
             showData();
         });
@@ -251,23 +251,23 @@ public class NotesFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.notes));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, ActivityCreateNote.class)));
-            mCallback.onScrollChanged(binding.recyclerView);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.notes));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> startActivity(new Intent(getContext(), ActivityCreateNote.class)));
+            getCallback().onScrollChanged(binding.recyclerView);
         }
         showData();
     }
 
     private void showData() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-        enableGrid = mPrefs.isNotesGridEnabled();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        enableGrid = getPrefs().isNotesGridEnabled();
         if (enableGrid) {
             layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         }
         binding.recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new NotesRecyclerAdapter(RealmDb.getInstance().getAllNotes(mPrefs.getNoteOrder()), mFilterCallback);
+        mAdapter = new NotesRecyclerAdapter(RealmDb.getInstance().getAllNotes(getPrefs().getNoteOrder()), mFilterCallback);
         mAdapter.setEventListener(mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -275,7 +275,7 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
         builder.setMessage(R.string.delete_all_notes);
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
@@ -297,13 +297,13 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void previewNote(String id, View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Intent intent = new Intent(mContext, NotePreviewActivity.class);
+            Intent intent = new Intent(getContext(), NotePreviewActivity.class);
             intent.putExtra(Constants.INTENT_ID, id);
             String transitionName = "image";
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, transitionName);
-            mContext.startActivity(intent, options.toBundle());
+            getContext().startActivity(intent, options.toBundle());
         } else {
-            mContext.startActivity(new Intent(mContext, NotePreviewActivity.class)
+            getContext().startActivity(new Intent(getContext(), NotePreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, id));
         }
     }
@@ -311,7 +311,7 @@ public class NotesFragment extends BaseNavigationFragment {
     private void showInStatusBar(String id) {
         NoteItem item = RealmDb.getInstance().getNote(id);
         if (item != null) {
-            new Notifier(mContext).showNoteNotification(item);
+            new Notifier(getContext()).showNoteNotification(item);
         }
     }
 
@@ -332,7 +332,7 @@ public class NotesFragment extends BaseNavigationFragment {
                     getString(R.string.dark_purple), getString(R.string.dark_orange),
                     getString(R.string.lime), getString(R.string.indigo)};
         }
-        Dialogues.showLCAM(mContext, item -> {
+        Dialogues.showLCAM(getContext(), item -> {
             RealmDb.getInstance().changeNoteColor(id, item);
             if (mAdapter != null) mAdapter.notifyChanged(position, id);
         }, items);

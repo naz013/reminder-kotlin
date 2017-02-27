@@ -38,13 +38,13 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean start() {
-        mReminder.setActive(true);
+        getReminder().setActive(true);
         super.save();
-        if (new AlarmReceiver().enablePositionDelay(mContext, mReminder.getUuId())) {
+        if (new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId())) {
             return true;
         } else {
-            if (!SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
-                mContext.startService(new Intent(mContext, GeolocationService.class)
+            if (!SuperUtil.isServiceRunning(getContext(), GeolocationService.class)) {
+                getContext().startService(new Intent(getContext(), GeolocationService.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
             return true;
@@ -53,10 +53,10 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        new AlarmReceiver().cancelPositionDelay(mContext, mReminder.getUniqueId());
-        RealmDb.getInstance().saveObject(mReminder.setActive(false));
-        Notifier.hideNotification(mContext, mReminder.getUniqueId());
-        mReminder.setActive(false);
+        new AlarmReceiver().cancelPositionDelay(getContext(), getReminder().getUniqueId());
+        RealmDb.getInstance().saveObject(getReminder().setActive(false));
+        Notifier.hideNotification(getContext(), getReminder().getUniqueId());
+        getReminder().setActive(false);
         super.save();
         stopTracking(false);
         return true;
@@ -65,12 +65,12 @@ class LocationEvent extends EventManager {
     private void stopTracking(boolean isPaused) {
         List<Reminder> list = RealmDb.getInstance().getGpsReminders();
         if (list.size() == 0) {
-            mContext.stopService(new Intent(mContext, GeolocationService.class));
+            getContext().stopService(new Intent(getContext(), GeolocationService.class));
         }
         boolean hasActive = false;
         for (Reminder item : list) {
             if (isPaused) {
-                if (item.getUniqueId() == mReminder.getUniqueId()) continue;
+                if (item.getUniqueId() == getReminder().getUniqueId()) continue;
                 if (TextUtils.isEmpty(item.getEventTime()) || !TimeCount.isCurrent(item.getEventTime())) {
                     if (!item.isNotificationShown()) {
                         hasActive = true;
@@ -90,13 +90,13 @@ class LocationEvent extends EventManager {
             }
         }
         if (!hasActive) {
-            mContext.stopService(new Intent(mContext, GeolocationService.class));
+            getContext().stopService(new Intent(getContext(), GeolocationService.class));
         }
     }
 
     @Override
     public boolean pause() {
-        new AlarmReceiver().cancelPositionDelay(mContext, mReminder.getUniqueId());
+        new AlarmReceiver().cancelPositionDelay(getContext(), getReminder().getUniqueId());
         stopTracking(true);
         return true;
     }
@@ -108,10 +108,10 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean resume() {
-        if (mReminder.isActive()) {
-            boolean b = new AlarmReceiver().enablePositionDelay(mContext, mReminder.getUuId());
-            if (!b && !SuperUtil.isServiceRunning(mContext, GeolocationService.class)) {
-                mContext.startService(new Intent(mContext, GeolocationService.class)
+        if (getReminder().isActive()) {
+            boolean b = new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId());
+            if (!b && !SuperUtil.isServiceRunning(getContext(), GeolocationService.class)) {
+                getContext().startService(new Intent(getContext(), GeolocationService.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
         }
@@ -128,8 +128,8 @@ class LocationEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
-            mReminder.setLocked(false);
-            mReminder.setNotificationShown(false);
+            getReminder().setLocked(false)
+                    .setNotificationShown(false);
             super.save();
             return start();
         }
@@ -137,7 +137,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean isActive() {
-        return mReminder.isActive();
+        return getReminder().isActive();
     }
 
     @Override
@@ -157,6 +157,6 @@ class LocationEvent extends EventManager {
 
     @Override
     public long calculateTime(boolean isNew) {
-        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
+        return TimeCount.getInstance(getContext()).generateDateTime(getReminder().getEventTime(), getReminder().getRepeatInterval());
     }
 }

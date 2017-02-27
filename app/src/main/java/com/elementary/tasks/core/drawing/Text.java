@@ -24,7 +24,6 @@ import android.support.annotation.ColorInt;
 public class Text implements Drawing {
 
     private String text = "";
-    private Typeface fontFamily = Typeface.DEFAULT;
     private float fontSize = 32F;
     private Paint textPaint = new Paint();
     private float textX = 0F;
@@ -32,7 +31,6 @@ public class Text implements Drawing {
 
     public Text(String text, Typeface fontFamily, float fontSize, Paint textPaint) {
         this.text = text;
-        this.fontFamily = fontFamily;
         this.fontSize = fontSize;
         this.textPaint = textPaint;
     }
@@ -51,7 +49,6 @@ public class Text implements Drawing {
     }
 
     public void setFontFamily(Typeface fontFamily) {
-        this.fontFamily = fontFamily;
         textPaint.setTypeface(fontFamily);
     }
 

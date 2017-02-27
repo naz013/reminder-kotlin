@@ -36,9 +36,21 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 public abstract class BaseMapFragment extends Fragment {
 
-    protected Activity mContext;
-    protected ThemeUtil mColor;
-    protected Prefs mPrefs;
+    private Activity mContext;
+    private ThemeUtil mColor;
+    private Prefs mPrefs;
+
+    public Activity getContext() {
+        return mContext;
+    }
+
+    public Prefs getPrefs() {
+        return mPrefs;
+    }
+
+    public ThemeUtil getThemeUtil() {
+        return mColor;
+    }
 
     @Override
     public void onAttach(Context context) {

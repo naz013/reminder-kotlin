@@ -166,9 +166,4 @@ public class TemplateActivity extends ThemedActivity {
         }
         return true;
     }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
 }

@@ -9,8 +9,16 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 
 public abstract class ThemedActivity extends AppCompatActivity {
 
-    protected ThemeUtil themeUtil;
-    protected Prefs mPrefs;
+    private ThemeUtil themeUtil;
+    private Prefs mPrefs;
+
+    protected Prefs getPrefs() {
+        return mPrefs;
+    }
+
+    protected ThemeUtil getThemeUtil() {
+        return themeUtil;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

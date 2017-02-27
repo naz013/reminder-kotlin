@@ -27,9 +27,9 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 abstract class RepeatableTypeFragment extends TypeFragment {
 
     protected void changeLimit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.repeat_limit);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(366);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -47,8 +47,8 @@ abstract class RepeatableTypeFragment extends TypeFragment {
 
             }
         });
-        b.seekBar.setProgress(mInterface.getRepeatLimit() != -1 ? mInterface.getRepeatLimit() : 0);
-        setRepeatTitle(b.titleView, mInterface.getRepeatLimit());
+        b.seekBar.setProgress(getInterface().getRepeatLimit() != -1 ? getInterface().getRepeatLimit() : 0);
+        setRepeatTitle(b.titleView, getInterface().getRepeatLimit());
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialog, which) -> saveLimit(b.seekBar.getProgress()));
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -68,6 +68,6 @@ abstract class RepeatableTypeFragment extends TypeFragment {
     private void saveLimit(int progress) {
         int repeatLimit = progress;
         if (progress == 0) repeatLimit = -1;
-        mInterface.setRepeatLimit(repeatLimit);
+        getInterface().setRepeatLimit(repeatLimit);
     }
 }

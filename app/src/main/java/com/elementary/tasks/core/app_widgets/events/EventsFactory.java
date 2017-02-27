@@ -98,7 +98,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
             } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
                 Calendar calendar1 = Calendar.getInstance();
                 calendar1.setTimeInMillis(eventTime);
-                date = TimeUtil.dateFormat.format(calendar1.getTime());
+                date = TimeUtil.DATE_FORMAT.format(calendar1.getTime());
                 time = TimeUtil.getTime(calendar1.getTime(), is24);
             } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
                 viewType = 2;

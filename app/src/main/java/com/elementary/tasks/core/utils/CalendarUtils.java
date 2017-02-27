@@ -40,6 +40,8 @@ public class CalendarUtils {
 
     private static final String TAG = "CalendarUtils";
 
+    private CalendarUtils() {}
+
     /**
      * Add event to calendar.
      */
@@ -62,10 +64,10 @@ public class CalendarUtils {
             values.put(CalendarContract.Events.ALL_DAY, 0);
             values.put(CalendarContract.Events.STATUS, CalendarContract.Events.STATUS_CONFIRMED);
             values.put(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder));
-            Uri l_eventUri = Uri.parse("content://com.android.calendar/events");
+            Uri lEventUri = Uri.parse("content://com.android.calendar/events");
             Uri event;
             try {
-                event = cr.insert(l_eventUri, values);
+                event = cr.insert(lEventUri, values);
                 if (event != null) {
                     long eventID = Long.parseLong(event.getLastPathSegment());
                     RealmDb.getInstance().saveObject(new CalendarEvent(reminder.getUuId(), event.toString(), eventID));
@@ -119,8 +121,8 @@ public class CalendarUtils {
      *
      * @return List of calendar identifiers.
      */
-    public static ArrayList<String> getCalendars(Context context) {
-        ArrayList<String> ids = new ArrayList<>();
+    public static List<String> getCalendars(Context context) {
+        List<String> ids = new ArrayList<>();
         ids.clear();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         String[] mProjection = new String[]{
@@ -152,8 +154,8 @@ public class CalendarUtils {
      *
      * @return List of CalendarItem's.
      */
-    public static ArrayList<CalendarItem> getCalendarsList(Context context) {
-        ArrayList<CalendarItem> ids = new ArrayList<>();
+    public static List<CalendarItem> getCalendarsList(Context context) {
+        List<CalendarItem> ids = new ArrayList<>();
         ids.clear();
         Uri uri = CalendarContract.Calendars.CONTENT_URI;
         String[] mProjection = new String[]{
@@ -187,8 +189,8 @@ public class CalendarUtils {
      * @param id calendar identifier.
      * @return List of EventItem's.
      */
-    public static ArrayList<EventItem> getEvents(Context context, int id) throws SecurityException {
-        ArrayList<EventItem> list = new ArrayList<>();
+    public static List<EventItem> getEvents(Context context, int id) throws SecurityException {
+        List<EventItem> list = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         Cursor c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
                 new String[]{CalendarContract.Events.TITLE,

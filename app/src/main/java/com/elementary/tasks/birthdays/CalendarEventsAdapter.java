@@ -107,7 +107,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         String dateTime = Prefs.getInstance(textView.getContext()).getBirthdayTime();
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
         try {
-            date = CheckBirthdaysAsync.dateFormat.parse(fullDate);
+            date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

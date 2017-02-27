@@ -281,7 +281,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showBirthdays(long dateTime) {
-        long time = TimeUtil.getBirthdayTime(mPrefs.getBirthdayTime());
+        long time = TimeUtil.getBirthdayTime(getPrefs().getBirthdayTime());
         Container<BirthdayItem> items = new Container<>(DataProvider.getBirthdays(dateTime, time));
         if (items.isEmpty()) {
             addResponse("No birthdays found");
@@ -434,7 +434,7 @@ public class ConversationActivity extends ThemedActivity {
             public void onYes() {
                 recognize.saveNote(noteItem, false, false);
                 addResponse("Note saved");
-                if (mPrefs.isNoteReminderEnabled()) {
+                if (getPrefs().isNoteReminderEnabled()) {
                     new Handler().postDelayed(() -> askQuickReminder(noteItem), 1500);
                 } else {
                     mAskAction = null;
@@ -536,7 +536,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void initRecognizer() {
         Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(mPrefs.getVoiceLocale()));
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(getPrefs().getVoiceLocale()));
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.getPackageName());
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);

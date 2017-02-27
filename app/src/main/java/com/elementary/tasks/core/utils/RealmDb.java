@@ -431,7 +431,7 @@ public class RealmDb {
             GroupItem item = items.get(i);
             names.add(item.getTitle());
             if (item.getUuId().matches(uuId)) {
-                p.i = i;
+                p.setI(i);
             }
         }
         realm.commitTransaction();

@@ -20,7 +20,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.databinding.CurrentWidgetConfigLayoutBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -49,7 +49,7 @@ public class EventsWidgetConfig extends ThemedActivity {
     private int textSize;
 
     private CurrentWidgetConfigLayoutBinding binding;
-    private ArrayList<EventsTheme> mThemes;
+    private List<EventsTheme> mThemes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,9 +163,9 @@ public class EventsWidgetConfig extends ThemedActivity {
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        ArrayList<EventsTheme> arrayList;
+        private List<EventsTheme> arrayList;
 
-        public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<EventsTheme> list) {
+        MyFragmentPagerAdapter(FragmentManager fm, List<EventsTheme> list) {
             super(fm);
             this.arrayList = list;
         }

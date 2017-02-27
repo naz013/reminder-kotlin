@@ -79,7 +79,7 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
                 return false;
             }
         }
-        return null;
+        return false;
     }
 
     @Override

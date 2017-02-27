@@ -130,9 +130,10 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         mNotifyMgr.notify((int) id, builder.build());
     }
 
-    class Image {
-        Bitmap bitmap;
-        public String path;
+    static class Image {
+
+        private Bitmap bitmap;
+        private String path;
 
         Image() {}
     }

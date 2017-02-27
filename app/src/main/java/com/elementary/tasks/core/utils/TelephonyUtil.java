@@ -78,9 +78,9 @@ public class TelephonyUtil {
     }
 
     public static void openApp(String appPackage, Context context) {
-        Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackage);
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackage);
         try {
-            context.startActivity(LaunchIntent);
+            context.startActivity(launchIntent);
         } catch (ActivityNotFoundException ignored) {
         }
     }

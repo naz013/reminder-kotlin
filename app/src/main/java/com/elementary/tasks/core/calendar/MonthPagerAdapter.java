@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,9 +25,9 @@ import java.util.ArrayList;
 
 public class MonthPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<DateGridFragment> fragments;
+    private List<DateGridFragment> fragments;
 
-    public ArrayList<DateGridFragment> getFragments() {
+    public List<DateGridFragment> getFragments() {
         if (fragments == null) {
             fragments = new ArrayList<>();
             for (int i = 0; i < getCount(); i++) {
@@ -36,7 +37,7 @@ public class MonthPagerAdapter extends FragmentStatePagerAdapter {
         return fragments;
     }
 
-    public void setFragments(ArrayList<DateGridFragment> fragments) {
+    public void setFragments(List<DateGridFragment> fragments) {
         this.fragments = fragments;
     }
 

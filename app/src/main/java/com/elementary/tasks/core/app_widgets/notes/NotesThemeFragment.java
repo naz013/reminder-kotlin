@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.databinding.FragmentNoteWidgetPreviewBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -32,13 +33,13 @@ public class NotesThemeFragment extends Fragment {
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_DATA = "arg_data";
     private int mPageNumber;
-    private ArrayList<NotesTheme> mList;
+    private List<NotesTheme> mList;
 
-    public static NotesThemeFragment newInstance(int page, ArrayList<NotesTheme> list) {
+    public static NotesThemeFragment newInstance(int page, List<NotesTheme> list) {
         NotesThemeFragment pageFragment = new NotesThemeFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
-        arguments.putParcelableArrayList(ARGUMENT_DATA, list);
+        arguments.putParcelableArrayList(ARGUMENT_DATA, new ArrayList<>(list));
         pageFragment.setArguments(arguments);
         return pageFragment;
     }

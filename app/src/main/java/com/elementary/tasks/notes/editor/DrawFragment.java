@@ -206,7 +206,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void setUiTheme() {
-        int bgColor = ThemeUtil.getInstance(mContext).getBackgroundStyle();
+        int bgColor = ThemeUtil.getInstance(getContext()).getBackgroundStyle();
         binding.background.setBackgroundColor(bgColor);
         binding.drawTools.setBackgroundColor(bgColor);
         binding.colorView.setBackgroundColor(bgColor);
@@ -244,11 +244,11 @@ public class DrawFragment extends BitmapFragment {
         } else {
             binding.colorGroup.check(getId(strokeColor));
         }
-        ViewUtils.slideInDown(mContext, binding.colorView);
+        ViewUtils.slideInDown(getContext(), binding.colorView);
     }
 
     private void hideColorPanel() {
-        ViewUtils.slideOutUp(mContext, binding.colorView);
+        ViewUtils.slideOutUp(getContext(), binding.colorView);
     }
 
     private void toggleToolPanel() {
@@ -260,11 +260,11 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void showToolPanel() {
-        ViewUtils.slideInDown(mContext, binding.drawTools);
+        ViewUtils.slideInDown(getContext(), binding.drawTools);
     }
 
     private void hideToolPanel() {
-        ViewUtils.slideOutUp(mContext, binding.drawTools);
+        ViewUtils.slideOutUp(getContext(), binding.drawTools);
     }
 
     private void setBackground() {
@@ -360,7 +360,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private ImagePrefsBinding getImagePanel() {
-        ImagePrefsBinding binding = ImagePrefsBinding.inflate(LayoutInflater.from(mContext));
+        ImagePrefsBinding binding = ImagePrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -387,7 +387,7 @@ public class DrawFragment extends BitmapFragment {
             Permissions.requestPermission(getActivity(), REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS);
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.image));
         builder.setItems(new CharSequence[]{getString(R.string.gallery),
                         getString(R.string.take_a_shot)},
@@ -407,7 +407,7 @@ public class DrawFragment extends BitmapFragment {
                             ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.TITLE, "Picture");
                             values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-                            mImageUri = mContext.getContentResolver().insert(
+                            mImageUri = getContext().getContentResolver().insert(
                                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
@@ -421,7 +421,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private TextPrefsBinding getTextPanel() {
-        TextPrefsBinding binding = TextPrefsBinding.inflate(LayoutInflater.from(mContext));
+        TextPrefsBinding binding = TextPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -461,7 +461,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private StandardPrefsBinding getPenPanel() {
-        StandardPrefsBinding binding = StandardPrefsBinding.inflate(LayoutInflater.from(mContext));
+        StandardPrefsBinding binding = StandardPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -500,11 +500,11 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void showPrefsPanel() {
-        ViewUtils.slideInUp(mContext, binding.prefsView);
+        ViewUtils.slideInUp(getContext(), binding.prefsView);
     }
 
     private void hidePrefsPanel() {
-        ViewUtils.slideOutDown(mContext, binding.prefsView);
+        ViewUtils.slideOutDown(getContext(), binding.prefsView);
     }
 
     private void setCurrentColor(IconRadioButton button) {
@@ -527,8 +527,8 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void showTextPickerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        RoboEditText editText = new RoboEditText(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        RoboEditText editText = new RoboEditText(getContext());
         editText.setHint(R.string.text);
         builder.setView(editText);
         builder.setPositiveButton(R.string.add_text, (dialogInterface, i) -> {
@@ -652,7 +652,7 @@ public class DrawFragment extends BitmapFragment {
         LogUtil.d(TAG, "addImageFromUri: 1");
         Bitmap bitmapImage = null;
         try {
-            bitmapImage = BitmapUtils.decodeUriToBitmap(mContext, uri);
+            bitmapImage = BitmapUtils.decodeUriToBitmap(getContext(), uri);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

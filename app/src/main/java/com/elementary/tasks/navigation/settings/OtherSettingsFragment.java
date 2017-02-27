@@ -51,7 +51,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     private View.OnClickListener mOssClick = view -> openOssScreen();
     private View.OnClickListener mPermissionsClick = view -> openPermissionsScreen();
     private View.OnClickListener mChangesClick = view -> openChangesScreen();
-    private View.OnClickListener mRateClick = view -> SuperUtil.launchMarket(mContext);
+    private View.OnClickListener mRateClick = view -> SuperUtil.launchMarket(getContext());
     private View.OnClickListener mShareClick = view -> shareApplication();
     private View.OnClickListener mAddClick = view -> showPermissionDialog();
 
@@ -79,9 +79,9 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.other));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.other));
+            getCallback().onFragmentSelect(this);
         }
     }
 
@@ -128,7 +128,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
             mDataList.add(new Item(getString(R.string.send_sms), Permissions.SEND_SMS));
         }
         if (mDataList.size() == 0) {
-            Toast.makeText(mContext, R.string.all_permissions_are_enabled, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.all_permissions_are_enabled, Toast.LENGTH_SHORT).show();
             return false;
         } else {
             return true;
@@ -138,8 +138,8 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     private void shareApplication() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + mContext.getPackageName());
-        mContext.startActivity(Intent.createChooser(shareIntent, "Share..."));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=" + getContext().getPackageName());
+        getContext().startActivity(Intent.createChooser(shareIntent, "Share..."));
     }
 
     private void openChangesScreen() {
@@ -156,9 +156,9 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
 
     private void showPermissionDialog() {
         if (!loadDataToList()) return;
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.allow_permission);
-        builder.setSingleChoiceItems(new ArrayAdapter<Item>(mContext, android.R.layout.simple_list_item_1) {
+        builder.setSingleChoiceItems(new ArrayAdapter<Item>(getContext(), android.R.layout.simple_list_item_1) {
             @Override
             public int getCount() {
                 return mDataList.size();
@@ -182,15 +182,15 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showAboutDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        DialogAboutLayoutBinding binding = DialogAboutLayoutBinding.inflate(LayoutInflater.from(mContext));
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        DialogAboutLayoutBinding binding = DialogAboutLayoutBinding.inflate(LayoutInflater.from(getContext()));
         String name;
         if (Module.isPro()) name = getString(R.string.app_name_pro);
         else name = getString(R.string.app_name);
         binding.appName.setText(name.toUpperCase());
         PackageInfo pInfo;
         try {
-            pInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
             binding.appVersion.setText(pInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -206,7 +206,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
         }
     }
 
-    class Item {
+    static class Item {
         private String title, permission;
 
         Item(String title, String permission) {
