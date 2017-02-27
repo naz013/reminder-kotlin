@@ -153,8 +153,8 @@ public class MemoryUtil {
         if (isSdPresent()) {
             File sdPath = Environment.getExternalStorageDirectory();
             File dir = new File(sdPath.toString() + "/JustReminder/" + directory);
-            if (!dir.exists()) {
-                if (dir.mkdirs()) return dir;
+            if (!dir.exists() && dir.mkdirs()) {
+                return dir;
             }
             return dir;
         } else return null;

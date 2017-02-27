@@ -55,19 +55,19 @@ public class DateFragment extends RepeatableTypeFragment {
         @Override
         public void onActionChange(boolean hasAction) {
             if (!hasAction) {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(false, null);
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(false, null);
             }
         }
 
         @Override
         public void onTypeChange(boolean isMessageType) {
             if (isMessageType) {
-                mInterface.setEventHint(getString(R.string.message));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
+                getInterface().setEventHint(getString(R.string.message));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_sending_sms_automatically));
             } else {
-                mInterface.setEventHint(getString(R.string.remind_me));
-                mInterface.setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
+                getInterface().setEventHint(getString(R.string.remind_me));
+                getInterface().setHasAutoExtra(true, getString(R.string.enable_making_phone_calls_automatically));
             }
         }
     };
@@ -77,19 +77,19 @@ public class DateFragment extends RepeatableTypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_DATE;
         boolean isAction = binding.actionView.hasAction();
-        if (TextUtils.isEmpty(mInterface.getSummary()) && !isAction) {
-            mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
+        if (TextUtils.isEmpty(getInterface().getSummary()) && !isAction) {
+            getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
             return false;
         }
         String number = null;
         if (isAction) {
             number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
-                mInterface.showSnackbar(getString(R.string.you_dont_insert_number));
+                getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
                 return false;
             }
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
@@ -106,20 +106,20 @@ public class DateFragment extends RepeatableTypeFragment {
         reminder.setRepeatInterval(binding.repeatView.getRepeat());
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -155,12 +155,12 @@ public class DateFragment extends RepeatableTypeFragment {
         binding.actionView.setListener(mActionListener);
         binding.actionView.setActivity(getActivity());
         binding.actionView.setContactClickListener(view -> selectContact());
-        if (mInterface.isExportToCalendar()) {
+        if (getInterface().isExportToCalendar()) {
             binding.exportToCalendar.setVisibility(View.VISIBLE);
         } else {
             binding.exportToCalendar.setVisibility(View.GONE);
         }
-        if (mInterface.isExportToTasks()) {
+        if (getInterface().isExportToTasks()) {
             binding.exportToTasks.setVisibility(View.VISIBLE);
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
@@ -170,8 +170,8 @@ public class DateFragment extends RepeatableTypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());

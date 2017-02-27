@@ -72,7 +72,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     };
 
     private void showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(getString(R.string.failed_to_login));
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
         builder.create().show();
@@ -114,7 +114,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void switchGoogleStatus() {
         if (!SuperUtil.checkGooglePlayServicesAvailability(getActivity())) {
-            Toast.makeText(mContext, R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.google_play_services_not_installed, Toast.LENGTH_SHORT).show();
             return;
         }
         if (mGoogleLogin.isLogged()){
@@ -153,9 +153,9 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.cloud_services));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.cloud_services));
+            getCallback().onFragmentSelect(this);
         }
         mDropbox.checkDropboxStatus();
         checkGoogleStatus();
@@ -168,8 +168,8 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     }
 
     private void startSync() {
-        mDialog = ProgressDialog.show(mContext, null, getString(R.string.retrieving_tasks), false, true);
-        new GetTaskListAsync(mContext, new TasksCallback() {
+        mDialog = ProgressDialog.show(getContext(), null, getString(R.string.retrieving_tasks), false, true);
+        new GetTaskListAsync(getContext(), new TasksCallback() {
             @Override
             public void onFailed() {
                 finishSync();
@@ -185,6 +185,6 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     private void finishSync() {
         if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
         checkGoogleStatus();
-        if (mCallback != null) mCallback.refreshMenu();
+        if (getCallback() != null) getCallback().refreshMenu();
     }
 }

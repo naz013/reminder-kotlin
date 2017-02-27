@@ -15,9 +15,9 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.databinding.CalendarWidgetConfigLayoutBinding;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -45,7 +45,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
     public final static String CALENDAR_WIDGET_YEAR = "calendar_year_";
 
     private CalendarWidgetConfigLayoutBinding binding;
-    private ArrayList<CalendarTheme> mThemes;
+    private List<CalendarTheme> mThemes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +128,9 @@ public class CalendarWidgetConfig extends ThemedActivity {
 
     private class MyFragmentPagerAdapter extends android.support.v13.app.FragmentPagerAdapter {
 
-        ArrayList<CalendarTheme> arrayList;
+        private List<CalendarTheme> arrayList;
 
-        public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<CalendarTheme> list) {
+        public MyFragmentPagerAdapter(FragmentManager fm, List<CalendarTheme> list) {
             super(fm);
             this.arrayList = list;
         }

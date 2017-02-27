@@ -25,7 +25,7 @@ import java.util.TreeMap;
 
 public class EventRoot implements YearInterface, RootInterface {
 
-    private TreeMap<Integer, Year> nodes = new TreeMap<>();
+    private Map<Integer, Year> nodes = new TreeMap<>();
     private List<Node> keys = new ArrayList<>();
     private Map<String, Integer> map = new HashMap<>();
 

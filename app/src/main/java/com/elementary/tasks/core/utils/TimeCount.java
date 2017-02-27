@@ -28,7 +28,7 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class TimeCount {
+public final class TimeCount {
 
     private static final String TAG = "TimeCount";
     public final static long SECOND = 1000;
@@ -287,7 +287,7 @@ public class TimeCount {
             Calendar cl = Calendar.getInstance();
             cl.setTimeInMillis(timeLong);
             Date mTime = cl.getTime();
-            date = TimeUtil.dateFormat.format(mTime);
+            date = TimeUtil.DATE_FORMAT.format(mTime);
             time = TimeUtil.getTime(mTime, Prefs.getInstance(mContext).getBoolean(Prefs.IS_24_TIME_FORMAT));
         }
         return new String[]{date, time};

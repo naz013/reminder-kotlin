@@ -80,7 +80,7 @@ public class MapFragment extends BaseNavigationFragment {
     private GoogleMap.OnMarkerClickListener mOnMarkerClick = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
-            mGoogleMap.moveCamera(marker.getPosition(), 0, 0, 0, MeasureUtils.dp2px(mContext, 192));
+            mGoogleMap.moveCamera(marker.getPosition(), 0, 0, 0, MeasureUtils.dp2px(getContext(), 192));
             return false;
         }
     };
@@ -107,7 +107,7 @@ public class MapFragment extends BaseNavigationFragment {
         }
         clickedPosition = position;
         Place place = reminder.getPlaces().get(pointer);
-        mGoogleMap.moveCamera(new LatLng(place.getLatitude(), place.getLongitude()), 0, 0, 0, MeasureUtils.dp2px(mContext, 192));
+        mGoogleMap.moveCamera(new LatLng(place.getLatitude(), place.getLongitude()), 0, 0, 0, MeasureUtils.dp2px(getContext(), 192));
     }
 
     @Nullable
@@ -121,7 +121,7 @@ public class MapFragment extends BaseNavigationFragment {
 
     private void initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                mPrefs.getMarkerStyle(), ThemeUtil.getInstance(mContext).isDark());
+                getPrefs().getMarkerStyle(), ThemeUtil.getInstance(getContext()).isDark());
         mGoogleMap.setCallback(mReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()
@@ -133,9 +133,9 @@ public class MapFragment extends BaseNavigationFragment {
     private void initViews() {
         BottomSheetLayoutBinding bottomSheet = binding.bottomSheet;
         mEventsList = bottomSheet.recyclerView;
-        mEventsList.setLayoutManager(new LinearLayoutManager(mContext));
+        mEventsList.setLayoutManager(new LinearLayoutManager(getContext()));
         mEmptyItem = bottomSheet.emptyItem;
-        binding.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(mContext).getCardStyle());
+        binding.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(getContext()).getCardStyle());
         BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(binding.sheetLayout);
         mBottomSheetBehavior.setBottomSheetCallback(mSheetCallback);
     }
@@ -143,9 +143,9 @@ public class MapFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.map));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.map));
+            getCallback().onFragmentSelect(this);
         }
         loadData();
         if (mGoogleMap != null) {
@@ -160,7 +160,7 @@ public class MapFragment extends BaseNavigationFragment {
 
     private void showData() {
         if (isDataShowed) return;
-        LocationPlacesAdapter mAdapter = new LocationPlacesAdapter(mContext, mData, mClickListener);
+        LocationPlacesAdapter mAdapter = new LocationPlacesAdapter(getContext(), mData, mClickListener);
         mEventsList.setAdapter(mAdapter);
         boolean mapReady = false;
         for (Reminder reminder : mData) {

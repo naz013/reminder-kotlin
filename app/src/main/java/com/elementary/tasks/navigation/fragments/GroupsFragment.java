@@ -42,20 +42,20 @@ public class GroupsFragment extends BaseNavigationFragment {
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
         public void onItemClicked(int position, View view) {
-            startActivity(new Intent(mContext, CreateGroupActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getUuId()));
+            startActivity(new Intent(getContext(), CreateGroupActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getUuId()));
         }
 
         @Override
         public void onItemLongClicked(int position, View view) {
             String[] items = {getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete)};
             if (mAdapter.getItemCount() == 1) items = new String[]{getString(R.string.change_color), getString(R.string.edit)};
-            Dialogues.showLCAM(mContext, item -> {
+            Dialogues.showLCAM(getContext(), item -> {
                 switch (item){
                     case 0:
                         changeColor(mAdapter.getItem(position).getUuId());
                         break;
                     case 1:
-                        startActivity(new Intent(mContext, CreateGroupActivity.class)
+                        startActivity(new Intent(getContext(), CreateGroupActivity.class)
                                 .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getUuId()));
                         break;
                     case 2:
@@ -92,7 +92,7 @@ public class GroupsFragment extends BaseNavigationFragment {
                     getString(R.string.dark_purple), getString(R.string.dark_orange),
                     getString(R.string.lime), getString(R.string.indigo)};
         }
-        Dialogues.showLCAM(mContext, item -> {
+        Dialogues.showLCAM(getContext(), item -> {
             RealmDb.getInstance().changeGroupColor(id, item);
             showTemplates();
         }, items);
@@ -101,24 +101,24 @@ public class GroupsFragment extends BaseNavigationFragment {
     private void initGroupsList() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         refreshView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.groups));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, CreateGroupActivity.class)));
-            mCallback.onScrollChanged(binding.recyclerView);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.groups));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> startActivity(new Intent(getContext(), CreateGroupActivity.class)));
+            getCallback().onScrollChanged(binding.recyclerView);
         }
         showTemplates();
     }
 
     private void showTemplates() {
-        mAdapter = new GroupsRecyclerAdapter(mContext, RealmDb.getInstance().getAllGroups(), mEventListener);
+        mAdapter = new GroupsRecyclerAdapter(getContext(), RealmDb.getInstance().getAllGroups(), mEventListener);
         binding.recyclerView.setAdapter(mAdapter);
         refreshView();
     }

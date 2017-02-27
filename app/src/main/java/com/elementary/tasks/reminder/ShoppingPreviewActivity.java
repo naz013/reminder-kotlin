@@ -81,10 +81,10 @@ public class ShoppingPreviewActivity extends ThemedActivity {
             if (group != null) {
                 catColor = group.getColor();
             }
-            int mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor));
+            int mColor = getThemeUtil().getColor(getThemeUtil().getCategoryColor(catColor));
             binding.toolbar.setBackgroundColor(mColor);
             if (Module.isLollipop()) {
-                getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(catColor));
+                getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(catColor));
             }
             loadData();
         }

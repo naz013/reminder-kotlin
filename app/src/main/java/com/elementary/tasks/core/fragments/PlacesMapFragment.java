@@ -168,7 +168,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return;
             mRadius = radius;
             if (mRadius == -1) {
-                mRadius = mPrefs.getRadius();
+                mRadius = getPrefs().getRadius();
             }
             if (clear) {
                 mMap.clear();
@@ -179,16 +179,16 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             mMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(getDescriptor(mColor.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(getThemeUtil().getMarkerStyle(markerStyle)))
                     .draggable(clear));
-            ThemeUtil.Marker marker = mColor.getMarkerRadiusStyle(markerStyle);
+            ThemeUtil.Marker marker = getThemeUtil().getMarkerRadiusStyle(markerStyle);
             float strokeWidth = 3f;
             mMap.addCircle(new CircleOptions()
                     .center(pos)
                     .radius(mRadius)
                     .strokeWidth(strokeWidth)
-                    .fillColor(mColor.getColor(marker.getFillColor()))
-                    .strokeColor(mColor.getColor(marker.getStrokeColor())));
+                    .fillColor(getThemeUtil().getColor(marker.getFillColor()))
+                    .strokeColor(getThemeUtil().getColor(marker.getStrokeColor())));
             if (animate) {
                 animate(pos);
             }
@@ -198,7 +198,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void recreateMarker(int radius) {
         mRadius = radius;
         if (mRadius == -1) {
-            mRadius = mPrefs.getRadius();
+            mRadius = getPrefs().getRadius();
         }
         if (mMap != null) {
             addMarkers();
@@ -221,7 +221,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
 
     private void addSelectAllItem() {
         if (spinnerArray != null && spinnerArray.size() > 1) {
-            spinnerArray.add(new GooglePlaceItem(mContext.getString(R.string.add_all), null, null, null, null, null, false));
+            spinnerArray.add(new GooglePlaceItem(getContext().getString(R.string.add_all), null, null, null, null, null, false));
         }
     }
 
@@ -254,29 +254,29 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     public void showShowcase() {
-        if (!mPrefs.isShowcase(SHOWCASE)) {
+        if (!getPrefs().isShowcase(SHOWCASE)) {
             ShowcaseConfig config = new ShowcaseConfig();
             config.setDelay(350);
-            config.setMaskColor(mColor.getColor(mColor.colorAccent()));
-            config.setContentTextColor(mColor.getColor(R.color.whitePrimary));
-            config.setDismissTextColor(mColor.getColor(R.color.whitePrimary));
+            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
+            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
 
-            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(mContext);
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
             sequence.setConfig(config);
 
             sequence.addSequenceItem(zoomOut,
-                    mContext.getString(R.string.click_to_expand_collapse_map),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.click_to_expand_collapse_map),
+                    getContext().getString(R.string.got_it));
 
             sequence.addSequenceItem(markers,
-                    mContext.getString(R.string.select_style_for_marker),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.select_style_for_marker),
+                    getContext().getString(R.string.got_it));
 
             sequence.addSequenceItem(places,
-                    mContext.getString(R.string.select_place_from_list),
-                    mContext.getString(R.string.got_it));
+                    getContext().getString(R.string.select_place_from_list),
+                    getContext().getString(R.string.got_it));
             sequence.start();
-            mPrefs.setShowcase(SHOWCASE, true);
+            getPrefs().setShowcase(SHOWCASE, true);
         }
     }
 
@@ -285,7 +285,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         if (args != null) {
             isZoom = args.getBoolean(ENABLE_ZOOM, true);
             isDark = args.getBoolean(THEME_MODE, false);
-            markerStyle = args.getInt(MARKER_STYLE, mPrefs.getMarkerStyle());
+            markerStyle = args.getInt(MARKER_STYLE, getPrefs().getMarkerStyle());
         }
     }
 
@@ -294,9 +294,9 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                              Bundle savedInstanceState) {
         initArgs();
         binding = FragmentPlacesMapBinding.inflate(inflater, container, false);
-        mRadius = mPrefs.getRadius();
-        mMapType = mPrefs.getMapType();
-        isDark = mColor.isDark();
+        mRadius = getPrefs().getRadius();
+        mMapType = getPrefs().getMapType();
+        isDark = getThemeUtil().isDark();
 
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
         fragment.getMapAsync(mMapCallback);
@@ -324,7 +324,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
         placesList = binding.placesList;
-        placesList.setLayoutManager(new LinearLayoutManager(mContext));
+        placesList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
@@ -337,18 +337,18 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         placesListCard.setVisibility(View.GONE);
         styleCard.setVisibility(View.GONE);
 
-        zoomCard.setCardBackgroundColor(mColor.getCardStyle());
-        searchCard.setCardBackgroundColor(mColor.getCardStyle());
-        layersCard.setCardBackgroundColor(mColor.getCardStyle());
-        placesCard.setCardBackgroundColor(mColor.getCardStyle());
-        styleCard.setCardBackgroundColor(mColor.getCardStyle());
-        placesListCard.setCardBackgroundColor(mColor.getCardStyle());
-        markersCard.setCardBackgroundColor(mColor.getCardStyle());
-        backCard.setCardBackgroundColor(mColor.getCardStyle());
+        zoomCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        searchCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        layersCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        placesCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        styleCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        placesListCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        markersCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
+        backCard.setCardBackgroundColor(getThemeUtil().getCardStyle());
 
         layersContainer = binding.layersContainer;
         layersContainer.setVisibility(View.GONE);
-        layersContainer.setCardBackgroundColor(mColor.getCardStyle());
+        layersContainer.setCardBackgroundColor(getThemeUtil().getCardStyle());
 
         if (Module.isLollipop()) {
             zoomCard.setCardElevation(Configs.CARD_ELEVATION);
@@ -362,7 +362,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             backCard.setCardElevation(Configs.CARD_ELEVATION);
         }
 
-        int style = mColor.getCardStyle();
+        int style = getThemeUtil().getCardStyle();
         zoomCard.setCardBackgroundColor(style);
         searchCard.setCardBackgroundColor(style);
         layersContainer.setCardBackgroundColor(style);
@@ -402,7 +402,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
 
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager)
-                mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(cardSearch.getWindowToken(), 0);
     }
 
@@ -411,15 +411,15 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         groupTwo.removeAllViewsInLayout();
         groupThree.removeAllViewsInLayout();
         for (int i = 0; i < ThemeUtil.NUM_OF_MARKERS; i++) {
-            ImageButton ib = new ImageButton(mContext);
+            ImageButton ib = new ImageButton(getContext());
             ib.setBackgroundResource(android.R.color.transparent);
-            ib.setImageResource(mColor.getMarkerStyle(i));
+            ib.setImageResource(getThemeUtil().getMarkerStyle(i));
             ib.setId(i + ThemeUtil.NUM_OF_MARKERS);
             ib.setOnClickListener(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    MeasureUtils.dp2px(mContext, 35),
-                    MeasureUtils.dp2px(mContext, 35));
-            int px = MeasureUtils.dp2px(mContext, 2);
+                    MeasureUtils.dp2px(getContext(), 35),
+                    MeasureUtils.dp2px(getContext(), 35));
+            int px = MeasureUtils.dp2px(getContext(), 2);
             params.setMargins(px, px, px, px);
             ib.setLayoutParams(params);
             if (i < 5) {
@@ -435,14 +435,14 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private void setMapType(int type) {
         if (mMap != null) {
             mMap.setMapType(type);
-            mPrefs.setMapType(type);
+            getPrefs().setMapType(type);
             ViewUtils.hideOver(layersContainer);
         }
     }
 
     private void setMyLocation() {
-        if (!Permissions.checkPermission(mContext, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(mContext, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
+        if (!Permissions.checkPermission(getContext(), Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(getContext(), 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
         } else {
             mMap.setMyLocationEnabled(true);
         }
@@ -463,7 +463,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     private void refreshAdapter(boolean show) {
-        GooglePlacesAdapter placesAdapter = new GooglePlacesAdapter(mContext, spinnerArray);
+        GooglePlacesAdapter placesAdapter = new GooglePlacesAdapter(getContext(), spinnerArray);
         placesAdapter.setEventListener(new SimpleListener() {
             @Override
             public void onItemClicked(int position, View view) {
@@ -482,7 +482,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             placesList.setVisibility(View.VISIBLE);
             placesList.setAdapter(placesAdapter);
             addMarkers();
-            if (!isPlacesVisible() && show) ViewUtils.slideInUp(mContext, placesListCard);
+            if (!isPlacesVisible() && show) ViewUtils.slideInUp(getContext(), placesListCard);
         } else {
             placesList.setVisibility(View.GONE);
             emptyItem.setVisibility(View.VISIBLE);
@@ -534,13 +534,13 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         if (isMarkersVisible()) {
             hideStyles();
         } else {
-            ViewUtils.slideInUp(mContext, styleCard);
+            ViewUtils.slideInUp(getContext(), styleCard);
         }
     }
 
     private void hideStyles() {
         if (isMarkersVisible()) {
-            ViewUtils.slideOutDown(mContext, styleCard);
+            ViewUtils.slideOutDown(getContext(), styleCard);
         }
     }
 
@@ -558,13 +558,13 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         if (isPlacesVisible()) {
             hidePlaces();
         } else {
-            ViewUtils.slideInUp(mContext, placesListCard);
+            ViewUtils.slideInUp(getContext(), placesListCard);
         }
     }
 
     private void hidePlaces() {
         if (isPlacesVisible()) {
-            ViewUtils.slideOutDown(mContext, placesListCard);
+            ViewUtils.slideOutDown(getContext(), placesListCard);
         }
     }
 
@@ -617,7 +617,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     }
 
     private void startTracking() {
-        mLocList = new LocationTracker(mContext, mTrackerCallback);
+        mLocList = new LocationTracker(getContext(), mTrackerCallback);
     }
 
     @Override
@@ -627,14 +627,14 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     setMyLocation();
                 } else {
-                    Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case 200:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     startTracking();
                 } else {
-                    Toast.makeText(mContext, R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -719,7 +719,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void onFinish(List<GooglePlaceItem> places) {
         spinnerArray = places;
         if (spinnerArray.size() == 0) {
-            Toast.makeText(mContext, mContext.getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
         }
         addSelectAllItem();
         refreshAdapter(true);

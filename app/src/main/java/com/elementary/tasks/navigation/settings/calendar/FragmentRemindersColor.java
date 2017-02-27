@@ -21,20 +21,20 @@ import com.elementary.tasks.R;
 public class FragmentRemindersColor extends FragmentStyle {
     @Override
     protected int getSelectedColor() {
-        return mPrefs.getReminderColor();
+        return getPrefs().getReminderColor();
     }
 
     @Override
     protected void saveToPrefs(int code) {
-        mPrefs.setReminderColor(code);
+        getPrefs().setReminderColor(code);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.reminders_color));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.reminders_color));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

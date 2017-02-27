@@ -30,8 +30,8 @@ public class ReminderUtils {
     public static final String DAY_CHECK = "1";
     public static final int DAY_CHECKED = 1;
 
-    public static ArrayList<Integer> getRepeatArray(String weekdays){
-        ArrayList<Integer> res = new ArrayList<>();
+    public static List<Integer> getRepeatArray(String weekdays){
+        List<Integer> res = new ArrayList<>();
         if (Character.toString(weekdays.charAt(6)).matches(DAY_CHECK)) res.add(1);
         else res.add(0);
         if (Character.toString(weekdays.charAt(0)).matches(DAY_CHECK)) res.add(1);
@@ -58,11 +58,9 @@ public class ReminderUtils {
     public static String getRepeatString(Context context, List<Integer> repCode){
         StringBuilder sb = new StringBuilder();
         int first = Prefs.getInstance(context).getStartDay();
-        if (first == 0) {
-            if (repCode.get(0) == DAY_CHECKED) {
-                sb.append(" ");
-                sb.append(context.getString(R.string.sun));
-            }
+        if (first == 0 && repCode.get(0) == DAY_CHECKED) {
+            sb.append(" ");
+            sb.append(context.getString(R.string.sun));
         }
         if (repCode.get(1) == DAY_CHECKED) {
             sb.append(" ");
@@ -88,11 +86,9 @@ public class ReminderUtils {
             sb.append(" ");
             sb.append(context.getString(R.string.sat));
         }
-        if (first == 1) {
-            if (repCode.get(0) == DAY_CHECKED) {
-                sb.append(" ");
-                sb.append(context.getString(R.string.sun));
-            }
+        if (first == 1 && repCode.get(0) == DAY_CHECKED) {
+            sb.append(" ");
+            sb.append(context.getString(R.string.sun));
         }
 
         if (isAllChecked(repCode)){

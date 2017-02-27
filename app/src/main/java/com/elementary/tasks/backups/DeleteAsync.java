@@ -109,7 +109,9 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                 if (file.isDirectory()) {
                     File[] files = file.listFiles();
                     if (files == null) continue;
-                    for (File f : files) f.delete();
+                    for (File f : files) {
+                        f.delete();
+                    }
                     res = 2;
                 } else {
                     if (file.delete()) res = 1;

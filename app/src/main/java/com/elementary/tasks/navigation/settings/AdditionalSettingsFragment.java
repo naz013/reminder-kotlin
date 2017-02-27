@@ -59,7 +59,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         initQuickSmsPrefs();
         initMessagesPrefs();
         binding.followReminderPrefs.setOnClickListener(mFollowClick);
-        binding.followReminderPrefs.setChecked(mPrefs.isFollowReminderEnabled());
+        binding.followReminderPrefs.setChecked(getPrefs().isFollowReminderEnabled());
         return binding.getRoot();
     }
 
@@ -72,7 +72,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     private void initQuickSmsPrefs() {
         mQuickSmsPrefs = binding.quickSMSPrefs;
         mQuickSmsPrefs.setOnClickListener(mQuickSmsClick);
-        mQuickSmsPrefs.setChecked(mPrefs.isQuickSmsEnabled());
+        mQuickSmsPrefs.setChecked(getPrefs().isQuickSmsEnabled());
     }
 
     private void initMissedTimePrefs() {
@@ -83,13 +83,13 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
 
     private void showTime() {
         binding.missedTimePrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                String.valueOf(mPrefs.getMissedReminderTime())));
+                String.valueOf(getPrefs().getMissedReminderTime())));
     }
 
     private void initMissedPrefs() {
         mMissedPrefs = binding.missedPrefs;
         mMissedPrefs.setOnClickListener(mMissedClick);
-        mMissedPrefs.setChecked(mPrefs.isMissedReminderEnabled());
+        mMissedPrefs.setChecked(getPrefs().isMissedReminderEnabled());
     }
 
     private void changeFollowPrefs() {
@@ -99,7 +99,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = binding.followReminderPrefs.isChecked();
         binding.followReminderPrefs.setChecked(!isChecked);
-        mPrefs.setFollowReminderEnabled(!isChecked);
+        getPrefs().setFollowReminderEnabled(!isChecked);
     }
 
     private void changeMissedPrefs() {
@@ -109,7 +109,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = mMissedPrefs.isChecked();
         mMissedPrefs.setChecked(!isChecked);
-        mPrefs.setMissedReminderEnabled(!isChecked);
+        getPrefs().setMissedReminderEnabled(!isChecked);
     }
 
     private void changeQuickSmsPrefs() {
@@ -119,13 +119,13 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
         }
         boolean isChecked = mQuickSmsPrefs.isChecked();
         mQuickSmsPrefs.setChecked(!isChecked);
-        mPrefs.setQuickSmsEnabled(!isChecked);
+        getPrefs().setQuickSmsEnabled(!isChecked);
     }
 
     private void showTimePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.interval);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(60);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -144,12 +144,12 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int time = mPrefs.getMissedReminderTime();
+        int time = getPrefs().getMissedReminderTime();
         b.seekBar.setProgress(time);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.x_minutes), String.valueOf(time)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            mPrefs.setMissedReminderTime(b.seekBar.getProgress());
+            getPrefs().setMissedReminderTime(b.seekBar.getProgress());
             showTime();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
@@ -159,9 +159,9 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.additional));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.additional));
+            getCallback().onFragmentSelect(this);
         }
     }
 

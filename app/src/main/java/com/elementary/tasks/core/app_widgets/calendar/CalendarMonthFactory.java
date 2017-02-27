@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import hirondelle.date4j.DateTime;
 
@@ -39,8 +40,8 @@ import hirondelle.date4j.DateTime;
 
 public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private ArrayList<DateTime> mDateTimeList;
-    private ArrayList<WidgetItem> mPagerData = new ArrayList<>();
+    private List<DateTime> mDateTimeList;
+    private List<WidgetItem> mPagerData = new ArrayList<>();
     private Context mContext;
     private int mWidgetId;
     private int mDay;
@@ -273,7 +274,7 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         return true;
     }
 
-    class WidgetItem {
+    static class WidgetItem {
         private int day, month, year;
         private boolean hasReminders, hasBirthdays;
 

@@ -27,39 +27,7 @@ import java.util.Calendar;
  * limitations under the License.
  */
 
-public class ThemeUtil {
-
-    private interface Color {
-        int RED = 0;
-        int PURPLE = 1;
-        int LIGHT_GREEN = 2;
-        int GREEN = 3;
-        int LIGHT_BLUE = 4;
-        int BLUE = 5;
-        int YELLOW = 6;
-        int ORANGE = 7;
-        int CYAN = 8;
-        int PINK = 9;
-        int TEAL = 10;
-        int AMBER = 11;
-        int DEEP_PURPLE = 12;
-        int DEEP_ORANGE = 13;
-        int LIME = 14;
-        int INDIGO = 15;
-    }
-
-    private class Holder {
-
-        private Context context;
-
-        private Holder(Context context) {
-            this.context = context;
-        }
-
-        public Context getContext() {
-            return context;
-        }
-    }
+public final class ThemeUtil {
 
     public static final int THEME_AUTO = 0;
     public static final int THEME_WHITE = 1;
@@ -1136,7 +1104,39 @@ public class ThemeUtil {
         return getColor(color);
     }
 
-    public class Marker {
+    private interface Color {
+        int RED = 0;
+        int PURPLE = 1;
+        int LIGHT_GREEN = 2;
+        int GREEN = 3;
+        int LIGHT_BLUE = 4;
+        int BLUE = 5;
+        int YELLOW = 6;
+        int ORANGE = 7;
+        int CYAN = 8;
+        int PINK = 9;
+        int TEAL = 10;
+        int AMBER = 11;
+        int DEEP_PURPLE = 12;
+        int DEEP_ORANGE = 13;
+        int LIME = 14;
+        int INDIGO = 15;
+    }
+
+    private static final class Holder {
+
+        private Context context;
+
+        private Holder(Context context) {
+            this.context = context;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+    }
+
+    public static class Marker {
 
         @ColorRes
         private int fillColor;

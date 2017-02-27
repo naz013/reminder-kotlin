@@ -167,7 +167,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private void initCustomTime() {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(mCurrentTime);
-        mCustomDateView.setText(TimeUtil.dateFormat.format(c.getTime()));
+        mCustomDateView.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
         mCustomTimeView.setText(TimeUtil.getTime(c.getTime(), mIs24Hour));
         mCustomHour = c.get(Calendar.HOUR_OF_DAY);
         mCustomMinute = c.get(Calendar.MINUTE);
@@ -199,10 +199,10 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     private void initPrefs() {
-        mCalendar = mPrefs.isCalendarEnabled();
-        mStock = mPrefs.isStockCalendarEnabled();
+        mCalendar = getPrefs().isCalendarEnabled();
+        mStock = getPrefs().isStockCalendarEnabled();
         mTasks = mGoogleTasks != null;
-        mIs24Hour = mPrefs.is24HourFormatEnabled();
+        mIs24Hour = getPrefs().is24HourFormatEnabled();
     }
 
     private void initActionBar() {
@@ -264,7 +264,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
             c.set(Calendar.MONTH, monthOfYear);
             c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            mCustomDateView.setText(TimeUtil.dateFormat.format(c.getTime()));
+            mCustomDateView.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
         }
     };
 

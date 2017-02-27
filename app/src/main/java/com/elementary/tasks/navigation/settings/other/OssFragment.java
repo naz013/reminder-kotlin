@@ -40,9 +40,9 @@ public class OssFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.open_source_licenses));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.open_source_licenses));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

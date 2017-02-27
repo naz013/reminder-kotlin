@@ -165,7 +165,7 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void initMenu() {
-        binding.bottomBarView.setBackgroundColor(themeUtil.getBackgroundStyle());
+        binding.bottomBarView.setBackgroundColor(getThemeUtil().getBackgroundStyle());
         binding.colorButton.setOnClickListener(view -> showColorDialog());
         binding.imageButton.setOnClickListener(view -> selectImages());
         binding.reminderButton.setOnClickListener(view -> switchReminder());
@@ -210,7 +210,7 @@ public class ActivityCreateNote extends ThemedActivity {
         toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         taskField = binding.taskMessage;
-        taskField.setTextSize(mPrefs.getNoteTextSize() + 12);
+        taskField.setTextSize(getPrefs().getNoteTextSize() + 12);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -282,7 +282,7 @@ public class ActivityCreateNote extends ThemedActivity {
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
         mMinute = calendar.get(Calendar.MINUTE);
         remindDate.setText(TimeUtil.getDate(calendar.getTimeInMillis()));
-        remindTime.setText(TimeUtil.getTime(calendar.getTime(), mPrefs.is24HourFormatEnabled()));
+        remindTime.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
     }
 
     private boolean isReminderAttached() {
@@ -516,10 +516,10 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     private void updateBackground() {
-        layoutContainer.setBackgroundColor(themeUtil.getNoteLightColor(mColor));
-        toolbar.setBackgroundColor(themeUtil.getNoteLightColor(mColor));
+        layoutContainer.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
+        toolbar.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
         if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(mColor));
+            getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(mColor));
         }
     }
 
@@ -595,7 +595,7 @@ public class ActivityCreateNote extends ThemedActivity {
     };
 
     protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute, mPrefs.is24HourFormatEnabled());
+        return new TimePickerDialog(this, myCallBack, mHour, mMinute, getPrefs().is24HourFormatEnabled());
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
@@ -605,7 +605,7 @@ public class ActivityCreateNote extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            remindTime.setText(TimeUtil.getTime(c.getTime(), mPrefs.is24HourFormatEnabled()));
+            remindTime.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
         }
     };
 

@@ -94,7 +94,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         super.onCreate(savedInstanceState);
         LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(mReminder.getEventTime()));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
-        binding.card.setCardBackgroundColor(themeUtil.getCardStyle());
+        binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
         binding.singleContainer.setVisibility(View.VISIBLE);
         binding.container.setVisibility(View.GONE);
@@ -107,7 +107,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         FloatingActionButton buttonNotification = (FloatingActionButton) findViewById(R.id.buttonNotification);
         colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
                 buttonNotification, binding.buttonEdit);
-        setTextDrawable(buttonDelay, String.valueOf(mPrefs.getSnoozeTime()));
+        setTextDrawable(buttonDelay, String.valueOf(getPrefs().getSnoozeTime()));
         setTextDrawable(buttonDelayFor, "...");
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
         binding.buttonEdit.setImageResource(R.drawable.ic_create_black_24dp);
@@ -116,7 +116,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         buttonNotification.setImageResource(R.drawable.ic_favorite_black_24dp);
 
         CircleImageView contactPhoto = binding.contactPhoto;
-        contactPhoto.setBorderColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
         todoList = (RecyclerView) findViewById(R.id.todoList);
@@ -172,7 +172,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 contactInfo.setText(mReminder.getTarget());
                 messageView.setText(getSummary());
             }
-            if (!mPrefs.isAutoSmsEnabled()) {
+            if (!getPrefs().isAutoSmsEnabled()) {
                 buttonCall.setVisibility(View.VISIBLE);
                 buttonCall.setImageResource(R.drawable.ic_send_black_24dp);
             } else {
@@ -274,7 +274,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             mTracker.setScreenName("Reminder " + mReminder.getType());
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }
     }
@@ -282,7 +282,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
@@ -294,9 +294,8 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (sentReceiver != null) {
             unregisterReceiver(sentReceiver);
         }
-//        notifier.recreatePermanent();
         removeFlags();
-        if (mPrefs.isAutoBackupEnabled()) {
+        if (getPrefs().isAutoBackupEnabled()) {
             new BackupTask(this).execute();
         }
     }
@@ -304,7 +303,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (mPrefs.isFoldingEnabled()) {
+        if (getPrefs().isFoldingEnabled()) {
             repeater.cancelAlarm(ReminderDialogActivity.this, getId());
             removeFlags();
             finish();
@@ -401,7 +400,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoCallEnabled() {
-        boolean is = mPrefs.isAutoCallEnabled();
+        boolean is = getPrefs().isAutoCallEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
         }
@@ -409,7 +408,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoLaunchEnabled() {
-        boolean is = mPrefs.isAutoLaunchEnabled();
+        boolean is = getPrefs().isAutoLaunchEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
         }
@@ -417,7 +416,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoEnabled() {
-        boolean is = mPrefs.isAutoSmsEnabled();
+        boolean is = getPrefs().isAutoSmsEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
         }
@@ -433,7 +432,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isRepeatEnabled() {
-        boolean isRepeat = mPrefs.isNotificationRepeatEnabled();
+        boolean isRepeat = getPrefs().isNotificationRepeatEnabled();
         if (!isGlobal()) {
             isRepeat = mReminder.isRepeatNotification();
         }
@@ -441,7 +440,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isTtsEnabled() {
-        boolean isTTS = mPrefs.isTtsEnabled();
+        boolean isTTS = getPrefs().isTtsEnabled();
         if (!isGlobal()) {
             isTTS = mReminder.isNotifyByVoice();
         }
@@ -471,15 +470,15 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void sendDataToWear() {
-        boolean silentSMS = mPrefs.isAutoSmsEnabled();
+        boolean silentSMS = getPrefs().isAutoSmsEnabled();
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && silentSMS)
             return;
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_REMINDER);
         DataMap map = putDataMapReq.getDataMap();
         map.putInt(SharedConst.KEY_TYPE, mReminder.getType());
         map.putString(SharedConst.KEY_TASK, getSummary());
-        map.putInt(SharedConst.KEY_COLOR, themeUtil.colorAccent());
-        map.putBoolean(SharedConst.KEY_THEME, themeUtil.isDark());
+        map.putInt(SharedConst.KEY_COLOR, getThemeUtil().colorAccent());
+        map.putBoolean(SharedConst.KEY_THEME, getThemeUtil().isDark());
         map.putBoolean(SharedConst.KEY_REPEAT, buttonCancel.getVisibility() == View.VISIBLE);
         map.putBoolean(SharedConst.KEY_TIMED, buttonDelay.getVisibility() == View.VISIBLE);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
@@ -538,7 +537,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void delay() {
-        int delay = mPrefs.getSnoozeTime();
+        int delay = getPrefs().getSnoozeTime();
         mControl.setDelay(delay);
         removeFlags();
         cancelTasks();
@@ -592,7 +591,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isVibrate() {
-        boolean isVibrate = mPrefs.isVibrateEnabled();
+        boolean isVibrate = getPrefs().isVibrateEnabled();
         if (!isGlobal()) isVibrate = mReminder.isVibrate();
         return isVibrate;
     }
@@ -618,7 +617,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             if (mReminder.getColor() != -1) {
                 return LED.getLED(mReminder.getColor());
             } else {
-                return LED.getLED(mPrefs.getLedColor());
+                return LED.getLED(getPrefs().getLedColor());
             }
         }
         return LED.getLED(0);
@@ -626,7 +625,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isAwakeDevice() {
-        boolean is = mPrefs.isDeviceAwakeEnabled();
+        boolean is = getPrefs().isDeviceAwakeEnabled();
         if (!isGlobal()) is = mReminder.isAwake();
         return is;
     }
@@ -638,7 +637,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isUnlockDevice() {
-        boolean is = mPrefs.isDeviceUnlockEnabled();
+        boolean is = getPrefs().isDeviceUnlockEnabled();
         if (!isGlobal()) is = mReminder.isUnlock();
         return is;
     }
@@ -646,7 +645,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected int getMaxVolume() {
         if (!isGlobal()) return mReminder.getVolume();
-        return mPrefs.getLoudness();
+        return getPrefs().getLoudness();
     }
 
     @Override

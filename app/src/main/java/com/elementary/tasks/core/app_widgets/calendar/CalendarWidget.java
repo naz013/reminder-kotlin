@@ -43,11 +43,6 @@ import java.util.Locale;
 public class CalendarWidget extends AppWidgetProvider {
 
     @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
     }
@@ -77,10 +72,10 @@ public class CalendarWidget extends AppWidgetProvider {
         StringBuilder monthYearStringBuilder = new StringBuilder(50);
         Formatter monthYearFormatter = new Formatter(
                 monthYearStringBuilder, Locale.getDefault());
-        int MONTH_YEAR_FLAG = DateUtils.FORMAT_SHOW_DATE
+        int monthYearFlag = DateUtils.FORMAT_SHOW_DATE
                 | DateUtils.FORMAT_NO_MONTH_DAY | DateUtils.FORMAT_SHOW_YEAR;
         String date = DateUtils.formatDateRange(context,
-                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), MONTH_YEAR_FLAG)
+                monthYearFormatter, cal.getTimeInMillis(), cal.getTimeInMillis(), monthYearFlag)
                 .toString().toUpperCase();
 
         int theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + widgetID, 0);

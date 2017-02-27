@@ -85,7 +85,7 @@ public class AddBirthdayActivity extends ThemedActivity {
         if (mItem != null) {
             binding.birthName.setText(mItem.getName());
             try {
-                Date dt = CheckBirthdaysAsync.dateFormat.parse(mItem.getDate());
+                Date dt = CheckBirthdaysAsync.DATE_FORMAT.parse(mItem.getDate());
                 if (dt != null) calendar.setTime(dt);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -102,7 +102,7 @@ public class AddBirthdayActivity extends ThemedActivity {
         myYear = calendar.get(Calendar.YEAR);
         myMonth = calendar.get(Calendar.MONTH);
         myDay = calendar.get(Calendar.DAY_OF_MONTH);
-        binding.birthDate.setText(CheckBirthdaysAsync.dateFormat.format(calendar.getTime()));
+        binding.birthDate.setText(CheckBirthdaysAsync.DATE_FORMAT.format(calendar.getTime()));
     }
 
     private void loadBirthday() {

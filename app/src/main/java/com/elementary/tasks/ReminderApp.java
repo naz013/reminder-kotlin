@@ -1,4 +1,18 @@
-/*
+package com.elementary.tasks;
+
+import android.support.multidex.MultiDexApplication;
+
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Prefs;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+
+import io.realm.DynamicRealm;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+
+/**
  * Copyright 2016 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +27,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.elementary.tasks;
-
-import android.support.multidex.MultiDexApplication;
-
-import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.Prefs;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
-
-import io.realm.DynamicRealm;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
 
 public class ReminderApp extends MultiDexApplication {
 
@@ -54,7 +54,7 @@ public class ReminderApp extends MultiDexApplication {
         return mTracker;
     }
 
-    private class Migration implements RealmMigration {
+    private static class Migration implements RealmMigration {
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
             LogUtil.d(TAG, "migrate: " + oldVersion + ", " + newVersion + ", " + realm.getSchema());

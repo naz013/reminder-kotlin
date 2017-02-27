@@ -14,7 +14,7 @@ import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding;
 import com.elementary.tasks.navigation.settings.voice.HelpFragment;
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,43 +61,43 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLanguage() {
-        binding.languagePrefs.setDetailText(Language.getLanguages(mContext).get(mPrefs.getVoiceLocale()));
+        binding.languagePrefs.setDetailText(Language.getLanguages(getContext()).get(getPrefs().getVoiceLocale()));
     }
 
     private void initConversationPrefs() {
         binding.conversationPrefs.setOnClickListener(view -> changeLivePrefs());
-        binding.conversationPrefs.setChecked(mPrefs.isLiveEnabled());
+        binding.conversationPrefs.setChecked(getPrefs().isLiveEnabled());
     }
 
     private void changeLivePrefs() {
         boolean isChecked = binding.conversationPrefs.isChecked();
-        mPrefs.setLiveEnabled(!isChecked);
+        getPrefs().setLiveEnabled(!isChecked);
         binding.conversationPrefs.setChecked(!isChecked);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.voice_control));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.voice_control));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     private void showLanguageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
-        builder.setTitle(mContext.getString(R.string.language));
-        ArrayList<String> locales = Language.getLanguages(mContext);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+        builder.setTitle(getString(R.string.language));
+        List<String> locales = Language.getLanguages(getContext());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, locales);
-        int language = mPrefs.getVoiceLocale();
+        int language = getPrefs().getVoiceLocale();
         builder.setSingleChoiceItems(adapter, language, (dialog, which) -> {
             if (which != -1) {
-                mPrefs.setVoiceLocale(which);
+                getPrefs().setVoiceLocale(which);
             }
         });
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.setOnDismissListener(dialogInterface -> showLanguage());
         dialog.show();

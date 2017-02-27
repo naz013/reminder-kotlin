@@ -31,11 +31,6 @@ import com.elementary.tasks.notes.ActivityCreateNote;
 public class NotesWidget extends AppWidgetProvider {
 
     @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
     }

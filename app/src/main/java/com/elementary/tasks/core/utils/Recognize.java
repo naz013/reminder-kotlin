@@ -276,7 +276,7 @@ public class Recognize {
         return mReminder;
     }
 
-    private class ContactHelper implements ContactsInterface {
+    private static class ContactHelper implements ContactsInterface {
 
         @Override
         public ContactOutput findEmail(String input, Context context) {

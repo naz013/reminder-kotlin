@@ -37,7 +37,6 @@ public class PrefsView extends RelativeLayout {
     private int check = 0;
     private int text = 2;
     private int view = 1;
-    private int none = 3;
 
     private CheckBox checkBox;
     private TextView title;

@@ -5,7 +5,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,8 +30,7 @@ import java.util.Hashtable;
  * limitations under the License.
  */
 public class MeasureUtils {
-    private static TypedValue sTypedValue = new TypedValue();
-    private static int sActionBarHeight;
+
     private static Dictionary<Integer, Integer> sListViewItemHeights = new Hashtable<>();
     private static Dictionary<Integer, Integer> sRecyclerViewItemHeights = new Hashtable<>();
 
@@ -65,8 +63,7 @@ public class MeasureUtils {
         int firstVisiblePosition = lv.getFirstVisiblePosition();
         int top = c.getTop();
 
-        int scrollY = -top + firstVisiblePosition * c.getHeight();
-        return scrollY;
+        return -top + firstVisiblePosition * c.getHeight();
     }
 
     public static int getScrollY(AbsListView lv) {

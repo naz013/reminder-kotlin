@@ -31,33 +31,18 @@ class ShoppingEvent extends RepeatableEventManager {
 
     @Override
     public boolean start() {
-        mReminder.setActive(true);
+        getReminder().setActive(true);
         super.save();
-        if (!TextUtils.isEmpty(mReminder.getEventTime())) {
-            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+        if (!TextUtils.isEmpty(getReminder().getEventTime())) {
+            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
             return true;
         }
         return true;
     }
 
     @Override
-    public boolean stop() {
-        return super.stop();
-    }
-
-    @Override
-    public boolean pause() {
-        return super.pause();
-    }
-
-    @Override
     public boolean skip() {
         return false;
-    }
-
-    @Override
-    public boolean resume() {
-        return super.resume();
     }
 
     @Override
@@ -76,7 +61,7 @@ class ShoppingEvent extends RepeatableEventManager {
 
     @Override
     public boolean isActive() {
-        return mReminder.isActive();
+        return getReminder().isActive();
     }
 
     @Override
@@ -95,13 +80,13 @@ class ShoppingEvent extends RepeatableEventManager {
             next();
             return;
         }
-        mReminder.setDelay(delay);
+        getReminder().setDelay(delay);
         super.save();
-        new AlarmReceiver().enableDelay(mContext, mReminder.getUniqueId(), delay, mReminder.getUuId());
+        new AlarmReceiver().enableDelay(getContext(), getReminder().getUniqueId(), delay, getReminder().getUuId());
     }
 
     @Override
     public long calculateTime(boolean isNew) {
-        return TimeCount.getInstance(mContext).generateDateTime(mReminder.getEventTime(), mReminder.getRepeatInterval());
+        return TimeCount.getInstance(getContext()).generateDateTime(getReminder().getEventTime(), getReminder().getRepeatInterval());
     }
 }

@@ -84,7 +84,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
     }
 
     public void setUpRadio(){
-        int loaded = mPrefs.getMarkerStyle();
+        int loaded = getPrefs().getMarkerStyle();
         if (loaded == 0){
             red.setChecked(true);
         } else if (loaded == 1){
@@ -176,7 +176,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
     }
 
     void saveColor(int style) {
-        mPrefs.setMarkerStyle(style);
+        getPrefs().setMarkerStyle(style);
     }
 
     private RadioGroup.OnCheckedChangeListener listener1 = new RadioGroup.OnCheckedChangeListener() {
@@ -251,9 +251,9 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.style_of_marker));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.style_of_marker));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

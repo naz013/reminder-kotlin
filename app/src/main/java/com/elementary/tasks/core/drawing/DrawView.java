@@ -345,9 +345,8 @@ public class DrawView extends View {
     /**
      * This method defines processes on MotionEvent.ACTION_DOWN
      *
-     * @param event This is argument of onTouchEvent method
      */
-    private void onActionUp(MotionEvent event) {
+    private void onActionUp() {
         if (isDown) {
             this.startX = 0F;
             this.startY = 0F;
@@ -388,7 +387,7 @@ public class DrawView extends View {
                 this.onActionMove(event);
                 break;
             case MotionEvent.ACTION_UP:
-                this.onActionUp(event);
+                this.onActionUp();
                 break;
             default:
                 break;

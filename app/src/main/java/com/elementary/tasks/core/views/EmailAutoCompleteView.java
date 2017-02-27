@@ -237,7 +237,7 @@ public class EmailAutoCompleteView extends AutoCompleteTextView {
         }
     }
 
-    private class EmailItem {
+    private static class EmailItem {
         private String name;
         private String email;
 

@@ -87,7 +87,7 @@ abstract class SharedPrefs extends PrefsConstants {
         String json = getString(key);
         Object value = new Gson().fromJson(json, classOfT);
         if (value == null)
-            throw new NullPointerException();
+            return new Object();
         return value;
     }
 

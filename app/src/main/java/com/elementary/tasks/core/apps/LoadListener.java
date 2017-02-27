@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.apps;
 
-import com.elementary.tasks.core.contacts.ContactItem;
-
 import java.util.List;
 
 /**

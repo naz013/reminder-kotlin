@@ -36,7 +36,7 @@ public class TreeManager {
     public void addBirthdayEvent(String date, String name) {
         Date dt = null;
         try {
-            dt = CheckBirthdaysAsync.dateFormat.parse(date);
+            dt = CheckBirthdaysAsync.DATE_FORMAT.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }

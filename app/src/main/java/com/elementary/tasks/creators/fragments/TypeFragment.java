@@ -24,10 +24,19 @@ import com.elementary.tasks.R;
 
 public abstract class TypeFragment extends Fragment {
 
-    protected Context mContext;
-    protected ReminderInterface mInterface;
+    private Context mContext;
+    private ReminderInterface mInterface;
 
     public abstract boolean save();
+
+    @Override
+    public Context getContext() {
+        return mContext;
+    }
+
+    public ReminderInterface getInterface() {
+        return mInterface;
+    }
 
     @Override
     public void onAttach(Context context) {

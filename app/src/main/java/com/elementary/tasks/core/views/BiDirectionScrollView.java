@@ -41,7 +41,7 @@ public class BiDirectionScrollView extends FrameLayout {
     private static final int SCROLL_DIRECTION_OVERRIDE_FACTOR = 3;
     private static final float SCROLL_THRESHOLD_DISTANCE_DIP = 48;
 
-    private class BiDirectionScrollViewFlinger implements Runnable {
+    private static class BiDirectionScrollViewFlinger implements Runnable {
         private final BiDirectionScrollView view;
         private final Scroller scroller;
 

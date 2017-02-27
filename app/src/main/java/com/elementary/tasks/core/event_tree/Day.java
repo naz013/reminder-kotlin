@@ -2,6 +2,7 @@ package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -23,9 +24,8 @@ import java.util.TreeMap;
 class Day implements TreeInterface, HourInterface {
 
     private int day;
-    private int maxNodes = 23;
     private Month month;
-    private TreeMap<Integer, Hour> nodes = new TreeMap<>();
+    private Map<Integer, Hour> nodes = new TreeMap<>();
 
     Day(int day, Month month) {
         this.day = day;

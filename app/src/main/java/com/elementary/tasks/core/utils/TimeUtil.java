@@ -33,20 +33,20 @@ public class TimeUtil {
 
     public static final String GMT = "GMT";
 
-    public static final SimpleDateFormat format24 = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault());
-    public static final SimpleDateFormat format12 = new SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault());
-    public static final SimpleDateFormat fullDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault());
-    public static final SimpleDateFormat fullDateTime24 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat fullDateTime12 = new SimpleDateFormat("EEE, dd MMM yyyy K:mm a", Locale.getDefault());
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-    public static final SimpleDateFormat time24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat time12 = new SimpleDateFormat("K:mm a", Locale.getDefault());
-    public static final SimpleDateFormat simpleDate = new SimpleDateFormat("d MMMM", Locale.getDefault());
-    public static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault());
-    public static final SimpleDateFormat simpleDateTime12 = new SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_24 = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+    public static final SimpleDateFormat TIME_STAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_12 = new SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault());
+    public static final SimpleDateFormat FULL_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault());
+    public static final SimpleDateFormat FULL_DATE_TIME_24 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm", Locale.getDefault());
+    public static final SimpleDateFormat FULL_DATE_TIME_12 = new SimpleDateFormat("EEE, dd MMM yyyy K:mm a", Locale.getDefault());
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+    public static final SimpleDateFormat TIME_24 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    public static final SimpleDateFormat TIME_12 = new SimpleDateFormat("K:mm a", Locale.getDefault());
+    public static final SimpleDateFormat SIMPLE_DATE = new SimpleDateFormat("d MMMM", Locale.getDefault());
+    public static final SimpleDateFormat SIMPLE_DATE_TIME = new SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault());
+    public static final SimpleDateFormat SIMPLE_DATE_TIME_12 = new SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault());
 
-    public static SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
+    private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
 
     public TimeUtil(){}
 
@@ -55,14 +55,14 @@ public class TimeUtil {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
-        return time24.format(calendar.getTime());
+        return TIME_24.format(calendar.getTime());
     }
 
     public static long getBirthdayTime(String time) {
         Calendar calendar = Calendar.getInstance();
         if (time != null) {
             try {
-                Date date = time24.parse(time);
+                Date date = TIME_24.parse(time);
                 calendar.setTime(date);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -85,7 +85,7 @@ public class TimeUtil {
         Calendar calendar = Calendar.getInstance();
         if (time != null) {
             try {
-                Date date = time24.parse(time);
+                Date date = TIME_24.parse(time);
                 calendar.setTime(date);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -103,23 +103,23 @@ public class TimeUtil {
     }
 
     public static String getGmtDateTime() {
-        gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
-        return gmtDateFormat.format(new Date());
+        GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+        return GMT_DATE_FORMAT.format(new Date());
     }
 
     public static String getGmtFromDateTime(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
-        return gmtDateFormat.format(calendar.getTime());
+        GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+        return GMT_DATE_FORMAT.format(calendar.getTime());
     }
 
     public static long getDateTimeFromGmt(String dateTime){
         if (TextUtils.isEmpty(dateTime)) return 0;
         Calendar calendar = Calendar.getInstance();
         try {
-            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
-            Date date = gmtDateFormat.parse(dateTime);
+            GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = GMT_DATE_FORMAT.parse(dateTime);
             calendar.setTime(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -131,10 +131,10 @@ public class TimeUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         if (isLog) {
-            return timeStampFormat.format(calendar.getTime());
+            return TIME_STAMP_FORMAT.format(calendar.getTime());
         } else {
-            if (is24) return fullDateTime24.format(calendar.getTime());
-            else return fullDateTime12.format(calendar.getTime());
+            if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
+            else return FULL_DATE_TIME_12.format(calendar.getTime());
         }
     }
 
@@ -142,35 +142,35 @@ public class TimeUtil {
         if (TextUtils.isEmpty(date)) return "No event time";
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(getDateTimeFromGmt(date));
-        return timeStampFormat.format(calendar.getTime());
+        return TIME_STAMP_FORMAT.format(calendar.getTime());
     }
 
     public static String getRealDateTime(String gmt, int delay, boolean is24) {
         if (TextUtils.isEmpty(gmt)) return "";
         Calendar calendar = Calendar.getInstance();
         try {
-            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
-            Date date = gmtDateFormat.parse(gmt);
+            GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = GMT_DATE_FORMAT.parse(gmt);
             calendar.setTime(date);
             calendar.setTimeInMillis(calendar.getTimeInMillis() + (delay * TimeCount.MINUTE));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (is24) return fullDateTime24.format(calendar.getTime());
-        else return fullDateTime12.format(calendar.getTime());
+        if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
+        else return FULL_DATE_TIME_12.format(calendar.getTime());
     }
 
     public static String getDateTimeFromGmt(String dateTime, boolean is24){
         Calendar calendar = Calendar.getInstance();
         try {
-            gmtDateFormat.setTimeZone(TimeZone.getTimeZone(GMT));
-            Date date = gmtDateFormat.parse(dateTime);
+            GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = GMT_DATE_FORMAT.parse(dateTime);
             calendar.setTime(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (is24) return fullDateTime24.format(calendar.getTime());
-        else return fullDateTime12.format(calendar.getTime());
+        if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
+        else return FULL_DATE_TIME_12.format(calendar.getTime());
     }
 
     public static String getSimpleDate(String gmtDate) {
@@ -180,33 +180,33 @@ public class TimeUtil {
     public static String getSimpleDate(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        return simpleDate.format(calendar.getTime());
+        return SIMPLE_DATE.format(calendar.getTime());
     }
 
     public static String getDate(long date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        return dateFormat.format(calendar.getTime());
+        return DATE_FORMAT.format(calendar.getTime());
     }
 
     public static String getSimpleDateTime(long date, boolean is24){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        if (is24) return simpleDateTime.format(calendar.getTime());
-        else return simpleDateTime12.format(calendar.getTime());
+        if (is24) return SIMPLE_DATE_TIME.format(calendar.getTime());
+        else return SIMPLE_DATE_TIME_12.format(calendar.getTime());
     }
 
     public static String getDate(Date date){
-        return fullDateFormat.format(date);
+        return FULL_DATE_FORMAT.format(date);
     }
 
     public static String getTimeStamp(){
-        return timeStampFormat.format(new Date());
+        return TIME_STAMP_FORMAT.format(new Date());
     }
 
     public static Date getDate(String date){
         try {
-            return time24.parse(date);
+            return TIME_24.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
@@ -232,13 +232,13 @@ public class TimeUtil {
     }
 
     public static String getDateTime(Date date, boolean is24){
-        if (is24) return format24.format(date);
-        else return format12.format(date);
+        if (is24) return FORMAT_24.format(date);
+        else return FORMAT_12.format(date);
     }
 
     public static String getTime(Date date, boolean is24){
-        if (is24) return time24.format(date);
-        else return time12.format(date);
+        if (is24) return TIME_24.format(date);
+        else return TIME_12.format(date);
     }
 
     public static int getAge(int year){

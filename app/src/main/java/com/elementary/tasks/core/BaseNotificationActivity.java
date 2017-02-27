@@ -225,7 +225,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
         mSound = new Sound(this);
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Wearable.API)
                     .addConnectionCallbacks(mGoogleCallback)
@@ -244,7 +244,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         super.onDestroy();
         int left = instanceCount.decrementAndGet();
         LogUtil.d(TAG, "onDestroy: " + left);
-        if (!mPrefs.isSystemLoudnessEnabled() && left == 0) {
+        if (!getPrefs().isSystemLoudnessEnabled() && left == 0) {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             am.setStreamVolume(mStream, currVolume, 0);
         }
@@ -279,14 +279,14 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected void colorify(FloatingActionButton... fab){
         for (FloatingActionButton button : fab){
-            button.setBackgroundTintList(ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorAccent()));
+            button.setBackgroundTintList(ViewUtils.getFabState(this, getThemeUtil().colorAccent(), getThemeUtil().colorAccent()));
         }
     }
 
     protected void loadImage(ImageView imageView) {
         imageView.setVisibility(View.GONE);
-        String imagePrefs = mPrefs.getReminderImage();
-        boolean blur = mPrefs.isBlurEnabled();
+        String imagePrefs = getPrefs().getReminderImage();
+        boolean blur = getPrefs().isBlurEnabled();
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -326,8 +326,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void setUpScreenOptions() {
-        boolean isFull = mPrefs.isDeviceUnlockEnabled();
-        boolean isWake = mPrefs.isDeviceAwakeEnabled();
+        boolean isFull = getPrefs().isDeviceUnlockEnabled();
+        boolean isWake = getPrefs().isDeviceAwakeEnabled();
         if (!isGlobal()) {
             isFull = isUnlockDevice();
             isWake = isAwakeDevice();
@@ -355,7 +355,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             tts.stop();
             tts.shutdown();
         }
-        if (mPrefs.isWearEnabled()) {
+        if (getPrefs().isWearEnabled()) {
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_STOP);
             DataMap map = putDataMapReq.getDataMap();
             map.putBoolean(SharedConst.KEY_STOP, true);
@@ -404,7 +404,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         builder.setContentTitle(name);
         builder.setAutoCancel(false);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        if (mPrefs.isManualRemoveEnabled()) {
+        if (getPrefs().isManualRemoveEnabled()) {
             builder.setOngoing(false);
         } else {
             builder.setOngoing(true);
@@ -412,7 +412,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         String appName;
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
-            if (mPrefs.isLedEnabled()) {
+            if (getPrefs().isLedEnabled()) {
                 builder.setLights(getLedColor(), 500, 1000);
             }
         } else {
@@ -427,23 +427,23 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-                mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+                mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
             } else {
-                if (mPrefs.isSoundInSilentModeEnabled()) {
-                    mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+                if (getPrefs().isSoundInSilentModeEnabled()) {
+                    mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
                 }
             }
         }
         if (isVibrate()) {
             long[] pattern;
-            if (mPrefs.isInfiniteVibrateEnabled()) {
+            if (getPrefs().isInfiniteVibrateEnabled()) {
                 pattern = new long[]{150, 86400000};
             } else {
                 pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
             }
             builder.setVibrate(pattern);
         }
-        boolean isWear = mPrefs.isWearEnabled();
+        boolean isWear = getPrefs().isWearEnabled();
         if (isWear) {
             if (Module.isJellyMR2()) {
                 builder.setOnlyAlertOnce(true);
@@ -472,7 +472,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        boolean isWear = mPrefs.isWearEnabled();
+        boolean isWear = getPrefs().isWearEnabled();
         if (isWear) {
             if (Module.isJellyMR2()) {
                 builder.setOnlyAlertOnce(true);
@@ -498,7 +498,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        if (mPrefs.isManualRemoveEnabled()) {
+        if (getPrefs().isManualRemoveEnabled()) {
             builder.setOngoing(false);
         } else {
             builder.setOngoing(true);
@@ -506,7 +506,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         String appName;
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
-            if (mPrefs.isLedEnabled()) {
+            if (getPrefs().isLedEnabled()) {
                 builder.setLights(getLedColor(), 500, 1000);
             }
         } else {
@@ -521,23 +521,23 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-                mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+                mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
             } else {
-                if (mPrefs.isSoundInSilentModeEnabled()) {
-                    mSound.playAlarm(soundUri, mPrefs.isInfiniteSoundEnabled());
+                if (getPrefs().isSoundInSilentModeEnabled()) {
+                    mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
                 }
             }
         }
         if (isVibrate()) {
             long[] pattern;
-            if (mPrefs.isInfiniteVibrateEnabled()) {
+            if (getPrefs().isInfiniteVibrateEnabled()) {
                 pattern = new long[]{150, 86400000};
             } else {
                 pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
             }
             builder.setVibrate(pattern);
         }
-        boolean isWear = mPrefs.isWearEnabled();
+        boolean isWear = getPrefs().isWearEnabled();
         if (isWear) {
             if (Module.isJellyMR2()) {
                 builder.setOnlyAlertOnce(true);
@@ -563,7 +563,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setPriority(Notification.PRIORITY_MAX);
-        if (mPrefs.isManualRemoveEnabled()) {
+        if (getPrefs().isManualRemoveEnabled()) {
             builder.setOngoing(false);
         } else {
             builder.setOngoing(true);
@@ -571,7 +571,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         String appName;
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
-            if (mPrefs.isLedEnabled()) {
+            if (getPrefs().isLedEnabled()) {
                 builder.setLights(getLedColor(), 500, 1000);
             }
         } else {
@@ -586,20 +586,20 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
             playDefaultMelody();
         } else {
-            if (mPrefs.isSoundInSilentModeEnabled()) {
+            if (getPrefs().isSoundInSilentModeEnabled()) {
                 playDefaultMelody();
             }
         }
         if (isVibrate()) {
             long[] pattern;
-            if (mPrefs.isInfiniteVibrateEnabled()) {
+            if (getPrefs().isInfiniteVibrateEnabled()) {
                 pattern = new long[]{150, 86400000};
             } else {
                 pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
             }
             builder.setVibrate(pattern);
         }
-        boolean isWear = mPrefs.isWearEnabled();
+        boolean isWear = getPrefs().isWearEnabled();
         if (isWear && Module.isJellyMR2()) {
             builder.setOnlyAlertOnce(true);
             builder.setGroup("GROUP");
@@ -613,10 +613,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void setPlayerVolume() {
-        boolean systemVol = mPrefs.isSystemLoudnessEnabled();
-        boolean increasing = mPrefs.isIncreasingLoudnessEnabled();
+        boolean systemVol = getPrefs().isSystemLoudnessEnabled();
+        boolean increasing = getPrefs().isIncreasingLoudnessEnabled();
         if (systemVol) {
-            mStream = mPrefs.getSoundStream();
+            mStream = getPrefs().getSoundStream();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
             streamVol = currVolume;
@@ -662,7 +662,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             File sound = new File(getMelody());
             return Uri.fromFile(sound);
         } else {
-            String defMelody = mPrefs.getMelodyFile();
+            String defMelody = getPrefs().getMelodyFile();
             if (!TextUtils.isEmpty(defMelody)) {
                 File sound = new File(defMelody);
                 if (sound.exists()) {

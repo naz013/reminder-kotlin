@@ -9,7 +9,7 @@ import com.elementary.tasks.core.utils.MeasureUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReturnScrollListener extends RecyclerView.OnScrollListener {
+public final class ReturnScrollListener extends RecyclerView.OnScrollListener {
 
     public enum QuickReturnViewType {
         HEADER,

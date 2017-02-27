@@ -70,7 +70,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     private RoboButton syncInterval;
 
     private int mItemSelect;
-    private ArrayList<CalendarUtils.CalendarItem> list;
+    private List<CalendarUtils.CalendarItem> list;
 
     @Nullable
     @Override
@@ -83,22 +83,22 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
         RoboCheckBox autoCheck = binding.autoCheck;
         autoCheck.setOnCheckedChangeListener(this);
-        autoCheck.setChecked(mPrefs.isAutoEventsCheckEnabled());
+        autoCheck.setChecked(getPrefs().isAutoEventsCheckEnabled());
         syncInterval.setEnabled(false);
         return binding.getRoot();
     }
 
     private void showIntervalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
-        builder.setTitle(mContext.getString(R.string.interval));
-        final CharSequence[] items = {mContext.getString(R.string.one_hour),
-                mContext.getString(R.string.six_hours),
-                mContext.getString(R.string.twelve_hours),
-                mContext.getString(R.string.one_day),
-                mContext.getString(R.string.two_days)};
+        builder.setTitle(getString(R.string.interval));
+        final CharSequence[] items = {getString(R.string.one_hour),
+                getString(R.string.six_hours),
+                getString(R.string.twelve_hours),
+                getString(R.string.one_day),
+                getString(R.string.two_days)};
         builder.setSingleChoiceItems(items, getIntervalPosition(), (dialog, item) -> mItemSelect = item);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
             saveIntervalPrefs();
             dialog.dismiss();
         });
@@ -110,22 +110,22 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
     private void saveIntervalPrefs() {
         if (mItemSelect == 0) {
-            mPrefs.setAutoCheckInterval(1);
+            getPrefs().setAutoCheckInterval(1);
         } else if (mItemSelect == 1) {
-            mPrefs.setAutoCheckInterval(6);
+            getPrefs().setAutoCheckInterval(6);
         } else if (mItemSelect == 2) {
-            mPrefs.setAutoCheckInterval(12);
+            getPrefs().setAutoCheckInterval(12);
         } else if (mItemSelect == 3) {
-            mPrefs.setAutoCheckInterval(24);
+            getPrefs().setAutoCheckInterval(24);
         } else if (mItemSelect == 4) {
-            mPrefs.setAutoCheckInterval(48);
+            getPrefs().setAutoCheckInterval(48);
         }
-        new AlarmReceiver().enableEventCheck(mContext);
+        new AlarmReceiver().enableEventCheck(getContext());
     }
 
     private int getIntervalPosition() {
         int position;
-        int interval = mPrefs.getAutoCheckInterval();
+        int interval = getPrefs().getAutoCheckInterval();
         switch (interval){
             case 1:
                 position = 0;
@@ -151,9 +151,9 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void loadCalendars() {
-        list = CalendarUtils.getCalendarsList(mContext);
+        list = CalendarUtils.getCalendarsList(getContext());
         if (list == null || list.size() == 0) {
-            Toast.makeText(mContext, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show();
         }
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add(getString(R.string.choose_calendar));
@@ -163,7 +163,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             }
         }
         ArrayAdapter<String> spinnerArrayAdapter =
-                new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+                new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         binding.eventCalendar.setAdapter(spinnerArrayAdapter);
     }
 
@@ -173,9 +173,9 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         if (checkCalendarPerm()) {
             loadCalendars();
         }
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.import_events));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.import_events));
+            getCallback().onFragmentSelect(this);
         }
     }
 
@@ -203,19 +203,19 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
     private void importEvents() {
         if (binding.eventCalendar.getSelectedItemPosition() == 0) {
-            Toast.makeText(mContext, getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show();
             return;
         }
         HashMap<String, Integer> map = new HashMap<>();
         int selectedPosition = binding.eventCalendar.getSelectedItemPosition() - 1;
         map.put(EVENT_KEY, list.get(selectedPosition).getId());
-        boolean isEnabled = mPrefs.isCalendarEnabled();
+        boolean isEnabled = getPrefs().isCalendarEnabled();
         if (!isEnabled) {
-            mPrefs.setCalendarEnabled(true);
-            mPrefs.setCalendarId(list.get(selectedPosition).getId());
+            getPrefs().setCalendarEnabled(true);
+            getPrefs().setCalendarId(list.get(selectedPosition).getId());
         }
-        mPrefs.setEventsCalendar(list.get(selectedPosition).getId());
-        new Import(mContext).execute(map);
+        getPrefs().setEventsCalendar(list.get(selectedPosition).getId());
+        new Import(getContext()).execute(map);
     }
 
     @Override
@@ -255,11 +255,11 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void autoCheck(boolean isChecked) {
-        mPrefs.setAutoEventsCheckEnabled(isChecked);
+        getPrefs().setAutoEventsCheckEnabled(isChecked);
         syncInterval.setEnabled(isChecked);
         AlarmReceiver alarm = new AlarmReceiver();
-        if (isChecked) alarm.enableEventCheck(mContext);
-        else alarm.cancelEventCheck(mContext);
+        if (isChecked) alarm.enableEventCheck(getContext());
+        else alarm.cancelEventCheck(getContext());
     }
 
     private class Import extends AsyncTask<HashMap<String, Integer>, Void, Integer> {
@@ -287,7 +287,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             int eventsCount = 0;
             HashMap<String, Integer> map = params[0];
             if (map.containsKey(EVENT_KEY)) {
-                ArrayList<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, map.get(EVENT_KEY));
+                List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, map.get(EVENT_KEY));
                 if (eventItems != null && eventItems.size() > 0) {
                     List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                     for (CalendarUtils.EventItem item : eventItems) {

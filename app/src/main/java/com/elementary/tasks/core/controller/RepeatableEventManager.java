@@ -38,48 +38,47 @@ abstract class RepeatableEventManager extends EventManager {
     }
 
     protected void export() {
-        if (mReminder.isExportToTasks()) {
-            long due = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime());
+        if (getReminder().isExportToTasks()) {
+            long due = TimeUtil.getDateTimeFromGmt(getReminder().getEventTime());
             TaskItem mItem = new TaskItem();
             mItem.setListId(null);
             mItem.setStatus(Google.TASKS_NEED_ACTION);
-            mItem.setTitle(mReminder.getSummary());
+            mItem.setTitle(getReminder().getSummary());
             mItem.setDueDate(due);
-            mItem.setNotes(mContext.getString(R.string.from_reminder));
-            mItem.setUuId(mReminder.getUuId());
-            new TaskAsync(mContext, TasksConstants.INSERT_TASK, null, mItem, null).execute();
+            mItem.setNotes(getContext().getString(R.string.from_reminder));
+            mItem.setUuId(getReminder().getUuId());
+            new TaskAsync(getContext(), TasksConstants.INSERT_TASK, null, mItem, null).execute();
         }
-        if (mReminder.isExportToCalendar()) {
-            if (Prefs.getInstance(mContext).isStockCalendarEnabled()) {
-                CalendarUtils.addEventToStock(mContext, mReminder.getSummary(), TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()));
+        if (getReminder().isExportToCalendar()) {
+            if (Prefs.getInstance(getContext()).isStockCalendarEnabled()) {
+                CalendarUtils.addEventToStock(getContext(), getReminder().getSummary(), TimeUtil.getDateTimeFromGmt(getReminder().getEventTime()));
             }
-            if (Prefs.getInstance(mContext).isCalendarEnabled()) {
-                CalendarUtils.addEvent(mContext, mReminder);
+            if (Prefs.getInstance(getContext()).isCalendarEnabled()) {
+                CalendarUtils.addEvent(getContext(), getReminder());
             }
-
         }
     }
 
     @Override
     public boolean resume() {
-        if (mReminder.isActive()) {
-            new AlarmReceiver().enableReminder(mContext, mReminder.getUuId());
+        if (getReminder().isActive()) {
+            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
         }
         return true;
     }
 
     @Override
     public boolean pause() {
-        Notifier.hideNotification(mContext, mReminder.getUniqueId());
-        new AlarmReceiver().cancelReminder(mContext, mReminder.getUniqueId());
-        new AlarmReceiver().cancelDelay(mContext, mReminder.getUniqueId());
-        new RepeatNotificationReceiver().cancelAlarm(mContext, mReminder.getUniqueId());
+        Notifier.hideNotification(getContext(), getReminder().getUniqueId());
+        new AlarmReceiver().cancelReminder(getContext(), getReminder().getUniqueId());
+        new AlarmReceiver().cancelDelay(getContext(), getReminder().getUniqueId());
+        new RepeatNotificationReceiver().cancelAlarm(getContext(), getReminder().getUniqueId());
         return true;
     }
 
     @Override
     public boolean stop() {
-        mReminder.setActive(false);
+        getReminder().setActive(false);
         save();
         return pause();
     }

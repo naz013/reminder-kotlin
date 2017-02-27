@@ -67,11 +67,11 @@ public class ShopFragment extends TypeFragment {
 
     @Override
     public boolean save() {
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_DATE_SHOP;
         if (mAdapter.getItemCount() == 0) {
-            mInterface.showSnackbar(getString(R.string.shopping_list_is_empty));
+            getInterface().showSnackbar(getString(R.string.shopping_list_is_empty));
             return false;
         }
         if (reminder == null) {
@@ -81,7 +81,7 @@ public class ShopFragment extends TypeFragment {
         reminder.setTarget(null);
         reminder.setType(type);
         reminder.setRepeatInterval(0);
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -91,11 +91,11 @@ public class ShopFragment extends TypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (control.start()) {
             return true;
         } else {
-            Toast.makeText(mContext, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -113,8 +113,8 @@ public class ShopFragment extends TypeFragment {
             selectDateDialog();
             return true;
         });
-        binding.todoList.setLayoutManager(new LinearLayoutManager(mContext));
-        mAdapter = new ShopListRecyclerAdapter(mContext, new ArrayList<>(), mActionListener);
+        binding.todoList.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new ShopListRecyclerAdapter(getContext(), new ArrayList<>(), mActionListener);
         binding.todoList.setAdapter(mAdapter);
         binding.shopEdit.setOnEditorActionListener((textView, actionId, event) -> {
             if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_NEXT)) {
@@ -140,8 +140,8 @@ public class ShopFragment extends TypeFragment {
     }
 
     private void editReminder() {
-        if (mInterface.getReminder() == null) return;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface().getReminder() == null) return;
+        Reminder reminder = getInterface().getReminder();
         binding.dateViewShopping.setDateTime(reminder.getEventTime());
         mAdapter.setData(reminder.getShoppings());
         if (reminder.getEventTime() != null) {
@@ -155,9 +155,9 @@ public class ShopFragment extends TypeFragment {
     }
 
     private void selectDateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         String[] types = new String[]{getString(R.string.no_reminder), getString(R.string.select_time)};
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_single_choice, types);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_single_choice, types);
         int selection = 0;
         if (isReminder) selection = 1;
         builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> mSelectedPosition = which);

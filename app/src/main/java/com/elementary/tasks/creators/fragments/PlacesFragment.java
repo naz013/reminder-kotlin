@@ -51,8 +51,8 @@ public class PlacesFragment extends RadiusTypeFragment {
     private MapCallback mCallback = new MapCallback() {
         @Override
         public void onMapReady() {
-            if (mInterface.getReminder() != null) {
-                Reminder item = mInterface.getReminder();
+            if (getInterface().getReminder() != null) {
+                Reminder item = getInterface().getReminder();
                 placesMap.selectMarkers(item.getPlaces());
             }
         }
@@ -65,12 +65,12 @@ public class PlacesFragment extends RadiusTypeFragment {
 
         @Override
         public void onZoomClick(boolean isFull) {
-            mInterface.setFullScreenMode(isFull);
+            getInterface().setFullScreenMode(isFull);
         }
 
         @Override
         public void onBackClick() {
-            mInterface.setFullScreenMode(false);
+            getInterface().setFullScreenMode(false);
         }
     };
 
@@ -82,16 +82,16 @@ public class PlacesFragment extends RadiusTypeFragment {
     @Override
     public boolean save() {
         super.save();
-        if (mInterface == null) return false;
-        Reminder reminder = mInterface.getReminder();
+        if (getInterface() == null) return false;
+        Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_PLACES;
-        if (TextUtils.isEmpty(mInterface.getSummary())) {
-            mInterface.showSnackbar(getString(R.string.task_summary_is_empty));
+        if (TextUtils.isEmpty(getInterface().getSummary())) {
+            getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
             return false;
         }
         List<Place> places = placesMap.getPlaces();
         if (places.size() == 0) {
-            mInterface.showSnackbar(getString(R.string.you_dont_select_place));
+            getInterface().showSnackbar(getString(R.string.you_dont_select_place));
             return false;
         }
         if (reminder == null) {
@@ -102,11 +102,11 @@ public class PlacesFragment extends RadiusTypeFragment {
         reminder.setType(type);
         reminder.setExportToCalendar(false);
         reminder.setExportToTasks(false);
-        reminder.setClear(mInterface);
+        reminder.setClear(getInterface());
         reminder.setEventTime(null);
         reminder.setStartTime(null);
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-        EventControl control = EventControlFactory.getController(mContext, reminder);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         control.start();
         return true;
     }

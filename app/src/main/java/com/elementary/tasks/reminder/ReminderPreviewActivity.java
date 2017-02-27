@@ -154,7 +154,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             binding.type.setText(ReminderUtils.getTypeString(this, item.getType()));
             long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
             if (due > 0) {
-                binding.time.setText(TimeUtil.getFullDateTime(due, mPrefs.is24HourFormatEnabled(), false));
+                binding.time.setText(TimeUtil.getFullDateTime(due, getPrefs().is24HourFormatEnabled(), false));
                 String repeatStr = IntervalUtil.getInterval(this, item.getRepeatInterval());
                 if (Reminder.isBase(item.getType(), Reminder.BY_WEEK)) {
                     repeatStr = ReminderUtils.getRepeatString(this, item.getWeekdays());
@@ -186,7 +186,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             if (!TextUtils.isEmpty(melodyStr)) {
                 file = new File(melodyStr);
             } else {
-                String path = mPrefs.getMelodyFile();
+                String path = getPrefs().getMelodyFile();
                 if (path != null) {
                     file = new File(path);
                 } else {
@@ -203,10 +203,10 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 binding.group.setText(group.getTitle());
                 catColor = group.getColor();
             }
-            int mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor));
+            int mColor = getThemeUtil().getColor(getThemeUtil().getCategoryColor(catColor));
             binding.toolbar.setBackgroundColor(mColor);
             if (Module.isLollipop()) {
-                getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(catColor));
+                getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(catColor));
             }
             binding.dataContainer.removeAllViewsInLayout();
             new Thread(new NoteThread(mReadyCallback, item.getNoteId())).start();
@@ -280,7 +280,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
         int minute = 0;
         list = new ArrayList<>();
         List<String> time = new ArrayList<>();
-        boolean is24 = mPrefs.is24HourFormatEnabled();
+        boolean is24 = getPrefs().is24HourFormatEnabled();
         do {
             if (hour == 23 && minute == 30) {
                 hour = -1;
@@ -336,7 +336,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
 
     private void initMap() {
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, mPrefs.getMarkerStyle(), themeUtil.isDark());
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, getPrefs().getMarkerStyle(), getThemeUtil().isDark());
         mGoogleMap.setCallback(mMapReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()

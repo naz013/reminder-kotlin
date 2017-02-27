@@ -54,7 +54,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         initMarkerStylePrefs();
         binding.trackerPrefs.setOnClickListener(mTrackClick);
         binding.notificationOptionPrefs.setOnClickListener(mNotificationClick);
-        binding.notificationOptionPrefs.setChecked(mPrefs.isDistanceNotificationEnabled());
+        binding.notificationOptionPrefs.setChecked(getPrefs().isDistanceNotificationEnabled());
         initRadiusPrefs();
         return binding.getRoot();
     }
@@ -65,7 +65,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showMarkerStyle() {
-        binding.markerStylePrefs.setViewResource(ThemeUtil.getInstance(mContext).getMarkerStyle());
+        binding.markerStylePrefs.setViewResource(ThemeUtil.getInstance(getContext()).getMarkerStyle());
     }
 
     private void initMapTypePrefs() {
@@ -75,7 +75,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
     private void showMapType() {
         String[] types = getResources().getStringArray(R.array.map_types);
-        binding.mapTypePrefs.setDetailText(types[getPosition(mPrefs.getMapType())]);
+        binding.mapTypePrefs.setDetailText(types[getPosition(getPrefs().getMapType())]);
     }
 
     private void initRadiusPrefs() {
@@ -87,16 +87,16 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     public void onResume() {
         super.onResume();
         showMarkerStyle();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.location));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.location));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     private void showTrackerOptionsDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.tracking_settings);
-        DialogTrackingSettingsLayoutBinding b = DialogTrackingSettingsLayoutBinding.inflate(LayoutInflater.from(mContext));
+        DialogTrackingSettingsLayoutBinding b = DialogTrackingSettingsLayoutBinding.inflate(LayoutInflater.from(getContext()));
         b.distanceBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -113,7 +113,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int distance = mPrefs.getTrackDistance() - 1;
+        int distance = getPrefs().getTrackDistance() - 1;
         b.distanceBar.setProgress(distance);
         b.distanceTitle.setText(String.format(Locale.getDefault(), getString(R.string.x_meters), String.valueOf(distance + 1)));
         b.timeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -132,29 +132,29 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int time = mPrefs.getTrackTime() - 1;
+        int time = getPrefs().getTrackTime() - 1;
         b.timeBar.setProgress(time);
         b.timeTitle.setText(String.format(Locale.getDefault(), getString(R.string.x_seconds), String.valueOf(time + 1)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            mPrefs.setTrackDistance(b.distanceBar.getProgress() + 1);
-            mPrefs.setTrackTime(b.timeBar.getProgress() + 1);
+            getPrefs().setTrackDistance(b.distanceBar.getProgress() + 1);
+            getPrefs().setTrackTime(b.timeBar.getProgress() + 1);
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
 
     private void showMapTypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
-        builder.setTitle(mContext.getString(R.string.map_type));
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext, R.array.map_types,
+        builder.setTitle(getString(R.string.map_type));
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.map_types,
                 android.R.layout.simple_list_item_single_choice);
-        int type = mPrefs.getMapType();
+        int type = getPrefs().getMapType();
         mItemSelect = getPosition(type);
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialogInterface, i) -> {
-            mPrefs.setMapType(mItemSelect + 1);
+        builder.setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> {
+            getPrefs().setMapType(mItemSelect + 1);
             showMapType();
             dialogInterface.dismiss();
         });
@@ -181,18 +181,18 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     private void changeNotificationPrefs() {
         boolean isChecked = binding.notificationOptionPrefs.isChecked();
         binding.notificationOptionPrefs.setChecked(!isChecked);
-        mPrefs.setDistanceNotificationEnabled(!isChecked);
+        getPrefs().setDistanceNotificationEnabled(!isChecked);
     }
 
     private void showRadius() {
         binding.radiusPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
-                String.valueOf(mPrefs.getRadius())));
+                String.valueOf(getPrefs().getRadius())));
     }
 
     private void showRadiusPickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.radius);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(mContext));
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5000);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -210,12 +210,12 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
 
             }
         });
-        int radius = mPrefs.getRadius();
+        int radius = getPrefs().getRadius();
         b.seekBar.setProgress(radius);
         b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(radius)));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            mPrefs.setRadius(b.seekBar.getProgress());
+            getPrefs().setRadius(b.seekBar.getProgress());
             showRadius();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());

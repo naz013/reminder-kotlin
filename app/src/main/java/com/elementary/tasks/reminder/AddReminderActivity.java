@@ -130,7 +130,7 @@ public class AddReminderActivity extends ThemedActivity {
     }
 
     private boolean isExportToCalendar() {
-        return mPrefs.isCalendarEnabled() || mPrefs.isStockCalendarEnabled();
+        return getPrefs().isCalendarEnabled() || getPrefs().isStockCalendarEnabled();
     }
 
     private void save() {

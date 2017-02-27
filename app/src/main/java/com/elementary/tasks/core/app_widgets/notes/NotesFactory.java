@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.app_widgets.notes;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,10 +40,9 @@ public class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
     private ThemeUtil themeUtil;
 
-    NotesFactory(Context ctx, Intent intent) {
+    NotesFactory(Context ctx) {
         mContext = ctx;
         themeUtil = ThemeUtil.getInstance(ctx);
-        int widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     @Override

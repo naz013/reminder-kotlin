@@ -16,7 +16,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.databinding.NoteWidgetConfigLayoutBinding;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -42,7 +42,7 @@ public class NotesWidgetConfig extends ThemedActivity {
     public final static String NOTES_WIDGET_THEME = "notes_theme_";
 
     private NoteWidgetConfigLayoutBinding binding;
-    private ArrayList<NotesTheme> mThemes;
+    private List<NotesTheme> mThemes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,9 +121,9 @@ public class NotesWidgetConfig extends ThemedActivity {
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-        ArrayList<NotesTheme> arrayList;
+        private List<NotesTheme> arrayList;
 
-        public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<NotesTheme> list) {
+        MyFragmentPagerAdapter(FragmentManager fm, List<NotesTheme> list) {
             super(fm);
             this.arrayList = list;
         }

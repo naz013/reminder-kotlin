@@ -84,8 +84,8 @@ public class TaskListFragment extends BaseFragment {
         currentList.setAdapter(customAdapter);
         currentList.setItemAnimator(new DefaultItemAnimator());
         reloadView();
-        if (mCallback != null) {
-            mCallback.onScrollChanged(currentList);
+        if (getCallback() != null) {
+            getCallback().onScrollChanged(currentList);
         }
     }
 

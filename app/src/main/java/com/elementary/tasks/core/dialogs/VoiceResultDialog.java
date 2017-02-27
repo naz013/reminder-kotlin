@@ -45,7 +45,7 @@ public class VoiceResultDialog extends BaseDialog {
         ReminderListItemBinding binding = ReminderListItemBinding.inflate(LayoutInflater.from(this), null, false);
         binding.setItem(reminder);
         binding.itemCheck.setVisibility(View.GONE);
-        binding.reminderContainer.setBackgroundColor(themeUtil.getCardStyle());
+        binding.reminderContainer.setBackgroundColor(getThemeUtil().getCardStyle());
         alert.setView(binding.getRoot());
         alert.setCancelable(true);
         alert.setNegativeButton(R.string.edit, (dialogInterface, i) -> {

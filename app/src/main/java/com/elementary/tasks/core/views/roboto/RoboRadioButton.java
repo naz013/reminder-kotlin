@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views.roboto;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
@@ -59,21 +58,6 @@ public class RoboRadioButton extends AppCompatRadioButton {
         } else {
             mTypeface = AssetsUtil.getDefaultTypeface(getContext());
         }
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-    }
-
-    @Override
-    public boolean onPreDraw() {
-        return super.onPreDraw();
     }
 
     @Override

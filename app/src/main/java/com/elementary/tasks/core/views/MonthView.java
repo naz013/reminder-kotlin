@@ -54,8 +54,8 @@ public class MonthView extends View implements View.OnTouchListener {
     private int currentYear;
     private int currentMonth;
     private int currentDay;
-    private ArrayList<DateTime> mDateTimeList;
-    private HashMap<DateTime, Events> eventsMap = new HashMap<>();
+    private List<DateTime> mDateTimeList;
+    private Map<DateTime, Events> eventsMap = new HashMap<>();
 
     private Context mContext;
 
@@ -130,7 +130,7 @@ public class MonthView extends View implements View.OnTouchListener {
         this.mDateLongClick = dateLongClick;
     }
 
-    public void setEventsMap(HashMap<DateTime, Events> eventsMap) {
+    public void setEventsMap(Map<DateTime, Events> eventsMap) {
         this.eventsMap = eventsMap;
     }
 
@@ -301,8 +301,8 @@ public class MonthView extends View implements View.OnTouchListener {
         int x = (int) motionEvent.getX();
         int y = (int) motionEvent.getY();
         mLongClickHandler.removeCallbacks(mLongRunnable);
-        if (mTouchRect != null && mTouchRect.contains(x, y)) {
-            if (mDateClick != null) mDateClick.onClick(mDateTimeList.get(mTouchPosition));
+        if (mTouchRect != null && mTouchRect.contains(x, y) && mDateClick != null) {
+            mDateClick.onClick(mDateTimeList.get(mTouchPosition));
         }
         cancelTouch();
     }

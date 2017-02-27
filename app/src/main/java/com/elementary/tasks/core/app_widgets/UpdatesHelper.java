@@ -26,7 +26,7 @@ import com.elementary.tasks.core.app_widgets.tasks.TasksWidget;
  * limitations under the License.
  */
 
-public class UpdatesHelper {
+public final class UpdatesHelper {
 
     private static UpdatesHelper helper;
     private Context mContext;

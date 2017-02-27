@@ -10,6 +10,7 @@ import com.elementary.tasks.core.views.MonthView;
 import com.elementary.tasks.databinding.DateGridFragmentBinding;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import hirondelle.date4j.DateTime;
 
@@ -35,7 +36,7 @@ public class DateGridFragment extends Fragment {
 
     private MonthView monthView;
 
-    private HashMap<DateTime, Events> eventsMap = new HashMap<>();
+    private Map<DateTime, Events> eventsMap = new HashMap<>();
     private int month;
     private int year;
 
@@ -60,7 +61,7 @@ public class DateGridFragment extends Fragment {
         }
     }
 
-    public void setEventsMap(HashMap<DateTime, Events> eventsMap) {
+    public void setEventsMap(Map<DateTime, Events> eventsMap) {
         this.eventsMap = eventsMap;
     }
 

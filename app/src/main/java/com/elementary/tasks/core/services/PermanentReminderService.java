@@ -149,7 +149,7 @@ public class PermanentReminderService extends Service {
                 remoteViews.setTextViewText(R.id.text, event);
                 remoteViews.setViewVisibility(R.id.featured, View.VISIBLE);
             } else {
-                remoteViews.setTextViewText(R.id.text, getString(R.string.active_reminders) + " " + String.valueOf(count));
+                remoteViews.setTextViewText(R.id.text, getString(R.string.active_reminders) + " " + count);
                 remoteViews.setViewVisibility(R.id.featured, View.GONE);
             }
         } else {

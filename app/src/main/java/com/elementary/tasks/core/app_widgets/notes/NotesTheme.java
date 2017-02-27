@@ -10,6 +10,7 @@ import android.support.annotation.DrawableRes;
 import com.elementary.tasks.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -96,8 +97,8 @@ public class NotesTheme implements Parcelable {
         return ctx.getResources().getColor(res);
     }
 
-    public static ArrayList<NotesTheme> getThemes(Context context) {
-        ArrayList<NotesTheme> list = new ArrayList<>();
+    public static List<NotesTheme> getThemes(Context context) {
+        List<NotesTheme> list = new ArrayList<>();
         list.clear();
         list.add(new NotesTheme(R.color.indigoPrimary, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,

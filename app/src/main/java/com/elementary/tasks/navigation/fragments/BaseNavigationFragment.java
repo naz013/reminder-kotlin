@@ -21,10 +21,10 @@ public abstract class BaseNavigationFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.setClick(null);
-            mCallback.onThemeChange(0, 0, 0);
-            mCallback.onScrollChanged(null);
+        if (getCallback() != null) {
+            getCallback().setClick(null);
+            getCallback().onThemeChange(0, 0, 0);
+            getCallback().onScrollChanged(null);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,10 +26,10 @@ import java.util.Map;
 
 public class TaskPagerAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<TaskListWrapperItem> mData;
+    private List<TaskListWrapperItem> mData;
     private Map<String, Integer> colors;
 
-    public TaskPagerAdapter(final FragmentManager fm, final ArrayList<TaskListWrapperItem> data, Map<String, Integer> colors) {
+    public TaskPagerAdapter(final FragmentManager fm, final List<TaskListWrapperItem> data, Map<String, Integer> colors) {
         super(fm);
         this.mData = data;
         this.colors = colors;

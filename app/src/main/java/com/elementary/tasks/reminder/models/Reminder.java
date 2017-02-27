@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.models;
 
-import android.support.annotation.NonNull;
-
 import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -31,11 +29,6 @@ import java.util.UUID;
  */
 
 public class Reminder implements RecyclerInterface, EventInterface {
-
-    public class Kind {
-        public static final int SMS = 2;
-        public static final int CALL = 1;
-    }
 
     private static final String TAG = "Reminder";
 
@@ -691,9 +684,8 @@ public class Reminder implements RecyclerInterface, EventInterface {
         return new int[]{y, m, d, h, min};
     }
 
-    @Override
-    public int compareTo(@NonNull Object o) {
-        EventInterface eventInterface = (EventInterface) o;
-        return eventInterface.hashCode() - hashCode();
+    public static class Kind {
+        public static final int SMS = 2;
+        public static final int CALL = 1;
     }
 }

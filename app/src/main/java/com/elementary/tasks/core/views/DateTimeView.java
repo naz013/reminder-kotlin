@@ -42,7 +42,6 @@ public class DateTimeView extends RelativeLayout implements
     private int mMonth;
     private int mDay;
     private Context mContext;
-    private AttributeSet attrs;
     private OnSelectListener mListener;
 
     private View.OnClickListener mDateClick = view -> selectDate();
@@ -68,7 +67,6 @@ public class DateTimeView extends RelativeLayout implements
 
     private void init(Context context, AttributeSet attrs) {
         if (isInEditMode()) return;
-        this.attrs = attrs;
         View.inflate(context, R.layout.date_time_view_layout, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,

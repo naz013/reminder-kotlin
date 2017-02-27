@@ -27,7 +27,10 @@ import java.io.FileNotFoundException;
 public class BitmapUtils {
 
     private static final double MAX_SIZE = 768500;
+    private static final int REQUIRED_SIZE = 350;
     private static final String TAG = "BitmapUtils";
+
+    private BitmapUtils() {}
 
     public static Bitmap compressBitmap(Bitmap bitmap) {
         if (bitmap != null) {
@@ -51,15 +54,14 @@ public class BitmapUtils {
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o);
-        final int REQUIRED_SIZE = 350;
-        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int widthTmp = o.outWidth, heightTmp = o.outHeight;
         int scale = 1;
         while (true) {
-            if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) {
+            if (widthTmp / 2 < REQUIRED_SIZE || heightTmp / 2 < REQUIRED_SIZE) {
                 break;
             }
-            width_tmp /= 2;
-            height_tmp /= 2;
+            widthTmp /= 2;
+            heightTmp /= 2;
             scale *= 2;
         }
         BitmapFactory.Options o2 = new BitmapFactory.Options();

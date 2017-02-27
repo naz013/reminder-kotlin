@@ -2,6 +2,7 @@ package com.elementary.tasks.core.event_tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import hirondelle.date4j.DateTime;
@@ -25,9 +26,8 @@ import hirondelle.date4j.DateTime;
 class Hour implements TreeInterface, MinuteInterface, SearchInterface {
 
     private int hour;
-    private int maxNodes = 59;
     private Day day;
-    private TreeMap<Integer, Minute> nodes = new TreeMap<>();
+    private Map<Integer, Minute> nodes = new TreeMap<>();
 
     Hour(int hour, Day day) {
         this.day = day;
@@ -111,7 +111,6 @@ class Hour implements TreeInterface, MinuteInterface, SearchInterface {
 
     @Override
     public boolean hasRange(DateTime stDate, int length) {
-        int minute = stDate.getMinute();
         return false;
     }
 }

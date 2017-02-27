@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
  * limitations under the License.
  */
 
-public class PicassoTool {
+public final class PicassoTool {
 
     private static final String TAG = "PicassoTool";
 

@@ -148,11 +148,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onResume() {
         super.onResume();
-        if (mPrefs.isUiChanged()) {
-            mPrefs.setUiChanged(false);
+        if (getPrefs().isUiChanged()) {
+            getPrefs().setUiChanged(false);
             recreate();
         }
-        if (!mPrefs.isBetaWarmingShowed()) {
+        if (!getPrefs().isBetaWarmingShowed()) {
             showBetaDialog();
         }
         if (isRateDialogShowed()) {
@@ -162,9 +162,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private boolean isRateDialogShowed() {
-        int count = mPrefs.getRateCount();
+        int count = getPrefs().getRateCount();
         count++;
-        mPrefs.setRateCount(count);
+        getPrefs().setRateCount(count);
         return count == 10;
     }
 
@@ -179,13 +179,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         builder.setNegativeButton(R.string.never, (dialogInterface, i) -> dialogInterface.dismiss());
         builder.setNeutralButton(R.string.later, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            mPrefs.setRateCount(0);
+            getPrefs().setRateCount(0);
         });
         builder.create().show();
     }
 
     private void showBetaDialog() {
-        mPrefs.setBetaWarmingShowed(true);
+        getPrefs().setBetaWarmingShowed(true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Beta");
         builder.setMessage("This version of application may work unstable!");
@@ -194,7 +194,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void showMainImage() {
-        String path = mPrefs.getImagePath();
+        String path = getPrefs().getImagePath();
         if (!path.isEmpty()) {
             String fileName = path;
             if (path.contains("=")) {
@@ -221,7 +221,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPrefs.isAutoBackupEnabled() && mPrefs.isSettingsBackupEnabled()
+        if (getPrefs().isAutoBackupEnabled() && getPrefs().isSettingsBackupEnabled()
                 && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
             new BackupSettingTask(this).execute();
         }
@@ -255,9 +255,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void onThemeChange(@ColorInt int primary, @ColorInt int primaryDark, @ColorInt int accent) {
-        if (primary == 0) primary = themeUtil.getColor(themeUtil.colorPrimary());
-        if (primaryDark == 0) primaryDark = themeUtil.getColor(themeUtil.colorPrimaryDark());
-        if (accent == 0) accent = themeUtil.getColor(themeUtil.colorAccent());
+        if (primary == 0) primary = getThemeUtil().getColor(getThemeUtil().colorPrimary());
+        if (primaryDark == 0) primaryDark = getThemeUtil().getColor(getThemeUtil().colorPrimaryDark());
+        if (accent == 0) accent = getThemeUtil().getColor(getThemeUtil().colorAccent());
         toolbar.setBackgroundColor(primary);
         if (Module.isLollipop()) getWindow().setStatusBarColor(primaryDark);
         binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, accent));

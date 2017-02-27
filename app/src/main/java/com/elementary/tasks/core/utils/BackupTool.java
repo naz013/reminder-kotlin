@@ -43,7 +43,7 @@ import java.lang.ref.WeakReference;
  * limitations under the License.
  */
 
-public class BackupTool {
+public final class BackupTool {
 
     private static final String TAG = "BackupTool";
     private static BackupTool instance;
@@ -430,11 +430,10 @@ public class BackupTool {
      * @return Decrypted string
      */
     public static String decrypt(String string) {
-//        LogUtil.d(TAG, "decrypt: " + string);
         String result = "";
         try {
-            byte[] byte_string = Base64.decode(string, Base64.DEFAULT);
-            result = new String(byte_string, "UTF-8");
+            byte[] byteString = Base64.decode(string, Base64.DEFAULT);
+            result = new String(byteString, "UTF-8");
         } catch (UnsupportedEncodingException e1) {
             e1.printStackTrace();
         }
@@ -448,13 +447,12 @@ public class BackupTool {
      * @return Encrypted string
      */
     public static String encrypt(String string) {
-//        LogUtil.d(TAG, "encrypt: " + string);
-        byte[] string_byted = null;
+        byte[] stringByted = null;
         try {
-            string_byted = string.getBytes("UTF-8");
+            stringByted = string.getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return Base64.encodeToString(string_byted, Base64.DEFAULT).trim();
+        return Base64.encodeToString(stringByted, Base64.DEFAULT).trim();
     }
 }

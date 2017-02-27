@@ -161,15 +161,15 @@ public class NotePreviewActivity extends ThemedActivity {
         int style = mItem.getStyle();
         binding.noteText.setTypeface(AssetsUtil.getTypeface(this, style));
         if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(themeUtil.getNoteDarkColor(color));
+            getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(color));
         }
-        binding.scrollContent.setBackgroundColor(themeUtil.getNoteLightColor(color));
+        binding.scrollContent.setBackgroundColor(getThemeUtil().getNoteLightColor(color));
     }
 
     private void showReminder() {
         mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
         if (mReminder != null){
-            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), mPrefs.is24HourFormatEnabled());
+            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), getPrefs().is24HourFormatEnabled());
             binding.reminderTime.setText(dateTime);
             binding.reminderContainer.setVisibility(View.VISIBLE);
         }
@@ -179,10 +179,10 @@ public class NotePreviewActivity extends ThemedActivity {
         List<NoteImage> list = mItem.getImages();
         if (!list.isEmpty()){
             mAdapter.setImages(list);
-            binding.appBar.setBackgroundColor(themeUtil.getNoteColor(mItem.getColor()));
+            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(0);
         } else {
-            binding.appBar.setBackgroundColor(themeUtil.getNoteColor(mItem.getColor()));
+            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(255);
         }
     }

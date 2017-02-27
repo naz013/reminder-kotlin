@@ -3,6 +3,7 @@ package com.elementary.tasks.core.event_tree;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -24,16 +25,14 @@ import java.util.TreeMap;
 class Month implements TreeInterface, DayInterface {
 
     private int month;
-    private int maxNodes;
     private Year year;
-    private TreeMap<Integer, Day> nodes = new TreeMap<>();
+    private Map<Integer, Day> nodes = new TreeMap<>();
 
     Month(int month, Year year) {
         this.year = year;
         this.month = month;
         Calendar calendar = Calendar.getInstance();
         calendar.set(year.getYear(), month, 1);
-        maxNodes = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
     public int getMonth() {

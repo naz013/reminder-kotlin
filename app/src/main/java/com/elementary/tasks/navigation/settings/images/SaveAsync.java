@@ -40,7 +40,7 @@ public class SaveAsync extends AsyncTask<String, Void, Void> {
         String path = strings[0];
         String fileName = path;
         if (path.contains("=")) {
-            int index = path.indexOf("=");
+            int index = path.indexOf('=');
             fileName = path.substring(index);
         }
         File directory = MemoryUtil.getImageCacheDir();

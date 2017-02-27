@@ -117,30 +117,30 @@ public class TemplatesFragment extends BaseSettingsFragment {
     }
 
     private void openCreateScreen() {
-        startActivity(new Intent(mContext, TemplateActivity.class));
+        startActivity(new Intent(getContext(), TemplateActivity.class));
     }
 
     private void initTemplateList() {
         RecyclerView recyclerView = binding.templatesList;
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         refreshView();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.messages));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> openCreateScreen());
-            mCallback.onScrollChanged(binding.templatesList);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.messages));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> openCreateScreen());
+            getCallback().onScrollChanged(binding.templatesList);
         }
         showTemplates();
     }
 
     private void showTemplates() {
-        adapter = new TemplatesAdapter(mContext, RealmDb.getInstance().getAllTemplates(), mFilter);
+        adapter = new TemplatesAdapter(getContext(), RealmDb.getInstance().getAllTemplates(), mFilter);
         binding.templatesList.setAdapter(adapter);
         refreshView();
     }

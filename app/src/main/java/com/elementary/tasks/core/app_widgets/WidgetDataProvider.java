@@ -41,7 +41,7 @@ public class WidgetDataProvider {
         REMINDER
     }
 
-    private ArrayList<Item> data;
+    private List<Item> data;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private int hour, minute;
     private boolean isFeature;
@@ -61,7 +61,7 @@ public class WidgetDataProvider {
         this.isFeature = isFeature;
     }
 
-    public ArrayList<Item> getData(){
+    public List<Item> getData(){
         return data;
     }
 
@@ -196,9 +196,11 @@ public class WidgetDataProvider {
         }
     }
 
-    public class Item {
-        int day, month, year;
-        WidgetType type;
+    public static class Item {
+        private int day;
+        private int month;
+        private int year;
+        private WidgetType type;
 
         public Item(int day, int month, int year, WidgetType type){
             this.day = day;

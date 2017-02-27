@@ -26,7 +26,7 @@ public class HelpFragment extends BaseWebViewFragment {
 
     @Override
     protected String getUrl() {
-        boolean isDark = ThemeUtil.getInstance(mContext).isDark();
+        boolean isDark = ThemeUtil.getInstance(getContext()).isDark();
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {
@@ -45,9 +45,9 @@ public class HelpFragment extends BaseWebViewFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.help));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.help));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

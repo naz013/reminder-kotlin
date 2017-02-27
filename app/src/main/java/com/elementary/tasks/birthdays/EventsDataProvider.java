@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import hirondelle.date4j.DateTime;
 
@@ -45,7 +46,7 @@ public class EventsDataProvider {
     private boolean isReminder = false;
     private boolean isFeature = false;
 
-    private HashMap<DateTime, Events> map = new HashMap<>();
+    private Map<DateTime, Events> map = new HashMap<>();
 
     public EventsDataProvider(Context mContext, boolean isReminder, boolean isFeature){
         this.mContext = mContext;
@@ -66,7 +67,7 @@ public class EventsDataProvider {
         }
     }
 
-    public HashMap<DateTime, Events> getEvents() {
+    public Map<DateTime, Events> getEvents() {
         ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int bColor = cs.getColor(cs.colorBirthdayCalendar());
         TimeCount timeCount = TimeCount.getInstance(mContext);
@@ -133,7 +134,7 @@ public class EventsDataProvider {
         for (BirthdayItem item : list) {
             Date date = null;
             try {
-                date = CheckBirthdaysAsync.dateFormat.parse(item.getDate());
+                date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.getDate());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

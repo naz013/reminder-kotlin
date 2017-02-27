@@ -153,8 +153,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private void initRadios() {
         binding.defaultCheck.setOnCheckedChangeListener(this);
         binding.noneCheck.setOnCheckedChangeListener(this);
-        position = mPrefs.getImageId();
-        String path = mPrefs.getImagePath();
+        position = getPrefs().getImageId();
+        String path = getPrefs().getImagePath();
         if (path.matches(NONE_PHOTO)) {
             binding.noneCheck.setChecked(true);
         } else if (position == -1 || path.matches(DEFAULT_PHOTO)) {
@@ -181,7 +181,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         binding.fullImageView.setOnTouchListener((view, motionEvent) -> true);
         binding.downloadButton.setOnClickListener(view -> showDownloadDialog());
         binding.setToMonthButton.setOnClickListener(view -> showMonthDialog());
-        if (!mPrefs.isCalendarImagesEnabled()) {
+        if (!getPrefs().isCalendarImagesEnabled()) {
             binding.setToMonthButton.setVisibility(View.GONE);
         }
     }
@@ -233,7 +233,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
                     .load(RetrofitBuilder.getImageLink(mSelectedItem.getId()))
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
-                    .error(themeUtil.isDark() ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
+                    .error(getThemeUtil().isDark() ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
                     .into(binding.fullImageView);
             ViewUtils.showReveal(binding.fullContainer);
             ViewUtils.show(this, binding.imageContainer, mAnimationCallback);
@@ -265,9 +265,9 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void setImageFotMonth(int month) {
-        MonthImage monthImage = mPrefs.getCalendarImages();
+        MonthImage monthImage = getPrefs().getCalendarImages();
         monthImage.setPhoto(month, mSelectedItem.getId());
-        mPrefs.setCalendarImages(monthImage);
+        getPrefs().setCalendarImages(monthImage);
         hideImage();
     }
 
@@ -327,21 +327,9 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void setImageUrl(String imageUrl, int id) {
-        mPrefs.setImagePath(imageUrl);
-        mPrefs.setImageId(id);
+        getPrefs().setImagePath(imageUrl);
+        getPrefs().setImageId(id);
         if (mAdapter != null) mAdapter.deselectLast();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAdapter != null) {
-            try {
-                mAdapter.finalize();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        }
     }
 
     @Override

@@ -72,14 +72,14 @@ public class PlacesFragment extends BaseNavigationFragment {
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
         public void onItemClicked(int position, View view) {
-            startActivity(new Intent(mContext, CreatePlaceActivity.class)
+            startActivity(new Intent(getContext(), CreatePlaceActivity.class)
                     .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
         }
 
         @Override
         public void onItemLongClicked(int position, View view) {
             final String[] items = {getString(R.string.edit), getString(R.string.delete)};
-            Dialogues.showLCAM(mContext, item -> {
+            Dialogues.showLCAM(getContext(), item -> {
                 if (item == 0) {
                     editPlace(position);
                 } else if (item == 1) {
@@ -150,28 +150,28 @@ public class PlacesFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.places));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> startActivity(new Intent(mContext, CreatePlaceActivity.class)));
-            mCallback.onScrollChanged(binding.recyclerView);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.places));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> startActivity(new Intent(getContext(), CreatePlaceActivity.class)));
+            getCallback().onScrollChanged(binding.recyclerView);
         }
         showData();
     }
 
     private void editPlace(int position) {
-        mContext.startActivity(new Intent(mContext, CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
+        getContext().startActivity(new Intent(getContext(), CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
     }
 
     private void initList() {
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         refreshView();
     }
 
     private void showData() {
-        mAdapter = new PlacesRecyclerAdapter(mContext, RealmDb.getInstance().getAllPlaces(), mEventListener, mFilter);
+        mAdapter = new PlacesRecyclerAdapter(getContext(), RealmDb.getInstance().getAllPlaces(), mEventListener, mFilter);
         binding.recyclerView.setAdapter(mAdapter);
         refreshView();
     }

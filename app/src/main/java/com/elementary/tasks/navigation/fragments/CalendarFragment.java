@@ -60,8 +60,8 @@ public class CalendarFragment extends BaseCalendarFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_voice:
-                if (mCallback != null){
-                    mCallback.onVoiceAction();
+                if (getCallback() != null){
+                    getCallback().onVoiceAction();
                 }
                 return true;
         }
@@ -71,10 +71,10 @@ public class CalendarFragment extends BaseCalendarFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.calendar));
-            mCallback.onFragmentSelect(this);
-            mCallback.setClick(view -> {
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.calendar));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> {
                 dateMills = System.currentTimeMillis();
                 showActionDialog();
             });
@@ -83,21 +83,21 @@ public class CalendarFragment extends BaseCalendarFragment {
     }
 
     private void showCalendar() {
-        ThemeUtil themeUtil = ThemeUtil.getInstance(mContext);
+        ThemeUtil themeUtil = ThemeUtil.getInstance(getContext());
         FlextCalendarFragment calendarView = new FlextCalendarFragment();
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
         args.putInt(FlextCalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1);
         args.putInt(FlextCalendarFragment.YEAR, cal.get(Calendar.YEAR));
-        if (mPrefs.getStartDay() == 0) {
+        if (getPrefs().getStartDay() == 0) {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.SUNDAY);
         } else {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.MONDAY);
         }
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark());
-        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, mPrefs.isCalendarImagesEnabled());
-        MonthImage monthImage = mPrefs.getCalendarImages();
+        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, getPrefs().isCalendarImagesEnabled());
+        MonthImage monthImage = getPrefs().getCalendarImages();
         LogUtil.d(TAG, "showCalendar: " + Arrays.toString(monthImage.getPhotos()));
         args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.getPhotos());
         calendarView.setArguments(args);
@@ -133,9 +133,9 @@ public class CalendarFragment extends BaseCalendarFragment {
         calendarView.setListener(listener);
         calendarView.refreshView();
         replaceFragment(calendarView, getString(R.string.calendar));
-        boolean isReminder = mPrefs.isRemindersInCalendarEnabled();
-        boolean isFeature = mPrefs.isFutureEventEnabled();
-        calendarView.setEvents(new EventsDataProvider(mContext, isReminder, isFeature).getEvents());
+        boolean isReminder = getPrefs().isRemindersInCalendarEnabled();
+        boolean isFeature = getPrefs().isFutureEventEnabled();
+        calendarView.setEvents(new EventsDataProvider(getContext(), isReminder, isFeature).getEvents());
         getActivity().invalidateOptionsMenu();
     }
 

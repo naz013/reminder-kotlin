@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.elementary.tasks.core.event_tree.EventInterface;
@@ -188,11 +187,5 @@ public class BirthdayItem implements RecyclerInterface, EventInterface {
     @Override
     public int[] getKeys() {
         return new int[]{0, 0, 0};
-    }
-
-    @Override
-    public int compareTo(@NonNull Object o) {
-        EventInterface eventInterface = (EventInterface) o;
-        return eventInterface.hashCode() - hashCode();
     }
 }

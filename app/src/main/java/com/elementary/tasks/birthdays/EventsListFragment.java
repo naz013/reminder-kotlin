@@ -64,10 +64,10 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentEventsListBinding.inflate(inflater, container, false);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        if (mCallback != null) {
-            mCallback.onScrollChanged(binding.recyclerView);
+        if (getCallback() != null) {
+            getCallback().onScrollChanged(binding.recyclerView);
         }
         return binding.getRoot();
     }
@@ -79,7 +79,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     }
 
     public void loadAdapter(){
-        CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(mContext, mDataList);
+        CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), mDataList);
         mAdapter.setEventListener(this);
         binding.recyclerView.setAdapter(mAdapter);
         reloadView();
@@ -98,7 +98,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
 
     private void showBirthdayLcam(BirthdayItem birthdayItem, int position) {
         String[] items = {getString(R.string.edit), getString(R.string.delete)};
-        Dialogues.showLCAM(mContext, item -> {
+        Dialogues.showLCAM(getContext(), item -> {
             switch (item){
                 case 0:
                     editBirthday(birthdayItem);
@@ -112,11 +112,11 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     }
 
     private void reopenFragment() {
-        mCallback.replaceFragment(new DayViewFragment(), getString(R.string.events));;
+        getCallback().replaceFragment(new DayViewFragment(), getString(R.string.events));;
     }
 
     private void editBirthday(BirthdayItem item) {
-        startActivity(new Intent(mContext, AddBirthdayActivity.class)
+        startActivity(new Intent(getContext(), AddBirthdayActivity.class)
                 .putExtra(Constants.INTENT_ID, item.getKey()));
     }
 
@@ -132,22 +132,22 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
 
     private void showReminder(Reminder object) {
         if (Reminder.isSame(object.getType(), Reminder.BY_DATE_SHOP)){
-            mContext.startActivity(new Intent(mContext, ShoppingPreviewActivity.class)
+            getContext().startActivity(new Intent(getContext(), ShoppingPreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, object.getUuId()));
         } else {
-            mContext.startActivity(new Intent(mContext, ReminderPreviewActivity.class)
+            getContext().startActivity(new Intent(getContext(), ReminderPreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, object.getUuId()));
         }
     }
 
     private void editReminder(String uuId) {
-        startActivity(new Intent(mContext, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
+        startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
     private void showActionDialog(Reminder reminder, int position) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.move_to_trash)};
-        Dialogues.showLCAM(mContext, item -> {
+        Dialogues.showLCAM(getContext(), item -> {
             switch (item){
                 case 0:
                     showReminder(reminder);
@@ -157,7 +157,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     break;
                 case 3:
                     if (RealmDb.getInstance().moveToTrash(reminder.getUuId())) {
-                        EventControl control = EventControlFactory.getController(mContext, reminder.setRemoved(true));
+                        EventControl control = EventControlFactory.getController(getContext(), reminder.setRemoved(true));
                         control.stop();
                         reopenFragment();
                     }

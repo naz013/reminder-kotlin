@@ -38,11 +38,6 @@ import java.util.Locale;
 public class EventsWidget extends AppWidgetProvider {
 
     @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
     }

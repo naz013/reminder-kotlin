@@ -20,8 +20,8 @@ import android.graphics.Typeface;
  */
 
 public class AssetsUtil {
-    public AssetsUtil(){
-    }
+
+    private AssetsUtil(){}
 
     public static Typeface getTypeface(Context context, int code){
         Typeface typeface;

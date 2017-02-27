@@ -40,9 +40,9 @@ public class PermissionsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.permissions));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.permissions));
+            getCallback().onFragmentSelect(this);
         }
     }
 }

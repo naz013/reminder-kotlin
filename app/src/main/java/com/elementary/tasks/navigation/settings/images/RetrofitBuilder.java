@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class RetrofitBuilder {
+public final class RetrofitBuilder {
 
     private RetrofitBuilder (){}
 

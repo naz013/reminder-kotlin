@@ -59,24 +59,24 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void init24TimePrefs() {
-        binding.time24hourPrefs.setChecked(mPrefs.is24HourFormatEnabled());
+        binding.time24hourPrefs.setChecked(getPrefs().is24HourFormatEnabled());
         binding.time24hourPrefs.setOnClickListener(view -> change24Prefs());
     }
 
     private void change24Prefs() {
         boolean is24 = binding.time24hourPrefs.isChecked();
-        mPrefs.set24HourFormatEnabled(!is24);
+        getPrefs().set24HourFormatEnabled(!is24);
         binding.time24hourPrefs.setChecked(!is24);
     }
 
     private void initGcmPrefs() {
-        binding.gcmPrefs.setChecked(mPrefs.isGcmEnabled());
+        binding.gcmPrefs.setChecked(getPrefs().isGcmEnabled());
         binding.gcmPrefs.setOnClickListener(view -> changeGcmPrefs());
     }
 
     private void changeGcmPrefs() {
         boolean isChecked = binding.gcmPrefs.isChecked();
-        mPrefs.setGcmEnabled(!isChecked);
+        getPrefs().setGcmEnabled(!isChecked);
         binding.gcmPrefs.setChecked(!isChecked);
         if (!isChecked) {
             FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
@@ -91,7 +91,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private String getCurrentTheme() {
-        int theme = mPrefs.getAppTheme();
+        int theme = getPrefs().getAppTheme();
         if (theme == ThemeUtil.THEME_AUTO) return getString(R.string.auto);
         else if (theme == ThemeUtil.THEME_WHITE) return getString(R.string.light);
         else return getString(R.string.dark);
@@ -100,24 +100,24 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mCallback != null) {
-            mCallback.onTitleChange(getString(R.string.general));
-            mCallback.onFragmentSelect(this);
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.general));
+            getCallback().onFragmentSelect(this);
         }
     }
 
     private void showThemeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
-        builder.setTitle(mContext.getString(R.string.theme));
+        builder.setTitle(getString(R.string.theme));
         String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark)};
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext,
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, colors);
-        int initTheme = mPrefs.getAppTheme();
+        int initTheme = getPrefs().getAppTheme();
         mItemSelect = initTheme;
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
-        builder.setPositiveButton(mContext.getString(R.string.ok), (dialog, which) -> {
-            mPrefs.setAppTheme(mItemSelect);
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            getPrefs().setAppTheme(mItemSelect);
             dialog.dismiss();
             if (initTheme != mItemSelect) restartApp();
         });
@@ -128,12 +128,12 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void restartApp() {
-        startActivity(new Intent(mContext, SplashScreen.class));
+        startActivity(new Intent(getContext(), SplashScreen.class));
         getActivity().finish();
     }
 
     private void selectMainImage() {
-        startActivity(new Intent(mContext, MainImageActivity.class));
+        startActivity(new Intent(getContext(), MainImageActivity.class));
     }
 
     private void initMainImage() {
@@ -141,33 +141,33 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void selectTheme() {
-        startActivity(new Intent(mContext, SelectThemeActivity.class));
+        startActivity(new Intent(getContext(), SelectThemeActivity.class));
     }
 
     private void initThemeColor() {
-        binding.themePrefs.setViewResource(ThemeUtil.getInstance(mContext).getIndicator(mPrefs.getAppThemeColor()));
+        binding.themePrefs.setViewResource(ThemeUtil.getInstance(getContext()).getIndicator(getPrefs().getAppThemeColor()));
         binding.themePrefs.setOnClickListener(mThemeClick);
     }
 
     private void initSmartFold() {
-        binding.smartFoldPrefs.setChecked(mPrefs.isFoldingEnabled());
+        binding.smartFoldPrefs.setChecked(getPrefs().isFoldingEnabled());
         binding.smartFoldPrefs.setOnClickListener(mFoldingClick);
     }
 
     private void initWearNotification() {
-        binding.wearPrefs.setChecked(mPrefs.isWearEnabled());
+        binding.wearPrefs.setChecked(getPrefs().isWearEnabled());
         binding.wearPrefs.setOnClickListener(mWearClick);
     }
 
     private void changeWearNotification() {
         boolean isChecked = binding.wearPrefs.isChecked();
-        mPrefs.setWearEnabled(!isChecked);
+        getPrefs().setWearEnabled(!isChecked);
         binding.wearPrefs.setChecked(!isChecked);
     }
 
     private void changeSmartFoldMode() {
         boolean isChecked = binding.smartFoldPrefs.isChecked();
-        mPrefs.setFoldingEnabled(!isChecked);
+        getPrefs().setFoldingEnabled(!isChecked);
         binding.smartFoldPrefs.setChecked(!isChecked);
     }
 }
