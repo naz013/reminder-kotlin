@@ -23,9 +23,9 @@ import java.io.File;
  * limitations under the License.
  */
 
-public class TelephonyUtil {
+public final class TelephonyUtil {
 
-    public TelephonyUtil() {
+    private TelephonyUtil() {
     }
 
     public static void sendNote(File file, Context context, String message) {
@@ -59,7 +59,9 @@ public class TelephonyUtil {
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (filePath != null) {
             Uri uri = Uri.fromFile(new File(filePath));
-            if (uri != null) intent.putExtra(Intent.EXTRA_STREAM, uri);
+            if (uri != null) {
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+            }
         }
         context.startActivity(Intent.createChooser(intent, "Send email..."));
     }

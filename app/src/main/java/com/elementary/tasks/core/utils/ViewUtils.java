@@ -37,7 +37,9 @@ import com.elementary.tasks.R;
  * limitations under the License.
  */
 
-public class ViewUtils {
+public final class ViewUtils {
+
+    private ViewUtils() {}
 
     public static ColorStateList getFabState(Context context, @ColorRes int colorNormal, @ColorRes int colorPressed) {
         int[][] states = {
@@ -172,7 +174,9 @@ public class ViewUtils {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (callback != null) callback.onAnimationFinish(1);
+                if (callback != null) {
+                    callback.onAnimationFinish(1);
+                }
             }
 
             @Override
@@ -194,7 +198,9 @@ public class ViewUtils {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                if (callback != null) callback.onAnimationFinish(0);
+                if (callback != null) {
+                    callback.onAnimationFinish(0);
+                }
             }
 
             @Override

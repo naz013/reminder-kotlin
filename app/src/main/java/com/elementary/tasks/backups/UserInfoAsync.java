@@ -95,8 +95,12 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     @Override
     protected void onPostExecute(List<UserItem> list) {
         super.onPostExecute(list);
-        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
-        if (listener != null && mContext != null) listener.onReceive(list);
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+        if (listener != null && mContext != null) {
+            listener.onReceive(list);
+        }
     }
 
     private void addLocalData(List<UserItem> list) {

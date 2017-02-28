@@ -58,18 +58,26 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             boolean isLinked = dbx.isLinked();
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {
-                if (filePath == null) continue;
+                if (filePath == null) {
+                    continue;
+                }
                 File file = new File(filePath);
-                if (!file.exists()) continue;
+                if (!file.exists()) {
+                    continue;
+                }
                 if (file.isDirectory()) {
                     File[] files = file.listFiles();
-                    if (files == null) continue;
+                    if (files == null) {
+                        continue;
+                    }
                     for (File f : files) {
                         f.delete();
                     }
                     res = 2;
                 } else {
-                    if (file.delete()) res = 1;
+                    if (file.delete()) {
+                        res = 1;
+                    }
                 }
             }
             if (isLinked && isConnected) {
@@ -80,18 +88,26 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             boolean isLinked = gdx != null;
             boolean isConnected = SuperUtil.isConnected(mContext);
             for (String filePath : params) {
-                if (filePath == null) continue;
+                if (filePath == null) {
+                    continue;
+                }
                 File file = new File(filePath);
-                if (!file.exists()) continue;
+                if (!file.exists()) {
+                    continue;
+                }
                 if (file.isDirectory()) {
                     File[] files = file.listFiles();
-                    if (files == null) continue;
+                    if (files == null) {
+                        continue;
+                    }
                     for (File f : files) {
                         f.delete();
                     }
                     res = 2;
                 } else {
-                    if (file.delete()) res = 1;
+                    if (file.delete()) {
+                        res = 1;
+                    }
                 }
             }
             if (isLinked && isConnected) {
@@ -103,18 +119,26 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             }
         } else if (type == UserInfoAsync.Info.Local) {
             for (String filePath : params) {
-                if (filePath == null) continue;
+                if (filePath == null) {
+                    continue;
+                }
                 File file = new File(filePath);
-                if (!file.exists()) continue;
+                if (!file.exists()) {
+                    continue;
+                }
                 if (file.isDirectory()) {
                     File[] files = file.listFiles();
-                    if (files == null) continue;
+                    if (files == null) {
+                        continue;
+                    }
                     for (File f : files) {
                         f.delete();
                     }
                     res = 2;
                 } else {
-                    if (file.delete()) res = 1;
+                    if (file.delete()) {
+                        res = 1;
+                    }
                 }
             }
         }
@@ -130,7 +154,9 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
         if (mContext != null) {
             Toast.makeText(mContext, R.string.all_files_removed, Toast.LENGTH_SHORT).show();
         }
-        if (listener != null && mContext != null) listener.onFinish();
+        if (listener != null && mContext != null) {
+            listener.onFinish();
+        }
     }
 
     public interface DeleteCallback {

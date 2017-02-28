@@ -40,14 +40,21 @@ public class CalendarUpdateMinusService extends IntentService {
         int year  = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, 0);
         if (action != 0){
             SharedPreferences.Editor editor = sp.edit();
-            if (month == 0) month = 11;
-            else month -= 1;
+            if (month == 0) {
+                month = 11;
+            } else {
+                month -= 1;
+            }
             editor.putInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetId, month);
-            if (month == 11) year -= 1;
+            if (month == 11) {
+                year -= 1;
+            }
             editor.putInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, year);
             editor.apply();
             UpdatesHelper.getInstance(getApplicationContext()).updateCalendarWidget();
             stopSelf();
-        } else stopSelf();
+        } else {
+            stopSelf();
+        }
     }
 }

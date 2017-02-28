@@ -38,8 +38,8 @@ public class TasksWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
-    public final static String TASKS_WIDGET_PREF = "tasks_pref";
-    public final static String TASKS_WIDGET_THEME = "tasks_theme_";
+    public static final String TASKS_WIDGET_PREF = "tasks_pref";
+    public static final String TASKS_WIDGET_THEME = "tasks_theme_";
 
     private List<TasksTheme> mThemes;
     private TasksWidgetConfigLayoutBinding binding;
@@ -82,7 +82,7 @@ public class TasksWidgetConfig extends ThemedActivity {
         binding.themePager.setCurrentItem(theme, true);
     }
 
-    private void loadThemes(){
+    private void loadThemes() {
         mThemes = TasksTheme.getThemes(this);
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mThemes);
         binding.themePager.setAdapter(adapter);
@@ -97,7 +97,7 @@ public class TasksWidgetConfig extends ThemedActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add:
                 updateWidget();
                 return true;

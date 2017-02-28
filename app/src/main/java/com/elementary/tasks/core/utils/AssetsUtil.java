@@ -19,7 +19,7 @@ import android.graphics.Typeface;
  * limitations under the License.
  */
 
-public class AssetsUtil {
+public final class AssetsUtil {
 
     private AssetsUtil(){}
 

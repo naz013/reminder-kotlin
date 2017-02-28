@@ -103,8 +103,11 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         rView.setTextViewText(R.id.task, name);
         SimpleDateFormat full24Format = new SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault());
         String notes = mData.get(i).getNotes();
-        if (notes != null && !notes.matches("")) rView.setTextViewText(R.id.note, notes);
-        else rView.setViewVisibility(R.id.note, View.GONE);
+        if (notes != null && !notes.matches("")) {
+            rView.setTextViewText(R.id.note, notes);
+        } else {
+            rView.setViewVisibility(R.id.note, View.GONE);
+        }
 
         long date = mData.get(i).getDueDate();
         java.util.Calendar calendar = java.util.Calendar.getInstance();
@@ -112,7 +115,9 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
             calendar.setTimeInMillis(date);
             String update = full24Format.format(calendar.getTime());
             rView.setTextViewText(R.id.taskDate, update);
-        } else rView.setViewVisibility(R.id.taskDate, View.GONE);
+        } else {
+            rView.setViewVisibility(R.id.taskDate, View.GONE);
+        }
 
         Intent fillInIntent = new Intent();
         fillInIntent.putExtra(Constants.INTENT_ID, mData.get(i).getTaskId());

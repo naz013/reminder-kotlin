@@ -67,7 +67,9 @@ public class ContactsActivity extends ThemedActivity implements NumberCallback {
     @Override
     public void onContactSelected(String number, String name) {
         Intent intent = new Intent();
-        if (number != null) intent.putExtra(Constants.SELECTED_CONTACT_NUMBER, number);
+        if (number != null) {
+            intent.putExtra(Constants.SELECTED_CONTACT_NUMBER, number);
+        }
         intent.putExtra(Constants.SELECTED_CONTACT_NAME, name);
         setResult(RESULT_OK, intent);
         finish();

@@ -70,7 +70,9 @@ class LocationEvent extends EventManager {
         boolean hasActive = false;
         for (Reminder item : list) {
             if (isPaused) {
-                if (item.getUniqueId() == getReminder().getUniqueId()) continue;
+                if (item.getUniqueId() == getReminder().getUniqueId()) {
+                    continue;
+                }
                 if (TextUtils.isEmpty(item.getEventTime()) || !TimeCount.isCurrent(item.getEventTime())) {
                     if (!item.isNotificationShown()) {
                         hasActive = true;

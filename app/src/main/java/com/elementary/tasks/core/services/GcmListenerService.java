@@ -44,7 +44,9 @@ public class GcmListenerService extends FirebaseMessagingService {
     }
 
     private String getValue(Map<String, String> data, String key) {
-        if (data.containsKey(key)) return data.get(key);
+        if (data.containsKey(key)) {
+            return data.get(key);
+        }
         return null;
     }
 
@@ -62,7 +64,9 @@ public class GcmListenerService extends FirebaseMessagingService {
         }
         if (Module.isPro()) {
             builder.setContentText(context.getString(R.string.app_name_pro));
-        } else builder.setContentText(context.getString(R.string.app_name));
+        } else {
+            builder.setContentText(context.getString(R.string.app_name));
+        }
         builder.setSmallIcon(R.drawable.ic_shop_white_24dp);
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
         mNotifyMgr.notify(24242, builder.build());

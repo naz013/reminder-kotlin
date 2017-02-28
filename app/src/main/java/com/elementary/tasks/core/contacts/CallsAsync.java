@@ -63,8 +63,11 @@ public class CallsAsync extends AsyncTask<Void, Void, Void> {
 
                 CallsItem data = new CallsItem(name, phoneNumber, photo, Long.valueOf(callDate), id, Integer.parseInt(callType));
                 int pos = getPosition(data.getDate());
-                if (pos == -1) mList.add(data);
-                else mList.add(pos, data);
+                if (pos == -1) {
+                    mList.add(data);
+                } else {
+                    mList.add(pos, data);
+                }
             }
             c.close();
         }
@@ -72,7 +75,9 @@ public class CallsAsync extends AsyncTask<Void, Void, Void> {
     }
 
     private int getPosition(long date) {
-        if (mList.size() == 0) return 0;
+        if (mList.size() == 0) {
+            return 0;
+        }
         int position = -1;
         for (CallsItem data : mList) {
             if (date > data.getDate()) {

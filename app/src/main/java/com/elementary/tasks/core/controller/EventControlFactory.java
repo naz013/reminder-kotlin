@@ -21,7 +21,7 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class EventControlFactory {
+public final class EventControlFactory {
 
     private static final String TAG = "EventControlFactory";
 

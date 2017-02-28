@@ -29,7 +29,7 @@ public class Text implements Drawing {
     private float textX = 0F;
     private float textY = 0F;
 
-    public Text(String text, Typeface fontFamily, float fontSize, Paint textPaint) {
+    public Text(String text, float fontSize, Paint textPaint) {
         this.text = text;
         this.fontSize = fontSize;
         this.textPaint = textPaint;

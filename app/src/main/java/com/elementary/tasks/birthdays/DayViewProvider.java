@@ -82,15 +82,21 @@ public class DayViewProvider {
             if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month){
                 res.add(item);
             } else {
-                if (mDay == day && mMonth == month && mYear == year) res.add(item);
+                if (mDay == day && mMonth == month && mYear == year) {
+                    res.add(item);
+                }
             }
         }
         return res;
     }
 
     public void fillArray(){
-        if (isBirthdays) loadBirthdays();
-        if (isReminders) loadReminders();
+        if (isBirthdays) {
+            loadBirthdays();
+        }
+        if (isReminders) {
+            loadReminders();
+        }
     }
 
     private void loadBirthdays(){
@@ -136,7 +142,9 @@ public class DayViewProvider {
                 long count = item.getEventCount();
                 boolean isLimited = limit > 0;
                 int color = 0;
-                if (map.containsKey(item.getGroupUuId())) color = map.get(item.getGroupUuId());
+                if (map.containsKey(item.getGroupUuId())) {
+                    color = map.get(item.getGroupUuId());
+                }
                 Calendar calendar1 = Calendar.getInstance();
                 calendar1.setTimeInMillis(eventTime);
                 int mDay = calendar1.get(Calendar.DAY_OF_MONTH);
@@ -144,12 +152,16 @@ public class DayViewProvider {
                 int mYear = calendar1.get(Calendar.YEAR);
                 if (eventTime > 0) {
                     data.add(new EventsItem(item.getViewType(), item, mDay, mMonth, mYear, color));
-                } else continue;
+                } else {
+                    continue;
+                }
                 if (isFeature) {
                     if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         List<Integer> list = item.getWeekdays();
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() +
@@ -167,7 +179,9 @@ public class DayViewProvider {
                     } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         do {
                             item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                             eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item);
@@ -181,10 +195,14 @@ public class DayViewProvider {
                             }
                         } while (days < max);
                     } else {
-                        if (repeatTime == 0) continue;
+                        if (repeatTime == 0) {
+                            continue;
+                        }
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() + repeatTime);
                             eventTime = calendar1.getTimeInMillis();

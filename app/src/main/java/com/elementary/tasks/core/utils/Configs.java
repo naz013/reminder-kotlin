@@ -15,7 +15,7 @@ package com.elementary.tasks.core.utils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class Configs {
+public final class Configs {
 
     public static final float CARD_ELEVATION = 5f;
     public static final float MAX_VOLUME = 25;

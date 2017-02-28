@@ -25,7 +25,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-class DataProvider {
+final class DataProvider {
 
     private DataProvider() {}
 
@@ -49,7 +49,9 @@ class DataProvider {
 
     static List<Reminder> getActiveReminders(long dateTime) {
         List<Reminder> list = new LinkedList<>(RealmDb.getInstance().getEnabledReminders());
-        if (dateTime == 0) return list;
+        if (dateTime == 0) {
+            return list;
+        }
         for (int i = list.size() - 1; i >= 0; i--) {
             Reminder reminder = list.get(i);
             if (reminder.getDateTime() != 0 && (reminder.getDateTime() > dateTime || reminder.getDateTime() < System.currentTimeMillis())) {
@@ -61,7 +63,9 @@ class DataProvider {
 
     static List<Reminder> getReminders(long dateTime) {
         List<Reminder> list = new LinkedList<>(RealmDb.getInstance().getActiveReminders());
-        if (dateTime == 0) return list;
+        if (dateTime == 0) {
+            return list;
+        }
         for (int i = list.size() - 1; i >= 0; i--) {
             Reminder reminder = list.get(i);
             if (reminder.getDateTime() != 0 && (reminder.getDateTime() > dateTime || reminder.getDateTime() < System.currentTimeMillis())) {
@@ -73,7 +77,9 @@ class DataProvider {
 
     static List<BirthdayItem> getBirthdays(long dateTime, long time) {
         List<BirthdayItem> list = new LinkedList<>(RealmDb.getInstance().getAllBirthdays());
-        if (dateTime == 0) return list;
+        if (dateTime == 0) {
+            return list;
+        }
         for (int i = list.size() - 1; i >= 0; i--) {
             long itemTime = list.get(i).getDateTime(time);
             if (itemTime < System.currentTimeMillis() || itemTime > dateTime) {

@@ -139,7 +139,7 @@ public final class TextDrawable extends ShapeDrawable {
         return new Builder();
     }
 
-    public static class Builder implements IConfigBuilder, IShapeBuilder, IBuilder {
+    public static final class Builder implements IConfigBuilder, IShapeBuilder, IBuilder {
 
         private String text;
 

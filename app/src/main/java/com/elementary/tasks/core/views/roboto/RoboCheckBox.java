@@ -45,7 +45,9 @@ public class RoboCheckBox extends AppCompatCheckBox {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboCheckBox);
             int fontCode = a.getInt(R.styleable.RoboCheckBox_check_font_style, -1);
@@ -63,7 +65,8 @@ public class RoboCheckBox extends AppCompatCheckBox {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mTypeface != null)
+        if (mTypeface != null) {
             setTypeface(mTypeface);
+        }
     }
 }

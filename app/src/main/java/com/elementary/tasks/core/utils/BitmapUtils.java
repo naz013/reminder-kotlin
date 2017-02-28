@@ -24,7 +24,7 @@ import java.io.FileNotFoundException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class BitmapUtils {
+public final class BitmapUtils {
 
     private static final double MAX_SIZE = 768500;
     private static final int REQUIRED_SIZE = 350;

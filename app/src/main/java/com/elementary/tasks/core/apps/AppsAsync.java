@@ -59,14 +59,19 @@ public class AppsAsync extends AsyncTask<Void, Void, Void> {
             Drawable drawable = packageInfo.loadIcon(pm);
             ApplicationItem data = new ApplicationItem(name, packageName, drawable);
             int pos = getPosition(name);
-            if (pos == -1) mList.add(data);
-            else mList.add(getPosition(name), data);
+            if (pos == -1) {
+                mList.add(data);
+            } else {
+                mList.add(getPosition(name), data);
+            }
         }
         return null;
     }
 
     private int getPosition(String name) {
-        if (mList.size() == 0) return 0;
+        if (mList.size() == 0) {
+            return 0;
+        }
         int position = -1;
         for (ApplicationItem data : mList) {
             int comp = name.compareTo(data.getName());
@@ -81,7 +86,9 @@ public class AppsAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
         if (mListener != null) {
             mListener.onLoaded(mList);
         }

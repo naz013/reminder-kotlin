@@ -45,7 +45,9 @@ public class RoboButton extends AppCompatButton {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboButton);
             int fontCode = a.getInt(R.styleable.RoboButton_button_font_style, -1);
@@ -63,7 +65,8 @@ public class RoboButton extends AppCompatButton {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mTypeface != null)
+        if (mTypeface != null) {
             setTypeface(mTypeface);
+        }
     }
 }

@@ -16,7 +16,7 @@ package com.elementary.tasks.core.cloud;
  * limitations under the License.
  */
 
-public class FileConfig {
+public final class FileConfig {
     /**
      * File extensions for reminder.
      */
@@ -53,4 +53,6 @@ public class FileConfig {
     public static final String FILE_NAME_TEMPLATE = ".te2";
 
     public static final String FILE_NAME_SETTINGS = "app.settings";
+
+    private FileConfig() {}
 }

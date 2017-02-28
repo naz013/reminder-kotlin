@@ -39,10 +39,10 @@ public class CalendarWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
-    public final static String CALENDAR_WIDGET_PREF = "calendar_pref";
-    public final static String CALENDAR_WIDGET_THEME = "calendar_theme_";
-    public final static String CALENDAR_WIDGET_MONTH = "calendar_month_";
-    public final static String CALENDAR_WIDGET_YEAR = "calendar_year_";
+    public static final String CALENDAR_WIDGET_PREF = "calendar_pref";
+    public static final String CALENDAR_WIDGET_THEME = "calendar_theme_";
+    public static final String CALENDAR_WIDGET_MONTH = "calendar_month_";
+    public static final String CALENDAR_WIDGET_YEAR = "calendar_year_";
 
     private CalendarWidgetConfigLayoutBinding binding;
     private List<CalendarTheme> mThemes;
@@ -81,7 +81,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
         setResult(RESULT_CANCELED, resultValue);
     }
 
-    private void loadThemes(){
+    private void loadThemes() {
         mThemes = CalendarTheme.getThemes(this);
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getFragmentManager(), mThemes);
         binding.themePager.setAdapter(adapter);
@@ -96,7 +96,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add:
                 updateWidget();
                 return true;

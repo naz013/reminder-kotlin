@@ -30,18 +30,20 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class FlextHelper {
+public final class FlextHelper {
 
     private static SimpleDateFormat yyyyMMddFormat = new SimpleDateFormat(
             "yyyy-MM-dd", Locale.ENGLISH);
 
-    public FlextHelper(){
+    private FlextHelper(){
     }
 
     public static int getColor(Context context, @ColorRes int res){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return context.getResources().getColor(res, null);
-        else return context.getResources().getColor(res);
+        } else {
+            return context.getResources().getColor(res);
+        }
     }
 
     public static List<DateTime> getFullWeeks(int month, int year, int startDayOfWeek) {

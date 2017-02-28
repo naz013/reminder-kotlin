@@ -16,7 +16,7 @@ package com.elementary.tasks.core.utils;
  * limitations under the License.
  */
 
-class PrefsConstants {
+final class PrefsConstants {
 
     protected static final String PREFS_NAME = "6_prefs";
     protected static final String EVENTS_CALENDAR = "events_cal";
@@ -136,4 +136,6 @@ class PrefsConstants {
     static final String IS_CREATE_SHOWN = "create_showcase";
     static final String IS_CALENDAR_SHOWN = "calendar_showcase";
     static final String IS_LIST_SHOWN = "list_showcase";
+
+    private PrefsConstants() {}
 }

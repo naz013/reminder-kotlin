@@ -30,14 +30,23 @@ public class HelpFragment extends BaseWebViewFragment {
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {
-            if (isDark) url = Constants.WEB_URL + "app_help/index.html";
-            else url = Constants.WEB_URL + "app_help/index_light.html";
+            if (isDark) {
+                url = Constants.WEB_URL + "app_help/index.html";
+            } else {
+                url = Constants.WEB_URL + "app_help/index_light.html";
+            }
         } else if (localeCheck.startsWith("ru")) {
-            if (isDark) url = Constants.WEB_URL + "app_help/index_ru.html";
-            else url = Constants.WEB_URL + "app_help/index_light_ru.html";
+            if (isDark) {
+                url = Constants.WEB_URL + "app_help/index_ru.html";
+            } else {
+                url = Constants.WEB_URL + "app_help/index_light_ru.html";
+            }
         } else {
-            if (isDark) url = Constants.WEB_URL + "app_help/index_en.html";
-            else url = Constants.WEB_URL + "app_help/index_light_en.html";
+            if (isDark) {
+                url = Constants.WEB_URL + "app_help/index_en.html";
+            } else {
+                url = Constants.WEB_URL + "app_help/index_light_en.html";
+            }
         }
         return url;
     }

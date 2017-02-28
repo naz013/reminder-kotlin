@@ -60,7 +60,9 @@ public class WeekdayArrayAdapter extends ArrayAdapter<String> {
         int textColor;
         if (isDark){
             textColor = getContext().getResources().getColor(android.R.color.white);
-        } else textColor = getContext().getResources().getColor(android.R.color.black);
+        } else {
+            textColor = getContext().getResources().getColor(android.R.color.black);
+        }
         textView.setTextColor(textColor);
         textView.setGravity(Gravity.CENTER);
         return textView;

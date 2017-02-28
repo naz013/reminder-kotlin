@@ -178,11 +178,9 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.weekday_grid, null);
             }
-
             TextView textView = (TextView) convertView.findViewById(R.id.textView1);
             textView.setText(weekdays.get(position));
             textView.setTextColor(textColor);
-
             return convertView;
         }
 

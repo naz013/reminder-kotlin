@@ -658,8 +658,11 @@ public class Reminder implements RecyclerInterface, EventInterface {
 
     @Override
     public int getViewType() {
-        if (isSame(type, BY_DATE_SHOP)) return SHOPPING;
-        else return REMINDER;
+        if (isSame(type, BY_DATE_SHOP)) {
+            return SHOPPING;
+        } else {
+            return REMINDER;
+        }
     }
 
     @Override

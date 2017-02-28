@@ -14,11 +14,11 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.databinding.ActivityApplicationListBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,9 +41,20 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
     private ActivityApplicationListBinding binding;
     private AppsRecyclerAdapter mAdapter;
-    private List<ApplicationItem> mData;
 
     private RecyclerView mRecyclerView;
+    private FilterableAdapter.Filter<ApplicationItem, String> mFilter = new FilterableAdapter.Filter<ApplicationItem, String>() {
+        @Override
+        public boolean filter(ApplicationItem applicationItem, String query) {
+            String text = applicationItem.getName().toLowerCase();
+            return text.contains(query.toLowerCase());
+        }
+
+        @Override
+        public void onFilterEnd(List<ApplicationItem> list, int size, String query) {
+            mRecyclerView.scrollToPosition(0);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +81,9 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterApps(s.toString());
+                if (mAdapter != null) {
+                    mAdapter.filter(s.toString());
+                }
             }
 
             @Override
@@ -78,34 +91,6 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
             }
         });
-    }
-
-    private void filterApps(String q) {
-        List<ApplicationItem> res = filter(mData, q);
-        mAdapter.animateTo(res);
-        mRecyclerView.scrollToPosition(0);
-    }
-
-    private List<ApplicationItem> filter(List<ApplicationItem> mData, String q) {
-        q = q.toLowerCase();
-        List<ApplicationItem> filteredModelList = new ArrayList<>();
-        if (q.matches("")) {
-            filteredModelList = new ArrayList<>(mData);
-        } else {
-            filteredModelList.addAll(getFiltered(mData, q));
-        }
-        return filteredModelList;
-    }
-
-    private List<ApplicationItem> getFiltered(List<ApplicationItem> models, String query) {
-        List<ApplicationItem> list = new ArrayList<>();
-        for (ApplicationItem model : models) {
-            final String text = model.getName().toLowerCase();
-            if (text.contains(query)) {
-                list.add(model);
-            }
-        }
-        return list;
     }
 
     private void initActionBar() {
@@ -130,8 +115,7 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
     @Override
     public void onLoaded(List<ApplicationItem> list) {
-        this.mData = list;
-        mAdapter = new AppsRecyclerAdapter(this, mData, this);
+        mAdapter = new AppsRecyclerAdapter(this, list, this, mFilter);
         mRecyclerView.setAdapter(mAdapter);
     }
 

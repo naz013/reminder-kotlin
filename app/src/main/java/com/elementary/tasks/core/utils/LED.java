@@ -20,7 +20,7 @@ import com.elementary.tasks.R;
  * limitations under the License.
  */
 
-public class LED {
+public final class LED {
     public static final int NUM_OF_LEDS = 17;
 
     public static final int WHITE= 0xffffffff;
@@ -40,6 +40,8 @@ public class LED {
     public static final int DEEP_PURPLE = 0xff673ab7;
     public static final int DEEP_ORANGE = 0xffff5722;
     public static final int TEAL = 0xff009688;
+
+    private LED() {}
 
     public static int getLED(int code) {
         if (!Module.isPro()) {

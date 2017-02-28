@@ -54,7 +54,9 @@ public class TreeManager {
         List<Object> list = root.getNodes(y, m, d, h, min);
         if (list != null && list.size() > 0) {
             return list.get(0);
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public List<Object> getItems(int... params) {

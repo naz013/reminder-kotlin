@@ -69,91 +69,91 @@ public class BirthdayItem implements RecyclerInterface, EventInterface {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
-    public int getUniqueId() {
+    public final int getUniqueId() {
         return uniqueId;
     }
 
-    public int getDay() {
+    public final int getDay() {
         return day;
     }
 
-    public int getMonth() {
+    public final int getMonth() {
         return month;
     }
 
-    public void setDay(int day) {
+    public final void setDay(int day) {
         this.day = day;
     }
 
-    public void setMonth(int month) {
+    public final void setMonth(int month) {
         this.month = month;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public String getDate() {
+    public final String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public final void setDate(String date) {
         this.date = date;
     }
 
-    public String getNumber() {
+    public final String getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public final void setNumber(String number) {
         this.number = number;
     }
 
-    public String getKey() {
+    public final String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
+    public final void setKey(String key) {
         this.key = key;
     }
 
-    public String getUuId() {
+    public final String getUuId() {
         return uuId;
     }
 
-    public void setUuId(String uuId) {
+    public final void setUuId(String uuId) {
         this.uuId = uuId;
     }
 
-    public int getShowedYear() {
+    public final int getShowedYear() {
         return showedYear;
     }
 
-    public void setShowedYear(int showedYear) {
+    public final void setShowedYear(int showedYear) {
         this.showedYear = showedYear;
     }
 
-    public int getContactId() {
+    public final int getContactId() {
         return contactId;
     }
 
-    public void setContactId(int contactId) {
+    public final void setContactId(int contactId) {
         this.contactId = contactId;
     }
 
-    public String getDayMonth() {
+    public final String getDayMonth() {
         return dayMonth;
     }
 
-    public void setDayMonth(String dayMonth) {
+    public final void setDayMonth(String dayMonth) {
         this.dayMonth = dayMonth;
     }
 
-    public long getDateTime(long time) {
+    public final long getDateTime(long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int year = calendar.get(Calendar.YEAR);

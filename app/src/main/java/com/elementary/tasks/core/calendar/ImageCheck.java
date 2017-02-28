@@ -58,9 +58,13 @@ public final class ImageCheck {
                 sdPathDr.mkdirs();
             }
             File image = new File(sdPathDr, getImageName(month, id));
-            if (image.exists()) res = image.toString();
+            if (image.exists()) {
+                res = image.toString();
+            }
             return res;
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public boolean isImage(int month, long id){
@@ -72,9 +76,13 @@ public final class ImageCheck {
                 sdPathDr.mkdirs();
             }
             File image = new File(sdPathDr, getImageName(month, id));
-            if (image.exists()) res = true;
+            if (image.exists()) {
+                res = true;
+            }
             return res;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 
     public String getImageUrl(int month, long id){

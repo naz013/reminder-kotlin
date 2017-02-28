@@ -26,19 +26,10 @@ public class TasksConstants {
     public static final String DELETE_TASK = "delete_task";
     public static final String MOVE_TASK = "move_task";
 
-    //task constants code
-    public static final int UPDATE_LIST = 102;
-    public static final int UPDATE = 103;
-    public static final int MOVE = 110;
-    public static final int INSERT_LIST = 104;
-    public static final int INSERT = 105;
-    public static final int DELETE_LIST = 106;
-    public static final int CLEAR_LIST = 109;
-    public static final int DELETE = 107;
-    public static final int UPDATE_STATUS = 108;
-
     //action types
     public static final String INTENT_ACTION = "action";
     public static final String EDIT = "edit";
     public static final String CREATE = "create";
+
+    private TasksConstants() {}
 }

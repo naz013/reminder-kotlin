@@ -89,8 +89,11 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(aVoid);
         UpdatesHelper.getInstance(mContext).updateTasksWidget();
         if (mListener != null) {
-            if (aVoid) mListener.onComplete();
-            else mListener.onFailed();
+            if (aVoid) {
+                mListener.onComplete();
+            } else {
+                mListener.onFailed();
+            }
         }
     }
 }

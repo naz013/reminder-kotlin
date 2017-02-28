@@ -29,7 +29,7 @@ import java.util.TimeZone;
  * limitations under the License.
  */
 
-public class TimeUtil {
+public final class TimeUtil {
 
     public static final String GMT = "GMT";
 
@@ -48,7 +48,7 @@ public class TimeUtil {
 
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
 
-    public TimeUtil(){}
+    private TimeUtil(){}
 
     public static String getBirthdayTime(int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
@@ -115,7 +115,9 @@ public class TimeUtil {
     }
 
     public static long getDateTimeFromGmt(String dateTime){
-        if (TextUtils.isEmpty(dateTime)) return 0;
+        if (TextUtils.isEmpty(dateTime)) {
+            return 0;
+        }
         Calendar calendar = Calendar.getInstance();
         try {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
@@ -133,20 +135,27 @@ public class TimeUtil {
         if (isLog) {
             return TIME_STAMP_FORMAT.format(calendar.getTime());
         } else {
-            if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
-            else return FULL_DATE_TIME_12.format(calendar.getTime());
+            if (is24) {
+                return FULL_DATE_TIME_24.format(calendar.getTime());
+            } else {
+                return FULL_DATE_TIME_12.format(calendar.getTime());
+            }
         }
     }
 
     public static String getFullDateTime(String date) {
-        if (TextUtils.isEmpty(date)) return "No event time";
+        if (TextUtils.isEmpty(date)) {
+            return "No event time";
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(getDateTimeFromGmt(date));
         return TIME_STAMP_FORMAT.format(calendar.getTime());
     }
 
     public static String getRealDateTime(String gmt, int delay, boolean is24) {
-        if (TextUtils.isEmpty(gmt)) return "";
+        if (TextUtils.isEmpty(gmt)) {
+            return "";
+        }
         Calendar calendar = Calendar.getInstance();
         try {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
@@ -156,8 +165,11 @@ public class TimeUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
-        else return FULL_DATE_TIME_12.format(calendar.getTime());
+        if (is24) {
+            return FULL_DATE_TIME_24.format(calendar.getTime());
+        } else {
+            return FULL_DATE_TIME_12.format(calendar.getTime());
+        }
     }
 
     public static String getDateTimeFromGmt(String dateTime, boolean is24){
@@ -169,8 +181,11 @@ public class TimeUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (is24) return FULL_DATE_TIME_24.format(calendar.getTime());
-        else return FULL_DATE_TIME_12.format(calendar.getTime());
+        if (is24) {
+            return FULL_DATE_TIME_24.format(calendar.getTime());
+        } else {
+            return FULL_DATE_TIME_12.format(calendar.getTime());
+        }
     }
 
     public static String getSimpleDate(String gmtDate) {
@@ -192,8 +207,11 @@ public class TimeUtil {
     public static String getSimpleDateTime(long date, boolean is24){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
-        if (is24) return SIMPLE_DATE_TIME.format(calendar.getTime());
-        else return SIMPLE_DATE_TIME_12.format(calendar.getTime());
+        if (is24) {
+            return SIMPLE_DATE_TIME.format(calendar.getTime());
+        } else {
+            return SIMPLE_DATE_TIME_12.format(calendar.getTime());
+        }
     }
 
     public static String getDate(Date date){
@@ -223,7 +241,9 @@ public class TimeUtil {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        if (date != null) calendar.setTime(date);
+        if (date != null) {
+            calendar.setTime(date);
+        }
         int yearOfBirth = calendar.get(Calendar.YEAR);
         Calendar calendar1 = Calendar.getInstance();
         calendar1.getTimeInMillis();
@@ -232,13 +252,19 @@ public class TimeUtil {
     }
 
     public static String getDateTime(Date date, boolean is24){
-        if (is24) return FORMAT_24.format(date);
-        else return FORMAT_12.format(date);
+        if (is24) {
+            return FORMAT_24.format(date);
+        } else {
+            return FORMAT_12.format(date);
+        }
     }
 
     public static String getTime(Date date, boolean is24){
-        if (is24) return TIME_24.format(date);
-        else return TIME_12.format(date);
+        if (is24) {
+            return TIME_24.format(date);
+        } else {
+            return TIME_12.format(date);
+        }
     }
 
     public static int getAge(int year){
@@ -268,14 +294,23 @@ public class TimeUtil {
         long minutes = ((time - hours * h) / (m));
         long seconds = ((time - (hours * h) - (minutes * m)) / (s));
         String hourStr;
-        if (hours < 10) hourStr = "0" + hours;
-        else hourStr = String.valueOf(hours);
+        if (hours < 10) {
+            hourStr = "0" + hours;
+        } else {
+            hourStr = String.valueOf(hours);
+        }
         String minuteStr;
-        if (minutes < 10) minuteStr = "0" + minutes;
-        else minuteStr = String.valueOf(minutes);
+        if (minutes < 10) {
+            minuteStr = "0" + minutes;
+        } else {
+            minuteStr = String.valueOf(minutes);
+        }
         String secondStr;
-        if (seconds < 10) secondStr = "0" + seconds;
-        else secondStr = String.valueOf(seconds);
+        if (seconds < 10) {
+            secondStr = "0" + seconds;
+        } else {
+            secondStr = String.valueOf(seconds);
+        }
         return hourStr + minuteStr + secondStr;
     }
 
