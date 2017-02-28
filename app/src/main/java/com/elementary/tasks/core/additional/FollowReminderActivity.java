@@ -22,8 +22,12 @@ import android.widget.TimePicker;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.controller.EventControl;
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
@@ -59,22 +63,35 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private RoboEditText mMessageField;
     private RoboTextView mCustomDateView;
     private RoboTextView mCustomTimeView;
-    private RoboRadioButton mMessageRadio, mCallRadio, mTomorrowRadio, mNextWorkingRadio, mAfterRadio, mCustomRadio;
+    private RoboRadioButton mMessageRadio;
+    private RoboRadioButton mCallRadio;
+    private RoboRadioButton mTomorrowRadio;
+    private RoboRadioButton mNextWorkingRadio;
+    private RoboRadioButton mAfterRadio;
+    private RoboRadioButton mCustomRadio;
     private Spinner mAfterSpinner;
     private RoboCheckBox mTasksCheck;
     private RoboCheckBox mCalendarCheck;
 
-    private int mHour = 0, mCustomHour = 0;
-    private int mMinute = 0, mCustomMinute = 0;
-    private int mYear = 0, mCustomYear = 0;
-    private int mMonth = 0, mCustomMonth = 0;
-    private int mDay = 1, mCustomDay = 1;
-    private long mTomorrowTime, mNextWorkTime, mCurrentTime;
+    private int mHour = 0;
+    private int mCustomHour = 0;
+    private int mMinute = 0;
+    private int mCustomMinute = 0;
+    private int mYear = 0;
+    private int mCustomYear = 0;
+    private int mMonth = 0;
+    private int mCustomMonth = 0;
+    private int mDay = 1;
+    private int mCustomDay = 1;
+    private long mTomorrowTime;
+    private long mNextWorkTime;
+    private long mCurrentTime;
 
     private boolean mIs24Hour = true;
     private boolean mCalendar = true;
     private boolean mStock = true;
     private boolean mTasks = true;
+    private String mNumber;
 
     private Google mGoogleTasks = Google.getInstance(this);
 
@@ -83,7 +100,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
         long receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0);
-        String mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
+        mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
         String name = Contacts.getNameFromNumber(mNumber, FollowReminderActivity.this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_follow_layout);
         initActionBar();
@@ -108,7 +125,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         initSpinner();
         initCustomTime();
         initTomorrowTime();
-        initNextBussinessTime();
+        initNextBusinessTime();
     }
 
     private void initViews() {
@@ -130,7 +147,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         mTomorrowRadio.setChecked(true);
     }
 
-    private void initNextBussinessTime() {
+    private void initNextBusinessTime() {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(mCurrentTime);
         int currDay = c.get(Calendar.DAY_OF_WEEK);
@@ -293,35 +310,23 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         }
         int type = getType();
         setUpTimes();
-//        String categoryId = GroupHelper.getInstance(this).getDefaultUuId();
-//        long due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0);
-//        JAction jAction = new JAction(type, mNumber, -1, null, null);
-//
-//        int isTasks = -1;
-//        if (mTasksCheck.getVisibility() == View.VISIBLE) {
-//            if (mTasksCheck.isChecked()) isTasks = 1;
-//            else isTasks = 0;
-//        }
-//
-//        int isCalendar = -1;
-//        if (mCalendarCheck.getVisibility() == View.VISIBLE) {
-//            if (mCalendarCheck.isChecked()) isCalendar = 1;
-//            else isCalendar = 0;
-//        }
-//
-//        JExport jExport = new JExport(isTasks, isCalendar, null);
-//        JsonModel jsonModel = new JsonModel(text, type, categoryId,
-//                SyncHelper.generateID(), due, due, null, jAction, jExport);
-//        long remId = new DateType(FollowReminderActivity.this, Constants.TYPE_REMINDER).save(new ReminderItem(jsonModel));
-//
-//        if (isCalendar == 1) {
-//            ReminderUtils.exportToCalendar(this, text.matches("") ? mNumber : text, due,
-//                    remId, mCalendar, mStock);
-//        }
-//        if (mTasks && isTasks == 1){
-//            ReminderUtils.exportToTasks(this, text, due, remId);
-//        }
-
+        String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+        long due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0);
+        Reminder reminder = new Reminder();
+        reminder.setGroupUuId(categoryId);
+        reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
+        reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
+        reminder.setType(type);
+        reminder.setSummary(text);
+        reminder.setTarget(mNumber);
+        if (mTasksCheck.getVisibility() == View.VISIBLE) {
+            reminder.setExportToTasks(mTasksCheck.isChecked());
+        }
+        if (mCalendarCheck.getVisibility() == View.VISIBLE) {
+            reminder.setExportToCalendar(mCalendarCheck.isChecked());
+        }
+        EventControl control = EventControlFactory.getController(this, reminder);
+        control.start();
         removeFlags();
         finish();
     }
