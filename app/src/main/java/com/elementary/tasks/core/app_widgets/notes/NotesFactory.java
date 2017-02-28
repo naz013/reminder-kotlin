@@ -76,8 +76,12 @@ public class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
             if (photo != null){
                 rView.setImageViewBitmap(R.id.noteImage, photo);
                 rView.setViewVisibility(R.id.noteImage, View.VISIBLE);
-            } else rView.setViewVisibility(R.id.noteImage, View.GONE);
-        } else rView.setViewVisibility(R.id.noteImage, View.GONE);
+            } else {
+                rView.setViewVisibility(R.id.noteImage, View.GONE);
+            }
+        } else {
+            rView.setViewVisibility(R.id.noteImage, View.GONE);
+        }
         rView.setTextViewText(R.id.note, note.getSummary());
         Intent fillInIntent = new Intent();
         fillInIntent.putExtra(Constants.INTENT_ID, note.getKey());

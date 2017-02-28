@@ -188,7 +188,9 @@ public class MonthView extends View implements View.OnTouchListener {
         long start = System.currentTimeMillis();
         this.mWidth = getWidth();
         this.mHeight = getHeight();
-        if (mCells == null) initCells();
+        if (mCells == null) {
+            initCells();
+        }
         for (int i = 0; i < ROWS * COLS; i++) {
             Rect rect = mCells.get(i);
             int color = mDefaultColor;

@@ -25,27 +25,50 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class ReminderUtils {
+public final class ReminderUtils {
 
     public static final String DAY_CHECK = "1";
     public static final int DAY_CHECKED = 1;
 
+    private ReminderUtils() {}
+
     public static List<Integer> getRepeatArray(String weekdays){
         List<Integer> res = new ArrayList<>();
-        if (Character.toString(weekdays.charAt(6)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(0)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(1)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(2)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(3)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(4)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
-        if (Character.toString(weekdays.charAt(5)).matches(DAY_CHECK)) res.add(1);
-        else res.add(0);
+        if (Character.toString(weekdays.charAt(6)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(0)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(1)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(2)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(3)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(4)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
+        if (Character.toString(weekdays.charAt(5)).matches(DAY_CHECK)) {
+            res.add(1);
+        } else {
+            res.add(0);
+        }
         return res;
     }
 
@@ -90,10 +113,11 @@ public class ReminderUtils {
             sb.append(" ");
             sb.append(context.getString(R.string.sun));
         }
-
         if (isAllChecked(repCode)){
             return context.getString(R.string.everyday);
-        } else return sb.toString();
+        } else {
+            return sb.toString();
+        }
     }
 
     public static boolean isAllChecked(List<Integer> repCode) {

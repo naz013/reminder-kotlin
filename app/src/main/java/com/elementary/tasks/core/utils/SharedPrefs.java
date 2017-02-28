@@ -86,8 +86,9 @@ abstract class SharedPrefs extends PrefsConstants {
     Object getObject(String key, Class<?> classOfT) {
         String json = getString(key);
         Object value = new Gson().fromJson(json, classOfT);
-        if (value == null)
+        if (value == null) {
             return new Object();
+        }
         return value;
     }
 
@@ -138,12 +139,16 @@ abstract class SharedPrefs extends PrefsConstants {
         File dir = MemoryUtil.getPrefsDir();
         if (dir != null) {
             File prefsFile = new File(dir + "/" + FileConfig.FILE_NAME_SETTINGS);
-            if (prefsFile.exists()) prefsFile.delete();
+            if (prefsFile.exists()) {
+                prefsFile.delete();
+            }
             ObjectOutputStream output = null;
             try {
                 output = new ObjectOutputStream(new FileOutputStream(prefsFile));
                 Map<String, ?> list = prefs.getAll();
-                if (list.containsKey(DRIVE_USER)) list.remove(DRIVE_USER);
+                if (list.containsKey(DRIVE_USER)) {
+                    list.remove(DRIVE_USER);
+                }
                 output.writeObject(list);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -162,7 +167,9 @@ abstract class SharedPrefs extends PrefsConstants {
 
     public void loadPrefsFromFile(){
         File dir = MemoryUtil.getPrefsDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         File prefsFile = new File(dir + "/" + FileConfig.FILE_NAME_SETTINGS);
         if (prefsFile.exists()) {
             ObjectInputStream input = null;
@@ -174,16 +181,17 @@ abstract class SharedPrefs extends PrefsConstants {
                 for (Map.Entry<String, ?> entry : entries.entrySet()) {
                     Object v = entry.getValue();
                     String key = entry.getKey();
-                    if (v instanceof Boolean)
+                    if (v instanceof Boolean) {
                         prefEdit.putBoolean(key, (Boolean) v);
-                    else if (v instanceof Float)
+                    } else if (v instanceof Float) {
                         prefEdit.putFloat(key, (Float) v);
-                    else if (v instanceof Integer)
+                    } else if (v instanceof Integer) {
                         prefEdit.putInt(key, (Integer) v);
-                    else if (v instanceof Long)
+                    } else if (v instanceof Long) {
                         prefEdit.putLong(key, (Long) v);
-                    else if (v instanceof String)
+                    } else if (v instanceof String) {
                         prefEdit.putString(key, ((String) v));
+                    }
                 }
                 prefEdit.apply();
             } catch (ClassNotFoundException | IOException e) {

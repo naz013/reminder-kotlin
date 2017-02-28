@@ -53,7 +53,9 @@ public final class BackupTool {
     public static BackupTool getInstance() {
         if (instance == null) {
             synchronized (BackupTool.class) {
-                if (instance == null) instance = new BackupTool();
+                if (instance == null) {
+                    instance = new BackupTool();
+                }
             }
         }
         return instance;
@@ -91,7 +93,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException {
@@ -106,7 +110,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(json, TemplateItem.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void exportPlaces() {
@@ -141,7 +147,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException {
@@ -156,7 +164,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(json, PlaceItem.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void exportBirthdays() {
@@ -191,7 +201,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException {
@@ -206,7 +218,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(json, BirthdayItem.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void exportGroups() {
@@ -228,7 +242,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public void importGroups() throws IOException {
@@ -258,7 +274,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(json, GroupItem.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void exportReminders() {
@@ -276,7 +294,9 @@ public final class BackupTool {
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);
-                        if (reminder.isRemoved() || !reminder.isActive()) continue;
+                        if (reminder.isRemoved() || !reminder.isActive()) {
+                            continue;
+                        }
                         realmDb.saveObject(reminder);
                         EventControl control = EventControlFactory.getController(mContext, reminder);
                         control.next();
@@ -297,7 +317,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public Reminder getReminder(ContentResolver cr, Uri name) throws IOException {
@@ -312,7 +334,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(json, Reminder.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public NoteItem getNote(ContentResolver cr, Uri name) throws IOException {
@@ -327,7 +351,9 @@ public final class BackupTool {
         } else if (json != null) {
             WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(json, NoteItem.class));
             return item.get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void exportNotes() {
@@ -362,7 +388,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
     }
 
     public File createNote(NoteItem item) {
@@ -378,7 +406,9 @@ public final class BackupTool {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else LogUtil.i(TAG, "Couldn't find external storage!");
+        } else {
+            LogUtil.i(TAG, "Couldn't find external storage!");
+        }
         return file;
     }
 
@@ -389,7 +419,9 @@ public final class BackupTool {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (is == null) return null;
+        if (is == null) {
+            return null;
+        }
         BufferedReader r = new BufferedReader(new InputStreamReader(is));
         StringBuilder total = new StringBuilder();
         String line;

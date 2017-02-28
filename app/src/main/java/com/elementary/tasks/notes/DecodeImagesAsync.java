@@ -83,7 +83,9 @@ public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteIma
     }
 
     private void addImageFromUri(List<NoteImage> images, Uri uri) {
-        if (uri == null) return;
+        if (uri == null) {
+            return;
+        }
         Bitmap bitmapImage = null;
         try {
             bitmapImage = BitmapUtils.decodeUriToBitmap(mContext, uri);
@@ -100,8 +102,12 @@ public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteIma
     @Override
     protected void onPostExecute(List<NoteImage> noteImages) {
         super.onPostExecute(noteImages);
-        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
-        if (mCallback != null) mCallback.onDecode(noteImages);
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+        if (mCallback != null) {
+            mCallback.onDecode(noteImages);
+        }
     }
 
     public interface DecodeListener {

@@ -191,8 +191,11 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         int realYear = calendar.get(Calendar.YEAR);
 
         rView.setTextViewText(R.id.textView, String.valueOf(selDay));
-        if (selMonth == prefsMonth + 1) rView.setTextColor(R.id.textView, itemTextColor);
-        else rView.setTextColor(R.id.textView, mContext.getResources().getColor(R.color.material_grey));
+        if (selMonth == prefsMonth + 1) {
+            rView.setTextColor(R.id.textView, itemTextColor);
+        } else {
+            rView.setTextColor(R.id.textView, mContext.getResources().getColor(R.color.material_grey));
+        }
         rView.setInt(R.id.background, "setBackgroundResource", rowColor);
 
         rView.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT);
@@ -212,7 +215,9 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
                             rView.setInt(R.id.reminderMark, "setBackgroundColor",
                                     mContext.getResources().getColor(cs.colorReminderCalendar()));
                         }
-                    } else rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT);
+                    } else {
+                        rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT);
+                    }
                     if (item.isHasBirthdays()){
                         if (birthdayM != 0){
                             rView.setInt(R.id.birthdayMark, "setBackgroundResource", birthdayM);
@@ -220,7 +225,9 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
                             rView.setInt(R.id.birthdayMark, "setBackgroundColor",
                                     mContext.getResources().getColor(cs.colorBirthdayCalendar()));
                         }
-                    } else rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT);
+                    } else {
+                        rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT);
+                    }
                     break;
                 }
             }

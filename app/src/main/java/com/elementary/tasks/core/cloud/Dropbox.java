@@ -53,9 +53,9 @@ public class Dropbox {
     private static final String TAG = "Dropbox";
     private static final String APP_KEY = "4zi1d414h0v8sxe";
     private static final String APP_SECRET = "aopehxo80oq8g5o";
-    final static private String ACCOUNT_PREFS_NAME = "prefs";
-    final static private String ACCESS_KEY_NAME = "ACCESS_KEY";
-    final static private String ACCESS_SECRET_NAME = "ACCESS_SECRET";
+    private static final String ACCOUNT_PREFS_NAME = "prefs";
+    private static final String ACCESS_KEY_NAME = "ACCESS_KEY";
+    private static final String ACCESS_SECRET_NAME = "ACCESS_SECRET";
 
     private Context mContext;
 
@@ -187,7 +187,9 @@ public class Dropbox {
         SharedPreferences prefs = mContext.getSharedPreferences(ACCOUNT_PREFS_NAME, 0);
         String key = prefs.getString(ACCESS_KEY_NAME, null);
         String secret = prefs.getString(ACCESS_SECRET_NAME, null);
-        if (key == null || secret == null || key.length() == 0 || secret.length() == 0) return;
+        if (key == null || secret == null || key.length() == 0 || secret.length() == 0) {
+            return;
+        }
         if (key.equals("oauth2:")) {
             session.setOAuth2AccessToken(secret);
         } else {
@@ -242,12 +244,16 @@ public class Dropbox {
      */
     private void upload(String path) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         File sdPath = Environment.getExternalStorageDirectory();
         File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + path);
         File[] files = sdPathDr.listFiles();
         String fileLoc = sdPathDr.toString();
-        if (files == null) return;
+        if (files == null) {
+            return;
+        }
         for (File file : files) {
             String fileLoopName = file.getName();
             File tmpFile = new File(fileLoc, fileLoopName);
@@ -258,12 +264,19 @@ public class Dropbox {
                 e.printStackTrace();
             }
             String folder;
-            if (path.matches(MemoryUtil.DIR_NOTES_SD)) folder = dbxNoteFolder;
-            else if (path.matches(MemoryUtil.DIR_GROUP_SD)) folder = dbxGroupFolder;
-            else if (path.matches(MemoryUtil.DIR_BIRTHDAY_SD)) folder = dbxBirthFolder;
-            else if (path.matches(MemoryUtil.DIR_PLACES_SD)) folder = dbxPlacesFolder;
-            else if (path.matches(MemoryUtil.DIR_TEMPLATES_SD)) folder = dbxTemplatesFolder;
-            else folder = dbxFolder;
+            if (path.matches(MemoryUtil.DIR_NOTES_SD)) {
+                folder = dbxNoteFolder;
+            } else if (path.matches(MemoryUtil.DIR_GROUP_SD)) {
+                folder = dbxGroupFolder;
+            } else if (path.matches(MemoryUtil.DIR_BIRTHDAY_SD)) {
+                folder = dbxBirthFolder;
+            } else if (path.matches(MemoryUtil.DIR_PLACES_SD)) {
+                folder = dbxPlacesFolder;
+            } else if (path.matches(MemoryUtil.DIR_TEMPLATES_SD)) {
+                folder = dbxTemplatesFolder;
+            } else {
+                folder = dbxFolder;
+            }
             try {
                 newEntry = mDBApi.putFileOverwrite(folder + fileLoopName, fis, tmpFile.length(), null);
             } catch (DropboxUnlinkedException e) {
@@ -281,9 +294,13 @@ public class Dropbox {
      */
     public void uploadReminder(final String fileName) {
         File dir = MemoryUtil.getRemindersDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         if (fileName != null) {
             File tmpFile = new File(dir.toString(), fileName);
             FileInputStream fis = null;
@@ -364,7 +381,9 @@ public class Dropbox {
      */
     public void deleteReminder(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxFolder + name);
         } catch (DropboxException e) {
@@ -379,7 +398,9 @@ public class Dropbox {
      */
     public void deleteNote(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxNoteFolder + name);
         } catch (DropboxException e) {
@@ -395,7 +416,9 @@ public class Dropbox {
     public void deleteGroup(String name) {
         LogUtil.d(TAG, "deleteGroup: " + name);
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxGroupFolder + name);
         } catch (DropboxException e) {
@@ -410,7 +433,9 @@ public class Dropbox {
      */
     public void deleteBirthday(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxBirthFolder + name);
         } catch (DropboxException e) {
@@ -425,7 +450,9 @@ public class Dropbox {
      */
     public void deletePlace(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxPlacesFolder + name);
         } catch (DropboxException e) {
@@ -440,7 +467,9 @@ public class Dropbox {
      */
     public void deleteTemplate(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxTemplatesFolder + name);
         } catch (DropboxException e) {
@@ -455,7 +484,9 @@ public class Dropbox {
      */
     public void deleteSettings(String name) {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             mDBApi.delete(dbxSettingsFolder + name);
         } catch (DropboxException e) {
@@ -468,7 +499,9 @@ public class Dropbox {
      */
     public void cleanFolder() {
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         deleteFolder(dbxNoteFolder);
         deleteFolder(dbxGroupFolder);
         deleteFolder(dbxBirthFolder);
@@ -491,12 +524,18 @@ public class Dropbox {
      */
     public void downloadTemplates(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxTemplatesDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxTemplatesFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -524,12 +563,18 @@ public class Dropbox {
      */
     public void downloadReminders(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxRemindersDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -539,7 +584,9 @@ public class Dropbox {
                     String cloudFile = "/" + dbxFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     Reminder reminder = backupTool.getReminder(localFile.toString(), null);
-                    if (reminder.isRemoved() || !reminder.isActive()) continue;
+                    if (reminder.isRemoved() || !reminder.isActive()) {
+                        continue;
+                    }
                     realmDb.saveObject(reminder);
                     EventControl control = EventControlFactory.getController(mContext, reminder);
                     control.next();
@@ -573,12 +620,18 @@ public class Dropbox {
      */
     public void downloadNotes(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxNotesDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxNoteFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -607,12 +660,18 @@ public class Dropbox {
      */
     public void downloadGroups(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxGroupsDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxGroupFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -640,12 +699,18 @@ public class Dropbox {
      */
     public void downloadBirthdays(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxBirthdaysDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxBirthFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -673,12 +738,18 @@ public class Dropbox {
      */
     public void downloadPlaces(boolean deleteFile) {
         File dir = MemoryUtil.getDropboxPlacesDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxPlacesFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             for (DropboxAPI.Entry e : newEntry.contents) {
@@ -703,13 +774,21 @@ public class Dropbox {
 
     public void uploadSettings() {
         File dir = MemoryUtil.getPrefsDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         File[] files = dir.listFiles();
-        if (files == null) return;
+        if (files == null) {
+            return;
+        }
         for (File file : files) {
-            if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue;
+            if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) {
+                continue;
+            }
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(file);
@@ -729,12 +808,18 @@ public class Dropbox {
 
     public void downloadSettings() {
         File dir = MemoryUtil.getPrefsDir();
-        if (dir == null) return;
+        if (dir == null) {
+            return;
+        }
         startSession();
-        if (!isLinked()) return;
+        if (!isLinked()) {
+            return;
+        }
         try {
             newEntry = mDBApi.metadata("/" + dbxSettingsFolder, 1000, null, true, null);
-            if (newEntry == null) return;
+            if (newEntry == null) {
+                return;
+            }
             for (DropboxAPI.Entry e : newEntry.contents) {
                 if (!e.isDeleted) {
                     String fileName = e.fileName();
@@ -760,15 +845,21 @@ public class Dropbox {
     public int countFiles() {
         int count = 0;
         startSession();
-        if (!isLinked()) return 0;
+        if (!isLinked()) {
+            return 0;
+        }
         try {
             newEntry = mDBApi.metadata("/", 1000, null, true, null);
-            if (newEntry == null) return 0;
+            if (newEntry == null) {
+                return 0;
+            }
             for (DropboxAPI.Entry e : newEntry.contents) {
                 if (!e.isDeleted) {
                     if (e.isDir) {
                         DropboxAPI.Entry entry = mDBApi.metadata(e.path, 1000, null, true, null);
-                        if (entry == null) continue;
+                        if (entry == null) {
+                            continue;
+                        }
                         List<DropboxAPI.Entry> list = entry.contents;
                         if (list != null) {
                             count += list.size();

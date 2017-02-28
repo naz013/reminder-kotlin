@@ -72,7 +72,9 @@ public class WidgetDataProvider {
     public boolean hasReminder(int day, int month, int year){
         boolean res = false;
         for (Item item : data){
-            if (res) break;
+            if (res) {
+                break;
+            }
             int mDay = item.getDay();
             int mMonth = item.getMonth();
             int mYear = item.getYear();
@@ -126,7 +128,9 @@ public class WidgetDataProvider {
                     if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         List<Integer> list = item.getWeekdays();
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
@@ -142,7 +146,9 @@ public class WidgetDataProvider {
                     } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         do {
                             item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                             eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item);
@@ -154,10 +160,14 @@ public class WidgetDataProvider {
                             data.add(new Item(sDay, sMonth, sYear, WidgetType.REMINDER));
                         } while (days < max);
                     } else {
-                        if (repeatTime == 0) continue;
+                        if (repeatTime == 0) {
+                            continue;
+                        }
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
-                        if (isLimited) max = limit - count;
+                        if (isLimited) {
+                            max = limit - count;
+                        }
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() + repeatTime);
                             mDay = calendar1.get(Calendar.DAY_OF_MONTH);

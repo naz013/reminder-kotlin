@@ -44,8 +44,11 @@ class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (isConnected && helper != null) {
             try {
-                if (status) helper.getTasks().updateTaskStatus(Google.TASKS_COMPLETE, listId, taskId);
-                else helper.getTasks().updateTaskStatus(Google.TASKS_NEED_ACTION, listId, taskId);
+                if (status) {
+                    helper.getTasks().updateTaskStatus(Google.TASKS_COMPLETE, listId, taskId);
+                } else {
+                    helper.getTasks().updateTaskStatus(Google.TASKS_NEED_ACTION, listId, taskId);
+                }
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

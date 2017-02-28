@@ -80,7 +80,9 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (showDialog) pd.show();
+        if (showDialog) {
+            pd.show();
+        }
     }
 
     @Override
@@ -90,7 +92,9 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
                 ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-        if (cur == null) return 0;
+        if (cur == null) {
+            return 0;
+        }
         while (cur.moveToNext()) {
             String contactId = cur.getString(cur.getColumnIndex(ContactsContract.Data._ID));
             String columns[] = {
@@ -159,7 +163,9 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
                         Toast.LENGTH_SHORT).show();
             }
         }
-        if (mCallback != null) mCallback.onFinish();
+        if (mCallback != null) {
+            mCallback.onFinish();
+        }
     }
 
     public interface TaskCallback {

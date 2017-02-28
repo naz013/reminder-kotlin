@@ -31,11 +31,11 @@ import java.util.Locale;
 public final class TimeCount {
 
     private static final String TAG = "TimeCount";
-    public final static long SECOND = 1000;
-    public final static long MINUTE = 60 * SECOND;
-    public final static long HOUR = MINUTE * 60;
-    public final static long HALF_DAY = HOUR * 12;
-    public final static long DAY = HALF_DAY * 2;
+    public static final long SECOND = 1000;
+    public static final long MINUTE = 60 * SECOND;
+    public static final long HOUR = MINUTE * 60;
+    public static final long HALF_DAY = HOUR * 12;
+    public static final long DAY = HALF_DAY * 2;
 
     private Context mContext;
     private static TimeCount instance;
@@ -143,10 +143,11 @@ public final class TimeCount {
                     result.append(String.format(mContext.getString(R.string.x_days), String.valueOf(days)));
                 }
             } else {
-                if (days < 2)
+                if (days < 2) {
                     result.append(String.format(mContext.getString(R.string.x_day), String.valueOf(days)));
-                else
+                } else {
                     result.append(String.format(mContext.getString(R.string.x_days), String.valueOf(days)));
+                }
             }
         } else if (difference > HOUR) {
             hours = (days * 24) + hours;
@@ -163,10 +164,11 @@ public final class TimeCount {
                     result.append(String.format(mContext.getString(R.string.x_hours), String.valueOf(hours)));
                 }
             } else {
-                if (hours < 2)
+                if (hours < 2) {
                     result.append(String.format(mContext.getString(R.string.x_hour), String.valueOf(hours)));
-                else
+                } else {
                     result.append(String.format(mContext.getString(R.string.x_hours), String.valueOf(hours)));
+                }
             }
         } else if (difference > MINUTE) {
             minutes = (hours * 60) + minutes;
@@ -183,10 +185,11 @@ public final class TimeCount {
                     result.append(String.format(mContext.getString(R.string.x_minutes), String.valueOf(minutes)));
                 }
             } else {
-                if (hours < 2)
+                if (hours < 2) {
                     result.append(String.format(mContext.getString(R.string.x_minute), String.valueOf(minutes)));
-                else
+                } else {
                     result.append(String.format(mContext.getString(R.string.x_minutes), String.valueOf(minutes)));
+                }
             }
         } else if (difference > 0) {
             result.append(mContext.getString(R.string.less_than_minute));
@@ -196,7 +199,7 @@ public final class TimeCount {
         return result.toString();
     }
 
-    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay){
+    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(startTime);
         cc.set(Calendar.SECOND, 0);
@@ -217,11 +220,13 @@ public final class TimeCount {
 
     public long getNextWeekdayTime(Reminder reminder) {
         List<Integer> weekdays = reminder.getWeekdays();
-        if (weekdays == null) return 0;
+        if (weekdays == null) {
+            return 0;
+        }
         Calendar cc = Calendar.getInstance();
         if (reminder.getEventTime() != null) {
             cc.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
-        } else
+        }
         cc.set(Calendar.SECOND, 0);
         cc.set(Calendar.MILLISECOND, 0);
         while (true) {
@@ -277,7 +282,7 @@ public final class TimeCount {
         return cc.getTimeInMillis();
     }
 
-    public String[] getNextDateTime(long timeLong){
+    public String[] getNextDateTime(long timeLong) {
         String date;
         String time;
         if (timeLong == 0) {

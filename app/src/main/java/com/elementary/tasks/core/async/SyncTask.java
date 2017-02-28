@@ -121,7 +121,9 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
             if (Module.isPro()) {
                 builder.setContentText(mContext.getString(R.string.app_name_pro));
-            } else builder.setContentText(mContext.getString(R.string.app_name));
+            } else {
+                builder.setContentText(mContext.getString(R.string.app_name));
+            }
             builder.setWhen(System.currentTimeMillis());
             mNotifyMgr.notify(2, builder.build());
             if (mListener != null && mContext != null) {

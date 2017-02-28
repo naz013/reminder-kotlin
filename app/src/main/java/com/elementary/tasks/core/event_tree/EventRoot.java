@@ -73,7 +73,9 @@ public class EventRoot implements YearInterface, RootInterface {
 
     @Override
     public List<Object> getNodes(int... params) {
-        if (params.length == 0) return getAll();
+        if (params.length == 0) {
+            return getAll();
+        }
         int y = params[0];
         if (y == -1) {
             return getAll();
@@ -112,7 +114,9 @@ public class EventRoot implements YearInterface, RootInterface {
     @Override
     public void remove(Object o) {
         EventInterface eventInterface = (EventInterface) o;
-        if (eventInterface.getUuId() == null) return;
+        if (eventInterface.getUuId() == null) {
+            return;
+        }
         if (map.containsKey(eventInterface.getUuId())) {
             int position = map.get(eventInterface.getUuId());
             Node node = keys.get(position);

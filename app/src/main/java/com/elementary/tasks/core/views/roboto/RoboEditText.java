@@ -45,7 +45,9 @@ public class RoboEditText extends AppCompatEditText {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboEditText);
             int fontCode = a.getInt(R.styleable.RoboEditText_edit_font_style, -1);

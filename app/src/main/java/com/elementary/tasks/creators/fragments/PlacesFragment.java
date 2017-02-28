@@ -76,13 +76,17 @@ public class PlacesFragment extends RadiusTypeFragment {
 
     @Override
     protected void recreateMarker() {
-        if (placesMap != null) placesMap.recreateMarker(radius);
+        if (placesMap != null) {
+            placesMap.recreateMarker(radius);
+        }
     }
 
     @Override
     public boolean save() {
         super.save();
-        if (getInterface() == null) return false;
+        if (getInterface() == null) {
+            return false;
+        }
         Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_PLACES;
         if (TextUtils.isEmpty(getInterface().getSummary())) {

@@ -62,15 +62,25 @@ public class Language {
 
     public static int getLocalePosition(String locale) {
         int mItemSelect = 0;
-        if (locale.matches(Language.ENGLISH)) mItemSelect = 0;
-        else if (locale.matches(Language.FRENCH)) mItemSelect = 1;
-        else if (locale.matches(Language.GERMAN)) mItemSelect = 2;
-        else if (locale.matches(Language.ITALIAN)) mItemSelect = 3;
-        else if (locale.matches(Language.JAPANESE)) mItemSelect = 4;
-        else if (locale.matches(Language.KOREAN)) mItemSelect = 5;
-        else if (locale.matches(Language.POLISH)) mItemSelect = 6;
-        else if (locale.matches(Language.RUSSIAN)) mItemSelect = 7;
-        else if (locale.matches(Language.SPANISH)) mItemSelect = 8;
+        if (locale.matches(Language.ENGLISH)) {
+            mItemSelect = 0;
+        } else if (locale.matches(Language.FRENCH)) {
+            mItemSelect = 1;
+        } else if (locale.matches(Language.GERMAN)) {
+            mItemSelect = 2;
+        } else if (locale.matches(Language.ITALIAN)) {
+            mItemSelect = 3;
+        } else if (locale.matches(Language.JAPANESE)) {
+            mItemSelect = 4;
+        } else if (locale.matches(Language.KOREAN)) {
+            mItemSelect = 5;
+        } else if (locale.matches(Language.POLISH)) {
+            mItemSelect = 6;
+        } else if (locale.matches(Language.RUSSIAN)) {
+            mItemSelect = 7;
+        } else if (locale.matches(Language.SPANISH)) {
+            mItemSelect = 8;
+        }
         return mItemSelect;
     }
 
@@ -97,8 +107,11 @@ public class Language {
     public Locale getLocale(Context context, boolean birth){
         Locale res = null;
         String locale;
-        if (birth) locale = Prefs.getInstance(context).getBirthdayTtsLocale();
-        else locale = Prefs.getInstance(context).getTtsLocale();
+        if (birth) {
+            locale = Prefs.getInstance(context).getBirthdayTtsLocale();
+        } else {
+            locale = Prefs.getInstance(context).getTtsLocale();
+        }
         switch (locale){
             case ENGLISH:
                 res = Locale.ENGLISH;

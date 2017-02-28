@@ -110,7 +110,9 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
             notifyItemRemoved(position);
             notifyItemRangeChanged(0, usedData.size());
             int index = originalData.indexOf(v);
-            if (index != -1) originalData.remove(index);
+            if (index != -1) {
+                originalData.remove(index);
+            }
             return v;
         }
         return null;
@@ -122,7 +124,9 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
     }
 
     private List<V> getFiltered(Q query) {
-        if (query == null) return originalData;
+        if (query == null) {
+            return originalData;
+        }
         List<V> list = new ArrayList<>();
         for (V model : originalData) {
             if (filter.filter(model, query)) {

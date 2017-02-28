@@ -51,9 +51,11 @@ public class CallReceiver extends BroadcastReceiver {
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             Prefs prefs = Prefs.getInstance(mContext);
-            if (incomingNumber != null && incomingNumber.length() > 0)
+            if (incomingNumber != null && incomingNumber.length() > 0) {
                 mIncomingNumber = incomingNumber;
-            else return;
+            } else {
+                return;
+            }
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
                     prevState = state;

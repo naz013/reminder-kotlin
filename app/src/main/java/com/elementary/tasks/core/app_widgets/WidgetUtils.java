@@ -22,7 +22,9 @@ import com.elementary.tasks.core.utils.Module;
  * limitations under the License.
  */
 
-public class WidgetUtils {
+public final class WidgetUtils {
+
+    private WidgetUtils() {}
 
     @ColorRes
     public static int getColor(int code){
@@ -86,7 +88,9 @@ public class WidgetUtils {
                             color = R.color.indigoPrimary;
                             break;
                     }
-                } else color = R.color.bluePrimary;
+                } else {
+                    color = R.color.bluePrimary;
+                }
                 break;
         }
         return color;
@@ -151,7 +155,9 @@ public class WidgetUtils {
                             drawable = R.drawable.rectangle_stroke_indigo;
                             break;
                     }
-                } else drawable = R.drawable.rectangle_stroke_blue;
+                } else {
+                    drawable = R.drawable.rectangle_stroke_blue;
+                }
                 break;
         }
         return drawable;

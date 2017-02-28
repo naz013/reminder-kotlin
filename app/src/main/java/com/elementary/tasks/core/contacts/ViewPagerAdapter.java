@@ -33,8 +33,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (position == 0) return ContactsFragment.newInstance();
-        else return CallsFragment.newInstance();
+        if (position == 0) {
+            return ContactsFragment.newInstance();
+        } else {
+            return CallsFragment.newInstance();
+        }
     }
 
     @Override

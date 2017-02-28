@@ -108,6 +108,8 @@ public class PermanentBirthdayService extends Service {
             }
             builder.addAction(R.drawable.ic_clear_white_24dp, getString(R.string.ok), piDismiss);
             startForeground(PERM_ID, builder.build());
-        } else hidePermanent();
+        } else {
+            hidePermanent();
+        }
     }
 }

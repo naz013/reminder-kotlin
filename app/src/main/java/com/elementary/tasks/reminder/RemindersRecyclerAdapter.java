@@ -123,11 +123,15 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;
             reminderHolder.setData(item);
-            if (isEditable) initLabel(reminderHolder.getListHeader(), position);
+            if (isEditable) {
+                initLabel(reminderHolder.getListHeader(), position);
+            }
         } else if (holder instanceof ShoppingHolder) {
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;
             shoppingHolder.setData(item);
-            if (isEditable) initLabel(shoppingHolder.getListHeader(), position);
+            if (isEditable) {
+                initLabel(shoppingHolder.getListHeader(), position);
+            }
         }
     }
 
@@ -191,12 +195,18 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
             ImageView checkView = binding.checkView;
             RoboTextView textView = binding.shopText;
             if (list.isChecked()) {
-                if (isDark) checkView.setImageResource(R.drawable.ic_check_box_white_24dp);
-                else checkView.setImageResource(R.drawable.ic_check_box_black_24dp);
+                if (isDark) {
+                    checkView.setImageResource(R.drawable.ic_check_box_white_24dp);
+                } else {
+                    checkView.setImageResource(R.drawable.ic_check_box_black_24dp);
+                }
                 textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                if (isDark) checkView.setImageResource(R.drawable.ic_check_box_outline_blank_white_24dp);
-                else checkView.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
+                if (isDark) {
+                    checkView.setImageResource(R.drawable.ic_check_box_outline_blank_white_24dp);
+                } else {
+                    checkView.setImageResource(R.drawable.ic_check_box_outline_blank_black_24dp);
+                }
                 textView.setPaintFlags(textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
             count++;

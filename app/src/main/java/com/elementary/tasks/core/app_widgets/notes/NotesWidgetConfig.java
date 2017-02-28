@@ -38,8 +38,8 @@ public class NotesWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
-    public final static String NOTES_WIDGET_PREF = "notes_pref";
-    public final static String NOTES_WIDGET_THEME = "notes_theme_";
+    public static final String NOTES_WIDGET_PREF = "notes_pref";
+    public static final String NOTES_WIDGET_THEME = "notes_theme_";
 
     private NoteWidgetConfigLayoutBinding binding;
     private List<NotesTheme> mThemes;
@@ -82,7 +82,7 @@ public class NotesWidgetConfig extends ThemedActivity {
         setResult(RESULT_CANCELED, resultValue);
     }
 
-    private void loadThemes(){
+    private void loadThemes() {
         mThemes = NotesTheme.getThemes(this);
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mThemes);
         binding.themePager.setAdapter(adapter);
@@ -97,7 +97,7 @@ public class NotesWidgetConfig extends ThemedActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add:
                 updateWidget();
                 return true;

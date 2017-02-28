@@ -36,7 +36,7 @@ import java.util.TimeZone;
  * limitations under the License.
  */
 
-public class CalendarUtils {
+public final class CalendarUtils {
 
     private static final String TAG = "CalendarUtils";
 
@@ -144,9 +144,14 @@ public class CalendarUtils {
                 ids.add(mID);
             } while (c.moveToNext());
         }
-        if (c != null) c.close();
-        if (ids.size() == 0) return null;
-        else return ids;
+        if (c != null) {
+            c.close();
+        }
+        if (ids.size() == 0) {
+            return null;
+        } else {
+            return ids;
+        }
     }
 
     /**
@@ -177,10 +182,14 @@ public class CalendarUtils {
                 ids.add(new CalendarItem(title, mID));
             } while (c.moveToNext());
         }
-        if (c != null) c.close();
-
-        if (ids.size() == 0) return null;
-        else return ids;
+        if (c != null) {
+            c.close();
+        }
+        if (ids.size() == 0) {
+            return null;
+        } else {
+            return ids;
+        }
     }
 
     /**

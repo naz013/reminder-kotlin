@@ -70,7 +70,9 @@ public class IconRadioButton extends AppCompatRadioButton {
             }
             setText(titleText);
         }
-        if (isCheckable) setChecked(isChecked);
+        if (isCheckable) {
+            setChecked(isChecked);
+        }
         if (icon != 0) {
             setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(icon), null, null);
         }
@@ -82,7 +84,9 @@ public class IconRadioButton extends AppCompatRadioButton {
     }
 
     public void setIcon(int icon) {
-        if (icon == 0) return;
+        if (icon == 0) {
+            return;
+        }
         this.icon = icon;
         setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(icon), null, null);
     }
@@ -105,14 +109,18 @@ public class IconRadioButton extends AppCompatRadioButton {
 
     @Override
     public void setChecked(boolean checked) {
-        if (!isCheckable) return;
+        if (!isCheckable) {
+            return;
+        }
         super.setChecked(checked);
         refreshView();
     }
 
     @Override
     public void toggle() {
-        if (!isCheckable) return;
+        if (!isCheckable) {
+            return;
+        }
         if (!isChecked()) {
             setChecked(true);
         }

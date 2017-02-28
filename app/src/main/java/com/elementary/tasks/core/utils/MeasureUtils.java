@@ -29,10 +29,12 @@ import java.util.Hashtable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class MeasureUtils {
+public final class MeasureUtils {
 
     private static Dictionary<Integer, Integer> sListViewItemHeights = new Hashtable<>();
     private static Dictionary<Integer, Integer> sRecyclerViewItemHeights = new Hashtable<>();
+
+    private MeasureUtils() {}
 
     public static int dp2px(Context context, int dp) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -77,12 +79,13 @@ public class MeasureUtils {
 
         sListViewItemHeights.put(lv.getFirstVisiblePosition(), c.getHeight());
 
-        if (scrollY < 0)
+        if (scrollY < 0) {
             scrollY = 0;
-
+        }
         for (int i = 0; i < firstVisiblePosition; ++i) {
-            if (sListViewItemHeights.get(i) != null) // (this is a sanity check)
-                scrollY += sListViewItemHeights.get(i); //add all heights of the views that are gone
+            if (sListViewItemHeights.get(i) != null) {
+                scrollY += sListViewItemHeights.get(i);
+            }
         }
         return scrollY;
     }
@@ -92,7 +95,6 @@ public class MeasureUtils {
         if (c == null) {
             return 0;
         }
-
         int firstVisiblePosition;
         if (mIsGrid) {
             try {
@@ -121,10 +123,13 @@ public class MeasureUtils {
         } else {
             sRecyclerViewItemHeights.put(firstVisiblePosition, c.getHeight());
         }
-        if (scrollY < 0) scrollY = 0;
+        if (scrollY < 0) {
+            scrollY = 0;
+        }
         for (int i = 0; i < firstVisiblePosition; ++i) {
-            if (sRecyclerViewItemHeights.get(i) != null) // (this is a sanity check)
-                scrollY += sRecyclerViewItemHeights.get(i); //add all heights of the views that are gone
+            if (sRecyclerViewItemHeights.get(i) != null) {
+                scrollY += sRecyclerViewItemHeights.get(i);
+            }
         }
         return scrollY;
     }

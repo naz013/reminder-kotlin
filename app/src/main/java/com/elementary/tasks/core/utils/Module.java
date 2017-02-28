@@ -22,6 +22,8 @@ import com.elementary.tasks.BuildConfig;
 
 public class Module {
 
+    private Module() {}
+
     public static boolean isPro(){
         return BuildConfig.IS_PRO;
     }

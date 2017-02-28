@@ -138,8 +138,11 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_POSITION_DELAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, 0);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (Module.isMarshmallow()) alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
-        else alarmMgr.set(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
+        if (Module.isMarshmallow()) {
+            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
+        } else {
+            alarmMgr.set(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
+        }
         return true;
     }
 
@@ -245,7 +248,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) alarmMgr.cancel(alarmIntent);
+        if (alarmMgr!= null) {
+            alarmMgr.cancel(alarmIntent);
+        }
     }
 
     public void enableEventCheck(Context context){
@@ -256,10 +261,13 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int interval = Prefs.getInstance(context).getAutoCheckInterval();
-        if (Module.isMarshmallow()) alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_HOUR * interval, alarmIntent);
-        else alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_HOUR * interval, alarmIntent);
+        if (Module.isMarshmallow()) {
+            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_HOUR * interval, alarmIntent);
+        } else {
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_HOUR * interval, alarmIntent);
+        }
     }
 
     public void cancelEventCheck(Context context) {
@@ -289,7 +297,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         }
         LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
-        if (due == 0) return;
+        if (due == 0) {
+            return;
+        }
         if (!Reminder.isBase(item.getType(), Reminder.BY_TIME)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(due);
@@ -317,7 +327,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_REMINDER);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr != null) alarmMgr.cancel(alarmIntent);
+        if (alarmMgr != null) {
+            alarmMgr.cancel(alarmIntent);
+        }
     }
 
     public void enableAutoSync(Context context){
@@ -374,10 +386,15 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                                 Freq freq = rule.getFreq();
                                 if (freq == Freq.HOURLY || freq == Freq.MINUTELY || freq == Freq.SECONDLY) {
                                 } else {
-                                    if (freq == Freq.WEEKLY) repeat = interval * 7;
-                                    else if (freq == Freq.MONTHLY) repeat = interval * 30;
-                                    else if (freq == Freq.YEARLY) repeat = interval * 365;
-                                    else repeat = interval;
+                                    if (freq == Freq.WEEKLY) {
+                                        repeat = interval * 7;
+                                    } else if (freq == Freq.MONTHLY) {
+                                        repeat = interval * 30;
+                                    } else if (freq == Freq.YEARLY) {
+                                        repeat = interval * 365;
+                                    } else {
+                                        repeat = interval;
+                                    }
                                 }
                             } catch (InvalidRecurrenceRuleException e) {
                                 e.printStackTrace();

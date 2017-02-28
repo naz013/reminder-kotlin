@@ -41,7 +41,9 @@ public class LocationTracker implements LocationListener {
     public void onLocationChanged(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        if (mCallback != null) mCallback.onChange(latitude, longitude);
+        if (mCallback != null) {
+            mCallback.onChange(latitude, longitude);
+        }
     }
 
     @Override
@@ -64,7 +66,9 @@ public class LocationTracker implements LocationListener {
     }
 
     private void updateListener() {
-        if (mContext == null) return;
+        if (mContext == null) {
+            return;
+        }
         mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         long time = (Prefs.getInstance(mContext).getTrackTime() * 1000) * 2;
         int distance = Prefs.getInstance(mContext).getTrackDistance() * 2;

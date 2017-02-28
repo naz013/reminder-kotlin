@@ -104,7 +104,9 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
             UpdatesHelper.getInstance(mContext).updateWidget();
             UpdatesHelper.getInstance(mContext).updateNotesWidget();
         }
-        if (mListener != null) mListener.onFinish();
+        if (mListener != null) {
+            mListener.onFinish();
+        }
     }
 
     public interface SyncListener {

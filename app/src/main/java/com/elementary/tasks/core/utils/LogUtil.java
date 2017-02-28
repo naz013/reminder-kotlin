@@ -20,24 +20,34 @@ import com.elementary.tasks.BuildConfig;
  * limitations under the License.
  */
 
-public class LogUtil {
+public final class LogUtil {
 
     private static final String TAG = "Reminder->";
     private static final boolean D = BuildConfig.DEBUG;
 
+    private LogUtil() {}
+
     public static void i(String tag, String message) {
-        if (D) Log.i(TAG + tag, message);
+        if (D) {
+            Log.i(TAG + tag, message);
+        }
     }
 
     public static void e(String tag, String message, Exception e) {
-        if (D) Log.e(TAG + tag, message + e.getLocalizedMessage());
+        if (D) {
+            Log.e(TAG + tag, message + e.getLocalizedMessage());
+        }
     }
 
     public static void v(String tag, String message) {
-        if (D) Log.v(TAG + tag, message);
+        if (D) {
+            Log.v(TAG + tag, message);
+        }
     }
 
     public static void d(String tag, String message) {
-        if (D) Log.d(TAG + tag, message);
+        if (D) {
+            Log.d(TAG + tag, message);
+        }
     }
 }

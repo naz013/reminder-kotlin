@@ -38,14 +38,18 @@ public final class Prefs extends SharedPrefs {
     }
 
     public static Prefs getInstance() {
-        if (instance != null) return instance;
+        if (instance != null) {
+            return instance;
+        }
         throw new IllegalArgumentException("Use Prefs(Context context) constructor!");
     }
 
     public static Prefs getInstance(Context context) {
         if (instance == null) {
             synchronized (Prefs.class) {
-                if (instance == null) instance = new Prefs(context.getApplicationContext());
+                if (instance == null) {
+                    instance = new Prefs(context.getApplicationContext());
+                }
             }
         }
         return instance;
@@ -855,7 +859,9 @@ public final class Prefs extends SharedPrefs {
                 locale = 2;
             } else if (localeCheck.startsWith("ru")) {
                 locale = 1;
-            } else locale = 0;
+            } else {
+                locale = 0;
+            }
             uiEd.putInt(VOICE_LOCALE, locale);
             uiEd.putString(TIME_MORNING, "7:0");
             uiEd.putString(TIME_DAY, "12:0");

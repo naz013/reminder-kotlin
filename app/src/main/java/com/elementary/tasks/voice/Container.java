@@ -26,7 +26,9 @@ class Container<V> {
 
     Container( List<V> list) {
         this.list = list;
-        if (!list.isEmpty()) this.type = list.get(0);
+        if (!list.isEmpty()) {
+            this.type = list.get(0);
+        }
     }
 
     public V getType() {

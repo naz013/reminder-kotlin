@@ -41,10 +41,11 @@ import java.util.List;
 
 public class VoiceWidgetConfig extends ThemedActivity {
 
+    public static final  String VOICE_WIDGET_PREF = "widget_pref";
+    public static final  String VOICE_WIDGET_COLOR = "widget_color_";
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
+
     private Intent resultValue;
-    public final static String VOICE_WIDGET_PREF = "widget_pref";
-    public final static String VOICE_WIDGET_COLOR = "widget_color_";
     private int color;
 
     private VoiceWidgetConfigLayoutBinding binding;

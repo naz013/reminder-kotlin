@@ -24,7 +24,7 @@ import android.provider.ContactsContract;
  * limitations under the License.
  */
 
-public class Contacts {
+public final class Contacts {
 
     private Context mContext;
 
@@ -69,12 +69,12 @@ public class Contacts {
 
     /**
      * Holder contact identifier by contact e-mail.
-     * @param e_mail contact e-mail.
+     * @param eMail contact e-mail.
      * @param context application context.
      * @return Contact identifier
      */
-    public static int getIdFromMail(String e_mail, Context context) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(e_mail));
+    public static int getIdFromMail(String eMail, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         int contactId =0;
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -96,12 +96,12 @@ public class Contacts {
 
     /**
      * Holder contact name by contact e_mail.
-     * @param e_mail contact e-mail.
+     * @param eMail contact e-mail.
      * @param context application context.
      * @return Contact name
      */
-    public static String getNameFromMail(String e_mail, Context context) {
-        Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(e_mail));
+    public static String getNameFromMail(String eMail, Context context) {
+        Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         String name = "?";
 
         ContentResolver contentResolver = context.getContentResolver();
@@ -178,7 +178,9 @@ public class Contacts {
      */
     public static String getNumber(String name, Context context) {
         String number = "";
-        if (name != null) name = name.replaceAll("'", "''");
+        if (name != null) {
+            name = name.replaceAll("'", "''");
+        }
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + name + "%'";
         String[] projection = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
         try {

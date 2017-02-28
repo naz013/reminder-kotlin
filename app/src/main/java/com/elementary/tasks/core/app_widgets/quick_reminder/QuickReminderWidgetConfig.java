@@ -43,8 +43,8 @@ public class QuickReminderWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Intent resultValue;
-    public final static String QUICK_REMINDER_WIDGET_PREF = "widget_pref";
-    public final static String QUICK_REMINDER_WIDGET_COLOR = "widget_color_";
+    public static final String QUICK_REMINDER_WIDGET_PREF = "widget_pref";
+    public static final String QUICK_REMINDER_WIDGET_COLOR = "widget_color_";
     private int color;
 
     private QuickReminderWidgetConfigLayoutBinding binding;
@@ -61,7 +61,7 @@ public class QuickReminderWidgetConfig extends ThemedActivity {
         List<String> spinnerArray = new ArrayList<>();
         String[] colorsArray = getResources().getStringArray(R.array.color_list);
         Collections.addAll(spinnerArray, colorsArray);
-        if (isPro){
+        if (isPro) {
             spinnerArray.add(getString(R.string.dark_purple));
             spinnerArray.add(getString(R.string.dark_orange));
             spinnerArray.add(getString(R.string.lime));

@@ -90,7 +90,9 @@ public class EventsDataProvider {
                         if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                             long days = 0;
                             long max = Configs.MAX_DAYS_COUNT;
-                            if (isLimited) max = limit - count;
+                            if (isLimited) {
+                                max = limit - count;
+                            }
                             List<Integer> list = item.getWeekdays();
                             do {
                                 calendar1.setTimeInMillis(calendar1.getTimeInMillis() +
@@ -105,7 +107,9 @@ public class EventsDataProvider {
                         } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
                             long days = 0;
                             long max = Configs.MAX_DAYS_COUNT;
-                            if (isLimited) max = limit - count;
+                            if (isLimited) {
+                                max = limit - count;
+                            }
                             do {
                                 item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                                 eventTime = timeCount.getNextMonthDayTime(item);
@@ -114,10 +118,14 @@ public class EventsDataProvider {
                                 setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                             } while (days < max);
                         } else {
-                            if (repeatTime == 0) continue;
+                            if (repeatTime == 0) {
+                                continue;
+                            }
                             long days = 0;
                             long max = Configs.MAX_DAYS_COUNT;
-                            if (isLimited) max = limit - count;
+                            if (isLimited) {
+                                max = limit - count;
+                            }
                             do {
                                 calendar1.setTimeInMillis(calendar1.getTimeInMillis() + repeatTime);
                                 eventTime = calendar1.getTimeInMillis();

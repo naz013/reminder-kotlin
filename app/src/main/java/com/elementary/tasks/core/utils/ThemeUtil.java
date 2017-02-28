@@ -133,7 +133,9 @@ public final class ThemeUtil {
                                 color = R.color.redAccent;
                                 break;
                         }
-                    } else color = R.color.redAccent;
+                    } else {
+                        color = R.color.redAccent;
+                    }
                     break;
             }
         } else {
@@ -193,7 +195,9 @@ public final class ThemeUtil {
                                 color = R.color.yellowAccent;
                                 break;
                         }
-                    } else color = R.color.yellowAccent;
+                    } else {
+                        color = R.color.yellowAccent;
+                    }
                     break;
             }
         }
@@ -279,7 +283,9 @@ public final class ThemeUtil {
                                 id = R.style.HomeDark_Blue;
                                 break;
                         }
-                    } else id = R.style.HomeDark_Blue;
+                    } else {
+                        id = R.style.HomeDark_Blue;
+                    }
                     break;
             }
         } else {
@@ -339,7 +345,9 @@ public final class ThemeUtil {
                                 id = R.style.HomeWhite_Blue;
                                 break;
                         }
-                    } else id = R.style.HomeWhite_Blue;
+                    } else {
+                        id = R.style.HomeWhite_Blue;
+                    }
                     break;
             }
         }
@@ -555,7 +563,9 @@ public final class ThemeUtil {
                             color = R.drawable.toggle_cyan;
                             break;
                     }
-                } else color = R.drawable.toggle_cyan;
+                } else {
+                    color = R.drawable.toggle_cyan;
+                }
                 break;
         }
         return getDrawable(color);
@@ -620,7 +630,9 @@ public final class ThemeUtil {
                             color = R.color.cyanPrimaryDark;
                             break;
                     }
-                } else color = R.color.cyanPrimaryDark;
+                } else {
+                    color = R.color.cyanPrimaryDark;
+                }
                 break;
         }
         return color;
@@ -635,8 +647,11 @@ public final class ThemeUtil {
     @ColorInt
     public int getSpinnerStyle() {
         int color;
-        if (isDark()) color = R.color.material_grey;
-        else color = R.color.whitePrimary;
+        if (isDark()) {
+            color = R.color.material_grey;
+        } else {
+            color = R.color.whitePrimary;
+        }
         return getColor(color);
     }
 
@@ -701,7 +716,9 @@ public final class ThemeUtil {
                                 id = R.style.HomeDarkDialog_Blue;
                                 break;
                         }
-                    } else id = R.style.HomeDarkDialog_Blue;
+                    } else {
+                        id = R.style.HomeDarkDialog_Blue;
+                    }
                     break;
             }
         } else {
@@ -761,7 +778,9 @@ public final class ThemeUtil {
                                 id = R.style.HomeWhiteDialog_Blue;
                                 break;
                         }
-                    } else id = R.style.HomeWhiteDialog_Blue;
+                    } else {
+                        id = R.style.HomeWhiteDialog_Blue;
+                    }
                     break;
             }
         }
@@ -771,38 +790,53 @@ public final class ThemeUtil {
     @StyleRes
     public int getFullscreenStyle() {
         int id;
-        if (isDark()) id = R.style.HomeDarkFullscreen;
-        else id = R.style.HomeWhiteFullscreen;
+        if (isDark()) {
+            id = R.style.HomeDarkFullscreen;
+        } else {
+            id = R.style.HomeWhiteFullscreen;
+        }
         return id;
     }
 
     @StyleRes
     public int getTransparentStyle() {
         int id;
-        if (isDark()) id = R.style.HomeDarkTranslucent;
-        else id = R.style.HomeWhiteTranslucent;
+        if (isDark()) {
+            id = R.style.HomeDarkTranslucent;
+        } else {
+            id = R.style.HomeWhiteTranslucent;
+        }
         return id;
     }
 
     @ColorInt
     public int getBackgroundStyle() {
         int id;
-        if (isDark()) id = getColor(R.color.material_grey);
-        else id = getColor(R.color.material_white);
+        if (isDark()) {
+            id = getColor(R.color.material_grey);
+        } else {
+            id = getColor(R.color.material_white);
+        }
         return id;
     }
 
     @ColorInt
     public int getStatusBarStyle() {
-        if (isDark()) return getColor(R.color.material_grey);
-        else return getColor(colorPrimaryDark());
+        if (isDark()) {
+            return getColor(R.color.material_grey);
+        } else {
+            return getColor(colorPrimaryDark());
+        }
     }
 
     @ColorInt
     public int getCardStyle() {
         int color;
-        if (isDark()) color = getColor(R.color.grey_x);
-        else color = getColor(R.color.whitePrimary);
+        if (isDark()) {
+            color = getColor(R.color.grey_x);
+        } else {
+            color = getColor(R.color.whitePrimary);
+        }
         return color;
     }
 
@@ -1018,7 +1052,9 @@ public final class ThemeUtil {
                             color = R.drawable.circle_blue;
                             break;
                     }
-                } else color = R.drawable.circle_blue;
+                } else {
+                    color = R.drawable.circle_blue;
+                }
                 break;
         }
         return color;
@@ -1098,7 +1134,9 @@ public final class ThemeUtil {
                             color = R.color.blueAccent;
                             break;
                     }
-                } else color = R.color.blueAccent;
+                } else {
+                    color = R.color.blueAccent;
+                }
                 break;
         }
         return getColor(color);

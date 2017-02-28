@@ -45,7 +45,9 @@ public class RoboRadioButton extends AppCompatRadioButton {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboRadioButton);
             int fontCode = a.getInt(R.styleable.RoboRadioButton_radio_font_style, -1);
@@ -63,7 +65,8 @@ public class RoboRadioButton extends AppCompatRadioButton {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mTypeface != null)
+        if (mTypeface != null) {
             setTypeface(mTypeface);
+        }
     }
 }

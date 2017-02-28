@@ -77,7 +77,9 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
         List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
         for (Reminder item : reminderItems) {
-            if (item.getViewType() == Reminder.SHOPPING) continue;
+            if (item.getViewType() == Reminder.SHOPPING) {
+                continue;
+            }
             int type = item.getType();
             String summary = item.getSummary();
             long eventTime = item.getDateTime();
@@ -175,15 +177,18 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
         int checkboxColor = eventsTheme.getCheckboxColor();
 
         RemoteViews rView = null;
-        if (i >= getCount()) return null;
+        if (i >= getCount()) {
+            return null;
+        }
         CalendarItem item = data.get(i);
         if (item.getViewType() == 1) {
-            rView = new RemoteViews(mContext.getPackageName(),
-                    R.layout.list_item_current_widget);
+            rView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_current_widget);
             rView.setInt(R.id.itemBg, "setBackgroundResource", itemBackground);
 
             String task = item.getName();
-            if (task == null || task.matches("")) task = Contacts.getNameFromNumber(item.getNumber(), mContext);
+            if (task == null || task.matches("")) {
+                task = Contacts.getNameFromNumber(item.getNumber(), mContext);
+            }
             rView.setTextViewText(R.id.taskText, task);
             rView.setTextColor(R.id.taskText, itemTextColor);
 
@@ -247,15 +252,17 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
                 RemoteViews view = new RemoteViews(mContext.getPackageName(), R.layout.list_item_task_item_widget);
                 boolean isBlack = checkboxColor == 0;
                 if (list.isChecked()) {
-                    if (isBlack)
+                    if (isBlack) {
                         view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_black_24dp);
-                    else
+                    } else {
                         view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_white_24dp);
+                    }
                 } else {
-                    if (isBlack)
+                    if (isBlack) {
                         view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_black_24dp);
-                    else
+                    } else {
                         view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_white_24dp);
+                    }
                 }
 
                 view.setTextColor(R.id.shopText, itemTextColor);

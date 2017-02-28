@@ -23,7 +23,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class IntervalUtil {
+public final class IntervalUtil {
 
     public static final int REPEAT_CODE_ONCE = 0;
     public static final int INTERVAL_DAY = 1;
@@ -77,8 +77,11 @@ public class IntervalUtil {
                 interval = String.format(mContext.getString(R.string.xD), String.valueOf(code));
             }
         } else {
-            if (tmp == 0) return "0";
-            else return String.format(mContext.getString(R.string.x_min), String.valueOf(tmp));
+            if (tmp == 0) {
+                return "0";
+            } else {
+                return String.format(mContext.getString(R.string.x_min), String.valueOf(tmp));
+            }
         }
         return interval;
     }

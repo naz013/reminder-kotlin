@@ -46,7 +46,7 @@ public class ReminderApp extends MultiDexApplication {
         Realm.setDefaultConfiguration(realmConfiguration);
     }
 
-    synchronized public Tracker getDefaultTracker() {
+    public synchronized Tracker getDefaultTracker() {
         if (mTracker == null) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             mTracker = analytics.newTracker(R.xml.global_tracker);

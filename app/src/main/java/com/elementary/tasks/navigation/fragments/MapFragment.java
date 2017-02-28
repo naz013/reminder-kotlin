@@ -102,8 +102,11 @@ public class MapFragment extends BaseNavigationFragment {
         if (position != clickedPosition) {
             pointer = 0;
         } else {
-            if (pointer == maxPointer) pointer = 0;
-            else pointer++;
+            if (pointer == maxPointer) {
+                pointer = 0;
+            } else {
+                pointer++;
+            }
         }
         clickedPosition = position;
         Place place = reminder.getPlaces().get(pointer);
@@ -159,7 +162,9 @@ public class MapFragment extends BaseNavigationFragment {
     }
 
     private void showData() {
-        if (isDataShowed) return;
+        if (isDataShowed) {
+            return;
+        }
         LocationPlacesAdapter mAdapter = new LocationPlacesAdapter(getContext(), mData, mClickListener);
         mEventsList.setAdapter(mAdapter);
         boolean mapReady = false;
@@ -167,9 +172,13 @@ public class MapFragment extends BaseNavigationFragment {
             for (Place place : reminder.getPlaces()) {
                 mapReady = mGoogleMap.addMarker(new LatLng(place.getLatitude(), place.getLongitude()),
                         place.getName(), false, place.getMarker(), false, place.getRadius());
-                if (!mapReady) break;
+                if (!mapReady) {
+                    break;
+                }
             }
-            if (!mapReady) break;
+            if (!mapReady) {
+                break;
+            }
         }
         isDataShowed = mapReady;
         reloadView();
@@ -178,7 +187,9 @@ public class MapFragment extends BaseNavigationFragment {
     private void reloadView() {
         RecyclerView.Adapter adapter = mEventsList.getAdapter();
         int size = 0;
-        if (adapter != null) size = mEventsList.getAdapter().getItemCount();
+        if (adapter != null) {
+            size = mEventsList.getAdapter().getItemCount();
+        }
         if (size > 0) {
             mEventsList.setVisibility(View.VISIBLE);
             mEmptyItem.setVisibility(View.GONE);

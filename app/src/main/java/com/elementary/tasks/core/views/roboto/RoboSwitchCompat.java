@@ -45,7 +45,9 @@ public class RoboSwitchCompat extends SwitchCompat {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboSwitchCompat);
             int fontCode = a.getInt(R.styleable.RoboSwitchCompat_switch_font_style, -1);
@@ -63,7 +65,8 @@ public class RoboSwitchCompat extends SwitchCompat {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mTypeface != null)
+        if (mTypeface != null) {
             setTypeface(mTypeface);
+        }
     }
 }

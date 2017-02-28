@@ -59,7 +59,9 @@ class TimerEvent extends RepeatableEventManager {
             getReminder().setEventTime(TimeUtil.getGmtFromDateTime(time));
             getReminder().setEventCount(getReminder().getEventCount() + 1);
             return start();
-        } else return stop();
+        } else {
+            return stop();
+        }
     }
 
     @Override

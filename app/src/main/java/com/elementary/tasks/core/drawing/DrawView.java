@@ -272,7 +272,9 @@ public class DrawView extends View {
                         return;
                     }
                     Path path = this.getCurrentPath();
-                    if (path == null) return;
+                    if (path == null) {
+                        return;
+                    }
                     switch (this.drawer) {
                         case PEN:
                             path.lineTo(x, y);
@@ -310,7 +312,9 @@ public class DrawView extends View {
                         return;
                     }
                     Path path = this.getCurrentPath();
-                    if (path == null) return;
+                    if (path == null) {
+                        return;
+                    }
                     path.reset();
                     path.moveTo(this.startX, this.startY);
                     path.quadTo(this.controlX, this.controlY, x, y);
@@ -530,7 +534,7 @@ public class DrawView extends View {
      * @param text
      */
     public void addText(String text) {
-        this.currentItem = new Text(text, fontFamily, fontSize, createPaint());
+        this.currentItem = new Text(text, fontSize, createPaint());
         this.currentItem.setX(startX);
         this.currentItem.setY(startY);
         if (this.historyPointer == this.elements.size()) {

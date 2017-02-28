@@ -28,17 +28,17 @@ import java.util.ArrayList;
  */
 public class PlaceParser {
 
-    private final static String TAG = "PlaceParser";
-    private final static String ADDRESS = "formatted_address";
-    private final static String VICINITY = "vicinity";
-    private final static String NAME = "name";
-    private final static String GEOMETRY = "geometry";
-    private final static String LOCATION = "location";
-    private final static String LAT = "lat";
-    private final static String LNG = "lng";
-    private final static String ICON = "icon";
-    private final static String ID = "id";
-    private final static String TYPES = "types";
+    private static final String TAG = "PlaceParser";
+    private static final String ADDRESS = "formatted_address";
+    private static final String VICINITY = "vicinity";
+    private static final String NAME = "name";
+    private static final String GEOMETRY = "geometry";
+    private static final String LOCATION = "location";
+    private static final String LAT = "lat";
+    private static final String LNG = "lng";
+    private static final String ICON = "icon";
+    private static final String ID = "id";
+    private static final String TYPES = "types";
 
     public GooglePlaceItem getDetails(JSONObject jsonObject) {
         GooglePlaceItem model = new GooglePlaceItem();
@@ -62,8 +62,9 @@ public class PlaceParser {
             if (jsonObject.has(GEOMETRY)) {
                 model.setPosition(getCoordinates(jsonObject.getJSONObject(GEOMETRY)));
             }
-            if (jsonObject.has(TYPES)){
-                Type collectionType = new TypeToken<ArrayList<String>>() {}.getType();
+            if (jsonObject.has(TYPES)) {
+                Type collectionType = new TypeToken<ArrayList<String>>() {
+                }.getType();
                 try {
                     ArrayList<String> types =
                             new Gson().fromJson(jsonObject.get(TYPES).toString(), collectionType);

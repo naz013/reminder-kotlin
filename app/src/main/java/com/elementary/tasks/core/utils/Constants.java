@@ -37,22 +37,22 @@ public class Constants {
 
     public static final int REQUEST_CODE_SELECTED_MELODY = 500;
 
-    public final static int REQUEST_CODE_CONTACTS = 101;
-    public final static int REQUEST_CODE_THEME = 105;
-    public final static int REQUEST_CODE_FONT_STYLE = 106;
-    public final static int REQUEST_CODE_SELECTED_RADIUS = 116;
-    public final static int REQUEST_CODE_SELECTED_COLOR = 118;
-    public final static int REQUEST_CODE_APPLICATION = 117;
+    public static final int REQUEST_CODE_CONTACTS = 101;
+    public static final int REQUEST_CODE_THEME = 105;
+    public static final int REQUEST_CODE_FONT_STYLE = 106;
+    public static final int REQUEST_CODE_SELECTED_RADIUS = 116;
+    public static final int REQUEST_CODE_SELECTED_COLOR = 118;
+    public static final int REQUEST_CODE_APPLICATION = 117;
 
     public static final int ACTION_REQUEST_GALLERY = 111;
     public static final int ACTION_REQUEST_CAMERA = 112;
     public static final String SELECTED_COLOR = "selected_color";
 
-    public final static String SELECTED_CONTACT_NAME = "selected_name";
-    public final static String SELECTED_FONT_STYLE = "selected_style";
-    public final static String SELECTED_RADIUS = "selected_radius";
-    public final static String SELECTED_LED_COLOR = "selected_led_color";
-    public final static String SELECTED_APPLICATION = "selected_application";
+    public static final String SELECTED_CONTACT_NAME = "selected_name";
+    public static final String SELECTED_FONT_STYLE = "selected_style";
+    public static final String SELECTED_RADIUS = "selected_radius";
+    public static final String SELECTED_LED_COLOR = "selected_led_color";
+    public static final String SELECTED_APPLICATION = "selected_application";
 
     public static final String ORDER_DATE_A_Z = "date_az";
     public static final String ORDER_DATE_Z_A = "date_za";
@@ -64,4 +64,6 @@ public class Constants {
     public static final String INTENT_IMAGE = "intent_image";
 
     public static final String WEB_URL = "http://future-graph-651.appspot.com/";
+
+    private Constants() {}
 }

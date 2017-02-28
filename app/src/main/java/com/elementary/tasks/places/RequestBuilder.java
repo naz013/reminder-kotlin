@@ -24,9 +24,13 @@ public class RequestBuilder {
 
     private static final String TAG = "RequestBuilder";
 
+    private RequestBuilder() {}
+
     public static String getNearby(double lat, double lng, String name) {
         String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
-        if (Module.isPro()) key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
+        if (Module.isPro()) {
+            key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
+        }
         key = "&key=" + key;
         String req = name.replaceAll("\\s+", "+");
         String params = "location=" + lat + "," + lng + "&radius=50000&name=" + req + getLanguage();
@@ -35,7 +39,9 @@ public class RequestBuilder {
 
     public static String getSearch(String name) {
         String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
-        if (Module.isPro()) key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
+        if (Module.isPro()) {
+            key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
+        }
         key = "&key=" + key;
         String req = name.replaceAll("\\s+", "+");
         String params = "query=" + req + getLanguage();

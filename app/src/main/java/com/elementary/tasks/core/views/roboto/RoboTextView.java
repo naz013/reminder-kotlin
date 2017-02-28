@@ -45,7 +45,9 @@ public class RoboTextView extends AppCompatTextView {
     }
 
     private void init(AttributeSet attrs) {
-        if (isInEditMode()) return;
+        if (isInEditMode()) {
+            return;
+        }
         setDrawingCacheEnabled(true);
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RoboTextView);
@@ -64,7 +66,8 @@ public class RoboTextView extends AppCompatTextView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mTypeface != null)
+        if (mTypeface != null) {
             setTypeface(mTypeface);
+        }
     }
 }

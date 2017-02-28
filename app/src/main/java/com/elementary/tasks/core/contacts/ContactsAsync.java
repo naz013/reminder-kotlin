@@ -53,15 +53,19 @@ public class ContactsAsync extends AsyncTask<Void, Void, Void> {
                 if (uri != null) {
                     photo = uri.toString();
                 }
-                if (hasPhone.equalsIgnoreCase("1"))
+                if (hasPhone.equalsIgnoreCase("1")) {
                     hasPhone = "true";
-                else
+                } else {
                     hasPhone = "false";
+                }
                 if (name != null && Boolean.parseBoolean(hasPhone)) {
                     ContactItem data = new ContactItem(name, photo, id);
                     int pos = getPosition(name);
-                    if (pos == -1) mList.add(data);
-                    else mList.add(pos, data);
+                    if (pos == -1) {
+                        mList.add(data);
+                    } else {
+                        mList.add(pos, data);
+                    }
                 }
             }
             cursor.close();
@@ -70,7 +74,9 @@ public class ContactsAsync extends AsyncTask<Void, Void, Void> {
     }
 
     private int getPosition(String name) {
-        if (mList.size() == 0) return 0;
+        if (mList.size() == 0) {
+            return 0;
+        }
         int position = -1;
         for (ContactItem data : mList) {
             int comp = name.compareTo(data.getName());

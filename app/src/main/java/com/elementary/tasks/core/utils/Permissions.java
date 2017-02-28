@@ -46,8 +46,12 @@ public class Permissions {
     public static final String READ_CALLS = Manifest.permission.READ_CALL_LOG;
     public static final String RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
 
+    private Permissions() {}
+
     public static boolean checkPermission(Activity a, String... permissions) {
-        if (!Module.isMarshmallow()) return true;
+        if (!Module.isMarshmallow()) {
+            return true;
+        }
         boolean res = true;
         for (String string : permissions) {
             if (a.checkSelfPermission(string) != PackageManager.PERMISSION_GRANTED) {
