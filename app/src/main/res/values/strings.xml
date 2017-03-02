@@ -579,5 +579,8 @@
     <string name="text_color">Text color</string>
     <string name="previous">Previous</string>
     <string name="preview">Preview</string>
+    <string name="backup">Backup</string>
+    <string name="body">Body</string>
+    <string name="button_color">Button color</string>
 
 </resources>

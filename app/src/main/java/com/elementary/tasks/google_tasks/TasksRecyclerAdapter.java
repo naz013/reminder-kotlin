@@ -79,7 +79,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         TaskItem item = mDataset.get(position);
-        holder.binding.setTask(item);
+        holder.binding.setTaskItem(item);
     }
 
     @Override

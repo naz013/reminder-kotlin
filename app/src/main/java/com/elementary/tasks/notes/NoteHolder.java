@@ -46,6 +46,6 @@ public class NoteHolder extends RecyclerView.ViewHolder {
     }
 
     public void setData(NoteItem item) {
-        binding.setNote(item);
+        binding.setNoteItem(item);
     }
 }

@@ -26,7 +26,7 @@
         android:layout_marginRight="10dp"
         android:clipChildren="false"
         android:foreground="?attr/selectableItemBackground"
-        android:onClick="@{click.onClick}"
+        android:onClick="@{click::onClick}"
         app:cardCornerRadius="3dp"
         app:cardUseCompatPadding="true">
 
