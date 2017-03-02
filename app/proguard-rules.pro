@@ -6,12 +6,13 @@
 
 -printmapping /proguard/mapping.txt
 
--keep class io.realm.annotations.RealmModule
+-keepnames public class * extends io.realm.RealmObject
 -keep @io.realm.annotations.RealmModule class *
--keep class io.realm.internal.Keep
--keep @io.realm.internal.Keep class * { *; }
+-keep class io.realm.** { *; }
 -dontwarn javax.**
 -dontwarn io.realm.**
+
+-keep class io.realm.annotations.RealmModule
 
 -keep class android.support.v4.app.** { *; }
 -keep interface android.support.v4.app.** { *; }
