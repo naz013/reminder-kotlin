@@ -69,6 +69,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private ActivityReminderPreviewBinding binding;
     private AdvancedMapFragment mGoogleMap;
 
+    private String id;
     private Reminder item;
     private List<Long> list = new ArrayList<>();
     private NoteItem mNoteItem;
@@ -100,8 +101,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
-        item = RealmDb.getInstance().getReminder(id);
+        id = getIntent().getStringExtra(Constants.INTENT_ID);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_preview);
         initActionBar();
         initViews();
@@ -110,6 +110,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        item = RealmDb.getInstance().getReminder(id);
         loadInfo();
     }
 

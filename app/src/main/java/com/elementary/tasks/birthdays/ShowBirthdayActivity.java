@@ -133,12 +133,8 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-                mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
-            } else {
-                if (isBirthdaySilentEnabled()) {
-                    mSound.playAlarm(soundUri, isBirthdayInfiniteSound());
-                }
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || isBirthdaySilentEnabled()) {
+                getSound().playAlarm(soundUri, isBirthdayInfiniteSound());
             }
         }
         if (isVibrate()){

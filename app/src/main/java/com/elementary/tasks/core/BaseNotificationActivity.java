@@ -23,6 +23,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -83,7 +84,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private static final String TAG = "BNActivity";
     private static final int MY_DATA_CHECK_CODE = 111;
 
-    protected Sound mSound;
+    private Sound mSound;
     protected Tracker mTracker;
     protected GoogleApiClient mGoogleApiClient;
     private TextToSpeech tts;
@@ -218,6 +219,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     protected abstract boolean isGlobal();
 
     protected abstract int getMaxVolume();
+
+    protected Sound getSound() {
+        return mSound;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -426,12 +431,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
                 mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-            } else {
-                if (getPrefs().isSoundInSilentModeEnabled()) {
-                    mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-                }
             }
         }
         if (isVibrate()) {
@@ -444,12 +445,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setVibrate(pattern);
         }
         boolean isWear = getPrefs().isWearEnabled();
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.notify(getId(), builder.build());
@@ -473,12 +472,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
         boolean isWear = getPrefs().isWearEnabled();
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.notify(getId(), builder.build());
@@ -519,13 +516,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
+            Log.d(TAG, "showReminderNotification: " + soundUri);
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
                 mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-            } else {
-                if (getPrefs().isSoundInSilentModeEnabled()) {
-                    mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-                }
             }
         }
         if (isVibrate()) {
@@ -538,12 +532,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setVibrate(pattern);
         }
         boolean isWear = getPrefs().isWearEnabled();
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.notify(getId(), builder.build());
@@ -583,12 +575,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+        if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
             playDefaultMelody();
-        } else {
-            if (getPrefs().isSoundInSilentModeEnabled()) {
-                playDefaultMelody();
-            }
         }
         if (isVibrate()) {
             long[] pattern;
