@@ -44,13 +44,14 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     private ActivityShoppingPreviewBinding binding;
 
     private ShopListRecyclerAdapter shoppingAdapter;
+
+    private String id;
     private Reminder mReminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String id = getIntent().getStringExtra(Constants.INTENT_ID);
-        mReminder = RealmDb.getInstance().getReminder(id);
+        id = getIntent().getStringExtra(Constants.INTENT_ID);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_shopping_preview);
         initActionBar();
         initViews();
@@ -59,6 +60,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mReminder = RealmDb.getInstance().getReminder(id);
         loadInfo();
     }
 
