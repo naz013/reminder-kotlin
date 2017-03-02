@@ -117,7 +117,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void showTask(TaskItem taskItem) {
         this.mTaskItem = taskItem;
         ListItemTaskBinding binding = ListItemTaskBinding.inflate(LayoutInflater.from(this));
-        binding.setTask(taskItem);
+        binding.setTaskItem(taskItem);
         binding.setClick(v -> startActivity(new Intent(ReminderPreviewActivity.this, TaskActivity.class)
                 .putExtra(Constants.INTENT_ID, mTaskItem.getTaskId())
                 .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)));
@@ -127,7 +127,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void showNote(NoteItem noteItem) {
         this.mNoteItem = noteItem;
         NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
-        binding.setNote(noteItem);
+        binding.setNoteItem(noteItem);
         binding.setClick(v -> startActivity(new Intent(this, NotePreviewActivity.class)
                 .putExtra(Constants.INTENT_ID, mNoteItem.getKey())));
         this.binding.dataContainer.addView(binding.getRoot());

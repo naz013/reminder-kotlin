@@ -7,7 +7,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="task"
+            name="taskItem"
             type="com.elementary.tasks.google_tasks.TaskItem" />
 
         <variable
@@ -23,13 +23,13 @@
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="0dp"
         app:cardElevation="2dp"
-        app:loadTaskCard='@{task.hidden}'>
+        app:loadTaskCard='@{taskItem.hidden}'>
 
         <LinearLayout
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:onClick="@{click.onClick}"
+            android:onClick="@{click::onClick}"
             android:orientation="horizontal">
 
             <View
@@ -37,7 +37,7 @@
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
                 android:background="@color/bluePrimary"
-                app:loadMarker='@{task.listId}' />
+                app:loadMarker='@{taskItem.listId}' />
 
             <com.elementary.tasks.core.views.roboto.RoboCheckBox
                 android:id="@+id/checkDone"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.9"
-                app:loadCheck='@{task}' />
+                app:loadCheck='@{taskItem}' />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="@{task.title}"
+                    android:text="@{taskItem.title}"
                     android:textSize="17sp"
                     app:font_style="roboto_light" />
 
@@ -72,9 +72,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="3dp"
                     android:maxLines="1"
-                    android:text="@{task.notes}"
+                    android:text="@{taskItem.notes}"
                     android:textSize="15sp"
-                    android:visibility="@{task.notes != null ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{taskItem.notes != null ? View.VISIBLE : View.GONE}"
                     app:font_style="roboto_light" />
 
             </LinearLayout>
@@ -89,7 +89,7 @@
                 android:gravity="center"
                 android:textSize="14sp"
                 app:font_style="roboto_medium"
-                app:loadDue='@{task.dueDate}' />
+                app:loadDue='@{taskItem.dueDate}' />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
