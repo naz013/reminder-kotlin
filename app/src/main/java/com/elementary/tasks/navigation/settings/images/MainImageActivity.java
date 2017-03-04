@@ -122,7 +122,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
         @Override
         public void deselectOverItem(int position) {
-            mPhotoList.get(position).setSelected(false);
+
         }
 
         @Override
@@ -138,7 +138,6 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     };
 
     private void loadDataToList() {
-        if (position != -1) mPhotoList.get(position).setSelected(true);
         mPointer = START_SIZE - 1;
         mAdapter = new ImagesRecyclerAdapter(this, mPhotoList.subList(0, mPointer), mListener);
         mAdapter.setPrevSelected(position);

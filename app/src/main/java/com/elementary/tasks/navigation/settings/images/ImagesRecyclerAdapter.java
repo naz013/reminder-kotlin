@@ -56,9 +56,8 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
 
     void deselectLast() {
         if (prevSelected != -1) {
-            mDataList.get(prevSelected).setSelected(false);
-            notifyItemChanged(prevSelected);
             prevSelected = -1;
+            notifyItemChanged(prevSelected);
         }
     }
 
@@ -76,6 +75,9 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         ImageItem item = mDataList.get(position);
         holder.binding.setItem(item);
+        if (prevSelected == position) {
+            holder.binding.setSelected(true);
+        }
         GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) holder.binding.card.getLayoutParams();
         if (position < 3) {
             params.topMargin = MeasureUtils.dp2px(mContext, 56);
@@ -112,23 +114,20 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
 
     private void performClick(int position) {
         if (position == prevSelected) {
-            mDataList.get(prevSelected).setSelected(false);
-            notifyItemChanged(prevSelected);
             prevSelected = -1;
             mPrefs.setImageId(-1);
             mPrefs.setImagePath("");
+            notifyItemChanged(prevSelected);
             if (mListener != null) mListener.onImageSelected(false);
         } else {
             if (prevSelected != -1) {
                 if (prevSelected >= getItemCount() && mListener != null) {
                     mListener.deselectOverItem(prevSelected);
                 } else {
-                    mDataList.get(prevSelected).setSelected(false);
                     notifyItemChanged(prevSelected);
                 }
             }
             prevSelected = position;
-            mDataList.get(position).setSelected(true);
             ImageItem item = mDataList.get(position);
             mPrefs.setImageId(position);
             mPrefs.setImagePath(RetrofitBuilder.getImageLink(item.getId()));

@@ -28,6 +28,7 @@ import io.realm.annotations.RealmClass;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 @RealmClass
 public class ImageItem implements RealmModel, Observable {
     @SerializedName("format")
@@ -49,21 +50,9 @@ public class ImageItem implements RealmModel, Observable {
     private String postUrl;
 
     @Ignore
-    private boolean selected;
-
-    @Ignore
     private List<OnPropertyChangedCallback> mCallbacks = new LinkedList<>();
 
     public ImageItem() {}
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    @Bindable
-    public boolean getSelected() {
-        return selected;
-    }
 
     @Bindable
     public String getFormat() {
