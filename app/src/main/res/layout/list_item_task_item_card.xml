@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="false">
@@ -11,30 +12,51 @@
             android:id="@+id/itemCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:visibility="visible"
-            app:check_font_style="roboto_light" />
+            app:check_font_style="roboto_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBaseline_creator="1"
+            tools:layout_constraintLeft_creator="1" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/shopText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/clearButton"
-            android:layout_toRightOf="@+id/itemCheck"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:textSize="16sp"
-            app:font_style="roboto_light" />
+            app:font_style="roboto_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/itemCheck"
+            app:layout_constraintRight_toLeftOf="@+id/clearButton"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBaseline_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
 
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:background="@android:color/transparent"
             android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tb_icon="@drawable/ic_clear_black_24dp"
-            app:tb_icon_light="@drawable/ic_clear_white_24dp" />
-    </RelativeLayout>
+            app:tb_icon_light="@drawable/ic_clear_white_24dp"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+    </android.support.constraint.ConstraintLayout>
 </layout>

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/headerItem"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -11,21 +12,36 @@
 
         <ImageView
             android:id="@+id/headerImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/appNameBanner"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/whitePrimary30"
-            android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/app_name"
             android:textColor="@color/whitePrimary"
             android:textSize="25sp"
-            app:font_style="roboto_regular" />
+            app:font_style="roboto_regular"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 </layout>

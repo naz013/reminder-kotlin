@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,36 +10,51 @@
             type="com.elementary.tasks.notes.NoteImage" />
     </data>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/photoView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="256dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginStart="8dp"
             android:scaleType="centerCrop"
-            app:loadImage='@{item}' />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadImage='@{item}'
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
 
         <ImageButton
             android:id="@+id/removeButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_alignParentRight="true"
-            android:layout_margin="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:alpha="100"
             android:background="@drawable/drawable_blue"
-            android:src="@drawable/ic_clear_white_24dp" />
+            android:src="@drawable/ic_clear_white_24dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/editButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginTop="4dp"
-            android:layout_toLeftOf="@+id/removeButton"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:alpha="100"
             android:background="@drawable/drawable_blue"
-            android:src="@drawable/ic_create_white_24dp" />
+            android:src="@drawable/ic_create_white_24dp"
+            app:layout_constraintRight_toLeftOf="@+id/removeButton"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 </layout>
