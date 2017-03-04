@@ -1,7 +1,17 @@
 package com.elementary.tasks.navigation.settings.images;
 
-import com.google.gson.annotations.Expose;
+import android.databinding.Bindable;
+import android.databinding.Observable;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import io.realm.RealmModel;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,42 +28,44 @@ import com.google.gson.annotations.SerializedName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ImageItem {
+@RealmClass
+public class ImageItem implements RealmModel, Observable {
     @SerializedName("format")
-    @Expose
     private String format;
     @SerializedName("width")
-    @Expose
     private int width;
     @SerializedName("height")
-    @Expose
     private int height;
     @SerializedName("filename")
-    @Expose
     private String filename;
     @SerializedName("id")
-    @Expose
+    @PrimaryKey
     private long id;
     @SerializedName("author")
-    @Expose
     private String author;
     @SerializedName("author_url")
-    @Expose
     private String authorUrl;
     @SerializedName("post_url")
-    @Expose
     private String postUrl;
 
+    @Ignore
     private boolean selected;
+
+    @Ignore
+    private List<OnPropertyChangedCallback> mCallbacks = new LinkedList<>();
+
+    public ImageItem() {}
 
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
+    @Bindable
     public boolean getSelected() {
         return selected;
     }
 
+    @Bindable
     public String getFormat() {
         return format;
     }
@@ -62,6 +74,7 @@ public class ImageItem {
         this.format = format;
     }
 
+    @Bindable
     public int getWidth() {
         return width;
     }
@@ -70,6 +83,7 @@ public class ImageItem {
         this.width = width;
     }
 
+    @Bindable
     public int getHeight() {
         return height;
     }
@@ -78,6 +92,7 @@ public class ImageItem {
         this.height = height;
     }
 
+    @Bindable
     public String getFilename() {
         return filename;
     }
@@ -86,6 +101,7 @@ public class ImageItem {
         this.filename = filename;
     }
 
+    @Bindable
     public long getId() {
         return id;
     }
@@ -94,6 +110,7 @@ public class ImageItem {
         this.id = id;
     }
 
+    @Bindable
     public String getAuthor() {
         return author;
     }
@@ -102,6 +119,7 @@ public class ImageItem {
         this.author = author;
     }
 
+    @Bindable
     public String getAuthorUrl() {
         return authorUrl;
     }
@@ -110,11 +128,26 @@ public class ImageItem {
         this.authorUrl = authorUrl;
     }
 
+    @Bindable
     public String getPostUrl() {
         return postUrl;
     }
 
     public void setPostUrl(String postUrl) {
         this.postUrl = postUrl;
+    }
+
+    @Override
+    public void addOnPropertyChangedCallback(OnPropertyChangedCallback onPropertyChangedCallback) {
+        if (!mCallbacks.contains(onPropertyChangedCallback)) {
+            mCallbacks.add(onPropertyChangedCallback);
+        }
+    }
+
+    @Override
+    public void removeOnPropertyChangedCallback(OnPropertyChangedCallback onPropertyChangedCallback) {
+        if (mCallbacks.contains(onPropertyChangedCallback)) {
+            mCallbacks.remove(onPropertyChangedCallback);
+        }
     }
 }
