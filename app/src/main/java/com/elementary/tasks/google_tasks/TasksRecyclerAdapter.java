@@ -1,5 +1,6 @@
 package com.elementary.tasks.google_tasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
@@ -48,6 +50,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private Context mContext;
     private static TasksCallback listener;
     private static Map<String, Integer> colors;
+    private static ProgressDialog mDialog;
 
     public TasksRecyclerAdapter(Context context, List<TaskItem> myDataset, Map<String, Integer> colors) {
         this.mDataset = myDataset;
@@ -94,8 +97,35 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     }
 
     private static void switchTask(Context context, boolean isDone, String listId, String taskId) {
+        showProgressDialog(context);
         RealmDb.getInstance().setStatus(taskId, isDone);
-        new SwitchTaskAsync(context, listId, taskId, isDone, listener).execute();
+        new SwitchTaskAsync(context, listId, taskId, isDone, new TasksCallback() {
+            @Override
+            public void onFailed() {
+                hideProgress();
+                if (listener != null) {
+                    listener.onFailed();
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                hideProgress();
+                if (listener != null) {
+                    listener.onComplete();
+                }
+            }
+        }).execute();
+    }
+
+    private static void hideProgress() {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
+    }
+
+    private static void showProgressDialog(Context context) {
+        mDialog = ProgressDialog.show(context, null, context.getString(R.string.please_wait));
     }
 
     @BindingAdapter({"loadMarker"})
