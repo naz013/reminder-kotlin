@@ -38,6 +38,7 @@ public class ReminderApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Prefs.getInstance(this);
+        Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .schemaVersion(1)
                 .deleteRealmIfMigrationNeeded()
