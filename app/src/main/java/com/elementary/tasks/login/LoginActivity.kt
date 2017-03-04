@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
     private fun showLoginError() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.failed_to_login))
-        builder.setPositiveButton(R.string.ok, { dialogInterface, i -> dialogInterface.dismiss() })
+        builder.setPositiveButton(R.string.ok, { dialogInterface, _ -> dialogInterface.dismiss() })
         builder.create().show()
     }
 
@@ -113,11 +113,11 @@ class LoginActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.import_birthdays))
         builder.setMessage(getString(R.string.would_you_like_to_import_birthdays))
-        builder.setPositiveButton(getString(R.string.import_string), { dialogInterface, i ->
+        builder.setPositiveButton(getString(R.string.import_string), { dialogInterface, _ ->
             dialogInterface.dismiss()
             importBirthdays()
         })
-        builder.setNegativeButton(getString(R.string.open_app), { dialog, i ->
+        builder.setNegativeButton(getString(R.string.open_app), { dialog, _ ->
             dialog.dismiss()
             openApplication()
         })
@@ -195,7 +195,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initCheckbox() {
         setViewHTML(binding.termsCheckBox, getString(R.string.i_accept))
-        binding.termsCheckBox.setOnCheckedChangeListener { p0, p1 -> setEnabling(p1) }
+        binding.termsCheckBox.setOnCheckedChangeListener { _, p1 -> setEnabling(p1) }
         binding.termsCheckBox.isChecked = true
     }
 
@@ -227,7 +227,7 @@ class LoginActivity : AppCompatActivity() {
         val webView = WebView(this)
         webView.loadUrl("https://craysoftware.wordpress.com/privacy-policy/")
         builder.setView(webView)
-        builder.setPositiveButton(R.string.ok, { dialogInterface, i -> dialogInterface.dismiss() })
+        builder.setPositiveButton(R.string.ok, { dialogInterface, _ -> dialogInterface.dismiss() })
         builder.create().show()
     }
 

@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PicassoTool;
+import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
@@ -89,9 +90,13 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         public void onResponse(Call<List<ImageItem>> call, Response<List<ImageItem>> response) {
             LogUtil.d(TAG, "onResponse: " + response.code() + ", " + response.message());
             if (response.code() == Api.OK) {
-                mPhotoList = new ArrayList<>(response.body());
-                if (position != -1) mPhotoList.get(position).setSelected(true);
-                loadDataToList();
+                if (mPhotoList.isEmpty()) {
+                    mPhotoList = new ArrayList<>(response.body());
+                    saveToDb(response.body());
+                    loadDataToList();
+                } else {
+                    saveToDb(response.body());
+                }
             }
         }
 
@@ -100,6 +105,11 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             LogUtil.d(TAG, "onFailure: " + t.getLocalizedMessage());
         }
     };
+
+    private void saveToDb(List<ImageItem> body) {
+        new Thread(() -> RealmDb.getInstance().saveImages(body)).start();
+    }
+
     private SelectListener mListener = new SelectListener() {
         @Override
         public void onImageSelected(boolean b) {
@@ -128,6 +138,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     };
 
     private void loadDataToList() {
+        if (position != -1) mPhotoList.get(position).setSelected(true);
         mPointer = START_SIZE - 1;
         mAdapter = new ImagesRecyclerAdapter(this, mPhotoList.subList(0, mPointer), mListener);
         mAdapter.setPrevSelected(position);
@@ -146,6 +157,10 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         binding.emptyLayout.emptyText.setText(R.string.no_images);
         initRecyclerView();
         initImageContainer();
+        mPhotoList = RealmDb.getInstance().getImages();
+        if (!mPhotoList.isEmpty()) {
+            loadDataToList();
+        }
         mCall = RetrofitBuilder.getApi().getAllImages();
         mCall.enqueue(mPhotoCallback);
     }
