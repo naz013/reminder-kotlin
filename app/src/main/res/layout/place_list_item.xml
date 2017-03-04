@@ -21,7 +21,7 @@
         card_view:cardCornerRadius="3dp"
         card_view:cardUseCompatPadding="true">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -29,22 +29,29 @@
                 android:id="@+id/markerImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
                 android:scaleType="center"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
                 card_view:loadMarker="@{item.icon}" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/textView"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="8dp"
-                android:layout_toLeftOf="@+id/markerImage"
-                android:textSize="21sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:text="@{item.title}"
-                card_view:font_style="roboto_light" />
+                android:textSize="21sp"
+                card_view:font_style="roboto_light"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                card_view:layout_constraintRight_toLeftOf="@+id/markerImage"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </layout>

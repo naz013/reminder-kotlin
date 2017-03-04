@@ -87,7 +87,7 @@ class DropboxLogin(context: Activity, callback: LoginCallback) {
     private fun checkDialog(): Dialog {
         return AlertDialog.Builder(mContext)
                 .setMessage(mContext.getString(R.string.other_version_detected))
-                .setPositiveButton(mContext.getString(R.string.open), { dialog, which ->
+                .setPositiveButton(mContext.getString(R.string.open), { _, _ ->
                     val i: Intent
                     val manager = mContext.packageManager
                     if (Module.isPro()) {
@@ -98,7 +98,7 @@ class DropboxLogin(context: Activity, callback: LoginCallback) {
                     i.addCategory(Intent.CATEGORY_LAUNCHER)
                     mContext.startActivity(i)
                 })
-                .setNegativeButton(mContext.getString(R.string.delete), { dialog, which ->
+                .setNegativeButton(mContext.getString(R.string.delete), { _, _ ->
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     if (Module.isPro()) {
                         intent.data = Uri.parse("package:" + MARKET_APP_JUSTREMINDER)
@@ -107,7 +107,7 @@ class DropboxLogin(context: Activity, callback: LoginCallback) {
                     }
                     mContext.startActivity(intent)
                 })
-                .setNeutralButton(mContext.getString(R.string.cancel), { dialog, which -> dialog.dismiss() })
+                .setNeutralButton(mContext.getString(R.string.cancel), { dialog, _ -> dialog.dismiss() })
                 .setCancelable(true)
                 .create()
     }
