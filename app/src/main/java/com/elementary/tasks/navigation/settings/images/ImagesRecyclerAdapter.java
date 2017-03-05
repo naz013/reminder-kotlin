@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.PicassoTool;

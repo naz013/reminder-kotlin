@@ -1,8 +1,14 @@
 package com.elementary.tasks.places;
 
+import com.elementary.tasks.core.network.RetrofitBuilder;
+import com.elementary.tasks.core.network.places.PlacesResponse;
 import com.elementary.tasks.core.utils.Module;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import retrofit2.Call;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,30 +32,36 @@ public class RequestBuilder {
 
     private RequestBuilder() {}
 
-    public static String getNearby(double lat, double lng, String name) {
-        String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
-        if (Module.isPro()) {
-            key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
-        }
-        key = "&key=" + key;
+    public static Call<PlacesResponse> getNearby(double lat, double lng, String name) {
         String req = name.replaceAll("\\s+", "+");
-        String params = "location=" + lat + "," + lng + "&radius=50000&name=" + req + getLanguage();
-        return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" + params + key;
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("location", lat + "," + lng);
+        params.put("radius", "50000");
+        params.put("name", req);
+        params.put("language", getLanguage());
+        params.put("key", getKey());
+        return RetrofitBuilder.getPlacesApi().getNearbyPlaces(params);
     }
 
-    public static String getSearch(String name) {
-        String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
-        if (Module.isPro()) {
-            key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
-        }
-        key = "&key=" + key;
+    public static Call<PlacesResponse> getSearch(String name) {
         String req = name.replaceAll("\\s+", "+");
-        String params = "query=" + req + getLanguage();
-        return "https://maps.googleapis.com/maps/api/place/textsearch/json?" + params + key;
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("query", req);
+        params.put("language", getLanguage());
+        params.put("key", getKey());
+        return RetrofitBuilder.getPlacesApi().getPlaces(params);
     }
 
     private static String getLanguage() {
         Locale locale = Locale.getDefault();
-        return "&language=" + locale.getLanguage();
+        return locale.getLanguage();
+    }
+
+    public static String getKey() {
+        String key = "AIzaSyCMrJF6bn1Mt6n2uyLLLN85h-PGAtotT3Q";
+        if (Module.isPro()) {
+            key = "AIzaSyD80IRgaabOQoZ_mRP_RL36CJKeDO96yKw";
+        }
+        return key;
     }
 }
