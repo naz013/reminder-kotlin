@@ -22,6 +22,8 @@ import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.location.LocationTracker;
+import com.elementary.tasks.core.network.Api;
+import com.elementary.tasks.core.network.places.PlacesResponse;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
@@ -33,7 +35,8 @@ import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.databinding.FragmentPlacesMapBinding;
 import com.elementary.tasks.places.GooglePlaceItem;
 import com.elementary.tasks.places.GooglePlacesAdapter;
-import com.elementary.tasks.places.PlaceSearchTask;
+import com.elementary.tasks.places.PlaceParser;
+import com.elementary.tasks.places.RequestBuilder;
 import com.elementary.tasks.reminder.models.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,6 +49,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -65,7 +71,7 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
  * limitations under the License.
  */
 
-public class PlacesMapFragment extends BaseMapFragment implements View.OnClickListener, PlaceSearchTask.ExecutionListener {
+public class PlacesMapFragment extends BaseMapFragment implements View.OnClickListener {
 
     private static final String SHOWCASE = "places_showcase";
 
@@ -92,7 +98,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private double mLat, mLng;
 
-    private PlaceSearchTask mPlacesAsync;
     private LocationTracker mLocList;
 
     private MapListener mMapListener;
@@ -101,6 +106,8 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public static final String ENABLE_ZOOM = "enable_zoom";
     public static final String MARKER_STYLE = "marker_style";
     public static final String THEME_MODE = "theme_mode";
+
+    private Call<PlacesResponse> call;
 
     private OnMapReadyCallback mMapCallback = new OnMapReadyCallback() {
         @Override
@@ -123,6 +130,30 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private LocationTracker.Callback mTrackerCallback = (lat, lon) -> {
         mLat = lat;
         mLng = lon;
+    };
+    private Callback<PlacesResponse> mSearchCallback = new Callback<PlacesResponse>() {
+        @Override
+        public void onResponse(Call<PlacesResponse> call, Response<PlacesResponse> response) {
+            if (response.code() == Api.OK) {
+                List<GooglePlaceItem> places = new ArrayList<>();
+                for (com.elementary.tasks.core.network.places.Place place : response.body().getResults()) {
+                    places.add(PlaceParser.getDetails(place));
+                }
+                spinnerArray = places;
+                if (spinnerArray.size() == 0) {
+                    Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+                }
+                addSelectAllItem();
+                refreshAdapter(true);
+            } else {
+                Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Call<PlacesResponse> call, Throwable t) {
+            Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+        }
     };
 
     public static PlacesMapFragment newInstance(boolean isZoom, boolean isDark) {
@@ -452,13 +483,16 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         String req = cardSearch.getText().toString().trim().toLowerCase();
         if (req.matches("")) return;
         cancelSearchTask();
-        mPlacesAsync = new PlaceSearchTask(this, req, mLat, mLng);
-        mPlacesAsync.execute();
+        call = RequestBuilder.getSearch(req);
+        if (mLat != 0.0 && mLng != 0.0) {
+            call = RequestBuilder.getNearby(mLat, mLng, req);
+        }
+        call.enqueue(mSearchCallback);
     }
 
     private void cancelSearchTask() {
-        if (mPlacesAsync != null && !mPlacesAsync.isCancelled()) {
-            mPlacesAsync.cancel(true);
+        if (call != null && !call.isExecuted()) {
+            call.cancel();
         }
     }
 
@@ -713,15 +747,5 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void onPause() {
         super.onPause();
         cancelTracking();
-    }
-
-    @Override
-    public void onFinish(List<GooglePlaceItem> places) {
-        spinnerArray = places;
-        if (spinnerArray.size() == 0) {
-            Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
-        }
-        addSelectAllItem();
-        refreshAdapter(true);
     }
 }

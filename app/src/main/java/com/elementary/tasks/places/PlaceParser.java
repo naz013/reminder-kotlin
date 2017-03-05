@@ -1,15 +1,8 @@
 package com.elementary.tasks.places;
 
-import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.network.places.Location;
+import com.elementary.tasks.core.network.places.Place;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,75 +19,23 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class PlaceParser {
 
-    private static final String TAG = "PlaceParser";
-    private static final String ADDRESS = "formatted_address";
-    private static final String VICINITY = "vicinity";
-    private static final String NAME = "name";
-    private static final String GEOMETRY = "geometry";
-    private static final String LOCATION = "location";
-    private static final String LAT = "lat";
-    private static final String LNG = "lng";
-    private static final String ICON = "icon";
-    private static final String ID = "id";
-    private static final String TYPES = "types";
+public class PlaceParser {;
 
-    public GooglePlaceItem getDetails(JSONObject jsonObject) {
+    public static GooglePlaceItem getDetails(Place place) {
         GooglePlaceItem model = new GooglePlaceItem();
-        try {
-            LogUtil.d(TAG, "Details " + jsonObject.toString());
-            if (jsonObject.has(NAME)) {
-                model.setName(jsonObject.getString(NAME));
-            }
-            if (jsonObject.has(ID)) {
-                model.setId(jsonObject.getString(ID));
-            }
-            if (jsonObject.has(ICON)) {
-                model.setIcon(jsonObject.getString(ICON));
-            }
-            if (jsonObject.has(ADDRESS)) {
-                model.setAddress(jsonObject.getString(ADDRESS));
-            }
-            if (jsonObject.has(VICINITY)) {
-                model.setAddress(jsonObject.getString(VICINITY));
-            }
-            if (jsonObject.has(GEOMETRY)) {
-                model.setPosition(getCoordinates(jsonObject.getJSONObject(GEOMETRY)));
-            }
-            if (jsonObject.has(TYPES)) {
-                Type collectionType = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                try {
-                    ArrayList<String> types =
-                            new Gson().fromJson(jsonObject.get(TYPES).toString(), collectionType);
-                    model.setTypes(types);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        model.setName(place.getName());
+        model.setId(place.getId());
+        model.setIcon(place.getIcon());
+        model.setAddress(place.getFormattedAddress());
+        model.setPosition(getCoordinates(place.getGeometry().getLocation()));
+        model.setTypes(place.getTypes());
         return model;
     }
 
-    private LatLng getCoordinates(JSONObject jsonObject) {
-        if (jsonObject.has(LOCATION)) {
-            try {
-                JSONObject object = jsonObject.getJSONObject(LOCATION);
-                double lat = 0.0;
-                double lng = 0.0;
-                if (object.has(LAT)) {
-                    lat = object.getDouble(LAT);
-                }
-                if (object.has(LNG)) {
-                    lng = object.getDouble(LNG);
-                }
-                return new LatLng(lat, lng);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    private static LatLng getCoordinates(Location location) {
+        if (location != null) {
+            return new LatLng(location.getLat(), location.getLng());
         }
         return null;
     }

@@ -1,12 +1,10 @@
-package com.elementary.tasks.navigation.settings.images;
+package com.elementary.tasks.core.network.places;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.http.GET;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2017 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +19,17 @@ import retrofit2.http.GET;
  * limitations under the License.
  */
 
-public interface Api {
-    int OK = 200;
+public class Geometry {
 
-    String BASE_URL = "https://unsplash.it";
+    @SerializedName("location")
+    @Expose
+    private Location location;
 
-    @GET("list")
-    Call<List<ImageItem>> getAllImages();
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

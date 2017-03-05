@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.network.Api;
+import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
@@ -160,7 +162,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         if (!mPhotoList.isEmpty()) {
             loadDataToList();
         }
-        mCall = RetrofitBuilder.getApi().getAllImages();
+        mCall = RetrofitBuilder.getUnsplashApi().getAllImages();
         mCall.enqueue(mPhotoCallback);
     }
 

@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.squareup.picasso.Picasso;
