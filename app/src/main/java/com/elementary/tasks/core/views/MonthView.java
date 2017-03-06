@@ -193,7 +193,7 @@ public class MonthView extends View implements View.OnTouchListener {
         }
         for (int i = 0; i < ROWS * COLS; i++) {
             Rect rect = mCells.get(i);
-            int color = mDefaultColor;
+            int color;
             DateTime dateTime = mDateTimeList.get(i);
             if (mYear != dateTime.getYear() || mMonth != dateTime.getMonth()) {
                 color = Color.GRAY;
@@ -203,6 +203,8 @@ public class MonthView extends View implements View.OnTouchListener {
                 }
                 if (dateTime.getDay() == currentDay && dateTime.getMonth() == currentMonth && dateTime.getYear() == currentYear) {
                     color = mTodayColor;
+                } else {
+                    color = mDefaultColor;
                 }
             }
             drawRectText(dateTime.getDay().toString(), canvas, rect, color);
@@ -292,7 +294,7 @@ public class MonthView extends View implements View.OnTouchListener {
             case MotionEvent.ACTION_CANCEL:
                 cancelTouch();
                 break;
-            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_MOVE:
                 performMove(motionEvent);
                 break;
         }
