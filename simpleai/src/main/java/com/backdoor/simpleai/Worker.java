@@ -1,7 +1,5 @@
 package com.backdoor.simpleai;
 
-import android.util.Log;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -244,7 +242,7 @@ abstract class Worker implements WorkerInterface {
 
     @Override
     public long getTime(String input, Ampm ampm, String[] times) {
-        Log.d(TAG, "getTime: " + ampm);
+        System.out.println("getTime: " + ampm);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         String[] parts = input.split("\\s");
