@@ -76,9 +76,6 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         ImageItem item = mDataList.get(position);
         holder.binding.setItem(item);
-        if (prevSelected == position) {
-            holder.binding.setSelected(true);
-        }
         GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) holder.binding.card.getLayoutParams();
         if (position < 3) {
             params.topMargin = MeasureUtils.dp2px(mContext, 56);
@@ -86,6 +83,11 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
             params.topMargin = 0;
         }
         holder.binding.card.setLayoutParams(params);
+        if (prevSelected == position) {
+            holder.binding.setSelected(true);
+        } else {
+            holder.binding.setSelected(false);
+        }
     }
 
     @Override
