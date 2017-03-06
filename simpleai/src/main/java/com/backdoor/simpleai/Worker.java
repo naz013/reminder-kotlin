@@ -41,7 +41,9 @@ abstract class Worker implements WorkerInterface {
 
     static int getSelectedWeekday(List<Integer> days) {
         for (int i = 0; i < days.size(); i++) {
-            if (days.get(i) == 1) return i;
+            if (days.get(i) == 1) {
+                return i;
+            }
         }
         return -1;
     }
@@ -81,39 +83,63 @@ abstract class Worker implements WorkerInterface {
             String string = parts[i];
             if (hasSeconds(string)) {
                 try {
-                    if (times[0] == 0) times[0] = Integer.parseInt(parts[i - 1]);
+                    if (times[0] == 0) {
+                        times[0] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[0] == 0) times[0] = 1;
+                    if (times[0] == 0) {
+                        times[0] = 1;
+                    }
                 }
             } else if (hasMinutes(string) != -1) {
                 try {
-                    if (times[1] == 0) times[1] = Integer.parseInt(parts[i - 1]);
+                    if (times[1] == 0) {
+                        times[1] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[1] == 0) times[1] = 1;
+                    if (times[1] == 0) {
+                        times[1] = 1;
+                    }
                 }
             } else if (hasHours(string) != -1) {
                 try {
-                    if (times[2] == 0) times[2] = Integer.parseInt(parts[i - 1]);
+                    if (times[2] == 0) {
+                        times[2] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[2] == 0) times[2] = 1;
+                    if (times[2] == 0) {
+                        times[2] = 1;
+                    }
                 }
             } else if (hasDays(string)) {
                 try {
-                    if (times[3] == 0) times[3] = Integer.parseInt(parts[i - 1]);
+                    if (times[3] == 0) {
+                        times[3] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[3] == 0) times[3] = 1;
+                    if (times[3] == 0) {
+                        times[3] = 1;
+                    }
                 }
             } else if (hasWeeks(string)) {
                 try {
-                    if (times[4] == 0) times[4] = Integer.parseInt(parts[i - 1]);
+                    if (times[4] == 0) {
+                        times[4] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[4] == 0) times[4] = 1;
+                    if (times[4] == 0) {
+                        times[4] = 1;
+                    }
                 }
             } else if (hasMonth(string)) {
                 try {
-                    if (times[5] == 0) times[5] = Integer.parseInt(parts[i - 1]);
+                    if (times[5] == 0) {
+                        times[5] = Integer.parseInt(parts[i - 1]);
+                    }
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[5] == 0) times[5] = 1;
+                    if (times[5] == 0) {
+                        times[5] = 1;
+                    }
                 }
             }
         }
@@ -180,7 +206,9 @@ abstract class Worker implements WorkerInterface {
             if (number != -1) {
                 if (number > 20 && (number % 10 > 0)) {
                     input = input.replace(parts[i] + " " + parts[i + 1], String.valueOf(number));
-                } else input = input.replace(parts[i], String.valueOf(number));
+                } else {
+                    input = input.replace(parts[i], String.valueOf(number));
+                }
             }
         }
         return input.trim();
@@ -188,12 +216,19 @@ abstract class Worker implements WorkerInterface {
 
     protected int getNumber(String[] parts, int index) {
         int number = findNumber(parts[index]);
-        if (number == -1) return -1;
+        if (number == -1) {
+            return -1;
+        }
         if (number >= 20) {
             int res = getNumber(parts, index + 1);
-            if (res != -1) return res + number;
-            else return number;
-        } else return number;
+            if (res != -1) {
+                return res + number;
+            } else {
+                return number;
+            }
+        } else {
+            return number;
+        }
     }
 
     @Override
@@ -242,12 +277,13 @@ abstract class Worker implements WorkerInterface {
 
     @Override
     public long getTime(String input, Ampm ampm, String[] times) {
-        System.out.println("getTime: " + ampm);
+        System.out.println("getTime: " + ampm + ", input " + input);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         String[] parts = input.split("\\s");
         int h = -1;
         int m = -1;
+        int reserveHour = 0;
         for (int i = parts.length - 1; i >= 0; i--) {
             String part = parts[i];
             if (hasHours(part) != -1) {
@@ -258,7 +294,9 @@ abstract class Worker implements WorkerInterface {
                 } catch (NumberFormatException e) {
                     integer = 1;
                 }
-                if (ampm == Ampm.EVENING) integer += 12;
+                if (ampm == Ampm.EVENING) {
+                    integer += 12;
+                }
                 h = integer;
                 parts[i - index] = "";
             }
@@ -271,6 +309,10 @@ abstract class Worker implements WorkerInterface {
                     integer = 0;
                 }
                 m = integer;
+            }
+            try {
+                reserveHour = Integer.parseInt(parts[i]);
+            } catch (NumberFormatException ignored) {
             }
         }
         Date date = getShortTime(input);
@@ -285,23 +327,43 @@ abstract class Worker implements WorkerInterface {
         if (h != -1) {
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, h);
-            if (m != -1) calendar.set(Calendar.MINUTE, m);
-            else calendar.set(Calendar.MINUTE, 0);
+            if (m != -1) {
+                calendar.set(Calendar.MINUTE, m);
+            } else {
+                calendar.set(Calendar.MINUTE, 0);
+            }
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
             return calendar.getTimeInMillis();
         }
+        if (calendar.getTimeInMillis() == 0 && reserveHour != 0) {
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, reserveHour);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+            if (ampm == Ampm.EVENING) {
+                calendar.add(Calendar.HOUR_OF_DAY, 12);
+            }
+        }
         if (calendar.getTimeInMillis() == 0 && ampm != null) {
             calendar.setTimeInMillis(System.currentTimeMillis());
             try {
-                if (ampm == Ampm.MORNING)
+                if (ampm == Ampm.MORNING) {
                     calendar.setTime(mFormat.parse(times[0]));
-                if (ampm == Ampm.NOON)
+                }
+                if (ampm == Ampm.NOON) {
                     calendar.setTime(mFormat.parse(times[1]));
-                if (ampm == Ampm.EVENING)
+                }
+                if (ampm == Ampm.EVENING) {
                     calendar.setTime(mFormat.parse(times[2]));
-                if (ampm == Ampm.NIGHT)
+                }
+                if (ampm == Ampm.NIGHT) {
                     calendar.setTime(mFormat.parse(times[3]));
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

@@ -71,7 +71,9 @@ public class Recognizer {
         }
         if (wrapper.hasEvent(keyStr)) {
             Model model = getEvent(keyStr);
-            if (model != null) return model;
+            if (model != null) {
+                return model;
+            }
         }
         if (wrapper.hasAction(keyStr)) {
             return getAction(keyStr);
@@ -110,7 +112,9 @@ public class Recognizer {
             keyStr = wrapper.clearRepeat(keyStr);
             repeating = true;
             repeat = wrapper.getDaysRepeat(keyStr);
-            if (repeat != 0) keyStr = wrapper.clearDaysRepeat(keyStr);
+            if (repeat != 0) {
+                keyStr = wrapper.clearDaysRepeat(keyStr);
+            }
         }
 
         boolean isCalendar = false;
@@ -136,7 +140,9 @@ public class Recognizer {
         }
 
         Ampm ampm = wrapper.getAmpm(keyStr);
-        if (ampm != null) keyStr = wrapper.clearAmpm(keyStr);
+        if (ampm != null) {
+            keyStr = wrapper.clearAmpm(keyStr);
+        }
         List<Integer> weekdays = wrapper.getWeekDays(keyStr);
         boolean hasWeekday = false;
         for (int day : weekdays) {
@@ -147,9 +153,13 @@ public class Recognizer {
         }
         keyStr = wrapper.clearWeekDays(keyStr);
         if (hasWeekday) {
-            if (type == Action.CALL) type = Action.WEEK_CALL;
-            else if (type == Action.MESSAGE) type = Action.WEEK_SMS;
-            else type = Action.WEEK;
+            if (type == Action.CALL) {
+                type = Action.WEEK_CALL;
+            } else if (type == Action.MESSAGE) {
+                type = Action.WEEK_SMS;
+            } else {
+                type = Action.WEEK;
+            }
         }
 
         boolean hasTimer = false;
@@ -162,11 +172,15 @@ public class Recognizer {
         }
 
         long date = wrapper.getDate(keyStr);
-        if (date != 0) keyStr = wrapper.clearDate(keyStr);
+        if (date != 0) {
+            keyStr = wrapper.clearDate(keyStr);
+        }
 
         long time = wrapper.getTime(keyStr, ampm, times);
-        if (time != 0) keyStr = wrapper.clearTime(keyStr);
-        System.out.println("parse: " + keyStr);
+        if (time != 0) {
+            keyStr = wrapper.clearTime(keyStr);
+        }
+        System.out.println("parse: " + keyStr + ", time " + time + ", date " + date);
         if (today) {
             time = getTodayTime(time);
         } else if (afterTomorrow) {
@@ -181,7 +195,9 @@ public class Recognizer {
             time = System.currentTimeMillis() + afterTime;
         } else if (date != 0 || time != 0) {
             time = getDateTime(date, time);
-        } else return null;
+        } else {
+            return null;
+        }
 
         String message = null;
         if (hasAction && (type == Action.MESSAGE || type == Action.MAIL)) {
@@ -200,15 +216,17 @@ public class Recognizer {
                 number = output.getNumber();
                 keyStr = output.getOutput();
             }
-            if (number == null)
+            if (number == null) {
                 return null;
+            }
         }
 
         String task = StringUtils.capitalize(keyStr);
         if (hasAction) {
             task = StringUtils.capitalize(message);
-            if ((type == Action.MESSAGE || type == Action.MAIL) && task == null)
+            if ((type == Action.MESSAGE || type == Action.MAIL) && task == null) {
                 return null;
+            }
         }
         Model model = new Model();
         model.setType(ActionType.REMINDER);
@@ -230,8 +248,12 @@ public class Recognizer {
     }
 
     private long getDateTime(long date, long time) {
-        if (date == 0) date = System.currentTimeMillis();
-        if (time == 0) time = date;
+        if (date == 0) {
+            date = System.currentTimeMillis();
+        }
+        if (time == 0) {
+            time = date;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -249,7 +271,9 @@ public class Recognizer {
 
     private long getRepeatingTime(long time, boolean hasWeekday) {
         Calendar calendar = Calendar.getInstance();
-        if (time == 0) time = System.currentTimeMillis();
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -259,15 +283,18 @@ public class Recognizer {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         if (!hasWeekday) {
-            if (calendar.getTimeInMillis() < System.currentTimeMillis())
+            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
                 calendar.setTimeInMillis(calendar.getTimeInMillis() + Worker.DAY);
+            }
         }
         return calendar.getTimeInMillis();
     }
 
     private long getDayTime(long time, List<Integer> weekdays) {
         Calendar calendar = Calendar.getInstance();
-        if (time == 0) time = System.currentTimeMillis();
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -291,7 +318,9 @@ public class Recognizer {
 
     private long getTomorrowTime(long time) {
         Calendar calendar = Calendar.getInstance();
-        if (time == 0) time = System.currentTimeMillis();
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -305,7 +334,9 @@ public class Recognizer {
 
     private long getAfterTomorrowTime(long time) {
         Calendar calendar = Calendar.getInstance();
-        if (time == 0) time = System.currentTimeMillis();
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -319,7 +350,9 @@ public class Recognizer {
 
     private long getTodayTime(long time) {
         Calendar calendar = Calendar.getInstance();
-        if (time == 0) time = System.currentTimeMillis();
+        if (time == 0) {
+            time = System.currentTimeMillis();
+        }
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -355,7 +388,9 @@ public class Recognizer {
 
     private Model getEvent(String keyStr) {
         Action event = wrapper.getEvent(keyStr);
-        if (event == Action.NO_EVENT) return null;
+        if (event == Action.NO_EVENT) {
+            return null;
+        }
         Model model = new Model();
         model.setType(ActionType.ACTION);
         model.setAction(event);

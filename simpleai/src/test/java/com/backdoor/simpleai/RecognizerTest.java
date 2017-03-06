@@ -37,7 +37,7 @@ public class RecognizerTest {
 
     @Test
     public void parse() throws Exception {
-        Model model = recognizer.parse("завтра о 8 годині вечора перевірити пошту");
+        Model model = recognizer.parse("завтра о 8 вечора перевірити пошту");
         System.out.println(model);
         assertNotEquals(null, model);
         printTime(model.getDateTime());
