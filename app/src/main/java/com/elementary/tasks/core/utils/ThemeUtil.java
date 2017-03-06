@@ -32,6 +32,7 @@ public final class ThemeUtil {
     public static final int THEME_AUTO = 0;
     public static final int THEME_WHITE = 1;
     private static final int THEME_DARK = 2;
+    public static final int THEME_AMOLED = 3;
     public static final int NUM_OF_MARKERS = 16;
 
     private Holder holder;
@@ -48,7 +49,8 @@ public final class ThemeUtil {
         return instance;
     }
 
-    private ThemeUtil() {}
+    private ThemeUtil() {
+    }
 
     private ThemeUtil(Context context) {
         this.holder = new Holder(context);
@@ -207,7 +209,7 @@ public final class ThemeUtil {
     public boolean isDark() {
         Prefs prefs = Prefs.getInstance(getContext());
         int appTheme = prefs.getAppTheme();
-        boolean isDark = appTheme == THEME_DARK;
+        boolean isDark = (appTheme == THEME_DARK || appTheme == THEME_AMOLED);
         if (appTheme == THEME_AUTO) {
             Calendar calendar = Calendar.getInstance();
             long mTime = System.currentTimeMillis();
@@ -227,66 +229,130 @@ public final class ThemeUtil {
         int id;
         int loadedColor = Prefs.getInstance(getContext()).getAppThemeColor();
         if (isDark()) {
-            switch (loadedColor) {
-                case Color.RED:
-                    id = R.style.HomeDark_Red;
-                    break;
-                case Color.PURPLE:
-                    id = R.style.HomeDark_Purple;
-                    break;
-                case Color.LIGHT_GREEN:
-                    id = R.style.HomeDark_LightGreen;
-                    break;
-                case Color.GREEN:
-                    id = R.style.HomeDark_Green;
-                    break;
-                case Color.LIGHT_BLUE:
-                    id = R.style.HomeDark_LightBlue;
-                    break;
-                case Color.BLUE:
-                    id = R.style.HomeDark_Blue;
-                    break;
-                case Color.YELLOW:
-                    id = R.style.HomeDark_Yellow;
-                    break;
-                case Color.ORANGE:
-                    id = R.style.HomeDark_Orange;
-                    break;
-                case Color.CYAN:
-                    id = R.style.HomeDark_Cyan;
-                    break;
-                case Color.PINK:
-                    id = R.style.HomeDark_Pink;
-                    break;
-                case Color.TEAL:
-                    id = R.style.HomeDark_Teal;
-                    break;
-                case Color.AMBER:
-                    id = R.style.HomeDark_Amber;
-                    break;
-                default:
-                    if (Module.isPro()) {
-                        switch (loadedColor) {
-                            case Color.DEEP_PURPLE:
-                                id = R.style.HomeDark_DeepPurple;
-                                break;
-                            case Color.DEEP_ORANGE:
-                                id = R.style.HomeDark_DeepOrange;
-                                break;
-                            case Color.LIME:
-                                id = R.style.HomeDark_Lime;
-                                break;
-                            case Color.INDIGO:
-                                id = R.style.HomeDark_Indigo;
-                                break;
-                            default:
-                                id = R.style.HomeDark_Blue;
-                                break;
+            if (Prefs.getInstance(getContext()).getAppTheme() == THEME_AMOLED) {
+                switch (loadedColor) {
+                    case Color.RED:
+                        id = R.style.HomeBlack_Red;
+                        break;
+                    case Color.PURPLE:
+                        id = R.style.HomeBlack_Purple;
+                        break;
+                    case Color.LIGHT_GREEN:
+                        id = R.style.HomeBlack_LightGreen;
+                        break;
+                    case Color.GREEN:
+                        id = R.style.HomeBlack_Green;
+                        break;
+                    case Color.LIGHT_BLUE:
+                        id = R.style.HomeBlack_LightBlue;
+                        break;
+                    case Color.BLUE:
+                        id = R.style.HomeBlack_Blue;
+                        break;
+                    case Color.YELLOW:
+                        id = R.style.HomeBlack_Yellow;
+                        break;
+                    case Color.ORANGE:
+                        id = R.style.HomeBlack_Orange;
+                        break;
+                    case Color.CYAN:
+                        id = R.style.HomeBlack_Cyan;
+                        break;
+                    case Color.PINK:
+                        id = R.style.HomeBlack_Pink;
+                        break;
+                    case Color.TEAL:
+                        id = R.style.HomeBlack_Teal;
+                        break;
+                    case Color.AMBER:
+                        id = R.style.HomeBlack_Amber;
+                        break;
+                    default:
+                        if (Module.isPro()) {
+                            switch (loadedColor) {
+                                case Color.DEEP_PURPLE:
+                                    id = R.style.HomeBlack_DeepPurple;
+                                    break;
+                                case Color.DEEP_ORANGE:
+                                    id = R.style.HomeBlack_DeepOrange;
+                                    break;
+                                case Color.LIME:
+                                    id = R.style.HomeBlack_Lime;
+                                    break;
+                                case Color.INDIGO:
+                                    id = R.style.HomeBlack_Indigo;
+                                    break;
+                                default:
+                                    id = R.style.HomeBlack_Blue;
+                                    break;
+                            }
+                        } else {
+                            id = R.style.HomeBlack_Blue;
                         }
-                    } else {
+                        break;
+                }
+            } else {
+                switch (loadedColor) {
+                    case Color.RED:
+                        id = R.style.HomeDark_Red;
+                        break;
+                    case Color.PURPLE:
+                        id = R.style.HomeDark_Purple;
+                        break;
+                    case Color.LIGHT_GREEN:
+                        id = R.style.HomeDark_LightGreen;
+                        break;
+                    case Color.GREEN:
+                        id = R.style.HomeDark_Green;
+                        break;
+                    case Color.LIGHT_BLUE:
+                        id = R.style.HomeDark_LightBlue;
+                        break;
+                    case Color.BLUE:
                         id = R.style.HomeDark_Blue;
-                    }
-                    break;
+                        break;
+                    case Color.YELLOW:
+                        id = R.style.HomeDark_Yellow;
+                        break;
+                    case Color.ORANGE:
+                        id = R.style.HomeDark_Orange;
+                        break;
+                    case Color.CYAN:
+                        id = R.style.HomeDark_Cyan;
+                        break;
+                    case Color.PINK:
+                        id = R.style.HomeDark_Pink;
+                        break;
+                    case Color.TEAL:
+                        id = R.style.HomeDark_Teal;
+                        break;
+                    case Color.AMBER:
+                        id = R.style.HomeDark_Amber;
+                        break;
+                    default:
+                        if (Module.isPro()) {
+                            switch (loadedColor) {
+                                case Color.DEEP_PURPLE:
+                                    id = R.style.HomeDark_DeepPurple;
+                                    break;
+                                case Color.DEEP_ORANGE:
+                                    id = R.style.HomeDark_DeepOrange;
+                                    break;
+                                case Color.LIME:
+                                    id = R.style.HomeDark_Lime;
+                                    break;
+                                case Color.INDIGO:
+                                    id = R.style.HomeDark_Indigo;
+                                    break;
+                                default:
+                                    id = R.style.HomeDark_Blue;
+                                    break;
+                            }
+                        } else {
+                            id = R.style.HomeDark_Blue;
+                        }
+                        break;
+                }
             }
         } else {
             switch (loadedColor) {
@@ -648,7 +714,11 @@ public final class ThemeUtil {
     public int getSpinnerStyle() {
         int color;
         if (isDark()) {
-            color = R.color.material_grey;
+            if (Prefs.getInstance(getContext()).getAppTheme() == THEME_AMOLED) {
+                color = R.color.blackPrimary;
+            } else {
+                color = R.color.material_grey;
+            }
         } else {
             color = R.color.whitePrimary;
         }
@@ -660,66 +730,130 @@ public final class ThemeUtil {
         int id;
         int loadedColor = Prefs.getInstance(getContext()).getAppThemeColor();
         if (isDark()) {
-            switch (loadedColor) {
-                case Color.RED:
-                    id = R.style.HomeDarkDialog_Red;
-                    break;
-                case Color.PURPLE:
-                    id = R.style.HomeDarkDialog_Purple;
-                    break;
-                case Color.LIGHT_GREEN:
-                    id = R.style.HomeDarkDialog_LightGreen;
-                    break;
-                case Color.GREEN:
-                    id = R.style.HomeDarkDialog_Green;
-                    break;
-                case Color.LIGHT_BLUE:
-                    id = R.style.HomeDarkDialog_LightBlue;
-                    break;
-                case Color.BLUE:
-                    id = R.style.HomeDarkDialog_Blue;
-                    break;
-                case Color.YELLOW:
-                    id = R.style.HomeDarkDialog_Yellow;
-                    break;
-                case Color.ORANGE:
-                    id = R.style.HomeDarkDialog_Orange;
-                    break;
-                case Color.CYAN:
-                    id = R.style.HomeDarkDialog_Cyan;
-                    break;
-                case Color.PINK:
-                    id = R.style.HomeDarkDialog_Pink;
-                    break;
-                case Color.TEAL:
-                    id = R.style.HomeDarkDialog_Teal;
-                    break;
-                case Color.AMBER:
-                    id = R.style.HomeDarkDialog_Amber;
-                    break;
-                default:
-                    if (Module.isPro()) {
-                        switch (loadedColor) {
-                            case Color.DEEP_PURPLE:
-                                id = R.style.HomeDarkDialog_DeepPurple;
-                                break;
-                            case Color.DEEP_ORANGE:
-                                id = R.style.HomeDarkDialog_DeepOrange;
-                                break;
-                            case Color.LIME:
-                                id = R.style.HomeDarkDialog_Lime;
-                                break;
-                            case Color.INDIGO:
-                                id = R.style.HomeDarkDialog_Indigo;
-                                break;
-                            default:
-                                id = R.style.HomeDarkDialog_Blue;
-                                break;
+            if (Prefs.getInstance(getContext()).getAppTheme() == THEME_AMOLED) {
+                switch (loadedColor) {
+                    case Color.RED:
+                        id = R.style.HomeBlackDialog_Red;
+                        break;
+                    case Color.PURPLE:
+                        id = R.style.HomeBlackDialog_Purple;
+                        break;
+                    case Color.LIGHT_GREEN:
+                        id = R.style.HomeBlackDialog_LightGreen;
+                        break;
+                    case Color.GREEN:
+                        id = R.style.HomeBlackDialog_Green;
+                        break;
+                    case Color.LIGHT_BLUE:
+                        id = R.style.HomeBlackDialog_LightBlue;
+                        break;
+                    case Color.BLUE:
+                        id = R.style.HomeBlackDialog_Blue;
+                        break;
+                    case Color.YELLOW:
+                        id = R.style.HomeBlackDialog_Yellow;
+                        break;
+                    case Color.ORANGE:
+                        id = R.style.HomeBlackDialog_Orange;
+                        break;
+                    case Color.CYAN:
+                        id = R.style.HomeBlackDialog_Cyan;
+                        break;
+                    case Color.PINK:
+                        id = R.style.HomeBlackDialog_Pink;
+                        break;
+                    case Color.TEAL:
+                        id = R.style.HomeBlackDialog_Teal;
+                        break;
+                    case Color.AMBER:
+                        id = R.style.HomeBlackDialog_Amber;
+                        break;
+                    default:
+                        if (Module.isPro()) {
+                            switch (loadedColor) {
+                                case Color.DEEP_PURPLE:
+                                    id = R.style.HomeBlackDialog_DeepPurple;
+                                    break;
+                                case Color.DEEP_ORANGE:
+                                    id = R.style.HomeBlackDialog_DeepOrange;
+                                    break;
+                                case Color.LIME:
+                                    id = R.style.HomeBlackDialog_Lime;
+                                    break;
+                                case Color.INDIGO:
+                                    id = R.style.HomeBlackDialog_Indigo;
+                                    break;
+                                default:
+                                    id = R.style.HomeBlackDialog_Blue;
+                                    break;
+                            }
+                        } else {
+                            id = R.style.HomeBlackDialog_Blue;
                         }
-                    } else {
+                        break;
+                }
+            } else {
+                switch (loadedColor) {
+                    case Color.RED:
+                        id = R.style.HomeDarkDialog_Red;
+                        break;
+                    case Color.PURPLE:
+                        id = R.style.HomeDarkDialog_Purple;
+                        break;
+                    case Color.LIGHT_GREEN:
+                        id = R.style.HomeDarkDialog_LightGreen;
+                        break;
+                    case Color.GREEN:
+                        id = R.style.HomeDarkDialog_Green;
+                        break;
+                    case Color.LIGHT_BLUE:
+                        id = R.style.HomeDarkDialog_LightBlue;
+                        break;
+                    case Color.BLUE:
                         id = R.style.HomeDarkDialog_Blue;
-                    }
-                    break;
+                        break;
+                    case Color.YELLOW:
+                        id = R.style.HomeDarkDialog_Yellow;
+                        break;
+                    case Color.ORANGE:
+                        id = R.style.HomeDarkDialog_Orange;
+                        break;
+                    case Color.CYAN:
+                        id = R.style.HomeDarkDialog_Cyan;
+                        break;
+                    case Color.PINK:
+                        id = R.style.HomeDarkDialog_Pink;
+                        break;
+                    case Color.TEAL:
+                        id = R.style.HomeDarkDialog_Teal;
+                        break;
+                    case Color.AMBER:
+                        id = R.style.HomeDarkDialog_Amber;
+                        break;
+                    default:
+                        if (Module.isPro()) {
+                            switch (loadedColor) {
+                                case Color.DEEP_PURPLE:
+                                    id = R.style.HomeDarkDialog_DeepPurple;
+                                    break;
+                                case Color.DEEP_ORANGE:
+                                    id = R.style.HomeDarkDialog_DeepOrange;
+                                    break;
+                                case Color.LIME:
+                                    id = R.style.HomeDarkDialog_Lime;
+                                    break;
+                                case Color.INDIGO:
+                                    id = R.style.HomeDarkDialog_Indigo;
+                                    break;
+                                default:
+                                    id = R.style.HomeDarkDialog_Blue;
+                                    break;
+                            }
+                        } else {
+                            id = R.style.HomeDarkDialog_Blue;
+                        }
+                        break;
+                }
             }
         } else {
             switch (loadedColor) {
@@ -813,7 +947,11 @@ public final class ThemeUtil {
     public int getBackgroundStyle() {
         int id;
         if (isDark()) {
-            id = getColor(R.color.material_grey);
+            if (Prefs.getInstance(getContext()).getAppTheme() == THEME_AMOLED) {
+                id = getColor(R.color.blackPrimary);
+            } else {
+                id = getColor(R.color.material_grey);
+            }
         } else {
             id = getColor(R.color.material_white);
         }
@@ -833,7 +971,11 @@ public final class ThemeUtil {
     public int getCardStyle() {
         int color;
         if (isDark()) {
-            color = getColor(R.color.grey_x);
+            if (Prefs.getInstance(getContext()).getAppTheme() == THEME_AMOLED) {
+                color = getColor(R.color.blackPrimary);
+            } else {
+                color = getColor(R.color.grey_x);
+            }
         } else {
             color = getColor(R.color.whitePrimary);
         }

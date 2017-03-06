@@ -582,5 +582,6 @@
     <string name="backup">Backup</string>
     <string name="body">Body</string>
     <string name="button_color">Button color</string>
+    <string name="amoled">AMOLED</string>
 
 </resources>
