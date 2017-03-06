@@ -207,6 +207,111 @@
         <item name="colorAccent">@color/pinkAccent</item>
     </style>
 
+    <style name="HomeBlack" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
+        <item name="colorPrimary">@color/bluePrimary</item>
+        <item name="colorAccent">@color/yellowAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowBackground">@color/blackPrimary</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="HomeBlack.Blue" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
+        <item name="colorPrimary">@color/bluePrimary</item>
+        <item name="colorAccent">@color/redAccent</item>
+    </style>
+
+    <style name="HomeBlack.Red" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/redPrimaryDark</item>
+        <item name="colorPrimary">@color/redPrimary</item>
+        <item name="colorAccent">@color/indigoAccent</item>
+    </style>
+
+    <style name="HomeBlack.Purple" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
+        <item name="colorPrimary">@color/purplePrimary</item>
+        <item name="colorAccent">@color/amberAccent</item>
+    </style>
+
+    <style name="HomeBlack.Green" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/greenPrimaryDark</item>
+        <item name="colorPrimary">@color/greenPrimary</item>
+        <item name="colorAccent">@color/pinkAccent</item>
+    </style>
+
+    <style name="HomeBlack.LightGreen" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/greenLightPrimaryDark</item>
+        <item name="colorPrimary">@color/greenLightPrimary</item>
+        <item name="colorAccent">@color/purpleAccent</item>
+    </style>
+
+    <style name="HomeBlack.LightBlue" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/blueLightPrimaryDark</item>
+        <item name="colorPrimary">@color/blueLightPrimary</item>
+        <item name="colorAccent">@color/yellowAccent</item>
+    </style>
+
+    <style name="HomeBlack.Yellow" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/yellowPrimaryDark</item>
+        <item name="colorPrimary">@color/yellowPrimary</item>
+        <item name="colorAccent">@color/redAccent</item>
+    </style>
+
+    <style name="HomeBlack.Orange" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/orangePrimaryDark</item>
+        <item name="colorPrimary">@color/orangePrimary</item>
+        <item name="colorAccent">@color/greenAccent</item>
+    </style>
+
+    <style name="HomeBlack.Cyan" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/cyanPrimaryDark</item>
+        <item name="colorPrimary">@color/cyanPrimary</item>
+        <item name="colorAccent">@color/purpleDeepAccent</item>
+    </style>
+
+    <style name="HomeBlack.Pink" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/pinkPrimaryDark</item>
+        <item name="colorPrimary">@color/pinkPrimary</item>
+        <item name="colorAccent">@color/blueLightAccent</item>
+    </style>
+
+    <style name="HomeBlack.Teal" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/tealPrimaryDark</item>
+        <item name="colorPrimary">@color/tealPrimary</item>
+        <item name="colorAccent">@color/pinkAccent</item>
+    </style>
+
+    <style name="HomeBlack.Amber" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/amberPrimaryDark</item>
+        <item name="colorPrimary">@color/amberPrimary</item>
+        <item name="colorAccent">@color/blueAccent</item>
+    </style>
+
+    <style name="HomeBlack.DeepPurple" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/purpleDeepPrimaryDark</item>
+        <item name="colorPrimary">@color/purpleDeepPrimary</item>
+        <item name="colorAccent">@color/greenAccent</item>
+    </style>
+
+    <style name="HomeBlack.DeepOrange" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/orangeDeepPrimaryDark</item>
+        <item name="colorPrimary">@color/orangeDeepPrimary</item>
+        <item name="colorAccent">@color/purpleAccent</item>
+    </style>
+
+    <style name="HomeBlack.Lime" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/limePrimaryDark</item>
+        <item name="colorPrimary">@color/limePrimary</item>
+        <item name="colorAccent">@color/redAccent</item>
+    </style>
+
+    <style name="HomeBlack.Indigo" parent="HomeBlack">
+        <item name="colorPrimaryDark">@color/indigoPrimaryDark</item>
+        <item name="colorPrimary">@color/indigoPrimary</item>
+        <item name="colorAccent">@color/pinkAccent</item>
+    </style>
+
     <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
     </style>
@@ -232,6 +337,76 @@
         <item name="colorPrimaryDark">@color/bluePrimary</item>
         <item name="windowActionBar">false</item>
     </style>
+
+    <style name="HomeBlackDialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="android:windowBackground">@color/blackPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Blue" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/bluePrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Red" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/redPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Purple" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/purplePrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Green" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/greenPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.LightGreen" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/greenLightPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.LightBlue" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/blueLightPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Yellow" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/yellowPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Orange" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/orangePrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Cyan" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/cyanPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Pink" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/pinkPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Teal" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/tealPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Amber" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/amberPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.DeepPurple" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/purpleDeepPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.DeepOrange" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/orangeDeepPrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Lime" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/limePrimary</item>
+    </style>
+
+    <style name="HomeBlackDialog.Indigo" parent="HomeBlackDialog">
+        <item name="colorAccent">@color/indigoPrimary</item>
+    </style>
+
 
     <style name="HomeDarkDialog.Blue" parent="HomeDarkDialog">
         <item name="colorAccent">@color/bluePrimary</item>

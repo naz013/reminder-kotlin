@@ -94,6 +94,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         int theme = getPrefs().getAppTheme();
         if (theme == ThemeUtil.THEME_AUTO) return getString(R.string.auto);
         else if (theme == ThemeUtil.THEME_WHITE) return getString(R.string.light);
+        else if (theme == ThemeUtil.THEME_AMOLED) return getString(R.string.amoled);
         else return getString(R.string.dark);
     }
 
@@ -110,7 +111,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.theme));
-        String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark)};
+        String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark), getString(R.string.amoled)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, colors);
         int initTheme = getPrefs().getAppTheme();
