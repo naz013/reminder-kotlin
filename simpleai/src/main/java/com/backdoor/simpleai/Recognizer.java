@@ -1,7 +1,6 @@
 package com.backdoor.simpleai;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,7 +42,7 @@ public class Recognizer {
     public Model parse(String string) {
         String keyStr = string.toLowerCase().trim();
         keyStr = wrapper.replaceNumbers(keyStr);
-        Log.d(TAG, "parse: " + keyStr);
+        System.out.println("parse: " + keyStr);
         if (wrapper.hasShowAction(keyStr)) {
             String local = keyStr + "";
             Action action = wrapper.getShowAction(local);
@@ -167,7 +166,7 @@ public class Recognizer {
 
         long time = wrapper.getTime(keyStr, ampm, times);
         if (time != 0) keyStr = wrapper.clearTime(keyStr);
-        Log.d(TAG, "parse: " + keyStr);
+        System.out.println("parse: " + keyStr);
         if (today) {
             time = getTodayTime(time);
         } else if (afterTomorrow) {
