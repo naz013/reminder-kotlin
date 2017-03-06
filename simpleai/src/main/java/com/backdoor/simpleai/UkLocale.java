@@ -63,7 +63,9 @@ class UkLocale extends Worker {
             }
         }
         List<Integer> list = new ArrayList<>();
-        for (int anArray : array) list.add(anArray);
+        for (int anArray : array) {
+            list.add(anArray);
+        }
         return list;
     }
 
@@ -83,7 +85,9 @@ class UkLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("в")) sb.append(" ").append(part);
+            if (!part.matches("в")) {
+                sb.append(" ").append(part);
+            }
         }
         return sb.toString().trim();
     }
@@ -164,9 +168,12 @@ class UkLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         boolean isStart = false;
         for (String part : parts) {
-            if (isStart) sb.append(" ").append(part);
-            if (part.matches("текст(ом)?"))
+            if (isStart) {
+                sb.append(" ").append(part);
+            }
+            if (part.matches("текст(ом)?")) {
                 isStart = true;
+            }
         }
         return sb.toString().trim();
     }
@@ -178,7 +185,9 @@ class UkLocale extends Worker {
             String part = parts[i];
             if (part.matches("текст(ом)?")) {
                 try {
-                    if (parts[i -1].matches("з")) input = input.replace(parts[i - 1], "");
+                    if (parts[i -1].matches("з")) {
+                        input = input.replace(parts[i - 1], "");
+                    }
                 } catch (IndexOutOfBoundsException e) {}
                 input = input.replace(part, "");
             }
@@ -188,8 +197,12 @@ class UkLocale extends Worker {
 
     @Override
     public Action getMessageType(String input) {
-        if (input.matches(".*повідомлення.*")) return Action.MESSAGE;
-        if (input.matches(".*листа?.*")) return Action.MAIL;
+        if (input.matches(".*повідомлення.*")) {
+            return Action.MESSAGE;
+        }
+        if (input.matches(".*листа?.*")) {
+            return Action.MAIL;
+        }
         return null;
     }
 
@@ -208,10 +221,18 @@ class UkLocale extends Worker {
 
     @Override
     public Ampm getAmpm(String input) {
-        if (input.matches(".*з?ран(ку|о)?.*") || input.matches(".*вранці.*")) return Ampm.MORNING;
-        if (input.matches(".*в?веч(о|е)р.*")) return Ampm.EVENING;
-        if (input.matches(".*в?день.*")) return Ampm.NOON;
-        if (input.matches(".*в?ночі.*")) return Ampm.NIGHT;
+        if (input.matches(".*з?ран(ку|о)?.*") || input.matches(".*вранці.*")) {
+            return Ampm.MORNING;
+        }
+        if (input.matches(".*в?веч(о|е)р.*")) {
+            return Ampm.EVENING;
+        }
+        if (input.matches(".*в?день.*")) {
+            return Ampm.NOON;
+        }
+        if (input.matches(".*в?ночі.*")) {
+            return Ampm.NIGHT;
+        }
         return null;
     }
 
@@ -237,7 +258,9 @@ class UkLocale extends Worker {
                 Date date;
                 try {
                     date = format.parse(time);
-                    if (date != null) return date;
+                    if (date != null) {
+                        return date;
+                    }
                 } catch (NullPointerException | ParseException e) {
                 }
             }
@@ -279,7 +302,9 @@ class UkLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("об?")) sb.append(" ").append(part);
+            if (!part.matches("об?")) {
+                sb.append(" ").append(part);
+            }
         }
         return sb.toString().trim();
     }
@@ -287,18 +312,42 @@ class UkLocale extends Worker {
     @Override
     protected int getMonth(String input) {
         int res = -1;
-        if (input.contains("січень") || input.contains("січня")) res = 0;
-        if (input.contains("лютий") || input.contains("лютого")) res = 1;
-        if (input.contains("березень") || input.contains("березня")) res = 2;
-        if (input.contains("квітень") || input.contains("квітня")) res = 3;
-        if (input.contains("травень") || input.contains("травня")) res = 4;
-        if (input.contains("червень") || input.contains("червня")) res = 5;
-        if (input.contains("липень") || input.contains("липня")) res = 6;
-        if (input.contains("серпень") || input.contains("серпня")) res = 7;
-        if (input.contains("вересень") || input.contains("вересня")) res = 8;
-        if (input.contains("жовтень") || input.contains("жовтня")) res = 9;
-        if (input.contains("листопад") || input.contains("листопада")) res = 10;
-        if (input.contains("грудень") || input.contains("грудня")) res = 11;
+        if (input.contains("січень") || input.contains("січня")) {
+            res = 0;
+        }
+        if (input.contains("лютий") || input.contains("лютого")) {
+            res = 1;
+        }
+        if (input.contains("березень") || input.contains("березня")) {
+            res = 2;
+        }
+        if (input.contains("квітень") || input.contains("квітня")) {
+            res = 3;
+        }
+        if (input.contains("травень") || input.contains("травня")) {
+            res = 4;
+        }
+        if (input.contains("червень") || input.contains("червня")) {
+            res = 5;
+        }
+        if (input.contains("липень") || input.contains("липня")) {
+            res = 6;
+        }
+        if (input.contains("серпень") || input.contains("серпня")) {
+            res = 7;
+        }
+        if (input.contains("вересень") || input.contains("вересня")) {
+            res = 8;
+        }
+        if (input.contains("жовтень") || input.contains("жовтня")) {
+            res = 9;
+        }
+        if (input.contains("листопад") || input.contains("листопада")) {
+            res = 10;
+        }
+        if (input.contains("грудень") || input.contains("грудня")) {
+            res = 11;
+        }
         return res;
     }
 
@@ -373,15 +422,15 @@ class UkLocale extends Worker {
 
     @Override
     public Action getAction(String input) {
-        if (input.matches(".*допомог.*"))
+        if (input.matches(".*допомог.*")) {
             return Action.HELP;
-        else if (input.matches(".*гучніст.*"))
+        } else if (input.matches(".*гучніст.*")) {
             return Action.VOLUME;
-        else if (input.matches(".*налаштування.*"))
+        } else if (input.matches(".*налаштування.*")) {
             return Action.SETTINGS;
-        else if (input.matches(".*повідомити.*"))
+        } else if (input.matches(".*повідомити.*")) {
             return Action.REPORT;
-        else return Action.APP;
+        } else return Action.APP;
     }
 
     @Override
@@ -428,7 +477,9 @@ class UkLocale extends Worker {
             return Action.BIRTHDAY;
         } else if (input.matches(".*нагадуван.*")) {
             return Action.REMINDER;
-        } else return Action.NO_EVENT;
+        } else {
+            return Action.NO_EVENT;
+        }
     }
 
     @Override
@@ -448,13 +499,17 @@ class UkLocale extends Worker {
 
     @Override
     protected int hasHours(String input) {
-        if (input.matches(".*годині?у?.*")) return 1;
+        if (input.matches(".*годині?у?.*")) {
+            return 1;
+        }
         return -1;
     }
 
     @Override
     protected int hasMinutes(String input) {
-        if (input.matches(".*хвилин.*")) return 1;
+        if (input.matches(".*хвилин.*")) {
+            return 1;
+        }
         return -1;
     }
 
@@ -495,62 +550,172 @@ class UkLocale extends Worker {
     @Override
     protected int findNumber(String input) {
         int number = -1;
-        if (input.matches("нуль")) number = 0;
-        if (input.matches("один") || input.matches("одну") || input.matches("одна")) number = 1;
-        if (input.matches("два") || input.matches("дві")) number = 2;
-        if (input.matches("три")) number = 3;
-        if (input.matches("чотири")) number = 4;
-        if (input.matches("п'ять")) number = 5;
-        if (input.matches("шість")) number = 6;
-        if (input.matches("сім")) number = 7;
-        if (input.matches("вісім")) number = 8;
-        if (input.matches("дев'ять")) number = 9;
-        if (input.matches("десять")) number = 10;
-        if (input.matches("одинадцять")) number = 11;
-        if (input.matches("дванадцять")) number = 12;
-        if (input.matches("тринадцять")) number = 13;
-        if (input.matches("чотирнадцять")) number = 14;
-        if (input.matches("п'ятнадцять")) number = 15;
-        if (input.matches("шістнадцять")) number = 16;
-        if (input.matches("сімнадцять")) number = 17;
-        if (input.matches("вісімнадцять")) number = 18;
-        if (input.matches("дев'ятнадцять")) number = 19;
-        if (input.matches("двадцять")) number = 20;
-        if (input.matches("тридцять")) number = 30;
-        if (input.matches("сорок")) number = 40;
-        if (input.matches("п'ятдесят")) number = 50;
-        if (input.matches("шістдесят")) number = 60;
-        if (input.matches("сімдесят")) number = 70;
-        if (input.matches("вісімдесят")) number = 80;
-        if (input.matches("дев'яносто")) number = 90;
+        if (input.matches("нуль")) {
+            number = 0;
+        }
+        if (input.matches("один") || input.matches("одну") || input.matches("одна")) {
+            number = 1;
+        }
+        if (input.matches("два") || input.matches("дві")) {
+            number = 2;
+        }
+        if (input.matches("три")) {
+            number = 3;
+        }
+        if (input.matches("чотири")) {
+            number = 4;
+        }
+        if (input.matches("п'ять")) {
+            number = 5;
+        }
+        if (input.matches("шість")) {
+            number = 6;
+        }
+        if (input.matches("сім")) {
+            number = 7;
+        }
+        if (input.matches("вісім")) {
+            number = 8;
+        }
+        if (input.matches("дев'ять")) {
+            number = 9;
+        }
+        if (input.matches("десять")) {
+            number = 10;
+        }
+        if (input.matches("одинадцять")) {
+            number = 11;
+        }
+        if (input.matches("дванадцять")) {
+            number = 12;
+        }
+        if (input.matches("тринадцять")) {
+            number = 13;
+        }
+        if (input.matches("чотирнадцять")) {
+            number = 14;
+        }
+        if (input.matches("п'ятнадцять")) {
+            number = 15;
+        }
+        if (input.matches("шістнадцять")) {
+            number = 16;
+        }
+        if (input.matches("сімнадцять")) {
+            number = 17;
+        }
+        if (input.matches("вісімнадцять")) {
+            number = 18;
+        }
+        if (input.matches("дев'ятнадцять")) {
+            number = 19;
+        }
+        if (input.matches("двадцять")) {
+            number = 20;
+        }
+        if (input.matches("тридцять")) {
+            number = 30;
+        }
+        if (input.matches("сорок")) {
+            number = 40;
+        }
+        if (input.matches("п'ятдесят")) {
+            number = 50;
+        }
+        if (input.matches("шістдесят")) {
+            number = 60;
+        }
+        if (input.matches("сімдесят")) {
+            number = 70;
+        }
+        if (input.matches("вісімдесят")) {
+            number = 80;
+        }
+        if (input.matches("дев'яносто")) {
+            number = 90;
+        }
 
-        if (input.matches("першого") || input.matches("першій")) number = 1;
-        if (input.matches("другого") || input.matches("другій")) number = 2;
-        if (input.matches("третього") || input.matches("третій")) number = 3;
-        if (input.matches("четвертого") || input.matches("четвертій")) number = 4;
-        if (input.matches("п'ятого") || input.matches("п'ятій")) number = 5;
-        if (input.matches("шостого") || input.matches("шостій")) number = 6;
-        if (input.matches("сьомого") || input.matches("сьомій")) number = 7;
-        if (input.matches("восьмого") || input.matches("восьмій")) number = 8;
-        if (input.matches("дев'ятого") || input.matches("дев'ятій")) number = 9;
-        if (input.matches("десятого") || input.matches("десятій")) number = 10;
-        if (input.matches("одинадцятого") || input.matches("одинадцятій")) number = 11;
-        if (input.matches("дванадцятого") || input.matches("дванадцятій")) number = 12;
-        if (input.matches("тринадцятого") || input.matches("тринадцятій")) number = 13;
-        if (input.matches("чотирнадцятого") || input.matches("чотирнадцятій")) number = 14;
-        if (input.matches("п'ятнадцятого") || input.matches("п'ятнадцятій")) number = 15;
-        if (input.matches("шістнадцятого") || input.matches("шістнадцятій")) number = 16;
-        if (input.matches("сімнадцятого") || input.matches("сімнадцятій")) number = 17;
-        if (input.matches("вісімнадцятого") || input.matches("вісімнадцятій")) number = 18;
-        if (input.matches("дев'ятнадцятого") || input.matches("дев'ятнадцятій")) number = 19;
-        if (input.matches("двадцятого") || input.matches("двадцятій")) number = 20;
-        if (input.matches("тридцятого")) number = 30;
-        if (input.matches("сорокового")) number = 40;
-        if (input.matches("п'ятдесятого")) number = 50;
-        if (input.matches("шістдесятого")) number = 60;
-        if (input.matches("сімдесятого")) number = 70;
-        if (input.matches("вісімдесятого")) number = 80;
-        if (input.matches("дев'яностого")) number = 90;
+        if (input.matches("першого") || input.matches("першій")) {
+            number = 1;
+        }
+        if (input.matches("другого") || input.matches("другій")) {
+            number = 2;
+        }
+        if (input.matches("третього") || input.matches("третій")) {
+            number = 3;
+        }
+        if (input.matches("четвертого") || input.matches("четвертій")) {
+            number = 4;
+        }
+        if (input.matches("п'ятого") || input.matches("п'ятій")) {
+            number = 5;
+        }
+        if (input.matches("шостого") || input.matches("шостій")) {
+            number = 6;
+        }
+        if (input.matches("сьомого") || input.matches("сьомій")) {
+            number = 7;
+        }
+        if (input.matches("восьмого") || input.matches("восьмій")) {
+            number = 8;
+        }
+        if (input.matches("дев'ятого") || input.matches("дев'ятій")) {
+            number = 9;
+        }
+        if (input.matches("десятого") || input.matches("десятій")) {
+            number = 10;
+        }
+        if (input.matches("одинадцятого") || input.matches("одинадцятій")) {
+            number = 11;
+        }
+        if (input.matches("дванадцятого") || input.matches("дванадцятій")) {
+            number = 12;
+        }
+        if (input.matches("тринадцятого") || input.matches("тринадцятій")) {
+            number = 13;
+        }
+        if (input.matches("чотирнадцятого") || input.matches("чотирнадцятій")) {
+            number = 14;
+        }
+        if (input.matches("п'ятнадцятого") || input.matches("п'ятнадцятій")) {
+            number = 15;
+        }
+        if (input.matches("шістнадцятого") || input.matches("шістнадцятій")) {
+            number = 16;
+        }
+        if (input.matches("сімнадцятого") || input.matches("сімнадцятій")) {
+            number = 17;
+        }
+        if (input.matches("вісімнадцятого") || input.matches("вісімнадцятій")) {
+            number = 18;
+        }
+        if (input.matches("дев'ятнадцятого") || input.matches("дев'ятнадцятій")) {
+            number = 19;
+        }
+        if (input.matches("двадцятого") || input.matches("двадцятій")) {
+            number = 20;
+        }
+        if (input.matches("тридцятого")) {
+            number = 30;
+        }
+        if (input.matches("сорокового")) {
+            number = 40;
+        }
+        if (input.matches("п'ятдесятого")) {
+            number = 50;
+        }
+        if (input.matches("шістдесятого")) {
+            number = 60;
+        }
+        if (input.matches("сімдесятого")) {
+            number = 70;
+        }
+        if (input.matches("вісімдесятого")) {
+            number = 80;
+        }
+        if (input.matches("дев'яностого")) {
+            number = 90;
+        }
         return number;
     }
 
