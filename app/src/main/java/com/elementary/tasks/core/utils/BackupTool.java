@@ -442,8 +442,9 @@ public final class BackupTool {
             total.append(line);
         }
         stream.close();
-        WeakReference<String> decrypted = new WeakReference<>(decrypt(total.toString()));
-        return decrypted.get();
+        String decr = decrypt(total.toString());
+        LogUtil.d(TAG, "readFileToJson: " + decr);
+        return decr;
     }
 
     private void writeFile(File file, String data) throws IOException {
