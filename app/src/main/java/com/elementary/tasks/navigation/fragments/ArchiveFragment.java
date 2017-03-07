@@ -167,6 +167,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         for (int i = 0; i < mAdapter.getItemCount(); i++) {
             WeakReference<Reminder> reminder = new WeakReference<>(mAdapter.getItem(i));
             deleteReminder(reminder.get());
+            mAdapter.removeItem(i);
         }
         Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         reloadView();
