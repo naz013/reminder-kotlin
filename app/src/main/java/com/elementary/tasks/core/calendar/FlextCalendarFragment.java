@@ -257,7 +257,7 @@ public class FlextCalendarFragment extends Fragment {
         fragments.get(2).setDate(next2DateTime.getMonth() - 1, next2DateTime.getYear());
         DateTime prevDateTime = currentDateTime.minus(0, 1, 0, 0, 0, 0, 0,
                 DateTime.DayOverflow.LastDay);
-        fragments.get(2).setDate(prevDateTime.getMonth() - 1, prevDateTime.getYear());
+        fragments.get(3).setDate(prevDateTime.getMonth() - 1, prevDateTime.getYear());
         for (int i = 0; i < NUMBER_OF_PAGES; i++) {
             DateGridFragment dateGridFragment = fragments.get(i);
             dateGridFragment.setEventsMap(eventsMap);
