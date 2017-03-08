@@ -74,14 +74,15 @@ android {
             minifyEnabled true
             productFlavors.pro.proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             productFlavors.free.proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable false
+            debuggable true
             zipAlignEnabled true
             jniDebuggable false
             productFlavors.free.signingConfig signingConfigs.freeApp
             productFlavors.pro.signingConfig signingConfigs.proApp
         }
         debug {
-            signingConfig signingConfigs.proApp
+            productFlavors.free.signingConfig signingConfigs.freeApp
+            productFlavors.pro.signingConfig signingConfigs.proApp
         }
     }
     compileOptions {

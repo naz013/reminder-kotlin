@@ -91,12 +91,10 @@ public class Google {
     }
 
     public static Google getInstance(Context context) {
-        if (instance == null) {
-            try {
-                instance = new Google(context.getApplicationContext());
-            } catch (IllegalArgumentException e) {
-                LogUtil.d(TAG, "getInstance: " + e.getLocalizedMessage());
-            }
+        try {
+            instance = new Google(context.getApplicationContext());
+        } catch (IllegalArgumentException e) {
+            LogUtil.d(TAG, "getInstance: " + e.getLocalizedMessage());
         }
         return instance;
     }
