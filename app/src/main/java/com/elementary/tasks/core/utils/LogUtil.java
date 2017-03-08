@@ -23,7 +23,7 @@ import com.elementary.tasks.BuildConfig;
 public final class LogUtil {
 
     private static final String TAG = "Reminder->";
-    private static final boolean D = BuildConfig.DEBUG;
+    private static final boolean D = true;
 
     private LogUtil() {}
 

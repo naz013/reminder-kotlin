@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -100,6 +101,7 @@ public class GoogleLogin {
                     mAccountName = s;
                 }
                 progressDlg.dismiss();
+                if (mCallback != null) mCallback.onSuccess();
             }
         };
         task.execute(account);
@@ -107,7 +109,8 @@ public class GoogleLogin {
 
     private String getAccessToken(Account account) {
         try {
-            return GoogleAuthUtil.getToken(activity, account.name, "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS);
+            String scope = "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS;
+            return GoogleAuthUtil.getToken(activity, account, scope);
         } catch (UserRecoverableAuthException e) {
             activity.startActivityForResult(e.getIntent(), REQUEST_ACCOUNT_PICKER);
             e.printStackTrace();
@@ -130,6 +133,7 @@ public class GoogleLogin {
         } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
             mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             finishLogin();
+            if (mCallback != null) mCallback.onSuccess();
         } else {
             if (mCallback != null) mCallback.onFail();
         }
@@ -138,7 +142,6 @@ public class GoogleLogin {
     private void finishLogin() {
         Prefs.getInstance(activity).setDriveUser(mAccountName);
         mGoogle = Google.getInstance(activity);
-        if (mCallback != null) mCallback.onSuccess();
     }
 
     public interface LoginCallback {

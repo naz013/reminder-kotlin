@@ -32,6 +32,9 @@ public class ReminderApp extends MultiDexApplication {
 
     private static final String TAG = "ReminderApp";
 
+    private static final String NAME_DB = "reminder_db";
+    private static final String NAME_DB_PRO = "reminder_db_pro";
+
     private Tracker mTracker;
 
     @Override
@@ -41,6 +44,7 @@ public class ReminderApp extends MultiDexApplication {
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .schemaVersion(1)
+                .name(BuildConfig.IS_PRO ? NAME_DB_PRO : NAME_DB)
                 .deleteRealmIfMigrationNeeded()
 //                .migration(new Migration())
                 .build();
