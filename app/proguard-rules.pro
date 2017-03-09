@@ -6,6 +6,26 @@
 
 -printmapping /proguard/mapping.txt
 
+-keep class com.elementary.tasks.reminder.models.** { *; }
+-keep class com.elementary.tasks.places.RealmPlace { *; }
+-keep class com.elementary.tasks.places.PlaceItem { *; }
+-keep class com.elementary.tasks.notes.RealmNote { *; }
+-keep class com.elementary.tasks.notes.RealmImage { *; }
+-keep class com.elementary.tasks.notes.NoteItem { *; }
+-keep class com.elementary.tasks.notes.NoteImage { *; }
+-keep class com.elementary.tasks.missed_calls.CallItem { *; }
+-keep class com.elementary.tasks.missed_calls.RealmCallItem { *; }
+-keep class com.elementary.tasks.groups.GroupItem { *; }
+-keep class com.elementary.tasks.groups.RealmGroup { *; }
+-keep class com.elementary.tasks.google_tasks.TaskListItem { *; }
+-keep class com.elementary.tasks.google_tasks.TaskItem { *; }
+-keep class com.elementary.tasks.google_tasks.RealmTaskList { *; }
+-keep class com.elementary.tasks.google_tasks.RealmTask { *; }
+-keep class com.elementary.tasks.birthdays.BirthdayItem { *; }
+-keep class com.elementary.tasks.birthdays.RealmBirthdayItem { *; }
+
+-keepclassmembers class * extends io.realm.RealmObject { *; }
+
 -keepnames public class * extends io.realm.RealmObject
 -keep @io.realm.annotations.RealmModule class *
 -keep class io.realm.** { *; }
