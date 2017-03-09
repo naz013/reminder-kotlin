@@ -1,5 +1,7 @@
 package com.elementary.tasks.places;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -20,12 +22,19 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class RealmPlace extends RealmObject {
+
+    @SerializedName("title")
     private String title;
+    @SerializedName("key")
     @PrimaryKey
     private String key;
+    @SerializedName("lat")
     private double lat;
+    @SerializedName("lng")
     private double lng;
+    @SerializedName("icon")
     private int icon;
+    @SerializedName("radius")
     private int radius;
 
     public RealmPlace() {

@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 /**
@@ -20,6 +22,7 @@ import io.realm.RealmObject;
 
 public class RealmString extends RealmObject {
 
+    @SerializedName("string")
     private String string;
 
     public RealmString() {}

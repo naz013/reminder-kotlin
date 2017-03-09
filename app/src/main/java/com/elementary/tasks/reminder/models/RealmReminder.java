@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import io.realm.RealmList;
@@ -24,48 +26,90 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmReminder extends RealmObject {
 
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("noteId")
     private String noteId;
+    @SerializedName("reminderType")
     private int reminderType;
+    @SerializedName("groupUuId")
     private String groupUuId;
+    @SerializedName("uuId")
     @PrimaryKey
     private String uuId;
+    @SerializedName("eventTime")
     private String eventTime;
+    @SerializedName("startTime")
     private String startTime;
+    @SerializedName("eventCount")
     private long eventCount;
+    @SerializedName("color")
     private int color;
+    @SerializedName("status")
     private int status;
+    @SerializedName("vibrate")
     private boolean vibrate;
+    @SerializedName("repeatNotification")
     private boolean repeatNotification;
+    @SerializedName("notifyByVoice")
     private boolean notifyByVoice;
+    @SerializedName("awake")
     private boolean awake;
+    @SerializedName("unlock")
     private boolean unlock;
+    @SerializedName("exportToTasks")
     private boolean exportToTasks;
+    @SerializedName("exportToCalendar")
     private boolean exportToCalendar;
+    @SerializedName("useGlobal")
     private boolean useGlobal;
+    @SerializedName("from")
     private String from;
+    @SerializedName("to")
     private String to;
-    private RealmList<RealmInteger> hours;
+    @SerializedName("hours")
+    private RealmList<RealmInteger> hours = new RealmList<>();
+    @SerializedName("fileName")
     private String fileName;
+    @SerializedName("melodyPath")
     private String melodyPath;
+    @SerializedName("volume")
     private int volume;
+    @SerializedName("dayOfMonth")
     private int dayOfMonth;
+    @SerializedName("repeatInterval")
     private long repeatInterval;
+    @SerializedName("repeatLimit")
     private int repeatLimit;
+    @SerializedName("after")
     private long after;
-    private RealmList<RealmInteger> weekdays;
+    @SerializedName("weekdays")
+    private RealmList<RealmInteger> weekdays = new RealmList<>();
+    @SerializedName("type")
     private int type;
+    @SerializedName("target")
     private String target;
+    @SerializedName("subject")
     private String subject;
+    @SerializedName("attachmentFile")
     private String attachmentFile;
-    private RealmList<RealmString> attachmentFiles;
+    @SerializedName("attachmentFiles")
+    private RealmList<RealmString> attachmentFiles = new RealmList<>();
+    @SerializedName("auto")
     private boolean auto;
-    private RealmList<RealmPlace2> places;
-    private RealmList<RealmShopItem> shoppings;
+    @SerializedName("places")
+    private RealmList<RealmPlace2> places = new RealmList<>();
+    @SerializedName("shoppings")
+    private RealmList<RealmShopItem> shoppings = new RealmList<>();
+    @SerializedName("uniqueId")
     private int uniqueId;
+    @SerializedName("isActive")
     private boolean isActive;
+    @SerializedName("isRemoved")
     private boolean isRemoved;
+    @SerializedName("isNotificationShown")
     private boolean isNotificationShown;
+    @SerializedName("isLocked")
     private boolean isLocked;
 
     public RealmReminder() {

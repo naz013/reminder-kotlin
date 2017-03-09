@@ -1,6 +1,7 @@
 package com.elementary.tasks.missed_calls;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Random;
 
@@ -22,8 +23,11 @@ import java.util.Random;
 
 public class CallItem {
 
+    @SerializedName("number")
     private String number;
+    @SerializedName("dateTime")
     private long dateTime;
+    @SerializedName("uniqueId")
     private int uniqueId;
 
     public CallItem() {

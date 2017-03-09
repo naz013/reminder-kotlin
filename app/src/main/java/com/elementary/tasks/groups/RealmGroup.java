@@ -1,5 +1,7 @@
 package com.elementary.tasks.groups;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -20,10 +22,15 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class RealmGroup extends RealmObject {
+
+    @SerializedName("title")
     private String title;
+    @SerializedName("uuId")
     @PrimaryKey
     private String uuId;
+    @SerializedName("color")
     private int color;
+    @SerializedName("dateTime")
     private String dateTime;
 
     public RealmGroup() {

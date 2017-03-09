@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -28,16 +29,27 @@ import java.util.UUID;
 
 public class BirthdayItem implements RecyclerInterface, EventInterface {
 
+    @SerializedName("name")
     private String name;
+    @SerializedName("date")
     private String date;
+    @SerializedName("number")
     private String number;
+    @SerializedName("key")
     private String key;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("showedYear")
     private int showedYear;
+    @SerializedName("contactId")
     private int contactId;
+    @SerializedName("day")
     private int day;
+    @SerializedName("month")
     private int month;
+    @SerializedName("uniqueId")
     private int uniqueId;
+    @SerializedName("dayMonth")
     private String dayMonth;
 
     public BirthdayItem(RealmBirthdayItem item) {

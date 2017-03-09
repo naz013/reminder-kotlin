@@ -547,20 +547,28 @@ public final class ThemeUtil {
             case Color.AMBER:
                 drawable = R.drawable.drawable_amber;
                 break;
-            case Color.DEEP_PURPLE:
-                drawable = R.drawable.drawable_deep_purple;
-                break;
-            case Color.DEEP_ORANGE:
-                drawable = R.drawable.drawable_deep_orange;
-                break;
-            case Color.LIME:
-                drawable = R.drawable.drawable_lime;
-                break;
-            case Color.INDIGO:
-                drawable = R.drawable.drawable_indigo;
-                break;
             default:
-                drawable = R.drawable.drawable_cyan;
+                if (Module.isPro()) {
+                    switch (color) {
+                        case Color.DEEP_PURPLE:
+                            drawable = R.drawable.drawable_deep_purple;
+                            break;
+                        case Color.DEEP_ORANGE:
+                            drawable = R.drawable.drawable_deep_orange;
+                            break;
+                        case Color.LIME:
+                            drawable = R.drawable.drawable_lime;
+                            break;
+                        case Color.INDIGO:
+                            drawable = R.drawable.drawable_indigo;
+                            break;
+                        default:
+                            drawable = R.drawable.drawable_cyan;
+                            break;
+                    }
+                } else {
+                    drawable = R.drawable.drawable_cyan;
+                }
                 break;
         }
         return drawable;

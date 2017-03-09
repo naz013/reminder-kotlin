@@ -1,5 +1,7 @@
 package com.elementary.tasks.missed_calls;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -21,9 +23,12 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmCallItem extends RealmObject {
 
+    @SerializedName("number")
     @PrimaryKey
     private String number;
+    @SerializedName("dateTime")
     private long dateTime;
+    @SerializedName("uniqueId")
     private int uniqueId;
 
     public RealmCallItem() {}

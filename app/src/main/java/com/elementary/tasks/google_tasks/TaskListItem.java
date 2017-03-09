@@ -2,6 +2,7 @@ package com.elementary.tasks.google_tasks;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.services.tasks.model.TaskList;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,14 +22,23 @@ import com.google.api.services.tasks.model.TaskList;
 
 public class TaskListItem {
 
+    @SerializedName("title")
     private String title;
+    @SerializedName("listId")
     private String listId;
+    @SerializedName("def")
     private int def;
+    @SerializedName("eTag")
     private String eTag;
+    @SerializedName("kind")
     private String kind;
+    @SerializedName("selfLink")
     private String selfLink;
+    @SerializedName("updated")
     private long updated;
+    @SerializedName("color")
     private int color;
+    @SerializedName("systemDefault")
     private int systemDefault;
 
     public TaskListItem() {

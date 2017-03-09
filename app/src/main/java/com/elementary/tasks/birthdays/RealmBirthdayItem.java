@@ -1,5 +1,7 @@
 package com.elementary.tasks.birthdays;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -21,17 +23,28 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmBirthdayItem extends RealmObject {
 
+    @SerializedName("name")
     private String name;
+    @SerializedName("date")
     private String date;
+    @SerializedName("number")
     private String number;
+    @SerializedName("key")
     @PrimaryKey
     private String key;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("showedYear")
     private int showedYear;
+    @SerializedName("contactId")
     private int contactId;
+    @SerializedName("day")
     private int day;
+    @SerializedName("month")
     private int month;
+    @SerializedName("uniqueId")
     private int uniqueId;
+    @SerializedName("dayMonth")
     private String dayMonth;
 
     public RealmBirthdayItem() {

@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -21,11 +23,16 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmShopItem extends RealmObject {
 
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("visibility")
     private boolean visibility;
+    @SerializedName("checked")
     private boolean checked;
+    @SerializedName("uuId")
     @PrimaryKey
     private String uuId;
+    @SerializedName("createTime")
     private String createTime;
 
     public RealmShopItem() {

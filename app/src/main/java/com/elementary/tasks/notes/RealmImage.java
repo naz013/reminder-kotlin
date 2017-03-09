@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 /**
@@ -20,6 +22,7 @@ import io.realm.RealmObject;
 
 public class RealmImage extends RealmObject {
 
+    @SerializedName("image")
     private byte[] image;
 
     public RealmImage() {}

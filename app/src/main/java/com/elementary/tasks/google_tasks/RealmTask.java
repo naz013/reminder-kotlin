@@ -1,5 +1,7 @@
 package com.elementary.tasks.google_tasks;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -21,22 +23,38 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmTask extends RealmObject {
 
+    @SerializedName("title")
     private String title;
+    @SerializedName("taskId")
     @PrimaryKey
     private String taskId;
+    @SerializedName("completeDate")
     private long completeDate;
+    @SerializedName("del")
     private int del;
+    @SerializedName("dueDate")
     private long dueDate;
+    @SerializedName("eTag")
     private String eTag;
+    @SerializedName("kind")
     private String kind;
+    @SerializedName("notes")
     private String notes;
+    @SerializedName("parent")
     private String parent;
+    @SerializedName("position")
     private String position;
+    @SerializedName("selfLink")
     private String selfLink;
+    @SerializedName("updateDate")
     private long updateDate;
+    @SerializedName("listId")
     private String listId;
+    @SerializedName("status")
     private String status;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("hidden")
     private int hidden;
 
     public RealmTask() {
