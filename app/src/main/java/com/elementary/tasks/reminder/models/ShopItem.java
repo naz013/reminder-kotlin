@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
@@ -23,10 +24,15 @@ import java.util.UUID;
 
 public class ShopItem {
 
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("isDeleted")
     private boolean isDeleted = false;
+    @SerializedName("checked")
     private boolean checked = false;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("createTime")
     private String createTime;
 
     public ShopItem(String summary) {

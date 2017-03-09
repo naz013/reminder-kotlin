@@ -1,5 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import io.realm.RealmList;
@@ -24,15 +26,23 @@ import io.realm.annotations.PrimaryKey;
 
 public class RealmPlace2 extends RealmObject {
 
+    @SerializedName("radius")
     private int radius;
+    @SerializedName("marker")
     private int marker;
+    @SerializedName("latitude")
     private double latitude;
+    @SerializedName("longitude")
     private double longitude;
+    @SerializedName("name")
     private String name;
+    @SerializedName("id")
     @PrimaryKey
     private String id;
+    @SerializedName("address")
     private String address;
-    private RealmList<RealmString> tags;
+    @SerializedName("tags")
+    private RealmList<RealmString> tags = new RealmList<>();
 
     public RealmPlace2() {}
 

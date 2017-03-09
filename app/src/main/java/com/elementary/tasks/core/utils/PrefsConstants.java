@@ -18,7 +18,7 @@ package com.elementary.tasks.core.utils;
 
 class PrefsConstants {
 
-    protected static final String PREFS_NAME = "6_prefs";
+    protected static final String PREFS_NAME = "prefs_six";
     protected static final String EVENTS_CALENDAR = "events_cal";
     protected static final String AUTO_CHECK_FOR_EVENTS = "auto_events";
     protected static final String AUTO_CHECK_FOR_EVENTS_INTERVAL = "auto_events_interval";

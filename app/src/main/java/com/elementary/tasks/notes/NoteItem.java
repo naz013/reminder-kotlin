@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,19 @@ import java.util.UUID;
  */
 
 public class NoteItem {
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("key")
     private String key;
+    @SerializedName("date")
     private String date;
+    @SerializedName("color")
     private int color;
+    @SerializedName("style")
     private int style;
+    @SerializedName("images")
     private List<NoteImage> images = new ArrayList<>();
+    @SerializedName("uniqueId")
     private int uniqueId;
 
     public NoteItem(RealmNote item) {

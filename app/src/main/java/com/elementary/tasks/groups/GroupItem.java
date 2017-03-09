@@ -2,6 +2,7 @@ package com.elementary.tasks.groups;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
 
@@ -22,9 +23,14 @@ import java.util.UUID;
  */
 
 public class GroupItem {
+
+    @SerializedName("title")
     private String title;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("color")
     private int color;
+    @SerializedName("dateTime")
     private String dateTime;
 
     public GroupItem(RealmGroup item) {

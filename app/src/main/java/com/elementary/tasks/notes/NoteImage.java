@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 /**
@@ -20,6 +22,7 @@ import java.io.Serializable;
 
 public class NoteImage implements Serializable {
 
+    @SerializedName("image")
     private byte[] image;
 
     public NoteImage() {}

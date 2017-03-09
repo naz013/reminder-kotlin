@@ -5,6 +5,7 @@ import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,47 +63,89 @@ public class Reminder implements RecyclerInterface, EventInterface {
     public static final int BY_PLACES_CALL = 81;
     public static final int BY_PLACES_SMS = 82;
 
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("noteId")
     private String noteId;
+    @SerializedName("reminderType")
     private int reminderType;
+    @SerializedName("groupUuId")
     private String groupUuId;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("eventTime")
     private String eventTime;
+    @SerializedName("startTime")
     private String startTime;
+    @SerializedName("eventCount")
     private long eventCount;
+    @SerializedName("color")
     private int color;
+    @SerializedName("delay")
     private int delay;
+    @SerializedName("vibrate")
     private boolean vibrate;
+    @SerializedName("repeatNotification")
     private boolean repeatNotification;
+    @SerializedName("notifyByVoice")
     private boolean notifyByVoice;
+    @SerializedName("awake")
     private boolean awake;
+    @SerializedName("unlock")
     private boolean unlock;
+    @SerializedName("exportToTasks")
     private boolean exportToTasks;
+    @SerializedName("exportToCalendar")
     private boolean exportToCalendar;
+    @SerializedName("useGlobal")
     private boolean useGlobal;
+    @SerializedName("from")
     private String from;
+    @SerializedName("to")
     private String to;
+    @SerializedName("hours")
     private List<Integer> hours = new ArrayList<>();
+    @SerializedName("fileName")
     private String fileName;
+    @SerializedName("melodyPath")
     private String melodyPath;
+    @SerializedName("volume")
     private int volume;
+    @SerializedName("dayOfMonth")
     private int dayOfMonth;
+    @SerializedName("repeatInterval")
     private long repeatInterval;
+    @SerializedName("repeatLimit")
     private int repeatLimit;
+    @SerializedName("after")
     private long after;
+    @SerializedName("weekdays")
     private List<Integer> weekdays = new ArrayList<>();
+    @SerializedName("type")
     private int type;
+    @SerializedName("target")
     private String target;
+    @SerializedName("subject")
     private String subject;
+    @SerializedName("attachmentFile")
     private String attachmentFile;
+    @SerializedName("attachmentFiles")
     private List<String> attachmentFiles = new ArrayList<>();
+    @SerializedName("auto")
     private boolean auto;
+    @SerializedName("places")
     private List<Place> places = new ArrayList<>();
+    @SerializedName("shoppings")
     private List<ShopItem> shoppings = new ArrayList<>();
+    @SerializedName("uniqueId")
     private int uniqueId;
+    @SerializedName("isActive")
     private boolean isActive;
+    @SerializedName("isRemoved")
     private boolean isRemoved;
+    @SerializedName("isNotificationShown")
     private boolean isNotificationShown;
+    @SerializedName("isLocked")
     private boolean isLocked;
 
     public static boolean isBase(int type, int base) {

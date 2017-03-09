@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -21,13 +23,20 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class RealmNote extends RealmObject {
+    @SerializedName("summary")
     private String summary;
+    @SerializedName("key")
     @PrimaryKey
     private String key;
+    @SerializedName("date")
     private String date;
+    @SerializedName("color")
     private int color;
+    @SerializedName("style")
     private int style;
-    private RealmList<RealmImage> images;
+    @SerializedName("images")
+    private RealmList<RealmImage> images = new RealmList<>();
+    @SerializedName("uniqueId")
     private int uniqueId;
 
     public RealmNote() {

@@ -1,6 +1,7 @@
 package com.elementary.tasks.reminder.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +25,22 @@ import java.util.UUID;
 
 public class Place {
 
+    @SerializedName("radius")
     private int radius;
+    @SerializedName("marker")
     private int marker;
+    @SerializedName("latitude")
     private double latitude;
+    @SerializedName("longitude")
     private double longitude;
+    @SerializedName("name")
     private String name;
+    @SerializedName("id")
     private String id;
+    @SerializedName("address")
     private String address;
-    private List<String> tags;
+    @SerializedName("tags")
+    private List<String> tags = new ArrayList<>();
 
     public Place(RealmPlace2 item) {
         this.radius = item.getRadius();

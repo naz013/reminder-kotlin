@@ -3,6 +3,7 @@ package com.elementary.tasks.google_tasks;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.model.Task;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,21 +23,37 @@ import com.google.api.services.tasks.model.Task;
 
 public class TaskItem {
 
+    @SerializedName("title")
     private String title;
+    @SerializedName("taskId")
     private String taskId;
+    @SerializedName("completeDate")
     private long completeDate;
+    @SerializedName("del")
     private int del;
+    @SerializedName("dueDate")
     private long dueDate;
+    @SerializedName("eTag")
     private String eTag;
+    @SerializedName("kind")
     private String kind;
+    @SerializedName("notes")
     private String notes;
+    @SerializedName("parent")
     private String parent;
+    @SerializedName("position")
     private String position;
+    @SerializedName("selfLink")
     private String selfLink;
+    @SerializedName("updateDate")
     private long updateDate;
+    @SerializedName("listId")
     private String listId;
+    @SerializedName("status")
     private String status;
+    @SerializedName("uuId")
     private String uuId;
+    @SerializedName("hidden")
     private int hidden;
 
     public TaskItem() {}

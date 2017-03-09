@@ -1,6 +1,7 @@
 package com.elementary.tasks.places;
 
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -19,11 +20,18 @@ import com.elementary.tasks.core.utils.SuperUtil;
  */
 
 public class PlaceItem {
+
+    @SerializedName("title")
     private String title;
+    @SerializedName("key")
     private String key;
+    @SerializedName("lat")
     private double lat;
+    @SerializedName("lng")
     private double lng;
+    @SerializedName("icon")
     private int icon;
+    @SerializedName("radius")
     private int radius;
 
     public PlaceItem() {
