@@ -291,20 +291,13 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
             config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
             config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
             sequence.setConfig(config);
-
             sequence.addSequenceItem(zoomOut,
                     getContext().getString(R.string.click_to_expand_collapse_map),
                     getContext().getString(R.string.got_it));
-
             sequence.addSequenceItem(markers,
                     getContext().getString(R.string.select_style_for_marker),
-                    getContext().getString(R.string.got_it));
-
-            sequence.addSequenceItem(places,
-                    getContext().getString(R.string.select_place_from_list),
                     getContext().getString(R.string.got_it));
             sequence.start();
             getPrefs().setShowcase(SHOWCASE, true);

@@ -399,9 +399,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                         getContext().getString(R.string.select_style_for_marker),
                         getContext().getString(R.string.got_it));
             }
-            sequence.addSequenceItem(places,
-                    getContext().getString(R.string.select_place_from_list),
-                    getContext().getString(R.string.got_it));
             sequence.start();
             getPrefs().setShowcase(SHOWCASE, true);
         }
