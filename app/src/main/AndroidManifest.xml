@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.elementary.tasks"
     android:installLocation="auto">
 
@@ -50,6 +51,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_title"
         android:supportsRtl="true"
+        tools:replace="android:label"
         android:theme="@style/HomeDark.Cyan">
         <activity android:name=".navigation.MainActivity" />
         <activity
