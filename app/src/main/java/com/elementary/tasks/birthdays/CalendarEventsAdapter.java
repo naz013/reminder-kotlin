@@ -19,10 +19,7 @@ import com.elementary.tasks.reminder.ReminderHolder;
 import com.elementary.tasks.reminder.ShoppingHolder;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -105,33 +102,11 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @BindingAdapter({"loadBirthday"})
     public static void loadBirthday(RoboTextView textView, String fullDate) {
-        Date date = null;
-        String dateTime = Prefs.getInstance(textView.getContext()).getBirthdayTime();
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
-        try {
-            date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(textView.getContext(), fullDate);
+        if (dateItem != null) {
+            textView.setText(SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.getCalendar().getTimeInMillis(), is24, false),
+                    "\n", TimeUtil.getAgeFormatted(textView.getContext(), dateItem.getYear())));
         }
-        long time = System.currentTimeMillis();
-        int year = 0;
-        if (date != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            int bDay = calendar.get(Calendar.DAY_OF_MONTH);
-            int bMonth = calendar.get(Calendar.MONTH);
-            year = calendar.get(Calendar.YEAR);
-            calendar.setTimeInMillis(TimeUtil.getBirthdayTime(dateTime));
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.MONTH, bMonth);
-            calendar.set(Calendar.DAY_OF_MONTH, bDay);
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-            time = calendar.getTimeInMillis();
-        }
-        textView.setText(SuperUtil.appendString(TimeUtil.getFullDateTime(time, is24, false),
-                "\n", TimeUtil.getAgeFormatted(textView.getContext(), year)));
     }
 }
