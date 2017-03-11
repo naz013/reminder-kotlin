@@ -161,7 +161,7 @@ public class GeolocationService extends Service {
         RealmDb.getInstance().saveObject(reminder.setNotificationShown(true));
         Intent resultIntent = new Intent(getApplicationContext(), ReminderDialogActivity.class);
         resultIntent.putExtra(Constants.INTENT_ID, reminder.getUuId());
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         getApplication().startActivity(resultIntent);
     }
 
