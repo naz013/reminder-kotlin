@@ -1,6 +1,8 @@
 package com.elementary.tasks.core;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.crashlytics.android.Crashlytics;
 import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.TasksService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.login.LoginActivity;
@@ -28,6 +31,19 @@ public class SplashScreen extends AppCompatActivity {
         }
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        }
+        checkIfAppUpdated();
+    }
+
+    private void checkIfAppUpdated() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            if (!Prefs.getInstance(this).getVersion(info.versionName)) {
+                Prefs.getInstance(this).saveVersionBoolean(info.versionName);
+                startService(new Intent(this, TasksService.class));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

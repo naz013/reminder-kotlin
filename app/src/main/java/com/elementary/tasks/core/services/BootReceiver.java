@@ -52,8 +52,5 @@ public class BootReceiver extends BroadcastReceiver {
             alarmReceiver.enableBirthdayPermanentAlarm(context);
             context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
         }
-//        if (prefs.isWearEnabled()) {
-//            context.startService(new Intent(context, WearService.class));
-//        }
     }
 }
