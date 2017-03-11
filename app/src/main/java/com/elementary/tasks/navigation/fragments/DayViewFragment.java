@@ -120,7 +120,7 @@ public class DayViewFragment extends BaseCalendarFragment {
             getCallback().onTitleChange(getString(R.string.calendar));
             getCallback().onFragmentSelect(this);
             getCallback().onMenuSelect(R.id.nav_day_view);
-            getCallback().setClick(view -> showActionDialog());
+            getCallback().setClick(view -> showActionDialog(false));
         }
         loadData();
     }

@@ -15,7 +15,6 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.navigation.settings.images.MonthImage;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -38,6 +37,34 @@ import java.util.Date;
 public class CalendarFragment extends BaseCalendarFragment {
 
     private static final String TAG = "CalendarFragment";
+
+    private final FlextListener listener = new FlextListener() {
+        @Override
+        public void onClickDate(Date date) {
+            LogUtil.d(TAG, "onClick: " + date);
+            saveTime(date);
+            replaceFragment(DayViewFragment.newInstance(dateMills, 0), "");
+        }
+
+        @Override
+        public void onLongClickDate(Date date) {
+            LogUtil.d(TAG, "onLongClickDate: " + date);
+            saveTime(date);
+            showActionDialog(true);
+        }
+
+        @Override
+        public void onMonthChanged(int month, int year) {
+        }
+
+        @Override
+        public void onViewCreated() {
+        }
+
+        @Override
+        public void onMonthSelected(int month) {
+        }
+    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -76,7 +103,7 @@ public class CalendarFragment extends BaseCalendarFragment {
             getCallback().onFragmentSelect(this);
             getCallback().setClick(view -> {
                 dateMills = System.currentTimeMillis();
-                showActionDialog();
+                showActionDialog(false);
             });
         }
         showCalendar();
@@ -98,38 +125,8 @@ public class CalendarFragment extends BaseCalendarFragment {
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark());
         args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, getPrefs().isCalendarImagesEnabled());
         MonthImage monthImage = getPrefs().getCalendarImages();
-        LogUtil.d(TAG, "showCalendar: " + Arrays.toString(monthImage.getPhotos()));
         args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.getPhotos());
         calendarView.setArguments(args);
-        final FlextListener listener = new FlextListener() {
-            @Override
-            public void onClickDate(Date date) {
-                LogUtil.d(TAG, "onClick: " + date);
-                saveTime(date);
-                replaceFragment(DayViewFragment.newInstance(dateMills, 0), "");
-            }
-
-            @Override
-            public void onLongClickDate(Date date) {
-                LogUtil.d(TAG, "onLongClickDate: " + date);
-                saveTime(date);
-                showActionDialog();
-            }
-
-            @Override
-            public void onMonthChanged(int month, int year) {
-
-            }
-
-            @Override
-            public void onViewCreated() {
-            }
-
-            @Override
-            public void onMonthSelected(int month) {
-
-            }
-        };
         calendarView.setListener(listener);
         calendarView.refreshView();
         replaceFragment(calendarView, getString(R.string.calendar));

@@ -14,6 +14,7 @@ import com.elementary.tasks.reminder.models.Reminder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +88,16 @@ public class DayViewProvider {
                 }
             }
         }
+        Collections.sort(res, (eventsItem, t1) -> {
+            int res1 = eventsItem.getYear() - t1.getYear();
+            if (res1 == 0) {
+                res1 = eventsItem.getMonth() - t1.getMonth();
+            }
+            if (res1 == 0) {
+                res1 = eventsItem.getDay() - t1.getDay();
+            }
+            return res1;
+        });
         return res;
     }
 

@@ -2,12 +2,21 @@ package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.CalendarEventsAdapter;
+import com.elementary.tasks.birthdays.DayViewProvider;
+import com.elementary.tasks.birthdays.EventsItem;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
 import com.elementary.tasks.reminder.AddReminderActivity;
+
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,7 +42,7 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     protected long dateMills;
     private AlertDialog mDialog;
 
-    protected void showActionDialog() {
+    protected void showActionDialog(boolean showEvents) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         DialogActionPickerBinding binding = DialogActionPickerBinding.inflate(LayoutInflater.from(getContext()));
         binding.addBirth.setOnClickListener(view -> {
@@ -44,9 +53,42 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             mDialog.dismiss();
             addReminder();
         });
+        if (showEvents && dateMills != 0) {
+            binding.loadingView.setVisibility(View.VISIBLE);
+            binding.eventsList.setLayoutManager(new LinearLayoutManager(getContext()));
+            loadEvents(binding);
+        } else {
+            binding.loadingView.setVisibility(View.GONE);
+        }
         builder.setView(binding.getRoot());
         mDialog = builder.create();
         mDialog.show();
+    }
+
+    private void loadEvents(DialogActionPickerBinding binding) {
+        new Thread(() -> {
+            String time = getPrefs().getBirthdayTime();
+            boolean isFeature = getPrefs().isFutureEventEnabled();
+            boolean isRemindersEnabled = getPrefs().isRemindersInCalendarEnabled();
+            DayViewProvider provider = new DayViewProvider(getContext());
+            provider.setBirthdays(true);
+            provider.setTime(TimeUtil.getBirthdayTime(time));
+            provider.setReminders(isRemindersEnabled);
+            provider.setFeature(isFeature);
+            provider.fillArray();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateMills);
+            int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+            int mMonth = calendar.get(Calendar.MONTH);
+            int mYear = calendar.get(Calendar.YEAR);
+            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear);
+            CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), datas);
+            binding.getRoot().post(() -> {
+                binding.eventsList.setAdapter(mAdapter);
+                binding.eventsList.setVisibility(View.VISIBLE);
+                binding.loadingView.setVisibility(View.GONE);
+            });
+        }).start();
     }
 
     private void addReminder() {
