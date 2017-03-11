@@ -120,7 +120,7 @@ public class LocationFragment extends RadiusTypeFragment {
         public void onBackClick() {
             if (advancedMapFragment.isFullscreen()) {
                 advancedMapFragment.setFullscreen(false);
-                getInterface().setFullScreenMode(true);
+                getInterface().setFullScreenMode(false);
             }
             ViewUtils.fadeOutAnimation(binding.mapContainer);
             ViewUtils.fadeInAnimation(binding.specsContainer);

@@ -138,6 +138,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 case GPS:
                     if (hasGpsPermission(GPS)) {
                         replaceFragment(new LocationFragment());
+                    } else {
+                        spinner.setSelection(DATE);
                     }
                     break;
                 case SKYPE:
@@ -152,6 +154,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 case GPS_OUT:
                     if (hasGpsPermission(GPS_OUT)) {
                         replaceFragment(new LocationOutFragment());
+                    } else {
+                        spinner.setSelection(DATE);
                     }
                     break;
                 case SHOP:
@@ -167,6 +171,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 case GPS_PLACE:
                     if (hasGpsPermission(GPS_PLACE)) {
                         replaceFragment(new PlacesFragment());
+                    } else {
+                        spinner.setSelection(DATE);
                     }
                     break;
             }
