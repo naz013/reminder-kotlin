@@ -35,7 +35,7 @@ public final class ThemeUtil {
     public static final int THEME_AMOLED = 3;
     public static final int NUM_OF_MARKERS = 16;
 
-    private Holder holder;
+    private ContextHolder holder;
     private static ThemeUtil instance;
 
     public static ThemeUtil getInstance(Context context) {
@@ -53,7 +53,7 @@ public final class ThemeUtil {
     }
 
     private ThemeUtil(Context context) {
-        this.holder = new Holder(context);
+        this.holder = new ContextHolder(context);
     }
 
     private Context getContext() {
@@ -1309,19 +1309,6 @@ public final class ThemeUtil {
         int DEEP_ORANGE = 13;
         int LIME = 14;
         int INDIGO = 15;
-    }
-
-    private static final class Holder {
-
-        private Context context;
-
-        private Holder(Context context) {
-            this.context = context;
-        }
-
-        public Context getContext() {
-            return context;
-        }
     }
 
     public static class Marker {
