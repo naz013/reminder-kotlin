@@ -73,7 +73,7 @@ public class DayViewProvider {
         return data;
     }
 
-    public List<EventsItem> getMatches(int day, int month, int year){
+    public List<EventsItem> getMatches(int day, int month, int year, boolean sort){
         List<EventsItem> res = new ArrayList<>();
         for (EventsItem item : data){
             int mDay = item.getDay();
@@ -88,15 +88,32 @@ public class DayViewProvider {
                 }
             }
         }
+        if (!sort) return res;
         Collections.sort(res, (eventsItem, t1) -> {
-            int res1 = eventsItem.getYear() - t1.getYear();
-            if (res1 == 0) {
-                res1 = eventsItem.getMonth() - t1.getMonth();
+            long time1 = 0, time2 = 0;
+            if (eventsItem.getObject() instanceof BirthdayItem) {
+                BirthdayItem item = (BirthdayItem) eventsItem.getObject();
+                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                if (dateItem != null) {
+                    Calendar calendar = dateItem.getCalendar();
+                    time1 = calendar.getTimeInMillis();
+                }
+            } else if (eventsItem.getObject() instanceof Reminder) {
+                Reminder reminder = (Reminder) eventsItem.getObject();
+                time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
             }
-            if (res1 == 0) {
-                res1 = eventsItem.getDay() - t1.getDay();
+            if (t1.getObject() instanceof BirthdayItem) {
+                BirthdayItem item = (BirthdayItem) t1.getObject();
+                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                if (dateItem != null) {
+                    Calendar calendar = dateItem.getCalendar();
+                    time2 = calendar.getTimeInMillis();
+                }
+            } else if (t1.getObject() instanceof Reminder) {
+                Reminder reminder = (Reminder) t1.getObject();
+                time2 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
             }
-            return res1;
+            return (int) (time1 - time2);
         });
         return res;
     }

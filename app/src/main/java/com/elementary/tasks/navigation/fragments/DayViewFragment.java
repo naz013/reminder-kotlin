@@ -163,7 +163,7 @@ public class DayViewFragment extends BaseCalendarFragment {
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
             int mMonth = calendar.get(Calendar.MONTH);
             int mYear = calendar.get(Calendar.YEAR);
-            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear);
+            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear, true);
             if (mDay == targetDay && mMonth == targetMonth && mYear == targetYear){
                 targetPosition = position;
                 pagerData.add(new EventsPagerItem(datas, position, 1, mDay, mMonth, mYear));

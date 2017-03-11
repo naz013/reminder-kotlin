@@ -81,7 +81,7 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
             int mMonth = calendar.get(Calendar.MONTH);
             int mYear = calendar.get(Calendar.YEAR);
-            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear);
+            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear, true);
             CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), datas);
             binding.getRoot().post(() -> {
                 binding.eventsList.setAdapter(mAdapter);

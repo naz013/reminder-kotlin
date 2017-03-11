@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +50,36 @@ public final class TimeUtil {
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
 
     private TimeUtil(){}
+
+    public static DateItem getFutureBirthdayDate(Context context, String fullDate) {
+        Date date = null;
+        String dateTime = Prefs.getInstance(context).getBirthdayTime();
+        try {
+            date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            int bDay = calendar.get(Calendar.DAY_OF_MONTH);
+            int bMonth = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            calendar.setTimeInMillis(TimeUtil.getBirthdayTime(dateTime));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.MONTH, bMonth);
+            calendar.set(Calendar.DAY_OF_MONTH, bDay);
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                calendar.add(Calendar.YEAR, 1);
+            }
+            return new DateItem(calendar, year);
+        }
+        return null;
+    }
 
     public static String getBirthdayTime(int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
@@ -364,5 +395,23 @@ public final class TimeUtil {
             }
         }
         return result.toString();
+    }
+
+    public static class DateItem {
+        final Calendar calendar;
+        final int year;
+
+        public DateItem(Calendar calendar, int year) {
+            this.calendar = calendar;
+            this.year = year;
+        }
+
+        public Calendar getCalendar() {
+            return calendar;
+        }
+
+        public int getYear() {
+            return year;
+        }
     }
 }
