@@ -325,6 +325,8 @@ public class Reminder implements RecyclerInterface, EventInterface {
 
     public Reminder setActive(boolean active) {
         isActive = active;
+        this.isNotificationShown = false;
+        this.isLocked = false;
         return this;
     }
 
