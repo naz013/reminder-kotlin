@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
@@ -37,18 +38,22 @@ public final class TimeCount {
     public static final long HALF_DAY = HOUR * 12;
     public static final long DAY = HALF_DAY * 2;
 
-    private Context mContext;
+    private ContextHolder holder;
     private static TimeCount instance;
 
     private TimeCount(Context context) {
-        this.mContext = context;
+        this.holder = new ContextHolder(context);
     }
 
     public static TimeCount getInstance(Context context) {
         if (instance == null) {
-            instance = new TimeCount(context);
+            instance = new TimeCount(context.getApplicationContext());
         }
         return instance;
+    }
+
+    private Context getContext() {
+        return holder.getContext();
     }
 
     public long generateNextTimer(Reminder reminder, boolean isNew) {
@@ -136,17 +141,17 @@ public final class TimeCount {
                     last -= 10;
                 }
                 if (last == 1 && days != 11) {
-                    result.append(String.format(mContext.getString(R.string.x_day), String.valueOf(days)));
+                    result.append(String.format(getString(R.string.x_day), String.valueOf(days)));
                 } else if (last < 5 && (days < 12 || days > 14)) {
-                    result.append(String.format(mContext.getString(R.string.x_dayzz), String.valueOf(days)));
+                    result.append(String.format(getString(R.string.x_dayzz), String.valueOf(days)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_days), String.valueOf(days)));
+                    result.append(String.format(getString(R.string.x_days), String.valueOf(days)));
                 }
             } else {
                 if (days < 2) {
-                    result.append(String.format(mContext.getString(R.string.x_day), String.valueOf(days)));
+                    result.append(String.format(getString(R.string.x_day), String.valueOf(days)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_days), String.valueOf(days)));
+                    result.append(String.format(getString(R.string.x_days), String.valueOf(days)));
                 }
             }
         } else if (difference > HOUR) {
@@ -157,17 +162,17 @@ public final class TimeCount {
                     last -= 10;
                 }
                 if (last == 1 && hours != 11) {
-                    result.append(String.format(mContext.getString(R.string.x_hour), String.valueOf(hours)));
+                    result.append(String.format(getString(R.string.x_hour), String.valueOf(hours)));
                 } else if (last < 5 && (hours < 12 || hours > 14)) {
-                    result.append(String.format(mContext.getString(R.string.x_hourzz), String.valueOf(hours)));
+                    result.append(String.format(getString(R.string.x_hourzz), String.valueOf(hours)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_hours), String.valueOf(hours)));
+                    result.append(String.format(getString(R.string.x_hours), String.valueOf(hours)));
                 }
             } else {
                 if (hours < 2) {
-                    result.append(String.format(mContext.getString(R.string.x_hour), String.valueOf(hours)));
+                    result.append(String.format(getString(R.string.x_hour), String.valueOf(hours)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_hours), String.valueOf(hours)));
+                    result.append(String.format(getString(R.string.x_hours), String.valueOf(hours)));
                 }
             }
         } else if (difference > MINUTE) {
@@ -178,25 +183,29 @@ public final class TimeCount {
                     last -= 10;
                 }
                 if (last == 1 && minutes != 11) {
-                    result.append(String.format(mContext.getString(R.string.x_minute), String.valueOf(minutes)));
+                    result.append(String.format(getString(R.string.x_minute), String.valueOf(minutes)));
                 } else if (last < 5 && (minutes < 12 || minutes > 14)) {
-                    result.append(String.format(mContext.getString(R.string.x_minutezz), String.valueOf(minutes)));
+                    result.append(String.format(getString(R.string.x_minutezz), String.valueOf(minutes)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_minutes), String.valueOf(minutes)));
+                    result.append(String.format(getString(R.string.x_minutes), String.valueOf(minutes)));
                 }
             } else {
                 if (hours < 2) {
-                    result.append(String.format(mContext.getString(R.string.x_minute), String.valueOf(minutes)));
+                    result.append(String.format(getString(R.string.x_minute), String.valueOf(minutes)));
                 } else {
-                    result.append(String.format(mContext.getString(R.string.x_minutes), String.valueOf(minutes)));
+                    result.append(String.format(getString(R.string.x_minutes), String.valueOf(minutes)));
                 }
             }
         } else if (difference > 0) {
-            result.append(mContext.getString(R.string.less_than_minute));
+            result.append(getString(R.string.less_than_minute));
         } else {
-            result.append(mContext.getString(R.string.overdue));
+            result.append(getString(R.string.overdue));
         }
         return result.toString();
+    }
+
+    private String getString(@StringRes int res) {
+        return getContext().getString(res);
     }
 
     public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
@@ -293,7 +302,7 @@ public final class TimeCount {
             cl.setTimeInMillis(timeLong);
             Date mTime = cl.getTime();
             date = TimeUtil.DATE_FORMAT.format(mTime);
-            time = TimeUtil.getTime(mTime, Prefs.getInstance(mContext).getBoolean(Prefs.IS_24_TIME_FORMAT));
+            time = TimeUtil.getTime(mTime, Prefs.getInstance(getContext()).getBoolean(Prefs.IS_24_TIME_FORMAT));
         }
         return new String[]{date, time};
     }
