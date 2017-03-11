@@ -583,5 +583,6 @@
     <string name="add_note">Aggiungi nota</string>
     <string name="failed_to_recognize_your_command">Impossibile riconoscere il suo discorso</string>
     <string name="opacity">Opacità</string>
+    <string name="loading_events">Caricamento in corso eventi</string>
 
 </resources>

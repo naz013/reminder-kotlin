@@ -584,5 +584,6 @@
     <string name="add_note">メモを追加</string>
     <string name="failed_to_recognize_your_command">あなたのスピーチを認識できませんでした</string>
     <string name="opacity">不透明度</string>
+    <string name="loading_events">イベントの読み込み</string>
 
 </resources>

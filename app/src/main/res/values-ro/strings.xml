@@ -583,5 +583,6 @@
     <string name="add_note">Adauga notita</string>
     <string name="failed_to_recognize_your_command">Nu a reușit să recunoască discursul</string>
     <string name="opacity">Opacitate</string>
+    <string name="loading_events">Evenimente de încărcare</string>
 
 </resources>
