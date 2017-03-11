@@ -583,5 +583,6 @@
     <string name="failed_to_recognize_your_command">Nepodařilo se rozpoznat vaši řeč</string>
     <string name="light">Světlo</string>
     <string name="opacity">Neprůhlednost</string>
+    <string name="loading_events">Nahrávání událostí</string>
 
 </resources>

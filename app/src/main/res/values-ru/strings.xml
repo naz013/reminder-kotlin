@@ -583,5 +583,6 @@
     <string name="add_note">Добавить заметку</string>
     <string name="failed_to_recognize_your_command">Не удалось распознать вашу речь</string>
     <string name="opacity">Непрозрачность</string>
+    <string name="loading_events">Загрузка событий</string>
 
 </resources>

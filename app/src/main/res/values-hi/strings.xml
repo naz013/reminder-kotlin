@@ -583,5 +583,6 @@
     <string name="add_note">नोट जोड़े</string>
     <string name="failed_to_recognize_your_command">अपने भाषण को पहचान करने में विफल</string>
     <string name="opacity">अस्पष्टता</string>
+    <string name="loading_events">ईवेंट लोड हो रहे हैं</string>
 
 </resources>

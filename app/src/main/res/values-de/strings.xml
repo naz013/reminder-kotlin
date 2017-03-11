@@ -583,5 +583,6 @@
     <string name="add_note">Notiz hinzufügen</string>
     <string name="failed_to_recognize_your_command">Ihre Rede nicht erkannt</string>
     <string name="opacity">Opazität</string>
+    <string name="loading_events">Ereignisse werden geladen</string>
 
 </resources>
