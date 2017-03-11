@@ -19,6 +19,8 @@ import com.elementary.tasks.core.views.MonthView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -193,7 +195,7 @@ public class FlextCalendarFragment extends Fragment {
         monthYearStringBuilder.setLength(0);
         String monthTitle = DateUtils.formatDateRange(getActivity(),
                 monthYearFormatter, millis, millis, MONTH_YEAR_FLAG).toString();
-        monthTitleTextView.setText(monthTitle);
+        monthTitleTextView.setText(StringUtils.capitalize(monthTitle));
         if (caldroidListener != null) {
             caldroidListener.onMonthSelected(month);
         }
