@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
     private fun loadPhotoView() {
         Glide.with(this)
                 .load("https://unsplash.it/1080/1920?image=596&blur")
-                .override(1080, 1920)
+                .override(768, 1280)
                 .centerCrop()
                 .crossFade()
                 .into(object : SimpleTarget<GlideDrawable>() {
