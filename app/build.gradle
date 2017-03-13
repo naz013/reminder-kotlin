@@ -130,7 +130,7 @@ dependencies {
     compile('com.google.http-client:google-http-client-gson:1.22.0') {
         exclude module: 'httpclient'
     }
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
     compile project(':photoPreview')

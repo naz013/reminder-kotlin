@@ -17,6 +17,7 @@ import com.elementary.tasks.birthdays.DayViewProvider;
 import com.elementary.tasks.birthdays.EventsItem;
 import com.elementary.tasks.birthdays.EventsPagerItem;
 import com.elementary.tasks.core.utils.Configs;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentDayViewBinding;
 
@@ -173,7 +174,7 @@ public class DayViewFragment extends BaseCalendarFragment {
             position++;
             calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
         }
-        final CalendarPagerAdapter pagerAdapter = new CalendarPagerAdapter(getFragmentManager(), pagerData);
+        CalendarPagerAdapter pagerAdapter = new CalendarPagerAdapter(Module.isJellyMR2() ? getChildFragmentManager() : getFragmentManager(), pagerData);
         binding.pager.setAdapter(pagerAdapter);
         binding.pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
