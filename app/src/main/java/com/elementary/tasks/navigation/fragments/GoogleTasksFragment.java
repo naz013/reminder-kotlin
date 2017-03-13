@@ -149,7 +149,9 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+        try {
+            EventBus.getDefault().register(this);
+        } catch (org.greenrobot.eventbus.EventBusException ignored) {}
         if (getCallback() != null) {
             getCallback().onTitleChange(getString(R.string.google_tasks));
             getCallback().onFragmentSelect(this);
@@ -161,7 +163,9 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     @Override
     public void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+        try {
+            EventBus.getDefault().unregister(this);
+        } catch (org.greenrobot.eventbus.EventBusException ignored) {}
     }
 
     @Subscribe
