@@ -51,7 +51,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (lists != null && lists.size() > 0) {
+            if (lists != null && lists.size() > 0 && lists.getItems() != null) {
                 for (TaskList item : lists.getItems()) {
                     String listId = item.getId();
                     TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
@@ -67,15 +67,17 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
                     RealmDb.getInstance().setDefault(listItem.getListId());
                     RealmDb.getInstance().setSystemDefault(listItem.getListId());
                     List<Task> tasks = helper.getTasks().getTasks(listId);
-                    for (Task task : tasks) {
-                        TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                        if (taskItem != null) {
-                            taskItem.update(task);
-                            taskItem.setListId(task.getId());
-                        } else {
-                            taskItem = new TaskItem(task, listId);
+                    if (tasks != null) {
+                        for (Task task : tasks) {
+                            TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
+                            if (taskItem != null) {
+                                taskItem.update(task);
+                                taskItem.setListId(task.getId());
+                            } else {
+                                taskItem = new TaskItem(task, listId);
+                            }
+                            RealmDb.getInstance().saveObject(taskItem);
                         }
-                        RealmDb.getInstance().saveObject(taskItem);
                     }
                 }
             }
