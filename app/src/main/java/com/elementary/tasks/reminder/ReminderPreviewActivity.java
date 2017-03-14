@@ -22,6 +22,7 @@ import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.IntervalUtil;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
@@ -65,6 +66,8 @@ import java.util.Locale;
  */
 
 public class ReminderPreviewActivity extends ThemedActivity {
+
+    private static final String TAG = "ReminderPreviewActivity";
 
     private ActivityReminderPreviewBinding binding;
     private AdvancedMapFragment mGoogleMap;
@@ -305,14 +308,19 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void saveCopy(int which) {
+        LogUtil.d(TAG, "saveCopy: " + which);
         Reminder newItem = item.copy();
         Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.setTimeInMillis(list.get(which));
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(newItem.getEventTime()));
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
+        while (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
         newItem.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
         newItem.setStartTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
         RealmDb.getInstance().saveObject(newItem);
