@@ -28,10 +28,6 @@ public class Module {
         return BuildConfig.IS_PRO;
     }
 
-    public static boolean isCloud(){
-        return BuildConfig.IS_CLOUD;
-    }
-
     public static boolean isLollipop(){
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }

@@ -21,7 +21,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 151
-        versionName '6.0beta3'
+        versionName '6.0beta4'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -54,12 +54,10 @@ android {
         free {
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
-            buildConfigField "boolean", "IS_CLOUD", "false"
         }
         pro {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            buildConfigField "boolean", "IS_CLOUD", "false"
             versionCode 123
         }
     }
