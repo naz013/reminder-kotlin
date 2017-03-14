@@ -20,8 +20,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 151
-        versionName '6.0beta4'
+        versionCode 152
+        versionName '6.0beta5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -58,7 +58,7 @@ android {
         pro {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 123
+            versionCode 124
         }
     }
     packagingOptions {
