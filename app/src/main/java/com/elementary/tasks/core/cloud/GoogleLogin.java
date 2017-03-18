@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.AsyncTask;
 
@@ -113,6 +114,9 @@ public class GoogleLogin {
             return GoogleAuthUtil.getToken(activity, account, scope);
         } catch (UserRecoverableAuthException e) {
             activity.startActivityForResult(e.getIntent(), REQUEST_ACCOUNT_PICKER);
+            e.printStackTrace();
+            return null;
+        } catch (ActivityNotFoundException e) {
             e.printStackTrace();
             return null;
         } catch (GoogleAuthException e) {

@@ -76,7 +76,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_birthday);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
-        if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
+        if (Module.isLollipop()) {
+            binding.card.setCardElevation(Configs.CARD_ELEVATION);
+        }
         binding.singleContainer.setVisibility(View.VISIBLE);
         loadImage(binding.bgImage);
         colorify(binding.buttonOk, binding.buttonCall, binding.buttonSend);
@@ -93,15 +95,18 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
-        if (TextUtils.isEmpty(mBirthdayItem.getNumber())) {
+        if (!TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
             mBirthdayItem.setNumber(Contacts.getNumber(mBirthdayItem.getName(), ShowBirthdayActivity.this));
         }
-        if (mBirthdayItem.getContactId() == 0) {
+        if (mBirthdayItem.getContactId() == 0 && !TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
             mBirthdayItem.setContactId(Contacts.getIdFromNumber(mBirthdayItem.getNumber(), ShowBirthdayActivity.this));
         }
         Uri photo = Contacts.getPhoto(mBirthdayItem.getContactId());
-        if (photo != null) contactPhoto.setImageURI(photo);
-        else contactPhoto.setVisibility(View.GONE);
+        if (photo != null) {
+            contactPhoto.setImageURI(photo);
+        } else {
+            contactPhoto.setVisibility(View.GONE);
+        }
         String years =  TimeUtil.getAgeFormatted(this, mBirthdayItem.getDate());
         RoboTextView userName = binding.userName;
         userName.setText(mBirthdayItem.getName());
@@ -109,7 +114,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         RoboTextView userYears = (RoboTextView) findViewById(R.id.userYears);
         userYears.setText(years);
         wearMessage = mBirthdayItem.getName() + "\n" + years;
-        if (mBirthdayItem.getNumber() == null || mBirthdayItem.getNumber().matches("noNumber")) {
+        if (mBirthdayItem.getNumber() == null || mBirthdayItem.getNumber().matches("")) {
             binding.buttonCall.setVisibility(View.GONE);
             binding.buttonSend.setVisibility(View.GONE);
             userNumber.setVisibility(View.GONE);
@@ -122,6 +127,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         }
     }
 
+    private boolean checkContactPermission() {
+        return Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS);
+    }
+
     public void showNotification(int years, String name){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
@@ -131,16 +140,15 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
         if (!isScreenResumed()) {
-            Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || isBirthdaySilentEnabled()) {
-                getSound().playAlarm(soundUri, isBirthdayInfiniteSound());
+                getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
             }
         }
         if (isVibrate()){
-            long[] pattern = new long[]{150, 86400000};
+            long[] pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
             if (isBirthdayInfiniteVibration()){
-                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+                pattern = new long[]{150, 86400000};
             }
             builder.setVibrate(pattern);
         }
@@ -148,12 +156,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
             builder.setLights(getLedColor(), 500, 1000);
         }
         boolean isWear = getPrefs().isWearEnabled();
-        if (isWear) {
-            if (Module.isJellyMR2()) {
-                builder.setOnlyAlertOnce(true);
-                builder.setGroup("GROUP");
-                builder.setGroupSummary(true);
-            }
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.notify(getId(), builder.build());

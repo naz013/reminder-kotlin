@@ -107,6 +107,7 @@ public class CalendarFragment extends BaseCalendarFragment {
             });
         }
         showCalendar();
+        LogUtil.d(TAG, "onResume: ");
     }
 
     private void showCalendar() {
@@ -132,7 +133,7 @@ public class CalendarFragment extends BaseCalendarFragment {
         replaceFragment(calendarView, getString(R.string.calendar));
         boolean isReminder = getPrefs().isRemindersInCalendarEnabled();
         boolean isFeature = getPrefs().isFutureEventEnabled();
-        calendarView.setEvents(new EventsDataProvider(getContext(), isReminder, isFeature).getEvents());
+        calendarView.setEvents(new EventsDataProvider(getContext(), isReminder, isFeature));
         getActivity().invalidateOptionsMenu();
     }
 

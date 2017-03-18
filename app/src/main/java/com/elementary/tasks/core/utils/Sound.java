@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 
 import java.io.File;
@@ -31,6 +33,7 @@ public class Sound {
     private MediaPlayer mMediaPlayer;
     private boolean isPaused;
     private String lastFile;
+    private Ringtone ringtone;
 
     public Sound(Context context) {
         this.mContext = context;
@@ -40,6 +43,9 @@ public class Sound {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             isPaused = false;
+        }
+        if (ringtone != null) {
+            ringtone.stop();
         }
     }
 
@@ -71,14 +77,13 @@ public class Sound {
 
     public void play(String path) {
         lastFile = path;
-        File file = new File(path);
-        Uri soundUri = Uri.fromFile(file);
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
         mMediaPlayer = new MediaPlayer();
         try {
-            mMediaPlayer.setDataSource(mContext, soundUri);
+            File file = new File(path);
+            mMediaPlayer.setDataSource(mContext, Uri.fromFile(file));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,14 +105,13 @@ public class Sound {
         try {
             mMediaPlayer.setDataSource(mContext, path);
         } catch (IOException e) {
-            e.printStackTrace();
+            ringtone = RingtoneManager.getRingtone(mContext, path);
+            ringtone.play();
         }
 
         Prefs prefs = Prefs.getInstance(mContext);
-        boolean isSystem = prefs.isSystemLoudnessEnabled();
-        if (isSystem) {
-            int stream = prefs.getSoundStream();
-            mMediaPlayer.setAudioStreamType(stream);
+        if (prefs.isSystemLoudnessEnabled()) {
+            mMediaPlayer.setAudioStreamType(prefs.getSoundStream());
         } else {
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         }
@@ -132,11 +136,11 @@ public class Sound {
             e.printStackTrace();
         }
         Prefs prefs = Prefs.getInstance(mContext);
-        boolean isSystem = prefs.isSystemLoudnessEnabled();
-        if (isSystem) {
-            int stream = prefs.getSoundStream();
-            mMediaPlayer.setAudioStreamType(stream);
-        } else mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        if (prefs.isSystemLoudnessEnabled()) {
+            mMediaPlayer.setAudioStreamType(prefs.getSoundStream());
+        } else {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
         mMediaPlayer.setLooping(looping);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {

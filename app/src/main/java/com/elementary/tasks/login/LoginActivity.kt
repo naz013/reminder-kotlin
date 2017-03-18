@@ -81,9 +81,18 @@ class LoginActivity : AppCompatActivity() {
 
                     override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
                         super.onLoadFailed(e, errorDrawable)
-                        binding.imageView2.setImageResource(R.drawable.photo)
+                        loadDefaultImage()
                     }
                 })
+    }
+
+    private fun loadDefaultImage() {
+        Glide.with(this)
+                .load(R.drawable.photo)
+                .override(768, 1280)
+                .centerCrop()
+                .crossFade()
+                .into(binding.imageView2)
     }
 
     override fun onResume() {
