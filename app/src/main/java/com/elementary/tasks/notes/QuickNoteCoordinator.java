@@ -15,6 +15,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -50,14 +51,18 @@ public class QuickNoteCoordinator {
     private Context mContext;
     private ActivityMainBinding binding;
     private Callback mCallback;
+    private ThemeUtil themeUtil;
 
     public QuickNoteCoordinator(Context context, ActivityMainBinding binding, Callback callback) {
         this.binding = binding;
         this.mContext = context;
         this.mCallback = callback;
+        this.themeUtil = ThemeUtil.getInstance(context);
         this.binding.quickNoteContainer.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                if (isNoteVisible()) hideNoteView();
+                if (isNoteVisible()) {
+                    hideNoteView();
+                }
                 return true;
             }
             return false;
@@ -79,7 +84,9 @@ public class QuickNoteCoordinator {
     public void hideNoteView() {
         ViewUtils.hideReveal(binding.quickNoteContainer);
         binding.quickNoteView.removeAllViewsInLayout();
-        if (mCallback != null) mCallback.onClose();
+        if (mCallback != null) {
+            mCallback.onClose();
+        }
     }
 
     private void showNoteView() {
@@ -91,10 +98,16 @@ public class QuickNoteCoordinator {
         NoteInputCardBinding binding = NoteInputCardBinding.inflate(LayoutInflater.from(mContext), this.binding.quickNoteView, false);
         binding.buttonSave.setOnClickListener(view -> saveNote(binding));
         binding.noteCard.setVisibility(View.GONE);
-        if (Module.isLollipop()) binding.noteCard.setElevation(Configs.CARD_ELEVATION);
+        if (Module.isLollipop()) {
+            binding.noteCard.setElevation(Configs.CARD_ELEVATION);
+        }
+        binding.noteCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        binding.bgView.setBackgroundColor(themeUtil.getBackgroundStyle());
         this.binding.quickNoteView.addView(binding.getRoot());
         ViewUtils.slideInUp(mContext, binding.noteCard);
-        if (mCallback != null) mCallback.onOpen();
+        if (mCallback != null) {
+            mCallback.onOpen();
+        }
     }
 
     private void saveNote(NoteInputCardBinding binding) {
@@ -119,7 +132,9 @@ public class QuickNoteCoordinator {
 
     private void addReminderCard(NoteItem item) {
         NoteReminderCardBinding cardBinding = NoteReminderCardBinding.inflate(LayoutInflater.from(mContext), this.binding.quickNoteView, false);
-        if (Module.isLollipop()) cardBinding.noteReminderCard.setElevation(Configs.CARD_ELEVATION);
+        if (Module.isLollipop()) {
+            cardBinding.noteReminderCard.setElevation(Configs.CARD_ELEVATION);
+        }
         cardBinding.buttonYes.setOnClickListener(view -> {
             cardBinding.buttonNo.setEnabled(false);
             cardBinding.buttonYes.setEnabled(false);
@@ -131,6 +146,8 @@ public class QuickNoteCoordinator {
             addNotificationCard(item);
         });
         cardBinding.noteReminderCard.setVisibility(View.GONE);
+        cardBinding.noteReminderCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        cardBinding.bgView.setBackgroundColor(themeUtil.getBackgroundStyle());
         this.binding.quickNoteView.addView(cardBinding.getRoot());
         new Handler().postDelayed(() -> ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard), 250);
     }
@@ -158,7 +175,9 @@ public class QuickNoteCoordinator {
 
     private void addNotificationCard(NoteItem item) {
         NoteStatusCardBinding cardBinding = NoteStatusCardBinding.inflate(LayoutInflater.from(mContext), binding.quickNoteView, false);
-        if (Module.isLollipop()) cardBinding.noteStatusCard.setElevation(Configs.CARD_ELEVATION);
+        if (Module.isLollipop()) {
+            cardBinding.noteStatusCard.setElevation(Configs.CARD_ELEVATION);
+        }
         cardBinding.buttonYes.setOnClickListener(view -> {
             cardBinding.buttonNo.setEnabled(false);
             cardBinding.buttonYes.setEnabled(false);
@@ -166,6 +185,8 @@ public class QuickNoteCoordinator {
         });
         cardBinding.buttonNo.setOnClickListener(view -> hideNoteView());
         cardBinding.noteStatusCard.setVisibility(View.GONE);
+        cardBinding.noteStatusCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()));
+        cardBinding.bgView.setBackgroundColor(themeUtil.getBackgroundStyle());
         this.binding.quickNoteView.addView(cardBinding.getRoot());
         new Handler().postDelayed(() -> ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard), 250);
     }
