@@ -42,12 +42,14 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     private Context mContext;
     private ProgressDialog mDialog;
     private DataListener listener;
+    private DialogListener mDialogListener;
     private int count;
 
-    public UserInfoAsync(Context context, DataListener listener, int count){
+    public UserInfoAsync(Context context, DataListener listener, int count, DialogListener dialogListener){
         this.mContext = context;
         this.listener = listener;
         this.count = count;
+        this.mDialogListener = dialogListener;
     }
 
     @Override
@@ -55,7 +57,12 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
         super.onPreExecute();
         mDialog = new ProgressDialog(mContext);
         mDialog.setMessage(mContext.getString(R.string.retrieving_data));
-        mDialog.setCancelable(false);
+        mDialog.setCancelable(true);
+        mDialog.setOnCancelListener(dialog -> {
+            if (mDialogListener != null) {
+                mDialogListener.onCancel();
+            }
+        });
         if (count > 1) {
             mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             mDialog.setMax(count);
@@ -201,5 +208,9 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
 
     public interface DataListener {
         void onReceive(List<UserItem> result);
+    }
+
+    public interface DialogListener {
+        void onCancel();
     }
 }
