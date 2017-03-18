@@ -48,6 +48,7 @@ public class BackupsFragment extends BaseNavigationFragment {
 
     private FragmentBackupsBinding binding;
     private InfoAdapter mAdapter;
+    private UserInfoAsync mTask;
     private UserInfoAsync.DataListener mDataCallback = new UserInfoAsync.DataListener() {
         @Override
         public void onReceive(List<UserItem> result) {
@@ -58,6 +59,13 @@ public class BackupsFragment extends BaseNavigationFragment {
     };
     private InfoAdapter.ActionCallback mActionCallback = this::deleteFiles;
     private DeleteAsync.DeleteCallback mDeleteCallback = this::loadUserInfo;
+    private UserInfoAsync.DialogListener mCancelListener = this::cancelTask;
+
+    private void cancelTask() {
+        if (mTask != null) {
+            mTask.cancel(true);
+        }
+    }
 
     private void deleteFiles(UserInfoAsync.Info info) {
         new DeleteAsync(getContext(), mDeleteCallback, info).execute(getFolders(info));
@@ -106,33 +114,48 @@ public class BackupsFragment extends BaseNavigationFragment {
 
     private String[] getFolders(UserInfoAsync.Info info) {
         if (info == UserInfoAsync.Info.Dropbox) {
-            String r = MemoryUtil.getDropboxRemindersDir().getPath();
-            String n = MemoryUtil.getDropboxNotesDir().getPath();
-            String g = MemoryUtil.getDropboxGroupsDir().getPath();
-            String b = MemoryUtil.getDropboxBirthdaysDir().getPath();
-            String p = MemoryUtil.getDropboxPlacesDir().getPath();
-            String s = MemoryUtil.getDropboxPrefsDir().getPath();
-            String t = MemoryUtil.getDropboxTemplatesDir().getPath();
-            return new String[]{r, n, g, b, p, s, t};
+            return getDropboxFolders();
         } else if (info == UserInfoAsync.Info.Google) {
-            String r = MemoryUtil.getGoogleRemindersDir().getPath();
-            String n = MemoryUtil.getGoogleNotesDir().getPath();
-            String g = MemoryUtil.getGoogleGroupsDir().getPath();
-            String b = MemoryUtil.getGoogleBirthdaysDir().getPath();
-            String p = MemoryUtil.getGooglePlacesDir().getPath();
-            String s = MemoryUtil.getGooglePrefsDir().getPath();
-            String t = MemoryUtil.getGoogleTemplatesDir().getPath();
-            return new String[]{r, n, g, b, p, s, t};
+            return getGoogleFolders();
         } else {
-            String r = MemoryUtil.getRemindersDir().getPath();
-            String n = MemoryUtil.getNotesDir().getPath();
-            String g = MemoryUtil.getGroupsDir().getPath();
-            String b = MemoryUtil.getBirthdaysDir().getPath();
-            String p = MemoryUtil.getPlacesDir().getPath();
-            String s = MemoryUtil.getPrefsDir().getPath();
-            String t = MemoryUtil.getTemplatesDir().getPath();
-            return new String[]{r, n, g, b, p, s, t};
+            return getLocalFolders();
         }
+    }
+
+    @NonNull
+    private String[] getLocalFolders() {
+        String r = MemoryUtil.getRemindersDir().getPath();
+        String n = MemoryUtil.getNotesDir().getPath();
+        String g = MemoryUtil.getGroupsDir().getPath();
+        String b = MemoryUtil.getBirthdaysDir().getPath();
+        String p = MemoryUtil.getPlacesDir().getPath();
+        String s = MemoryUtil.getPrefsDir().getPath();
+        String t = MemoryUtil.getTemplatesDir().getPath();
+        return new String[]{r, n, g, b, p, s, t};
+    }
+
+    @NonNull
+    private String[] getGoogleFolders() {
+        String r = MemoryUtil.getGoogleRemindersDir().getPath();
+        String n = MemoryUtil.getGoogleNotesDir().getPath();
+        String g = MemoryUtil.getGoogleGroupsDir().getPath();
+        String b = MemoryUtil.getGoogleBirthdaysDir().getPath();
+        String p = MemoryUtil.getGooglePlacesDir().getPath();
+        String s = MemoryUtil.getGooglePrefsDir().getPath();
+        String t = MemoryUtil.getGoogleTemplatesDir().getPath();
+        return new String[]{r, n, g, b, p, s, t};
+    }
+
+    @NonNull
+    private String[] getDropboxFolders() {
+        String r = MemoryUtil.getDropboxRemindersDir().getPath();
+        String n = MemoryUtil.getDropboxNotesDir().getPath();
+        String g = MemoryUtil.getDropboxGroupsDir().getPath();
+        String b = MemoryUtil.getDropboxBirthdaysDir().getPath();
+        String p = MemoryUtil.getDropboxPlacesDir().getPath();
+        String s = MemoryUtil.getDropboxPrefsDir().getPath();
+        String t = MemoryUtil.getDropboxTemplatesDir().getPath();
+        return new String[]{r, n, g, b, p, s, t};
     }
 
     private void loadUserInfo() {
@@ -155,7 +178,9 @@ public class BackupsFragment extends BaseNavigationFragment {
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
-        new UserInfoAsync(getContext(), mDataCallback, list.size()).execute(array);
+        cancelTask();
+        mTask = new UserInfoAsync(getContext(), mDataCallback, list.size(), mCancelListener);
+        mTask.execute(array);
     }
 
     @Override
