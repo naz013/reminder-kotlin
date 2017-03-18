@@ -584,5 +584,6 @@
     <string name="button_color">Button color</string>
     <string name="amoled" translatable="false">AMOLED</string>
     <string name="loading_events">Loading events</string>
+    <string name="canceled">Canceled</string>
 
 </resources>
