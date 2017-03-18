@@ -50,6 +50,7 @@ import java.util.Date;
 public class AddBirthdayActivity extends ThemedActivity {
 
     private static final int MENU_ITEM_DELETE = 12;
+    private static final int CONTACT_PERM = 102;
 
     private ActivityAddBirthdayBinding binding;
 
@@ -127,12 +128,19 @@ public class AddBirthdayActivity extends ThemedActivity {
         }
     }
 
-    private void pickContact() {
-        if (Permissions.checkPermission(AddBirthdayActivity.this, Permissions.READ_CONTACTS, Permissions.READ_CALLS)) {
-            SuperUtil.selectContact(AddBirthdayActivity.this, Constants.REQUEST_CODE_CONTACTS);
-        } else {
-            Permissions.requestPermission(AddBirthdayActivity.this, 101, Permissions.READ_CONTACTS, Permissions.READ_CALLS);
+    private boolean checkContactPermission(int code) {
+        if (!Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS)) {
+            Permissions.requestPermission(this, code, Permissions.READ_CONTACTS, Permissions.READ_CALLS);
+            return false;
         }
+        return true;
+    }
+
+    private void pickContact() {
+        if (!checkContactPermission(101)) {
+            return;
+        }
+        SuperUtil.selectContact(this, Constants.REQUEST_CODE_CONTACTS);
     }
 
     @Override
@@ -173,7 +181,18 @@ public class AddBirthdayActivity extends ThemedActivity {
             binding.birthName.setError(getString(R.string.must_be_not_empty));
             return;
         }
-        int contactId = Contacts.getIdFromNumber(number, this);
+        int contactId = 0;
+        if (binding.contactCheck.isChecked()) {
+            number = binding.phone.getText().toString().trim();
+            if (TextUtils.isEmpty(number)) {
+                binding.phone.setError(getString(R.string.you_dont_insert_number));
+                return;
+            }
+            if (!checkContactPermission(CONTACT_PERM)) {
+                return;
+            }
+            contactId = Contacts.getIdFromNumber(number, this);
+        }
         if (mItem != null) {
             mItem.setName(contact);
             mItem.setContactId(contactId);
@@ -242,6 +261,11 @@ public class AddBirthdayActivity extends ThemedActivity {
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     SuperUtil.selectContact(AddBirthdayActivity.this, Constants.REQUEST_CODE_CONTACTS);
+                }
+                break;
+            case CONTACT_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    saveBirthday();
                 }
                 break;
         }

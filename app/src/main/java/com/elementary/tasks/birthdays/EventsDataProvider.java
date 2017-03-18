@@ -68,6 +68,7 @@ public class EventsDataProvider {
     }
 
     public Map<DateTime, Events> getEvents() {
+        map.clear();
         ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int bColor = cs.getColor(cs.colorBirthdayCalendar());
         TimeCount timeCount = TimeCount.getInstance(mContext);

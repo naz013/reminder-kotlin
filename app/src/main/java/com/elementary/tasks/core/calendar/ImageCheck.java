@@ -50,21 +50,17 @@ public final class ImageCheck {
     }
 
     public String getImage(int month, long id){
-        if (isSdPresent()){
-            String res = null;
-            File sdPath = Environment.getExternalStorageDirectory();
-            File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + "image_cache");
-            if (!sdPathDr.exists()) {
-                sdPathDr.mkdirs();
-            }
-            File image = new File(sdPathDr, getImageName(month, id));
-            if (image.exists()) {
-                res = image.toString();
-            }
-            return res;
-        } else {
-            return null;
+        String res = null;
+        File sdPath = Environment.getExternalStorageDirectory();
+        File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + "image_cache");
+        if (!sdPathDr.exists()) {
+            sdPathDr.mkdirs();
         }
+        File image = new File(sdPathDr, getImageName(month, id));
+        if (image.exists()) {
+            res = image.toString();
+        }
+        return res;
     }
 
     public boolean isImage(int month, long id){

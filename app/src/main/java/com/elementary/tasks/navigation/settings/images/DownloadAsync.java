@@ -11,7 +11,6 @@ import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.network.RetrofitBuilder;
-import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.squareup.picasso.Picasso;
 
@@ -83,7 +82,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
             }
             if (bitmap != null) {
                 image = new Image();
-                image.bitmap = BitmapUtils.compressBitmap(bitmap);
+                image.bitmap = bitmap;
                 image.path = filePath;
             }
         } catch (IOException e) {

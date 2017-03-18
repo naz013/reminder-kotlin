@@ -4,19 +4,18 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.TextView;
 
-import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
-import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.elementary.tasks.databinding.FragmentFlextCalBinding;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
@@ -106,14 +105,13 @@ public class FlextCalendarFragment extends Fragment {
     /**
      * Declare views
      */
-    private TextView monthTitleTextView;
     private List<DateGridFragment> fragments;
-    private KenBurnsView image;
 
     /**
      * caldroidData belongs to Caldroid
      */
-    protected Map<DateTime, Events> eventsMap = new HashMap<>();
+    protected EventsDataProvider eventsProvider;
+    private Map<DateTime, Events> mLastMap = new HashMap<>();
 
     private long[] photosList = new long[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
@@ -123,6 +121,7 @@ public class FlextCalendarFragment extends Fragment {
     private MonthView.OnDateLongClick dateItemLongClickListener;
 
     private FlextListener caldroidListener;
+    private FragmentFlextCalBinding binding;
 
     public WeekdayArrayAdapter getNewWeekdayAdapter() {
         return new WeekdayArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
@@ -133,8 +132,9 @@ public class FlextCalendarFragment extends Fragment {
         return fragments;
     }
 
-    public void setEvents(Map<DateTime, Events> eventsMap) {
-        this.eventsMap = eventsMap;
+    public void setEvents(EventsDataProvider eventsMap) {
+        this.eventsProvider = eventsMap;
+        this.mLastMap = eventsProvider.getEvents();
     }
 
     public void setListener(FlextListener caldroidListener) {
@@ -195,14 +195,14 @@ public class FlextCalendarFragment extends Fragment {
         monthYearStringBuilder.setLength(0);
         String monthTitle = DateUtils.formatDateRange(getActivity(),
                 monthYearFormatter, millis, millis, MONTH_YEAR_FLAG).toString();
-        monthTitleTextView.setText(StringUtils.capitalize(monthTitle));
+        binding.monthYear.setText(StringUtils.capitalize(monthTitle));
         if (caldroidListener != null) {
             caldroidListener.onMonthSelected(month);
         }
-        if (image != null && enableImage) {
+        if (binding.imageView != null && enableImage) {
             ImageCheck check = ImageCheck.getInstance();
             if (check.isImage(month - 1, photosList[month - 1])){
-                Picasso.with(getActivity()).load(new File(check.getImage(month - 1, photosList[month - 1]))).into(image);
+                Picasso.with(getActivity()).load(new File(check.getImage(month - 1, photosList[month - 1]))).into(binding.imageView);
             } else {
                 new LoadAsync(getActivity(), month - 1, photosList[month - 1]).execute();
             }
@@ -242,12 +242,9 @@ public class FlextCalendarFragment extends Fragment {
         }
     }
 
-    private void setupDateGridPages(View view) {
+    private void setupDateGridPages() {
         DateTime currentDateTime = new DateTime(year, month, 1, 0, 0, 0, 0);
-        DatePageChangeListener pageChangeListener = new DatePageChangeListener();
-        pageChangeListener.setCurrentDateTime(currentDateTime);
-        InfiniteViewPager dateViewPager = (InfiniteViewPager) view.findViewById(R.id.months_infinite_pager);
-        dateViewPager.setEnabled(true);
+        DatePageChangeListener pageChangeListener = initMonthPager(currentDateTime);
         final MonthPagerAdapter pagerAdapter = new MonthPagerAdapter(getFragmentManager());
         fragments = pagerAdapter.getFragments();
         fragments.get(0).setDate(currentDateTime.getMonth() - 1, currentDateTime.getYear());
@@ -262,18 +259,26 @@ public class FlextCalendarFragment extends Fragment {
         fragments.get(3).setDate(prevDateTime.getMonth() - 1, prevDateTime.getYear());
         for (int i = 0; i < NUMBER_OF_PAGES; i++) {
             DateGridFragment dateGridFragment = fragments.get(i);
-            dateGridFragment.setEventsMap(eventsMap);
+            dateGridFragment.setEventsMap(mLastMap);
             dateGridFragment.setOnItemClickListener(getDateItemClickListener());
             dateGridFragment.setOnItemLongClickListener(getDateItemLongClickListener());
         }
         pageChangeListener.setFlextGridAdapters(fragments);
         InfinitePagerAdapter infinitePagerAdapter = new InfinitePagerAdapter(pagerAdapter);
-        dateViewPager.setAdapter(infinitePagerAdapter);
+        binding.monthsInfinitePager.setAdapter(infinitePagerAdapter);
+    }
+
+    @NonNull
+    private DatePageChangeListener initMonthPager(DateTime currentDateTime) {
+        DatePageChangeListener pageChangeListener = new DatePageChangeListener();
+        pageChangeListener.setCurrentDateTime(currentDateTime);
+        binding.monthsInfinitePager.setEnabled(true);
         if (Module.isLollipop()) {
-            dateViewPager.addOnPageChangeListener(pageChangeListener);
+            binding.monthsInfinitePager.addOnPageChangeListener(pageChangeListener);
         } else {
-            dateViewPager.setOnPageChangeListener(pageChangeListener);
+            binding.monthsInfinitePager.setOnPageChangeListener(pageChangeListener);
         }
+        return pageChangeListener;
     }
 
     public static FlextCalendarFragment newInstance() {
@@ -296,30 +301,39 @@ public class FlextCalendarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         retrieveInitialArgs();
-        View view = inflater.inflate(R.layout.fragment_flext_cal, container, false);
-        image = (KenBurnsView) view.findViewById(R.id.imageView);
-        monthTitleTextView = (TextView) view.findViewById(R.id.monthYear);
-        GridView weekdayGridView = (GridView) view.findViewById(R.id.weekday_gridview);
+        binding = FragmentFlextCalBinding.inflate(inflater, container, false);
         WeekdayArrayAdapter weekdaysAdapter = getNewWeekdayAdapter();
-        weekdayGridView.setAdapter(weekdaysAdapter);
-        setupDateGridPages(view);
+        binding.weekdayGridview.setAdapter(weekdaysAdapter);
+        setupDateGridPages();
         refreshView();
         if (caldroidListener != null) {
             caldroidListener.onViewCreated();
         }
-        return view;
+        return binding.getRoot();
     }
 
-    public class DatePageChangeListener implements ViewPager.OnPageChangeListener {
+    private void loadData() {
+        mLastMap = eventsProvider.getEvents();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Thread(this::loadData).start();
+        LogUtil.d(TAG, "onResume: ");
+    }
+
+    private class DatePageChangeListener implements ViewPager.OnPageChangeListener {
+
         private int currentPage = InfiniteViewPager.OFFSET;
         private DateTime currentDateTime;
         private List<DateGridFragment> flextGridAdapters;
 
-        public void setFlextGridAdapters(List<DateGridFragment> flextGridAdapters) {
+        void setFlextGridAdapters(List<DateGridFragment> flextGridAdapters) {
             this.flextGridAdapters = flextGridAdapters;
         }
 
-        public void setCurrentDateTime(DateTime dateTime) {
+        void setCurrentDateTime(DateTime dateTime) {
             this.currentDateTime = dateTime;
             setCalendarDateTime(currentDateTime);
         }
@@ -350,7 +364,7 @@ public class FlextCalendarFragment extends Fragment {
          * @param position position
          * @return position
          */
-        public int getCurrent(int position) {
+        int getCurrent(int position) {
             return position % NUMBER_OF_PAGES;
         }
 
@@ -364,29 +378,29 @@ public class FlextCalendarFragment extends Fragment {
 
         }
 
-        public void refreshAdapters(int position) {
+        void refreshAdapters(int position) {
             DateGridFragment currentAdapter = flextGridAdapters.get(getCurrent(position));
             DateGridFragment prevAdapter = flextGridAdapters.get(getPrevious(position));
             DateGridFragment nextAdapter = flextGridAdapters.get(getNext(position));
             if (position == currentPage) {
-                currentAdapter.setEventsMap(eventsMap);
+                currentAdapter.setEventsMap(mLastMap);
                 currentAdapter.setDateTime(currentDateTime);
-                prevAdapter.setEventsMap(eventsMap);
+                prevAdapter.setEventsMap(mLastMap);
                 prevAdapter.setDateTime(currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
-                nextAdapter.setEventsMap(eventsMap);
+                nextAdapter.setEventsMap(mLastMap);
                 nextAdapter.setDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
             }
             // Detect if swipe right or swipe left
             // Swipe right
             else if (position > currentPage) {
                 currentDateTime = currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-                nextAdapter.setEventsMap(eventsMap);
+                nextAdapter.setEventsMap(mLastMap);
                 nextAdapter.setDateTime(currentDateTime.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
             }
             // Swipe left
             else {
                 currentDateTime = currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay);
-                prevAdapter.setEventsMap(eventsMap);
+                prevAdapter.setEventsMap(mLastMap);
                 prevAdapter.setDateTime(currentDateTime.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay));
             }
             currentPage = position;

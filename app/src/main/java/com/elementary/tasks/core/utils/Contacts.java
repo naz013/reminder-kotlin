@@ -28,24 +28,29 @@ public final class Contacts {
 
     private Context mContext;
 
-    public Contacts(Context context){
+    public Contacts(Context context) {
         this.mContext = context;
     }
 
     /**
      * Holder photo of contact.
+     *
      * @param contactId contact identifier.
      * @return Contact photo
      */
     public static Uri getPhoto(long contactId) {
+        if (contactId == 0) {
+            return null;
+        }
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.DISPLAY_PHOTO);
     }
 
     /**
      * Holder contact identifier by contact phoneNumber.
+     *
      * @param phoneNumber contact phoneNumber.
-     * @param context application context.
+     * @param context     application context.
      * @return Contact identifier
      */
     public static int getIdFromNumber(String phoneNumber, Context context) {
@@ -54,9 +59,12 @@ public final class Contacts {
             String contact = Uri.encode(phoneNumber);
             Cursor contactLookupCursor = context.getContentResolver()
                     .query(Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
-                            new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
+                            new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
                             null, null, null);
-            while(contactLookupCursor.moveToNext()){
+            if (contactLookupCursor == null) {
+                return 0;
+            }
+            while (contactLookupCursor.moveToNext()) {
                 phoneContactID = contactLookupCursor.getInt(
                         contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
             }
@@ -69,18 +77,17 @@ public final class Contacts {
 
     /**
      * Holder contact identifier by contact e-mail.
-     * @param eMail contact e-mail.
+     *
+     * @param eMail   contact e-mail.
      * @param context application context.
      * @return Contact identifier
      */
     public static int getIdFromMail(String eMail, Context context) {
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
-        int contactId =0;
-
+        int contactId = 0;
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor contactLookup = contentResolver.query(uri, new String[] {
+        Cursor contactLookup = contentResolver.query(uri, new String[]{
                 ContactsContract.PhoneLookup._ID}, null, null, null);
-
         try {
             if (contactLookup != null && contactLookup.getCount() > 0) {
                 contactLookup.moveToNext();
@@ -96,22 +103,20 @@ public final class Contacts {
 
     /**
      * Holder contact name by contact e_mail.
-     * @param eMail contact e-mail.
+     *
+     * @param eMail   contact e-mail.
      * @param context application context.
      * @return Contact name
      */
     public static String getNameFromMail(String eMail, Context context) {
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         String name = "?";
-
         ContentResolver contentResolver = context.getContentResolver();
-        Cursor contactLookup = contentResolver.query(uri, new String[] {
-                ContactsContract.Data.DISPLAY_NAME }, null, null, null);
-
+        Cursor contactLookup = contentResolver.query(uri, new String[]{ContactsContract.Data.DISPLAY_NAME}, null, null, null);
         try {
             if (contactLookup != null && contactLookup.getCount() > 0) {
                 contactLookup.moveToNext();
-                name = contactLookup.getString(contactLookup.getColumnIndex( ContactsContract.Data.DISPLAY_NAME ));
+                name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
             }
         } finally {
             if (contactLookup != null) {
@@ -123,8 +128,9 @@ public final class Contacts {
 
     /**
      * Holder contact name by contact number.
+     *
      * @param contactNumber contact number.
-     * @param context application context.
+     * @param context       application context.
      * @return Contact name
      */
     public static String getNameFromNumber(String contactNumber, Context context) {
@@ -136,6 +142,9 @@ public final class Contacts {
                         Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, contact),
                         new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},
                         null, null, null);
+                if (contactLookupCursor == null) {
+                    return null;
+                }
                 while (contactLookupCursor.moveToNext()) {
                     phoneContactID = contactLookupCursor.getString(
                             contactLookupCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
@@ -150,10 +159,11 @@ public final class Contacts {
 
     /**
      * Holder e=mail for contact.
+     *
      * @param id contact identifier.
      * @return e-mail
      */
-    public String getMail(int id){
+    public String getMail(int id) {
         String mail = null;
         if (id != 0) {
             ContentResolver cr = mContext.getContentResolver();
@@ -172,7 +182,8 @@ public final class Contacts {
 
     /**
      * Holder contact number by contact name.
-     * @param name contact name.
+     *
+     * @param name    contact name.
      * @param context application context.
      * @return Phone number
      */
@@ -182,7 +193,7 @@ public final class Contacts {
             name = name.replaceAll("'", "''");
         }
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + name + "%'";
-        String[] projection = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
         try {
             Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                     projection, selection, null, null);
@@ -193,7 +204,7 @@ public final class Contacts {
         } catch (SQLiteException e) {
             e.printStackTrace();
         }
-        if (number == null){
+        if (number == null) {
             number = "noNumber";
         }
         return number;
