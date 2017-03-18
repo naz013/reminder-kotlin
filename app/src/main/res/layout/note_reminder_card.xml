@@ -9,11 +9,13 @@
         android:layout_marginTop="16dp">
 
         <LinearLayout
+            android:id="@+id/bgView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="1dp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:layout_width="match_parent"
