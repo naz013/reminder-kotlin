@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.backups.DeleteAsync;
@@ -59,7 +60,10 @@ public class BackupsFragment extends BaseNavigationFragment {
     };
     private InfoAdapter.ActionCallback mActionCallback = this::deleteFiles;
     private DeleteAsync.DeleteCallback mDeleteCallback = this::loadUserInfo;
-    private UserInfoAsync.DialogListener mCancelListener = this::cancelTask;
+    private UserInfoAsync.DialogListener mCancelListener = () -> {
+        Toast.makeText(getContext(), R.string.canceled, Toast.LENGTH_SHORT).show();
+        cancelTask();
+    };
 
     private void cancelTask() {
         if (mTask != null) {
