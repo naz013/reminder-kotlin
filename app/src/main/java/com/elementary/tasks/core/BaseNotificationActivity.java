@@ -262,13 +262,13 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (MotionEvent.ACTION_DOWN == event.getAction()){
+        if (MotionEvent.ACTION_DOWN == event.getAction()) {
             discardMedia();
         }
         return super.onTouchEvent(event);
     }
 
-    protected void setTextDrawable(FloatingActionButton button, String text){
+    protected void setTextDrawable(FloatingActionButton button, String text) {
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
                 .textColor(Color.BLACK)
@@ -281,8 +281,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         button.setImageDrawable(drawable);
     }
 
-    protected void colorify(FloatingActionButton... fab){
-        for (FloatingActionButton button : fab){
+    protected void colorify(FloatingActionButton... fab) {
+        for (FloatingActionButton button : fab) {
             button.setBackgroundTintList(ViewUtils.getFabState(this, getThemeUtil().colorAccent(), getThemeUtil().colorAccent()));
         }
     }
@@ -296,33 +296,37 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         int height = (int) (metrics.heightPixels * 0.75);
-        if (imagePrefs.matches(Constants.DEFAULT)){
+        if (imagePrefs.matches(Constants.DEFAULT)) {
             if (blur && Module.isPro()) {
                 Picasso.with(this)
                         .load(R.drawable.photo)
                         .resize(width, height)
+                        .centerCrop()
                         .transform(new BlurTransformation(this, 15, 2))
                         .into(imageView);
             } else {
                 Picasso.with(this)
                         .load(R.drawable.photo)
                         .resize(width, height)
+                        .centerCrop()
                         .into(imageView);
             }
             imageView.setVisibility(View.VISIBLE);
-        } else if (imagePrefs.matches(Constants.NONE)){
+        } else if (imagePrefs.matches(Constants.NONE)) {
             imageView.setVisibility(View.GONE);
         } else {
             if (blur && Module.isPro()) {
                 Picasso.with(this)
                         .load(Uri.parse(imagePrefs))
                         .resize(width, height)
+                        .centerCrop()
                         .transform(new BlurTransformation(this, 15, 2))
                         .into(imageView);
             } else {
                 Picasso.with(this)
                         .load(Uri.parse(imagePrefs))
                         .resize(width, height)
+                        .centerCrop()
                         .into(imageView);
             }
             imageView.setVisibility(View.VISIBLE);
@@ -349,7 +353,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    protected void removeFlags(){
+    protected void removeFlags() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
@@ -403,7 +407,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         return true;
     }
 
-    protected void showMissedReminder(CallItem callItem, String name){
+    protected void showMissedReminder(CallItem callItem, String name) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
         builder.setAutoCancel(false);
@@ -456,7 +460,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    protected void showFavouriteNotification(){
+    protected void showFavouriteNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getSummary());
         String appName;
@@ -478,7 +482,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.notify(getId(), builder.build());
-        if (isWear){
+        if (isWear) {
             showWearNotification(appName);
         }
     }
@@ -660,13 +664,13 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
-    protected void discardNotification(int id){
+    protected void discardNotification(int id) {
         discardMedia();
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
         mNotifyMgr.cancel(id);
     }
 
-    protected void discardMedia(){
+    protected void discardMedia() {
         mSound.stop();
     }
 

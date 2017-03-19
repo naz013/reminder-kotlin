@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -631,25 +632,21 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, types);
         String image = getPrefs().getReminderImage();
-        int selection;
         if (image.matches(Constants.NONE)) {
-            selection = 0;
+            mItemSelect = 0;
         } else if (image.matches(Constants.DEFAULT)) {
-            selection = 1;
+            mItemSelect = 1;
         } else {
-            selection = 2;
+            mItemSelect = 2;
         }
-        builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> {
-            if (which != -1) {
-                dialog.dismiss();
-                saveImagePrefs(which);
-            }
-        });
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
         builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            saveImagePrefs(mItemSelect);
             dialog.dismiss();
-            saveImagePrefs(which);
         });
         AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
         dialog.show();
     }
 
@@ -693,6 +690,12 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                         }
                     }
                     showMelody();
+                }
+                break;
+            case Constants.ACTION_REQUEST_GALLERY:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    getPrefs().setReminderImage(selectedImage.toString());
                 }
                 break;
         }
