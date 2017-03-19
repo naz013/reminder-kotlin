@@ -264,7 +264,8 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAppType() {
-        return Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) || Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP);
+        return Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) ||
+                Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP);
     }
 
     @Override
