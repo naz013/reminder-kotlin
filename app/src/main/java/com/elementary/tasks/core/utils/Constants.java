@@ -65,5 +65,53 @@ public class Constants {
 
     public static final String WEB_URL = "http://future-graph-651.appspot.com/";
 
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_TEXT = "task_text";
+    public static final String COLUMN_TYPE = "task_type";
+    public static final String COLUMN_NUMBER = "call_number";
+    public static final String COLUMN_DAY = "day";
+    public static final String COLUMN_MONTH = "month";
+    public static final String COLUMN_YEAR = "year";
+    public static final String COLUMN_HOUR = "hour";
+    public static final String COLUMN_MINUTE = "minute";
+    public static final String COLUMN_REMIND_TIME = "remind_time";
+    public static final String COLUMN_REPEAT = "repeat";
+    public static final String COLUMN_REMINDERS_COUNT = "reminders_count";
+    public static final String COLUMN_LATITUDE = "latitude";
+    public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String COLUMN_FEATURE_TIME = "tech_int";
+    public static final String COLUMN_DELAY = "tech_lint";
+    public static final String COLUMN_TECH_VAR = "tech_var";
+    public static final String COLUMN_WEEKDAYS = "tech_lvar";
+    public static final String COLUMN_EXPORT_TO_CALENDAR = "export_calendar";
+    public static final String COLUMN_CUSTOM_MELODY = "custom_melody";
+    public static final String COLUMN_CUSTOM_RADIUS = "custom_radius";
+    public static final String COLUMN_ARCHIVED = "archived";
+    public static final String COLUMN_DATE_TIME = "var";
+    public static final String COLUMN_CATEGORY = "var2";
+    public static final String COLUMN_LED_COLOR = "int";
+    public static final String COLUMN_SYNC_CODE = "int2";
+    public static final String COLUMN_VIBRATION = "vibration";
+    public static final String COLUMN_AUTO_ACTION = "action_";
+    public static final String COLUMN_WAKE_SCREEN = "awake_screen";
+    public static final String COLUMN_UNLOCK_DEVICE = "unlock_device";
+    public static final String COLUMN_NOTIFICATION_REPEAT = "notification_repeat";
+    public static final String COLUMN_VOICE = "voice_notification";
+    public static final String COLUMN_REPEAT_LIMIT = "column_extra";
+    public static final String COLUMN_EXTRA_1 = "column_extra_1";
+    public static final String COLUMN_EXTRA_3 = "column_extra_3";
+
+    public static final String COLUMN_NOTE = "note";
+    public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_COLOR = "color";
+    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_UUID = "uuid";
+    public static final String COLUMN_ENCRYPTED = "tech";
+    public static final String COLUMN_FONT_STYLE = "font_style";
+    public static final String COLUMN_FONT_COLOR = "font_color";
+    public static final String COLUMN_FONT_SIZE = "font_size";
+    public static final String COLUMN_FONT_UNDERLINED = "font_underlined";
+    public static final String COLUMN_LINK_ID = "font_crossed";
+
     private Constants() {}
 }
