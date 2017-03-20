@@ -1,1 +1,1 @@
-include ':app', ':photoPreview', ':simpleai', ':shared', ':wear', ':backend', ':android-animated-recording-view', ':continuustree'
+include ':app', ':photoPreview', ':simpleai', ':shared', ':wear', ':backend', ':android-animated-recording-view'
