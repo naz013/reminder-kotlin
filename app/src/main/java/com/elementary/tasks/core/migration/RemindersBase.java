@@ -31,37 +31,36 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class RemindersBase {
+class RemindersBase {
 
     private static final String DB_NAME = "reminder_base";
     private static final int DB_VERSION = 1;
     private static final String TABLE_NAME = "reminders_table";
 
-    public static final String _ID = "_id";
-    public static final String SUMMARY = "summary";
-    public static final String TYPE = "type";
-    public static final String EVENT_TIME = "event_time";
-    public static final String DELAY = "delay";
-    public static final String CATEGORY = "category";
-    public static final String JSON = "_json";
-    public static final String DB_STATUS = "db_status";
-    public static final String DB_LIST = "db_list";
-    public static final String NOTIFICATION_STATUS = "n_status";
-    public static final String UUID = "uuid";
+    private static final String _ID = "_id";
+    private static final String SUMMARY = "summary";
+    private static final String TYPE = "type";
+    private static final String EVENT_TIME = "event_time";
+    private static final String DELAY = "delay";
+    private static final String CATEGORY = "category";
+    private static final String JSON = "_json";
+    private static final String DB_STATUS = "db_status";
+    private static final String DB_LIST = "db_list";
+    private static final String NOTIFICATION_STATUS = "n_status";
+    private static final String UUID = "uuid";
 
     private DBHelper dbHelper;
     private Context mContext;
     private SQLiteDatabase db;
 
-    public class DBHelper extends SQLiteOpenHelper {
+    private class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper(Context context) {
+        private DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//            sqLiteDatabase.execSQL(TABLE_CREATE);
         }
 
         @Override
@@ -70,26 +69,22 @@ public class RemindersBase {
         }
     }
 
-    public RemindersBase(Context c) {
+    RemindersBase(Context c) {
         mContext = c;
     }
 
-    public RemindersBase open() throws SQLiteException {
+    RemindersBase open() throws SQLiteException {
         dbHelper = new DBHelper(mContext);
         db = dbHelper.getWritableDatabase();
         System.gc();
         return this;
     }
 
-    public boolean isOpen() {
+    boolean isOpen() {
         return db != null && db.isOpen();
     }
 
-    public SQLiteDatabase getDatabase() {
-        return db;
-    }
-
-    public void close() {
+    void close() {
         if (dbHelper != null) {
             dbHelper.close();
         }
@@ -184,7 +179,7 @@ public class RemindersBase {
         return Reminder.BY_DATE;
     }
 
-    public List<Reminder> queryAllReminders() throws SQLException {
+    List<Reminder> queryAllReminders() throws SQLException {
         openGuard();
         Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
         List<Reminder> list = new ArrayList<>();
@@ -199,11 +194,11 @@ public class RemindersBase {
         return list;
     }
 
-    public boolean deleteReminder(long rowId) {
+    private boolean deleteReminder(long rowId) {
         return db.delete(TABLE_NAME, _ID + "=" + rowId, null) > 0;
     }
 
-    public void openGuard() throws SQLiteException {
+    private void openGuard() throws SQLiteException {
         if (isOpen()) return;
         open();
         if (isOpen()) return;

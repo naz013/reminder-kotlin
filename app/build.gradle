@@ -79,8 +79,7 @@ android {
             productFlavors.pro.signingConfig signingConfigs.proApp
         }
         debug {
-            productFlavors.free.signingConfig signingConfigs.freeApp
-            productFlavors.pro.signingConfig signingConfigs.proApp
+            signingConfig signingConfigs.proApp
         }
     }
     compileOptions {

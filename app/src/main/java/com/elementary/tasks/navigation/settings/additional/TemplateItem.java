@@ -1,5 +1,7 @@
 package com.elementary.tasks.navigation.settings.additional;
 
+import com.elementary.tasks.core.utils.TimeUtil;
+
 import java.util.UUID;
 
 /**
@@ -34,6 +36,12 @@ public class TemplateItem {
     public TemplateItem(String title, String date) {
         this.title = title;
         this.date = date;
+        this.key = UUID.randomUUID().toString();
+    }
+
+    public TemplateItem(String title) {
+        this.title = title;
+        this.date = TimeUtil.getGmtDateTime();
         this.key = UUID.randomUUID().toString();
     }
 

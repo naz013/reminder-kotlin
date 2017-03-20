@@ -55,6 +55,14 @@ public final class Prefs extends SharedPrefs {
         return instance;
     }
 
+    public boolean isMigrated() {
+        return getBoolean(MIGRATION_COMPLETE);
+    }
+
+    public void setMigrated(boolean value) {
+        putBoolean(MIGRATION_COMPLETE, value);
+    }
+
     public int getLastUsedReminder() {
         return getInt(LAST_USED_REMINDER);
     }

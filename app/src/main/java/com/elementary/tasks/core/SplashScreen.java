@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
+import com.elementary.tasks.core.migration.MigrationTool;
 import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.services.TasksService;
@@ -50,6 +51,19 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (Prefs.getInstance(this).isMigrated()) {
+            gotoApp();
+        } else {
+            new Thread(() -> {
+                try {
+                    MigrationTool.migrate(SplashScreen.this);
+                } catch (Exception ignored) {}
+                runOnUiThread(this::gotoApp);
+            }).start();
+        }
+    }
+
+    private void gotoApp() {
         if (!Prefs.getInstance(this).isUserLogged()) {
             openLoginScreen();
         } else {
