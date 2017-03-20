@@ -33,7 +33,6 @@ public class SplashScreen extends AppCompatActivity {
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
-        checkIfAppUpdated();
     }
 
     private void checkIfAppUpdated() {
@@ -65,6 +64,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void gotoApp() {
+        checkIfAppUpdated();
         if (!Prefs.getInstance(this).isUserLogged()) {
             openLoginScreen();
         } else {
