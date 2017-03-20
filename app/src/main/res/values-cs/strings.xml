@@ -584,5 +584,6 @@
     <string name="light">Světlo</string>
     <string name="opacity">Neprůhlednost</string>
     <string name="loading_events">Nahrávání událostí</string>
+    <string name="canceled">Zrušený</string>
 
 </resources>

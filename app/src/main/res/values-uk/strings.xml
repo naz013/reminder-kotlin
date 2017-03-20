@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Чи не вдалося розпізнати вашу мову</string>
     <string name="opacity">Прозорість</string>
     <string name="loading_events">Завантаження подій</string>
+    <string name="canceled">Відмінено</string>
 
 </resources>

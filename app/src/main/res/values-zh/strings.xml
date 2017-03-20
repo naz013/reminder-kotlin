@@ -583,5 +583,6 @@
     <string name="failed_to_recognize_your_command">无法识别您的演讲</string>
     <string name="opacity">不透明度</string>
     <string name="loading_events">正在加载事件</string>
+    <string name="canceled">取消</string>
 
 </resources>

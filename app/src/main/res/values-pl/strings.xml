@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Nie udało się rozpoznać mowę</string>
     <string name="opacity">Nieprzezroczystość</string>
     <string name="loading_events">Ładowanie wydarzenia</string>
+    <string name="canceled">Odwołany</string>
 
 </resources>

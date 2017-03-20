@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Ihre Rede nicht erkannt</string>
     <string name="opacity">Opazität</string>
     <string name="loading_events">Ereignisse werden geladen</string>
+    <string name="canceled">Abgebrochen</string>
 
 </resources>

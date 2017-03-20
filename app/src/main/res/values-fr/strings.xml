@@ -583,5 +583,6 @@
     <string name="failed_to_recognize_your_command">Impossible de reconnaître votre discours</string>
     <string name="opacity">अस्पष्टता...</string>
     <string name="loading_events">Chargement des événements</string>
+    <string name="canceled">Annulé</string>
 
 </resources>
