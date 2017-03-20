@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Konuşmanızı tanımadık</string>
     <string name="opacity">Opaklık</string>
     <string name="loading_events">Etkinlik yükleniyor</string>
+    <string name="canceled">İptal edildi</string>
 
 </resources>

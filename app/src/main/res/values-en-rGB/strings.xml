@@ -584,4 +584,5 @@
     <string name="failed_to_recognize_your_command">Failed to recognize your speech</string>
     <string name="opacity">Opacity</string>
     <string name="loading_events">Loading events</string>
+    <string name="canceled">Canceled</string>
 </resources>

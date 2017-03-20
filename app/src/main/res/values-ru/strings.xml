@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Не удалось распознать вашу речь</string>
     <string name="opacity">Непрозрачность</string>
     <string name="loading_events">Загрузка событий</string>
+    <string name="canceled">Отменено</string>
 
 </resources>

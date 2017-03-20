@@ -584,5 +584,6 @@
     <string name="failed_to_recognize_your_command">Impossibile riconoscere il suo discorso</string>
     <string name="opacity">Opacità</string>
     <string name="loading_events">Caricamento in corso eventi</string>
+    <string name="canceled">Annullato</string>
 
 </resources>
