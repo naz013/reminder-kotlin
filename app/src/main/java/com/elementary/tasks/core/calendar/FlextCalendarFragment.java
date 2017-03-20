@@ -98,11 +98,6 @@ public class FlextCalendarFragment extends Fragment {
     public final static String MONTH_IMAGES = "month_images";
 
     /**
-     * For internal use
-     */
-    public final static String _EVENTS_ = "_events";
-
-    /**
      * Declare views
      */
     private List<DateGridFragment> fragments;
