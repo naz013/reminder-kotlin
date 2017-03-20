@@ -113,5 +113,31 @@ public class Constants {
     public static final String COLUMN_FONT_UNDERLINED = "font_underlined";
     public static final String COLUMN_LINK_ID = "font_crossed";
 
+    public class Contacts {
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_CONTACT_ID = "contact_id";
+        public static final String COLUMN_NAME = "display_name";
+        public static final String COLUMN_NUMBER = "phone_number";
+        public static final String COLUMN_CONTACT_MAIL = "e_mail";
+        public static final String COLUMN_BIRTHDATE = "birthday";
+        public static final String COLUMN_UUID = "photo_id";
+        public static final String COLUMN_DAY = "day";
+        public static final String COLUMN_VAR = "var";
+        public static final String COLUMN_MONTH = "month";
+    }
+
+    public class Location {
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_LOCATION_NAME = "location_name";
+        public static final String COLUMN_LOCATION_LATITUDE = "display_name";
+        public static final String COLUMN_LOCATION_LONGITUDE = "phone_number";
+        public static final String COLUMN_LOCATION_TECH = "tech";
+        public static final String COLUMN_LOCATION_TECH1 = "tech1";
+        public static final String COLUMN_LOCATION_TECH2 = "tech2";
+        public static final String COLUMN_LOCATION_VAR = "var";
+        public static final String COLUMN_LOCATION_VAR1 = "var1";
+        public static final String COLUMN_LOCATION_VAR2 = "var2";
+    }
+
     private Constants() {}
 }

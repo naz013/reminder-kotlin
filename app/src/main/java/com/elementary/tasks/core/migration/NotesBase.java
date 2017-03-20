@@ -32,7 +32,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class NotesBase {
+class NotesBase {
 
     private static final String DB_NAME = "notes_base";
     private static final int DB_VERSION = 2;
@@ -41,15 +41,14 @@ public class NotesBase {
     private Context mContext;
     private SQLiteDatabase db;
 
-    public class DBHelper extends SQLiteOpenHelper {
+    private class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper(Context context) {
+        DBHelper(Context context) {
             super(context, DB_NAME, null, DB_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//            sqLiteDatabase.execSQL(NOTE_TABLE_CREATE);
         }
 
         @Override
@@ -71,30 +70,26 @@ public class NotesBase {
         }
     }
 
-    public NotesBase(Context c) {
+    NotesBase(Context c) {
         mContext = c;
     }
 
-    public NotesBase open() throws SQLiteException {
+    NotesBase open() throws SQLiteException {
         dbHelper = new DBHelper(mContext);
         db = dbHelper.getWritableDatabase();
         System.gc();
         return this;
     }
 
-    public boolean isOpen() {
+    boolean isOpen() {
         return db != null && db.isOpen();
     }
 
-    public SQLiteDatabase getDatabase() {
-        return db;
-    }
-
-    public void close() {
+    void close() {
         if (dbHelper != null) dbHelper.close();
     }
 
-    public List<NoteItem> getNotes() throws SQLException {
+    List<NoteItem> getNotes() throws SQLException {
         openGuard();
         Cursor c = db.query(NOTE_TABLE_NAME, null, null, null, null, null, null);
         List<NoteItem> list = new ArrayList<>();

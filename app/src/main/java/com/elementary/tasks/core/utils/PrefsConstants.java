@@ -103,6 +103,7 @@ class PrefsConstants {
     static final String RATE_COUNT = "rate_count";
     static final String USER_LOGGED = "user_logged";
     static final String LIVE_CONVERSATION = "live_conversation";
+    static final String MIGRATION_COMPLETE = "migration_complete";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String NOTE_CHANGED = "note_changed";
