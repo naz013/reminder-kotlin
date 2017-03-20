@@ -58,6 +58,7 @@ public class SplashScreen extends AppCompatActivity {
                 try {
                     MigrationTool.migrate(SplashScreen.this);
                 } catch (Exception ignored) {}
+                Prefs.getInstance(SplashScreen.this).setMigrated(true);
                 runOnUiThread(this::gotoApp);
             }).start();
         }
