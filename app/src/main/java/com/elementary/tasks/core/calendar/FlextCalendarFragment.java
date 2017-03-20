@@ -304,6 +304,7 @@ public class FlextCalendarFragment extends Fragment {
         binding = FragmentFlextCalBinding.inflate(inflater, container, false);
         WeekdayArrayAdapter weekdaysAdapter = getNewWeekdayAdapter();
         binding.weekdayGridview.setAdapter(weekdaysAdapter);
+        loadData();
         setupDateGridPages();
         refreshView();
         if (caldroidListener != null) {
@@ -319,7 +320,7 @@ public class FlextCalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        new Thread(this::loadData).start();
+        loadData();
         LogUtil.d(TAG, "onResume: ");
     }
 
