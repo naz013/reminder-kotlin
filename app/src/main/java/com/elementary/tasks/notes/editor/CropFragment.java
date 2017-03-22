@@ -34,25 +34,12 @@ import java.io.ByteArrayOutputStream;
 
 public class CropFragment extends BitmapFragment {
 
-    private static final String IMAGE = "image";
+    private static final String TAG = "CropFragment";
 
     private CropFragmentBinding binding;
-    private NoteImage mItem;
 
-    public static CropFragment newInstance(NoteImage image) {
-        CropFragment fragment = new CropFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(IMAGE, image);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mItem = (NoteImage) getArguments().getSerializable(IMAGE);
-        }
+    public static CropFragment newInstance() {
+        return new CropFragment();
     }
 
     @Nullable
@@ -67,7 +54,7 @@ public class CropFragment extends BitmapFragment {
 
     private void loadImage() {
         Glide.with(this)
-                .load(mItem.getImage())
+                .load(ImageSingleton.getInstance().getItem().getImage())
                 .asBitmap()
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
@@ -87,12 +74,12 @@ public class CropFragment extends BitmapFragment {
         Bitmap cropped = binding.cropImageView.getCroppedImage();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        mItem.setImage(outputStream.toByteArray());
-        return mItem;
+        ImageSingleton.getInstance().getItem().setImage(outputStream.toByteArray());
+        return ImageSingleton.getInstance().getItem();
     }
 
     @Override
     public NoteImage getOriginalImage() {
-        return mItem;
+        return ImageSingleton.getInstance().getItem();
     }
 }

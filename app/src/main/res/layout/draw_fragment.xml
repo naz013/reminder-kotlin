@@ -10,15 +10,24 @@
         <com.elementary.tasks.core.drawing.DrawView
             android:id="@+id/draw_view"
             android:layout_width="match_parent"
-            android:layout_height="256dp"
+            android:layout_height="292dp"
             android:layout_centerVertical="true"
             android:layout_gravity="center" />
 
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/showPrefsButton"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_alignParentBottom="true"
+            android:background="?attr/selectableItemBackground"
+            app:tb_icon="@drawable/ic_expand_less_black_24dp"
+            app:tb_icon_light="@drawable/ic_expand_less_white_24dp" />
+
         <LinearLayout
             android:id="@+id/prefsView"
-            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical" />
 
         <ScrollView
@@ -344,9 +353,9 @@
                 android:id="@+id/currentFillColorButton"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="-24dp"
                 android:layout_toRightOf="@+id/currentStrokeColorButton"
                 app:ir_checkable="false"
-                android:layout_marginLeft="-24dp"
                 app:ir_icon="@drawable/drawable_purple"
                 app:ir_icon_light="@drawable/drawable_purple"
                 app:ir_text="@string/fill"

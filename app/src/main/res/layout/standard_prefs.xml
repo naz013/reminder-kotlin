@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
+
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/prefsControl"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackground"
+            app:tb_icon="@drawable/ic_expand_less_white_24dp"
+            app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:layout_width="wrap_content"
