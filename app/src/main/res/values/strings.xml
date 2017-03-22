@@ -585,5 +585,6 @@
     <string name="amoled" translatable="false">AMOLED</string>
     <string name="loading_events">Loading events</string>
     <string name="canceled">Canceled</string>
+    <string name="scale">Scale</string>
 
 </resources>

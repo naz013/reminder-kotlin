@@ -26,6 +26,7 @@ public class Image implements Drawing {
     private float bitmapX = 0F;
     private float bitmapY = 0F;
     private int opacity = 255;
+    private int percentage = 100;
 
     public Image(Bitmap bitmap) {
         this.bitmap = bitmap;
@@ -38,18 +39,28 @@ public class Image implements Drawing {
     @Override
     public void draw(Canvas canvas) {
         Paint paint = new Paint();
-        paint.setAlpha(opacity);
-        canvas.drawBitmap(this.bitmap, bitmapX, bitmapY, paint);
+        paint.setAlpha(this.opacity);
+        canvas.drawBitmap(getBitmap(), this.bitmapX, this.bitmapY, paint);
+    }
+
+    private Bitmap getBitmap() {
+        if (this.percentage >= 100) {
+            return this.bitmap;
+        } else {
+            int dstWidth = (this.bitmap.getWidth() * this.percentage) / 100;
+            int dstHeight = (this.bitmap.getHeight() * this.percentage) / 100;
+            return Bitmap.createScaledBitmap(this.bitmap, dstWidth, dstHeight, true);
+        }
     }
 
     @Override
     public float getX() {
-        return bitmapX;
+        return this.bitmapX;
     }
 
     @Override
     public float getY() {
-        return bitmapY;
+        return this.bitmapY;
     }
 
     @Override
@@ -69,7 +80,7 @@ public class Image implements Drawing {
 
     @Override
     public int getOpacity() {
-        return opacity;
+        return this.opacity;
     }
 
     @Override
@@ -80,5 +91,13 @@ public class Image implements Drawing {
     @Override
     public float getStrokeWidth() {
         return 0;
+    }
+
+    void setScalePercentage(int percentage) {
+        this.percentage = percentage;
+    }
+
+    int getPercentage() {
+        return this.percentage;
     }
 }

@@ -1,5 +1,6 @@
 package com.elementary.tasks.notes.editor;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -19,11 +20,12 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.drawing.DrawView;
 import com.elementary.tasks.core.utils.BitmapUtils;
-import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.IconRadioButton;
+import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.databinding.DrawFragmentBinding;
 import com.elementary.tasks.databinding.ImagePrefsBinding;
@@ -53,13 +55,12 @@ import java.io.FileNotFoundException;
 public class DrawFragment extends BitmapFragment {
 
     private static final String TAG = "DrawFragment";
-    private static final String IMAGE = "image";
     private static final int REQUEST_SD_CARD = 1112;
 
     private DrawFragmentBinding binding;
     private DrawView mView;
+    private ThemedImageButton mControlButton;
 
-    private NoteImage mItem;
     private Uri mImageUri;
 
     @ColorRes
@@ -73,20 +74,8 @@ public class DrawFragment extends BitmapFragment {
         checkUndo();
     };
 
-    public static DrawFragment newInstance(NoteImage image) {
-        DrawFragment fragment = new DrawFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(IMAGE, image);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mItem = (NoteImage) getArguments().getSerializable(IMAGE);
-        }
+    public static DrawFragment newInstance() {
+        return new DrawFragment();
     }
 
     @Nullable
@@ -228,6 +217,15 @@ public class DrawFragment extends BitmapFragment {
             isFillPicker = false;
             toggleColorPanel();
         });
+        binding.showPrefsButton.setOnClickListener(v -> togglePrefsPanel());
+    }
+
+    private void togglePrefsPanel() {
+        if (binding.prefsView.getVisibility() == View.VISIBLE) {
+            hidePrefsPanel();
+        } else {
+            showPrefsPanel();
+        }
     }
 
     private void toggleColorPanel() {
@@ -364,7 +362,7 @@ public class DrawFragment extends BitmapFragment {
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mView.setOpacity(i);
+                mView.setOpacity(i, DrawView.Mode.IMAGE);
             }
 
             @Override
@@ -378,7 +376,26 @@ public class DrawFragment extends BitmapFragment {
             }
         });
         binding.opacitySeek.setProgress(mView.getOpacity());
-        binding.addImageButton.setOnClickListener(view -> showImagePickerDialog());
+        binding.scaleSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mView.setScale(progress, DrawView.Mode.IMAGE);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        binding.scaleSeek.setProgress(mView.getScale());
+        mControlButton = binding.prefsControl;
+        binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
+        binding.imageButton.setOnClickListener(v -> showImagePickerDialog());
         return binding;
     }
 
@@ -393,31 +410,37 @@ public class DrawFragment extends BitmapFragment {
                         getString(R.string.take_a_shot)},
                 (dialog, which) -> {
                     switch (which) {
-                        case 0: {
-                            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                            getIntent.setType("image/*");
-                            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            pickIntent.setType("image/*");
-                            Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-                            startActivityForResult(chooserIntent, 1555);
-                        }
-                        break;
-                        case 1: {
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.TITLE, "Picture");
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-                            mImageUri = getContext().getContentResolver().insert(
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                            startActivityForResult(intent, 1556);
-                        }
-                        break;
+                        case 0:
+                            pickFromGallery();
+                            break;
+                        case 1:
+                            pickFromCamera();
+                            break;
                     }
                 });
 
         builder.create().show();
+    }
+
+    private void pickFromCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        mImageUri = getContext().getContentResolver().insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        startActivityForResult(intent, Constants.ACTION_REQUEST_CAMERA);
+    }
+
+    private void pickFromGallery() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+        startActivityForResult(chooserIntent, Constants.ACTION_REQUEST_GALLERY);
     }
 
     private TextPrefsBinding getTextPanel() {
@@ -425,7 +448,7 @@ public class DrawFragment extends BitmapFragment {
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mView.setOpacity(i);
+                mView.setOpacity(i, DrawView.Mode.TEXT);
             }
 
             @Override
@@ -457,6 +480,8 @@ public class DrawFragment extends BitmapFragment {
         });
         binding.widthSeek.setProgress((int) mView.getFontSize());
         binding.addButton.setOnClickListener(view -> showTextPickerDialog());
+        mControlButton = binding.prefsControl;
+        binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
         return binding;
     }
 
@@ -465,7 +490,7 @@ public class DrawFragment extends BitmapFragment {
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mView.setOpacity(i);
+                mView.setOpacity(i, DrawView.Mode.DRAW);
             }
 
             @Override
@@ -496,15 +521,33 @@ public class DrawFragment extends BitmapFragment {
             }
         });
         binding.widthSeek.setProgress((int) mView.getPaintStrokeWidth());
+        mControlButton = binding.prefsControl;
+        binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
         return binding;
     }
 
     private void showPrefsPanel() {
         ViewUtils.slideInUp(getContext(), binding.prefsView);
+        if (mControlButton == null) {
+            return;
+        }
+        if (ThemeUtil.getInstance(getContext()).isDark()) {
+            mControlButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
+        } else {
+            mControlButton.setImageResource(R.drawable.ic_expand_more_black_24dp);
+        }
     }
 
     private void hidePrefsPanel() {
         ViewUtils.slideOutDown(getContext(), binding.prefsView);
+        if (mControlButton == null) {
+            return;
+        }
+        if (ThemeUtil.getInstance(getContext()).isDark()) {
+            mControlButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
+        } else {
+            mControlButton.setImageResource(R.drawable.ic_expand_less_black_24dp);
+        }
     }
 
     private void setCurrentColor(IconRadioButton button) {
@@ -545,18 +588,18 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void loadImage() {
-        mView.addBitmap(mItem.getImage());
+        mView.addBitmap(ImageSingleton.getInstance().getItem().getImage());
     }
 
     @Override
     public NoteImage getImage() {
-        mItem.setImage(mView.getBitmapAsByteArray(Bitmap.CompressFormat.PNG, 100));
-        return mItem;
+        ImageSingleton.getInstance().setImage(mView.getBitmapAsByteArray(Bitmap.CompressFormat.PNG, 100));
+        return ImageSingleton.getInstance().getItem();
     }
 
     @Override
     public NoteImage getOriginalImage() {
-        return mItem;
+        return ImageSingleton.getInstance().getItem();
     }
 
     private int getId(@ColorRes int color) {
@@ -624,7 +667,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
         int column_index = cursor
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -634,32 +677,29 @@ public class DrawFragment extends BitmapFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        LogUtil.d(TAG, "onActivityResult: " + requestCode + ", " + resultCode + ", " + data.getData());
-//        if (resultCode == RESULT_OK) {
-//            switch (requestCode) {
-//                case Constants.ACTION_REQUEST_GALLERY:
-//                    addImageFromUri(data.getData());
-//                    break;
-//                case Constants.ACTION_REQUEST_CAMERA:
-//                    getImageFromCamera();
-//                    break;
-//            }
-//        }
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.ACTION_REQUEST_GALLERY:
+                    addImageFromUri(data.getData());
+                    break;
+                case Constants.ACTION_REQUEST_CAMERA:
+                    getImageFromCamera();
+                    break;
+            }
+        }
     }
 
     private void addImageFromUri(Uri uri) {
         if (uri == null) return;
-        LogUtil.d(TAG, "addImageFromUri: 1");
         Bitmap bitmapImage = null;
         try {
             bitmapImage = BitmapUtils.decodeUriToBitmap(getContext(), uri);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        LogUtil.d(TAG, "addImageFromUri: 2");
         if (bitmapImage != null) {
-            LogUtil.d(TAG, "addImageFromUri: 3");
             mView.addBitmap(bitmapImage);
+            switchPrefsPanel(DrawView.Mode.IMAGE);
         }
     }
 

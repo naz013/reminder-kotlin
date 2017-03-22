@@ -18,7 +18,6 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
-import com.elementary.tasks.notes.NoteImage;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -41,13 +40,12 @@ public class ImageEditActivity extends ThemedActivity {
     private static final String TAG = "ImageEditActivity";
 
     private ActivityImageEditBinding binding;
-    private NoteImage mItem;
     private BitmapFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mItem = RealmDb.getInstance().getImage();
+        ImageSingleton.getInstance().setItem(RealmDb.getInstance().getImage());
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_edit);
         initActionBar();
         initTabControl();
@@ -93,12 +91,12 @@ public class ImageEditActivity extends ThemedActivity {
         builder.setMessage(R.string.which_image_you_want_to_use);
         builder.setPositiveButton(R.string.edited, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            mItem = fragment.getImage();
+            ImageSingleton.getInstance().setItem(fragment.getImage());
             switchTab(position);
         });
         builder.setNegativeButton(R.string.original, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            mItem = fragment.getOriginalImage();
+            ImageSingleton.getInstance().setItem(fragment.getOriginalImage());
             switchTab(position);
         });
         builder.create().show();
@@ -109,12 +107,12 @@ public class ImageEditActivity extends ThemedActivity {
         builder.setMessage(R.string.which_image_you_want_to_use);
         builder.setPositiveButton(R.string.cropped, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            mItem = fragment.getImage();
+            ImageSingleton.getInstance().setItem(fragment.getImage());
             switchTab(position);
         });
         builder.setNegativeButton(R.string.original, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            mItem = fragment.getOriginalImage();
+            ImageSingleton.getInstance().setItem(fragment.getOriginalImage());
             switchTab(position);
         });
         builder.create().show();
@@ -130,11 +128,11 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void openDrawFragment() {
-        replaceFragment(DrawFragment.newInstance(mItem));
+        replaceFragment(DrawFragment.newInstance());
     }
 
     private void openCropFragment() {
-        replaceFragment(CropFragment.newInstance(mItem));
+//        replaceFragment(CropFragment.newInstance());
     }
 
     public void replaceFragment(BitmapFragment fragment) {
@@ -156,7 +154,7 @@ public class ImageEditActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        closeScreen();
     }
 
     @Override
@@ -175,8 +173,7 @@ public class ImageEditActivity extends ThemedActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT_CANCELED);
-                finish();
+                closeScreen();
                 return true;
             case R.id.action_add:
                 saveImage();
@@ -184,6 +181,11 @@ public class ImageEditActivity extends ThemedActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void closeScreen() {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @Override
@@ -199,8 +201,8 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void saveImage() {
-        mItem = fragment.getImage();
-        RealmDb.getInstance().saveImage(mItem);
+        RealmDb.getInstance().saveImage(fragment.getImage());
+        ImageSingleton.getInstance().setItem(null);
         setResult(RESULT_OK);
         finish();
     }

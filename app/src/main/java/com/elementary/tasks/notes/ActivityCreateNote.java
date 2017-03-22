@@ -457,6 +457,7 @@ public class ActivityCreateNote extends ThemedActivity {
         return cursor.getString(column_index);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {

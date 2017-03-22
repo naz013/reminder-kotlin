@@ -668,14 +668,38 @@ public class DrawView extends View {
      *
      * @param opacity
      */
-    public void setOpacity(int opacity) {
+    public void setOpacity(int opacity, Mode mode) {
         if ((opacity >= 0) && (opacity <= 255)) {
             this.opacity = opacity;
         } else {
             this.opacity = 255;
         }
         Drawing drawing = getCurrent();
-        drawing.setOpacity(this.opacity);
+        if (mode == Mode.DRAW && drawing instanceof Figure) {
+            drawing.setOpacity(this.opacity);
+        } else if (mode == Mode.TEXT && drawing instanceof Text) {
+            drawing.setOpacity(this.opacity);
+        } else if (mode == Mode.IMAGE && (drawing instanceof Background || drawing instanceof Image)) {
+            drawing.setOpacity(this.opacity);
+        }
+        this.invalidate();
+    }
+
+    public int getScale() {
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Image) {
+            return ((Image) drawing).getPercentage();
+        }
+        return 100;
+    }
+
+    public void setScale(int scale, Mode mode) {
+        if ((scale >= 1) && (scale <= 100)) {
+            Drawing drawing = getCurrent();
+            if (mode == Mode.IMAGE && drawing instanceof Image) {
+                ((Image) drawing).setScalePercentage(scale);
+            }
+        }
         this.invalidate();
     }
 
