@@ -56,6 +56,6 @@ android {
 
 dependencies {
     compile 'com.google.android.support:wearable:1.4.0'
-    compile 'com.google.android.gms:play-services-wearable:10.0.1'
+    compile 'com.google.android.gms:play-services-wearable:10.2.1'
     compile project(':shared')
 }
