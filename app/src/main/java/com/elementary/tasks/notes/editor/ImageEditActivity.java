@@ -132,7 +132,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void openCropFragment() {
-//        replaceFragment(CropFragment.newInstance());
+        replaceFragment(CropFragment.newInstance());
     }
 
     public void replaceFragment(BitmapFragment fragment) {

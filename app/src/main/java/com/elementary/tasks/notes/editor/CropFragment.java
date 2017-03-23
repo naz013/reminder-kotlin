@@ -48,8 +48,19 @@ public class CropFragment extends BitmapFragment {
         binding = CropFragmentBinding.inflate(inflater, container, false);
         binding.background.setBackgroundColor(ThemeUtil.getInstance(getContext()).getBackgroundStyle());
         initControls();
-        loadImage();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadImage();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.cropImageView.clearImage();
     }
 
     private void loadImage() {
