@@ -6,20 +6,27 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.drawing.DrawView;
+import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Permissions;
@@ -37,6 +44,7 @@ import com.elementary.tasks.notes.NoteImage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -508,7 +516,53 @@ public class DrawFragment extends BitmapFragment {
         binding.addButton.setOnClickListener(view -> showTextPickerDialog());
         mControlButton = binding.prefsControl;
         binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
+        binding.fontButton.setOnClickListener(v -> showStyleDialog());
         return binding;
+    }
+
+    private void showStyleDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.font_style));
+        ArrayList<String> contacts = new ArrayList<>();
+        contacts.clear();
+        contacts.add("Black");
+        contacts.add("Black Italic");
+        contacts.add("Bold");
+        contacts.add("Bold Italic");
+        contacts.add("Italic");
+        contacts.add("Light");
+        contacts.add("Light Italic");
+        contacts.add("Medium");
+        contacts.add("Medium Italic");
+        contacts.add("Regular");
+        contacts.add("Thin");
+        contacts.add("Thin Italic");
+        final LayoutInflater inflater = LayoutInflater.from(getContext());
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_single_choice, contacts) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
+                }
+                TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+                textView.setTypeface(getTypeface(position));
+                textView.setText(contacts.get(position));
+                return convertView;
+            }
+
+            private Typeface getTypeface(int position) {
+                return AssetsUtil.getTypeface(getContext(), position);
+            }
+        };
+        builder.setSingleChoiceItems(adapter, mView.getFontFamily(), (dialog, which) -> {
+            mView.setFontFamily(which);
+            dialog.dismiss();
+        });
+//        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private StandardPrefsBinding getPenPanel() {
@@ -610,6 +664,10 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void setText(String text) {
+        if (TextUtils.isEmpty(text)) {
+            Toast.makeText(getContext(), R.string.text_is_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
         mView.addText(text);
     }
 
