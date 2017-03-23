@@ -17,6 +17,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.elementary.tasks.core.interfaces.Observable;
+import com.elementary.tasks.core.interfaces.Observer;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.LogUtil;
 
@@ -34,9 +36,32 @@ import java.util.List;
 /**
  * This class defines fields and methods for drawing.
  */
-public class DrawView extends View {
+public class DrawView extends View implements Observable {
 
     private static final String TAG = "DrawView";
+
+    private List<Observer> observers = new ArrayList<>();
+
+    @Override
+    public void addObserver(Observer observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        if (observers.contains(observer)) {
+            observers.remove(observer);
+        }
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.setUpdate(this.historyPointer);
+        }
+    }
 
     // Enumeration for Mode
     public enum Mode {
@@ -112,6 +137,15 @@ public class DrawView extends View {
     public DrawView(Context context) {
         super(context);
         this.setup();
+    }
+
+    public void setHistoryPointer(int historyPointer) {
+        this.historyPointer = historyPointer;
+        this.invalidate();
+    }
+
+    public int getHistoryPointer() {
+        return historyPointer;
     }
 
     public List<Drawing> getElements() {
@@ -375,10 +409,13 @@ public class DrawView extends View {
         super.onDraw(canvas);
         if (this.elements != null && !this.elements.isEmpty()) {
             for (int i = 0; i < historyPointer; i++) {
-                elements.get(i).draw(canvas, false);
+                try {
+                    elements.get(i).draw(canvas, false);
+                } catch (IndexOutOfBoundsException ignored) {}
             }
         }
         this.mCanvas = canvas;
+        notifyObservers();
     }
 
     /**
