@@ -45,14 +45,14 @@ public class Image implements Drawing {
 
     private float getBitmapY(boolean scale) {
         if (scale) {
-            return this.bitmapY / 5;
+            return this.bitmapY / 10;
         }
         return this.bitmapY;
     }
 
     private float getBitmapX(boolean scale) {
         if (scale) {
-            return this.bitmapX / 5;
+            return this.bitmapX / 10;
         }
         return this.bitmapX;
     }
@@ -61,7 +61,7 @@ public class Image implements Drawing {
         if (this.percentage >= 100) {
             return this.bitmap;
         } else {
-            int scalar = scale ? 5 : 1;
+            int scalar = scale ? 10 : 1;
             int dstWidth = (this.bitmap.getWidth() * (this.percentage / scalar)) / 100;
             int dstHeight = (this.bitmap.getHeight() * (this.percentage / scalar)) / 100;
             return Bitmap.createScaledBitmap(this.bitmap, dstWidth, dstHeight, true);

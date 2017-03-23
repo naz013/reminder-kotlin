@@ -15,6 +15,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,8 @@ import com.elementary.tasks.databinding.LayersPrefsBinding;
 import com.elementary.tasks.databinding.StandardPrefsBinding;
 import com.elementary.tasks.databinding.TextPrefsBinding;
 import com.elementary.tasks.notes.NoteImage;
+import com.elementary.tasks.notes.editor.layers.LayersRecyclerAdapter;
+import com.elementary.tasks.notes.editor.layers.SimpleItemTouchHelperCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,6 +73,9 @@ public class DrawFragment extends BitmapFragment {
     private DrawFragmentBinding binding;
     private DrawView mView;
     private ThemedImageButton mControlButton;
+
+    private ItemTouchHelper mItemTouchHelper;
+    private LayersRecyclerAdapter mAdapter;
 
     private Uri mImageUri;
 
@@ -383,11 +389,43 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private LayersPrefsBinding getLayersPanel() {
+        if (mAdapter != null) {
+            mView.removeObserver(mAdapter);
+        }
         LayersPrefsBinding binding = LayersPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.layersList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.layersList.setAdapter(new LayersRecyclerAdapter(getContext(), mView.getElements()));
+        mAdapter = new LayersRecyclerAdapter(getContext(), mView.getElements(),
+                viewHolder -> mItemTouchHelper.startDrag(viewHolder),
+                new LayersRecyclerAdapter.AdapterCallback() {
+                    @Override
+                    public void onChanged() {
+                        mView.invalidate();
+                    }
+
+                    @Override
+                    public void onItemSelect(int position) {
+                        mAdapter.setIndex(position);
+                        mView.setHistoryPointer(position + 1);
+                    }
+
+                    @Override
+                    public void onItemRemoved(int position) {
+                        mView.setHistoryPointer(mView.getHistoryPointer() - 1);
+                    }
+
+                    @Override
+                    public void onItemAdded() {
+                        binding.layersList.scrollToPosition(mAdapter.getItemCount() - 1);
+                    }
+                });
+        mAdapter.setIndex(mView.getHistoryPointer() - 1);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(binding.layersList);
+        binding.layersList.setAdapter(mAdapter);
         mControlButton = binding.prefsControl;
         binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
+        mView.addObserver(mAdapter);
         return binding;
     }
 

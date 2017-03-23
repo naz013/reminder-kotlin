@@ -1,8 +1,10 @@
 package com.elementary.tasks.core.drawing;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -31,12 +33,19 @@ class Figure implements Drawing {
     }
 
     public Path getPath() {
-        return path;
+        return this.path;
     }
 
     @Override
     public void draw(Canvas canvas, boolean scale) {
-        canvas.drawPath(path, paint);
+        if (scale) {
+            Matrix scaleMatrix = new Matrix();
+            Path path = new Path();
+            scaleMatrix.setScale(0.15f, 0.15f);
+            path.addPath(this.path, scaleMatrix);
+            canvas.drawPath(path, this.paint);
+        }
+        canvas.drawPath(this.path, this.paint);
     }
 
     @Override

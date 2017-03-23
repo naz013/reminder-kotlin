@@ -147,21 +147,21 @@ public class Text implements Drawing {
 
     private float getFontScaled(boolean scale) {
         if (scale) {
-            return this.fontSize / 3;
+            return this.fontSize / 4;
         }
         return this.fontSize;
     }
 
     private float getTextY(boolean scale) {
         if (scale) {
-            return this.textY / 5;
+            return this.textY / 7;
         }
         return this.textY;
     }
 
     private float getTextX(boolean scale) {
         if (scale) {
-            return this.textX / 5;
+            return this.textX / 7;
         }
         return this.textX;
     }

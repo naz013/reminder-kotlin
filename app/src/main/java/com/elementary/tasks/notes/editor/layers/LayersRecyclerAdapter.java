@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes.editor;
+package com.elementary.tasks.notes.editor.layers;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -12,8 +12,10 @@ import com.elementary.tasks.core.drawing.Background;
 import com.elementary.tasks.core.drawing.Drawing;
 import com.elementary.tasks.core.drawing.Image;
 import com.elementary.tasks.core.drawing.Text;
+import com.elementary.tasks.core.interfaces.Observer;
 import com.elementary.tasks.databinding.LayerListItemBinding;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,19 +34,57 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder> {
+public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder> implements Observer {
 
     private List<Drawing> mDataList;
     private Context mContext;
+    private OnStartDragListener onStartDragListener;
+    private AdapterCallback mCallback;
+    private int index;
 
-    public LayersRecyclerAdapter(Context context, List<Drawing> list) {
+    public LayersRecyclerAdapter(Context context, List<Drawing> list, OnStartDragListener listener, AdapterCallback callback) {
         this.mDataList = list;
         this.mContext = context;
+        this.onStartDragListener = listener;
+        this.mCallback = callback;
     }
 
-    public void deleteItem(int position) {
+    public void setIndex(int index) {
+        this.index = index;
+        notifyDataSetChanged();
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    void onItemDismiss(int position) {
+        mDataList.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(0, mDataList.size());
+        if (mCallback != null) {
+            mCallback.onItemRemoved(position);
+        }
+    }
+
+    void onItemMove(int from, int to) {
+        Collections.swap(mDataList, from, to);
+        notifyItemMoved(from, to);
+        if (mCallback != null) {
+            mCallback.onChanged();
+        }
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void setUpdate(Object o) {
+        if (o instanceof Integer) {
+            this.index = ((Integer) (o)) - 1;
+        }
+        notifyDataSetChanged();
+        if (mCallback != null) {
+            mCallback.onItemAdded();
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,16 +93,20 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
         public ViewHolder(View v) {
             super(v);
             binding = DataBindingUtil.bind(v);
-//            v.setOnClickListener(view -> {
-//                if (mEventListener != null) {
-//                    mEventListener.onItemClicked(getAdapterPosition(), view);
+            v.setOnClickListener(view -> {
+                if (mCallback != null) {
+                    mCallback.onItemSelect(getAdapterPosition());
+                }
+            });
+            v.setOnLongClickListener(view -> {
+                onStartDragListener.onStartDrag(this);
+                return true;
+            });
+//            v.setOnTouchListener((v1, event) -> {
+//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                    onStartDragListener.onStartDrag(this);
 //                }
-//            });
-//            v.setOnLongClickListener(view -> {
-//                if (mEventListener != null) {
-//                    mEventListener.onItemLongClicked(getAdapterPosition(), view);
-//                }
-//                return true;
+//                return false;
 //            });
         }
     }
@@ -77,6 +121,11 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
         Drawing item = mDataList.get(position);
         holder.binding.layerName.setText(getName(item));
         holder.binding.layerView.setDrawing(item);
+        if (position == index) {
+            holder.binding.selectionView.setBackgroundResource(R.color.redPrimary);
+        } else {
+            holder.binding.selectionView.setBackgroundResource(android.R.color.transparent);
+        }
     }
 
     private String getName(Drawing drawing) {
@@ -94,5 +143,15 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
     @Override
     public int getItemCount() {
         return mDataList.size();
+    }
+
+    public interface AdapterCallback {
+        void onChanged();
+
+        void onItemSelect(int position);
+
+        void onItemRemoved(int position);
+
+        void onItemAdded();
     }
 }
