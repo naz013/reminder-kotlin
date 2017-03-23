@@ -35,7 +35,7 @@ class Figure implements Drawing {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, boolean scale) {
         canvas.drawPath(path, paint);
     }
 

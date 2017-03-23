@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.databinding.DrawFragmentBinding;
 import com.elementary.tasks.databinding.ImagePrefsBinding;
+import com.elementary.tasks.databinding.LayersPrefsBinding;
 import com.elementary.tasks.databinding.StandardPrefsBinding;
 import com.elementary.tasks.databinding.TextPrefsBinding;
 import com.elementary.tasks.notes.NoteImage;
@@ -217,7 +219,16 @@ public class DrawFragment extends BitmapFragment {
             isFillPicker = false;
             toggleColorPanel();
         });
-        binding.showPrefsButton.setOnClickListener(v -> togglePrefsPanel());
+        binding.showPrefsButton.setOnClickListener(v -> switchPrefsPanel(mView.getMode()));
+        binding.layersButton.setOnClickListener(v -> showLayersPanel());
+    }
+
+    private void showLayersPanel() {
+        if (isPrefsPanelExpanded()) {
+            hidePrefsPanel();
+        } else {
+            switchPrefsPanel(DrawView.Mode.LAYERS);
+        }
     }
 
     private void togglePrefsPanel() {
@@ -347,7 +358,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void switchPrefsPanel(DrawView.Mode mode) {
-        if (binding.prefsView.getVisibility() == View.VISIBLE) {
+        if (isPrefsPanelExpanded()) {
             hidePrefsPanel();
         }
         binding.prefsView.removeAllViewsInLayout();
@@ -357,8 +368,19 @@ public class DrawFragment extends BitmapFragment {
             binding.prefsView.addView(getTextPanel().getRoot());
         } else if (mode == DrawView.Mode.IMAGE) {
             binding.prefsView.addView(getImagePanel().getRoot());
+        } else if (mode == DrawView.Mode.LAYERS) {
+            binding.prefsView.addView(getLayersPanel().getRoot());
         }
         showPrefsPanel();
+    }
+
+    private LayersPrefsBinding getLayersPanel() {
+        LayersPrefsBinding binding = LayersPrefsBinding.inflate(LayoutInflater.from(getContext()));
+        binding.layersList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.layersList.setAdapter(new LayersRecyclerAdapter(getContext(), mView.getElements()));
+        mControlButton = binding.prefsControl;
+        binding.prefsControl.setOnClickListener(v -> togglePrefsPanel());
+        return binding;
     }
 
     private ImagePrefsBinding getImagePanel() {

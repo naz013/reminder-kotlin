@@ -20,7 +20,7 @@ import android.support.annotation.ColorInt;
  * limitations under the License.
  */
 
-class Background implements Drawing {
+public class Background implements Drawing {
 
     @ColorInt
     private int color;
@@ -39,7 +39,7 @@ class Background implements Drawing {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, boolean scale) {
         int red = Color.red(color);
         int green = Color.green(color);
         int blue = Color.blue(color);
