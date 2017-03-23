@@ -43,6 +43,7 @@ public class DrawView extends View {
         DRAW,
         TEXT,
         IMAGE,
+        LAYERS,
         ERASER
     }
 
@@ -81,7 +82,7 @@ public class DrawView extends View {
     private Paint.Cap lineCap = Paint.Cap.ROUND;
     private PathEffect drawPathEffect = null;
 
-    private Typeface fontFamily = Typeface.DEFAULT;
+    private Typeface fontFamily = Typeface.SERIF;
     private float fontSize = 32F;
     private Paint.Align textAlign = Paint.Align.RIGHT;  // fixed
     private Paint textPaint = new Paint();
@@ -111,6 +112,10 @@ public class DrawView extends View {
     public DrawView(Context context) {
         super(context);
         this.setup();
+    }
+
+    public List<Drawing> getElements() {
+        return elements;
     }
 
     /**
@@ -369,7 +374,7 @@ public class DrawView extends View {
         super.onDraw(canvas);
         if (this.elements != null && !this.elements.isEmpty()) {
             for (int i = 0; i < historyPointer; i++) {
-                elements.get(i).draw(canvas);
+                elements.get(i).draw(canvas, false);
             }
         }
         this.mCanvas = canvas;

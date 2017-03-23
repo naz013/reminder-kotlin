@@ -586,5 +586,7 @@
     <string name="loading_events">Loading events</string>
     <string name="canceled">Canceled</string>
     <string name="scale">Scale</string>
+    <string name="layers">Layers</string>
+    <string name="figure">Figure</string>
 
 </resources>

@@ -7,12 +7,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.elementary.tasks.core.drawing.DrawView
-            android:id="@+id/draw_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="292dp"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_gravity="center" />
+            android:background="?attr/colorAccent"
+            android:padding="1dp">
+
+            <com.elementary.tasks.core.drawing.DrawView
+                android:id="@+id/draw_view"
+                android:layout_width="match_parent"
+                android:layout_height="292dp"
+                android:layout_gravity="center" />
+
+        </RelativeLayout>
 
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/showPrefsButton"
@@ -437,6 +445,17 @@
                         app:ir_icon="@drawable/ic_format_color_fill"
                         app:ir_icon_light="@drawable/ic_format_color_fill_white"
                         app:ir_text="@string/fill"
+                        app:ir_text_size="6sp" />
+
+                    <com.elementary.tasks.core.views.IconRadioButton
+                        android:id="@+id/layersButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        app:ir_checkable="false"
+                        app:ir_icon="@drawable/ic_layers_black_24dp"
+                        app:ir_icon_light="@drawable/ic_layers_white_24dp"
+                        app:ir_text="@string/layers"
                         app:ir_text_size="6sp" />
 
                 </LinearLayout>

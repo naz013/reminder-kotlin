@@ -40,6 +40,10 @@ public class Text implements Drawing {
         this.textPaint.setTextSize(fontSize);
     }
 
+    public String getText() {
+        return text;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
@@ -57,8 +61,8 @@ public class Text implements Drawing {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        drawText(canvas);
+    public void draw(Canvas canvas, boolean scale) {
+        drawText(canvas, scale);
     }
 
     @Override
@@ -101,12 +105,12 @@ public class Text implements Drawing {
         return this.textPaint.getStrokeWidth();
     }
 
-    private void drawText(Canvas canvas) {
+    private void drawText(Canvas canvas, boolean scale) {
         if (this.text.length() <= 0) {
             return;
         }
-        float textX = this.textX;
-        float textY = this.textY;
+        float textX = this.getTextX(scale);
+        float textY = this.getTextY(scale);
         Paint paintForMeasureText = new Paint();
         float textLength = paintForMeasureText.measureText(this.text);
         float lengthOfChar = textLength / (float) this.text.length();
@@ -121,8 +125,38 @@ public class Text implements Drawing {
             } else {
                 substring = this.text.substring(i, len);
             }
-            y += this.fontSize;
-            canvas.drawText(substring, textX, y, this.textPaint);
+            y += getFontScaled(scale);
+            canvas.drawText(substring, textX, y, getTransformed(scale));
         }
+    }
+
+    private Paint getTransformed(boolean scale) {
+        if (scale) {
+            Paint p = new Paint(this.textPaint);
+            p.setTextSize(getFontScaled(true));
+            return p;
+        }
+        return this.textPaint;
+    }
+
+    private float getFontScaled(boolean scale) {
+        if (scale) {
+            return this.fontSize / 3;
+        }
+        return this.fontSize;
+    }
+
+    private float getTextY(boolean scale) {
+        if (scale) {
+            return this.textY / 5;
+        }
+        return this.textY;
+    }
+
+    private float getTextX(boolean scale) {
+        if (scale) {
+            return this.textX / 5;
+        }
+        return this.textX;
     }
 }

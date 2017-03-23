@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="72dp"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/layerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textSize="13sp"
+            app:font_style="roboto_light" />
+
+        <com.elementary.tasks.core.drawing.SimpleDrawView
+            android:id="@+id/layerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layerName" />
+
+    </RelativeLayout>
+</layout>

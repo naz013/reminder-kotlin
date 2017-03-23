@@ -37,18 +37,33 @@ public class Image implements Drawing {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, boolean scale) {
         Paint paint = new Paint();
         paint.setAlpha(this.opacity);
-        canvas.drawBitmap(getBitmap(), this.bitmapX, this.bitmapY, paint);
+        canvas.drawBitmap(getBitmap(scale), getBitmapX(scale), getBitmapY(scale), paint);
     }
 
-    private Bitmap getBitmap() {
+    private float getBitmapY(boolean scale) {
+        if (scale) {
+            return this.bitmapY / 5;
+        }
+        return this.bitmapY;
+    }
+
+    private float getBitmapX(boolean scale) {
+        if (scale) {
+            return this.bitmapX / 5;
+        }
+        return this.bitmapX;
+    }
+
+    private Bitmap getBitmap(boolean scale) {
         if (this.percentage >= 100) {
             return this.bitmap;
         } else {
-            int dstWidth = (this.bitmap.getWidth() * this.percentage) / 100;
-            int dstHeight = (this.bitmap.getHeight() * this.percentage) / 100;
+            int scalar = scale ? 5 : 1;
+            int dstWidth = (this.bitmap.getWidth() * (this.percentage / scalar)) / 100;
+            int dstHeight = (this.bitmap.getHeight() * (this.percentage / scalar)) / 100;
             return Bitmap.createScaledBitmap(this.bitmap, dstWidth, dstHeight, true);
         }
     }
