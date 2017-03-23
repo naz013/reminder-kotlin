@@ -8,6 +8,11 @@
         android:orientation="vertical"
         android:padding="8dp">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorAccent" />
+
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/prefsControl"
             android:layout_width="match_parent"

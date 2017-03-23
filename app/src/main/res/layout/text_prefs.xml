@@ -8,6 +8,11 @@
         android:orientation="vertical"
         android:padding="8dp">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorAccent" />
+
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/prefsControl"
             android:layout_width="match_parent"
@@ -16,15 +21,33 @@
             app:tb_icon="@drawable/ic_expand_less_white_24dp"
             app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
 
-        <com.elementary.tasks.core.views.IconRadioButton
-            android:id="@+id/addButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:ir_checkable="false"
-            app:ir_icon="@drawable/ic_add_black_24dp"
-            app:ir_icon_light="@drawable/ic_add_white_24dp"
-            app:ir_text="@string/add_text"
-            app:ir_text_size="6sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.elementary.tasks.core.views.IconRadioButton
+                android:id="@+id/addButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:ir_checkable="false"
+                app:ir_icon="@drawable/ic_add_black_24dp"
+                app:ir_icon_light="@drawable/ic_add_white_24dp"
+                app:ir_text="@string/add_text"
+                app:ir_text_size="6sp" />
+
+            <com.elementary.tasks.core.views.IconRadioButton
+                android:id="@+id/fontButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="16dp"
+                app:ir_checkable="false"
+                app:ir_icon="@drawable/ic_text_format_black_24dp"
+                app:ir_icon_light="@drawable/ic_text_format_white_24dp"
+                app:ir_text="@string/font_style"
+                app:ir_text_size="6sp" />
+
+        </LinearLayout>
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:layout_width="wrap_content"

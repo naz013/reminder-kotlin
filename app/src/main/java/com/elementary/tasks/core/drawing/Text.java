@@ -28,6 +28,7 @@ public class Text implements Drawing {
     private Paint textPaint = new Paint();
     private float textX = 0F;
     private float textY = 0F;
+    private int fontFamily;
 
     public Text(String text, float fontSize, Paint textPaint) {
         this.text = text;
@@ -44,6 +45,10 @@ public class Text implements Drawing {
         return text;
     }
 
+    public int getFontFamily() {
+        return fontFamily;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
@@ -52,8 +57,9 @@ public class Text implements Drawing {
         this.textPaint.setColor(color);
     }
 
-    public void setFontFamily(Typeface fontFamily) {
-        textPaint.setTypeface(fontFamily);
+    public void setFontFamily(int id, Typeface fontFamily) {
+        this.fontFamily = id;
+        this.textPaint.setTypeface(fontFamily);
     }
 
     public float getFontSize() {

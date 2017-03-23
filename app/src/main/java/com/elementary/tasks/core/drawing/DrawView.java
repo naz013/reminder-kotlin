@@ -12,12 +12,12 @@ import android.graphics.PathEffect;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.LogUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -82,7 +82,7 @@ public class DrawView extends View {
     private Paint.Cap lineCap = Paint.Cap.ROUND;
     private PathEffect drawPathEffect = null;
 
-    private Typeface fontFamily = Typeface.SERIF;
+    private int fontFamily = 9;
     private float fontSize = 32F;
     private Paint.Align textAlign = Paint.Align.RIGHT;  // fixed
     private Paint textPaint = new Paint();
@@ -144,9 +144,10 @@ public class DrawView extends View {
         paint.setStrokeJoin(Paint.Join.MITER);  // fixed
         // for Text
         if (this.mode == Mode.TEXT) {
-            paint.setTypeface(this.fontFamily);
+            paint.setTypeface(AssetsUtil.getTypeface(getContext(), this.fontFamily));
             paint.setTextSize(this.fontSize);
             paint.setTextAlign(this.textAlign);
+            paint.setStyle(Paint.Style.FILL_AND_STROKE);
             paint.setStrokeWidth(0F);
         }
         if (this.mode == Mode.ERASER) {
@@ -804,18 +805,25 @@ public class DrawView extends View {
      *
      * @return
      */
-    public Typeface getFontFamily() {
+    public int getFontFamily() {
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Text) {
+            return ((Text) drawing).getFontFamily();
+        }
         return this.fontFamily;
     }
 
     /**
      * This method is setter for font-family.
      *
-     * @param face
      */
-    public void setFontFamily(Typeface face) {
-        this.fontFamily = face;
-
+    public void setFontFamily(int position) {
+        this.fontFamily = position;
+        Drawing drawing = getCurrent();
+        if (drawing instanceof Text) {
+            ((Text) drawing).setFontFamily(this.fontFamily, AssetsUtil.getTypeface(getContext(), position));
+            this.invalidate();
+        }
     }
 
     /**

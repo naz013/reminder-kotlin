@@ -5,7 +5,8 @@
     <RelativeLayout
         android:layout_width="72dp"
         android:layout_height="match_parent"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:foreground="?attr/selectableItemBackground">
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/layerName"
