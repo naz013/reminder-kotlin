@@ -22,4 +22,5 @@ import com.elementary.tasks.notes.NoteImage;
 public abstract class BitmapFragment extends BaseNavigationFragment {
     public abstract NoteImage getImage();
     public abstract NoteImage getOriginalImage();
+    public abstract boolean onBackPressed();
 }
