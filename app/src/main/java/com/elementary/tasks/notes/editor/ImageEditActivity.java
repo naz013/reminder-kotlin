@@ -154,6 +154,9 @@ public class ImageEditActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
+        if (fragment.onBackPressed()) {
+            return;
+        }
         closeScreen();
     }
 

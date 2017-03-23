@@ -63,6 +63,11 @@ public class CropFragment extends BitmapFragment {
         binding.cropImageView.clearImage();
     }
 
+    @Override
+    public boolean onBackPressed() {
+        return false;
+    }
+
     private void loadImage() {
         Glide.with(this)
                 .load(ImageSingleton.getInstance().getItem().getImage())

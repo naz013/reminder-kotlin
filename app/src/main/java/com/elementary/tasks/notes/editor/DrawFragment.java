@@ -85,10 +85,10 @@ public class DrawFragment extends BitmapFragment {
         setUiTheme();
         mView = binding.drawView;
         mView.setCallback(mDrawCallback);
-        loadImage();
         initDrawControl();
         initControls();
         initColorControls();
+        loadImage();
         new Handler().postDelayed(this::hideToolPanel, 1000);
         new Handler().postDelayed(this::hideColorPanel, 1000);
         return binding.getRoot();
@@ -221,11 +221,15 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void togglePrefsPanel() {
-        if (binding.prefsView.getVisibility() == View.VISIBLE) {
+        if (isPrefsPanelExpanded()) {
             hidePrefsPanel();
         } else {
             showPrefsPanel();
         }
+    }
+
+    private boolean isPrefsPanelExpanded() {
+        return binding.prefsView.getVisibility() == View.VISIBLE;
     }
 
     private void toggleColorPanel() {
@@ -589,6 +593,7 @@ public class DrawFragment extends BitmapFragment {
 
     private void loadImage() {
         mView.addBitmap(ImageSingleton.getInstance().getItem().getImage());
+        binding.imageButton.setChecked(true);
     }
 
     @Override
@@ -710,5 +715,14 @@ public class DrawFragment extends BitmapFragment {
         if (file.exists()) {
             file.delete();
         }
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (isPrefsPanelExpanded()) {
+            togglePrefsPanel();
+            return true;
+        }
+        return false;
     }
 }
