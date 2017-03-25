@@ -585,5 +585,9 @@
     <string name="opacity">Neprůhlednost</string>
     <string name="loading_events">Nahrávání událostí</string>
     <string name="canceled">Zrušený</string>
+    <string name="figure">Živel</string>
+    <string name="layers">Vrstvy</string>
+    <string name="scale">Měřítko</string>
+    <string name="text_is_empty">Text je prázdný</string>
 
 </resources>

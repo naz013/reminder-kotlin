@@ -585,5 +585,9 @@
     <string name="opacity">Nieprzezroczystość</string>
     <string name="loading_events">Ładowanie wydarzenia</string>
     <string name="canceled">Odwołany</string>
+    <string name="figure">Element</string>
+    <string name="layers">Warstwy</string>
+    <string name="scale">Skala</string>
+    <string name="text_is_empty">Tekst jest pusty</string>
 
 </resources>

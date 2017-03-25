@@ -585,5 +585,9 @@
     <string name="opacity">Непрозрачность</string>
     <string name="loading_events">Загрузка событий</string>
     <string name="canceled">Отменено</string>
+    <string name="figure">Элемент</string>
+    <string name="layers">Слои</string>
+    <string name="scale">Масштаб</string>
+    <string name="text_is_empty">Текст пуст</string>
 
 </resources>

@@ -585,5 +585,9 @@
     <string name="opacity">Opaklık</string>
     <string name="loading_events">Etkinlik yükleniyor</string>
     <string name="canceled">İptal edildi</string>
+    <string name="figure">Eleman</string>
+    <string name="layers">Katmanlar</string>
+    <string name="scale">Ölçek</string>
+    <string name="text_is_empty">Metin boş</string>
 
 </resources>

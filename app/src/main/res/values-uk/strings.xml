@@ -585,5 +585,9 @@
     <string name="opacity">Прозорість</string>
     <string name="loading_events">Завантаження подій</string>
     <string name="canceled">Відмінено</string>
+    <string name="figure">Елемент</string>
+    <string name="layers">Шари</string>
+    <string name="scale">Розмір</string>
+    <string name="text_is_empty">Текст порожній</string>
 
 </resources>
