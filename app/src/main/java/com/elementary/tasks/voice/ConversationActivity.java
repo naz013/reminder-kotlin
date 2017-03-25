@@ -14,9 +14,9 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.backdoor.simpleai.Action;
-import com.backdoor.simpleai.ActionType;
-import com.backdoor.simpleai.Model;
+import com.backdoor.engine.Action;
+import com.backdoor.engine.ActionType;
+import com.backdoor.engine.Model;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.BirthdayItem;
