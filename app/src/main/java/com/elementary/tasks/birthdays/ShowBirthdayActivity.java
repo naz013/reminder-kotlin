@@ -25,13 +25,11 @@ import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -187,13 +185,14 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mTracker.setScreenName("Birthday Reminder ");
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
         if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }
+    }
+
+    @Override
+    protected String getStats() {
+        return "Birthday reminder";
     }
 
     @Override

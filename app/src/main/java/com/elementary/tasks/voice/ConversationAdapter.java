@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.birthdays.BirthdayHolder;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.databinding.AskListItemBinding;
 import com.elementary.tasks.databinding.GroupListItemBinding;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
 import com.elementary.tasks.databinding.NoteListItemBinding;
@@ -69,7 +70,9 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mData.add(0, reply);
             notifyItemInserted(0);
             notifyItemRangeChanged(0, mData.size());
-            if (mCallback != null) mCallback.onItemAdded();
+            if (mCallback != null) {
+                mCallback.onItemAdded();
+            }
         }
     }
 
@@ -92,6 +95,8 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil);
         } else if (viewType == Reply.SHOPPING) {
             return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil);
+        } else if (viewType == Reply.ASK) {
+            return new AskHolder(AskListItemBinding.inflate(inflater, parent, false).getRoot());
         }
         return null;
     }
@@ -113,6 +118,8 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             ((BirthdayHolder) holder).setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()));
         } else if (holder instanceof ShoppingHolder) {
             ((ShoppingHolder) holder).setData((Reminder) mData.get(position).getObject());
+        } else if (holder instanceof AskHolder) {
+            ((AskHolder) holder).setAskAction((AskAction) mData.get(position).getObject());
         }
     }
 
@@ -124,6 +131,41 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    private class AskHolder extends RecyclerView.ViewHolder {
+
+        private AskListItemBinding binding;
+        private AskAction askAction;
+
+        AskHolder(View itemView) {
+            super(itemView);
+            binding = DataBindingUtil.bind(itemView);
+            binding.replyYes.setOnClickListener(v -> {
+                removeFirst();
+                if (askAction != null) {
+                    askAction.onYes();
+                }
+            });
+            binding.replyNo.setOnClickListener(v -> {
+                removeFirst();
+                if (askAction != null) {
+                    askAction.onNo();
+                }
+            });
+            binding.replyNo.setBackgroundResource(themeUtil.getRectangle());
+            binding.replyYes.setBackgroundResource(themeUtil.getRectangle());
+        }
+
+        void setAskAction(AskAction askAction) {
+            this.askAction = askAction;
+        }
+    }
+
+    private void removeFirst() {
+        mData.remove(0);
+        notifyItemRemoved(0);
+        notifyItemRangeChanged(0, mData.size());
     }
 
     private class VoiceHolder extends RecyclerView.ViewHolder {

@@ -22,11 +22,9 @@ import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -123,13 +121,14 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mTracker.setScreenName("Missed call Reminder ");
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
         if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }
+    }
+
+    @Override
+    protected String getStats() {
+        return "Missed call reminder";
     }
 
     @Override
