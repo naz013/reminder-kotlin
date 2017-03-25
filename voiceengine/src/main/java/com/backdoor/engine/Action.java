@@ -1,4 +1,4 @@
-package com.backdoor.simpleai;
+package com.backdoor.engine;
 
 /**
  * Copyright 2017 Nazar Suhovich

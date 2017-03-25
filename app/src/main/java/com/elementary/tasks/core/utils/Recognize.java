@@ -8,12 +8,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.backdoor.simpleai.Action;
-import com.backdoor.simpleai.ActionType;
-import com.backdoor.simpleai.ContactOutput;
-import com.backdoor.simpleai.ContactsInterface;
-import com.backdoor.simpleai.Model;
-import com.backdoor.simpleai.Recognizer;
+import com.backdoor.engine.Action;
+import com.backdoor.engine.ActionType;
+import com.backdoor.engine.ContactOutput;
+import com.backdoor.engine.ContactsInterface;
+import com.backdoor.engine.Model;
+import com.backdoor.engine.Recognizer;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.core.SplashScreen;
@@ -66,7 +66,6 @@ public class Recognize {
         String night = prefs.getNightTime();
         String[] times = new String[]{morning, day, evening, night};
         recognizer = new Recognizer.Builder()
-                .with(mContext)
                 .setLocale(language)
                 .setTimes(times)
                 .setContactsInterface(new ContactHelper())
@@ -276,17 +275,17 @@ public class Recognize {
         return mReminder;
     }
 
-    private static class ContactHelper implements ContactsInterface {
+    private class ContactHelper implements ContactsInterface {
 
         @Override
-        public ContactOutput findEmail(String input, Context context) {
+        public ContactOutput findEmail(String input) {
             String number = null;
             String[] parts = input.split("\\s");
             for (String part : parts) {
                 while (part.length() > 1) {
                     String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'";
                     String[] projection = new String[]{ContactsContract.CommonDataKinds.Email.DATA};
-                    Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    Cursor c = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null);
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0);
@@ -305,14 +304,14 @@ public class Recognize {
         }
 
         @Override
-        public ContactOutput findNumber(String input, Context context) {
+        public ContactOutput findNumber(String input) {
             String number = null;
             String[] parts = input.split("\\s");
             for (String part : parts) {
                 while (part.length() > 1) {
                     String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'";
                     String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-                    Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    Cursor c = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null);
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0);

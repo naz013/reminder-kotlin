@@ -1,4 +1,4 @@
-package com.backdoor.simpleai;
+package com.backdoor.engine;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -16,7 +16,13 @@ package com.backdoor.simpleai;
  * limitations under the License.
  */
 
-public enum MessageType {
-    SMS,
-    EMAIL
+public enum ActionType {
+    REMINDER,
+    NOTE,
+    BIRTHDAYS,
+    GROUP,
+    ANSWER,
+    SHOW,
+    DELETE,
+    ACTION
 }
