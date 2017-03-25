@@ -152,11 +152,6 @@ public class ConversationActivity extends ThemedActivity {
         }
     };
 
-    private void showErrorMessage(int i) {
-        stopView();
-        playTts(getErrorText(i));
-    }
-
     private void showSilentMessage() {
         stopView();
         playTts("Did you say something?");
@@ -173,7 +168,9 @@ public class ConversationActivity extends ThemedActivity {
         for (String s : list) {
             suggestion = s;
             model = recognize.findSuggestion(s);
-            if (model != null) break;
+            if (model != null) {
+                break;
+            }
         }
         if (model != null) {
             performResult(model, suggestion);
@@ -404,6 +401,7 @@ public class ConversationActivity extends ThemedActivity {
                 mAskAction = null;
             }
         };
+        addAskReply();
         new Handler().postDelayed(this::micClick, 1500);
     }
 
@@ -424,6 +422,7 @@ public class ConversationActivity extends ThemedActivity {
                 mAskAction = null;
             }
         };
+        addAskReply();
         new Handler().postDelayed(this::micClick, 1500);
     }
 
@@ -447,6 +446,7 @@ public class ConversationActivity extends ThemedActivity {
                 mAskAction = null;
             }
         };
+        addAskReply();
         new Handler().postDelayed(this::micClick, 1500);
     }
 
@@ -475,7 +475,12 @@ public class ConversationActivity extends ThemedActivity {
                 mAskAction = null;
             }
         };
+        addAskReply();
         new Handler().postDelayed(this::micClick, 1500);
+    }
+
+    private void addAskReply() {
+        mAdapter.addReply(new Reply(Reply.ASK, createAsk(mAskAction)));
     }
 
     private void addResponse(String message) {
@@ -559,33 +564,6 @@ public class ConversationActivity extends ThemedActivity {
         initRecognizer();
     }
 
-    private String getErrorText(int errorCode) {
-        String message;
-        switch (errorCode) {
-            case SpeechRecognizer.ERROR_AUDIO:
-            case SpeechRecognizer.ERROR_CLIENT:
-            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                message = "Something went wrong";
-                break;
-            case SpeechRecognizer.ERROR_SERVER:
-            case SpeechRecognizer.ERROR_NETWORK:
-            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                message = "Network error";
-                break;
-            case SpeechRecognizer.ERROR_NO_MATCH:
-                message = "No match";
-                break;
-            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                message = "No speech input";
-                break;
-            default:
-                message = "Didn't understand, please try again.";
-                break;
-        }
-        return message;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -647,8 +625,19 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private interface AskAction {
-        void onYes();
-        void onNo();
+    private AskAction createAsk(AskAction askAction) {
+        return new AskAction() {
+            @Override
+            public void onYes() {
+                stopView();
+                askAction.onYes();
+            }
+
+            @Override
+            public void onNo() {
+                stopView();
+                askAction.onNo();
+            }
+        };
     }
 }

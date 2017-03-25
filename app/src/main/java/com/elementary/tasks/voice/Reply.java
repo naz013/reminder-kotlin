@@ -16,7 +16,7 @@ package com.elementary.tasks.voice;
  * limitations under the License.
  */
 
-public class Reply {
+class Reply {
 
     public static final int REPLY = 0;
     public static final int REMINDER = 1;
@@ -27,11 +27,12 @@ public class Reply {
     public static final int SHOW_MORE = 6;
     public static final int BIRTHDAY = 7;
     public static final int SHOPPING = 8;
+    public static final int ASK = 9;
 
     private int viewType;
     private Object object;
 
-    public Reply(int viewType, Object object) {
+    Reply(int viewType, Object object) {
         this.viewType = viewType;
         this.object = object;
     }

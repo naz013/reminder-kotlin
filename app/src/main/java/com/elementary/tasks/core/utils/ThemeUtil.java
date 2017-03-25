@@ -1292,6 +1292,74 @@ public final class ThemeUtil {
         return getColor(color);
     }
 
+    @DrawableRes
+    public int getRectangle() {
+        int code = Prefs.getInstance(getContext()).getAppThemeColor();
+        int color;
+        switch (code) {
+            case Color.RED:
+                color = R.drawable.rectangle_stroke_red;
+                break;
+            case Color.PURPLE:
+                color = R.drawable.rectangle_stroke_purple;
+                break;
+            case Color.LIGHT_GREEN:
+                color = R.drawable.rectangle_stroke_light_green;
+                break;
+            case Color.GREEN:
+                color = R.drawable.rectangle_stroke_green;
+                break;
+            case Color.LIGHT_BLUE:
+                color = R.drawable.rectangle_stroke_light_blue;
+                break;
+            case Color.BLUE:
+                color = R.drawable.rectangle_stroke_blue;
+                break;
+            case Color.YELLOW:
+                color = R.drawable.rectangle_stroke_yellow;
+                break;
+            case Color.ORANGE:
+                color = R.drawable.rectangle_stroke_orange;
+                break;
+            case Color.CYAN:
+                color = R.drawable.rectangle_stroke_cyan;
+                break;
+            case Color.PINK:
+                color = R.drawable.rectangle_stroke;
+                break;
+            case Color.TEAL:
+                color = R.drawable.rectangle_stroke_teal;
+                break;
+            case Color.AMBER:
+                color = R.drawable.rectangle_stroke_amber;
+                break;
+            default:
+                if (Module.isPro()) {
+                    switch (code) {
+                        case Color.DEEP_PURPLE:
+                            color = R.drawable.rectangle_stroke_deep_purple;
+                            break;
+                        case Color.DEEP_ORANGE:
+                            color = R.drawable.rectangle_stroke_deep_orange;
+                            break;
+                        case Color.LIME:
+                            color = R.drawable.rectangle_stroke_lime;
+                            break;
+                        case Color.INDIGO:
+                            color = R.drawable.rectangle_stroke_indigo;
+                            break;
+                        default:
+                            color = R.drawable.rectangle_stroke_blue;
+                            break;
+                    }
+                } else {
+                    color = R.drawable.rectangle_stroke_blue;
+                }
+                break;
+        }
+        return color;
+    }
+
     private interface Color {
         int RED = 0;
         int PURPLE = 1;
