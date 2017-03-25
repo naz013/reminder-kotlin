@@ -30,7 +30,6 @@ import android.widget.ImageView;
 
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
-import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.interfaces.SendListener;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
@@ -38,12 +37,10 @@ import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Sound;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
 import com.elementary.tasks.missed_calls.CallItem;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
@@ -84,7 +81,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private static final int MY_DATA_CHECK_CODE = 111;
 
     private Sound mSound;
-    protected Tracker mTracker;
     protected GoogleApiClient mGoogleApiClient;
     private TextToSpeech tts;
     private ProgressDialog mSendDialog;
@@ -234,10 +230,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
                     .addApi(Wearable.API)
                     .addConnectionCallbacks(mGoogleCallback)
                     .build();
-        }
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            ReminderApp application = (ReminderApp) getApplication();
-            mTracker = application.getDefaultTracker();
         }
         setPlayerVolume();
         setUpScreenOptions();

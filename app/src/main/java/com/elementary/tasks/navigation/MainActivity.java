@@ -56,6 +56,7 @@ import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
 import com.elementary.tasks.notes.QuickNoteCoordinator;
+import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -159,6 +160,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             showRateDialog();
         }
         showMainImage();
+    }
+
+    @Override
+    protected String getStats() {
+        return "App opened";
     }
 
     private boolean isRateDialogShowed() {
