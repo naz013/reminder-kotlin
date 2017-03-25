@@ -48,6 +48,7 @@
                 android:id="@+id/quickNoteContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/whitePrimary30"
                 android:overScrollMode="never"
                 android:paddingRight="88dp"
                 android:scrollbars="none"

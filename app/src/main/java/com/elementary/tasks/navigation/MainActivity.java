@@ -213,9 +213,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                         .load(path)
                         .into(mMainImageView);
                 mMainImageView.setVisibility(View.VISIBLE);
-                if (readPerm) new SaveAsync(this).execute(path);
+                if (readPerm) {
+                    new SaveAsync(this).execute(path);
+                }
             }
-        } else mMainImageView.setVisibility(View.GONE);
+        } else {
+            mMainImageView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -235,6 +239,11 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     public void onFragmentSelect(Fragment fragment) {
         this.fragment = fragment;
+        if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
+            binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        } else {
+            binding.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        }
     }
 
     @Override
@@ -255,11 +264,19 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void onThemeChange(@ColorInt int primary, @ColorInt int primaryDark, @ColorInt int accent) {
-        if (primary == 0) primary = getThemeUtil().getColor(getThemeUtil().colorPrimary());
-        if (primaryDark == 0) primaryDark = getThemeUtil().getColor(getThemeUtil().colorPrimaryDark());
-        if (accent == 0) accent = getThemeUtil().getColor(getThemeUtil().colorAccent());
+        if (primary == 0) {
+            primary = getThemeUtil().getColor(getThemeUtil().colorPrimary());
+        }
+        if (primaryDark == 0) {
+            primaryDark = getThemeUtil().getColor(getThemeUtil().colorPrimaryDark());
+        }
+        if (accent == 0) {
+            accent = getThemeUtil().getColor(getThemeUtil().colorAccent());
+        }
         toolbar.setBackgroundColor(primary);
-        if (Module.isLollipop()) getWindow().setStatusBarColor(primaryDark);
+        if (Module.isLollipop()) {
+            getWindow().setStatusBarColor(primaryDark);
+        }
         binding.fab.setBackgroundTintList(ViewUtils.getFabState(accent, accent));
     }
 
@@ -390,13 +407,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             new Recognize(this).parseResults(matches, false);
             super.onActivityResult(requestCode, resultCode, data);
         }
-        if (fragment != null) fragment.onActivityResult(requestCode, resultCode, data);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (Module.isMarshmallow() && fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Module.isMarshmallow() && fragment != null) {
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
