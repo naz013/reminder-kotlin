@@ -102,12 +102,6 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
                 onStartDragListener.onStartDrag(this);
                 return true;
             });
-//            v.setOnTouchListener((v1, event) -> {
-//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-//                    onStartDragListener.onStartDrag(this);
-//                }
-//                return false;
-//            });
         }
     }
 
