@@ -43,7 +43,6 @@ import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.elementary.tasks.reminder.models.ShopItem;
-import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -269,12 +268,13 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     @Override
+    protected String getStats() {
+        return "Reminder " + mReminder.getType();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mTracker.setScreenName("Reminder " + mReminder.getType());
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
         if (getPrefs().isWearEnabled()) {
             mGoogleApiClient.connect();
         }

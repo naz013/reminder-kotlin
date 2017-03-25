@@ -79,6 +79,11 @@ public class AddBirthdayActivity extends ThemedActivity {
         showBirthday();
     }
 
+    @Override
+    protected String getStats() {
+        return "Birthday " + (mItem != null ? "edit" : "create");
+    }
+
     private void showBirthday() {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

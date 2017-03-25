@@ -119,7 +119,6 @@ public class ActivityCreateNote extends ThemedActivity {
     private Toolbar toolbar;
     private EditText taskField;
 
-    private Tracker mTracker;
     private DecodeImagesAsync.DecodeListener mDecodeCallback = new DecodeImagesAsync.DecodeListener() {
         @Override
         public void onDecode(List<NoteImage> result) {
@@ -158,10 +157,6 @@ public class ActivityCreateNote extends ThemedActivity {
         }
         updateBackground();
         updateTextStyle();
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            ReminderApp application = (ReminderApp) getApplication();
-            mTracker = application.getDefaultTracker();
-        }
     }
 
     private void initMenu() {
@@ -618,12 +613,8 @@ public class ActivityCreateNote extends ThemedActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mTracker.setScreenName("Create note screen");
-            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        }
+    protected String getStats() {
+        return "Note " + (mItem != null ? "edit" : "create");
     }
 
     @Override

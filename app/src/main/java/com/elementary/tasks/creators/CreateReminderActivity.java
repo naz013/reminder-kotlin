@@ -203,6 +203,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         editReminder();
     }
 
+    @Override
+    protected String getStats() {
+        return "Note " + (mReminder != null ? "edit" : "create");
+    }
+
     private void loadReminder() {
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
