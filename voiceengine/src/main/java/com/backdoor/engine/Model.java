@@ -22,7 +22,7 @@ public class Model {
 
     private String target;
     private String summary;
-    private long dateTime;
+    private String dateTime;
     private long repeatInterval;
     private ActionType type;
     private List<Integer> weekdays;
@@ -48,11 +48,11 @@ public class Model {
         this.summary = summary;
     }
 
-    public long getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(long dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 
