@@ -201,11 +201,12 @@ public class Recognize {
         long repeat = model.getRepeatInterval();
         List<Integer> weekdays = model.getWeekdays();
         boolean isCalendar = model.isHasCalendar();
-        long startTime = model.getDateTime();
+        String startTime = model.getDateTime();
+        long eventTime = TimeUtil.getDateTimeFromGmt(startTime);
         int typeT = Reminder.BY_DATE;
         if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
             typeT = Reminder.BY_WEEK;
-            startTime = TimeCount.getInstance(mContext).getNextWeekdayTime(startTime, weekdays, 0);
+            eventTime = TimeCount.getInstance(mContext).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0);
             if (!TextUtils.isEmpty(number)) {
                 if (action == Action.WEEK_CALL) typeT = Reminder.BY_WEEK_CALL;
                 else typeT = Reminder.BY_WEEK_SMS;
@@ -228,8 +229,8 @@ public class Recognize {
         reminder.setWeekdays(weekdays);
         reminder.setRepeatInterval(repeat);
         reminder.setTarget(number);
-        reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
+        reminder.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
+        reminder.setStartTime(TimeUtil.getGmtFromDateTime(eventTime));
         reminder.setExportToCalendar(isCalendar && (isCal || isStock));
         return reminder;
     }

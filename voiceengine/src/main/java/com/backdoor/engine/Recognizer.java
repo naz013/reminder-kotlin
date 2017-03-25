@@ -54,7 +54,7 @@ public class Recognizer {
                 Model model = new Model();
                 model.setAction(action);
                 model.setType(ActionType.SHOW);
-                model.setDateTime(date);
+                model.setDateTime(TimeUtil.getGmtFromDateTime(date));
                 return model;
             }
         }
@@ -227,7 +227,7 @@ public class Recognizer {
         Model model = new Model();
         model.setType(ActionType.REMINDER);
         model.setSummary(task);
-        model.setDateTime(time);
+        model.setDateTime(TimeUtil.getGmtFromDateTime(time));
         model.setWeekdays(weekdays);
         model.setRepeatInterval(repeat);
         model.setTarget(number);

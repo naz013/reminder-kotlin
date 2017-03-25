@@ -235,18 +235,18 @@ public class ConversationActivity extends ThemedActivity {
             performAnswer(model);
         } else if (actionType == ActionType.SHOW) {
             stopView();
-            LogUtil.d(TAG, "performResult: " + TimeUtil.getFullDateTime(model.getDateTime(), true, true));
+            LogUtil.d(TAG, "performResult: " + TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.getDateTime()), true, true));
             Action action = model.getAction();
             if (action == Action.REMINDERS) {
-                showActiveReminders(model.getDateTime());
+                showActiveReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.NOTES) {
                 showNotes();
             } else if (action == Action.GROUPS) {
                 showGroups();
             } else if (action == Action.ACTIVE_REMINDERS) {
-                showEnabledReminders(model.getDateTime());
+                showEnabledReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.BIRTHDAYS) {
-                showBirthdays(model.getDateTime());
+                showBirthdays(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.SHOP_LISTS) {
                 showShoppingLists();
             } else {
