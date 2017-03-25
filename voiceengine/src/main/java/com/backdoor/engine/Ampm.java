@@ -1,4 +1,4 @@
-package com.backdoor.simpleai;
+package com.backdoor.engine;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -16,20 +16,9 @@ package com.backdoor.simpleai;
  * limitations under the License.
  */
 
-public class ContactOutput {
-    private final String output;
-    private final String number;
-
-    public ContactOutput(String output, String number) {
-        this.output = output;
-        this.number = number;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public String getNumber() {
-        return number;
-    }
+enum Ampm {
+    MORNING,
+    NOON,
+    EVENING,
+    NIGHT
 }

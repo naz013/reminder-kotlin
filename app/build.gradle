@@ -131,9 +131,9 @@ dependencies {
         transitive = true;
     }
     compile project(':photoPreview')
-    compile project(':simpleai')
     compile project(path: ':shared')
-//    compile project(path: ':backend', configuration: 'android-endpoints')
+    compile project(':voiceengine')
+    //    compile project(path: ':backend', configuration: 'android-endpoints')
     compile project(':android-animated-recording-view')
     compile 'com.android.support:support-v4:25.3.0'
     compile 'com.android.support:support-v13:25.3.0'

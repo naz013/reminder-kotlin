@@ -6,9 +6,12 @@
 
 package com.elementary.backend;
 
+import com.backdoor.engine.Model;
+import com.backdoor.engine.Recognizer;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.users.User;
 
@@ -21,6 +24,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * An endpoint class we are exposing
@@ -71,4 +75,26 @@ public class ReminderApi {
         return new ResultMessage(result2);
     }
 
+    @ApiMethod(name = "recognize", path = "recognize", httpMethod = ApiMethod.HttpMethod.POST)
+    public Model recognize(ControlBody body) throws BadRequestException {
+        if (body == null || body.getTexts() == null || body.getLocale() == null || body.getTimes() == null) {
+            throw new BadRequestException("Empty body");
+        }
+        Recognizer recognizer = new Recognizer.Builder().setLocale(body.getLocale()).setTimes(getTimes(body.getTimes())).setContactsInterface(null).build();
+        for (String request : body.getTexts()) {
+            Model model = recognizer.parse(request);
+            if (model != null) {
+                return model;
+            }
+        }
+        return null;
+    }
+
+    private String[] getTimes(List<String> times) {
+        String[] array = new String[times.size()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = times.get(i);
+        }
+        return array;
+    }
 }

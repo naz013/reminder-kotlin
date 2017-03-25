@@ -1,6 +1,4 @@
-package com.backdoor.simpleai;
-
-import android.content.Context;
+package com.backdoor.engine;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,13 +25,11 @@ public class Recognizer {
 
     private static final String TAG = "Recognizer";
 
-    private Context mContext;
     private String[] times;
     private WorkerInterface wrapper;
     private ContactsInterface contactsInterface;
 
-    private Recognizer(Context context, String[] times, String locale, ContactsInterface contactsInterface) {
-        this.mContext = context;
+    private Recognizer(String[] times, String locale, ContactsInterface contactsInterface) {
         this.times = times;
         this.contactsInterface = contactsInterface;
         wrapper = WorkerFactory.getWorker(locale);
@@ -208,11 +204,11 @@ public class Recognizer {
             }
         }
         if (hasAction && contactsInterface != null) {
-            ContactOutput output = contactsInterface.findNumber(keyStr, mContext);
+            ContactOutput output = contactsInterface.findNumber(keyStr);
             keyStr = output.getOutput();
             number = output.getNumber();
             if (type == Action.MAIL) {
-                output = contactsInterface.findEmail(keyStr, mContext);
+                output = contactsInterface.findEmail(keyStr);
                 number = output.getNumber();
                 keyStr = output.getOutput();
             }
@@ -417,47 +413,30 @@ public class Recognizer {
         public Builder() {
         }
 
-        public LocaleBuilder with(Context context) {
-            return new LocaleBuilder(context);
-        }
-
-        public class LocaleBuilder {
-
-            private Context context;
-
-            LocaleBuilder(Context context) {
-                this.context = context;
-            }
-
-            public TimeBuilder setLocale(String locale) {
-                return new TimeBuilder(context, locale);
-            }
+        public TimeBuilder setLocale(String locale) {
+            return new TimeBuilder(locale);
         }
 
         public class TimeBuilder {
 
-            private Context context;
             private String locale;
 
-            TimeBuilder(Context context, String locale) {
-                this.context = context;
+            TimeBuilder(String locale) {
                 this.locale = locale;
             }
 
             public ExtraBuilder setTimes(String[] times) {
-                return new ExtraBuilder(context, locale, times);
+                return new ExtraBuilder(locale, times);
             }
         }
 
         public class ExtraBuilder {
 
-            private Context context;
             private ContactsInterface contactsInterface;
             private String[] times;
             private String locale;
 
-            ExtraBuilder(Context context, String locale, String[] times) {
-                this.context = context;
+            ExtraBuilder(String locale, String[] times) {
                 this.locale = locale;
                 this.times = times;
             }
@@ -468,7 +447,7 @@ public class Recognizer {
             }
 
             public Recognizer build() {
-                return new Recognizer(context, times, locale, contactsInterface);
+                return new Recognizer(times, locale, contactsInterface);
             }
         }
     }
