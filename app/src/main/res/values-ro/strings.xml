@@ -585,5 +585,9 @@
     <string name="opacity">Opacitate</string>
     <string name="loading_events">Evenimente de încărcare</string>
     <string name="canceled">Anulat</string>
+    <string name="figure">Element</string>
+    <string name="layers">Straturi</string>
+    <string name="scale">Scară</string>
+    <string name="text_is_empty">Textul este gol</string>
 
 </resources>

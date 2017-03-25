@@ -585,5 +585,9 @@
     <string name="opacity">अस्पष्टता</string>
     <string name="loading_events">ईवेंट लोड हो रहे हैं</string>
     <string name="canceled">रद्द किया गया</string>
+    <string name="figure">एलिमेंट</string>
+    <string name="layers">परतें</string>
+    <string name="scale">स्केल</string>
+    <string name="text_is_empty">पाठ खाली है</string>
 
 </resources>

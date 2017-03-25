@@ -585,5 +585,9 @@
     <string name="opacity">Opacidad</string>
     <string name="loading_events">Cargando eventos</string>
     <string name="canceled">Cancelado</string>
+    <string name="figure">Elemento</string>
+    <string name="layers">Capas</string>
+    <string name="scale">Escala</string>
+    <string name="text_is_empty">El texto está vacío</string>
 
 </resources>

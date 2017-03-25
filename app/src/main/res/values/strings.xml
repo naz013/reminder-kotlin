@@ -587,7 +587,7 @@
     <string name="canceled">Canceled</string>
     <string name="scale">Scale</string>
     <string name="layers">Layers</string>
-    <string name="figure">Figure</string>
+    <string name="figure">Element</string>
     <string name="text_is_empty">Text is empty</string>
 
 </resources>
