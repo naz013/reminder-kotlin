@@ -67,6 +67,7 @@ public class QuickNoteCoordinator {
             }
             return false;
         });
+        this.binding.quickNoteContainer.setVisibility(View.GONE);
     }
 
     public void switchQuickNote() {
