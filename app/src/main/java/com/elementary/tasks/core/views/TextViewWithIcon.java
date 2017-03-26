@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 
@@ -52,21 +53,26 @@ public class TextViewWithIcon extends RoboTextView {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextViewWithIcon, 0, 0);
             try {
                 Drawable drawableLeft = null;
+                ThemeUtil themeUtil = ThemeUtil.getInstance(context);
+                boolean isDark = themeUtil.isDark();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (ThemeUtil.getInstance(context).isDark()) {
+                    if (isDark) {
                         drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon_light);
                     } else {
                         drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon);
                     }
                 } else {
                     int drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon, -1);
-                    if (ThemeUtil.getInstance(context).isDark()) {
+                    if (isDark) {
                         drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon_light, -1);
                     }
                     if (drawableLeftId != -1) {
                         drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
                     }
                 }
+//                if (drawableLeft != null && a.getBoolean(R.styleable.TextViewWithIcon_tv_tint, false)) {
+//                    DrawableCompat.setTint(drawableLeft, getResources().getColor(themeUtil.colorPrimary()));
+//                }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
