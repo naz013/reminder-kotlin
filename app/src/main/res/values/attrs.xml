@@ -2,57 +2,58 @@
 <resources>
 
     <declare-styleable name="PrefsView">
-        <attr name="prefs_primary_text" format="string"/>
-        <attr name="prefs_secondary_text" format="string"/>
-        <attr name="prefs_value_text" format="string"/>
-        <attr name="prefs_divider_top" format="boolean"/>
-        <attr name="prefs_divider_bottom" format="boolean"/>
-        <attr name="prefs_checked" format="boolean"/>
-        <attr name="prefs_pro" format="boolean"/>
-        <attr name="prefs_view_resource" format="reference"/>
+        <attr name="prefs_primary_text" format="string" />
+        <attr name="prefs_secondary_text" format="string" />
+        <attr name="prefs_value_text" format="string" />
+        <attr name="prefs_divider_top" format="boolean" />
+        <attr name="prefs_divider_bottom" format="boolean" />
+        <attr name="prefs_checked" format="boolean" />
+        <attr name="prefs_pro" format="boolean" />
+        <attr name="prefs_view_resource" format="reference" />
         <attr name="prefs_type" format="enum">
-            <enum name="check" value="0"/>
-            <enum name="view" value="1"/>
-            <enum name="text" value="2"/>
-            <enum name="none" value="3"/>
+            <enum name="check" value="0" />
+            <enum name="view" value="1" />
+            <enum name="text" value="2" />
+            <enum name="none" value="3" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="DateTimeView">
-        <attr name="date_text_size" format="dimension"/>
-        <attr name="time_text_size" format="dimension"/>
+        <attr name="date_text_size" format="dimension" />
+        <attr name="time_text_size" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RepeatView">
         <attr name="repeat_type" format="enum">
-            <enum name="seconds" value="0"/>
-            <enum name="minutes" value="1"/>
-            <enum name="hours" value="2"/>
-            <enum name="days" value="3"/>
-            <enum name="weeks" value="4"/>
+            <enum name="seconds" value="0" />
+            <enum name="minutes" value="1" />
+            <enum name="hours" value="2" />
+            <enum name="days" value="3" />
+            <enum name="weeks" value="4" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="IconRadioButton">
-        <attr name="ir_text_size" format="dimension"/>
-        <attr name="ir_text" format="string"/>
-        <attr name="ir_icon" format="reference"/>
-        <attr name="ir_icon_light" format="reference"/>
-        <attr name="ir_checked" format="boolean"/>
-        <attr name="ir_checkable" format="boolean"/>
+        <attr name="ir_text_size" format="dimension" />
+        <attr name="ir_text" format="string" />
+        <attr name="ir_icon" format="reference" />
+        <attr name="ir_icon_light" format="reference" />
+        <attr name="ir_checked" format="boolean" />
+        <attr name="ir_checkable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ActionView">
-    </declare-styleable>
+    <declare-styleable name="ActionView"></declare-styleable>
 
     <declare-styleable name="ThemedImageButton">
-        <attr name="tb_icon" format="reference"/>
-        <attr name="tb_icon_light" format="reference"/>
+        <attr name="tb_icon" format="reference" />
+        <attr name="tb_icon_light" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="TextViewWithIcon">
-        <attr name="tv_icon" format="reference"/>
-        <attr name="tv_icon_light" format="reference"/>
+        <attr name="tv_icon" format="reference" />
+        <attr name="tv_icon_light" format="reference" />
+        <attr name="tv_tint_color" format="reference" />
+        <attr name="tv_tint" format="boolean" />
     </declare-styleable>
 
     <!-- Declare custom theme attributes that allow changing which styles are
@@ -66,103 +67,103 @@
 
     <declare-styleable name="RoboTextView">
         <attr name="font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RoboButton">
         <attr name="button_font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RoboRadioButton">
         <attr name="radio_font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RoboEditText">
         <attr name="edit_font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RoboCheckBox">
         <attr name="check_font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RoboSwitchCompat">
         <attr name="switch_font_style" format="enum">
-            <enum name="roboto_black" value="0"/>
-            <enum name="roboto_black_italic" value="1"/>
-            <enum name="roboto_bold" value="2"/>
-            <enum name="roboto_bold_italic" value="3"/>
-            <enum name="roboto_italic" value="4"/>
-            <enum name="roboto_light" value="5"/>
-            <enum name="roboto_light_italic" value="6"/>
-            <enum name="roboto_medium" value="7"/>
-            <enum name="roboto_medium_italic" value="8"/>
-            <enum name="roboto_regular" value="9"/>
-            <enum name="roboto_thin" value="10"/>
-            <enum name="roboto_thin_italic" value="11"/>
+            <enum name="roboto_black" value="0" />
+            <enum name="roboto_black_italic" value="1" />
+            <enum name="roboto_bold" value="2" />
+            <enum name="roboto_bold_italic" value="3" />
+            <enum name="roboto_italic" value="4" />
+            <enum name="roboto_light" value="5" />
+            <enum name="roboto_light_italic" value="6" />
+            <enum name="roboto_medium" value="7" />
+            <enum name="roboto_medium_italic" value="8" />
+            <enum name="roboto_regular" value="9" />
+            <enum name="roboto_thin" value="10" />
+            <enum name="roboto_thin_italic" value="11" />
         </attr>
     </declare-styleable>
 </resources>
