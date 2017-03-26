@@ -2,6 +2,9 @@ package com.elementary.tasks.core.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
@@ -48,13 +51,23 @@ public class TextViewWithIcon extends RoboTextView {
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextViewWithIcon, 0, 0);
             try {
-                int icon;
-                if (ThemeUtil.getInstance(context).isDark()) {
-                    icon = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon_light, 0);
+                Drawable drawableLeft = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (ThemeUtil.getInstance(context).isDark()) {
+                        drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon_light);
+                    } else {
+                        drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon);
+                    }
                 } else {
-                    icon = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon, 0);
+                    int drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon, -1);
+                    if (ThemeUtil.getInstance(context).isDark()) {
+                        drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon_light, -1);
+                    }
+                    if (drawableLeftId != -1) {
+                        drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
+                    }
                 }
-                setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+                setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
             } finally {
