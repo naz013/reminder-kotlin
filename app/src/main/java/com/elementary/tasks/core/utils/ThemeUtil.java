@@ -8,6 +8,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.StyleRes;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Calendar;
 
@@ -1358,6 +1359,43 @@ public final class ThemeUtil {
                 break;
         }
         return color;
+    }
+
+    @DrawableRes
+    public int getReminderIllustration(int type) {
+        if (Reminder.isKind(type, Reminder.Kind.CALL)) {
+            return R.drawable.ic_phone_call;
+        } else if (Reminder.isKind(type, Reminder.Kind.SMS)) {
+            return R.drawable.ic_chat;
+        } else if (Reminder.isBase(type, Reminder.BY_LOCATION)) {
+            return R.drawable.ic_location_illustration;
+        } else if (Reminder.isBase(type, Reminder.BY_OUT)) {
+            return R.drawable.ic_radar;
+        } else if (Reminder.isBase(type, Reminder.BY_PLACES)) {
+            return R.drawable.ic_placeholder;
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
+            return R.drawable.ic_browser;
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
+            return R.drawable.ic_gamepad;
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
+            return R.drawable.ic_email_illustration;
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
+            return R.drawable.ic_shopping_cart;
+        } else if (Reminder.isBase(type, Reminder.BY_DATE)) {
+            return R.drawable.ic_calendar_illustration;
+        } else if (Reminder.isBase(type, Reminder.BY_WEEK)) {
+            return R.drawable.ic_alarm_clock;
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
+            return R.drawable.ic_seventeen;
+        } else if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
+            return R.drawable.ic_skype_illustration;
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
+            return R.drawable.ic_seventeen;
+        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
+            return R.drawable.ic_seventeen;
+        } else {
+            return R.drawable.ic_bell_illustration;
+        }
     }
 
     private interface Color {

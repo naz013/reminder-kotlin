@@ -154,8 +154,9 @@ public class ReminderPreviewActivity extends ThemedActivity {
             } else {
                 binding.statusText.setText(R.string.enabled4);
             }
-            binding.toolbar.setTitle(item.getSummary());
+            binding.taskText.setText(item.getSummary());
             binding.type.setText(ReminderUtils.getTypeString(this, item.getType()));
+            binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(item.getType()));
             long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
             if (due > 0) {
                 binding.time.setText(TimeUtil.getFullDateTime(due, getPrefs().is24HourFormatEnabled(), false));
@@ -208,7 +209,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 catColor = group.getColor();
             }
             int mColor = getThemeUtil().getColor(getThemeUtil().getCategoryColor(catColor));
-            binding.toolbar.setBackgroundColor(mColor);
+            binding.appBar.setBackgroundColor(mColor);
             if (Module.isLollipop()) {
                 getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(catColor));
             }
@@ -357,7 +358,6 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void initActionBar() {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     @Override
