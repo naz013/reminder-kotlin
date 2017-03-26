@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -12,55 +12,127 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:orientation="vertical"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-        </android.support.design.widget.AppBarLayout>
-
-        <RelativeLayout
-            android:id="@+id/switchWrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true">
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/statusText"
+            <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/statusSwitch"
-                android:paddingLeft="35dp"
-                android:textSize="20sp"
-                app:font_style="roboto_regular" />
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
-                android:id="@+id/statusSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:clickable="false"
-                app:switch_font_style="roboto_medium" />
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_scrollFlags="enterAlways"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/actionBarSize"
+                    android:orientation="vertical"
+                    app:layout_collapseMode="parallax">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/todoList"
+                    <ImageView
+                        android:id="@+id/itemPhoto"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_alarm_clock" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="@string/reminder"
+                        android:textColor="@color/whitePrimary"
+                        android:textSize="22sp"
+                        app:font_style="roboto_regular" />
+
+                </LinearLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:clipToPadding="false"
-            android:minHeight="56dp"
-            android:overScrollMode="never" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/switchWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true">
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/statusText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/statusSwitch"
+                        android:paddingLeft="35dp"
+                        android:textSize="20sp"
+                        app:font_style="roboto_regular" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
+                        android:id="@+id/statusSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="false"
+                        app:switch_font_style="roboto_medium" />
+
+                </RelativeLayout>
+
+                <com.elementary.tasks.core.views.TextViewWithIcon
+                    android:id="@+id/taskText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_format_text"
+                    app:tv_icon_light="@drawable/ic_format_text_white" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/todoList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:minHeight="56dp"
+                    android:overScrollMode="never"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>
