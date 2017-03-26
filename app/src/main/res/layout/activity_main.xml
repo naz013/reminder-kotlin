@@ -41,8 +41,8 @@
                 android:layout_height="56dp"
                 android:layout_gravity="bottom|right"
                 android:layout_margin="16dp"
-                android:src="@drawable/ic_add_white_24dp"
-                app:fabSize="normal" />
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_add_white_24dp" />
 
             <ScrollView
                 android:id="@+id/quickNoteContainer"
