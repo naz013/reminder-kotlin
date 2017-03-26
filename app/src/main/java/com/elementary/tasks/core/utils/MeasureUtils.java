@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
+import android.support.annotation.Px;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -36,6 +37,7 @@ public final class MeasureUtils {
 
     private MeasureUtils() {}
 
+    @Px
     public static int dp2px(Context context, int dp) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -46,7 +48,7 @@ public final class MeasureUtils {
         return (int) (dp * displaymetrics.density + 0.5f);
     }
 
-    public static int px2dp(Context context, int px) {
+    public static int px2dp(Context context, @Px int px) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 

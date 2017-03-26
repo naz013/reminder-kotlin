@@ -30,9 +30,10 @@ public final class ReminderUtils {
     public static final String DAY_CHECK = "1";
     public static final int DAY_CHECKED = 1;
 
-    private ReminderUtils() {}
+    private ReminderUtils() {
+    }
 
-    public static List<Integer> getRepeatArray(String weekdays){
+    public static List<Integer> getRepeatArray(String weekdays) {
         List<Integer> res = new ArrayList<>();
         if (Character.toString(weekdays.charAt(6)).matches(DAY_CHECK)) {
             res.add(1);
@@ -72,13 +73,13 @@ public final class ReminderUtils {
         return res;
     }
 
-    public static long getTime(int day, int month, int year, int hour, int minute, long after){
+    public static long getTime(int day, int month, int year, int hour, int minute, long after) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day, hour, minute, 0);
         return calendar.getTimeInMillis() + after;
     }
 
-    public static String getRepeatString(Context context, List<Integer> repCode){
+    public static String getRepeatString(Context context, List<Integer> repCode) {
         StringBuilder sb = new StringBuilder();
         int first = Prefs.getInstance(context).getStartDay();
         if (first == 0 && repCode.get(0) == DAY_CHECKED) {
@@ -113,7 +114,7 @@ public final class ReminderUtils {
             sb.append(" ");
             sb.append(context.getString(R.string.sun));
         }
-        if (isAllChecked(repCode)){
+        if (isAllChecked(repCode)) {
             return context.getString(R.string.everyday);
         } else {
             return sb.toString();
@@ -131,32 +132,32 @@ public final class ReminderUtils {
         return is;
     }
 
-    public static String getTypeString(Context context, int type){
+    public static String getTypeString(Context context, int type) {
         String res;
-        if (Reminder.isKind(type, Reminder.Kind.CALL)){
+        if (Reminder.isKind(type, Reminder.Kind.CALL)) {
             String init = context.getString(R.string.make_call);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isKind(type, Reminder.Kind.SMS)){
+        } else if (Reminder.isKind(type, Reminder.Kind.SMS)) {
             String init = context.getString(R.string.message);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_CALL)){
+        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_CALL)) {
             String init = context.getString(R.string.skype_call);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE)){
+        } else if (Reminder.isSame(type, Reminder.BY_SKYPE)) {
             String init = context.getString(R.string.skype_chat);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO)){
+        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO)) {
             String init = context.getString(R.string.video_call);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)){
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
             String init = context.getString(R.string.application);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)){
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
             String init = context.getString(R.string.open_link);
             res = init + " (" + getType(context, type) + ")";
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)){
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
             res = context.getString(R.string.shopping_list);
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)){
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
             res = context.getString(R.string.e_mail);
         } else {
             String init = context.getString(R.string.reminder);
@@ -165,20 +166,26 @@ public final class ReminderUtils {
         return res;
     }
 
-    public static String getType(Context context, int type){
+    public static String getType(Context context, int type) {
         String res;
-        if (Reminder.isBase(type, Reminder.BY_MONTH)){
+        if (Reminder.isBase(type, Reminder.BY_MONTH)) {
             res = context.getString(R.string.day_of_month);
-        } else if (Reminder.isBase(type, Reminder.BY_WEEK)){
+        } else if (Reminder.isBase(type, Reminder.BY_WEEK)) {
             res = context.getString(R.string.alarm);
-        } else if (Reminder.isBase(type, Reminder.BY_LOCATION)){
+        } else if (Reminder.isBase(type, Reminder.BY_LOCATION)) {
             res = context.getString(R.string.location);
-        } else if (Reminder.isBase(type, Reminder.BY_OUT)){
+        } else if (Reminder.isBase(type, Reminder.BY_OUT)) {
             res = context.getString(R.string.place_out);
-        } else if (Reminder.isSame(type, Reminder.BY_TIME)){
+        } else if (Reminder.isSame(type, Reminder.BY_TIME)) {
             res = context.getString(R.string.timer);
-        } else if (Reminder.isBase(type, Reminder.BY_PLACES)){
+        } else if (Reminder.isBase(type, Reminder.BY_PLACES)) {
             res = context.getString(R.string.places);
+        } else if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
+            res = context.getString(R.string.skype);
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
+            res = context.getString(R.string.e_mail);
+        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
+            res = context.getString(R.string.shopping_list);
         } else {
             res = context.getString(R.string.by_date);
         }

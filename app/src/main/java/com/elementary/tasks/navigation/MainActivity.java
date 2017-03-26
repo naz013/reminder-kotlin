@@ -36,6 +36,7 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.core.views.ReturnScrollListener;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
@@ -56,11 +57,11 @@ import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
 import com.elementary.tasks.notes.QuickNoteCoordinator;
-import com.google.android.gms.analytics.HitBuilders;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
 
@@ -76,12 +77,14 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private Fragment fragment;
     private QuickNoteCoordinator mNoteView;
     private ReturnScrollListener returnScrollListener;
+    private RecyclerView.OnScrollListener listener;
     private RecyclerView mPrevList;
 
     private int prevItem;
     private int beforeSettings;
     private boolean isBackPressed;
     private long pressedTime;
+
     private QuickNoteCoordinator.Callback mQuickCallback = new QuickNoteCoordinator.Callback() {
         @Override
         public void onOpen() {
@@ -293,8 +296,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void onScrollChanged(RecyclerView recyclerView) {
-        if (returnScrollListener != null && mPrevList != null) {
-            mPrevList.removeOnScrollListener(returnScrollListener);
+        if (listener != null && mPrevList != null) {
+            mPrevList.removeOnScrollListener(listener);
         }
         if (recyclerView != null) {
             returnScrollListener = new ReturnScrollListener.Builder(ReturnScrollListener.QuickReturnViewType.FOOTER)
@@ -302,13 +305,59 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                     .minFooterTranslation(MeasureUtils.dp2px(this, 88))
                     .isSnappable(true)
                     .build();
+            listener = getOnScrollListener();
             if (Module.isLollipop()) {
-                recyclerView.addOnScrollListener(returnScrollListener);
+                recyclerView.addOnScrollListener(listener);
             } else {
-                recyclerView.setOnScrollListener(returnScrollListener);
+                recyclerView.setOnScrollListener(listener);
             }
             mPrevList = recyclerView;
         }
+    }
+
+    @NonNull
+    private RecyclerView.OnScrollListener getOnScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                returnScrollListener.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                returnScrollListener.onScrolled(recyclerView, dx, dy);
+            }
+        };
+    }
+
+    @Override
+    public void addFilters(List<FilterView.Filter> filters, boolean clear) {
+        if (filters == null || filters.size() == 0) {
+            hideFilters();
+            if (clear) {
+                binding.filterView.clear();
+            }
+        } else {
+            if (clear) {
+                binding.filterView.clear();
+            }
+            for (FilterView.Filter filter : filters) {
+                binding.filterView.addFilter(filter);
+            }
+            ViewUtils.expand(binding.filterView);
+        }
+    }
+
+    @Override
+    public void hideFilters() {
+        if (isFiltersVisible()) {
+            ViewUtils.collapse(binding.filterView);
+        }
+    }
+
+    @Override
+    public boolean isFiltersVisible() {
+        return binding.filterView.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -361,6 +410,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         DrawerLayout drawer = binding.drawerLayout;
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (isFiltersVisible()) {
+            addFilters(null, true);
         } else if (mNoteView.isNoteVisible()) {
             mNoteView.hideNoteView();
         } else {

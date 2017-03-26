@@ -4,6 +4,10 @@ import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.elementary.tasks.core.views.FilterView;
+
+import java.util.List;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -38,4 +42,10 @@ public interface FragmentCallback {
     void onMenuSelect(int menu);
 
     void onScrollChanged(RecyclerView recyclerView);
+
+    void addFilters(List<FilterView.Filter> filters, boolean clear);
+
+    void hideFilters();
+
+    boolean isFiltersVisible();
 }

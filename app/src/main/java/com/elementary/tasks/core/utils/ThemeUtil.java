@@ -1391,8 +1391,8 @@ public final class ThemeUtil {
             return R.drawable.ic_skype_illustration;
         } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
             return R.drawable.ic_seventeen;
-        } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-            return R.drawable.ic_seventeen;
+        } else if (Reminder.isBase(type, Reminder.BY_TIME)) {
+            return R.drawable.ic_stopwatch;
         } else {
             return R.drawable.ic_bell_illustration;
         }
