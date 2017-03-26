@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -95,10 +96,19 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         @Override
         public boolean onQueryTextChange(String newText) {
             if (mAdapter != null) mAdapter.filter(newText);
+            if (!getCallback().isFiltersVisible()) {
+                showRemindersFilter();
+            }
             return false;
         }
     };
-    private SearchView.OnCloseListener mSearchCloseListener = () -> false;
+    private SearchView.OnCloseListener mSearchCloseListener = () -> {
+        Log.d(TAG, "close: ");
+        if (getCallback().isFiltersVisible()) {
+            getCallback().hideFilters();
+        }
+        return false;
+    };
     private RecyclerListener mEventListener = new RecyclerListener() {
         @Override
         public void onItemSwitched(int position, View view) {
@@ -148,6 +158,13 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
+            mSearchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    if (!getCallback().isFiltersVisible()) {
+                        showRemindersFilter();
+                    }
+                }
+            });
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -301,6 +318,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void addTypeFilter(List<FilterView.Filter> filters) {
         List<Reminder> reminders = mAdapter.getUsedData();
+        if (reminders.size() == 0) {
+            return;
+        }
         Set<Integer> types = new LinkedHashSet<>();
         for (Reminder reminder : reminders) {
             types.add(reminder.getType());

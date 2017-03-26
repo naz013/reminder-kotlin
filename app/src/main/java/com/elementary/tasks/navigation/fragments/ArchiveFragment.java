@@ -25,14 +25,21 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.DataLoader;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentTrashBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -57,6 +64,10 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
     private RemindersRecyclerAdapter mAdapter;
 
+    private ArrayList<String> mGroupsIds;
+    private String mLastGroupId;
+    private int lastType;
+
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
 
@@ -73,10 +84,18 @@ public class ArchiveFragment extends BaseNavigationFragment {
         @Override
         public boolean onQueryTextChange(String newText) {
             if (mAdapter != null) mAdapter.filter(newText);
+            if (!getCallback().isFiltersVisible()) {
+                showRemindersFilter();
+            }
             return false;
         }
     };
-    private SearchView.OnCloseListener mSearchCloseListener = () -> false;
+    private SearchView.OnCloseListener mSearchCloseListener = () -> {
+        if (getCallback().isFiltersVisible()) {
+            getCallback().hideFilters();
+        }
+        return false;
+    };
     private RecyclerListener mEventListener = new RecyclerListener() {
         @Override
         public void onItemSwitched(int position, View view) {
@@ -126,6 +145,13 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
+            mSearchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    if (!getCallback().isFiltersVisible()) {
+                        showRemindersFilter();
+                    }
+                }
+            });
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -156,7 +182,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
             getCallback().onFragmentSelect(this);
             getCallback().setClick(null);
         }
-        loadData();
+        loadData(mLastGroupId, lastType);
     }
 
     private void editReminder(String uuId) {
@@ -180,6 +206,9 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
         reloadView();
+        if (getCallback().isFiltersVisible()) {
+            showRemindersFilter();
+        }
     }
 
     private void showActionDialog(int position) {
@@ -209,8 +238,62 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
     }
 
-    private void loadData() {
-        DataLoader.loadArchivedReminder(mLoadCallback);
+    private void loadData(String groupId, int type) {
+        mLastGroupId = groupId;
+        lastType = type;
+        if (groupId != null || type != 0) {
+            DataLoader.loadArchivedReminder(groupId, type, mLoadCallback);
+        } else {
+            DataLoader.loadArchivedReminder(mLoadCallback);
+        }
+    }
+
+    private void showRemindersFilter() {
+        List<FilterView.Filter> filters = new ArrayList<>();
+        addGroupFilter(filters);
+        addTypeFilter(filters);
+        getCallback().addFilters(filters, true);
+    }
+
+    private void addTypeFilter(List<FilterView.Filter> filters) {
+        List<Reminder> reminders = mAdapter.getUsedData();
+        if (reminders.size() == 0) {
+            return;
+        }
+        Set<Integer> types = new LinkedHashSet<>();
+        for (Reminder reminder : reminders) {
+            types.add(reminder.getType());
+        }
+        FilterView.Filter filter = new FilterView.Filter((view, id) -> loadData(mLastGroupId, id));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
+        ThemeUtil util = ThemeUtil.getInstance(getContext());
+        for (Integer integer : types) {
+            filter.add(new FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(getContext(), integer), integer));
+        }
+        if (filter.size() != 0) {
+            filters.add(filter);
+        }
+    }
+
+    private void addGroupFilter(List<FilterView.Filter> filters) {
+        mGroupsIds = new ArrayList<>();
+        FilterView.Filter filter = new FilterView.Filter((view, id) -> {
+            if (id == 0) {
+                loadData(null, lastType);
+            } else {
+                String catId = mGroupsIds.get(id - 1);
+                loadData(catId, lastType);
+            }
+        });
+        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
+        List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
+        ThemeUtil util = ThemeUtil.getInstance(getContext());
+        for (int i = 0; i < groups.size(); i++) {
+            GroupItem item = groups.get(i);
+            filter.add(new FilterView.FilterElement(util.getCategoryIndicator(item.getColor()), item.getTitle(), i + 1));
+            mGroupsIds.add(item.getUuId());
+        }
+        filters.add(filter);
     }
 
     private void reloadView() {

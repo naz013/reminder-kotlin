@@ -922,6 +922,31 @@ public class RealmDb {
         }).start();
     }
 
+    void getArchivedReminders(String groupId, int type, RealmCallback<List<Reminder>> callback) {
+        new Thread(() -> {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            String[] fields = new String[]{"eventTime"};
+            Sort[] orders = new Sort[]{Sort.ASCENDING};
+            RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
+            query.equalTo("isRemoved", true);
+            if (groupId != null) {
+                query.equalTo("groupUuId", groupId);
+            }
+            if (type != 0) {
+                query.equalTo("type", type);
+            }
+            RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
+            List<Reminder> items = new ArrayList<>();
+            for (RealmReminder object : list) {
+                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
+                items.add(reference.get());
+            }
+            realm.commitTransaction();
+            callback.onDataLoaded(items);
+        }).start();
+    }
+
     void getArchivedReminders(RealmCallback<List<Reminder>> callback) {
         new Thread(() -> {
             Realm realm = Realm.getDefaultInstance();
