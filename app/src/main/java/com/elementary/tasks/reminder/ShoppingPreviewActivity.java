@@ -17,6 +17,7 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityShoppingPreviewBinding;
 import com.elementary.tasks.groups.GroupItem;
@@ -42,9 +43,7 @@ import com.elementary.tasks.reminder.models.ShopItem;
 public class ShoppingPreviewActivity extends ThemedActivity {
 
     private ActivityShoppingPreviewBinding binding;
-
     private ShopListRecyclerAdapter shoppingAdapter;
-
     private String id;
     private Reminder mReminder;
 
@@ -77,14 +76,16 @@ public class ShoppingPreviewActivity extends ThemedActivity {
             } else {
                 binding.switchWrapper.setVisibility(View.VISIBLE);
             }
-            binding.toolbar.setTitle(mReminder.getSummary());
+            binding.taskText.setText(mReminder.getSummary());
+            binding.type.setText(ReminderUtils.getTypeString(this, mReminder.getType()));
+            binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(mReminder.getType()));
             int catColor = 0;
             GroupItem group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
             if (group != null) {
                 catColor = group.getColor();
             }
             int mColor = getThemeUtil().getColor(getThemeUtil().getCategoryColor(catColor));
-            binding.toolbar.setBackgroundColor(mColor);
+            binding.appBar.setBackgroundColor(mColor);
             if (Module.isLollipop()) {
                 getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(catColor));
             }
@@ -173,7 +174,6 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     private void initActionBar() {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     @Override
