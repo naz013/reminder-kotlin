@@ -25,6 +25,7 @@ public abstract class BaseNavigationFragment extends BaseFragment {
             getCallback().setClick(null);
             getCallback().onThemeChange(0, 0, 0);
             getCallback().onScrollChanged(null);
+            getCallback().addFilters(null, true);
         }
     }
 }

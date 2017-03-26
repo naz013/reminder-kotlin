@@ -41,6 +41,7 @@ import java.util.Locale;
 import java.util.Random;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -896,13 +897,21 @@ public class RealmDb {
         return items;
     }
 
-    void getActiveReminders(String groupId, RealmCallback<List<Reminder>> callback) {
+    void getActiveReminders(String groupId, int type, RealmCallback<List<Reminder>> callback) {
         new Thread(() -> {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             String[] fields = new String[]{"isActive", "eventTime"};
             Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
-            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("groupUuId", groupId).equalTo("isRemoved", false).findAllSorted(fields, orders);
+            RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
+            query.equalTo("isRemoved", false);
+            if (groupId != null) {
+                query.equalTo("groupUuId", groupId);
+            }
+            if (type != 0) {
+                query.equalTo("type", type);
+            }
+            RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
             List<Reminder> items = new ArrayList<>();
             for (RealmReminder object : list) {
                 WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));

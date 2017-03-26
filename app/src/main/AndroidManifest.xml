@@ -51,7 +51,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_title"
         android:supportsRtl="true"
-        tools:replace="android:label"
+        tools:replace="android:label, android:theme"
         android:theme="@style/HomeDark.Cyan">
         <activity android:name=".navigation.MainActivity" />
         <activity
