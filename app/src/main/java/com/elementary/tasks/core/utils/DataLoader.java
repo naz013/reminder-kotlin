@@ -27,8 +27,8 @@ public class DataLoader {
 
     private static Handler handler = new Handler();
 
-    public static void loadActiveReminder(String group, int type, RealmCallback<List<Reminder>> callback) {
-        RealmDb.getInstance().getActiveReminders(group, type, result -> handler.post(() -> callback.onDataLoaded(result)));
+    public static void loadActiveReminder(String group, int type, int active, RealmCallback<List<Reminder>> callback) {
+        RealmDb.getInstance().getActiveReminders(group, type, active, result -> handler.post(() -> callback.onDataLoaded(result)));
     }
 
     public static void loadActiveReminder(RealmCallback<List<Reminder>> callback) {

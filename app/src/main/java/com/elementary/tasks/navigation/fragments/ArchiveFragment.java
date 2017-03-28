@@ -91,9 +91,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         }
     };
     private SearchView.OnCloseListener mSearchCloseListener = () -> {
-        if (getCallback().isFiltersVisible()) {
-            getCallback().hideFilters();
-        }
+        refreshFilters();
         return false;
     };
     private RecyclerListener mEventListener = new RecyclerListener() {
@@ -206,9 +204,6 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mAdapter);
         reloadView();
-        if (getCallback().isFiltersVisible()) {
-            showRemindersFilter();
-        }
     }
 
     private void showActionDialog(int position) {
@@ -230,6 +225,13 @@ public class ArchiveFragment extends BaseNavigationFragment {
     private void deleteReminder(Reminder reminder) {
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
         CalendarUtils.deleteEvents(getContext(), reminder.getUuId());
+        refreshFilters();
+    }
+
+    private void refreshFilters() {
+        if (getCallback().isFiltersVisible()) {
+            showRemindersFilter();
+        }
     }
 
     private void initList() {

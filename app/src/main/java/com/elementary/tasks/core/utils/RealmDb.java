@@ -897,7 +897,7 @@ public class RealmDb {
         return items;
     }
 
-    void getActiveReminders(String groupId, int type, RealmCallback<List<Reminder>> callback) {
+    void getActiveReminders(String groupId, int type, int active, RealmCallback<List<Reminder>> callback) {
         new Thread(() -> {
             Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -910,6 +910,9 @@ public class RealmDb {
             }
             if (type != 0) {
                 query.equalTo("type", type);
+            }
+            if (active != 0) {
+                query.equalTo("isActive", active == 1);
             }
             RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
             List<Reminder> items = new ArrayList<>();
