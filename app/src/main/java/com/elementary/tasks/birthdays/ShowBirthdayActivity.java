@@ -133,7 +133,11 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
         builder.setContentText(TimeUtil.getAgeFormatted(this, years));
-        builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
