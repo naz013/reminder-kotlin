@@ -14,6 +14,7 @@ import android.widget.RemoteViews;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -89,7 +90,11 @@ public class PermanentReminderService extends Service {
                 R.layout.notification_layout);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext());
         notification.setAutoCancel(false);
-        notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
+        if (Module.isLollipop()) {
+            notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
+        } else {
+            notification.setSmallIcon(R.mipmap.ic_launcher);
+        }
         notification.setContent(remoteViews);
         notification.setOngoing(true);
         if (Prefs.getInstance(getApplicationContext()).isSbIconEnabled()) {

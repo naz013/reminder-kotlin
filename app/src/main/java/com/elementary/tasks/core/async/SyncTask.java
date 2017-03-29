@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.async;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
@@ -34,8 +34,8 @@ import java.util.List;
 public class SyncTask extends AsyncTask<Void, String, Boolean> {
 
     private Context mContext;
-    private NotificationManagerCompat mNotifyMgr;
-    private NotificationCompat.Builder builder;
+    private NotificationManager mNotifyMgr;
+    private Notification.Builder builder;
     private SyncListener mListener;
     private boolean quiet = false;
 
@@ -43,7 +43,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         this.mContext = context;
         this.mListener = mListener;
         this.quiet = quiet;
-        builder = new NotificationCompat.Builder(context);
+        builder = new Notification.Builder(context);
     }
 
     @Override
@@ -53,8 +53,12 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
             builder.setContentTitle(Module.isPro() ? mContext.getString(R.string.app_name_pro) :
                     mContext.getString(R.string.app_name));
             builder.setContentText(mContext.getString(R.string.sync));
-            builder.setSmallIcon(R.drawable.ic_cached_white_24dp);
-            mNotifyMgr = NotificationManagerCompat.from(mContext);
+            if (Module.isLollipop()) {
+                builder.setSmallIcon(R.drawable.ic_cached_white_24dp);
+            } else {
+                builder.setSmallIcon(R.mipmap.ic_launcher);
+            }
+            mNotifyMgr = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotifyMgr.notify(2, builder.build());
         }
     }
@@ -118,7 +122,9 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         super.onPostExecute(aVoid);
         if (!quiet) {
             builder.setContentTitle(mContext.getString(R.string.done));
-            builder.setSmallIcon(R.drawable.ic_done_white_24dp);
+            if (Module.isLollipop()) {
+                builder.setSmallIcon(R.drawable.ic_done_white_24dp);
+            }
             if (Module.isPro()) {
                 builder.setContentText(mContext.getString(R.string.app_name_pro));
             } else {

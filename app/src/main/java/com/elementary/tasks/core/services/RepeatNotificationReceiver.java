@@ -109,7 +109,11 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         } else {
             builder.setContentText(context.getString(R.string.app_name));
         }
-        builder.setSmallIcon(R.drawable.ic_calendar_white);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_calendar_white);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         builder.setSound(getSoundUri(reminder.getMelodyPath(), context));
         if (Prefs.getInstance(context).isVibrateEnabled()){
             long[] pattern;

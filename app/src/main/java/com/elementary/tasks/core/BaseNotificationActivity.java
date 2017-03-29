@@ -419,7 +419,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             appName = getString(R.string.app_name);
         }
         builder.setContentText(appName);
-        builder.setSmallIcon(R.drawable.ic_call_black_24dp);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_call_black_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
@@ -462,9 +466,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             appName = getString(R.string.app_name);
         }
         builder.setContentText(appName);
-        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
         if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
         }
         boolean isWear = getPrefs().isWearEnabled();
         if (isWear && Module.isJellyMR2()) {
@@ -505,9 +511,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             appName = getString(R.string.app_name);
         }
         builder.setContentText(appName);
-        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
         if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
         }
         if (!isScreenResumed()) {
             Uri soundUri = getSoundUri();
@@ -565,9 +573,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             appName = getString(R.string.app_name);
         }
         builder.setContentText(appName);
-        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
         if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
         }
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {

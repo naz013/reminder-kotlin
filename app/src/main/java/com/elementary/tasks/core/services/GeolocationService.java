@@ -13,6 +13,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -171,7 +172,11 @@ public class GeolocationService extends Service {
         builder.setContentText(String.valueOf(roundedDistance));
         builder.setContentTitle(reminder.getSummary());
         builder.setContentText(String.valueOf(roundedDistance));
-        builder.setSmallIcon(R.drawable.ic_navigation_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_navigation_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.notify(reminder.getUniqueId(), builder.build());
     }

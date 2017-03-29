@@ -10,6 +10,7 @@ import android.support.v7.app.NotificationCompat;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -88,7 +89,11 @@ public class PermanentBirthdayService extends Service {
         int month = calendar.get(Calendar.MONTH);
         List<BirthdayItem> list = RealmDb.getInstance().getBirthdays(day, month);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);

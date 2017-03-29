@@ -48,7 +48,11 @@ public class Notifier {
             builder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
         }
         String content = item.getSummary();
-        builder.setSmallIcon(R.drawable.ic_note_white);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_note_white);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         builder.setContentTitle(content);
         boolean isWear = sPrefs.getBoolean(Prefs.WEAR_NOTIFICATION);
         if (isWear && Module.isJellyMR2()) {

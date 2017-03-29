@@ -67,7 +67,11 @@ public class GcmListenerService extends FirebaseMessagingService {
         } else {
             builder.setContentText(context.getString(R.string.app_name));
         }
-        builder.setSmallIcon(R.drawable.ic_shop_white_24dp);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_shop_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
         mNotifyMgr.notify(24242, builder.build());
     }
