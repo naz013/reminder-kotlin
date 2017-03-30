@@ -67,7 +67,7 @@
                     android:layout_centerVertical="true"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:src="@drawable/ic_add_black_24dp"
+                    app:srcCompat="@drawable/ic_add_black_24dp"
                     android:visibility="visible" />
 
                 <ImageButton
@@ -78,7 +78,7 @@
                     android:layout_toLeftOf="@+id/tasksCount"
                     android:background="@android:color/transparent"
                     android:gravity="center"
-                    android:src="@drawable/ic_settings_white"
+                    app:srcCompat="@drawable/ic_settings_white"
                     android:visibility="visible" />
 
                 <com.elementary.tasks.core.views.roboto.RoboTextView

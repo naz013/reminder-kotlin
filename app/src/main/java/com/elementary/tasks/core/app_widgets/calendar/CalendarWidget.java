@@ -14,6 +14,7 @@ import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.creators.CreateReminderActivity;
@@ -89,6 +90,12 @@ public class CalendarWidget extends AppWidgetProvider {
         rv.setInt(R.id.header, "setBackgroundResource", item.getHeaderColor());
         rv.setInt(R.id.monthGrid, "setBackgroundResource", item.getBorderColor());
 
+        WidgetUtils.setIcon(context, rv, item.getIconPlus(), R.id.plusButton);
+        WidgetUtils.setIcon(context, rv, item.getIconVoice(), R.id.voiceButton);
+        WidgetUtils.setIcon(context, rv, item.getIconSettings(), R.id.settingsButton);
+        WidgetUtils.setIcon(context, rv, item.getRightArrow(), R.id.nextMonth);
+        WidgetUtils.setIcon(context, rv, item.getLeftArrow(), R.id.prevMonth);
+
         Intent weekdayAdapter = new Intent(context, CalendarWeekdayService.class);
         weekdayAdapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         rv.setRemoteAdapter(R.id.weekdayGrid, weekdayAdapter);
@@ -106,18 +113,15 @@ public class CalendarWidget extends AppWidgetProvider {
         Intent configIntent = new Intent(context, CreateReminderActivity.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.plusButton, configPendingIntent);
-        rv.setInt(R.id.plusButton, "setImageResource", item.getIconPlus());
 
         configIntent = new Intent(context, VoiceWidgetDialog.class);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.voiceButton, configPendingIntent);
-        rv.setInt(R.id.voiceButton, "setImageResource", item.getIconVoice());
 
         configIntent = new Intent(context, CalendarWidgetConfig.class);
         configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
-        rv.setInt(R.id.settingsButton, "setImageResource", item.getIconSettings());
 
         Intent serviceIntent = new Intent(context, CalendarUpdateService.class);
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
@@ -132,9 +136,6 @@ public class CalendarWidget extends AppWidgetProvider {
         servicePendingIntent =
                 PendingIntent.getService(context, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setOnClickPendingIntent(R.id.prevMonth, servicePendingIntent);
-
-        rv.setInt(R.id.nextMonth, "setImageResource", item.getRightArrow());
-        rv.setInt(R.id.prevMonth, "setImageResource", item.getLeftArrow());
 
         appWidgetManager.updateAppWidget(widgetID, rv);
         appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, R.id.weekdayGrid);

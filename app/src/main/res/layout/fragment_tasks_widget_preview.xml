@@ -83,8 +83,8 @@
                         android:layout_weight="5"
                         android:background="@android:color/transparent"
                         android:gravity="right"
-                        android:src="@drawable/ic_settings_white"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        app:srcCompat="@drawable/ic_settings_white" />
 
                     <ImageButton
                         android:id="@+id/tasksCount"
@@ -93,8 +93,8 @@
                         android:layout_weight="5"
                         android:background="@android:color/transparent"
                         android:gravity="right"
-                        android:src="@drawable/ic_add_white_24dp"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        app:srcCompat="@drawable/ic_add_white_24dp" />
 
                 </LinearLayout>
             </LinearLayout>

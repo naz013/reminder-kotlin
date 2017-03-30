@@ -39,7 +39,7 @@ import java.util.Map;
  * limitations under the License.
  */
 
-public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
+class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
     private int widgetID;
@@ -99,7 +99,7 @@ public class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         if (map.containsKey(mData.get(i).getListId())) {
             rView.setInt(R.id.listColor, "setBackgroundColor", cs.getNoteColor(map.get(mData.get(i).getListId())));
         }
-        final String name = mData.get(i).getTitle();
+        String name = mData.get(i).getTitle();
         rView.setTextViewText(R.id.task, name);
         SimpleDateFormat full24Format = new SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault());
         String notes = mData.get(i).getNotes();

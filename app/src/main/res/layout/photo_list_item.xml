@@ -7,9 +7,11 @@
         <variable
             name="item"
             type="com.elementary.tasks.navigation.settings.images.ImageItem" />
+
         <variable
             name="selected"
             type="java.lang.Boolean" />
+
         <import type="android.view.View" />
     </data>
 
@@ -66,7 +68,7 @@
                 android:layout_height="0dp"
                 android:background="@color/whitePrimary30"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_check_mark_green"
+                app:srcCompat="@drawable/ic_check_mark_green"
                 android:visibility="@{selected ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

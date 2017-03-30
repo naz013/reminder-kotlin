@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.reminder.AddReminderActivity;
 
 /**
@@ -47,6 +48,7 @@ public class QuickReminderWidget extends AppWidgetProvider{
         Intent configIntent = new Intent(context, AddReminderActivity.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent);
+        WidgetUtils.setIcon(context, rv, R.drawable.ic_access_time_white_24dp, R.id.imageView);
         appWidgetManager.updateAppWidget(widgetID, rv);
     }
 }

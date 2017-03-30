@@ -28,7 +28,7 @@
                     android:layout_height="56dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_clear_white_24dp" />
+                    app:srcCompat="@drawable/ic_clear_white_24dp" />
 
                 <com.elementary.tasks.core.views.roboto.RoboEditText
                     android:id="@+id/searchField"
@@ -137,7 +137,7 @@
                     android:layout_gravity="bottom|right"
                     android:layout_marginRight="@dimen/fab_margin"
                     android:layout_marginTop="-36dp"
-                    android:src="@drawable/ic_done_white_24dp" />
+                    app:srcCompat="@drawable/ic_done_white_24dp" />
 
             </LinearLayout>
         </RelativeLayout>
