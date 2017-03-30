@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.annotation.DrawableRes;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 
@@ -48,6 +49,21 @@ public class TextViewWithIcon extends RoboTextView {
         init(context, attrs);
     }
 
+    public void setIcon(@DrawableRes int icon) {
+        if (icon == 0) {
+            setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            return;
+        }
+        Drawable drawableLeft;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawableLeft = getContext().getDrawable(icon);
+        } else {
+            drawableLeft = AppCompatResources.getDrawable(getContext(), icon);
+        }
+        setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
+        setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 8));
+    }
+
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextViewWithIcon, 0, 0);
@@ -71,6 +87,7 @@ public class TextViewWithIcon extends RoboTextView {
                     }
                 }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
+                setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 8));
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
             } finally {
