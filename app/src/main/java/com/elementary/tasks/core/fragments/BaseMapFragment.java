@@ -8,10 +8,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -79,7 +82,7 @@ public abstract class BaseMapFragment extends Fragment {
         if (Module.isLollipop()) {
             return getBitmapDescriptor(resId);
         } else {
-            return BitmapDescriptorFactory.fromResource(resId);
+            return getBDPreLollipop(resId);
         }
     }
 
@@ -88,8 +91,14 @@ public abstract class BaseMapFragment extends Fragment {
         return dp * (metrics.densityDpi / 160f);
     }
 
+    @NonNull
+    private BitmapDescriptor getBDPreLollipop(@DrawableRes int id) {
+        return BitmapDescriptorFactory.fromBitmap(WidgetUtils.getIcon(getContext(), id));
+    }
+
+    @NonNull
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private BitmapDescriptor getBitmapDescriptor(int id) {
+    private BitmapDescriptor getBitmapDescriptor(@DrawableRes int id) {
         Drawable vectorDrawable = mContext.getDrawable(id);
         int h = ((int) convertDpToPixel(24));
         int w = ((int) convertDpToPixel(24));

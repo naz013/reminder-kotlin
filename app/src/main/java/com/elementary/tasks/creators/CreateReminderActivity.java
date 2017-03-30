@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -44,7 +43,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.core.views.TextViewWithIcon;
 import com.elementary.tasks.creators.fragments.ApplicationFragment;
 import com.elementary.tasks.creators.fragments.DateFragment;
 import com.elementary.tasks.creators.fragments.EmailFragment;
@@ -860,8 +859,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private class TitleNavigationAdapter extends BaseAdapter {
 
-        private ImageView imgIcon;
-        private RoboTextView txtTitle;
+        private TextViewWithIcon txtTitle;
         private ArrayList<SpinnerItem> spinnerNavItem;
         private Context context;
 
@@ -892,10 +890,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                         context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.list_item_navigation, null);
             }
-            imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
-            txtTitle = (RoboTextView) convertView.findViewById(R.id.txtTitle);
-            imgIcon.setImageResource(spinnerNavItem.get(position).getIcon());
-            imgIcon.setVisibility(View.GONE);
+            txtTitle = (TextViewWithIcon) convertView.findViewById(R.id.txtTitle);
+            txtTitle.setIcon(0);
             txtTitle.setText(spinnerNavItem.get(position).getTitle());
             txtTitle.setTextColor(context.getResources().getColor(R.color.whitePrimary));
             return convertView;
@@ -911,9 +907,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             }
             RelativeLayout itemBg = (RelativeLayout) convertView.findViewById(R.id.itemBg);
             itemBg.setBackgroundColor(getThemeUtil().getSpinnerStyle());
-            imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
-            txtTitle = (RoboTextView) convertView.findViewById(R.id.txtTitle);
-            imgIcon.setImageResource(spinnerNavItem.get(position).getIcon());
+            txtTitle = (TextViewWithIcon) convertView.findViewById(R.id.txtTitle);
+            txtTitle.setIcon(spinnerNavItem.get(position).getIcon());
             if (getThemeUtil().isDark()) {
                 txtTitle.setTextColor(getThemeUtil().getColor(R.color.whitePrimary));
             } else {
