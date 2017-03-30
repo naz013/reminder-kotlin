@@ -1,18 +1,25 @@
 package com.elementary.tasks.core.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
+import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.GeocoderTask;
 import com.elementary.tasks.core.utils.AssetsUtil;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +40,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class AddressAutoCompleteView extends AutoCompleteTextView {
+public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     private static final String TAG = "AddressAutoCompleteView";
 
@@ -82,6 +89,35 @@ public class AddressAutoCompleteView extends AutoCompleteTextView {
     private void init(Context context, AttributeSet attrs) {
         this.mContext = context;
         mTypeface = AssetsUtil.getDefaultTypeface(getContext());
+        if (attrs != null) {
+            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AddressAutoCompleteView, 0, 0);
+            try {
+                Drawable drawableLeft = null;
+                ThemeUtil themeUtil = ThemeUtil.getInstance(context);
+                boolean isDark = themeUtil.isDark();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (isDark) {
+                        drawableLeft = a.getDrawable(R.styleable.AddressAutoCompleteView_icon_light);
+                    } else {
+                        drawableLeft = a.getDrawable(R.styleable.AddressAutoCompleteView_icon_dark);
+                    }
+                } else {
+                    int drawableLeftId = a.getResourceId(R.styleable.AddressAutoCompleteView_icon_dark, -1);
+                    if (isDark) {
+                        drawableLeftId = a.getResourceId(R.styleable.AddressAutoCompleteView_icon_light, -1);
+                    }
+                    if (drawableLeftId != -1) {
+                        drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
+                    }
+                }
+                setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
+            } catch (Exception e) {
+                LogUtil.d(TAG, "There was an error loading attributes.");
+            } finally {
+                a.recycle();
+            }
+        }
+
         addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

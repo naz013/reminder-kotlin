@@ -70,9 +70,6 @@ public class TextViewWithIcon extends RoboTextView {
                         drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
                     }
                 }
-//                if (drawableLeft != null && a.getBoolean(R.styleable.TextViewWithIcon_tv_tint, false)) {
-//                    DrawableCompat.setTint(drawableLeft, getResources().getColor(themeUtil.colorPrimary()));
-//                }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
