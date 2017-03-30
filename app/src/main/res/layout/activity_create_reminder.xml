@@ -61,13 +61,14 @@
                             android:background="?attr/selectableItemBackgroundBorderless"
                             app:srcCompat="@drawable/ic_tune_white_24dp" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
+                        <com.elementary.tasks.core.views.TextViewWithIcon
                             android:id="@+id/groupButton"
                             android:layout_width="wrap_content"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:drawableLeft="@drawable/ic_local_offer_white_24dp"
+                            app:tv_icon_light="@drawable/ic_local_offer_black_24dp"
+                            app:tv_icon="@drawable/ic_local_offer_white_24dp"
                             android:drawablePadding="8dp"
                             android:gravity="center"
                             android:text="@string/general"

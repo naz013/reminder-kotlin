@@ -44,6 +44,11 @@
 
     <declare-styleable name="ActionView"></declare-styleable>
 
+    <declare-styleable name="AddressAutoCompleteView">
+        <attr name="icon_light" format="reference" />
+        <attr name="icon_dark" format="reference" />
+    </declare-styleable>
+
     <declare-styleable name="ThemedImageButton">
         <attr name="tb_icon" format="reference" />
         <attr name="tb_icon_light" format="reference" />
