@@ -59,7 +59,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="16dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_tune_white_24dp" />
+                            app:srcCompat="@drawable/ic_tune_white_24dp" />
 
                         <com.elementary.tasks.core.views.roboto.RoboTextView
                             android:id="@+id/groupButton"
@@ -82,7 +82,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_microphone_white" />
+                            app:srcCompat="@drawable/ic_microphone_white" />
 
                         <ImageButton
                             android:id="@+id/exclusionButton"
@@ -90,7 +90,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_lock_button"
+                            app:srcCompat="@drawable/ic_lock_button"
                             android:visibility="gone" />
 
                         <ImageButton
@@ -99,7 +99,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_music_note_white_24dp"
+                            app:srcCompat="@drawable/ic_music_note_white_24dp"
                             android:visibility="gone" />
 
                         <ImageButton
@@ -108,7 +108,7 @@
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_refresh_white"
+                            app:srcCompat="@drawable/ic_refresh_white"
                             android:visibility="gone" />
 
                     </LinearLayout>

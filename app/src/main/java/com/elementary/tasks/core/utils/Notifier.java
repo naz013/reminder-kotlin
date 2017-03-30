@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
 

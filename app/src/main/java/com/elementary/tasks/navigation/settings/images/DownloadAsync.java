@@ -76,6 +76,9 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         try {
             Bitmap bitmap = Picasso.with(mContext).load(RetrofitBuilder.getImageLink(id, width, height)).get();
             try {
+                if (file.exists()) {
+                    file.delete();
+                }
                 if (file.createNewFile()) {
                     FileOutputStream stream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -86,7 +89,6 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
             }
             if (bitmap != null) {
                 image = new Image();
-                image.bitmap = bitmap;
                 image.path = filePath;
             }
         } catch (IOException e) {
@@ -124,19 +126,15 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
             intent.setDataAndType(Uri.parse("file://" + image.path), "image/*");
             PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
             builder.setContentIntent(pendingIntent);
+            builder.setContentText(mContext.getString(R.string.click_to_preview));
+        } else {
+            builder.setContentText(mContext.getString(R.string.done));
         }
-        builder.setContentText(mContext.getString(R.string.done));
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        Bitmap bitmap = image.bitmap;
-        builder.setLargeIcon(bitmap);
-        NotificationCompat.BigPictureStyle s = new NotificationCompat.BigPictureStyle();
-        s.bigLargeIcon(bitmap);
-        s.bigPicture(bitmap);
-        builder.setStyle(s);
         builder.setAutoCancel(true);
         builder.setWhen(System.currentTimeMillis());
         mNotifyMgr.notify((int) id, builder.build());
@@ -144,7 +142,6 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
 
     static class Image {
 
-        private Bitmap bitmap;
         private String path;
 
         Image() {}

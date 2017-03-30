@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.google_tasks.TaskActivity;
 import com.elementary.tasks.google_tasks.TasksConstants;
 
@@ -60,7 +61,7 @@ public class TasksWidget extends AppWidgetProvider {
         rv.setInt(R.id.headerBg, "setBackgroundResource", headerColor);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", backgroundColor);
         rv.setTextColor(R.id.widgetTitle, titleColor);
-        rv.setInt(R.id.tasksCount, "setImageResource", plusIcon);
+        WidgetUtils.setIcon(context, rv, plusIcon, R.id.tasksCount);
 
         Intent configIntent = new Intent(context, TaskActivity.class);
         configIntent.putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE);
@@ -72,7 +73,7 @@ public class TasksWidget extends AppWidgetProvider {
         configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
-        rv.setInt(R.id.settingsButton, "setImageResource", settingsIcon);
+        WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton);
 
         Intent startActivityIntent = new Intent(context, TaskActivity.class);
         PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0,

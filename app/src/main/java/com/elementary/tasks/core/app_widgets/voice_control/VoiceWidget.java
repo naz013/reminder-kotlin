@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,6 +44,7 @@ public class VoiceWidget extends AppWidgetProvider{
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.voice_widget_layout);
         int widgetColor = sp.getInt(VoiceWidgetConfig.VOICE_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);
+        WidgetUtils.setIcon(context, rv, R.drawable.ic_microphone_white, R.id.imageView);
         Intent configIntent = new Intent(context, VoiceWidgetDialog.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent);

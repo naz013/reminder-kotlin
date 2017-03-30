@@ -69,7 +69,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     @Override
     public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new PhotoViewHolder(DataBindingUtil.inflate(inflater, R.layout.photo_list_item, parent, false).getRoot());
+        return new PhotoViewHolder(PhotoListItemBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override

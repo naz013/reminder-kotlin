@@ -1,7 +1,14 @@
 package com.elementary.tasks.core.app_widgets;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+import android.support.v7.widget.AppCompatDrawableManager;
+import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Module;
@@ -25,6 +32,25 @@ import com.elementary.tasks.core.utils.Module;
 public final class WidgetUtils {
 
     private WidgetUtils() {}
+
+    public static void setIcon(Context context, RemoteViews rv, @DrawableRes int iconId, @IdRes int viewId) {
+        if (Module.isLollipop()) {
+            rv.setImageViewResource(viewId, iconId);
+        } else {
+            rv.setImageViewBitmap(viewId, getIcon(context, iconId));
+        }
+    }
+
+    public static Bitmap getIcon(Context context, @DrawableRes int id) {
+        Drawable d = AppCompatDrawableManager.get().getDrawable(context, id);
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(),
+                d.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        d.setBounds(0, 0, c.getWidth(), c.getHeight());
+        d.draw(c);
+        return b;
+    }
 
     @ColorRes
     public static int getColor(int code){

@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.notes.ActivityCreateNote;
 
 /**
@@ -37,10 +39,8 @@ public class NotesWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
         SharedPreferences sp = context.getSharedPreferences(
                 NotesWidgetConfig.NOTES_WIDGET_PREF, Context.MODE_PRIVATE);
-
         for (int i : appWidgetIds) {
             updateWidget(context, appWidgetManager, sp, i);
         }
@@ -62,7 +62,7 @@ public class NotesWidget extends AppWidgetProvider {
         rv.setInt(R.id.headerBg, "setBackgroundResource", headerColor);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", backgroundColor);
         rv.setTextColor(R.id.widgetTitle, titleColor);
-        rv.setInt(R.id.tasksCount, "setImageResource", plusIcon);
+        WidgetUtils.setIcon(context, rv, plusIcon, R.id.tasksCount);
 
         Intent configIntent = new Intent(context, ActivityCreateNote.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
@@ -72,7 +72,7 @@ public class NotesWidget extends AppWidgetProvider {
         configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
-        rv.setInt(R.id.settingsButton, "setImageResource", settingsIcon);
+        WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton);
 
         Intent startActivityIntent = new Intent(context, ActivityCreateNote.class);
         PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent,

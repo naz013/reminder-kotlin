@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -162,6 +163,9 @@ public class PermanentReminderService extends Service {
             remoteViews.setViewVisibility(R.id.featured, View.GONE);
         }
         ThemeUtil cs = ThemeUtil.getInstance(getApplicationContext());
+        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_alarm_white, R.id.notificationAdd);
+        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
+        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
         startForeground(PERM_ID, notification.build());
     }

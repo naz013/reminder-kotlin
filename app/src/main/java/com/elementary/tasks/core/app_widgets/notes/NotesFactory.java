@@ -34,7 +34,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
+class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private List<NoteItem> notes = new ArrayList<>();
     private Context mContext;

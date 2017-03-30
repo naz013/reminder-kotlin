@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/notificationBg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +16,7 @@
         android:layout_marginRight="16dp"
         android:layout_toLeftOf="@+id/noteAdd"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_alarm_white" />
+        app:srcCompat="@drawable/ic_alarm_white" />
 
     <ImageButton
         android:id="@+id/noteAdd"
@@ -25,7 +26,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="16dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_note_white" />
+        app:srcCompat="@drawable/ic_note_white" />
 
     <ImageView
         android:id="@+id/bellIcon"
@@ -34,7 +35,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_notifications_white_24dp" />
+        app:srcCompat="@drawable/ic_notifications_white_24dp" />
 
     <LinearLayout
         android:id="@+id/textContainer"

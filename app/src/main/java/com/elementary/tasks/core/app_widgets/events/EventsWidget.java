@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.reminder.AddReminderActivity;
@@ -75,21 +76,22 @@ public class EventsWidget extends AppWidgetProvider {
         rv.setInt(R.id.headerBg, "setBackgroundResource", headerColor);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", backgroundColor);
 
+        WidgetUtils.setIcon(context, rv, plusIcon, R.id.tasksCount);
+        WidgetUtils.setIcon(context, rv, voiceIcon, R.id.voiceButton);
+        WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton);
+
         Intent configIntent = new Intent(context, AddReminderActivity.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.tasksCount, configPendingIntent);
-        rv.setInt(R.id.tasksCount, "setImageResource", plusIcon);
 
         configIntent = new Intent(context, VoiceWidgetDialog.class);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.voiceButton, configPendingIntent);
-        rv.setInt(R.id.voiceButton, "setImageResource", voiceIcon);
 
         configIntent = new Intent(context, EventsWidgetConfig.class);
         configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
-        rv.setInt(R.id.settingsButton, "setImageResource", settingsIcon);
 
         Intent startActivityIntent = new Intent(context, CreateReminderActivity.class);
         PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0,

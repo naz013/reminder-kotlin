@@ -10,6 +10,7 @@ import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -47,6 +48,7 @@ public class AddBirthdayWidget extends AppWidgetProvider{
         Intent configIntent = new Intent(context, AddBirthdayActivity.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent);
+        WidgetUtils.setIcon(context, rv, R.drawable.ic_cake_white_24dp, R.id.imageView);
         appWidgetManager.updateAppWidget(widgetID, rv);
     }
 }
