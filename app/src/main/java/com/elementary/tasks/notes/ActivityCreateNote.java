@@ -284,12 +284,12 @@ public class ActivityCreateNote extends ThemedActivity {
         return remindContainer.getVisibility() == View.VISIBLE;
     }
 
-    private void createObject() {
+    private boolean createObject() {
         String note = taskField.getText().toString().trim();
         List<NoteImage> images = mAdapter.getImages();
         if (TextUtils.isEmpty(note) && images.isEmpty()) {
             taskField.setError(getString(R.string.must_be_not_empty));
-            return;
+            return false;
         }
         if (mItem == null) {
             mItem = new NoteItem();
@@ -299,10 +299,13 @@ public class ActivityCreateNote extends ThemedActivity {
         mItem.setImages(images);
         mItem.setColor(mColor);
         mItem.setStyle(mFontStyle);
+        return true;
     }
 
     private void saveNote() {
-        createObject();
+        if (!createObject()) {
+            return;
+        }
         boolean hasReminder = isReminderAttached();
         if (!hasReminder) removeNoteFromReminder(mItem.getKey());
         RealmDb.getInstance().saveObject(mItem);
