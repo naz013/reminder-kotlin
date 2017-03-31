@@ -2,6 +2,9 @@ package com.elementary.tasks.core.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -74,9 +77,19 @@ public class IconRadioButton extends AppCompatRadioButton {
             setChecked(isChecked);
         }
         if (icon != 0) {
-            setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(icon), null, null);
+            setTopIcon();
         }
         refreshView();
+    }
+
+    private void setTopIcon() {
+        Drawable drawableTop;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawableTop = getContext().getDrawable(icon);
+        } else {
+            drawableTop = AppCompatResources.getDrawable(getContext(), icon);
+        }
+        setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
     }
 
     public int getIcon() {
@@ -88,7 +101,7 @@ public class IconRadioButton extends AppCompatRadioButton {
             return;
         }
         this.icon = icon;
-        setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(icon), null, null);
+        setTopIcon();
     }
 
     private void refreshView() {
