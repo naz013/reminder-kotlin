@@ -2,7 +2,10 @@ package com.elementary.tasks.core.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -215,7 +218,13 @@ public class PrefsView extends RelativeLayout {
     
     public void setViewResource(@DrawableRes int resource) {
         if (resource != 0) {
-            prefsView.setBackgroundResource(resource);
+            Drawable drawableTop;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                drawableTop = getContext().getDrawable(resource);
+            } else {
+                drawableTop = AppCompatResources.getDrawable(getContext(), resource);
+            }
+            prefsView.setBackground(drawableTop);
         }
     }
 
