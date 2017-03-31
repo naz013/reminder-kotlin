@@ -123,8 +123,8 @@ public class MapFragment extends BaseNavigationFragment {
     }
 
     private void initMap() {
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                getPrefs().getMarkerStyle(), ThemeUtil.getInstance(getContext()).isDark());
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, false, false,
+                ThemeUtil.getInstance(getContext()).isDark());
         mGoogleMap.setCallback(mReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
         getFragmentManager().beginTransaction()
