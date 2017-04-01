@@ -207,6 +207,14 @@ public final class Prefs extends SharedPrefs {
         putBoolean(IS_24_TIME_FORMAT, value);
     }
 
+    public boolean isAutoSaveEnabled() {
+        return getBoolean(AUTO_SAVE);
+    }
+
+    public void setAutoSaveEnabled(boolean value) {
+        putBoolean(AUTO_SAVE, value);
+    }
+
     public boolean isCalendarEnabled() {
         return getBoolean(EXPORT_TO_CALENDAR);
     }

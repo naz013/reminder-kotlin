@@ -590,5 +590,7 @@
     <string name="figure">Element</string>
     <string name="text_is_empty">Text is empty</string>
     <string name="click_to_preview">Click to preview</string>
+    <string name="save_on_exit">Save on exit</string>
+    <string name="enable_saving_item_automatically">Enable saving item automatically when close editor screen</string>
 
 </resources>
