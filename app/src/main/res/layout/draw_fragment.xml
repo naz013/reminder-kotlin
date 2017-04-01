@@ -40,7 +40,7 @@
 
         <ScrollView
             android:id="@+id/draw_tools"
-            android:layout_width="56dp"
+            android:layout_width="@dimen/draw_tool_width"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/controlBox"
@@ -58,7 +58,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/penButton"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/draw_tool_width"
                     app:ir_checked="true"
                     app:ir_icon="@drawable/ic_pen"
                     app:ir_icon_light="@drawable/ic_pen_white"
@@ -68,8 +68,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/imageButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_image_black_24dp"
                     app:ir_icon_light="@drawable/ic_image_white_24dp"
                     app:ir_text="@string/image"
@@ -78,8 +78,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/textButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_format_text"
                     app:ir_icon_light="@drawable/ic_format_text_white"
                     app:ir_text="@string/text"
@@ -88,9 +88,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/lineButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:button="@null"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_vector_line"
                     app:ir_icon_light="@drawable/ic_vector_line_white"
                     app:ir_text="@string/line"
@@ -99,8 +98,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/rectangleButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_square_outline"
                     app:ir_icon_light="@drawable/ic_square_outline_white"
                     app:ir_text="@string/rectangle"
@@ -109,8 +108,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/circleButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_circle_outline"
                     app:ir_icon_light="@drawable/ic_circle_outline_white"
                     app:ir_text="@string/circle"
@@ -119,8 +118,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/ellipseButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_ellipse_vector_format"
                     app:ir_icon_light="@drawable/ic_ellipse_vector_format_white"
                     app:ir_text="@string/ellipse"
@@ -129,8 +128,8 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/cubicBezierButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/draw_tool_width"
+                    android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/ic_vector_curve"
                     app:ir_icon_light="@drawable/ic_vector_curve_white"
                     app:ir_text="@string/curve"
@@ -141,7 +140,7 @@
 
         <ScrollView
             android:id="@+id/colorView"
-            android:layout_width="56dp"
+            android:layout_width="@dimen/draw_tool_width"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/controlBox"
@@ -159,7 +158,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorAmberButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_amber"
                     app:ir_icon_light="@drawable/drawable_amber"
@@ -169,7 +168,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorBlueButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_blue"
                     app:ir_icon_light="@drawable/drawable_blue"
@@ -179,7 +178,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorBlueLightButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_blue_light"
                     app:ir_icon_light="@drawable/drawable_blue_light"
@@ -189,7 +188,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorCyanButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_cyan"
                     app:ir_icon_light="@drawable/drawable_cyan"
@@ -199,7 +198,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorDeepOrangeButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_deep_orange"
                     app:ir_icon_light="@drawable/drawable_deep_orange"
@@ -209,7 +208,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorDeepPurpleButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_deep_purple"
                     app:ir_icon_light="@drawable/drawable_deep_purple"
@@ -219,7 +218,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorGreenButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_green"
                     app:ir_icon_light="@drawable/drawable_green"
@@ -229,7 +228,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorGreenLightButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_green_light"
                     app:ir_icon_light="@drawable/drawable_green_light"
@@ -239,7 +238,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorGreyButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_grey"
                     app:ir_icon_light="@drawable/drawable_grey"
@@ -249,7 +248,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorIndigoButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_indigo"
                     app:ir_icon_light="@drawable/drawable_indigo"
@@ -259,7 +258,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorLimeButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_lime"
                     app:ir_icon_light="@drawable/drawable_lime"
@@ -269,7 +268,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorOrangeButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_orange"
                     app:ir_icon_light="@drawable/drawable_orange"
@@ -279,7 +278,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorPinkButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_pink"
                     app:ir_icon_light="@drawable/drawable_pink"
@@ -289,7 +288,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorPurpleButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_purple"
                     app:ir_icon_light="@drawable/drawable_purple"
@@ -299,7 +298,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorRedButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_red"
                     app:ir_icon_light="@drawable/drawable_red"
@@ -309,7 +308,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorTealButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_teal"
                     app:ir_icon_light="@drawable/drawable_teal"
@@ -319,7 +318,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorYellowButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_yellow"
                     app:ir_icon_light="@drawable/drawable_yellow"
@@ -329,7 +328,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorWhiteButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_white"
                     app:ir_icon_light="@drawable/drawable_white"
@@ -339,7 +338,7 @@
                 <com.elementary.tasks.core.views.IconRadioButton
                     android:id="@+id/colorBlackButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/draw_tool_width"
                     android:layout_marginTop="8dp"
                     app:ir_icon="@drawable/drawable_black"
                     app:ir_icon_light="@drawable/drawable_black"
@@ -352,14 +351,14 @@
         <RelativeLayout
             android:id="@+id/controlBox"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/draw_tool_width"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="8dp">
 
             <com.elementary.tasks.core.views.IconRadioButton
                 android:id="@+id/currentFillColorButton"
-                android:layout_width="48dp"
+                android:layout_width="@dimen/draw_tool_width"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="-24dp"
                 android:layout_toRightOf="@+id/currentStrokeColorButton"
@@ -371,7 +370,7 @@
 
             <com.elementary.tasks.core.views.IconRadioButton
                 android:id="@+id/currentStrokeColorButton"
-                android:layout_width="48dp"
+                android:layout_width="@dimen/draw_tool_width"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 app:ir_checkable="false"
@@ -382,7 +381,7 @@
 
             <com.elementary.tasks.core.views.IconRadioButton
                 android:id="@+id/currentToolButton"
-                android:layout_width="48dp"
+                android:layout_width="@dimen/draw_tool_width"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 app:ir_checkable="false"
@@ -394,7 +393,7 @@
             <HorizontalScrollView
                 android:id="@+id/controlView"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/draw_tool_width"
                 android:layout_toLeftOf="@+id/currentToolButton"
                 android:layout_toRightOf="@+id/currentFillColorButton">
 
@@ -402,13 +401,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="16dp"
                     android:orientation="horizontal">
 
                     <com.elementary.tasks.core.views.IconRadioButton
                         android:id="@+id/undoButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="56dp"
+                        android:layout_width="@dimen/draw_tool_width"
+                        android:layout_height="match_parent"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_undo_black_24dp"
                         app:ir_icon_light="@drawable/ic_undo_white_24dp"
@@ -417,9 +417,9 @@
 
                     <com.elementary.tasks.core.views.IconRadioButton
                         android:id="@+id/redoButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_width="@dimen/draw_tool_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_redo_black_24dp"
                         app:ir_icon_light="@drawable/ic_redo_white_24dp"
@@ -428,9 +428,9 @@
 
                     <com.elementary.tasks.core.views.IconRadioButton
                         android:id="@+id/clearButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_width="@dimen/draw_tool_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_clear_black_24dp"
                         app:ir_icon_light="@drawable/ic_clear_white_24dp"
@@ -439,9 +439,9 @@
 
                     <com.elementary.tasks.core.views.IconRadioButton
                         android:id="@+id/fillButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_width="@dimen/draw_tool_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_format_color_fill"
                         app:ir_icon_light="@drawable/ic_format_color_fill_white"
@@ -450,9 +450,9 @@
 
                     <com.elementary.tasks.core.views.IconRadioButton
                         android:id="@+id/layersButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_width="@dimen/draw_tool_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="8dp"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_layers_black_24dp"
                         app:ir_icon_light="@drawable/ic_layers_white_24dp"

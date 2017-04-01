@@ -52,5 +52,6 @@
 
     <dimen name="create_imagebutton_size_ext">60dp</dimen>
     <dimen name="grid_item_spacing">2dp</dimen>
+    <dimen name="draw_tool_width">56dp</dimen>
 
 </resources>

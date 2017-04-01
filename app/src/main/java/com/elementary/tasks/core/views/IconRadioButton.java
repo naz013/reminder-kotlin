@@ -7,12 +7,13 @@ import android.os.Build;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
-import android.view.Gravity;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
+
+import static android.view.Gravity.CENTER_HORIZONTAL;
 
 public class IconRadioButton extends AppCompatRadioButton {
 
@@ -48,8 +49,9 @@ public class IconRadioButton extends AppCompatRadioButton {
             setTextAppearance(context, android.R.style.TextAppearance_Small);
         }
         setMaxLines(1);
-        setGravity(Gravity.CENTER_HORIZONTAL);
-        setButtonDrawable(null);
+        setButtonDrawable(android.R.color.transparent);
+        setGravity(CENTER_HORIZONTAL);
+        setPadding(31, 0, 0, 0);
         setSingleLine(true);
         boolean isChecked = false;
         if (attrs != null) {
