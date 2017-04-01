@@ -116,12 +116,7 @@ public class DateFragment extends RepeatableTypeFragment {
             return false;
         }
         EventControl control = EventControlFactory.getController(getContext(), reminder);
-        if (control.start()) {
-            return true;
-        } else {
-            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        return control.start();
     }
 
     @Override

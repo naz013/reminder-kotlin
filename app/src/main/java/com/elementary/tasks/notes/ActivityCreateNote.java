@@ -38,7 +38,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.controller.EventControl;
@@ -62,8 +61,6 @@ import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -350,6 +347,14 @@ public class ActivityCreateNote extends ThemedActivity {
             EventControl control = EventControlFactory.getController(this, mReminder);
             control.stop();
             RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            saveNote();
         }
     }
 

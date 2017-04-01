@@ -495,10 +495,16 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void closeScreen() {
-        if (isEditing) {
+        if (mReminder != null && getPrefs().isAutoSaveEnabled()) {
+            if (!mReminder.isActive()) {
+                askAboutEnabling();
+            } else {
+                save();
+            }
+        } else if (isEditing) {
             getControl().resume();
+            finish();
         }
-        finish();
     }
 
     private void deleteReminder() {
@@ -564,6 +570,21 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         builder.setNegativeButton(R.string.disable, (dialog, which) -> {
             ledColor = -1;
             dialog.dismiss();
+        });
+        builder.create().show();
+    }
+
+    private void askAboutEnabling() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.this_reminder_is_disabled);
+        builder.setMessage(R.string.would_you_like_to_enable_it);
+        builder.setPositiveButton(R.string.yes, (dialog, which) -> {
+            dialog.dismiss();
+            save();
+        });
+        builder.setNegativeButton(R.string.no, (dialog, which) -> {
+            dialog.dismiss();
+            finish();
         });
         builder.create().show();
     }
@@ -661,7 +682,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 }
                 break;
         }
-        if (Module.isMarshmallow() && fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Module.isMarshmallow() && fragment != null)
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

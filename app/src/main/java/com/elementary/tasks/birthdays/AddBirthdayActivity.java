@@ -180,6 +180,14 @@ public class AddBirthdayActivity extends ThemedActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            saveBirthday();
+        }
+    }
+
     private void saveBirthday() {
         String contact = binding.birthName.getText().toString();
         if (contact.matches("")) {

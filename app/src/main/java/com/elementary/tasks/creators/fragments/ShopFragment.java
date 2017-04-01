@@ -16,6 +16,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
 import com.elementary.tasks.reminder.ShopListRecyclerAdapter;
@@ -84,20 +85,20 @@ public class ShopFragment extends TypeFragment {
         reminder.setClear(getInterface());
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
-            reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
-            reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
+            String time = TimeUtil.getGmtFromDateTime(startTime);
+            reminder.setStartTime(time);
+            reminder.setEventTime(time);
             LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
+            if (!TimeCount.isCurrent(time)) {
+                Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+                return false;
+            }
         } else {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
         EventControl control = EventControlFactory.getController(getContext(), reminder);
-        if (control.start()) {
-            return true;
-        } else {
-            Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        return control.start();
     }
 
     @Override

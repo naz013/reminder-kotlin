@@ -319,6 +319,14 @@ public class TaskActivity extends ThemedActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            saveTask();
+        }
+    }
+
     private void saveTask() {
         String taskName = editField.getText().toString().trim();
         if (taskName.matches("")) {

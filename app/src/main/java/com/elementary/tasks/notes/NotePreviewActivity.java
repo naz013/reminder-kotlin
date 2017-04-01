@@ -102,10 +102,10 @@ public class NotePreviewActivity extends ThemedActivity {
                 int minDist = 0, maxDist = MeasureUtils.dp2px(NotePreviewActivity.this, 200);
                 if (scrollY > maxDist) {
                     return 255;
-                } else if (scrollY<minDist) {
+                } else if (scrollY < minDist) {
                     return 0;
                 } else {
-                    return (int)  ((255.0 / maxDist) * scrollY);
+                    return (int) ((255.0 / maxDist) * scrollY);
                 }
             }
         });
@@ -127,7 +127,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void moveToStatus() {
-        if (mItem != null){
+        if (mItem != null) {
             new Notifier(this).showNoteNotification(mItem);
         }
     }
@@ -143,9 +143,9 @@ public class NotePreviewActivity extends ThemedActivity {
         closeWindow();
     }
 
-    private void loadData(){
+    private void loadData() {
         mItem = RealmDb.getInstance().getNote(mId);
-        if (mItem != null){
+        if (mItem != null) {
             showNote();
             showImage();
             showReminder();
@@ -168,7 +168,7 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void showReminder() {
         mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
-        if (mReminder != null){
+        if (mReminder != null) {
             String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), getPrefs().is24HourFormatEnabled());
             binding.reminderTime.setText(dateTime);
             binding.reminderContainer.setVisibility(View.VISIBLE);
@@ -177,7 +177,7 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void showImage() {
         List<NoteImage> list = mItem.getImages();
-        if (!list.isEmpty()){
+        if (!list.isEmpty()) {
             mAdapter.setImages(list);
             binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mItem.getColor()));
             binding.appBar.getBackground().setAlpha(0);
@@ -187,7 +187,7 @@ public class NotePreviewActivity extends ThemedActivity {
         }
     }
 
-    private void shareNote(){
+    private void shareNote() {
         File file = BackupTool.getInstance().createNote(mItem);
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
