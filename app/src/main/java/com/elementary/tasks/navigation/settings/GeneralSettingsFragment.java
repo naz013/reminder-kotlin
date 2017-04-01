@@ -55,7 +55,19 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initWearNotification();
         initGcmPrefs();
         init24TimePrefs();
+        initSavePrefs();
         return binding.getRoot();
+    }
+
+    private void initSavePrefs() {
+        binding.savePrefs.setChecked(getPrefs().isAutoSaveEnabled());
+        binding.savePrefs.setOnClickListener(v -> changeSavePrefs());
+    }
+
+    private void changeSavePrefs() {
+        boolean b = binding.savePrefs.isChecked();
+        getPrefs().setAutoSaveEnabled(!b);
+        binding.savePrefs.setChecked(!b);
     }
 
     private void init24TimePrefs() {
