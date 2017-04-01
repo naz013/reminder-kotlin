@@ -590,5 +590,9 @@
     <string name="scale">Escala</string>
     <string name="text_is_empty">El texto está vacío</string>
     <string name="click_to_preview">Haga clic para obtener una vista previa</string>
+    <string name="enable_saving_item_automatically">Habilitar el elemento de ahorro automáticamente al cerrar la pantalla del editor</string>
+    <string name="save_on_exit">Guardar a la salida</string>
+    <string name="this_reminder_is_disabled">Este recordatorio está deshabilitado</string>
+    <string name="would_you_like_to_enable_it">¿Desea habilitarlo?</string>
 
 </resources>

@@ -589,5 +589,9 @@
     <string name="scale">Échelle</string>
     <string name="text_is_empty">Le texte est vide</string>
     <string name="click_to_preview">Cliquez pour prévisualiser</string>
+    <string name="enable_saving_item_automatically">Activez l\'élément de sauvegarde automatiquement lorsque vous fermez l\'écran de l\'éditeur</string>
+    <string name="save_on_exit">Enregistrer à la sortie</string>
+    <string name="this_reminder_is_disabled">Ce rappel est désactivé</string>
+    <string name="would_you_like_to_enable_it">Voulez-vous l\'activer?</string>
 
 </resources>

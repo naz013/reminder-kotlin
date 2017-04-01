@@ -589,5 +589,9 @@
     <string name="scale">规模</string>
     <string name="text_is_empty">文字为空</string>
     <string name="click_to_preview">点击预览</string>
+    <string name="enable_saving_item_automatically">关闭编辑器屏幕时自动启用保存项目</string>
+    <string name="save_on_exit">退出时保存</string>
+    <string name="this_reminder_is_disabled">此提醒被禁用</string>
+    <string name="would_you_like_to_enable_it">你想启用它吗？</string>
 
 </resources>

@@ -590,5 +590,9 @@
     <string name="scale">Rahmen</string>
     <string name="text_is_empty">Text ist leer</string>
     <string name="click_to_preview">Klicken Sie auf Vorschau</string>
+    <string name="enable_saving_item_automatically">Aktivieren Sie das Speichern von Element automatisch, wenn Sie den Editor schließen</string>
+    <string name="save_on_exit">Sparen Sie bei Ausfahrt</string>
+    <string name="this_reminder_is_disabled">Diese Erinnerung ist deaktiviert</string>
+    <string name="would_you_like_to_enable_it">Möchten Sie es aktivieren?</string>
 
 </resources>
