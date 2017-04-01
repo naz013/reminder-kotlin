@@ -590,5 +590,9 @@
     <string name="scale">स्केल</string>
     <string name="text_is_empty">पाठ खाली है</string>
     <string name="click_to_preview">पूर्वावलोकन करने के लिए क्लिक करें</string>
+    <string name="enable_saving_item_automatically">क्लोजर एडिटर स्क्रीन पर स्वचालित रूप से आइटम सहेजने में सक्षम करें</string>
+    <string name="save_on_exit">बाहर निकलें पर सहेजें</string>
+    <string name="this_reminder_is_disabled">यह अनुस्मारक अक्षम है</string>
+    <string name="would_you_like_to_enable_it">क्या आप इसे सक्षम करना चाहेंगे?</string>
 
 </resources>

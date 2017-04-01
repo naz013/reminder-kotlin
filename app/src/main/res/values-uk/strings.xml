@@ -590,5 +590,9 @@
     <string name="scale">Розмір</string>
     <string name="text_is_empty">Текст порожній</string>
     <string name="click_to_preview">Натисніть для перегляду</string>
+    <string name="enable_saving_item_automatically">Включити збереження пункту автоматично закрити редактор екрану</string>
+    <string name="save_on_exit">Зберегти на виході</string>
+    <string name="this_reminder_is_disabled">Це нагадування відключено</string>
+    <string name="would_you_like_to_enable_it">Ви хочете, його увімкнути?</string>
 
 </resources>

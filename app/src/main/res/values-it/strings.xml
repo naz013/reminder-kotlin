@@ -590,5 +590,9 @@
     <string name="scale">Scala</string>
     <string name="text_is_empty">Il testo è vuoto</string>
     <string name="click_to_preview">Clicca per visualizzare in anteprima</string>
+    <string name="enable_saving_item_automatically">Attiva risparmio oggetto automaticamente quando vicino schermata dell\'editor</string>
+    <string name="save_on_exit">Salva in uscita</string>
+    <string name="this_reminder_is_disabled">Questo richiamo è disabilitata</string>
+    <string name="would_you_like_to_enable_it">Vuoi per attivarlo?</string>
 
 </resources>

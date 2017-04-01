@@ -590,5 +590,9 @@
     <string name="scale">Масштаб</string>
     <string name="text_is_empty">Текст пуст</string>
     <string name="click_to_preview">Нажмите для просмотра</string>
+    <string name="enable_saving_item_automatically">Автоматически сохранять элемент при закрытии экрана редактора</string>
+    <string name="save_on_exit">Сохранить при выходе</string>
+    <string name="this_reminder_is_disabled">Это напоминание отключено</string>
+    <string name="would_you_like_to_enable_it">Вы хотите включить его?</string>
 
 </resources>
