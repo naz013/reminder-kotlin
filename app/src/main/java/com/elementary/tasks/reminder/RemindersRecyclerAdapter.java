@@ -274,10 +274,11 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
     public static void loadContact(RoboTextView textView, Reminder model) {
         int type = model.getType();
         String number = model.getTarget();
-        textView.setVisibility(View.VISIBLE);
         if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
+            textView.setVisibility(View.VISIBLE);
             textView.setText(number);
         } else if (Reminder.isKind(type, Reminder.Kind.CALL) || Reminder.isKind(type, Reminder.Kind.SMS)) {
+            textView.setVisibility(View.VISIBLE);
             String name = Contacts.getNameFromNumber(number, textView.getContext());
             if (name == null) {
                 textView.setText(number);
@@ -292,15 +293,18 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
             } catch (final PackageManager.NameNotFoundException ignored) {
             }
             final String name = (String) ((applicationInfo != null) ? packageManager.getApplicationLabel(applicationInfo) : "???");
+            textView.setVisibility(View.VISIBLE);
             textView.setText(name + "/" + number);
         } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
             String name = Contacts.getNameFromMail(number, textView.getContext());
+            textView.setVisibility(View.VISIBLE);
             if (name == null) {
                 textView.setText(number);
             } else {
                 textView.setText(name + "(" + number + ")");
             }
         } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
+            textView.setVisibility(View.VISIBLE);
             textView.setText(number);
         } else {
             textView.setVisibility(View.GONE);

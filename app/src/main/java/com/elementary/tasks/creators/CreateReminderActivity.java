@@ -504,6 +504,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         } else if (isEditing) {
             getControl().resume();
             finish();
+        } else {
+            finish();
         }
     }
 
