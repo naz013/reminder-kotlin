@@ -127,6 +127,14 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            saveTaskList();
+        }
+    }
+
     private void showProgressDialog(String title) {
         mDialog = ProgressDialog.show(this, null, title, true, false);
     }

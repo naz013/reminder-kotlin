@@ -112,6 +112,14 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            saveCroup();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_group_edit, menu);

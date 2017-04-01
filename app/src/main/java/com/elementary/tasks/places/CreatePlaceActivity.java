@@ -154,6 +154,14 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+            addPlace();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_palce_edit, menu);
