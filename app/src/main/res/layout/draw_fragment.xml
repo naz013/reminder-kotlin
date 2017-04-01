@@ -408,6 +408,7 @@
                         android:id="@+id/undoButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="56dp"
                         app:ir_checkable="false"
                         app:ir_icon="@drawable/ic_undo_black_24dp"
                         app:ir_icon_light="@drawable/ic_undo_white_24dp"
