@@ -589,5 +589,6 @@
     <string name="layers">Katmanlar</string>
     <string name="scale">Ölçek</string>
     <string name="text_is_empty">Metin boş</string>
+    <string name="click_to_preview">Önizleme için tıklayın</string>
 
 </resources>

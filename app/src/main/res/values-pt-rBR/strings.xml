@@ -588,5 +588,6 @@
     <string name="layers">Camadas</string>
     <string name="scale">Escala</string>
     <string name="text_is_empty">O texto está vazio</string>
+    <string name="click_to_preview">Clique para visualizar</string>
 
 </resources>

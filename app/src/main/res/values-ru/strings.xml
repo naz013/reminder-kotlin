@@ -589,5 +589,6 @@
     <string name="layers">Слои</string>
     <string name="scale">Масштаб</string>
     <string name="text_is_empty">Текст пуст</string>
+    <string name="click_to_preview">Нажмите для просмотра</string>
 
 </resources>

@@ -588,5 +588,6 @@
     <string name="layers">Couches</string>
     <string name="scale">Échelle</string>
     <string name="text_is_empty">Le texte est vide</string>
+    <string name="click_to_preview">Cliquez pour prévisualiser</string>
 
 </resources>

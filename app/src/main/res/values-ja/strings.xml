@@ -590,5 +590,6 @@
     <string name="layers">レイヤー</string>
     <string name="scale">規模</string>
     <string name="text_is_empty">テキストが空です</string>
+    <string name="click_to_preview">クリックしてプレビュー</string>
 
 </resources>

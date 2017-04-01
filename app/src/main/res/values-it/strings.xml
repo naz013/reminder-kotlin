@@ -589,5 +589,6 @@
     <string name="layers">Livelli</string>
     <string name="scale">Scala</string>
     <string name="text_is_empty">Il testo è vuoto</string>
+    <string name="click_to_preview">Clicca per visualizzare in anteprima</string>
 
 </resources>

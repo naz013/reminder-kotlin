@@ -589,5 +589,6 @@
     <string name="layers">Capas</string>
     <string name="scale">Escala</string>
     <string name="text_is_empty">El texto está vacío</string>
+    <string name="click_to_preview">Haga clic para obtener una vista previa</string>
 
 </resources>

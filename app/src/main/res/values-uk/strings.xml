@@ -589,5 +589,6 @@
     <string name="layers">Шари</string>
     <string name="scale">Розмір</string>
     <string name="text_is_empty">Текст порожній</string>
+    <string name="click_to_preview">Натисніть для перегляду</string>
 
 </resources>
