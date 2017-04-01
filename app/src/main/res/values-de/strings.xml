@@ -589,5 +589,6 @@
     <string name="layers">Lagen</string>
     <string name="scale">Rahmen</string>
     <string name="text_is_empty">Text ist leer</string>
+    <string name="click_to_preview">Klicken Sie auf Vorschau</string>
 
 </resources>

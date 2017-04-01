@@ -589,5 +589,6 @@
     <string name="layers">Vrstvy</string>
     <string name="scale">Měřítko</string>
     <string name="text_is_empty">Text je prázdný</string>
+    <string name="click_to_preview">Kliknutím na náhled</string>
 
 </resources>

@@ -589,5 +589,6 @@
     <string name="layers">परतें</string>
     <string name="scale">स्केल</string>
     <string name="text_is_empty">पाठ खाली है</string>
+    <string name="click_to_preview">पूर्वावलोकन करने के लिए क्लिक करें</string>
 
 </resources>

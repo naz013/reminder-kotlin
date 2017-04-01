@@ -589,5 +589,6 @@
     <string name="layers">Warstwy</string>
     <string name="scale">Skala</string>
     <string name="text_is_empty">Tekst jest pusty</string>
+    <string name="click_to_preview">Kliknij, aby wyświetlić podgląd</string>
 
 </resources>

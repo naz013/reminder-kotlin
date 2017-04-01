@@ -589,5 +589,6 @@
     <string name="layers">Straturi</string>
     <string name="scale">Scară</string>
     <string name="text_is_empty">Textul este gol</string>
+    <string name="click_to_preview">Click aici pentru a previzualiza</string>
 
 </resources>
