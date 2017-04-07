@@ -184,6 +184,7 @@ public class DayViewProvider {
                     continue;
                 }
                 if (isFeature) {
+                    calendar1.setTimeInMillis(item.getStartDateTime());
                     if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                         long days = 0;
                         long max = Configs.MAX_DAYS_COUNT;
@@ -195,13 +196,18 @@ public class DayViewProvider {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() +
                                     AlarmManager.INTERVAL_DAY);
                             eventTime = calendar1.getTimeInMillis();
+                            if (eventTime == item.getDateTime()) {
+                                continue;
+                            }
                             int weekDay = calendar1.get(Calendar.DAY_OF_WEEK);
                             if (list.get(weekDay - 1) == 1 && eventTime > 0) {
                                 mDay = calendar1.get(Calendar.DAY_OF_MONTH);
                                 mMonth = calendar1.get(Calendar.MONTH);
                                 mYear = calendar1.get(Calendar.YEAR);
                                 days++;
-                                data.add(new EventsItem(item.getViewType(), new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)), mDay, mMonth, mYear, color));
+                                data.add(new EventsItem(item.getViewType(),
+                                        new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        mDay, mMonth, mYear, color));
                             }
                         } while (days < max);
                     } else if (Reminder.isBase(mType, Reminder.BY_MONTH)) {
@@ -211,15 +217,20 @@ public class DayViewProvider {
                             max = limit - count;
                         }
                         do {
-                            item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
+//                            item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                             eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item);
                             calendar1.setTimeInMillis(eventTime);
+                            if (eventTime == item.getDateTime()) {
+                                continue;
+                            }
                             mDay = calendar1.get(Calendar.DAY_OF_MONTH);
                             mMonth = calendar1.get(Calendar.MONTH);
                             mYear = calendar1.get(Calendar.YEAR);
                             if (eventTime > 0) {
                                 days++;
-                                data.add(new EventsItem(item.getViewType(), new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)), mDay, mMonth, mYear, color));
+                                data.add(new EventsItem(item.getViewType(),
+                                        new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        mDay, mMonth, mYear, color));
                             }
                         } while (days < max);
                     } else {
@@ -234,12 +245,17 @@ public class DayViewProvider {
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() + repeatTime);
                             eventTime = calendar1.getTimeInMillis();
+                            if (eventTime == item.getDateTime()) {
+                                continue;
+                            }
                             mDay = calendar1.get(Calendar.DAY_OF_MONTH);
                             mMonth = calendar1.get(Calendar.MONTH);
                             mYear = calendar1.get(Calendar.YEAR);
                             if (eventTime > 0) {
                                 days++;
-                                data.add(new EventsItem(item.getViewType(), new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)), mDay, mMonth, mYear, color));
+                                data.add(new EventsItem(item.getViewType(),
+                                        new Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        mDay, mMonth, mYear, color));
                             }
                         } while (days < max);
                     }
