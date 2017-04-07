@@ -701,6 +701,10 @@ public class Reminder implements RecyclerInterface, EventInterface {
         return TimeUtil.getDateTimeFromGmt(eventTime);
     }
 
+    public long getStartDateTime() {
+        return TimeUtil.getDateTimeFromGmt(startTime);
+    }
+
     @Override
     public int getViewType() {
         if (isSame(type, BY_DATE_SHOP)) {
