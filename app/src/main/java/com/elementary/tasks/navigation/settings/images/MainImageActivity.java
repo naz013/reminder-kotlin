@@ -75,7 +75,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
             int visiblePosition = layoutManager.findLastVisibleItemPosition();
             int count = mAdapter.getItemCount();
-            if (visiblePosition >= count - 10 && mPointer < mPhotoList.size() -1 && mPointer < count + (START_SIZE / 2) - 1) {
+            if (visiblePosition >= count - 10 && mPointer < mPhotoList.size() - 1 && mPointer < count + (START_SIZE / 2) - 1) {
                 int endPoint = mPointer + (START_SIZE / 2);
                 boolean last = endPoint >= mPhotoList.size();
                 if (last) endPoint = mPhotoList.size() - 1;
@@ -249,7 +249,6 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
                     .load(RetrofitBuilder.getImageLink(mSelectedItem.getId()))
                     .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                     .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
-                    .error(getThemeUtil().isDark() ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
                     .into(binding.fullImageView);
             ViewUtils.showReveal(binding.fullContainer);
             ViewUtils.show(this, binding.imageContainer, mAnimationCallback);
