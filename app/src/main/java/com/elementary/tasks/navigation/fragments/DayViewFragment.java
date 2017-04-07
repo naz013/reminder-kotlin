@@ -160,7 +160,8 @@ public class DayViewFragment extends BaseCalendarFragment {
 
         int position = 0;
         int targetPosition = -1;
-        while (position < Configs.MAX_DAYS_COUNT) {
+        calendar.add(Calendar.DAY_OF_MONTH, -100);
+        while (position < Configs.MAX_DAYS_COUNT + 100) {
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
             int mMonth = calendar.get(Calendar.MONTH);
             int mYear = calendar.get(Calendar.YEAR);
