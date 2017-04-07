@@ -87,7 +87,7 @@ public class EventsDataProvider {
                     setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                     if (isFeature) {
                         Calendar calendar1 = Calendar.getInstance();
-                        calendar1.setTimeInMillis(eventTime);
+                        calendar1.setTimeInMillis(item.getStartDateTime());
                         if (Reminder.isBase(mType, Reminder.BY_WEEK)) {
                             long days = 0;
                             long max = Configs.MAX_DAYS_COUNT;
@@ -99,6 +99,9 @@ public class EventsDataProvider {
                                 calendar1.setTimeInMillis(calendar1.getTimeInMillis() +
                                         AlarmManager.INTERVAL_DAY);
                                 eventTime = calendar1.getTimeInMillis();
+                                if (eventTime == item.getDateTime()) {
+                                    continue;
+                                }
                                 int weekDay = calendar1.get(Calendar.DAY_OF_WEEK);
                                 if (list.get(weekDay - 1) == 1) {
                                     days++;
@@ -114,6 +117,9 @@ public class EventsDataProvider {
                             do {
                                 item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                                 eventTime = timeCount.getNextMonthDayTime(item);
+                                if (eventTime == item.getDateTime()) {
+                                    continue;
+                                }
                                 calendar1.setTimeInMillis(eventTime);
                                 days++;
                                 setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
@@ -130,6 +136,9 @@ public class EventsDataProvider {
                             do {
                                 calendar1.setTimeInMillis(calendar1.getTimeInMillis() + repeatTime);
                                 eventTime = calendar1.getTimeInMillis();
+                                if (eventTime == item.getDateTime()) {
+                                    continue;
+                                }
                                 days++;
                                 setEvent(eventTime, summary, rColor, Events.Type.REMINDER);
                             } while (days < max);
