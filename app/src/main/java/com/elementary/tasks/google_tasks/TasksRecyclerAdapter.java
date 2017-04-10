@@ -52,7 +52,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     private static Map<String, Integer> colors;
     private static ProgressDialog mDialog;
 
-    public TasksRecyclerAdapter(Context context, List<TaskItem> myDataset, Map<String, Integer> colors) {
+    TasksRecyclerAdapter(Context context, List<TaskItem> myDataset, Map<String, Integer> colors) {
         this.mDataset = myDataset;
         this.mContext = context;
         TasksRecyclerAdapter.colors = colors;
