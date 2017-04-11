@@ -204,7 +204,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
     private void showMonthDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(R.array.month_list, (dialogInterface, i) -> setImageFotMonth(i));
+        builder.setItems(R.array.month_list, (dialogInterface, i) -> setImageForMonth(i));
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -216,7 +216,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         CharSequence maxSize = mSelectedItem.getHeight() + "x" + mSelectedItem.getWidth();
-        builder.setItems(new CharSequence[]{maxSize, "1920x1080", "1280x768", "800x480"}, (dialogInterface, i) -> {
+        builder.setItems(new CharSequence[]{maxSize, "1080x1920", "768x1280", "480x800"}, (dialogInterface, i) -> {
             int width = mSelectedItem.getWidth();
             int height = mSelectedItem.getHeight();
             switch (i) {
@@ -279,7 +279,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         hideImage();
     }
 
-    private void setImageFotMonth(int month) {
+    private void setImageForMonth(int month) {
         MonthImage monthImage = getPrefs().getCalendarImages();
         monthImage.setPhoto(month, mSelectedItem.getId());
         getPrefs().setCalendarImages(monthImage);
