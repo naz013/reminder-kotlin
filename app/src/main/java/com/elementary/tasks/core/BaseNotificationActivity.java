@@ -37,6 +37,7 @@ import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Sound;
+import com.elementary.tasks.core.utils.SoundStackHolder;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
@@ -224,7 +225,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-        mSound = new Sound(this);
+        if (savedInstanceState != null && SoundStackHolder.getInstance().hasInStack(this)) {
+            mSound = SoundStackHolder.getInstance().getFromStack(this);
+        } else {
+            mSound = new Sound(this);
+        }
+        mSound.setSaved(false);
         if (getPrefs().isWearEnabled()) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Wearable.API)
@@ -240,6 +246,9 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         super.onDestroy();
         int left = instanceCount.decrementAndGet();
         LogUtil.d(TAG, "onDestroy: " + left);
+        if (!mSound.isSaved()) {
+            SoundStackHolder.getInstance().removeFromStack(this);
+        }
         if (!getPrefs().isSystemLoudnessEnabled() && left == 0) {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             am.setStreamVolume(mStream, currVolume, 0);
@@ -258,6 +267,15 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             discardMedia();
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if (mSound != null) {
+            mSound.setSaved(true);
+            SoundStackHolder.getInstance().addToStack(this, mSound);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     protected void setTextDrawable(FloatingActionButton button, String text) {

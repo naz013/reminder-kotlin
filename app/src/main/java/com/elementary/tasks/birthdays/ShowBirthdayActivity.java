@@ -77,7 +77,6 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (Module.isLollipop()) {
             binding.card.setCardElevation(Configs.CARD_ELEVATION);
         }
-        binding.singleContainer.setVisibility(View.VISIBLE);
         loadImage(binding.bgImage);
         colorify(binding.buttonOk, binding.buttonCall, binding.buttonSend);
 

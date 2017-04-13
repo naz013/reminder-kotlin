@@ -34,6 +34,8 @@ public class Sound {
     private boolean isPaused;
     private String lastFile;
     private Ringtone ringtone;
+    private boolean isDone;
+    private boolean isSaved;
 
     public Sound(Context context) {
         this.mContext = context;
@@ -61,6 +63,18 @@ public class Sound {
             mMediaPlayer.start();
             isPaused = false;
         }
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public boolean isDone() {
+        return isDone;
     }
 
     public boolean isPaused() {
@@ -98,6 +112,9 @@ public class Sound {
     }
 
     public void playAlarm(Uri path, boolean looping) {
+        if (isPlaying()) {
+            return;
+        }
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
@@ -118,6 +135,7 @@ public class Sound {
 
         mMediaPlayer.setLooping(looping);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
+        mMediaPlayer.setOnCompletionListener(mp -> isDone = true);
         try {
             mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
@@ -128,6 +146,9 @@ public class Sound {
     public void playAlarm(AssetFileDescriptor afd, boolean looping) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
+        }
+        if (isDone) {
+            return;
         }
         mMediaPlayer = new MediaPlayer();
         try {
