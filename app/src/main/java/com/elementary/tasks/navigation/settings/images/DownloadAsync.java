@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.NotificationCompat;
 
+import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.Module;
@@ -120,16 +122,18 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
     }
 
     private void showNotificationWithImage(Image image) {
-        if (!Module.isNougat()) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse("file://" + image.path), "image/*");
-            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
-            builder.setContentIntent(pendingIntent);
-            builder.setContentText(mContext.getString(R.string.click_to_preview));
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        if (Module.isNougat()) {
+            Uri uri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", new File(image.path));
+            intent.setData(uri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
-            builder.setContentText(mContext.getString(R.string.done));
+            intent.setDataAndType(Uri.parse("file://" + image.path), "image/*");
         }
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+        builder.setContentIntent(pendingIntent);
+        builder.setContentText(mContext.getString(R.string.click_to_preview));
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
         } else {
