@@ -27,7 +27,7 @@
             card_view:cardCornerRadius="0dp"
             card_view:layout_constraintLeft_toLeftOf="parent"
             card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toTopOf="@+id/imageView">
+            card_view:layout_constraintTop_toTopOf="parent">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/monthYear"

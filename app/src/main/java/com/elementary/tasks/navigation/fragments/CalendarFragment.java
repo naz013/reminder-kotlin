@@ -102,10 +102,11 @@ public class CalendarFragment extends BaseCalendarFragment {
         if (getCallback() != null) {
             getCallback().onTitleChange(getString(R.string.calendar));
             getCallback().onFragmentSelect(this);
-            getCallback().setClick(view -> {
+            CalendarSingleton.getInstance().setFabClick(view -> {
                 dateMills = System.currentTimeMillis();
                 showActionDialog(false);
             });
+            getCallback().setClick(CalendarSingleton.getInstance().getFabClick());
         }
         showCalendar();
         LogUtil.d(TAG, "onResume: ");
