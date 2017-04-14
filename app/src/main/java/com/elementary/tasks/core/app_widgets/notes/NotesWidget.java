@@ -11,8 +11,7 @@ import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
-import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.notes.ActivityCreateNote;
+import com.elementary.tasks.notes.CreateNoteActivity;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -64,7 +63,7 @@ public class NotesWidget extends AppWidgetProvider {
         rv.setTextColor(R.id.widgetTitle, titleColor);
         WidgetUtils.setIcon(context, rv, plusIcon, R.id.tasksCount);
 
-        Intent configIntent = new Intent(context, ActivityCreateNote.class);
+        Intent configIntent = new Intent(context, CreateNoteActivity.class);
         PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.tasksCount, configPendingIntent);
 
@@ -74,7 +73,7 @@ public class NotesWidget extends AppWidgetProvider {
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
         WidgetUtils.setIcon(context, rv, settingsIcon, R.id.settingsButton);
 
-        Intent startActivityIntent = new Intent(context, ActivityCreateNote.class);
+        Intent startActivityIntent = new Intent(context, CreateNoteActivity.class);
         PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent);

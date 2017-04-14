@@ -1,6 +1,7 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,7 +33,7 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
-import com.elementary.tasks.notes.ActivityCreateNote;
+import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
@@ -63,6 +64,7 @@ public class NotesFragment extends BaseNavigationFragment {
     private FragmentNotesBinding binding;
     private NotesRecyclerAdapter mAdapter;
     private boolean enableGrid = false;
+    private ProgressDialog mProgress;
 
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
@@ -94,7 +96,7 @@ public class NotesFragment extends BaseNavigationFragment {
                         selectColor(position, noteItem.getKey());
                         break;
                     case 4:
-                        getContext().startActivity(new Intent(getContext(), ActivityCreateNote.class)
+                        getContext().startActivity(new Intent(getContext(), CreateNoteActivity.class)
                                 .putExtra(Constants.INTENT_ID, noteItem.getKey()));
                         break;
                     case 5:
@@ -180,12 +182,27 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void shareNote(NoteItem noteItem){
-        File file = BackupTool.getInstance().createNote(noteItem);
+        showProgress();
+        BackupTool.getInstance().createNote(noteItem, file -> sendNote(noteItem, file));
+    }
+
+    private void sendNote(NoteItem noteItem, File file) {
+        hideProgress();
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(getContext(), getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
         }
         TelephonyUtil.sendNote(file, getContext(), noteItem.getSummary());
+    }
+
+    private void hideProgress() {
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
+        }
+    }
+
+    private void showProgress() {
+        mProgress = ProgressDialog.show(getContext(), null, getString(R.string.please_wait), true, false);
     }
 
     @Override
@@ -254,7 +271,7 @@ public class NotesFragment extends BaseNavigationFragment {
         if (getCallback() != null) {
             getCallback().onTitleChange(getString(R.string.notes));
             getCallback().onFragmentSelect(this);
-            getCallback().setClick(view -> startActivity(new Intent(getContext(), ActivityCreateNote.class)));
+            getCallback().setClick(view -> startActivity(new Intent(getContext(), CreateNoteActivity.class)));
             getCallback().onScrollChanged(binding.recyclerView);
         }
         showData();

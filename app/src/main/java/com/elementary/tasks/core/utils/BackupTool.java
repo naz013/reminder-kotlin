@@ -393,7 +393,7 @@ public final class BackupTool {
         }
     }
 
-    public File createNote(NoteItem item) {
+    public void createNote(NoteItem item, CreateCallback callback) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File file = null;
@@ -409,7 +409,9 @@ public final class BackupTool {
         } else {
             LogUtil.i(TAG, "Couldn't find external storage!");
         }
-        return file;
+        if (callback != null) {
+            callback.onReady(file);
+        }
     }
 
     public String readFileToJson(ContentResolver cr, Uri name) throws IOException {
@@ -487,5 +489,9 @@ public final class BackupTool {
             e.printStackTrace();
         }
         return Base64.encodeToString(stringByted, Base64.DEFAULT).trim();
+    }
+
+    public interface CreateCallback {
+        void onReady(File file);
     }
 }

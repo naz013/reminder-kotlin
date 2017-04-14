@@ -166,7 +166,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".notes.ActivityCreateNote"
+            android:name=".notes.CreateNoteActivity"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

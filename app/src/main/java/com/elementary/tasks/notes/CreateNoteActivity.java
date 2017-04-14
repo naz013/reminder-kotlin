@@ -3,6 +3,7 @@ package com.elementary.tasks.notes;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ContentResolver;
@@ -87,9 +88,9 @@ import java.util.Random;
  * limitations under the License.
  */
 
-public class ActivityCreateNote extends ThemedActivity {
+public class CreateNoteActivity extends ThemedActivity {
 
-    private static final String TAG = "ActivityCreateNote";
+    private static final String TAG = "CreateNoteActivity";
     public static final int MENU_ITEM_DELETE = 12;
     private static final int REQUEST_SD_CARD = 1112;
     private static final int EDIT_CODE = 11223;
@@ -110,6 +111,7 @@ public class ActivityCreateNote extends ThemedActivity {
 
     private ActivityCreateNoteBinding binding;
     private ImagesGridAdapter mAdapter;
+    private ProgressDialog mProgress;
 
     private NoteItem mItem;
     private Reminder mReminder;
@@ -254,9 +256,24 @@ public class ActivityCreateNote extends ThemedActivity {
         }
     }
 
+    private void hideProgress() {
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
+        }
+    }
+
+    private void showProgress() {
+        mProgress = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false);
+    }
+
     private void shareNote() {
         createObject();
-        File file = BackupTool.getInstance().createNote(mItem);
+        showProgress();
+        BackupTool.getInstance().createNote(mItem, this::sendNote);
+    }
+
+    private void sendNote(File file) {
+        hideProgress();
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
@@ -560,7 +577,7 @@ public class ActivityCreateNote extends ThemedActivity {
             }
 
             private Typeface getTypeface(int position) {
-                return AssetsUtil.getTypeface(ActivityCreateNote.this, position);
+                return AssetsUtil.getTypeface(CreateNoteActivity.this, position);
             }
         };
         builder.setSingleChoiceItems(adapter, mFontStyle, (dialog, which) -> {
