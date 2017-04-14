@@ -1,6 +1,7 @@
 package com.elementary.tasks.notes;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -58,6 +59,8 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private ImagesGridAdapter mAdapter;
     private ActivityNotePreviewBinding binding;
+
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +125,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void editNote() {
-        startActivity(new Intent(NotePreviewActivity.this, ActivityCreateNote.class)
+        startActivity(new Intent(NotePreviewActivity.this, CreateNoteActivity.class)
                 .putExtra(Constants.INTENT_ID, mItem.getKey()));
     }
 
@@ -187,8 +190,23 @@ public class NotePreviewActivity extends ThemedActivity {
         }
     }
 
+    private void hideProgress() {
+        if (mProgress != null && mProgress.isShowing()) {
+            mProgress.dismiss();
+        }
+    }
+
+    private void showProgress() {
+        mProgress = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false);
+    }
+
     private void shareNote() {
-        File file = BackupTool.getInstance().createNote(mItem);
+        showProgress();
+        BackupTool.getInstance().createNote(mItem, this::sendNote);
+    }
+
+    private void sendNote(File file) {
+        hideProgress();
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;

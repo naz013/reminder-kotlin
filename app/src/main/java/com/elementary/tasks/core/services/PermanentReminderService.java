@@ -20,7 +20,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
-import com.elementary.tasks.notes.ActivityCreateNote;
+import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.List;
@@ -111,10 +111,10 @@ public class PermanentReminderService extends Service {
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
                 PendingIntent.FLAG_ONE_SHOT);
         remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
-        Intent noteIntent = new Intent(getApplicationContext(), ActivityCreateNote.class)
+        Intent noteIntent = new Intent(getApplicationContext(), CreateNoteActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         TaskStackBuilder noteBuilder = TaskStackBuilder.create(getApplicationContext());
-        noteBuilder.addParentStack(ActivityCreateNote.class);
+        noteBuilder.addParentStack(CreateNoteActivity.class);
         noteBuilder.addNextIntent(noteIntent);
         PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
                 PendingIntent.FLAG_UPDATE_CURRENT);

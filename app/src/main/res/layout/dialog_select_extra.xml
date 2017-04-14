@@ -2,71 +2,75 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="wrap_content">
 
-        <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
-            android:id="@+id/extraSwitch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/default_string"
-            app:switch_font_style="roboto_medium" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:text="@string/allow_customizing_notification"
-            android:textStyle="italic"
-            app:font_style="roboto_thin" />
+            <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
+                android:id="@+id/extraSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/default_string"
+                app:switch_font_style="roboto_medium" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/vibrationCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/vibrate"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:text="@string/allow_customizing_notification"
+                android:textStyle="italic"
+                app:font_style="roboto_thin" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/voiceCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/voice_notification"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/vibrationCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/vibrate"
+                app:check_font_style="roboto_light" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/wakeCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/turn_on_screen"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/voiceCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/voice_notification"
+                app:check_font_style="roboto_light" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/unlockCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/unlock_screen"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/wakeCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/turn_on_screen"
+                app:check_font_style="roboto_light" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/repeatCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/repeat_notification"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/unlockCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unlock_screen"
+                app:check_font_style="roboto_light" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
-            android:id="@+id/autoCheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/enable_sending_sms_automatically"
-            app:check_font_style="roboto_light" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/repeatCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat_notification"
+                app:check_font_style="roboto_light" />
 
-    </LinearLayout>
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/autoCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enable_sending_sms_automatically"
+                app:check_font_style="roboto_light" />
 
+        </LinearLayout>
+    </ScrollView>
 </layout>

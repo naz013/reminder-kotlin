@@ -30,7 +30,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@android:color/transparent"
                 android:hint="@string/task"
-                android:maxLines="5"
+                android:maxLines="3"
                 android:textColorHint="@color/whitePrimary"
                 android:textSize="@dimen/create_text_size_secondary"
                 app:edit_font_style="roboto_light" />
