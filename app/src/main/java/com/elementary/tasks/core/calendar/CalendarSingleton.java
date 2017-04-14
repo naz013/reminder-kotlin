@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.calendar;
 
+import android.view.View;
+
 import com.elementary.tasks.birthdays.EventsDataProvider;
 
 /**
@@ -22,6 +24,7 @@ public class CalendarSingleton {
 
     private static CalendarSingleton instance;
     private EventsDataProvider provider;
+    private View.OnClickListener fabClick;
 
     private CalendarSingleton() {
     }
@@ -35,6 +38,14 @@ public class CalendarSingleton {
             }
         }
         return instance;
+    }
+
+    public void setFabClick(View.OnClickListener fabClick) {
+        this.fabClick = fabClick;
+    }
+
+    public View.OnClickListener getFabClick() {
+        return fabClick;
     }
 
     public void setProvider(EventsDataProvider provider) {

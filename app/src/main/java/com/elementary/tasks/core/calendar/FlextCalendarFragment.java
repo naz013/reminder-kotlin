@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.calendar;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
 import com.elementary.tasks.databinding.FragmentFlextCalBinding;
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +51,7 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class FlextCalendarFragment extends Fragment {
+public class FlextCalendarFragment extends BaseNavigationFragment {
 
     private static final String TAG = "FlextCalendarFragment";
 
@@ -308,6 +309,10 @@ public class FlextCalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getString(R.string.calendar));
+            getCallback().setClick(CalendarSingleton.getInstance().getFabClick());
+        }
         loadData();
         LogUtil.d(TAG, "onResume: ");
     }
