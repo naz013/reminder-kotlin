@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
@@ -105,7 +104,6 @@ public class FlextCalendarFragment extends Fragment {
     /**
      * caldroidData belongs to Caldroid
      */
-    protected EventsDataProvider eventsProvider;
     private Map<DateTime, Events> mLastMap = new HashMap<>();
 
     private long[] photosList = new long[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
@@ -125,11 +123,6 @@ public class FlextCalendarFragment extends Fragment {
 
     public List<DateGridFragment> getFragments() {
         return fragments;
-    }
-
-    public void setEvents(EventsDataProvider eventsMap) {
-        this.eventsProvider = eventsMap;
-        this.mLastMap = eventsProvider.getEvents();
     }
 
     public void setListener(FlextListener caldroidListener) {
@@ -309,7 +302,7 @@ public class FlextCalendarFragment extends Fragment {
     }
 
     private void loadData() {
-        mLastMap = eventsProvider.getEvents();
+        mLastMap = CalendarSingleton.getInstance().getProvider().getEvents();
     }
 
     @Override

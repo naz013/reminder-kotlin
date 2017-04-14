@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.EventsDataProvider;
+import com.elementary.tasks.core.calendar.CalendarSingleton;
 import com.elementary.tasks.core.calendar.FlextCalendarFragment;
 import com.elementary.tasks.core.calendar.FlextListener;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -133,7 +134,7 @@ public class CalendarFragment extends BaseCalendarFragment {
         replaceFragment(calendarView, getString(R.string.calendar));
         boolean isReminder = getPrefs().isRemindersInCalendarEnabled();
         boolean isFeature = getPrefs().isFutureEventEnabled();
-        calendarView.setEvents(new EventsDataProvider(getContext(), isReminder, isFeature));
+        CalendarSingleton.getInstance().setProvider(new EventsDataProvider(getContext(), isReminder, isFeature));
         getActivity().invalidateOptionsMenu();
     }
 
