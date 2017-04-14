@@ -269,7 +269,8 @@ public class CreateNoteActivity extends ThemedActivity {
     private void shareNote() {
         createObject();
         showProgress();
-        BackupTool.getInstance().createNote(mItem, this::sendNote);
+        BackupTool.CreateCallback callback = this::sendNote;
+        new Thread(() -> BackupTool.getInstance().createNote(mItem, callback)).start();
     }
 
     private void sendNote(File file) {
