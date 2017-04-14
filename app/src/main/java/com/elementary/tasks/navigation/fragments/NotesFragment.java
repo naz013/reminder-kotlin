@@ -183,7 +183,8 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void shareNote(NoteItem noteItem){
         showProgress();
-        BackupTool.getInstance().createNote(noteItem, file -> sendNote(noteItem, file));
+        BackupTool.CreateCallback callback = file -> sendNote(noteItem, file);
+        new Thread(() -> BackupTool.getInstance().createNote(noteItem, callback)).start();
     }
 
     private void sendNote(NoteItem noteItem, File file) {
