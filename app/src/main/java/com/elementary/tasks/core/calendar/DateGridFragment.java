@@ -65,16 +65,8 @@ public class DateGridFragment extends Fragment {
         this.eventsMap = eventsMap;
     }
 
-    public MonthView.OnDateClick getOnItemClickListener() {
-        return onItemClickListener;
-    }
-
     public void setOnItemClickListener(MonthView.OnDateClick onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
-    }
-
-    public MonthView.OnDateLongClick getOnItemLongClickListener() {
-        return onItemLongClickListener;
     }
 
     public void setOnItemLongClickListener(MonthView.OnDateLongClick onItemLongClickListener) {

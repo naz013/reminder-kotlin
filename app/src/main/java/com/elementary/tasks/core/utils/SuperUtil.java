@@ -3,10 +3,8 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -26,7 +24,7 @@ import com.elementary.tasks.core.interfaces.LCAMListener;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.voice.ConversationActivity;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -80,24 +78,20 @@ public class SuperUtil {
     }
 
     public static boolean isGooglePlayServicesAvailable(Activity a) {
-        try {
-            int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
-            return resultCode == ConnectionResult.SUCCESS;
-        } catch (NoSuchMethodError e) {
-            return false;
-        }
+        int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(a);
+        return resultCode == ConnectionResult.SUCCESS;
     }
 
     public static boolean checkGooglePlayServicesAvailability(Activity a) {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(a.getApplicationContext());
-        if (resultCode != ConnectionResult.SUCCESS) {
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, a, 69);
-            dialog.setCancelable(false);
-            dialog.setOnDismissListener(DialogInterface::dismiss);
-            dialog.show();
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(a);
+        LogUtil.d(TAG, "Result is: " + result);
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(a, result, 69).show();
+            }
             return false;
         } else {
-            LogUtil.d(TAG, "Result is: " + resultCode);
             return true;
         }
     }
@@ -162,7 +156,7 @@ public class SuperUtil {
         } else if (Prefs.getInstance(activity).isLiveEnabled()) {
             if (activity instanceof VoiceWidgetDialog) activity.finish();
             intent = new Intent(activity, ConversationActivity.class);
-        }else {
+        } else {
             intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).getVoiceLocale()));
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something));

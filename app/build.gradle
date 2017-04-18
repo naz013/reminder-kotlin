@@ -136,6 +136,8 @@ dependencies {
     compile project(':voiceengine')
     //    compile project(path: ':backend', configuration: 'android-endpoints')
     compile project(':android-animated-recording-view')
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    kapt "com.android.databinding:compiler:$android_plugin_version"
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-v13:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
@@ -167,12 +169,11 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
     compile 'com.tuyenmonkey:mkloader:1.2.0'
+    compile 'me.relex:circleindicator:1.2.2@aar'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     androidTestCompile 'org.testng:testng:6.9.6'
     androidTestCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    kapt "com.android.databinding:compiler:$android_plugin_version"
 }
 
 kapt {

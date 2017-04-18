@@ -14,7 +14,7 @@ import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.services.TasksService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.login.LoginActivity;
+import com.elementary.tasks.intro.IntroActivity;
 import com.elementary.tasks.navigation.MainActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -66,15 +66,15 @@ public class SplashScreen extends AppCompatActivity {
     private void gotoApp() {
         checkIfAppUpdated();
         if (!Prefs.getInstance(this).isUserLogged()) {
-            openLoginScreen();
+            openIntroScreen();
         } else {
             initGroups();
             runApplication();
         }
     }
 
-    private void openLoginScreen() {
-        startActivity(new Intent(this, LoginActivity.class));
+    private void openIntroScreen() {
+        startActivity(new Intent(this, IntroActivity.class));
         finish();
     }
 
