@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -253,13 +254,27 @@ public final class BackupTool {
             File[] files = dir.listFiles();
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
+                List<GroupItem> groupItems = realmDb.getAllGroups();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
-                        realmDb.saveObject(getGroup(file.toString(), null));
+                        GroupItem item = getGroup(file.toString(), null);
+                        if (!hasGroup(groupItems, item.getTitle())) {
+                            realmDb.saveObject(item);
+                            groupItems.add(item);
+                        }
                     }
                 }
             }
         }
+    }
+
+    private boolean hasGroup(List<GroupItem> list, String comparable) {
+        for (GroupItem item : list) {
+            if (comparable.equals(item.getTitle())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException {
