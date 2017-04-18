@@ -35,7 +35,7 @@
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!--<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />-->
+    <!-- <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" /> -->
 
     <supports-screens
         android:anyDensity="true"
@@ -51,8 +51,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_title"
         android:supportsRtl="true"
-        tools:replace="android:label, android:theme"
-        android:theme="@style/HomeDark.Cyan">
+        android:theme="@style/HomeDark.Cyan"
+        tools:replace="android:label, android:theme">
         <activity android:name=".navigation.MainActivity" />
         <activity
             android:name=".creators.CreateReminderActivity"
@@ -545,6 +545,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".intro.IntroActivity" />
+        <activity android:name=".intro.GoogleFixActivity"></activity>
     </application>
 
 </manifest>

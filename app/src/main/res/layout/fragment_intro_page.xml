@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_one"
+            android:layout_width="224dp"
+            android:layout_height="224dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="48dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_note_ill" />
+
+        <ImageView
+            android:id="@+id/image_two"
+            android:layout_width="198dp"
+            android:layout_height="198dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="112dp"
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_map_ill" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/notes_support"
+            android:textSize="24sp"
+            app:font_style="roboto_medium"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_two" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/notes_support"
+            android:textSize="17sp"
+            app:font_style="roboto_light"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
