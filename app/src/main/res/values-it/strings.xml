@@ -594,5 +594,13 @@
     <string name="save_on_exit">Salva in uscita</string>
     <string name="this_reminder_is_disabled">Questo richiamo è disabilitata</string>
     <string name="would_you_like_to_enable_it">Vuoi per attivarlo?</string>
+    <string name="error">Errore</string>
+    <string name="google_descr">Integrazione supporto per le applicazioni con il calendario e le attività.</string>
+    <string name="google_integration">Integrazione con Google</string>
+    <string name="location_descr">Inoltre è possibile utilizzare la localizzazione promemoria (per indirizzo o luogo).</string>
+    <string name="location_events">Eventi di localizzazione</string>
+    <string name="notes_descr">È possibile creare note con immagini multiple. Inoltre può modificare le immagini in note.</string>
+    <string name="reminder_descr">Supporta vari tipi di promemoria (per data, giorno della settimana, giorno del mese, timer, promemoria compleanno).</string>
+    <string name="sync_descr">E quindi salvare tutti i dati sul cloud storage preferito.</string>
 
 </resources>

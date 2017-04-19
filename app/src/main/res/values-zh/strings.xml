@@ -593,5 +593,13 @@
     <string name="save_on_exit">退出时保存</string>
     <string name="this_reminder_is_disabled">此提醒被禁用</string>
     <string name="would_you_like_to_enable_it">你想启用它吗？</string>
+    <string name="error">错误</string>
+    <string name="google_descr">应用程序支持与日历和任务的集成。</string>
+    <string name="google_integration">与Google集成</string>
+    <string name="location_descr">还可以使用位置提醒（通过地址或地点）。</string>
+    <string name="location_events">位置事件</string>
+    <string name="notes_descr">您可以创建具有多个图像的笔记。 也可以在笔记中编辑图像。</string>
+    <string name="reminder_descr">支持各种类型的提醒（按日期，工作日，月份，定时器，生日提醒）。</string>
+    <string name="sync_descr">然后将所有数据保存到您最喜欢的云存储。</string>
 
 </resources>

@@ -594,5 +594,13 @@
     <string name="save_on_exit">Guardar a la salida</string>
     <string name="this_reminder_is_disabled">Este recordatorio está deshabilitado</string>
     <string name="would_you_like_to_enable_it">¿Desea habilitarlo?</string>
+    <string name="error">Error</string>
+    <string name="google_descr">Integración de soporte de aplicaciones con Calendario y tareas.</string>
+    <string name="google_integration">Integración con Google</string>
+    <string name="location_descr">También puede utilizar recordatorios de ubicación (por dirección o lugar).</string>
+    <string name="location_events">Eventos de localización</string>
+    <string name="notes_descr">Puede crear notas con varias imágenes. También puede editar imágenes en notas.</string>
+    <string name="reminder_descr">Soporte de varios tipos de recordatorios (por fecha, día de la semana, día del mes, temporizador, recordatorio de cumpleaños).</string>
+    <string name="sync_descr">A continuación, guarde todos los datos en su almacenamiento en la nube favorito.</string>
 
 </resources>

@@ -594,5 +594,13 @@
     <string name="save_on_exit">Зберегти на виході</string>
     <string name="this_reminder_is_disabled">Це нагадування відключено</string>
     <string name="would_you_like_to_enable_it">Ви хочете, його увімкнути?</string>
+    <string name="error">Помилка</string>
+    <string name="google_descr">Підтримує інтеграцію з Календарем і Завданнями.</string>
+    <string name="google_integration">Інтеграція з Google</string>
+    <string name="location_descr">Також ви можете використовувати нагадування про місцезнаходження (за адресою або місця).</string>
+    <string name="location_events">Місце події</string>
+    <string name="notes_descr">Ви можете створити з декількома зображеннями заміток. Крім того, можна редагувати зображення в примітках.</string>
+    <string name="reminder_descr">Підтримка різних типів нагадувань (за датою, день тижня, день місяця, таймер, нагадування про дні народження).</string>
+    <string name="sync_descr">А потім зберегти всі дані в вашому улюбленому хмарних системах зберігання даних.</string>
 
 </resources>

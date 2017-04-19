@@ -594,5 +594,13 @@
     <string name="save_on_exit">बाहर निकलें पर सहेजें</string>
     <string name="this_reminder_is_disabled">यह अनुस्मारक अक्षम है</string>
     <string name="would_you_like_to_enable_it">क्या आप इसे सक्षम करना चाहेंगे?</string>
+    <string name="error">त्रुटि</string>
+    <string name="google_descr">कैलेंडर और कार्य के साथ आवेदन समर्थन एकीकरण।</string>
+    <string name="google_integration">Google के साथ एकीकरण</string>
+    <string name="location_descr">इसके अलावा आप स्थान अनुस्मारक (पता या स्थान के द्वारा) का उपयोग कर सकते हैं।</string>
+    <string name="location_events">स्थान की घटनाएं</string>
+    <string name="notes_descr">आप एकाधिक छवियों के साथ नोट्स बना सकते हैं। नोट्स में छवियों को भी संपादित कर सकते हैं</string>
+    <string name="reminder_descr">विभिन्न प्रकार के अनुस्मारक का समर्थन करें (तिथि, सप्ताह का दिन, महीने का दिन, टाइमर, जन्मदिन अनुस्मारक)।</string>
+    <string name="sync_descr">और फिर सभी डेटा अपने पसंदीदा मेघ संग्रहण में सहेजें।</string>
 
 </resources>

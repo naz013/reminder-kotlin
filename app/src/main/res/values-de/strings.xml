@@ -594,5 +594,13 @@
     <string name="save_on_exit">Sparen Sie bei Ausfahrt</string>
     <string name="this_reminder_is_disabled">Diese Erinnerung ist deaktiviert</string>
     <string name="would_you_like_to_enable_it">Möchten Sie es aktivieren?</string>
+    <string name="error">Fehler</string>
+    <string name="google_descr">Application Support Integration mit Kalender und Aufgaben.</string>
+    <string name="google_integration">Integration mit Google</string>
+    <string name="location_descr">Auch können Sie Ortsmeldungen (nach Adresse oder Ort) verwenden.</string>
+    <string name="location_events">Standortveranstaltungen</string>
+    <string name="notes_descr">Sie können Notizen mit mehreren Bildern erstellen. Auch können Bilder in Notizen bearbeiten.</string>
+    <string name="reminder_descr">Unterstützen Sie verschiedene Arten von Erinnerungen (nach Datum, Wochentag, Tag des Monats, Timer, Geburtstag Erinnerung).</string>
+    <string name="sync_descr">Und dann speichern Sie alle Daten auf Ihre Lieblings-Cloud-Speicher.</string>
 
 </resources>

@@ -594,5 +594,13 @@
     <string name="save_on_exit">Zapisz po wyjściu</string>
     <string name="this_reminder_is_disabled">To przypomnienie jest wyłączone</string>
     <string name="would_you_like_to_enable_it">Czy chcesz go włączyć?</string>
+    <string name="error">Błąd</string>
+    <string name="google_descr">Integracja wsparcia aplikacji z Kalendarzem i Zadaniami.</string>
+    <string name="google_integration">Integracja z Google</string>
+    <string name="location_descr">Możesz też używać przypomnień o położeniu (według adresu lub miejsca).</string>
+    <string name="location_events">Wydarzenia lokalizacji</string>
+    <string name="notes_descr">Możesz tworzyć notatki z wieloma obrazami. Można również edytować obrazy w notatkach.</string>
+    <string name="reminder_descr">Obsługa różnych rodzajów przypomnień (według daty, dnia tygodnia, dnia miesiąca, zegara, przypomnienia urodzin).</string>
+    <string name="sync_descr">Następnie zapisz wszystkie dane do swojej ulubionej pamięci w chmurze.</string>
 
 </resources>
