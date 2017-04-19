@@ -594,14 +594,14 @@
     <string name="enable_saving_item_automatically">Enable saving item automatically when close editor screen</string>
     <string name="this_reminder_is_disabled">This reminder is disabled</string>
     <string name="would_you_like_to_enable_it">Would you like to enable it?</string>
-    <string name="google_integration">Google integration</string>
+    <string name="google_integration">Integration with Google</string>
     <string name="location_events">Location events</string>
-    <string name="reminder_descr">Support various type of reminders (by date, weekday, month day, timer, birthday reminder).</string>
+    <string name="reminder_descr">Support various type of reminders (by date, weekday, day of month, timer, birthday reminder).</string>
     <string name="notes_descr">You can create notes with multiple images. Also can edit images in notes.</string>
     <string name="google_descr">Application support integration with Calendar and Tasks.</string>
     <string name="location_descr">Also you can use location reminders (by address or place).</string>
-    <string name="sync_descr">And them save all data to your favourite cloud storage.</string>
+    <string name="sync_descr">And then save all data to your favourite cloud storage.</string>
     <string name="error">Error</string>
-    <string name="on_your_device_not_installed_google_play_service_to_continue_using_application_you_must_install_google_play_services">On your device not installed Google Play Service. To continue using application you must install Google Play Services.</string>
+    <string name="on_your_device_not_installed_google_play_service_to_continue_using_application_you_must_install_google_play_services" translatable="false">On your device not installed Google Play Service. To continue using application you must install Google Play Services.</string>
 
 </resources>

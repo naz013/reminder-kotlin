@@ -595,5 +595,13 @@
     <string name="save_on_exit">終了時に保存</string>
     <string name="this_reminder_is_disabled">このアラームは無効です</string>
     <string name="would_you_like_to_enable_it">それを有効にしますか？</string>
+    <string name="error">エラー</string>
+    <string name="google_descr">アプリケーションは、カレンダーやタスクとの統合をサポートします。</string>
+    <string name="google_integration">Googleとの統合</string>
+    <string name="location_descr">また、住所や場所別のロケーションリマインダーを使用することもできます。</string>
+    <string name="location_events">ロケーションイベント</string>
+    <string name="notes_descr">複数の画像でメモを作成できます。 また、ノート内の画像を編集することもできます。</string>
+    <string name="reminder_descr">さまざまな種類のリマインダーをサポートします（日付、曜日、曜日、タイマー、誕生日リマインダ）。</string>
+    <string name="sync_descr">すべてのデータをお気に入りのクラウドストレージに保存します。</string>
 
 </resources>

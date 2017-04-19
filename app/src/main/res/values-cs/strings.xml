@@ -594,5 +594,13 @@
     <string name="save_on_exit">Ušetřit na výjezdu</string>
     <string name="this_reminder_is_disabled">Tato připomínka je zakázána</string>
     <string name="would_you_like_to_enable_it">Chtěli byste, aby mohl?</string>
+    <string name="error">Chyba</string>
+    <string name="google_descr">Integrace podpora aplikací s kalendářem a úkoly.</string>
+    <string name="google_integration">Integrace s Google</string>
+    <string name="location_descr">Také můžete použít připomenutí polohy (podle adresy nebo místa).</string>
+    <string name="location_events">Místo události</string>
+    <string name="notes_descr">Můžete vytvářet poznámky s více obrázků. Také můžete upravovat obrázky v poznámkách.</string>
+    <string name="reminder_descr">Podporovat různé typy upomínek (podle data, den v týdnu, den v měsíci, časovač, připomenutí narozenin).</string>
+    <string name="sync_descr">A pak uložit všechna data do vašeho oblíbeného cloud storage.</string>
 
 </resources>

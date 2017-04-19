@@ -594,5 +594,13 @@
     <string name="save_on_exit">Çıkışta kaydet</string>
     <string name="this_reminder_is_disabled">Bu hatırlatıcı devre dışı</string>
     <string name="would_you_like_to_enable_it">Etkinleştirmek ister misiniz?</string>
+    <string name="error">Hata</string>
+    <string name="google_descr">Takvim ve Görevler ile uygulama desteği entegrasyonu.</string>
+    <string name="google_integration">Google ile entegrasyon</string>
+    <string name="location_descr">Ayrıca yer hatırlatıcılarını (adres veya yer olarak) kullanabilirsiniz.</string>
+    <string name="location_events">Yer olayları</string>
+    <string name="notes_descr">Birden fazla görüntü ile not oluşturabilirsiniz. Ayrıca notlardaki görüntüleri düzenleyebilirsiniz.</string>
+    <string name="reminder_descr">Hatırlatıcıların çeşitli türlerini destekleyin (tarihe, haftanın günü, günün günü, zamanlayıcı, doğum günü hatırlatıcısı).</string>
+    <string name="sync_descr">Ve ardından tüm verileri en sevdiğiniz bulut depolama alanınıza kaydedin.</string>
 
 </resources>

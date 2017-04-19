@@ -593,5 +593,13 @@
     <string name="save_on_exit">Enregistrer à la sortie</string>
     <string name="this_reminder_is_disabled">Ce rappel est désactivé</string>
     <string name="would_you_like_to_enable_it">Voulez-vous l\'activer?</string>
+    <string name="error">Erreur</string>
+    <string name="google_descr">Intégration de la prise en charge des applications avec le calendrier et les tâches.</string>
+    <string name="google_integration">Intégration avec Google</string>
+    <string name="location_descr">Vous pouvez également utiliser les rappels d\'emplacement (par adresse ou lieu).</string>
+    <string name="location_events">Événements de localisation</string>
+    <string name="notes_descr">Vous pouvez créer des notes avec plusieurs images. Également peut éditer des images en notes.</string>
+    <string name="reminder_descr">Soutenir divers types de rappels (par date, jour de semaine, jour de mois, minuteur, rappel d\'anniversaire).</string>
+    <string name="sync_descr">Ensuite, enregistrez toutes les données dans votre stockage préféré sur le cloud.</string>
 
 </resources>

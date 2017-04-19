@@ -594,5 +594,13 @@
     <string name="save_on_exit">Salvare la ieșire</string>
     <string name="this_reminder_is_disabled">Acest memento este dezactivat</string>
     <string name="would_you_like_to_enable_it">Doriți să-l activați?</string>
+    <string name="error">Eroare</string>
+    <string name="google_descr">Integrarea cu suport Application Calendar și Sarcini.</string>
+    <string name="google_integration">Integrarea cu Google</string>
+    <string name="location_descr">De asemenea, puteți utiliza memento-uri de locație (prin adresa sau locul).</string>
+    <string name="location_events">Evenimente Localizare</string>
+    <string name="notes_descr">Puteți crea note cu mai multe imagini. De asemenea, se pot edita imagini în note.</string>
+    <string name="reminder_descr">Suporta diverse tipuri de memento-uri (de data, zi a săptămânii, zi lună, cronometru, memento ziua de nastere).</string>
+    <string name="sync_descr">Și apoi salvați toate datele pentru spațiul de stocare nor favorit.</string>
 
 </resources>
