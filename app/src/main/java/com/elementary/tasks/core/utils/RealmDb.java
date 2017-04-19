@@ -386,7 +386,14 @@ public class RealmDb {
         realm.beginTransaction();
         RealmGroup object = realm.where(RealmGroup.class).equalTo("uuId", item.getUuId()).findFirst();
         if (object != null) {
+            RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
+            query.equalTo("groupUuId", object.getUuId());
+            RealmResults<RealmReminder> list = query.findAll();
             object.deleteFromRealm();
+            RealmGroup realmGroup = realm.where(RealmGroup.class).findFirst();
+            for (RealmReminder reminder : list) {
+                reminder.setGroupUuId(realmGroup.getUuId());
+            }
         }
         realm.commitTransaction();
     }
