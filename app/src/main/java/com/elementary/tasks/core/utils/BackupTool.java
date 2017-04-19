@@ -306,11 +306,15 @@ public final class BackupTool {
             File[] files = dir.listFiles();
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
+                GroupItem defaultGroup = realmDb.getDefaultGroup();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);
                         if (reminder.isRemoved() || !reminder.isActive()) {
                             continue;
+                        }
+                        if (realmDb.getGroup(reminder.getGroupUuId()) == null) {
+                            reminder.setGroupUuId(defaultGroup.getUuId());
                         }
                         realmDb.saveObject(reminder);
                         EventControl control = EventControlFactory.getController(mContext, reminder);
