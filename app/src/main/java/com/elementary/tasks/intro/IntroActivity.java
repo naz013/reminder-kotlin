@@ -28,6 +28,11 @@ public class IntroActivity extends ThemedActivity {
 
         binding.skipButton.setOnClickListener(v -> moveToNextScreen());
         binding.nextButton.setOnClickListener(v -> moveForward());
+        if (getThemeUtil().isDark()) {
+            binding.nextButton.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
+        } else {
+            binding.nextButton.setImageResource(R.drawable.ic_keyboard_arrow_right_black_24dp);
+        }
     }
 
     private void moveForward() {
