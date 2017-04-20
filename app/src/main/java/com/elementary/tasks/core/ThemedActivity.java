@@ -3,6 +3,7 @@ package com.elementary.tasks.core;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -28,6 +29,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.enter_slide_in, R.anim.enter_slide_out);
         mPrefs = Prefs.getInstance(this);
         themeUtil = ThemeUtil.getInstance(this);
         setTheme(themeUtil.getStyle());
@@ -35,6 +37,14 @@ public abstract class ThemedActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(themeUtil.getColor(themeUtil.colorPrimaryDark()));
         }
         initTracker();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing()) {
+            overridePendingTransition(R.anim.exit_left_to_right, R.anim.exit_right_to_left);
+        }
     }
 
     @Override
@@ -51,7 +61,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
     }
 
     protected String getStats() {
-        return null;
+        return this.getClass().getName();
     }
 
     private void initTracker() {
