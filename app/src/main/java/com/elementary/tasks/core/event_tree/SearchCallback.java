@@ -16,33 +16,8 @@ package com.elementary.tasks.core.event_tree;
  * limitations under the License.
  */
 
-public class Node {
+public interface SearchCallback {
+    void foundAt(int year, int month, int day, int hour, int minute);
 
-    private Object object;
-    private String uuId;
-    private Param keys;
-    private long duration;
-
-    public Node(Object object, String uuId, Param keys, long duration) {
-        this.uuId = uuId;
-        this.keys = keys;
-        this.object = object;
-        this.duration = duration;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public String getUuId() {
-        return uuId;
-    }
-
-    public Param getKeys() {
-        return keys;
-    }
-
-    public Object getObject() {
-        return object;
-    }
+    void nothingFound();
 }

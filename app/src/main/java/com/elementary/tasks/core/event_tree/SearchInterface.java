@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.event_tree;
 
-import hirondelle.date4j.DateTime;
-
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -19,5 +17,12 @@ import hirondelle.date4j.DateTime;
  */
 
 public interface SearchInterface {
-    boolean hasRange(DateTime stDate, int length);
+
+    /**
+     * Search next available date-time for event.
+     * @param startMills Start date-time for search.
+     * @param required Duration of event.
+     * @param callback For search response.
+     */
+    void find(long startMills, long endMills, long required, SearchCallback callback);
 }

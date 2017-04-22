@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.models;
 
-import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -29,7 +28,7 @@ import java.util.UUID;
  * limitations under the License.
  */
 
-public class Reminder implements RecyclerInterface, EventInterface {
+public class Reminder implements RecyclerInterface {
 
     private static final String TAG = "Reminder";
 
@@ -736,7 +735,6 @@ public class Reminder implements RecyclerInterface, EventInterface {
         return UUID.fromString(uuId).hashCode();
     }
 
-    @Override
     public int[] getKeys() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
