@@ -111,6 +111,8 @@ public class RealmReminder extends RealmObject {
     private boolean isNotificationShown;
     @SerializedName("isLocked")
     private boolean isLocked;
+    @SerializedName("duration")
+    private long duration;
 
     public RealmReminder() {
     }
@@ -156,6 +158,7 @@ public class RealmReminder extends RealmObject {
         this.isRemoved = item.isRemoved();
         this.isNotificationShown = item.isNotificationShown();
         this.isLocked = item.isLocked();
+        this.duration = item.getDuration();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -184,6 +187,14 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public boolean isNotificationShown() {

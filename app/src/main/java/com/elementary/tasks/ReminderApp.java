@@ -11,6 +11,8 @@ import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
+import io.realm.RealmSchema;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,6 +37,8 @@ public class ReminderApp extends MultiDexApplication {
     private static final String NAME_DB = "reminder_db";
     private static final String NAME_DB_PRO = "reminder_db_pro";
 
+    private static final long DB_VERSION = 2;
+
     private Tracker mTracker;
 
     @Override
@@ -43,10 +47,10 @@ public class ReminderApp extends MultiDexApplication {
         Prefs.getInstance(this);
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .schemaVersion(1)
+                .schemaVersion(DB_VERSION)
                 .name(BuildConfig.IS_PRO ? NAME_DB_PRO : NAME_DB)
-                .deleteRealmIfMigrationNeeded()
-//                .migration(new Migration())
+//                .deleteRealmIfMigrationNeeded()
+                .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
     }
@@ -63,6 +67,12 @@ public class ReminderApp extends MultiDexApplication {
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
             LogUtil.d(TAG, "migrate: " + oldVersion + ", " + newVersion + ", " + realm.getSchema());
+            if (oldVersion == 1) {
+                RealmSchema schema = realm.getSchema();
+                RealmObjectSchema model = schema.get("RealmReminder");
+                model.addField("duration", long.class)
+                        .transform(obj -> obj.setLong("duration", 0));
+            }
         }
     }
 }
