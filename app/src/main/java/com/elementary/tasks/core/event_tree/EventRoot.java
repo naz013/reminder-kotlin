@@ -1,5 +1,8 @@
 package com.elementary.tasks.core.event_tree;
 
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.reminder.models.Reminder;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -23,11 +26,12 @@ import java.util.TreeMap;
  * limitations under the License.
  */
 
-public class EventRoot implements YearInterface, RootInterface {
+public class EventRoot implements YearInterface, SearchInterface {
 
     private Map<Integer, Year> nodes = new TreeMap<>();
     private List<Node> keys = new ArrayList<>();
     private Map<String, Integer> map = new HashMap<>();
+    private long birthdayTime;
 
     public EventRoot() {
         Calendar calendar = Calendar.getInstance();
@@ -39,19 +43,20 @@ public class EventRoot implements YearInterface, RootInterface {
         }
     }
 
-    @Override
-    public int addNode(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        if (map.containsKey(eventInterface.getUuId())) {
-            int position = map.get(eventInterface.getUuId());
-            addAnotherTree(position);
-            return position;
+    public void setBirthdayTime(long birthdayTime) {
+        this.birthdayTime = birthdayTime;
+    }
+
+    public void addReminder(Reminder reminder) {
+        if (map.containsKey(reminder.getUuId())) {
+            int position = map.get(reminder.getUuId());
+            removeCurrent(position);
         }
-        Param param = new Param(eventInterface.getKeys());
+        Param param = new Param(reminder.getKeys());
         int year = param.getYear();
-        keys.add(new Node(object, eventInterface.getUuId(), param));
+        keys.add(new Node(reminder, reminder.getUuId(), param, reminder.getDuration()));
         int position = keys.size() - 1;
-        map.put(eventInterface.getUuId(), position);
+        map.put(reminder.getUuId(), position);
         if (nodes.containsKey(year)) {
             nodes.get(year).buildTree(param, position);
         } else {
@@ -59,91 +64,18 @@ public class EventRoot implements YearInterface, RootInterface {
             y.buildTree(param, position);
             nodes.put(year, y);
         }
-        return position;
     }
 
-    private void addAnotherTree(int position) {
+    private void removeCurrent(int position) {
 
     }
 
-    @Override
+    public void addBirthday(BirthdayItem item, long duration) {
+
+    }
+
     public int size() {
         return keys.size();
-    }
-
-    @Override
-    public List<Object> getNodes(int... params) {
-        if (params.length == 0) {
-            return getAll();
-        }
-        int y = params[0];
-        if (y == -1) {
-            return getAll();
-        }
-        if (nodes.containsKey(y)) {
-            List<Integer> list = nodes.get(y).getNodes(new Param(params));
-            if (list != null && !list.isEmpty()) {
-                List<Object> objects = new ArrayList<>();
-                for (int i : list) {
-                    objects.add(keys.get(i).getObject());
-                }
-                return objects;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Object getNode(int position) throws IndexOutOfBoundsException {
-        if (position > 0 && position < size()) {
-            return getNodes(keys.get(position).getKeys().getParams()).get(0);
-        } else {
-            throw new IndexOutOfBoundsException();
-        }
-    }
-
-    @Override
-    public List<Object> getAll() {
-        List<Object> list = new ArrayList<>();
-        for (Year year : nodes.values()) {
-            list.addAll(year.getAll());
-        }
-        return list;
-    }
-
-    @Override
-    public void remove(Object o) {
-        EventInterface eventInterface = (EventInterface) o;
-        if (eventInterface.getUuId() == null) {
-            return;
-        }
-        if (map.containsKey(eventInterface.getUuId())) {
-            int position = map.get(eventInterface.getUuId());
-            Node node = keys.get(position);
-            for (Year year : nodes.values()) {
-                year.remove(new Param(node.getKeys().getParams()), position);
-            }
-            map.remove(eventInterface.getUuId());
-            keys.remove(position);
-        }
-    }
-
-    @Override
-    public void remove(int position) throws IndexOutOfBoundsException {
-        if (position > 0 && position < size()) {
-            remove(keys.get(position).getUuId());
-        } else {
-            throw new IndexOutOfBoundsException();
-        }
-    }
-
-    @Override
-    public int indexOf(Object object) {
-        EventInterface eventInterface = (EventInterface) object;
-        if (map.containsKey(eventInterface.getUuId())) {
-            return map.get(eventInterface.getUuId());
-        }
-        return -1;
     }
 
     @Override
@@ -176,5 +108,10 @@ public class EventRoot implements YearInterface, RootInterface {
         for (Year year : nodes.values()) {
             year.print();
         }
+    }
+
+    @Override
+    public void find(long startMills, long endMills, long required, SearchCallback callback) {
+
     }
 }

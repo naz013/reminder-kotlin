@@ -2,7 +2,6 @@ package com.elementary.tasks.birthdays;
 
 import android.text.TextUtils;
 
-import com.elementary.tasks.core.event_tree.EventInterface;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;
@@ -27,7 +26,7 @@ import java.util.UUID;
  * limitations under the License.
  */
 
-public class BirthdayItem implements RecyclerInterface, EventInterface {
+public class BirthdayItem implements RecyclerInterface {
 
     @SerializedName("name")
     private String name;
@@ -194,10 +193,5 @@ public class BirthdayItem implements RecyclerInterface, EventInterface {
     @Override
     public int getViewType() {
         return 2;
-    }
-
-    @Override
-    public int[] getKeys() {
-        return new int[]{0, 0, 0};
     }
 }
