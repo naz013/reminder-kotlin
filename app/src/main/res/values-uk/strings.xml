@@ -514,19 +514,18 @@
     <string name="november">Листопад</string>
     <string name="december">Грудень</string>
     <string name="download_failed">Помилка завантаження</string>
-    <string name="google_play_services_not_installed">Google Play Services not installed</string>
+    <string name="google_play_services_not_installed">Сервіси Google Play не встановлені</string>
     <string name="close">Закрити</string>
     <string name="map">Карта</string>
-    <string name="settings">Settings</string>
     <string name="disable">Вимкнути</string>
     <string name="once">Один раз</string>
     <string name="times">раз</string>
     <string name="no_groups">Немає груп</string>
-    <string name="retrieving_tasks">Отримання завданнь...</string>
-    <string name="saving">Збереження...</string>
-    <string name="moving_task">Переміщення завдання...</string>
-    <string name="deleting_task">Видалення завдання...</string>
-    <string name="deleting_list">Видалення списку...</string>
+    <string name="retrieving_tasks">Отримання завданнь…</string>
+    <string name="saving">Збереження…</string>
+    <string name="moving_task">Переміщення завдання…</string>
+    <string name="deleting_task">Видалення завдання…</string>
+    <string name="deleting_list">Видалення списку…</string>
     <string name="remove_exclusion">Видалити виняток</string>
     <string name="theme_color">Колір теми</string>
     <string name="light">Світла</string>
@@ -534,8 +533,8 @@
     <string name="x_out_of_x" formatted="false">%d з %d</string>
     <string name="decoding_images">Декодування зображень</string>
     <string name="failed_to_sync_google_tasks">Не вдалося синхронізувати Завдання Google</string>
-    <string name="syncing_places">Синхронізація місць ...</string>
-    <string name="syncing_templates">Синхронізація шаблонів повідомлень ...</string>
+    <string name="syncing_places">Синхронізація місць …</string>
+    <string name="syncing_templates">Синхронізація шаблонів повідомлень …</string>
     <string name="work">Робота</string>
     <string name="personal">Особисті</string>
     <string name="auto_call">Автоматичний виклик</string>
@@ -547,7 +546,7 @@
     <string name="install">Встановити</string>
     <string name="all_reminders_were_disabled">Всі нагадування вимкнено</string>
     <string name="log_in">Увійти</string>
-    <string name="failed_to_login">Чи не вдалося увійти в систему</string>
+    <string name="failed_to_login">Не вдалося увійти в систему</string>
     <string name="would_you_like_to_import_birthdays">Ви хочете імпортувати дні народження?</string>
     <string name="open_app">Відкрити додаток</string>
     <string name="i_accept"><![CDATA[Я приймаю <a href=\'termsopen.com\'>Політику конфіденційності</a>]]></string>
@@ -581,7 +580,7 @@
     <string name="_minutes">хвилини</string>
     <string name="_hours">години</string>
     <string name="add_note">Додати нотатку</string>
-    <string name="failed_to_recognize_your_command">Чи не вдалося розпізнати вашу мову</string>
+    <string name="failed_to_recognize_your_command">Не вдалося розпізнати вашу команду</string>
     <string name="opacity">Прозорість</string>
     <string name="loading_events">Завантаження подій</string>
     <string name="canceled">Відмінено</string>
@@ -590,7 +589,7 @@
     <string name="scale">Розмір</string>
     <string name="text_is_empty">Текст порожній</string>
     <string name="click_to_preview">Натисніть для перегляду</string>
-    <string name="enable_saving_item_automatically">Включити збереження пункту автоматично закрити редактор екрану</string>
+    <string name="enable_saving_item_automatically">Включити збереження пункту автоматично при закритті екрану редагування</string>
     <string name="save_on_exit">Зберегти на виході</string>
     <string name="this_reminder_is_disabled">Це нагадування відключено</string>
     <string name="would_you_like_to_enable_it">Ви хочете, його увімкнути?</string>
@@ -599,8 +598,8 @@
     <string name="google_integration">Інтеграція з Google</string>
     <string name="location_descr">Також ви можете використовувати нагадування про місцезнаходження (за адресою або місця).</string>
     <string name="location_events">Місце події</string>
-    <string name="notes_descr">Ви можете створити з декількома зображеннями заміток. Крім того, можна редагувати зображення в примітках.</string>
+    <string name="notes_descr">Ви можете створити нотатки з декількома зображеннями. Крім того, можна редагувати зображення в них.</string>
     <string name="reminder_descr">Підтримка різних типів нагадувань (за датою, день тижня, день місяця, таймер, нагадування про дні народження).</string>
-    <string name="sync_descr">А потім зберегти всі дані в вашому улюбленому хмарних системах зберігання даних.</string>
+    <string name="sync_descr">А потім зберегти всі дані в вашому улюбленому хмарному сервісі зберігання даних.</string>
 
 </resources>

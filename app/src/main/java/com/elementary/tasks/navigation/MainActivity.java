@@ -529,7 +529,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 break;
             case R.id.nav_settings:
                 beforeSettings = prevItem;
-                replaceFragment(new SettingsFragment(), getString(R.string.settings));
+                replaceFragment(new SettingsFragment(), getString(R.string.action_settings));
                 break;
             case R.id.nav_feedback:
                 replaceFragment(new FeedbackFragment(), getString(R.string.feedback));
