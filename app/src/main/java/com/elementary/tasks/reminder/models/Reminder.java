@@ -147,6 +147,8 @@ public class Reminder implements RecyclerInterface, EventInterface {
     private boolean isNotificationShown;
     @SerializedName("isLocked")
     private boolean isLocked;
+    @SerializedName("duration")
+    private long duration;
 
     public static boolean isBase(int type, int base) {
         int res = type - base;
@@ -211,6 +213,7 @@ public class Reminder implements RecyclerInterface, EventInterface {
         this.isLocked = item.isLocked();
         this.places = item.getPlaces();
         this.shoppings = item.getShoppings();
+        this.duration = item.getDuration();
         if (fullCopy) {
             this.uuId = item.getUuId();
             this.uniqueId = item.getUniqueId();
@@ -258,6 +261,7 @@ public class Reminder implements RecyclerInterface, EventInterface {
         this.isRemoved = item.isRemoved();
         this.isNotificationShown = item.isNotificationShown();
         this.isLocked = item.isLocked();
+        this.duration = item.getDuration();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -295,6 +299,14 @@ public class Reminder implements RecyclerInterface, EventInterface {
         reminder.setActive(true);
         reminder.setRemoved(false);
         return reminder;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public boolean isNotificationShown() {
