@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import hirondelle.date4j.DateTime;
-
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -110,7 +108,7 @@ class Hour implements TreeInterface, MinuteInterface, SearchInterface {
     }
 
     @Override
-    public boolean hasRange(DateTime stDate, int length) {
-        return false;
+    public void find(long startMills, long endMills, long required, SearchCallback callback) {
+
     }
 }
