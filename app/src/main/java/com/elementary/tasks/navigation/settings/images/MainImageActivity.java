@@ -1,9 +1,13 @@
 package com.elementary.tasks.navigation.settings.images;
 
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +23,7 @@ import com.elementary.tasks.core.network.Api;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -58,6 +63,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private static final String NONE_PHOTO = "";
     private static final String TAG = "MainImageActivity";
     private static final int START_SIZE = 50;
+    private static final int REQUEST_DOWNLOAD = 112;
+    private static final int REQUEST_REMINDER = 113;
 
     private ActivityMainImageLayoutBinding binding;
     private RecyclerView imagesList;
@@ -67,6 +74,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private int mPointer;
 
     private int position = -1;
+    private int mWidth, mHeight;
     private ImageItem mSelectedItem;
 
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -197,9 +205,36 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         binding.fullImageView.setOnTouchListener((view, motionEvent) -> true);
         binding.downloadButton.setOnClickListener(view -> showDownloadDialog());
         binding.setToMonthButton.setOnClickListener(view -> showMonthDialog());
+        binding.setReminderButton.setOnClickListener(v -> setToReminder());
         if (!getPrefs().isCalendarImagesEnabled()) {
             binding.setToMonthButton.setVisibility(View.GONE);
         }
+    }
+
+    private void setToReminder() {
+        if (!Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
+            Permissions.requestPermission(this, REQUEST_REMINDER, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL);
+            return;
+        }
+        if (MemoryUtil.isSdPresent()) {
+            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            File imageFile = new File(folder, mSelectedItem.getFilename());
+            Uri destination;
+            if (Module.isNougat()) {
+                destination = FileProvider.getUriForFile(this, getPackageName() + ".provider", imageFile);
+            } else {
+                destination = Uri.fromFile(imageFile);
+            }
+            getPrefs().setReminderImage(destination.toString());
+            new DownloadAsync(this, mSelectedItem.getFilename(), imageFile.toString(), 1080, 1920, mSelectedItem.getId()).execute();
+        } else {
+            Toast.makeText(this, R.string.no_sd_card, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        hideImage();
     }
 
     private void showMonthDialog() {
@@ -211,7 +246,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
 
     private void showDownloadDialog() {
         if (!Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(this, 112, Permissions.WRITE_EXTERNAL);
+            Permissions.requestPermission(this, REQUEST_DOWNLOAD, Permissions.WRITE_EXTERNAL);
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -261,6 +296,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void downloadImage(int width, int height) {
+        this.mWidth = width;
+        this.mHeight = height;
         if (!Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL)) {
             Permissions.requestPermission(this, 112, Permissions.WRITE_EXTERNAL);
             return;
@@ -353,6 +390,25 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             hideImage();
         } else {
             finish();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) {
+            return;
+        }
+        switch (requestCode) {
+            case REQUEST_DOWNLOAD:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    downloadImage(mWidth, mHeight);
+                }
+                break;
+            case REQUEST_REMINDER:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setToReminder();
+                }
+                break;
         }
     }
 }

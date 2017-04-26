@@ -42,7 +42,7 @@
         <attr name="ir_checkable" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ActionView"></declare-styleable>
+    <declare-styleable name="ActionView" />
 
     <declare-styleable name="AddressAutoCompleteView">
         <attr name="icon_light" format="reference" />
@@ -52,6 +52,7 @@
     <declare-styleable name="ThemedImageButton">
         <attr name="tb_icon" format="reference" />
         <attr name="tb_icon_light" format="reference" />
+        <attr name="tb_message" format="string" />
     </declare-styleable>
 
     <declare-styleable name="TextViewWithIcon">

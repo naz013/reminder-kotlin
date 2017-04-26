@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -63,11 +64,20 @@ public class ThemedImageButton extends AppCompatImageButton {
                     icon = a.getResourceId(R.styleable.ThemedImageButton_tb_icon, 0);
                 }
                 setImageResource(icon);
+                String message = a.getString(R.styleable.ThemedImageButton_tb_message);
+                if (message != null) {
+                    setOnLongClickListener(v -> showMessage(message));
+                }
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
             } finally {
                 a.recycle();
             }
         }
+    }
+
+    private boolean showMessage(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        return true;
     }
 }
