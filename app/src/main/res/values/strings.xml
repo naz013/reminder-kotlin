@@ -602,5 +602,8 @@
     <string name="sync_descr">And then save all data to your favourite cloud storage.</string>
     <string name="error">Error</string>
     <string name="on_your_device_not_installed_google_play_service_to_continue_using_application_you_must_install_google_play_services" translatable="false">On your device not installed Google Play Service. To continue using application you must install Google Play Services.</string>
+    <string name="set_to_reminder_screen">Set to reminder screen</string>
+    <string name="download_image">Download image</string>
+    <string name="set_image_for_month">Set image for month</string>
 
 </resources>

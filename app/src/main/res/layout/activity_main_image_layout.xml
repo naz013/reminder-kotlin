@@ -118,7 +118,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -128,7 +127,18 @@
                             android:layout_height="44dp"
                             android:background="@null"
                             app:tb_icon="@drawable/ic_get_app_black_24dp"
-                            app:tb_icon_light="@drawable/ic_get_app_white_24dp" />
+                            app:tb_icon_light="@drawable/ic_get_app_white_24dp"
+                            app:tb_message="@string/download_image" />
+
+                        <com.elementary.tasks.core.views.ThemedImageButton
+                            android:id="@+id/setReminderButton"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:layout_marginLeft="16dp"
+                            android:background="@null"
+                            app:tb_icon="@drawable/ic_notifications_black_24dp"
+                            app:tb_icon_light="@drawable/ic_notifications_white_24dp"
+                            app:tb_message="@string/set_to_reminder_screen" />
 
                         <com.elementary.tasks.core.views.ThemedImageButton
                             android:id="@+id/setToMonthButton"
@@ -137,7 +147,8 @@
                             android:layout_marginLeft="16dp"
                             android:background="@null"
                             app:tb_icon="@drawable/ic_calendar"
-                            app:tb_icon_light="@drawable/ic_calendar_white" />
+                            app:tb_icon_light="@drawable/ic_calendar_white"
+                            app:tb_message="@string/set_image_for_month" />
 
                     </LinearLayout>
                 </LinearLayout>
