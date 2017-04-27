@@ -601,5 +601,8 @@
     <string name="notes_descr">You can create notes with multiple images. Also can edit images in notes.</string>
     <string name="reminder_descr">Support various type of reminders (by date, weekday, day of month, timer, birthday reminder).</string>
     <string name="sync_descr">And then save all data to your favourite cloud storage.</string>
+    <string name="download_image">Save image on SD card</string>
+    <string name="set_image_for_month">Set image for month</string>
+    <string name="set_to_reminder_screen">Set on reminder screen</string>
 
 </resources>

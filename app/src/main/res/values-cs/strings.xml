@@ -601,5 +601,8 @@
     <string name="notes_descr">Můžete vytvářet poznámky s více obrázků. Také můžete upravovat obrázky v poznámkách.</string>
     <string name="reminder_descr">Podporovat různé typy upomínek (podle data, den v týdnu, den v měsíci, časovač, připomenutí narozenin).</string>
     <string name="sync_descr">A pak uložit všechna data do vašeho oblíbeného cloud storage.</string>
+    <string name="download_image">Uložte obrázek na kartu SD</string>
+    <string name="set_image_for_month">Nastavte obrázek měsíc</string>
+    <string name="set_to_reminder_screen">Nastavte na obrazovce připomenutí</string>
 
 </resources>

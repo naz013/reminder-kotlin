@@ -600,5 +600,8 @@
     <string name="notes_descr">您可以创建具有多个图像的笔记。 也可以在笔记中编辑图像。</string>
     <string name="reminder_descr">支持各种类型的提醒（按日期，工作日，月份，定时器，生日提醒）。</string>
     <string name="sync_descr">然后将所有数据保存到您最喜欢的云存储。</string>
+    <string name="download_image">将图像保存在SD卡上</string>
+    <string name="set_image_for_month">设置月份的图像</string>
+    <string name="set_to_reminder_screen">设置在提醒屏幕上</string>
 
 </resources>

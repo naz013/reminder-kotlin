@@ -600,5 +600,8 @@
     <string name="notes_descr">Vous pouvez créer des notes avec plusieurs images. Également peut éditer des images en notes.</string>
     <string name="reminder_descr">Soutenir divers types de rappels (par date, jour de semaine, jour de mois, minuteur, rappel d\'anniversaire).</string>
     <string name="sync_descr">Ensuite, enregistrez toutes les données dans votre stockage préféré sur le cloud.</string>
+    <string name="download_image">Enregistrer l\'image sur une carte SD</string>
+    <string name="set_image_for_month">Définir l\'image pour un mois</string>
+    <string name="set_to_reminder_screen">Réglé sur l\'écran de rappel</string>
 
 </resources>

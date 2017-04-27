@@ -601,5 +601,8 @@
     <string name="notes_descr">Możesz tworzyć notatki z wieloma obrazami. Można również edytować obrazy w notatkach.</string>
     <string name="reminder_descr">Obsługa różnych rodzajów przypomnień (według daty, dnia tygodnia, dnia miesiąca, zegara, przypomnienia urodzin).</string>
     <string name="sync_descr">Następnie zapisz wszystkie dane do swojej ulubionej pamięci w chmurze.</string>
+    <string name="download_image">Zapisz obraz na karcie SD</string>
+    <string name="set_image_for_month">Ustaw obraz dla miesiąca</string>
+    <string name="set_to_reminder_screen">Ustaw na ekranie przypomnienia</string>
 
 </resources>

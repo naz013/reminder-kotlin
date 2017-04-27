@@ -601,5 +601,8 @@
     <string name="notes_descr">È possibile creare note con immagini multiple. Inoltre può modificare le immagini in note.</string>
     <string name="reminder_descr">Supporta vari tipi di promemoria (per data, giorno della settimana, giorno del mese, timer, promemoria compleanno).</string>
     <string name="sync_descr">E quindi salvare tutti i dati sul cloud storage preferito.</string>
+    <string name="download_image">Salvare l\'immagine sulla scheda SD</string>
+    <string name="set_image_for_month">Imposta l\'immagine per il mese</string>
+    <string name="set_to_reminder_screen">Imposta sullo schermo di promemoria</string>
 
 </resources>

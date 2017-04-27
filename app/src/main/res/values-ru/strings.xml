@@ -601,5 +601,8 @@
     <string name="notes_descr">Вы можете создавать заметки с несколькими изображениями. Также можно редактировать изображения в заметках.</string>
     <string name="reminder_descr">Поддержка различных типов напоминаний (по дате, буднему дню, месяцу, таймеру, напоминанию о дне рождения).</string>
     <string name="sync_descr">Затем сохраните все данные в своем любимом облачном хранилище.</string>
+    <string name="download_image">Сохранить изображение на SD-карте</string>
+    <string name="set_image_for_month">Установить изображение на месяц</string>
+    <string name="set_to_reminder_screen">Установить на экране напоминания</string>
 
 </resources>

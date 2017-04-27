@@ -602,5 +602,8 @@
     <string name="notes_descr">複数の画像でメモを作成できます。 また、ノート内の画像を編集することもできます。</string>
     <string name="reminder_descr">さまざまな種類のリマインダーをサポートします（日付、曜日、曜日、タイマー、誕生日リマインダ）。</string>
     <string name="sync_descr">すべてのデータをお気に入りのクラウドストレージに保存します。</string>
+    <string name="download_image">SDカードに画像を保存する</string>
+    <string name="set_image_for_month">月の画像を設定する</string>
+    <string name="set_to_reminder_screen">リマインダー画面で設定</string>
 
 </resources>

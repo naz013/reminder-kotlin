@@ -600,5 +600,8 @@
     <string name="notes_descr">Você pode criar notas com várias imagens. Também pode editar imagens em notas.</string>
     <string name="reminder_descr">Suporte vários tipos de lembretes (por data, dia da semana, dia do mês, timer, lembrete de aniversário).</string>
     <string name="sync_descr">Em seguida, salve todos os dados em seu armazenamento em nuvem favorito.</string>
+    <string name="download_image">Guardar imagem no cartão SD</string>
+    <string name="set_image_for_month">Definir imagem para o mês</string>
+    <string name="set_to_reminder_screen">Definir na tela de lembrete</string>
 
 </resources>

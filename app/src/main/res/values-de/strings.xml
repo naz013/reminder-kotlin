@@ -601,5 +601,8 @@
     <string name="notes_descr">Sie können Notizen mit mehreren Bildern erstellen. Auch können Bilder in Notizen bearbeiten.</string>
     <string name="reminder_descr">Unterstützen Sie verschiedene Arten von Erinnerungen (nach Datum, Wochentag, Tag des Monats, Timer, Geburtstag Erinnerung).</string>
     <string name="sync_descr">Und dann speichern Sie alle Daten auf Ihre Lieblings-Cloud-Speicher.</string>
+    <string name="download_image">Bild auf SD-Karte speichern</string>
+    <string name="set_image_for_month">Bild für Monat einstellen</string>
+    <string name="set_to_reminder_screen">Set auf Erinnerungsbildschirm</string>
 
 </resources>
