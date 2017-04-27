@@ -601,5 +601,8 @@
     <string name="notes_descr">Puede crear notas con varias imágenes. También puede editar imágenes en notas.</string>
     <string name="reminder_descr">Soporte de varios tipos de recordatorios (por fecha, día de la semana, día del mes, temporizador, recordatorio de cumpleaños).</string>
     <string name="sync_descr">A continuación, guarde todos los datos en su almacenamiento en la nube favorito.</string>
+    <string name="download_image">Guardar imagen en la tarjeta SD</string>
+    <string name="set_image_for_month">Establecer imagen para el mes</string>
+    <string name="set_to_reminder_screen">Establecer en la pantalla de recordatorio</string>
 
 </resources>

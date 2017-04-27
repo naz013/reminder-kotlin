@@ -601,5 +601,8 @@
     <string name="notes_descr">Ви можете створити нотатки з декількома зображеннями. Крім того, можна редагувати зображення в них.</string>
     <string name="reminder_descr">Підтримка різних типів нагадувань (за датою, день тижня, день місяця, таймер, нагадування про дні народження).</string>
     <string name="sync_descr">А потім зберегти всі дані в вашому улюбленому хмарному сервісі зберігання даних.</string>
+    <string name="download_image">Збереження зображення на SD-карті</string>
+    <string name="set_image_for_month">Встановити зображення на місяць</string>
+    <string name="set_to_reminder_screen">Встановити на екрані нагадування</string>
 
 </resources>

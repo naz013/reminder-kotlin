@@ -601,5 +601,8 @@
     <string name="notes_descr">आप एकाधिक छवियों के साथ नोट्स बना सकते हैं। नोट्स में छवियों को भी संपादित कर सकते हैं</string>
     <string name="reminder_descr">विभिन्न प्रकार के अनुस्मारक का समर्थन करें (तिथि, सप्ताह का दिन, महीने का दिन, टाइमर, जन्मदिन अनुस्मारक)।</string>
     <string name="sync_descr">और फिर सभी डेटा अपने पसंदीदा मेघ संग्रहण में सहेजें।</string>
+    <string name="download_image">एसडी कार्ड पर छवि सहेजें</string>
+    <string name="set_image_for_month">महीने के लिए छवि सेट करें</string>
+    <string name="set_to_reminder_screen">रिमाइंडर स्क्रीन पर सेट करें</string>
 
 </resources>
