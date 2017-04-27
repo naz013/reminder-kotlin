@@ -26,30 +26,30 @@ public class Recognizer {
     private static final String TAG = "Recognizer";
 
     private String[] times;
-    private WorkerInterface wrapper;
+    private WorkerInterface worker;
     private ContactsInterface contactsInterface;
 
     private Recognizer(String[] times, String locale, ContactsInterface contactsInterface) {
         this.times = times;
         this.contactsInterface = contactsInterface;
-        wrapper = WorkerFactory.getWorker(locale);
+        worker = WorkerFactory.getWorker(locale);
     }
 
     public Model parse(String string) {
         String keyStr = string.toLowerCase().trim();
-        keyStr = wrapper.replaceNumbers(keyStr);
-        System.out.println("parse: " + keyStr);
-        if (wrapper.hasShowAction(keyStr)) {
+        keyStr = worker.replaceNumbers(keyStr);
+        System.out.println("parse: " + keyStr + ", worker " + worker);
+        if (worker.hasShowAction(keyStr)) {
             String local = keyStr + "";
-            Action action = wrapper.getShowAction(local);
+            Action action = worker.getShowAction(local);
             if (action != null) {
-                boolean hasNext = wrapper.hasNextModifier(local);
+                boolean hasNext = worker.hasNextModifier(local);
                 long date;
-                long multi = wrapper.getMultiplier(local);
+                long multi = worker.getMultiplier(local);
                 if (hasNext) {
                     date = System.currentTimeMillis() + multi;
                 } else {
-                    date = wrapper.getDate(local);
+                    date = worker.getDate(local);
                 }
                 Model model = new Model();
                 model.setAction(action);
@@ -58,88 +58,83 @@ public class Recognizer {
                 return model;
             }
         }
-        if (wrapper.hasNote(keyStr)) {
+        if (worker.hasNote(keyStr)) {
             return getNote(keyStr);
         }
-        if (wrapper.hasGroup(keyStr)) {
-            keyStr = wrapper.clearGroup(keyStr);
+        if (worker.hasGroup(keyStr)) {
+            keyStr = worker.clearGroup(keyStr);
             return getGroup(keyStr);
         }
-        if (wrapper.hasEvent(keyStr)) {
+        if (worker.hasEvent(keyStr)) {
             Model model = getEvent(keyStr);
             if (model != null) {
                 return model;
             }
         }
-        if (wrapper.hasAction(keyStr)) {
+        if (worker.hasAction(keyStr)) {
             return getAction(keyStr);
         }
-        if (wrapper.hasEmptyTrash(keyStr)) {
+        if (worker.hasEmptyTrash(keyStr)) {
             return getEmptyTrash();
         }
-        if (wrapper.hasDisableReminders(keyStr)) {
+        if (worker.hasDisableReminders(keyStr)) {
             return getDisableAction();
         }
-        if (wrapper.hasAnswer(keyStr)) {
+        if (worker.hasAnswer(keyStr)) {
             return getAnswer(keyStr);
         }
 
         Action type = Action.DATE;
         String number = null;
         boolean hasAction = false;
-        if (wrapper.hasCall(keyStr)) {
-            keyStr = wrapper.clearCall(keyStr);
+        if (worker.hasCall(keyStr)) {
+            keyStr = worker.clearCall(keyStr);
             hasAction = true;
             type = Action.CALL;
         }
-        if (wrapper.hasSender(keyStr)) {
-            keyStr = wrapper.clearSender(keyStr);
-            Action actionType = wrapper.getMessageType(keyStr);
+        if (worker.hasSender(keyStr)) {
+            keyStr = worker.clearSender(keyStr);
+            Action actionType = worker.getMessageType(keyStr);
             if (actionType != null) {
                 hasAction = true;
-                keyStr = wrapper.clearMessageType(keyStr);
+                keyStr = worker.clearMessageType(keyStr);
                 type = actionType;
             }
         }
 
-        boolean repeating = false;
+        boolean repeating;
         long repeat = 0;
-        if (wrapper.hasRepeat(keyStr)) {
-            keyStr = wrapper.clearRepeat(keyStr);
-            repeating = true;
-            repeat = wrapper.getDaysRepeat(keyStr);
+        if (repeating = worker.hasRepeat(keyStr)) {
+            keyStr = worker.clearRepeat(keyStr);
+            repeat = worker.getDaysRepeat(keyStr);
             if (repeat != 0) {
-                keyStr = wrapper.clearDaysRepeat(keyStr);
+                keyStr = worker.clearDaysRepeat(keyStr);
             }
         }
 
-        boolean isCalendar = false;
-        if (wrapper.hasCalendar(keyStr)) {
-            keyStr = wrapper.clearCalendar(keyStr);
-            isCalendar = true;
+        boolean isCalendar;
+        if (isCalendar = worker.hasCalendar(keyStr)) {
+            keyStr = worker.clearCalendar(keyStr);
         }
 
-        boolean today = false;
-        if (wrapper.hasToday(keyStr)) {
-            keyStr = wrapper.clearToday(keyStr);
-            today = true;
+        boolean today;
+        if (today = worker.hasToday(keyStr)) {
+            keyStr = worker.clearToday(keyStr);
         }
-        boolean afterTomorrow = false;
-        if (wrapper.hasAfterTomorrow(keyStr)) {
-            keyStr = wrapper.clearAfterTomorrow(keyStr);
-            afterTomorrow = true;
+        boolean afterTomorrow;
+        if (afterTomorrow = worker.hasAfterTomorrow(keyStr)) {
+            keyStr = worker.clearAfterTomorrow(keyStr);
         }
-        boolean tomorrow = false;
-        if (wrapper.hasTomorrow(keyStr)) {
-            keyStr = wrapper.clearTomorrow(keyStr);
-            tomorrow = true;
+        boolean tomorrow;
+        if (tomorrow = worker.hasTomorrow(keyStr)) {
+            keyStr = worker.clearTomorrow(keyStr);
         }
 
-        Ampm ampm = wrapper.getAmpm(keyStr);
+        Ampm ampm = worker.getAmpm(keyStr);
         if (ampm != null) {
-            keyStr = wrapper.clearAmpm(keyStr);
+            keyStr = worker.clearAmpm(keyStr);
         }
-        List<Integer> weekdays = wrapper.getWeekDays(keyStr);
+        List<Integer> weekdays = worker.getWeekDays(keyStr);
         boolean hasWeekday = false;
         for (int day : weekdays) {
             if (day == 1) {
@@ -147,7 +142,7 @@ public class Recognizer {
                 break;
             }
         }
-        keyStr = wrapper.clearWeekDays(keyStr);
+        keyStr = worker.clearWeekDays(keyStr);
         if (hasWeekday) {
             if (type == Action.CALL) {
                 type = Action.WEEK_CALL;
@@ -158,23 +153,22 @@ public class Recognizer {
             }
         }
 
-        boolean hasTimer = false;
+        boolean hasTimer;
         long afterTime = 0;
-        if (wrapper.isTimer(keyStr)) {
-            keyStr = wrapper.cleanTimer(keyStr);
-            afterTime = wrapper.getMultiplier(keyStr);
-            keyStr = wrapper.clearMultiplier(keyStr);
-            hasTimer = true;
+        if (hasTimer = worker.isTimer(keyStr)) {
+            keyStr = worker.cleanTimer(keyStr);
+            afterTime = worker.getMultiplier(keyStr);
+            keyStr = worker.clearMultiplier(keyStr);
         }
 
-        long date = wrapper.getDate(keyStr);
+        long date = worker.getDate(keyStr);
         if (date != 0) {
-            keyStr = wrapper.clearDate(keyStr);
+            keyStr = worker.clearDate(keyStr);
         }
 
-        long time = wrapper.getTime(keyStr, ampm, times);
+        long time = worker.getTime(keyStr, ampm, times);
         if (time != 0) {
-            keyStr = wrapper.clearTime(keyStr);
+            keyStr = worker.clearTime(keyStr);
         }
         System.out.println("parse: " + keyStr + ", time " + time + ", date " + date);
         if (today) {
@@ -197,8 +191,8 @@ public class Recognizer {
 
         String message = null;
         if (hasAction && (type == Action.MESSAGE || type == Action.MAIL)) {
-            message = wrapper.getMessage(keyStr);
-            keyStr = wrapper.clearMessage(keyStr);
+            message = worker.getMessage(keyStr);
+            keyStr = worker.clearMessage(keyStr);
             if (message != null) {
                 keyStr = keyStr.replace(message, "");
             }
@@ -239,7 +233,7 @@ public class Recognizer {
     private Model getAnswer(String keyStr) {
         Model model = new Model();
         model.setType(ActionType.ANSWER);
-        model.setAction(wrapper.getAnswer(keyStr));
+        model.setAction(worker.getAnswer(keyStr));
         return model;
     }
 
@@ -313,38 +307,18 @@ public class Recognizer {
     }
 
     private long getTomorrowTime(long time) {
-        Calendar calendar = Calendar.getInstance();
-        if (time == 0) {
-            time = System.currentTimeMillis();
-        }
-        calendar.setTimeInMillis(time);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        calendar.setTimeInMillis(System.currentTimeMillis() + Worker.DAY);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTimeInMillis();
+        return getTime(time, 1);
     }
 
     private long getAfterTomorrowTime(long time) {
-        Calendar calendar = Calendar.getInstance();
-        if (time == 0) {
-            time = System.currentTimeMillis();
-        }
-        calendar.setTimeInMillis(time);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        calendar.setTimeInMillis(System.currentTimeMillis() + (Worker.DAY * 2));
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTimeInMillis();
+        return getTime(time, 2);
     }
 
     private long getTodayTime(long time) {
+        return getTime(time, 0);
+    }
+
+    private long getTime(long time, int days) {
         Calendar calendar = Calendar.getInstance();
         if (time == 0) {
             time = System.currentTimeMillis();
@@ -352,7 +326,7 @@ public class Recognizer {
         calendar.setTimeInMillis(time);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.setTimeInMillis(System.currentTimeMillis() + (Worker.DAY * days));
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
@@ -375,7 +349,7 @@ public class Recognizer {
     }
 
     private Model getGroup(String keyStr) {
-        keyStr = StringUtils.capitalize(wrapper.clearNote(keyStr));
+        keyStr = StringUtils.capitalize(worker.clearNote(keyStr));
         Model model = new Model();
         model.setSummary(keyStr);
         model.setType(ActionType.GROUP);
@@ -383,7 +357,7 @@ public class Recognizer {
     }
 
     private Model getEvent(String keyStr) {
-        Action event = wrapper.getEvent(keyStr);
+        Action event = worker.getEvent(keyStr);
         if (event == Action.NO_EVENT) {
             return null;
         }
@@ -396,12 +370,12 @@ public class Recognizer {
     private Model getAction(String keyStr) {
         Model model = new Model();
         model.setType(ActionType.ACTION);
-        model.setAction(wrapper.getAction(keyStr));
+        model.setAction(worker.getAction(keyStr));
         return model;
     }
 
     private Model getNote(String keyStr) {
-        keyStr = StringUtils.capitalize(wrapper.clearNote(keyStr));
+        keyStr = StringUtils.capitalize(worker.clearNote(keyStr));
         Model model = new Model();
         model.setSummary(keyStr);
         model.setType(ActionType.NOTE);
