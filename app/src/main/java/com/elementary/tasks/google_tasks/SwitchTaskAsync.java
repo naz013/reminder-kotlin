@@ -42,7 +42,7 @@ class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
-        if (isConnected && helper != null) {
+        if (isConnected && helper != null && helper.getTasks() != null) {
             try {
                 if (status) {
                     helper.getTasks().updateTaskStatus(Google.TASKS_COMPLETE, listId, taskId);

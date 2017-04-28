@@ -44,6 +44,9 @@ public class TaskListAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
+        if (helper == null || helper.getTasks() == null) {
+            return false;
+        }
         boolean isConnected = SuperUtil.isConnected(mContext);
         if (taskType.matches(TasksConstants.UPDATE_TASK_LIST)) {
             if (isConnected) {
