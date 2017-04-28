@@ -44,26 +44,27 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
-        if (isConnected) {
+        if (isConnected && helper.getTasks() != null) {
+            Google.Tasks tasks = helper.getTasks();
             if (taskType.matches(TasksConstants.DELETE_TASK)) {
                 try {
-                    helper.getTasks().deleteTask(mItem);
+                    tasks.deleteTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.MOVE_TASK)) {
-                return helper.getTasks().moveTask(mItem, oldList);
+                return tasks.moveTask(mItem, oldList);
             } else if (taskType.matches(TasksConstants.UPDATE_TASK)) {
                 try {
-                    helper.getTasks().updateTask(mItem);
+                    tasks.updateTask(mItem);
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else if (taskType.matches(TasksConstants.INSERT_TASK)) {
                 try {
-                    return helper.getTasks().insertTask(mItem);
+                    return tasks.insertTask(mItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
