@@ -44,6 +44,9 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
+        if (helper == null || helper.getTasks() == null) {
+            return false;
+        }
         TaskLists lists = null;
         try {
             lists = helper.getTasks().getTaskLists();
