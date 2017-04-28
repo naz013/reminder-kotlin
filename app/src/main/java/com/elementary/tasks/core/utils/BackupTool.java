@@ -488,7 +488,7 @@ public final class BackupTool {
         try {
             byte[] byteString = Base64.decode(string, Base64.DEFAULT);
             result = new String(byteString, "UTF-8");
-        } catch (UnsupportedEncodingException e1) {
+        } catch (UnsupportedEncodingException | IllegalArgumentException e1) {
             e1.printStackTrace();
         }
         return result;
@@ -504,7 +504,7 @@ public final class BackupTool {
         byte[] stringByted = null;
         try {
             stringByted = string.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
             e.printStackTrace();
         }
         return Base64.encodeToString(stringByted, Base64.DEFAULT).trim();

@@ -83,10 +83,14 @@ public class Google {
             service = new com.google.api.services.tasks.Tasks.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
             mDrives = new Drives();
             mTasks = new Tasks();
-        } else throw new IllegalArgumentException("Not logged to Google");
+        } else {
+            logOut();
+            throw new IllegalArgumentException("Not logged to Google");
+        }
     }
 
     void logOut() {
+        Prefs.getInstance().setDriveUser(Prefs.DRIVE_USER_NONE);
         instance = null;
     }
 
