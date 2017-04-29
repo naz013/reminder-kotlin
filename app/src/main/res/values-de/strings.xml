@@ -6,14 +6,10 @@
     <string name="copyright">"2016\u00A9 Nazar Suhovich"</string>
 
     <string name="blur">"Verwischen"</string>
-    <string name="next">"Nächster"</string>
-    <string name="previous">"Früher"</string>
-    <string name="something_went_wrong">"Etwas ist schief gelaufen!"</string>
 
     <string name="got_it">"ICH HABS"</string>
     <string name="select_style_for_marker">"Wählen Sie Stil für Marker"</string>
     <string name="click_when_add_place">"Klicken Sie auf der Karte zu schließen"</string>
-    <string name="select_place_from_list">"Wählen Sie Ort aus der Liste"</string>
     <string name="click_to_expand_collapse_map">"Klicken Sie zum Vergrößern / Kollaps Karte"</string>
     <string name="cant_access_location_services">"Ich kann keinen Zugriff auf die Ortungsdienste erhalten!"</string>
     <string name="normal">"Normal"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"Automatisch prüfen"</string>
     <string name="interval">"Intervall"</string>
     <string name="import_string">"Import"</string>
-    <string name="select_melody">"Melodie auswählen"</string>
-    <string name="connect_to_cloud">"Eine Verbindung mit Cloud"</string>
     <string name="google_drive">"Google Drive"</string>
     <string name="dropbox">"Dropbox"</string>
     <string name="import_birthdays">"Import Geburtstage"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"Ja"</string>
     <string name="no">"Nein"</string>
     <string name="add_reminder">"In Erinnerung?"</string>
-    <string name="show_hidden">"Zeige versteckt"</string>
     <string name="name">"Name"</string>
     <string name="contact">"Kontakt"</string>
     <string name="background">"Hintergrund"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"Permanent Benachrichtigung in der Statusleiste"</string>
     <string name="show_in_home_screen">"Show in Home-Bildschirm-Widget"</string>
     <string name="birthday_reminder">"Geburtstagserinnerung"</string>
-    <string name="backup">"Sicherungskopie"</string>
     <string name="contacts">"Impressum"</string>
     <string name="scan">"Scan"</string>
     <string name="no_events">"Keine Termine"</string>
-    <string name="custom">"Anpassen"</string>
     <string name="theme">"Thema"</string>
-    <string name="text_color">"Textfarbe"</string>
-    <string name="button_color">"Button color"</string>
     <string name="calendar">"Kalender"</string>
     <string name="title">"Titel"</string>
     <string name="color">"Farbe"</string>
     <string name="files">"Dateien"</string>
-    <string name="list">"Liste"</string>
     <string name="delete_all">"Alles löschen"</string>
     <string name="connect">"Verbinden"</string>
     <string name="google">"Google"</string>
     <string name="search">"Suche"</string>
     <string name="text_size">"Textgröße"</string>
-    <string name="transparency">"Transparenz"</string>
-    <string name="header">"Kopfzeile"</string>
-    <string name="body">"Körper"</string>
-    <string name="item">"Artikel"</string>
     <string name="exclusion">"Ausschluss"</string>
     <string name="hours">"Stunden"</string>
     <string name="ok">"OK"</string>
@@ -118,7 +102,6 @@
     <string name="address">"Adresse"</string>
     <string name="no_places">"Keine Orte"</string>
     <string name="tasks">"Aufgaben"</string>
-    <string name="directions">"Wegbeschreibung"</string>
     <string name="groups">"Gruppen"</string>
     <string name="places">"Setzt"</string>
     <string name="messages">"Nachrichten"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"Kaufen PRO"</string>
     <string name="edit">"Bearbeiten"</string>
     <string name="delete">"Löschen"</string>
-    <string name="last_modified">"Letzte Änderung"</string>
     <string name="no_notes">"Keine Anmerkungen"</string>
     <string name="next_event">"nächste Veranstaltung"</string>
     <string name="remind_me">"Erinnere mich..."</string>
@@ -137,12 +119,10 @@
     <string name="days">"Tage"</string>
     <string name="send">"Senden"</string>
     <string name="radius">"Radius"</string>
-    <string name="i_use_transport">"Ich benutze Transport"</string>
     <string name="can_you_rate_this_application">"Können Sie diese Anwendung ein?"</string>
     <string name="rate">"Preis"</string>
     <string name="later">"Später"</string>
     <string name="never">"Nie"</string>
-    <string name="no_application">"Keine Anwendungen"</string>
     <string name="url">"URL ..."</string>
     <string name="application">"Anwendung"</string>
     <string name="open_link">"Verbindung öffnen"</string>
@@ -156,7 +136,6 @@
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"S"</string>
-    <string name="minutes">"minuten"</string>
     <string name="mon">"MON"</string>
     <string name="tue">"DIE"</string>
     <string name="wed">"MIT"</string>
@@ -186,22 +165,15 @@
     <string name="show_quick_answer_window">"Antworten anzeigen Fenster nach Aufruf Ablehnung"</string>
     <string name="after_call_reminder">"Erinnerung nach Anruf"</string>
     <string name="_24_hour_time_format">"24 Stunden Zeitformat"</string>
-    <string name="dark_mode">"Dunkel-Modus"</string>
-    <string name="screen_orientation">"Bildschirmausrichtung"</string>
     <string name="smart_fold">"Intelligente Klapp"</string>
     <string name="enable_folding_reminder_window">"Aktivieren intelligente Faltung von Erinnerungsfenster"</string>
     <string name="android_wear_notification">"Android Wear Meldung"</string>
-    <string name="preview">"Vorschau"</string>
-    <string name="enable_reminder_preview">"Aktivieren Vorschau von Erinnerung"</string>
     <string name="distance_notification">"Mitteilung über Distanz"</string>
     <string name="map_type">"Art der Karte"</string>
     <string name="style_of_marker">"Stil Marker"</string>
     <string name="tracking_settings">"Tracking-Einstellungen"</string>
-    <string name="encrypt">"Verschlüsseln"</string>
     <string name="enable_creating_reminder_for_quick_note">"Erstellen Erinnerung für kurze Notiz"</string>
     <string name="quick_note_reminder">"Mahnung"</string>
-    <string name="delete_backup">"Löschen Sicherungsdatei"</string>
-    <string name="delete_backup_file_when_remove_note">"Löschen Sicherungsdatei, wenn entfernen Notiz"</string>
     <string name="appearance">"Aussehen"</string>
     <string name="status_bar">"Statusleiste"</string>
     <string name="manual_remove">"Entfernen Sie manuell"</string>
@@ -226,7 +198,6 @@
     <string name="changes">"Verändert sich"</string>
     <string name="open_source_licenses">"Quell-offene Software"</string>
     <string name="tell_friends">"Lassen Sie Freunde"</string>
-    <string name="auto_language">"Automatische Sprach"</string>
     <string name="default_string">"Standard"</string>
     <string name="morning">"Morgen"</string>
     <string name="day">"Tag"</string>
@@ -234,7 +205,6 @@
     <string name="night">"Nacht"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"Bei geringeren Batterieverbrauch, höheren Wert einstellen!"</string>
     <string name="saved">"Gerettet"</string>
-    <string name="month">"Monat"</string>
     <string name="voice_control">"Stimmenkontrolle"</string>
     <string name="image">"Image"</string>
     <string name="font_style">"Schriftstil"</string>
@@ -250,7 +220,6 @@
     <string name="active_reminders">"Aktive Erinnerungen"</string>
     <string name="events">"Ereignisse"</string>
     <string name="must_be_not_empty">"Darf nicht leer sein!"</string>
-    <string name="local_sync">"Lokale Sync"</string>
     <string name="other_version_detected">"Weitere Anwendungs ​​erkannt!"</string>
     <string name="open">"Öffnen"</string>
     <string name="trying_to_log_in">"Der Versuch, sich anzumelden ..."</string>
@@ -259,8 +228,6 @@
     <string name="syncing_notes">"Synchronisieren von Notizen ..."</string>
     <string name="syncing_birthdays">"Synchronisieren Geburtstage ..."</string>
     <string name="done">"Fertig"</string>
-    <string name="syncing_google_tasks">"Synchronisieren von Google Tasks"</string>
-    <string name="note_deleted">"Hinweis gelöscht"</string>
     <string name="error_sending">"Fehler beim Senden!"</string>
     <string name="delete_this_note">"Löschen Sie diese Notiz?"</string>
     <string name="gallery">"Galerie"</string>
@@ -276,7 +243,6 @@
     <string name="shopping_list">"Einkaufsliste"</string>
     <string name="deleted">"Gelöscht"</string>
     <string name="radius_x_meters">"Radius %s meter"</string>
-    <string name="same_reminder_also_present">"Gleiche Erinnerung ist in Anwendung!"</string>
     <string name="shopping_list_is_empty">"Einkaufsliste ist leer!"</string>
     <string name="you_dont_select_any_day">"Sie nicht einen Tag wählen!"</string>
     <string name="you_dont_select_application">"Sie wählen nicht Anwendung!"</string>
@@ -289,11 +255,8 @@
     <string name="dark_orange">"Dunkelorange"</string>
     <string name="dark_purple">"Dunkelviolett"</string>
     <string name="teal">"Dunkelgrün"</string>
-    <string name="turn_screen_off_to_see_led_light">"Beleuchtung ausschalten LED-Licht zu sehen"</string>
     <string name="select_one_of_item">"Wählen Sie eine von Artikel!"</string>
     <string name="selected_loudness_x_for_reminder">"Ausgewählte Lautstärke %s Bestätigung"</string>
-    <string name="excluded_hours_x">"Ausgeschlossen Stunden %s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"Ausgeschlossen Zeit von %s zu %s"</string>
     <string name="sunday">"Sonntag"</string>
     <string name="monday">"Montag"</string>
     <string name="local">"Speicherkarte"</string>
@@ -315,8 +278,6 @@
     <string name="ukrainian">"Ukrainisch"</string>
     <string name="choose_file">"Datei wählen"</string>
     <string name="auto">"Auto"</string>
-    <string name="portrait">"Porträt"</string>
-    <string name="landscape">"Landschaft"</string>
     <string name="choose_group">"Wählen Sie Gruppe"</string>
     <string name="none">"Keine"</string>
     <string name="from_reminder">"Von Erinnerung"</string>
@@ -324,7 +285,6 @@
     <string name="disabled">"Ausgeschaltet"</string>
     <string name="enabled4">"Aktiviert"</string>
     <string name="choose_time">"Wählen Sie Zeit"</string>
-    <string name="can_not_connect">"Kann nicht verbinden!"</string>
     <string name="pro_advantages">"Vorteile der PRO:"</string>
     <string name="buy">"Kaufen"</string>
     <string name="different_settings_for_birthdays">"- Verschiedene Einstellungen für Geburtstage;"</string>
@@ -333,7 +293,6 @@
     <string name="styles_for_marker">"- 16 Arten für Marker;"</string>
     <string name="option_for_image_blurring">"- Option für Bildunschärfe;"</string>
     <string name="additional_app_themes">"- 4 zusätzliche App Themen."</string>
-    <string name="thank_you_for_buying_pro">"Danke für den Kauf PRO-Lizenz."</string>
     <string name="press_again_to_exit">"Drücken Sie zum Beenden erneut"</string>
     <string name="delete_this_list">"Löschen Sie diese Liste?"</string>
     <string name="delete_list">"Liste löschen"</string>
@@ -349,7 +308,6 @@
     <string name="move_to_another_list">"Zu einem anderen Liste"</string>
     <string name="edit_birthday">"Bearbeiten Geburtstag"</string>
     <string name="disconnect">"Trennen"</string>
-    <string name="no_action_selected">"Keine Aktion ausgewählt"</string>
     <string name="you_dont_select_any_calendar">"Sie wählen nicht einen Kalender!"</string>
     <string name="please_wait">"Warten Sie mal..."</string>
     <string name="no_events_found">"Keine Termine gefunden!"</string>
@@ -365,17 +323,11 @@
     <string name="x_days">"%s Tage"</string>
     <string name="reminder_snoozed">"Erinnerung snoozed"</string>
     <string name="choose_application">"Wählen Sie Anwendung"</string>
-    <string name="flexible">"Flexibel"</string>
-    <string name="smart">"intelligent"</string>
-    <string name="widgets_support">"Widget-Unterstützung"</string>
-    <string name="dark_theme_support">"Dunkle Theme-Unterstützung"</string>
-    <string name="cloud_sync">"Cloud-Synchronisation"</string>
     <string name="notes_support">"Hinweise Unterstützung"</string>
     <string name="no_messages">"Keine Nachrichten"</string>
     <string name="birthday">"Geburtstag"</string>
     <string name="permanent">"Dauerhaft"</string>
     <string name="today">"Heute"</string>
-    <string name="paused">"Angehalten"</string>
     <string name="less_than_minute">"Weniger als Minute"</string>
     <string name="birthday_notification">"Mitteilung"</string>
     <string name="found_nothing">"Nichts gefunden"</string>
@@ -409,7 +361,6 @@
     <string name="name_az">"Name (AZ)"</string>
     <string name="name_za">"Name (ZA)"</string>
     <string name="delete_all_notes">"Löschen Sie alle Notizen?"</string>
-    <string name="sent">"Gesendete"</string>
     <string name="no_google_tasks">"Keine Google Tasks"</string>
     <string name="edit_list">"Liste bearbeiten"</string>
     <string name="delete_completed_tasks">"Löschen erledigten Aufgaben"</string>
@@ -417,7 +368,6 @@
     <string name="completed_first">"Abgeschlossen ersten"</string>
     <string name="trash_cleared">"Papierkorb gelöscht"</string>
     <string name="trash_is_empty">"Papierkorb ist leer"</string>
-    <string name="wrong_date_time_message">"Datum oder Zeit falsch!"</string>
     <string name="reminder_is_outdated">"Erinnerung ist veraltet, bearbeiten es zunächst"</string>
     <string name="reminder_created">"Erinnerung geschaffen"</string>
     <string name="everyday">"Jeden Tag"</string>
@@ -428,13 +378,10 @@
     <string name="additional">"Zusätzlich"</string>
     <string name="other">"Andere"</string>
     <string name="general">"General"</string>
-    <string name="encrypting">"Verschlüsseln ..."</string>
-    <string name="decrypting">"Entschlüsseln ..."</string>
     <string name="xW">"%sW"</string>
     <string name="xD">"%sT"</string>
     <string name="x_min">"%s min"</string>
     <string name="gps_not_enabled">"GPS nicht aktiviert!"</string>
-    <string name="moved_to_trash">"In den Papierkorb"</string>
     <string name="no_limits">"Keine Einschränkungen"</string>
     <string name="e_mail">"Email"</string>
     <string name="subject">"Gegenstand"</string>
@@ -447,9 +394,6 @@
     <string name="you_dont_insert_any_message">"Sie legen Sie nicht eine Nachricht!"</string>
     <string name="xM">"%sM"</string>
     <string name="overdue">"Überfällig"</string>
-    <string name="and">"&amp;"</string>
-    <string name="android_wear_service">"Android Wear Service"</string>
-    <string name="enable_service_if_you_want_">"Aktivieren Sie diesen Dienst, wenn Sie Erinnerungen von Merk verwalten möchten"</string>
     <string name="search_place">"Suche nach Ort ..."</string>
     <string name="click_to_select_reminder_type">"Klicken Erinnerung Typ zu wählen"</string>
     <string name="to_insert_task_by_voice">"So fügen Aufgabe von Sprach"</string>
@@ -463,7 +407,6 @@
     <string name="add_reminder_menu">"In Erinnerung"</string>
     <string name="x_meters">"%s Meter"</string>
     <string name="task_summary_is_empty">"Aufgabenzusammenfassung ist leer!"</string>
-    <string name="exclusion_added">"Ausschluss hinzugefügt"</string>
     <string name="x_day">"%s Tag"</string>
     <string name="x_hour">"%s Stunde"</string>
     <string name="x_dayzz">"%s Tage"</string>
@@ -473,17 +416,12 @@
     <string name="x_year">"%s Jahr"</string>
     <string name="x_yearzz">"%s Jahren"</string>
     <string name="application_not_selected">Anwendung nicht ausgewählt</string>
-    <string name="report">Bericht über Fehler</string>
-    <string name="describe_your_problem">Beschreiben Sie das Problem</string>
-    <string name="day_night">Tag/Nacht</string>
-    <string name="enable_changing_theme_during_day">Automatisch während des Tages aktivieren Thema zu ändern</string>
     <string name="move_backward">Kehren Sie zurück</string>
     <string name="create_task">Aufgabe erstellen</string>
     <string name="type_to_search">Tippe um zu suchen</string>
     <string name="up">Oben</string>
     <string name="move_forward">Schritt vorwärts</string>
     <string name="refresh">Erfrischen</string>
-    <string name="save_widget">Speichern Widget</string>
     <string name="app_title">"Mahnung"</string>
     <string name="you_dont_select_any_hours">Sie wählen keine Stunden!</string>
     <string name="could_not_launch_market">Konnte nicht Markt bringen</string>
@@ -568,7 +506,6 @@
     <string name="fill">Füllen</string>
     <string name="grey">Grau</string>
     <string name="stroke">Streicheln</string>
-    <string name="move_image">Bild verschieben</string>
     <string name="add_text">Text hinzufügen</string>
     <string name="stroke_width">Strichbreite</string>
     <string name="live_conversation">Live-Konversation</string>
@@ -579,8 +516,6 @@
     <string name="seconds">sekunden</string>
     <string name="_minutes">minuten</string>
     <string name="_hours">stunden</string>
-    <string name="add_note">Notiz hinzufügen</string>
-    <string name="failed_to_recognize_your_command">Ihre Rede nicht erkannt</string>
     <string name="opacity">Opazität</string>
     <string name="loading_events">Ereignisse werden geladen</string>
     <string name="canceled">Abgebrochen</string>

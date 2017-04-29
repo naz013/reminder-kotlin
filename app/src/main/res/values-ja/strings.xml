@@ -6,14 +6,10 @@
     <string name="copyright">"2016 \u00A9 Nazar Suhovich"</string>
 
     <string name="blur">"ブラー"</string>
-    <string name="next">"次"</string>
-    <string name="previous">"前"</string>
-    <string name="something_went_wrong">"何かが間違っていました！"</string>
 
     <string name="got_it">"とった"</string>
     <string name="select_style_for_marker">"マーカーのスタイルを選択します"</string>
     <string name="click_when_add_place">"マップを閉じます"</string>
-    <string name="select_place_from_list">"リストから場所を選択"</string>
     <string name="click_to_expand_collapse_map">"クリックして拡大/縮小マップ"</string>
     <string name="cant_access_location_services">"私は、ロケーションサービスへのアクセスを得ることができません！"</string>
     <string name="normal">"ノーマル"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"自動的にチェック"</string>
     <string name="interval">"間隔"</string>
     <string name="import_string">"インポート"</string>
-    <string name="select_melody">"メロディを選択"</string>
-    <string name="connect_to_cloud">"クラウドへの接続"</string>
     <string name="google_drive">"グーグルドライブ"</string>
     <string name="dropbox">"Dropboxの"</string>
     <string name="import_birthdays">"インポート誕生日"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"はい"</string>
     <string name="no">"いいえ"</string>
     <string name="add_reminder">"リマインダーを追加しますか？"</string>
-    <string name="show_hidden">"ショー隠されました"</string>
     <string name="name">"名"</string>
     <string name="contact">"接触"</string>
     <string name="background">"バックグラウンド"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"ステータスバーの永久通知"</string>
     <string name="show_in_home_screen">"ホーム画面のウィジェットに表示"</string>
     <string name="birthday_reminder">"誕生日リマインダー"</string>
-    <string name="backup">"バックアップ"</string>
     <string name="contacts">"コンタクト"</string>
     <string name="scan">"スキャン"</string>
     <string name="no_events">"イベントはありません"</string>
-    <string name="custom">"カスタマイズ"</string>
     <string name="theme">"テーマ"</string>
-    <string name="text_color">"テキストの色"</string>
-    <string name="button_color">"ボタンの色"</string>
     <string name="calendar">"カレンダー"</string>
     <string name="title">"タイトル"</string>
     <string name="color">"カラー"</string>
     <string name="files">"ファイル"</string>
-    <string name="list">"リスト"</string>
     <string name="delete_all">"すべて削除"</string>
     <string name="connect">"接続します"</string>
     <string name="google">"グーグル"</string>
     <string name="search">"サーチ"</string>
     <string name="text_size">"文字サイズ"</string>
-    <string name="transparency">"透明"</string>
-    <string name="header">"ヘッダ"</string>
-    <string name="body">"ボディ"</string>
-    <string name="item">"項目"</string>
     <string name="exclusion">"除外"</string>
     <string name="hours">"営業時間"</string>
     <string name="ok">"[OK]"</string>
@@ -118,7 +102,6 @@
     <string name="address">"アドレス"</string>
     <string name="no_places">"いいえ場所はありません"</string>
     <string name="tasks">"タスク"</string>
-    <string name="directions">"行き方"</string>
     <string name="groups">"グループ"</string>
     <string name="places">"場所"</string>
     <string name="messages">"メッセージ"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"PRO購入"</string>
     <string name="edit">"編集"</string>
     <string name="delete">"削除"</string>
-    <string name="last_modified">"最終更新日"</string>
     <string name="no_notes">"ノートはありません"</string>
     <string name="next_event">"次のイベント"</string>
     <string name="remind_me">"私を思い出させます..."</string>
@@ -137,12 +119,10 @@
     <string name="days">"日々"</string>
     <string name="send">"送信"</string>
     <string name="radius">"半径"</string>
-    <string name="i_use_transport">"私は、トランスポートを使用"</string>
     <string name="can_you_rate_this_application">"あなたは、このアプリケーションを評価することはできますか？"</string>
     <string name="rate">"レート"</string>
     <string name="later">"後で"</string>
     <string name="never">"決して"</string>
-    <string name="no_application">"いいえアプリケーションはありません"</string>
     <string name="url">"URL ..."</string>
     <string name="application">"アプリケーション"</string>
     <string name="open_link">"リンクを開きます"</string>
@@ -156,7 +136,6 @@
     <string name="c">"秒"</string>
     <string name="m">"分"</string>
     <string name="h">"時間"</string>
-    <string name="minutes">"分"</string>
     <string name="mon">"月曜日"</string>
     <string name="tue">"火曜日"</string>
     <string name="wed">"水曜日"</string>
@@ -187,22 +166,15 @@
     <string name="show_quick_answer_window">"着信拒否の後に答えウィンドウを表示します"</string>
     <string name="after_call_reminder">"コー​​ル後のリマインダー"</string>
     <string name="_24_hour_time_format">"24時間形式"</string>
-    <string name="dark_mode">"ダークモード"</string>
-    <string name="screen_orientation">"画面の向き"</string>
     <string name="smart_fold">"インテリジェント折りたたみ"</string>
     <string name="enable_folding_reminder_window">"リマインダーウィンドウのインテリジェントなフォールディングを有効にします"</string>
     <string name="android_wear_notification">"Android Wear通知"</string>
-    <string name="preview">"プレビュー"</string>
-    <string name="enable_reminder_preview">"リマインダーのプレビューを有効にします"</string>
     <string name="distance_notification">"距離に関するお知らせ"</string>
     <string name="map_type">"マップのタイプ"</string>
     <string name="style_of_marker">"マーカーのスタイル"</string>
     <string name="tracking_settings">"トラッキングの設定"</string>
-    <string name="encrypt">"暗号化します"</string>
     <string name="enable_creating_reminder_for_quick_note">"簡単なメモのためのリマインダーを作成します。"</string>
     <string name="quick_note_reminder">"リマインダー"</string>
-    <string name="delete_backup">"バックアップファイルを削除します。"</string>
-    <string name="delete_backup_file_when_remove_note">"ノートを削除すると、バックアップファイルを削除します。"</string>
     <string name="appearance">"外観"</string>
     <string name="status_bar">"ステータスバー"</string>
     <string name="manual_remove">"手動で削除します"</string>
@@ -227,7 +199,6 @@
     <string name="changes">"変更"</string>
     <string name="open_source_licenses">"オープンソースソフトウェア"</string>
     <string name="tell_friends">"友達に教えます"</string>
-    <string name="auto_language">"自動言語"</string>
     <string name="default_string">"デフォルト"</string>
     <string name="morning">"朝"</string>
     <string name="day">"日"</string>
@@ -235,7 +206,6 @@
     <string name="night">"夜"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"低いバッテリの使用のために、より高い値を設定！"</string>
     <string name="saved">"保存"</string>
-    <string name="month">"月"</string>
     <string name="voice_control">"音声制御"</string>
     <string name="image">"イメージ"</string>
     <string name="font_style">"フォントスタイル"</string>
@@ -251,7 +221,6 @@
     <string name="active_reminders">"アクティブリマインダー"</string>
     <string name="events">"イベント"</string>
     <string name="must_be_not_empty">"空であってはならないことを！"</string>
-    <string name="local_sync">"ローカル同期"</string>
     <string name="other_version_detected">"他のアプリケーションで検出されました！"</string>
     <string name="open">"オープン"</string>
     <string name="trying_to_log_in">"ログインしようとしています..."</string>
@@ -260,8 +229,6 @@
     <string name="syncing_notes">"同期のメモ..."</string>
     <string name="syncing_birthdays">"誕生日を同期しています..."</string>
     <string name="done">"終わりました"</string>
-    <string name="syncing_google_tasks">"Googleのタスクを同期"</string>
-    <string name="note_deleted">"注削除"</string>
     <string name="error_sending">"送信エラー！"</string>
     <string name="delete_this_note">"このノートを削除しますか？"</string>
     <string name="gallery">"ギャラリー"</string>
@@ -277,7 +244,6 @@
     <string name="shopping_list">"買い物リスト"</string>
     <string name="deleted">"削除されました"</string>
     <string name="radius_x_meters">"半径%sメートル"</string>
-    <string name="same_reminder_also_present">"同じアラームがアプリケーションに存在しています！"</string>
     <string name="shopping_list_is_empty">"ショッピングリストは空です！"</string>
     <string name="you_dont_select_any_day">"あなたは日を選択しないで！"</string>
     <string name="you_dont_select_application">"あなたは、アプリケーションを選択しないでください！"</string>
@@ -290,11 +256,8 @@
     <string name="dark_orange">"濃いオレンジ色"</string>
     <string name="dark_purple">"濃い紫色"</string>
     <string name="teal">"濃い緑色"</string>
-    <string name="turn_screen_off_to_see_led_light">"LEDの光を見るためにバックライトをオフにします"</string>
     <string name="select_one_of_item">"アイテムのいずれかを選択します！"</string>
     <string name="selected_loudness_x_for_reminder">"選択したラウドネス%sリマインダー用"</string>
-    <string name="excluded_hours_x">"除外された時間%s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"除外時間%sの%s"</string>
     <string name="sunday">"日曜日"</string>
     <string name="monday">"月曜"</string>
     <string name="local">"メモリカード"</string>
@@ -316,8 +279,6 @@
     <string name="ukrainian">"ウクライナ語"</string>
     <string name="choose_file">"ファイルを選ぶ"</string>
     <string name="auto">"オート"</string>
-    <string name="portrait">"肖像画"</string>
-    <string name="landscape">"風景"</string>
     <string name="choose_group">"グループを選択します"</string>
     <string name="none">"なし"</string>
     <string name="from_reminder">"リマインダーから"</string>
@@ -325,7 +286,6 @@
     <string name="disabled">"オフ"</string>
     <string name="enabled4">"使用可能"</string>
     <string name="choose_time">"時間を選択してください"</string>
-    <string name="can_not_connect">"接続できません！"</string>
     <string name="pro_advantages">"PROの利点："</string>
     <string name="buy">"購入"</string>
     <string name="different_settings_for_birthdays">"- 誕生日のためのさまざまな設定。"</string>
@@ -334,7 +294,6 @@
     <string name="styles_for_marker">"- マーカーのための16のスタイル。"</string>
     <string name="option_for_image_blurring">"- ぼかし画像のためのオプション。"</string>
     <string name="additional_app_themes">"-  4追加のアプリのテーマ。"</string>
-    <string name="thank_you_for_buying_pro">"PROライセンスをお買い上げいただき誠にありがとうございます。"</string>
     <string name="press_again_to_exit">"もう一度押すと終了します"</string>
     <string name="delete_this_list">"このリストを削除しますか？"</string>
     <string name="delete_list">"削除リスト"</string>
@@ -350,7 +309,6 @@
     <string name="move_to_another_list">"別のリストに移動"</string>
     <string name="edit_birthday">"編集の誕生日"</string>
     <string name="disconnect">"切断"</string>
-    <string name="no_action_selected">"何のアクションが選択されていません"</string>
     <string name="you_dont_select_any_calendar">"あなたはカレンダーを選択しないでください！"</string>
     <string name="please_wait">"お待ちください..."</string>
     <string name="no_events_found">"イベントが見つかりませんでした！"</string>
@@ -366,17 +324,11 @@
     <string name="x_days">"%s日"</string>
     <string name="reminder_snoozed">"リマインダーはスヌーズ"</string>
     <string name="choose_application">"アプリケーションを選択します。"</string>
-    <string name="flexible">"フレキシブル"</string>
-    <string name="smart">"スマート"</string>
-    <string name="widgets_support">"ウィジェットのサポート"</string>
-    <string name="dark_theme_support">"暗いテーマのサポート"</string>
-    <string name="cloud_sync">"クラウド同期"</string>
     <string name="notes_support">"ノートのサポート"</string>
     <string name="no_messages">"メッセージはありません"</string>
     <string name="birthday">"お誕生日"</string>
     <string name="permanent">"恒久的な"</string>
     <string name="today">"今日"</string>
-    <string name="paused">"一時停止"</string>
     <string name="less_than_minute">"分未満"</string>
     <string name="birthday_notification">"お知らせ"</string>
     <string name="found_nothing">"見つかり何もありません"</string>
@@ -410,7 +362,6 @@
     <string name="name_az">"名前（AZ）"</string>
     <string name="name_za">"名前（ZA）"</string>
     <string name="delete_all_notes">"すべてのメモを削除しますか？"</string>
-    <string name="sent">"送信されました"</string>
     <string name="no_google_tasks">"いいえ、Googleのタスクはありません"</string>
     <string name="edit_list">"編集リスト"</string>
     <string name="delete_completed_tasks">"完了したタスクを削除します。"</string>
@@ -418,7 +369,6 @@
     <string name="completed_first">"最初に完了"</string>
     <string name="trash_cleared">"ゴミ箱をクリア"</string>
     <string name="trash_is_empty">"ゴミ箱は空です"</string>
-    <string name="wrong_date_time_message">"間違った日付や時刻！"</string>
     <string name="reminder_is_outdated">"リマインダーが古い、まずそれを編集"</string>
     <string name="reminder_created">"リマインダー作成"</string>
     <string name="everyday">"毎日"</string>
@@ -429,13 +379,10 @@
     <string name="additional">"追加の"</string>
     <string name="other">"他の"</string>
     <string name="general">"一般的な"</string>
-    <string name="encrypting">"暗号化..."</string>
-    <string name="decrypting">"復号化..."</string>
     <string name="xW">"%s週間"</string>
     <string name="xD">"%s日"</string>
     <string name="x_min">"%s分"</string>
     <string name="gps_not_enabled">"GPS有効になっていません！"</string>
-    <string name="moved_to_trash">"ゴミ箱に移動しました"</string>
     <string name="no_limits">"無制限"</string>
     <string name="e_mail">"Eメール"</string>
     <string name="subject">"テーマ"</string>
@@ -448,9 +395,6 @@
     <string name="you_dont_insert_any_message">"あなたがメッセージを挿入しないでください！"</string>
     <string name="xM">"%sヶ月"</string>
     <string name="overdue">"期限を過ぎました"</string>
-    <string name="and">"＆"</string>
-    <string name="android_wear_service">"Android Wearサービス"</string>
-    <string name="enable_service_if_you_want_">"あなたは時計からリマインダーを管理する場合は、このサービスを有効にします"</string>
     <string name="search_place">"検索場所..."</string>
     <string name="click_to_select_reminder_type">"リマインダーの種類をクリックして選択します"</string>
     <string name="to_insert_task_by_voice">"音声でタスクを挿入するには"</string>
@@ -464,7 +408,6 @@
     <string name="add_reminder_menu">"リマインダーを追加"</string>
     <string name="x_meters">"%sメートル"</string>
     <string name="task_summary_is_empty">"タスクの概要は空です！"</string>
-    <string name="exclusion_added">"除外を追加"</string>
     <string name="x_day">"%s日"</string>
     <string name="x_hour">"%s時間"</string>
     <string name="x_dayzz">"%s日"</string>
@@ -474,17 +417,12 @@
     <string name="x_year">"%s年"</string>
     <string name="x_yearzz">"%s年"</string>
     <string name="application_not_selected">"アプリケーションを選択しません"</string>
-    <string name="report">"バグに関する報告書"</string>
-    <string name="describe_your_problem">"あなたの問題を説明してください"</string>
-    <string name="day_night">デイ/ナイト</string>
-    <string name="enable_changing_theme_during_day">日中に自動的にテーマを変更する有効</string>
     <string name="move_backward">戻ります</string>
     <string name="create_task">タスクを作成します。</string>
     <string name="type_to_search">検索するタイプ</string>
     <string name="up">アップ</string>
     <string name="move_forward">前進する</string>
     <string name="refresh">リフレッシュ</string>
-    <string name="save_widget">保存ウィジェット</string>
     <string name="app_title">"リマインダー"</string>
     <string name="you_dont_select_any_hours">あなたは、任意の時間を選択しないでください！</string>
     <string name="could_not_launch_market">市場を起動できませんでした</string>
@@ -569,7 +507,6 @@
     <string name="fill">塗りつぶす</string>
     <string name="grey">グレー</string>
     <string name="stroke">ストローク</string>
-    <string name="move_image">画像を移動する</string>
     <string name="add_text">テキストを追加</string>
     <string name="stroke_width">ストローク幅</string>
     <string name="live_conversation">ライブ会話</string>
@@ -580,8 +517,6 @@
     <string name="seconds">秒</string>
     <string name="_minutes">分</string>
     <string name="_hours">時間</string>
-    <string name="add_note">メモを追加</string>
-    <string name="failed_to_recognize_your_command">あなたのスピーチを認識できませんでした</string>
     <string name="opacity">不透明度</string>
     <string name="loading_events">イベントの読み込み</string>
     <string name="canceled">キャンセル</string>

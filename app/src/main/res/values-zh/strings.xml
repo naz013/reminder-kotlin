@@ -6,14 +6,10 @@
     <string name="copyright">"2016 \u00A9 Nazar Suhovich"</string>
 
     <string name="blur">"模糊"</string>
-    <string name="next">"下一个"</string>
-    <string name="previous">"以前"</string>
-    <string name="something_went_wrong">"出了些问题！"</string>
 
     <string name="got_it">"得到它了"</string>
     <string name="select_style_for_marker">"为标记选择风格"</string>
     <string name="click_when_add_place">"点击关闭地图"</string>
-    <string name="select_place_from_list">"从列表中选择的地方"</string>
     <string name="click_to_expand_collapse_map">"点击展开/折叠地图"</string>
     <string name="cant_access_location_services">"我无法进入位置服务！"</string>
     <string name="normal">"正常"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"自动检查"</string>
     <string name="interval">"间隔"</string>
     <string name="import_string">"进口"</string>
-    <string name="select_melody">"选择旋律"</string>
-    <string name="connect_to_cloud">"连接到云"</string>
     <string name="google_drive">"谷歌云端硬盘"</string>
     <string name="dropbox">"Dropbox"</string>
     <string name="import_birthdays">"导入生日"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"是"</string>
     <string name="no">"没有"</string>
     <string name="add_reminder">"添加提醒？"</string>
-    <string name="show_hidden">"显示隐藏"</string>
     <string name="name">"名称"</string>
     <string name="contact">"联系"</string>
     <string name="background">"背景"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"在状态栏中永久通知"</string>
     <string name="show_in_home_screen">"在首页中显示屏幕小部件"</string>
     <string name="birthday_reminder">"生日提醒"</string>
-    <string name="backup">"备用"</string>
     <string name="contacts">"往来"</string>
     <string name="scan">"扫描"</string>
     <string name="no_events">"没有事件"</string>
-    <string name="custom">"定制"</string>
     <string name="theme">"主题"</string>
-    <string name="text_color">"文字颜色"</string>
-    <string name="button_color">"按钮颜色"</string>
     <string name="calendar">"日历"</string>
     <string name="title">"标题"</string>
     <string name="color">"颜色"</string>
     <string name="files">"档"</string>
-    <string name="list">"名单"</string>
     <string name="delete_all">"删除所有"</string>
     <string name="connect">"接"</string>
     <string name="google">"谷歌"</string>
     <string name="search">"搜索"</string>
     <string name="text_size">"字体大小"</string>
-    <string name="transparency">"透明度"</string>
-    <string name="header">"头"</string>
-    <string name="body">"身体"</string>
-    <string name="item">"项目"</string>
     <string name="exclusion">"排除"</string>
     <string name="hours">"小时"</string>
     <string name="ok">"好"</string>
@@ -118,7 +102,6 @@
     <string name="address">"地址"</string>
     <string name="no_places">"没有地方"</string>
     <string name="tasks">"任务"</string>
-    <string name="directions">"说明"</string>
     <string name="groups">"组"</string>
     <string name="places">"地方"</string>
     <string name="messages">"消息"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"购买PRO"</string>
     <string name="edit">"编辑"</string>
     <string name="delete">"删除"</string>
-    <string name="last_modified">"上一次更改"</string>
     <string name="no_notes">"没有任何记事"</string>
     <string name="next_event">"下一个事件"</string>
     <string name="remind_me">"提醒我..."</string>
@@ -137,12 +119,10 @@
     <string name="days">"天"</string>
     <string name="send">"发送"</string>
     <string name="radius">"半径"</string>
-    <string name="i_use_transport">"我使用的交通工具"</string>
     <string name="can_you_rate_this_application">"你可以给这个应用程序？"</string>
     <string name="rate">"率"</string>
     <string name="later">"后来"</string>
     <string name="never">"决不"</string>
-    <string name="no_application">"没有应用"</string>
     <string name="url">"网址..."</string>
     <string name="application">"应用"</string>
     <string name="open_link">"打开链接"</string>
@@ -156,7 +136,6 @@
     <string name="c">"小号"</string>
     <string name="m">"中号"</string>
     <string name="h">"H"</string>
-    <string name="minutes">"分钟"</string>
     <string name="mon">"星期一"</string>
     <string name="tue">"星期二"</string>
     <string name="wed">"星期三"</string>
@@ -186,22 +165,15 @@
     <string name="show_quick_answer_window">"显示呼叫拒绝回答后，窗口"</string>
     <string name="after_call_reminder">"电话提醒后"</string>
     <string name="_24_hour_time_format">"24小时时间格式"</string>
-    <string name="dark_mode">"黑暗模式"</string>
-    <string name="screen_orientation">"屏幕方向"</string>
     <string name="smart_fold">"智能折叠"</string>
     <string name="enable_folding_reminder_window">"打开提醒窗口智能折叠"</string>
     <string name="android_wear_notification">"Android Wear通知"</string>
-    <string name="preview">"预习"</string>
-    <string name="enable_reminder_preview">"启用提醒预览"</string>
     <string name="distance_notification">"通知关于距离"</string>
     <string name="map_type">"地图类型"</string>
     <string name="style_of_marker">"标记样式"</string>
     <string name="tracking_settings">"跟踪设置"</string>
-    <string name="encrypt">"加密"</string>
     <string name="enable_creating_reminder_for_quick_note">"创建快速的注意提醒"</string>
     <string name="quick_note_reminder">"提醒"</string>
-    <string name="delete_backup">"删除备份文件"</string>
-    <string name="delete_backup_file_when_remove_note">"删除备份文件时删除注"</string>
     <string name="appearance">"出现"</string>
     <string name="status_bar">"状态栏"</string>
     <string name="manual_remove">"手动删除"</string>
@@ -226,7 +198,6 @@
     <string name="changes">"变化"</string>
     <string name="open_source_licenses">"开源软件"</string>
     <string name="tell_friends">"告诉朋友们"</string>
-    <string name="auto_language">"自动语言"</string>
     <string name="default_string">"默认"</string>
     <string name="morning">"早上"</string>
     <string name="day">"天"</string>
@@ -234,7 +205,6 @@
     <string name="night">"晚"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"为了降低电池的使用，设置较高的值！"</string>
     <string name="saved">"保存"</string>
-    <string name="month">"月"</string>
     <string name="voice_control">"语音控制"</string>
     <string name="image">"图片"</string>
     <string name="font_style">"字体样式"</string>
@@ -250,7 +220,6 @@
     <string name="active_reminders">"主动提醒"</string>
     <string name="events">"活动"</string>
     <string name="must_be_not_empty">"一定不能空！"</string>
-    <string name="local_sync">"本地同步"</string>
     <string name="other_version_detected">"检测其它应用程序！"</string>
     <string name="open">"打开"</string>
     <string name="trying_to_log_in">"尝试登录..."</string>
@@ -259,8 +228,6 @@
     <string name="syncing_notes">"同步笔记..."</string>
     <string name="syncing_birthdays">"同步生日..."</string>
     <string name="done">"做"</string>
-    <string name="syncing_google_tasks">"谷歌同步任务"</string>
-    <string name="note_deleted">"注意：删除"</string>
     <string name="error_sending">"发送错误！"</string>
     <string name="delete_this_note">"删除备注？"</string>
     <string name="gallery">"画廊"</string>
@@ -276,7 +243,6 @@
     <string name="shopping_list">"购物清单"</string>
     <string name="deleted">"已删除"</string>
     <string name="radius_x_meters">"半径%s米"</string>
-    <string name="same_reminder_also_present">"同样提醒存在于应用程序！"</string>
     <string name="shopping_list_is_empty">"购物清单是空的！"</string>
     <string name="you_dont_select_any_day">"你不选择一天！"</string>
     <string name="you_dont_select_application">"您不要选择应用程序！"</string>
@@ -289,11 +255,8 @@
     <string name="dark_orange">"深橙色"</string>
     <string name="dark_purple">"深紫色"</string>
     <string name="teal">"深绿色"</string>
-    <string name="turn_screen_off_to_see_led_light">"关闭背光看到LED灯"</string>
     <string name="select_one_of_item">"选择项之一！"</string>
     <string name="selected_loudness_x_for_reminder">"选择响度%s的提醒"</string>
-    <string name="excluded_hours_x">"排除小时%s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"从时间排除%s到%s"</string>
     <string name="sunday">"星期日"</string>
     <string name="monday">"星期一"</string>
     <string name="local">"存储卡"</string>
@@ -315,8 +278,6 @@
     <string name="ukrainian">"乌克兰"</string>
     <string name="choose_file">"选择文件"</string>
     <string name="auto">"汽车"</string>
-    <string name="portrait">"肖像"</string>
-    <string name="landscape">"景观"</string>
     <string name="choose_group">"选择组"</string>
     <string name="none">"没有"</string>
     <string name="from_reminder">"从提醒"</string>
@@ -324,7 +285,6 @@
     <string name="disabled">"关掉"</string>
     <string name="enabled4">"启用"</string>
     <string name="choose_time">"选择时间"</string>
-    <string name="can_not_connect">"无法连接！"</string>
     <string name="pro_advantages">"的PRO优势："</string>
     <string name="buy">"购买"</string>
     <string name="different_settings_for_birthdays">"- 生日不同的设置;"</string>
@@ -333,7 +293,6 @@
     <string name="styles_for_marker">"-  16样式标记;"</string>
     <string name="option_for_image_blurring">"- 选件的图像模糊;"</string>
     <string name="additional_app_themes">"-  4个额外的应用程序的主题。"</string>
-    <string name="thank_you_for_buying_pro">"感谢您购买PRO许可证。"</string>
     <string name="press_again_to_exit">"再次按下退出"</string>
     <string name="delete_this_list">"删除这个名单？"</string>
     <string name="delete_list">"删除列表"</string>
@@ -349,7 +308,6 @@
     <string name="move_to_another_list">"移动到另一个列表"</string>
     <string name="edit_birthday">"编辑生日"</string>
     <string name="disconnect">"断开"</string>
-    <string name="no_action_selected">"无动作选择"</string>
     <string name="you_dont_select_any_calendar">"你不选择日历！"</string>
     <string name="please_wait">"请稍候..."</string>
     <string name="no_events_found">"找不到活动！"</string>
@@ -365,17 +323,11 @@
     <string name="x_days">"%s天"</string>
     <string name="reminder_snoozed">"提醒延后"</string>
     <string name="choose_application">"选择应用程序"</string>
-    <string name="flexible">"灵活"</string>
-    <string name="smart">"聪明"</string>
-    <string name="widgets_support">"小工具支持"</string>
-    <string name="dark_theme_support">"黑暗主题支持"</string>
-    <string name="cloud_sync">"云同步"</string>
     <string name="notes_support">"Notes支持"</string>
     <string name="no_messages">"没有邮件"</string>
     <string name="birthday">"生日"</string>
     <string name="permanent">"常驻"</string>
     <string name="today">"今天"</string>
-    <string name="paused">"已暂停"</string>
     <string name="less_than_minute">"比分钟不到"</string>
     <string name="birthday_notification">"通知"</string>
     <string name="found_nothing">"什么也没有发现"</string>
@@ -409,7 +361,6 @@
     <string name="name_az">"名称（AZ）"</string>
     <string name="name_za">"名称（ZA）"</string>
     <string name="delete_all_notes">"删除所有笔记吗？"</string>
-    <string name="sent">"发送"</string>
     <string name="no_google_tasks">"没有谷歌的任务"</string>
     <string name="edit_list">"编辑列表"</string>
     <string name="delete_completed_tasks">"删除已完成的任务"</string>
@@ -417,7 +368,6 @@
     <string name="completed_first">"首先完成"</string>
     <string name="trash_cleared">"清除垃圾"</string>
     <string name="trash_is_empty">"垃圾桶是空的"</string>
-    <string name="wrong_date_time_message">"错误的日期或时间！"</string>
     <string name="reminder_is_outdated">"提醒已经过时，首先编辑"</string>
     <string name="reminder_created">"创建提醒"</string>
     <string name="everyday">"每天"</string>
@@ -428,13 +378,10 @@
     <string name="additional">"额外"</string>
     <string name="other">"其他"</string>
     <string name="general">"一般"</string>
-    <string name="encrypting">"加密..."</string>
-    <string name="decrypting">"解密..."</string>
     <string name="xW">"%s 周"</string>
     <string name="xD">"%s 天"</string>
     <string name="x_min">"%s分钟"</string>
     <string name="gps_not_enabled">"未启用GPS！"</string>
-    <string name="moved_to_trash">"移到回收站"</string>
     <string name="no_limits">"无限"</string>
     <string name="e_mail">"电子邮件"</string>
     <string name="subject">"学科"</string>
@@ -447,9 +394,6 @@
     <string name="you_dont_insert_any_message">"你不插入一个消息！"</string>
     <string name="xM">"%s个月"</string>
     <string name="overdue">"过期的"</string>
-    <string name="and">"＆"</string>
-    <string name="android_wear_service">"Android Wear服务"</string>
-    <string name="enable_service_if_you_want_">"如果你想管理从手表提醒启用此服务"</string>
     <string name="search_place">"搜索的地方..."</string>
     <string name="click_to_select_reminder_type">"单击以选中提醒类型"</string>
     <string name="to_insert_task_by_voice">"要通过语音插入任务"</string>
@@ -463,7 +407,6 @@
     <string name="add_reminder_menu">"添加提醒"</string>
     <string name="x_meters">"%s米"</string>
     <string name="task_summary_is_empty">"任务摘要是空的！"</string>
-    <string name="exclusion_added">"新增排除"</string>
     <string name="x_day">"%s天"</string>
     <string name="x_hour">"%s小时"</string>
     <string name="x_dayzz">"%s天"</string>
@@ -473,11 +416,6 @@
     <string name="x_year">"%s一年"</string>
     <string name="x_yearzz">"%s年"</string>
     <string name="application_not_selected">"应用程序未选择"</string>
-    <string name="report">"有关错误报告"</string>
-    <string name="describe_your_problem">"描述您的问题"</string>
-    <string name="day_night">"早晚"</string>
-    <string name="enable_changing_theme_during_day">"启用白天更换主题"</string>
-    <string name="save_widget">"保存部件"</string>
     <string name="refresh">"刷新"</string>
     <string name="move_forward">"向前走"</string>
     <string name="move_backward">"返回上一页"</string>
@@ -567,7 +505,6 @@
     <string name="fill">填</string>
     <string name="grey">灰色</string>
     <string name="stroke">行程</string>
-    <string name="move_image">移动图像</string>
     <string name="add_text">添加文字</string>
     <string name="stroke_width">行程宽度</string>
     <string name="live_conversation">现场对话</string>
@@ -578,8 +515,6 @@
     <string name="seconds">秒</string>
     <string name="_minutes">分钟</string>
     <string name="_hours">小时</string>
-    <string name="add_note">添加备注</string>
-    <string name="failed_to_recognize_your_command">无法识别您的演讲</string>
     <string name="opacity">不透明度</string>
     <string name="loading_events">正在加载事件</string>
     <string name="canceled">取消</string>

@@ -6,14 +6,10 @@
     <string name="copyright">"2016\u00A9 Nazar Suhovich"</string>
 
     <string name="blur">"Estompa"</string>
-    <string name="next">"Următor →"</string>
-    <string name="previous">"Anterior"</string>
-    <string name="something_went_wrong">"A apărut o eroare!"</string>
 
     <string name="got_it">"AM ÎNŢELES"</string>
     <string name="select_style_for_marker">"Selectați stilul de marcator"</string>
     <string name="click_when_add_place">"Click pentru a închide harta"</string>
-    <string name="select_place_from_list">"Selectați locul din lista"</string>
     <string name="click_to_expand_collapse_map">"Click pentru a extinde / harta colaps"</string>
     <string name="cant_access_location_services">"Eu nu pot avea acces la serviciile de localizare!"</string>
     <string name="normal">"Normal"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"Verifica în mod automat"</string>
     <string name="interval">"Interval"</string>
     <string name="import_string">"Import"</string>
-    <string name="select_melody">"Selectați melodia"</string>
-    <string name="connect_to_cloud">"Conectează la nor"</string>
     <string name="google_drive">"Google Drive"</string>
     <string name="dropbox">"Dropbox"</string>
     <string name="import_birthdays">"Naștere import"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"Da"</string>
     <string name="no">"Nu"</string>
     <string name="add_reminder">"Adauga memento?"</string>
-    <string name="show_hidden">"Arată ascuns"</string>
     <string name="name">"Nume"</string>
     <string name="contact">"Contact"</string>
     <string name="background">"Fundal"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"Notificare permanent în bara de stare"</string>
     <string name="show_in_home_screen">"Arată în ecranul de start widget"</string>
     <string name="birthday_reminder">"Memento zi de naștere"</string>
-    <string name="backup">"Rezervă"</string>
     <string name="contacts">"Contacte"</string>
     <string name="scan">"Explorare"</string>
     <string name="no_events">"Nu există evenimente"</string>
-    <string name="custom">"Personaliza"</string>
     <string name="theme">"Temă"</string>
-    <string name="text_color">"Culoarea textului"</string>
-    <string name="button_color">"Culoarea butonului"</string>
     <string name="calendar">"Calendaristic"</string>
     <string name="title">"Titlu"</string>
     <string name="color">"Culoare"</string>
     <string name="files">"Fişiere"</string>
-    <string name="list">"Listă"</string>
     <string name="delete_all">"Sterge tot"</string>
     <string name="connect">"Lega"</string>
     <string name="google">"Google"</string>
     <string name="search">"A cauta"</string>
     <string name="text_size">"Dimensiunea textului"</string>
-    <string name="transparency">"Transparenţă"</string>
-    <string name="header">"Antet"</string>
-    <string name="body">"Corp"</string>
-    <string name="item">"Articol"</string>
     <string name="exclusion">"Excludere"</string>
     <string name="hours">"Ore"</string>
     <string name="ok">"Bine"</string>
@@ -118,7 +102,6 @@
     <string name="address">"Adresa"</string>
     <string name="no_places">"Nicio locație"</string>
     <string name="tasks">"Sarcini"</string>
-    <string name="directions">"Direcții"</string>
     <string name="groups">"Grupuri"</string>
     <string name="places">"locuri"</string>
     <string name="messages">"Mesaje"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"Vand PRO"</string>
     <string name="edit">"Edita"</string>
     <string name="delete">"Ștergere"</string>
-    <string name="last_modified">"Modificat ultima dată"</string>
     <string name="no_notes">"Nu există note"</string>
     <string name="next_event">"Următorul eveniment"</string>
     <string name="remind_me">"Aminteste-mi..."</string>
@@ -137,12 +119,10 @@
     <string name="days">"zi"</string>
     <string name="send">"Trimite"</string>
     <string name="radius">"Rază"</string>
-    <string name="i_use_transport">"Eu folosesc transportul"</string>
     <string name="can_you_rate_this_application">"Poate notați această aplicație?"</string>
     <string name="rate">"Rată"</string>
     <string name="later">"Mai tarziu"</string>
     <string name="never">"Nu"</string>
-    <string name="no_application">"Nu există aplicații"</string>
     <string name="url">"Url ..."</string>
     <string name="application">"Aplicație"</string>
     <string name="open_link">"Deschide link-ul"</string>
@@ -156,7 +136,6 @@
     <string name="c">"S"</string>
     <string name="m">"M"</string>
     <string name="h">"O"</string>
-    <string name="minutes">"minute"</string>
     <string name="mon">"LU"</string>
     <string name="tue">"MA"</string>
     <string name="wed">"MI"</string>
@@ -186,22 +165,15 @@
     <string name="show_quick_answer_window">"Arăta fereastra răspuns după respingerea apelului"</string>
     <string name="after_call_reminder">"Memento după apel"</string>
     <string name="_24_hour_time_format">"Formatul de timp 24 oră"</string>
-    <string name="dark_mode">"Modul de culoare închisă"</string>
-    <string name="screen_orientation">"Orientarea ecranului"</string>
     <string name="smart_fold">"Pliere inteligent"</string>
     <string name="enable_folding_reminder_window">"Permite plierea inteligentă a ferestrei memento"</string>
     <string name="android_wear_notification">"Notificare Android Wear"</string>
-    <string name="preview">"Previzualizare"</string>
-    <string name="enable_reminder_preview">"Permite previzualizarea memento"</string>
     <string name="distance_notification">"Notificarea despre distanță"</string>
     <string name="map_type">"Tipul de hartă"</string>
     <string name="style_of_marker">"Stilul de marcator"</string>
     <string name="tracking_settings">"Setările de urmărire"</string>
-    <string name="encrypt">"Cripta"</string>
     <string name="enable_creating_reminder_for_quick_note">"A crea memento pentru notă de rapid"</string>
     <string name="quick_note_reminder">"Aducere aminte"</string>
-    <string name="delete_backup">"Șterge fișier de rezervă"</string>
-    <string name="delete_backup_file_when_remove_note">"Șterge fișiere de rezervă în cazul notă de eliminare"</string>
     <string name="appearance">"Aspect"</string>
     <string name="status_bar">"Bara de stare"</string>
     <string name="manual_remove">"Eliminați manual"</string>
@@ -226,7 +198,6 @@
     <string name="changes">"Modificări"</string>
     <string name="open_source_licenses">"Open source software"</string>
     <string name="tell_friends">"Spune prietenilor"</string>
-    <string name="auto_language">"Automată a limbii"</string>
     <string name="default_string">"Lipsă"</string>
     <string name="morning">"Dimineaţă"</string>
     <string name="day">"Zi"</string>
@@ -234,7 +205,6 @@
     <string name="night">"Noapte"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"Pentru utilizarea bateriei mai mică, valori mai mari!"</string>
     <string name="saved">"Salvate"</string>
-    <string name="month">"Lună"</string>
     <string name="voice_control">"Control vocal"</string>
     <string name="image">"Imagine"</string>
     <string name="font_style">"Stilul fontului"</string>
@@ -250,7 +220,6 @@
     <string name="active_reminders">"Alertele active"</string>
     <string name="events">"Evenimente"</string>
     <string name="must_be_not_empty">"Nu trebuie să fie gol!"</string>
-    <string name="local_sync">"Sincronizare locală"</string>
     <string name="other_version_detected">"Alte aplicații detectat!"</string>
     <string name="open">"Deschis"</string>
     <string name="trying_to_log_in">"Încercați să vă conectați ..."</string>
@@ -259,8 +228,6 @@
     <string name="syncing_notes">"Notele sincronizează ..."</string>
     <string name="syncing_birthdays">"Se sincronizează aniversari ..."</string>
     <string name="done">"Terminat"</string>
-    <string name="syncing_google_tasks">"Se sincronizează Sarcini Google"</string>
-    <string name="note_deleted">"Notă eliminat"</string>
     <string name="error_sending">"Eroare la trimiterea!"</string>
     <string name="delete_this_note">"Șterge această notă?"</string>
     <string name="gallery">"Galerie"</string>
@@ -276,7 +243,6 @@
     <string name="shopping_list">"Lista de cumparaturi"</string>
     <string name="deleted">"Eliminat"</string>
     <string name="radius_x_meters">"Raza %s metri"</string>
-    <string name="same_reminder_also_present">"La fel de reamintire este prezentă în aplicare!"</string>
     <string name="shopping_list_is_empty">"Lista de cumpărături este gol!"</string>
     <string name="you_dont_select_any_day">"Nu selectați o zi!"</string>
     <string name="you_dont_select_application">"Nu selectați aplicație!"</string>
@@ -289,11 +255,8 @@
     <string name="dark_orange">"Portocaliu închis"</string>
     <string name="dark_purple">"Violet închis"</string>
     <string name="teal">"Verde inchis"</string>
-    <string name="turn_screen_off_to_see_led_light">"Opriți lumina de fundal pentru a vedea lumina LED"</string>
     <string name="select_one_of_item">"Selecta una din articol!"</string>
     <string name="selected_loudness_x_for_reminder">"Selectate intensitate %s pentru memento"</string>
-    <string name="excluded_hours_x">"Ore excluse %s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"Timp excluse de la %s la %s"</string>
     <string name="sunday">"Duminică"</string>
     <string name="monday">"luni"</string>
     <string name="local">"Card de memorie"</string>
@@ -315,8 +278,6 @@
     <string name="ukrainian">"Ucrainean"</string>
     <string name="choose_file">"Alege fișierul"</string>
     <string name="auto">"Auto"</string>
-    <string name="portrait">"Portret"</string>
-    <string name="landscape">"Peisaj"</string>
     <string name="choose_group">"Alege grup"</string>
     <string name="none">"Nici una"</string>
     <string name="from_reminder">"De la Memento"</string>
@@ -324,7 +285,6 @@
     <string name="disabled">"Oprit"</string>
     <string name="enabled4">"Activat"</string>
     <string name="choose_time">"Selectați perioada"</string>
-    <string name="can_not_connect">"Nu se poate conecta!"</string>
     <string name="pro_advantages">"Avantajele PRO:"</string>
     <string name="buy">"A cumpara"</string>
     <string name="different_settings_for_birthdays">"- Diferite setări pentru zilele de naștere;"</string>
@@ -333,7 +293,6 @@
     <string name="styles_for_marker">"- 16 stiluri pentru markerul;"</string>
     <string name="option_for_image_blurring">"- Opțiunea de imagini neclare;"</string>
     <string name="additional_app_themes">"- 4 teme de aplicații suplimentare."</string>
-    <string name="thank_you_for_buying_pro">"Vă mulțumim pentru achiziționarea PRO licență."</string>
     <string name="press_again_to_exit">"Apăsați din nou pentru a ieși"</string>
     <string name="delete_this_list">"Șterge această listă?"</string>
     <string name="delete_list">"Ștergeţi lista"</string>
@@ -349,7 +308,6 @@
     <string name="move_to_another_list">"Mutați în altă listă"</string>
     <string name="edit_birthday">"Edita zi de naștere"</string>
     <string name="disconnect">"Deconecta"</string>
-    <string name="no_action_selected">"Nicio acțiune selectat"</string>
     <string name="you_dont_select_any_calendar">"Nu selectați un calendar!"</string>
     <string name="please_wait">"Te rog asteapta..."</string>
     <string name="no_events_found">"Nu sunt relatate evenimente!"</string>
@@ -365,17 +323,11 @@
     <string name="x_days">"%s zile"</string>
     <string name="reminder_snoozed">"Memento amânate"</string>
     <string name="choose_application">"Alegeți aplicația"</string>
-    <string name="flexible">"Flexibil"</string>
-    <string name="smart">"Inteligent"</string>
-    <string name="widgets_support">"Suport widget-uri"</string>
-    <string name="dark_theme_support">"Suport temă întuneric"</string>
-    <string name="cloud_sync">"Sincronizare nor"</string>
     <string name="notes_support">"Suport note"</string>
     <string name="no_messages">"Nu există mesaje"</string>
     <string name="birthday">"Aniversare"</string>
     <string name="permanent">"Permanent"</string>
     <string name="today">"Astăzi"</string>
-    <string name="paused">"Întrerupt"</string>
     <string name="less_than_minute">"Mai puțin de minute"</string>
     <string name="birthday_notification">"Notificare"</string>
     <string name="found_nothing">"Găsit nimic"</string>
@@ -409,7 +361,6 @@
     <string name="name_az">"Nume (AZ)"</string>
     <string name="name_za">"Nume (ZA)"</string>
     <string name="delete_all_notes">"Șterge toate notele?"</string>
-    <string name="sent">"Trimis"</string>
     <string name="no_google_tasks">"Nici un Sarcini Google"</string>
     <string name="edit_list">"Editare listă"</string>
     <string name="delete_completed_tasks">"Șterge sarcinile finalizate"</string>
@@ -417,7 +368,6 @@
     <string name="completed_first">"Finalizat primul"</string>
     <string name="trash_cleared">"Gunoi eliminat"</string>
     <string name="trash_is_empty">"Coșul de gunoi este gol"</string>
-    <string name="wrong_date_time_message">"Data greșit sau timp!"</string>
     <string name="reminder_is_outdated">"Memento este depășit, se modifica în primul rând"</string>
     <string name="reminder_created">"Memento creat"</string>
     <string name="everyday">"In fiecare zi"</string>
@@ -428,13 +378,10 @@
     <string name="additional">"Adiţional"</string>
     <string name="other">"Alte"</string>
     <string name="general">"General"</string>
-    <string name="encrypting">"Criptarea ..."</string>
-    <string name="decrypting">"Decriptarea ..."</string>
     <string name="xW">"%sW"</string>
     <string name="xD">"%sZ"</string>
     <string name="x_min">"%s min"</string>
     <string name="gps_not_enabled">"GPS-ul nu este activat!"</string>
-    <string name="moved_to_trash">"Mutat în coșul de gunoi"</string>
     <string name="no_limits">"Fără limite"</string>
     <string name="e_mail">"E-mail"</string>
     <string name="subject">"Subiect"</string>
@@ -447,9 +394,6 @@
     <string name="you_dont_insert_any_message">"Nu introduceți un mesaj!"</string>
     <string name="xM">"%s M"</string>
     <string name="overdue">"întârziat"</string>
-    <string name="and">"&amp;"</string>
-    <string name="android_wear_service">"Serviciu Android Wear"</string>
-    <string name="enable_service_if_you_want_">"Activarea acestui serviciu, dacă doriți să gestioneze memento de la ceas"</string>
     <string name="search_place">"Locul de căutare ..."</string>
     <string name="click_to_select_reminder_type">"Clic pentru a selecta tipul de memento"</string>
     <string name="to_insert_task_by_voice">"Pentru a introduce sarcină prin voce"</string>
@@ -463,7 +407,6 @@
     <string name="add_reminder_menu">"Adauga memento"</string>
     <string name="x_meters">"%s metri"</string>
     <string name="task_summary_is_empty">"Rezumat sarcină este gol!"</string>
-    <string name="exclusion_added">"Excludere a adăugat"</string>
     <string name="x_day">"%s zile"</string>
     <string name="x_hour">"%s oră"</string>
     <string name="x_dayzz">"%s zile"</string>
@@ -474,17 +417,12 @@
     <string name="x_yearzz">"%s ani"</string>
     <string name="application_not_selected">De utilizare selectat</string>
     <string name="app_title">"Reminder PRO"</string>
-    <string name="report">Raport despre eroare</string>
-    <string name="describe_your_problem">Descrieți problema</string>
-    <string name="day_night">Zi/Noapte</string>
-    <string name="enable_changing_theme_during_day">Activați schimbarea automată temă în timpul zilei</string>
     <string name="move_backward">Reveni înapoi</string>
     <string name="create_task">Creează sarcină</string>
     <string name="type_to_search">Tastați pentru a căuta</string>
     <string name="up">Sus</string>
     <string name="move_forward">Mergi inainte</string>
     <string name="refresh">Reîmprospăta</string>
-    <string name="save_widget">Salvați widget</string>
     <string name="you_dont_select_any_hours">Nu selectați nici o oră!</string>
     <string name="could_not_launch_market">Nu a putut fi lansat pe piață</string>
     <string name="call_history">Istoricul apelurilor</string>
@@ -568,7 +506,6 @@
     <string name="fill">Completati</string>
     <string name="grey">Gri</string>
     <string name="stroke">Accident vascular cerebral</string>
-    <string name="move_image">Imagine mișcare</string>
     <string name="add_text">Adaugă text</string>
     <string name="stroke_width">Lățimea de accident vascular cerebral</string>
     <string name="live_conversation">Conversație live</string>
@@ -579,8 +516,6 @@
     <string name="seconds">secunde</string>
     <string name="_minutes">minute</string>
     <string name="_hours">ore</string>
-    <string name="add_note">Adauga notita</string>
-    <string name="failed_to_recognize_your_command">Nu a reușit să recunoască discursul</string>
     <string name="opacity">Opacitate</string>
     <string name="loading_events">Evenimente de încărcare</string>
     <string name="canceled">Anulat</string>

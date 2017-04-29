@@ -6,14 +6,10 @@
     <string name="copyright">"2016\u00a9 Nazar Suhovich"</string>
 
     <string name="blur">"Размытость"</string>
-    <string name="next">"Следующая"</string>
-    <string name="previous">"Предыдущая"</string>
-    <string name="something_went_wrong">"Что-то пошло не так!"</string>
 
     <string name="got_it">"ПОНЯТНО"</string>
     <string name="select_style_for_marker">"Выберите стиль для маркера"</string>
     <string name="click_when_add_place">"Нажмите, чтобы закрыть карту"</string>
-    <string name="select_place_from_list">"Выберите место из списка"</string>
     <string name="click_to_expand_collapse_map">"Нажмите, чтобы развернуть / свернуть карту"</string>
     <string name="cant_access_location_services">"Я не могу получить доступ к услугам местоположения!"</string>
     <string name="normal">"Нормальная"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"Проверять автоматически"</string>
     <string name="interval">"Интервал"</string>
     <string name="import_string">"Импортировать"</string>
-    <string name="select_melody">"Выбор мелодии"</string>
-    <string name="connect_to_cloud">"Подключение к облаку"</string>
     <string name="google_drive">"Диск Google"</string>
     <string name="dropbox">"Dropbox"</string>
     <string name="import_birthdays">"Импорт дней рождений"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"Да"</string>
     <string name="no">"Нет"</string>
     <string name="add_reminder">"Добавить напоминание?"</string>
-    <string name="show_hidden">"Показать скрытое"</string>
     <string name="name">"Имя"</string>
     <string name="contact">"Контакт"</string>
     <string name="background">"Фон"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"Постоянное уведомление в строке состояния"</string>
     <string name="show_in_home_screen">"Показать в виджете главного экрана"</string>
     <string name="birthday_reminder">"Напоминание о дне рождения"</string>
-    <string name="backup">"Резервное копирование"</string>
     <string name="contacts">"Контакты"</string>
     <string name="scan">"Сканировать"</string>
     <string name="no_events">"Нет событий"</string>
-    <string name="custom">"Настроить"</string>
     <string name="theme">"Тема"</string>
-    <string name="text_color">"Цвет текста"</string>
-    <string name="button_color">"Цвет кнопки"</string>
     <string name="calendar">"Календарь"</string>
     <string name="title">"Название"</string>
     <string name="color">"Цвет"</string>
     <string name="files">"Файлы"</string>
-    <string name="list">"Список"</string>
     <string name="delete_all">"Удалить все"</string>
     <string name="connect">"Подключить"</string>
     <string name="google">"Google"</string>
     <string name="search">"Поиск"</string>
     <string name="text_size">"Размер текста"</string>
-    <string name="transparency">"Прозрачность"</string>
-    <string name="header">"Заголовок"</string>
-    <string name="body">"Тело"</string>
-    <string name="item">"Пункт"</string>
     <string name="exclusion">"Исключение"</string>
     <string name="hours">"Часов"</string>
     <string name="ok">"ОК"</string>
@@ -118,7 +102,6 @@
     <string name="address">"Адрес"</string>
     <string name="no_places">"Нет мест"</string>
     <string name="tasks">"Задания"</string>
-    <string name="directions">"Направления"</string>
     <string name="groups">"Группы"</string>
     <string name="places">"Места"</string>
     <string name="messages">"Сообщения"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"Купить PRO"</string>
     <string name="edit">"Изменить"</string>
     <string name="delete">"Удалить"</string>
-    <string name="last_modified">"Последнее изменение"</string>
     <string name="no_notes">"Нет заметок"</string>
     <string name="next_event">"Следующее событие"</string>
     <string name="remind_me">"Напомни мне…"</string>
@@ -137,12 +119,10 @@
     <string name="days">"дней"</string>
     <string name="send">"Отправить"</string>
     <string name="radius">"Радиус"</string>
-    <string name="i_use_transport">"Я использую транспорт"</string>
     <string name="can_you_rate_this_application">"Вы можете оценить это приложение?"</string>
     <string name="rate">"Оценить"</string>
     <string name="later">"Позже"</string>
     <string name="never">"Никогда"</string>
-    <string name="no_application">"Нет приложений"</string>
     <string name="url">"Url…"</string>
     <string name="application">"Приложение"</string>
     <string name="open_link">"Открыть ссылку"</string>
@@ -156,7 +136,6 @@
     <string name="c">"С"</string>
     <string name="m">"М"</string>
     <string name="h">"Ч"</string>
-    <string name="minutes">"минут"</string>
     <string name="mon">"ПН"</string>
     <string name="tue">"ВТ"</string>
     <string name="wed">"СР"</string>
@@ -186,22 +165,15 @@
     <string name="show_quick_answer_window">"Показать окно ответа после отказа вызова"</string>
     <string name="after_call_reminder">"Напоминание после вызова"</string>
     <string name="_24_hour_time_format">"Формат времени 24 часа"</string>
-    <string name="dark_mode">"Темный режим"</string>
-    <string name="screen_orientation">"Ориентация экрана"</string>
     <string name="smart_fold">"Интеллектуальное сворачивание"</string>
     <string name="enable_folding_reminder_window">"Включить интеллектуальное сворачивание окна напоминания"</string>
     <string name="android_wear_notification">"Уведомление Android Wear"</string>
-    <string name="preview">"Предварительный просмотр"</string>
-    <string name="enable_reminder_preview">"Включить предварительный просмотр напоминания"</string>
     <string name="distance_notification">"Уведомление о расстоянии"</string>
     <string name="map_type">"Тип карты"</string>
     <string name="style_of_marker">"Стиль маркера"</string>
     <string name="tracking_settings">"Настройки слежения"</string>
-    <string name="encrypt">"Шифровать"</string>
     <string name="enable_creating_reminder_for_quick_note">"Создать напоминание для быстрой заметки"</string>
     <string name="quick_note_reminder">"Напоминание"</string>
-    <string name="delete_backup">"Удалить файл резервной копии"</string>
-    <string name="delete_backup_file_when_remove_note">"Удалить файл резервной копии, когда удаляется заметка"</string>
     <string name="appearance">"Внешний вид"</string>
     <string name="status_bar">"Статус бар"</string>
     <string name="manual_remove">"Удалить вручную"</string>
@@ -226,7 +198,6 @@
     <string name="changes">"Изменения"</string>
     <string name="open_source_licenses">"Программное обеспечение с открытым исходным кодом"</string>
     <string name="tell_friends">"Рассказать друзьям"</string>
-    <string name="auto_language">"Автоматический язык"</string>
     <string name="default_string">"По умолчанию"</string>
     <string name="morning">"Утро"</string>
     <string name="day">"День"</string>
@@ -234,7 +205,6 @@
     <string name="night">"Ночь"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"Для сокращения потребления батареи, установите более высокие значения!"</string>
     <string name="saved">"Сохранено"</string>
-    <string name="month">"Месяц"</string>
     <string name="voice_control">"Голосовое управление"</string>
     <string name="image">"Изображение"</string>
     <string name="font_style">"Стиль шрифта"</string>
@@ -250,7 +220,6 @@
     <string name="active_reminders">"Активные напоминания"</string>
     <string name="events">"События"</string>
     <string name="must_be_not_empty">"Должно быть не пустым!"</string>
-    <string name="local_sync">"Локальная синхронизация"</string>
     <string name="other_version_detected">"Другое приложение обнаружено!"</string>
     <string name="open">"Открыть"</string>
     <string name="trying_to_log_in">"Попытка войти…"</string>
@@ -259,8 +228,6 @@
     <string name="syncing_notes">"Синхронизация заметок…"</string>
     <string name="syncing_birthdays">"Синхронизация дней рождений…"</string>
     <string name="done">"Готово"</string>
-    <string name="syncing_google_tasks">"Синхронизация Задач Google"</string>
-    <string name="note_deleted">"Заметка удалена"</string>
     <string name="error_sending">"Ошибка при отправке!"</string>
     <string name="delete_this_note">"Удалить эту заметку?"</string>
     <string name="gallery">"Галерея"</string>
@@ -276,7 +243,6 @@
     <string name="shopping_list">"Список покупок"</string>
     <string name="deleted">"Удалено"</string>
     <string name="radius_x_meters">"Радиус %s метров"</string>
-    <string name="same_reminder_also_present">"То же напоминание присутствует в приложении!"</string>
     <string name="shopping_list_is_empty">"Список покупок пуст!"</string>
     <string name="you_dont_select_any_day">"Вы не выберали день!"</string>
     <string name="you_dont_select_application">"Вы не выбрали приложение!"</string>
@@ -289,11 +255,8 @@
     <string name="dark_orange">"Темно-оранжевый"</string>
     <string name="dark_purple">"Темно фиолетовый"</string>
     <string name="teal">"Темно-зеленый"</string>
-    <string name="turn_screen_off_to_see_led_light">"Выключите подсветку, чтобы увидеть свет LED"</string>
     <string name="select_one_of_item">"Выберите один из пунктов!"</string>
     <string name="selected_loudness_x_for_reminder">"Выбрано громкость %s для напоминания"</string>
-    <string name="excluded_hours_x">"Исключенные часи %s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"Исключено время от %s , до %s"</string>
     <string name="sunday">"Воскресенье"</string>
     <string name="monday">"Понедельник"</string>
     <string name="local">"Карта памяти"</string>
@@ -315,8 +278,6 @@
     <string name="ukrainian">"Украинский"</string>
     <string name="choose_file">"Выберите файл"</string>
     <string name="auto">"Автоматически"</string>
-    <string name="portrait">"Портретная"</string>
-    <string name="landscape">"Горизонтальная"</string>
     <string name="choose_group">"Выберите группу"</string>
     <string name="none">"Нету"</string>
     <string name="from_reminder">"С Напоминания"</string>
@@ -324,7 +285,6 @@
     <string name="disabled">"Выключен"</string>
     <string name="enabled4">"Включено"</string>
     <string name="choose_time">"Выберите время"</string>
-    <string name="can_not_connect">"Невозможно соединиться!"</string>
     <string name="pro_advantages">"Преимущества PRO:"</string>
     <string name="buy">"Купить"</string>
     <string name="different_settings_for_birthdays">"- Различные настройки для дней рождений;"</string>
@@ -333,7 +293,6 @@
     <string name="styles_for_marker">"- 16 стилей для маркера;"</string>
     <string name="option_for_image_blurring">"- Вариант для размытия изображения;"</string>
     <string name="additional_app_themes">"- 4 дополнительные темы приложения."</string>
-    <string name="thank_you_for_buying_pro">"Благодарим Вас за покупку PRO лицензии."</string>
     <string name="press_again_to_exit">"Нажмите еще раз, чтобы выйти"</string>
     <string name="delete_this_list">"Удалить этот список?"</string>
     <string name="delete_list">"Удалить список"</string>
@@ -349,7 +308,6 @@
     <string name="move_to_another_list">"Переход к другому списку"</string>
     <string name="edit_birthday">"Редактировать день рождения"</string>
     <string name="disconnect">"Отключить"</string>
-    <string name="no_action_selected">"Никаких действий не выбрано"</string>
     <string name="you_dont_select_any_calendar">"Вы не выберали календарь!"</string>
     <string name="please_wait">"Пожалуйста, подождите…"</string>
     <string name="no_events_found">"События не найдены!"</string>
@@ -365,17 +323,11 @@
     <string name="x_days">"%s дней"</string>
     <string name="reminder_snoozed">"Напоминание отложено"</string>
     <string name="choose_application">"Выберите приложение"</string>
-    <string name="flexible">"Гибкое"</string>
-    <string name="smart">"Умное"</string>
-    <string name="widgets_support">"Поддержывает виджеты"</string>
-    <string name="dark_theme_support">"Поддерживает темную тему"</string>
-    <string name="cloud_sync">"Синхронизация с облаком"</string>
     <string name="notes_support">"Поддерживает заметки"</string>
     <string name="no_messages">"Нет сообщений"</string>
     <string name="birthday">"День рождения"</string>
     <string name="permanent">"Постоянное"</string>
     <string name="today">"Cегодня"</string>
-    <string name="paused">"Приостановлено"</string>
     <string name="less_than_minute">"Менее минуты"</string>
     <string name="birthday_notification">"Уведомление"</string>
     <string name="found_nothing">"Ничего не найдено"</string>
@@ -409,7 +361,6 @@
     <string name="name_az">"Имя (А-Я)"</string>
     <string name="name_za">"Имя (Я-А)"</string>
     <string name="delete_all_notes">"Удалить все записи?"</string>
-    <string name="sent">"Отправлено"</string>
     <string name="no_google_tasks">"Нет Задач Google"</string>
     <string name="edit_list">"Редактировать список"</string>
     <string name="delete_completed_tasks">"Удалить завершенные задачи"</string>
@@ -417,7 +368,6 @@
     <string name="completed_first">"Завершенные сначала"</string>
     <string name="trash_cleared">"Корзина очищена"</string>
     <string name="trash_is_empty">"Корзина пуста"</string>
-    <string name="wrong_date_time_message">"Неправильная дата или время!"</string>
     <string name="reminder_is_outdated">"Напоминание устарело, отредактируйте его сначала"</string>
     <string name="reminder_created">"Напоминание создано"</string>
     <string name="everyday">"Каждый день"</string>
@@ -428,13 +378,10 @@
     <string name="additional">"Дополнительные"</string>
     <string name="other">"Другие"</string>
     <string name="general">"Общие"</string>
-    <string name="encrypting">"Шифрование…"</string>
-    <string name="decrypting">"Расшифровка…"</string>
     <string name="xW">"%sН"</string>
     <string name="xD">"%sД"</string>
     <string name="x_min">"%s мин"</string>
     <string name="gps_not_enabled">"GPS не включен!"</string>
-    <string name="moved_to_trash">"Перемещено в корзину"</string>
     <string name="no_limits">"Без ограничений"</string>
     <string name="e_mail">"Эл. почта"</string>
     <string name="subject">"Предмет"</string>
@@ -447,9 +394,6 @@
     <string name="you_dont_insert_any_message">"Вы не ввели сообщение!"</string>
     <string name="xM">"%sM"</string>
     <string name="overdue">"Просроченный"</string>
-    <string name="and">"и"</string>
-    <string name="android_wear_service">"Служба Android Wear"</string>
-    <string name="enable_service_if_you_want_">"Включите эту услугу, если вы хотите управлять напоминаниями из часов"</string>
     <string name="search_place">"Поиск места…"</string>
     <string name="click_to_select_reminder_type">"Нажмите, чтобы выбрать тип напоминания"</string>
     <string name="to_insert_task_by_voice">"Чтобы вставить задачу по голосу"</string>
@@ -463,7 +407,6 @@
     <string name="add_reminder_menu">"Добавить напоминание"</string>
     <string name="x_meters">"%s метров"</string>
     <string name="task_summary_is_empty">"Задание пустое!"</string>
-    <string name="exclusion_added">"Исключение добавлено"</string>
     <string name="x_day">%s день</string>
     <string name="x_hour">%s час</string>
     <string name="x_dayzz">%s дня</string>
@@ -473,17 +416,12 @@
     <string name="x_year">%s год</string>
     <string name="x_yearzz">%s года</string>
     <string name="application_not_selected">Приложение не выбрано</string>
-    <string name="report">Сообщить об ошибке</string>
-    <string name="describe_your_problem">Опишите проблему</string>
-    <string name="day_night">День/Ночь</string>
-    <string name="enable_changing_theme_during_day">Включение автоматического изменения темы в течение дня</string>
     <string name="move_backward">Назад</string>
     <string name="create_task">Создать задачу</string>
     <string name="type_to_search">Введите запрос для поиска</string>
     <string name="up">Вверх</string>
     <string name="move_forward">Вперед</string>
     <string name="refresh">Обновить</string>
-    <string name="save_widget">Сохранить виджет</string>
     <string name="app_title">"Напоминания"</string>
     <string name="you_dont_select_any_hours">Вы не выбрали время!</string>
     <string name="could_not_launch_market">Не удалось запустить Play Market</string>
@@ -568,7 +506,6 @@
     <string name="fill">Заполнить</string>
     <string name="grey">Серый</string>
     <string name="stroke">Мазок</string>
-    <string name="move_image">Перемещение изображения</string>
     <string name="add_text">Добавить текст</string>
     <string name="stroke_width">Ширина линии</string>
     <string name="live_conversation">Живой разговор</string>
@@ -579,8 +516,6 @@
     <string name="seconds">секунды</string>
     <string name="_minutes">минуты</string>
     <string name="_hours">часы</string>
-    <string name="add_note">Добавить заметку</string>
-    <string name="failed_to_recognize_your_command">Не удалось распознать вашу речь</string>
     <string name="opacity">Непрозрачность</string>
     <string name="loading_events">Загрузка событий</string>
     <string name="canceled">Отменено</string>
