@@ -24,30 +24,36 @@
             android:layout_marginTop="8dp"
             android:orientation="vertical">
 
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                    android:id="@+id/callAction"
+                <RadioGroup
+                    android:id="@+id/radioGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/make_call"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:radio_font_style="roboto_regular" />
+                    android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                    android:id="@+id/messageAction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:text="@string/sms"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:radio_font_style="roboto_regular" />
-            </RadioGroup>
+                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                        android:id="@+id/callAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/make_call"
+                        android:textSize="@dimen/create_text_size_normal"
+                        app:radio_font_style="roboto_regular" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                        android:id="@+id/messageAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="@string/sms"
+                        android:textSize="@dimen/create_text_size_normal"
+                        app:radio_font_style="roboto_regular" />
+                </RadioGroup>
+
+            </HorizontalScrollView>
 
             <LinearLayout
                 android:layout_width="fill_parent"
