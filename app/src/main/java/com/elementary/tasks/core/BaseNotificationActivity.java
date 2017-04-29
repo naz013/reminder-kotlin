@@ -438,7 +438,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         builder.setContentText(appName);
         if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_call_black_24dp);
+            builder.setSmallIcon(R.drawable.ic_call_white_24dp);
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
@@ -485,7 +485,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         builder.setContentText(appName);
         if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
@@ -530,7 +530,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         builder.setContentText(appName);
         if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
@@ -592,7 +592,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         builder.setContentText(appName);
         if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
