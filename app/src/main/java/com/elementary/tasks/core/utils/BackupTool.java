@@ -68,7 +68,7 @@ public final class BackupTool {
         }
     }
 
-    public void importTemplates() throws IOException {
+    public void importTemplates() throws IOException, IllegalStateException {
         File dir = MemoryUtil.getTemplatesDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -99,12 +99,12 @@ public final class BackupTool {
         }
     }
 
-    public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException {
+    public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), TemplateItem.class));
         return item.get();
     }
 
-    public TemplateItem getTemplate(String filePath, String json) throws IOException {
+    public TemplateItem getTemplate(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), TemplateItem.class));
             return item.get();
@@ -122,7 +122,7 @@ public final class BackupTool {
         }
     }
 
-    public void importPlaces() throws IOException {
+    public void importPlaces() throws IOException, IllegalStateException {
         File dir = MemoryUtil.getPlacesDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -153,12 +153,12 @@ public final class BackupTool {
         }
     }
 
-    public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException {
+    public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), PlaceItem.class));
         return item.get();
     }
 
-    public PlaceItem getPlace(String filePath, String json) throws IOException {
+    public PlaceItem getPlace(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), PlaceItem.class));
             return item.get();
@@ -176,7 +176,7 @@ public final class BackupTool {
         }
     }
 
-    public void importBirthdays() throws IOException {
+    public void importBirthdays() throws IOException, IllegalStateException {
         File dir = MemoryUtil.getBirthdaysDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -207,12 +207,12 @@ public final class BackupTool {
         }
     }
 
-    public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException {
+    public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), BirthdayItem.class));
         return item.get();
     }
 
-    public BirthdayItem getBirthday(String filePath, String json) throws IOException {
+    public BirthdayItem getBirthday(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), BirthdayItem.class));
             return item.get();
@@ -248,7 +248,7 @@ public final class BackupTool {
         }
     }
 
-    public void importGroups() throws IOException {
+    public void importGroups() throws IOException, IllegalStateException {
         File dir = MemoryUtil.getGroupsDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -277,12 +277,12 @@ public final class BackupTool {
         return false;
     }
 
-    public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException {
+    public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), GroupItem.class));
         return item.get();
     }
 
-    public GroupItem getGroup(String filePath, String json) throws IOException {
+    public GroupItem getGroup(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), GroupItem.class));
             return item.get();
@@ -300,7 +300,7 @@ public final class BackupTool {
         }
     }
 
-    public void importReminders(Context mContext) throws IOException {
+    public void importReminders(Context mContext) throws IOException, IllegalStateException {
         File dir = MemoryUtil.getRemindersDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -341,12 +341,12 @@ public final class BackupTool {
         }
     }
 
-    public Reminder getReminder(ContentResolver cr, Uri name) throws IOException {
+    public Reminder getReminder(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Reminder.class));
         return item.get();
     }
 
-    public Reminder getReminder(String filePath, String json) throws IOException {
+    public Reminder getReminder(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Reminder.class));
             return item.get();
@@ -358,12 +358,12 @@ public final class BackupTool {
         }
     }
 
-    public NoteItem getNote(ContentResolver cr, Uri name) throws IOException {
+    public NoteItem getNote(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
         WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
         return note.get();
     }
 
-    public NoteItem getNote(String filePath, String json) throws IOException {
+    public NoteItem getNote(String filePath, String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), NoteItem.class));
             return item.get();
@@ -381,7 +381,7 @@ public final class BackupTool {
         }
     }
 
-    public void importNotes() throws IOException {
+    public void importNotes() throws IOException, IllegalStateException {
         File dir = MemoryUtil.getNotesDir();
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
@@ -484,7 +484,7 @@ public final class BackupTool {
      * @return Decrypted string
      */
     public static String decrypt(String string) {
-        String result = "";
+        String result = string;
         try {
             byte[] byteString = Base64.decode(string, Base64.DEFAULT);
             result = new String(byteString, "UTF-8");

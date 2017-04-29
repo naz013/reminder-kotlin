@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding;
@@ -258,7 +259,12 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
             if (i > 0) colors.put(item.getListId(), item.getColor());
         }
         int pos = getPrefs().getLastGoogleList();
-        final TaskPagerAdapter pagerAdapter = new TaskPagerAdapter(getFragmentManager(), taskListDatum, colors);
+        TaskPagerAdapter pagerAdapter;
+        if (Module.isJellyMR1()) {
+            pagerAdapter = new TaskPagerAdapter(getChildFragmentManager(), taskListDatum, colors);
+        } else {
+            pagerAdapter = new TaskPagerAdapter(getFragmentManager(), taskListDatum, colors);
+        }
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
