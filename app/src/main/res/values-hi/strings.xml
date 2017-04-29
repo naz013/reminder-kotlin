@@ -6,14 +6,10 @@
     <string name="copyright">"2016\u00A9 नजर Suhovich"</string>
 
     <string name="blur">"कलंक"</string>
-    <string name="next">"अगला"</string>
-    <string name="previous">"पूर्व"</string>
-    <string name="something_went_wrong">"कुछ गलत हो गया!"</string>
 
     <string name="got_it">"समझ गया"</string>
     <string name="select_style_for_marker">"मार्कर के लिए शैली का चयन"</string>
     <string name="click_when_add_place">"नक्शा बंद करने के लिए क्लिक करें"</string>
-    <string name="select_place_from_list">"सूची से जगह का चयन करें"</string>
     <string name="click_to_expand_collapse_map">"विस्तार करने के लिए क्लिक करें / ढहने नक्शा"</string>
     <string name="cant_access_location_services">"मैं स्थान सेवाओं के लिए उपयोग नहीं कर सकते!"</string>
     <string name="normal">"साधारण"</string>
@@ -43,8 +39,6 @@
     <string name="check_automatically">"स्वचालित रूप से जाँच करें"</string>
     <string name="interval">"अंतराल"</string>
     <string name="import_string">"आयात"</string>
-    <string name="select_melody">"राग का चयन"</string>
-    <string name="connect_to_cloud">"क्लाउड से कनेक्ट करें"</string>
     <string name="google_drive">"गूगल ड्राइव"</string>
     <string name="dropbox">"ड्रॉपबॉक्स"</string>
     <string name="import_birthdays">"आयात जन्मदिन"</string>
@@ -57,7 +51,6 @@
     <string name="yes">"हाँ"</string>
     <string name="no">"नहीं"</string>
     <string name="add_reminder">"अनुस्मारक जोड़ें?"</string>
-    <string name="show_hidden">"छिपा हुआ दिखाएं"</string>
     <string name="name">"नाम"</string>
     <string name="contact">"संपर्क"</string>
     <string name="background">"पृष्ठभूमि"</string>
@@ -79,28 +72,19 @@
     <string name="permanent_status_bar_notification">"स्थिति पट्टी में स्थायी अधिसूचना"</string>
     <string name="show_in_home_screen">"होम स्क्रीन विजेट में दिखाएँ"</string>
     <string name="birthday_reminder">"जन्मदिन अनुस्मारक"</string>
-    <string name="backup">"बैकअप"</string>
     <string name="contacts">"संपर्क"</string>
     <string name="scan">"स्कैन"</string>
     <string name="no_events">"कोई आयोजन नहीं"</string>
-    <string name="custom">"अनुकूलित"</string>
     <string name="theme">"विषय"</string>
-    <string name="text_color">"पाठ का रंग"</string>
-    <string name="button_color">"बटन रंग"</string>
     <string name="calendar">"कैलेंडर"</string>
     <string name="title">"शीर्षक"</string>
     <string name="color">"रंग"</string>
     <string name="files">"फ़ाइलें"</string>
-    <string name="list">"सूची"</string>
     <string name="delete_all">"सभी हटा दो"</string>
     <string name="connect">"कनेक्ट"</string>
     <string name="google">"गूगल"</string>
     <string name="search">"खोज"</string>
     <string name="text_size">"टेक्स्ट का साइज़"</string>
-    <string name="transparency">"ट्रांसपेरेंसी"</string>
-    <string name="header">"हैडर"</string>
-    <string name="body">"शव"</string>
-    <string name="item">"मद"</string>
     <string name="exclusion">"बहिष्करण"</string>
     <string name="hours">"घंटे"</string>
     <string name="ok">"ठीक है"</string>
@@ -118,7 +102,6 @@
     <string name="address">"पता"</string>
     <string name="no_places">"कोई स्थान नहीं"</string>
     <string name="tasks">"कार्य"</string>
-    <string name="directions">"दिशा-निर्देश"</string>
     <string name="groups">"समूह"</string>
     <string name="places">"स्थान"</string>
     <string name="messages">"संदेश"</string>
@@ -129,7 +112,6 @@
     <string name="buy_pro">"खरीदारी के समर्थक"</string>
     <string name="edit">"संपादित करें"</string>
     <string name="delete">"मिटाना"</string>
-    <string name="last_modified">"अंतिम बार संशोधित"</string>
     <string name="no_notes">"कोई नोट"</string>
     <string name="next_event">"अगली घटना"</string>
     <string name="remind_me">"मुझे याद दिलाना..."</string>
@@ -137,12 +119,10 @@
     <string name="days">"दिन"</string>
     <string name="send">"भेजना"</string>
     <string name="radius">"त्रिज्या"</string>
-    <string name="i_use_transport">"मैं परिवहन का उपयोग"</string>
     <string name="can_you_rate_this_application">"आप इस आवेदन दर कर सकते हैं?"</string>
     <string name="rate">"दर"</string>
     <string name="later">"बाद में"</string>
     <string name="never">"कभी नहीं"</string>
-    <string name="no_application">"कोई अनुप्रयोगों"</string>
     <string name="url">"यूआरएल ..."</string>
     <string name="application">"आवेदन"</string>
     <string name="open_link">"खुला लिंक"</string>
@@ -156,7 +136,6 @@
     <string name="c">"से"</string>
     <string name="m">"मि"</string>
     <string name="h">"स"</string>
-    <string name="minutes">"मिनटों"</string>
     <string name="mon">"सोम"</string>
     <string name="tue">"मंगल"</string>
     <string name="wed">"बुध"</string>
@@ -186,22 +165,15 @@
     <string name="show_quick_answer_window">"कॉल अस्वीकृति के बाद जवाब खिड़की दिखाएँ"</string>
     <string name="after_call_reminder">"कॉल के बाद अनुस्मारक"</string>
     <string name="_24_hour_time_format">"24 घंटे का समय स्वरूप"</string>
-    <string name="dark_mode">"डार्क मोड"</string>
-    <string name="screen_orientation">"स्क्रीन अनुकूलन"</string>
     <string name="smart_fold">"बुद्धिमान तह"</string>
     <string name="enable_folding_reminder_window">"अनुस्मारक खिड़की के बुद्धिमान तह सक्षम करें"</string>
     <string name="android_wear_notification">"Android Wear अधिसूचना"</string>
-    <string name="preview">"पूर्वावलोकन"</string>
-    <string name="enable_reminder_preview">"अनुस्मारक के पूर्वावलोकन सक्षम करें"</string>
     <string name="distance_notification">"दूरी के बारे में अधिसूचना"</string>
     <string name="map_type">"नक्शे के प्रकार"</string>
     <string name="style_of_marker">"मार्कर की शैली"</string>
     <string name="tracking_settings">"ट्रैकिंग सेटिंग"</string>
-    <string name="encrypt">"एन्क्रिप्ट"</string>
     <string name="enable_creating_reminder_for_quick_note">"त्वरित टिप्पणी के लिए अनुस्मारक बनाएं"</string>
     <string name="quick_note_reminder">"अनुस्मारक"</string>
-    <string name="delete_backup">"बैकअप फ़ाइल हटाएँ"</string>
-    <string name="delete_backup_file_when_remove_note">"बैकअप फ़ाइल को नष्ट हटाने के नोट"</string>
     <string name="appearance">"दिखावट"</string>
     <string name="status_bar">"स्टेटस बार"</string>
     <string name="manual_remove">"मैन्युअल रूप से निकालें"</string>
@@ -226,7 +198,6 @@
     <string name="changes">"परिवर्तन"</string>
     <string name="open_source_licenses">"खुला स्रोत सॉफ्टवेयर"</string>
     <string name="tell_friends">"मित्रों को बताओ"</string>
-    <string name="auto_language">"स्वत: भाषा"</string>
     <string name="default_string">"चूक"</string>
     <string name="morning">"सुबह"</string>
     <string name="day">"दिन"</string>
@@ -234,7 +205,6 @@
     <string name="night">"रात"</string>
     <string name="for_lower_battery_usage_set_bigger_values">"कम बैटरी उपयोग के लिए, उच्च मूल्यों को निर्धारित!"</string>
     <string name="saved">"बचाया"</string>
-    <string name="month">"महीना"</string>
     <string name="voice_control">"आवाज नियंत्रण"</string>
     <string name="image">"छवि"</string>
     <string name="font_style">"फ़ॉन्ट शैली"</string>
@@ -250,7 +220,6 @@
     <string name="active_reminders">"सक्रिय अनुस्मारक"</string>
     <string name="events">"घटनाओं"</string>
     <string name="must_be_not_empty">"खाली नहीं किया जाना चाहिए!"</string>
-    <string name="local_sync">"स्थानीय सिंक"</string>
     <string name="other_version_detected">"अन्य आवेदन का पता चला!"</string>
     <string name="open">"खुला"</string>
     <string name="trying_to_log_in">"में लॉग इन करने की कोशिश कर रहा है ..."</string>
@@ -259,8 +228,6 @@
     <string name="syncing_notes">"सिंक्रनाइज़ किए जा रहे नोटों ..."</string>
     <string name="syncing_birthdays">"जन्मदिन सिंक्रनाइज़ किए जा रहे ..."</string>
     <string name="done">"कर दिया"</string>
-    <string name="syncing_google_tasks">"Google कार्य सिंक्रनाइज़ किए जा रहे"</string>
-    <string name="note_deleted">"नोट नष्ट कर दिया"</string>
     <string name="error_sending">"भेजने में त्रुटि हुई!"</string>
     <string name="delete_this_note">"इस नोट को मिटाना?"</string>
     <string name="gallery">"गेलरी"</string>
@@ -276,7 +243,6 @@
     <string name="shopping_list">"खरीदारी की सूची"</string>
     <string name="deleted">"हटाए गए"</string>
     <string name="radius_x_meters">"त्रिज्या %s मीटर"</string>
-    <string name="same_reminder_also_present">"उसी अनुस्मारक आवेदन में मौजूद है!"</string>
     <string name="shopping_list_is_empty">"खरीदारी की सूची खाली है!"</string>
     <string name="you_dont_select_any_day">"आप एक दिन का चयन नहीं!"</string>
     <string name="you_dont_select_application">"आप आवेदन का चयन नहीं करते!"</string>
@@ -289,11 +255,8 @@
     <string name="dark_orange">"गहरा नारंगी"</string>
     <string name="dark_purple">"गहरा बैंगनी"</string>
     <string name="teal">"गहरा हरा"</string>
-    <string name="turn_screen_off_to_see_led_light">"एलईडी प्रकाश को देखने के backlight बंद करें"</string>
     <string name="select_one_of_item">"आइटम में से एक का चयन करें!"</string>
     <string name="selected_loudness_x_for_reminder">"चुने गए प्रबलता %s याद दिलाने के लिए"</string>
-    <string name="excluded_hours_x">"अपवर्जित घंटे %s"</string>
-    <string formatted="false" name="excluded_time_from_x_to_x">"समय से अपवर्जित %s को %s"</string>
     <string name="sunday">"रविवार"</string>
     <string name="monday">"सोमवार"</string>
     <string name="local">"मेमोरी कार्ड"</string>
@@ -315,8 +278,6 @@
     <string name="ukrainian">"यूक्रेनी"</string>
     <string name="choose_file">"फाइलें चुनें"</string>
     <string name="auto">"ऑटो"</string>
-    <string name="portrait">"चित्र"</string>
-    <string name="landscape">"परिदृश्य"</string>
     <string name="choose_group">"समूह चुनें"</string>
     <string name="none">"कोई नहीं"</string>
     <string name="from_reminder">"अनुस्मारक से"</string>
@@ -324,7 +285,6 @@
     <string name="disabled">"कामोत्तेजित"</string>
     <string name="enabled4">"सक्षम"</string>
     <string name="choose_time">"समय चुनें"</string>
-    <string name="can_not_connect">"जुड़ नहीं सकता!"</string>
     <string name="pro_advantages">"प्रो के लाभ:"</string>
     <string name="buy">"खरीदें"</string>
     <string name="different_settings_for_birthdays">"- जन्मदिन के लिए विभिन्न सेटिंग्स;"</string>
@@ -333,7 +293,6 @@
     <string name="styles_for_marker">"- मार्कर के लिए 16 शैलियों;"</string>
     <string name="option_for_image_blurring">"- छवि को धुंधला के लिए विकल्प;"</string>
     <string name="additional_app_themes">"- 4 अतिरिक्त एप्लिकेशन विषयों।"</string>
-    <string name="thank_you_for_buying_pro">"प्रो लाइसेंस खरीदने के लिए धन्यवाद।"</string>
     <string name="press_again_to_exit">"प्रेस फिर से बाहर निकलने के लिए"</string>
     <string name="delete_this_list">"इस सूची मिटाना चाहते हैं?"</string>
     <string name="delete_list">"सूची को नष्ट"</string>
@@ -349,7 +308,6 @@
     <string name="move_to_another_list">"एक और सूची में ले जाएँ"</string>
     <string name="edit_birthday">"जन्मदिन संपादित करें"</string>
     <string name="disconnect">"डिस्कनेक्ट"</string>
-    <string name="no_action_selected">"कोई कार्रवाई नहीं चुने गए"</string>
     <string name="you_dont_select_any_calendar">"आप एक कैलेंडर का चयन नहीं करते!"</string>
     <string name="please_wait">"कृपया प्रतीक्षा करें..."</string>
     <string name="no_events_found">"कोई इवेंट नहीं!"</string>
@@ -365,17 +323,11 @@
     <string name="x_days">"%s दिन"</string>
     <string name="reminder_snoozed">"अनुस्मारक snoozed"</string>
     <string name="choose_application">"आवेदन चुनें"</string>
-    <string name="flexible">"लचीला"</string>
-    <string name="smart">"स्मार्ट"</string>
-    <string name="widgets_support">"विजेट समर्थन"</string>
-    <string name="dark_theme_support">"डार्क विषय समर्थन"</string>
-    <string name="cloud_sync">"बादल सिंक"</string>
     <string name="notes_support">"नोट्स समर्थन"</string>
     <string name="no_messages">"कोई संदेश नहीं"</string>
     <string name="birthday">"जन्मदिन"</string>
     <string name="permanent">"स्थायी"</string>
     <string name="today">"आज"</string>
-    <string name="paused">"रोका गया"</string>
     <string name="less_than_minute">"मिनट से भी कम"</string>
     <string name="birthday_notification">"अधिसूचना"</string>
     <string name="found_nothing">"कुछ भी नहीं मिला"</string>
@@ -409,7 +361,6 @@
     <string name="name_az">"नाम (AZ)"</string>
     <string name="name_za">"नाम (अ)"</string>
     <string name="delete_all_notes">"सभी नोटों मिटाना चाहते हैं?"</string>
-    <string name="sent">"भेजा"</string>
     <string name="no_google_tasks">"कोई Google कार्य"</string>
     <string name="edit_list">"संपादन सूची"</string>
     <string name="delete_completed_tasks">"पूर्ण कार्य को हटाएँ"</string>
@@ -417,7 +368,6 @@
     <string name="completed_first">"पहले पूरा"</string>
     <string name="trash_cleared">"कचरे को मंजूरी दे दी"</string>
     <string name="trash_is_empty">"कचरा खाली है"</string>
-    <string name="wrong_date_time_message">"गलत तारीख या समय!"</string>
     <string name="reminder_is_outdated">"अनुस्मारक पुरानी हो चुकी है, यह पहली बार संपादित"</string>
     <string name="reminder_created">"अनुस्मारक बनाया"</string>
     <string name="everyday">"हर दिन"</string>
@@ -428,13 +378,10 @@
     <string name="additional">"अतिरिक्त"</string>
     <string name="other">"अन्य"</string>
     <string name="general">"सामान्य"</string>
-    <string name="encrypting">"Encrypting ..."</string>
-    <string name="decrypting">"Decrypting ..."</string>
     <string name="xW">"%s डब्ल्यू"</string>
     <string name="xD">"%s डी"</string>
     <string name="x_min">"%s मिनट"</string>
     <string name="gps_not_enabled">"जीपीएस सक्षम नहीं!"</string>
-    <string name="moved_to_trash">"रद्दी में"</string>
     <string name="no_limits">"कोई सीमा नहीं"</string>
     <string name="e_mail">"ई-मेल"</string>
     <string name="subject">"विषय"</string>
@@ -447,9 +394,6 @@
     <string name="you_dont_insert_any_message">"आप एक संदेश डालने के लिए नहीं है!"</string>
     <string name="xM">"%s M"</string>
     <string name="overdue">"अतिदेय"</string>
-    <string name="and">"और"</string>
-    <string name="android_wear_service">"Android Wear सेवा"</string>
-    <string name="enable_service_if_you_want_">"यदि आप घड़ी अनुस्मारक प्रबंधन करना चाहते हैं इस सेवा को सक्षम"</string>
     <string name="search_place">"खोजें जगह है ..."</string>
     <string name="click_to_select_reminder_type">"अनुस्मारक प्रकार का चयन करने के लिए क्लिक करें"</string>
     <string name="to_insert_task_by_voice">"आवाज से कार्य सम्मिलित करने के लिए"</string>
@@ -463,7 +407,6 @@
     <string name="add_reminder_menu">"अनुस्मारक जोड़े"</string>
     <string name="x_meters">"%s मीटर"</string>
     <string name="task_summary_is_empty">"टास्क सारांश खाली है!"</string>
-    <string name="exclusion_added">"बहिष्करण जोड़ा"</string>
     <string name="x_day">"%s दिन"</string>
     <string name="x_hour">"%s घंटे"</string>
     <string name="x_dayzz">"%s दिन"</string>
@@ -474,17 +417,12 @@
     <string name="x_yearzz">"%s साल"</string>
     <string name="application_not_selected">आवेदन नहीं चुने गए</string>
     <string name="app_title">"अनुस्मारक"</string>
-    <string name="report">बग के बारे में रिपोर्ट</string>
-    <string name="describe_your_problem">आपकी समस्या का वर्णन करें</string>
-    <string name="day_night">दिन/रात</string>
-    <string name="enable_changing_theme_during_day">दिन के दौरान स्वचालित रूप से विषय बदलते सक्षम करें</string>
     <string name="move_backward">वापस आना</string>
     <string name="create_task">कार्य बनाएँ</string>
     <string name="type_to_search">खोजने के लिए लिखें</string>
     <string name="up">ऊपर</string>
     <string name="move_forward">आगे बढ़ो</string>
     <string name="refresh">ताज़ा करना</string>
-    <string name="save_widget">विजेट सहेजें</string>
     <string name="you_dont_select_any_hours">आप किसी भी घंटे का चयन नहीं करते!</string>
     <string name="could_not_launch_market">बाजार में लांच नहीं कर सका</string>
     <string name="call_history">कॉल इतिहास</string>
@@ -568,7 +506,6 @@
     <string name="fill">भरना</string>
     <string name="grey">ग्रे</string>
     <string name="stroke">स्ट्रोक</string>
-    <string name="move_image">हटो की छवि</string>
     <string name="add_text">शब्द जोड़ें</string>
     <string name="stroke_width">रेखा की चौड़ाई</string>
     <string name="live_conversation">लाइव बातचीत</string>
@@ -579,8 +516,6 @@
     <string name="seconds">सेकंड के</string>
     <string name="_minutes">मिनटों</string>
     <string name="_hours">घंटे</string>
-    <string name="add_note">नोट जोड़े</string>
-    <string name="failed_to_recognize_your_command">अपने भाषण को पहचान करने में विफल</string>
     <string name="opacity">अस्पष्टता</string>
     <string name="loading_events">ईवेंट लोड हो रहे हैं</string>
     <string name="canceled">रद्द किया गया</string>

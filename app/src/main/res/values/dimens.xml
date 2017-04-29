@@ -42,7 +42,6 @@
     <dimen name="reminder_text_size_normal">20sp</dimen>
     <dimen name="reminder_photo_size">175dp</dimen>
     <dimen name="create_text_size_small">15sp</dimen>
-    <dimen name="reminder_preview_container_padding">15dp</dimen>
     <dimen name="reminder_preview_margin_top">15dp</dimen>
     <dimen name="toolbar_elevation">3dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
