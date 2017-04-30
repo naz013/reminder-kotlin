@@ -301,7 +301,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         imageView.setVisibility(View.GONE);
         String imagePrefs = getPrefs().getReminderImage();
         boolean blur = getPrefs().isBlurEnabled();
-
+        LogUtil.d(TAG, "loadImage: " + imagePrefs + ", blur " + blur);
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;

@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.file_explorer;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
@@ -13,19 +14,23 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityFileExplorerBinding;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -54,6 +59,8 @@ public class FileExplorerActivity extends ThemedActivity {
 
     private static final String TAG = "FileExplorerActivity";
     private static final int SD_CARD = 444;
+    public static final String TYPE_MUSIC = "music";
+    public static final String TYPE_PHOTO = "photo";
 
     private ArrayList<String> str = new ArrayList<>();
     private Boolean firstLvl = true;
@@ -102,6 +109,12 @@ public class FileExplorerActivity extends ThemedActivity {
         } else {
             if (filType.matches("any")) {
                 sendFile();
+            } else if (filType.equals(TYPE_PHOTO)) {
+                if (isImage(mFileName)) {
+                    showFullImage();
+                } else {
+                    Toast.makeText(this, "Not a image file", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 if (isMelody(mFileName)) {
                     play();
@@ -110,6 +123,25 @@ public class FileExplorerActivity extends ThemedActivity {
                 }
             }
         }
+    }
+
+    private void showFullImage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(mFileName);
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, MeasureUtils.dp2px(this, 256));
+        imageView.setLayoutParams(layoutParams);
+        Picasso.with(this)
+                .load(new File(mFilePath))
+                .into(imageView);
+        builder.setView(imageView);
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            dialog.dismiss();
+            sendFile();
+        });
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     private void moveUp() {
@@ -137,7 +169,7 @@ public class FileExplorerActivity extends ThemedActivity {
         mSound = new Sound(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_file_explorer);
         filType = getIntent().getStringExtra(Constants.FILE_TYPE);
-        if (filType == null) filType = "music";
+        if (filType == null) filType = TYPE_MUSIC;
         isDark = getThemeUtil().isDark();
         initActionBar();
         initRecyclerView();
@@ -288,7 +320,7 @@ public class FileExplorerActivity extends ThemedActivity {
 
     private void addUpItem() {
         ArrayList<FileDataItem> temp = new ArrayList<>(mDataList.size() + 1);
-        temp.add(0, new FileDataItem(getString(R.string.up), getUndoIcon(), null));
+        temp.add(0, new FileDataItem(getString(R.string.up), getUndoIcon(), ""));
         temp.addAll(mDataList);
         mDataList = temp;
     }
@@ -296,6 +328,11 @@ public class FileExplorerActivity extends ThemedActivity {
     private boolean isMelody(String file){
         return file != null && (file.endsWith(".mp3") || file.endsWith(".ogg")
                 || file.endsWith(".m4a") || file.endsWith(".flac"));
+    }
+
+    private boolean isImage(String file){
+        return file != null && (file.endsWith(".jpg") || file.endsWith(".jpeg")
+                || file.endsWith(".png") || file.endsWith(".tiff"));
     }
 
     private int getDirectoryIcon(){

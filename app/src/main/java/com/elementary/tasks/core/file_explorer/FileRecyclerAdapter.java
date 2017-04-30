@@ -13,7 +13,9 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemFileLayoutBinding;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,9 +167,17 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     }
 
     @BindingAdapter("loadImage")
-    public static void loadImage(ImageView imageView, String v) {
+    public static void loadImage(ImageView imageView, FileDataItem item) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
-        imageView.setImageResource(getFileIcon(v, isDark));
+        if (item.getFilePath() != null && isPicture(item.getFilePath())) {
+            Picasso.with(imageView.getContext())
+                    .load(new File(item.getFilePath()))
+                    .resize(100, 100)
+                    .centerCrop()
+                    .into(imageView);
+        } else {
+            imageView.setImageResource(getFileIcon(item.getFileName(), isDark));
+        }
     }
 
     private static int getFileIcon(String file, boolean isDark){

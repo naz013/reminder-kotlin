@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 
+import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.services.PermanentReminderService;
@@ -656,15 +658,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         } else if (which == 1) {
             getPrefs().setReminderImage(Constants.DEFAULT);
         } else if (which == 2) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            if (Module.isKitkat()) {
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-            }
-            Intent chooser = Intent.createChooser(intent, getString(R.string.image));
-            startActivityForResult(chooser, Constants.ACTION_REQUEST_GALLERY);
+            startActivityForResult(new Intent(getContext(), FileExplorerActivity.class)
+                    .putExtra(Constants.FILE_TYPE, FileExplorerActivity.TYPE_PHOTO), Constants.ACTION_REQUEST_GALLERY);
         }
     }
 
@@ -694,8 +689,20 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 break;
             case Constants.ACTION_REQUEST_GALLERY:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    getPrefs().setReminderImage(selectedImage.toString());
+                    String filePath = data.getStringExtra(Constants.FILE_PICKED);
+                    if (filePath != null) {
+                        File file = new File(filePath);
+                        if (file.exists()) {
+                            Uri uri;
+                            if (Module.isNougat()) {
+                                uri = FileProvider.getUriForFile(getContext(),
+                                        BuildConfig.APPLICATION_ID + ".provider", file);
+                            } else {
+                                uri = Uri.fromFile(file);
+                            }
+                            getPrefs().setReminderImage(uri.toString());
+                        }
+                    }
                 }
                 break;
         }
