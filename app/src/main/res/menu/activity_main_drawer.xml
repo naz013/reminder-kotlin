@@ -57,7 +57,9 @@
             android:title="@string/action_settings" />
     </group>
 
-    <group android:checkableBehavior="none">
+    <group
+        android:id="@+id/misc_group"
+        android:checkableBehavior="none">
 
         <item
             android:id="@+id/nav_feedback"
