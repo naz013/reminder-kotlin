@@ -34,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:loadImage='@{item.fileName}'
+                app:loadImage='@{item}'
                 app:srcCompat="@drawable/ic_attach_file_white_24dp" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
