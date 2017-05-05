@@ -66,12 +66,13 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
         BackupTool.getInstance().exportNotes();
-        if (SuperUtil.isConnected(mContext)) {
+        Google.Drives drives = Google.getInstance(mContext).getDrive();
+        if (drives != null && SuperUtil.isConnected(mContext)) {
             new Dropbox(mContext).downloadNotes(true);
             new Dropbox(mContext).uploadNotes();
             try {
-                Google.getInstance(mContext).getDrive().downloadNotes(true);
-                Google.getInstance(mContext).getDrive().saveNotesToDrive();
+                drives.downloadNotes(true);
+                drives.saveNotesToDrive();
             } catch (IOException e) {
                 e.printStackTrace();
             }
