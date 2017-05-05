@@ -637,7 +637,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             updateMelodyIndicator();
             showCurrentMelody();
         }
-        fragment.onActivityResult(requestCode, resultCode, data);
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void showCurrentMelody() {
