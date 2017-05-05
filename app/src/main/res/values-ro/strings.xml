@@ -539,5 +539,7 @@
     <string name="download_image">Salvați imaginea pe cardul SD</string>
     <string name="set_image_for_month">Setați imaginea pentru o lună</string>
     <string name="set_to_reminder_screen">Setați pe ecranul mementoului</string>
+    <string name="for_correct_work_of_application">Pentru o lucrare corectă de aplicare, trebuie să acordați permisiunea de notificare</string>
+    <string name="grant">Acorda</string>
 
 </resources>
