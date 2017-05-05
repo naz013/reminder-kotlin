@@ -26,6 +26,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
+import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding;
@@ -192,7 +193,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 file = new File(melodyStr);
             } else {
                 String path = getPrefs().getMelodyFile();
-                if (path != null) {
+                if (path != null && !Sound.isDefaultMelody(path)) {
                     file = new File(path);
                 } else {
                     Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
