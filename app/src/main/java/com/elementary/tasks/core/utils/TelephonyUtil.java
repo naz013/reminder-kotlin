@@ -45,8 +45,9 @@ public final class TelephonyUtil {
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, title);
         intent.putExtra(Intent.EXTRA_TEXT, note);
-        Uri uri = Uri.fromFile(file);
+        Uri uri = UriUtil.getUri(context, file);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(Intent.createChooser(intent, "Send email..."));
     }
 
@@ -58,9 +59,10 @@ public final class TelephonyUtil {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (filePath != null) {
-            Uri uri = Uri.fromFile(new File(filePath));
+            Uri uri = UriUtil.getUri(context, filePath);
             if (uri != null) {
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
         }
         context.startActivity(Intent.createChooser(intent, "Send email..."));

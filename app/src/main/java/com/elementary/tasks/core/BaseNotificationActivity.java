@@ -39,6 +39,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SoundStackHolder;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
 import com.elementary.tasks.missed_calls.CallItem;
@@ -670,14 +671,13 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected Uri getSoundUri() {
         if (!TextUtils.isEmpty(getMelody())) {
-            File sound = new File(getMelody());
-            return Uri.fromFile(sound);
+            return UriUtil.getUri(this, getMelody());
         } else {
             String defMelody = getPrefs().getMelodyFile();
-            if (!TextUtils.isEmpty(defMelody)) {
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 File sound = new File(defMelody);
                 if (sound.exists()) {
-                    return Uri.fromFile(sound);
+                    return UriUtil.getUri(this, sound);
                 }
             }
         }

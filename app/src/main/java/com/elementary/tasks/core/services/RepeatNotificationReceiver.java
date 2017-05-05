@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.services;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +18,11 @@ import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.Sound;
+import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.io.File;
 import java.util.Calendar;
 
 /**
@@ -80,13 +82,11 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
 
     private Uri getSoundUri(String melody, Context context) {
         if (!TextUtils.isEmpty(melody)) {
-            File sound = new File(melody);
-            return Uri.fromFile(sound);
+            return UriUtil.getUri(context, melody);
         } else {
             String defMelody = Prefs.getInstance(context).getMelodyFile();
-            if (!TextUtils.isEmpty(defMelody)) {
-                File sound = new File(defMelody);
-                return Uri.fromFile(sound);
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
+                return UriUtil.getUri(context, defMelody);
             } else {
                 return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             }
@@ -97,7 +97,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle(reminder.getSummary());
         builder.setAutoCancel(false);
-        builder.setPriority(5);
+        builder.setPriority(Notification.PRIORITY_MAX);
         if (Prefs.getInstance(context).isFoldingEnabled() && !Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
             Intent notificationIntent = new Intent(context, ReminderDialogActivity.class);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
@@ -110,11 +110,13 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
             builder.setContentText(context.getString(R.string.app_name));
         }
         if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_calendar_white);
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        builder.setSound(getSoundUri(reminder.getMelodyPath(), context));
+        Uri uri = getSoundUri(reminder.getMelodyPath(), context);
+        context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        builder.setSound(uri);
         if (Prefs.getInstance(context).isVibrateEnabled()){
             long[] pattern;
             if (Prefs.getInstance(context).isInfiniteVibrateEnabled()){
