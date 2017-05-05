@@ -67,6 +67,9 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
         mCallItem = RealmDb.getInstance().getMissedCall(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
+        if (mCallItem == null) {
+            finish();
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
