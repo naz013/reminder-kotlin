@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +49,29 @@ import java.util.Locale;
 public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
+
+    public static boolean checkNotificationPermission(Activity activity) {
+        NotificationManager notificationManager =
+                (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Module.isMarshmallow() && !notificationManager.isNotificationPolicyAccessGranted()) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void askNotificationPermission(Activity activity) {
+        if (Module.isMarshmallow()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage(R.string.for_correct_work_of_application);
+            builder.setPositiveButton(R.string.grant, (dialog, which) -> {
+                dialog.dismiss();
+                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                activity.startActivity(intent);
+            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+            builder.create().show();
+        }
+    }
 
     public static boolean checkLocationEnable(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
