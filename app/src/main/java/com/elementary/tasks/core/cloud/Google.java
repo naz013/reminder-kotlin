@@ -113,9 +113,14 @@ public class Google {
 
     public class Tasks {
         public boolean insertTask(TaskItem item) throws IOException {
+            if (item.getTitle() == null) {
+                return false;
+            }
             Task task = new Task();
             task.setTitle(item.getTitle());
-            if (item.getNotes() != null) task.setNotes(item.getNotes());
+            if (item.getNotes() != null) {
+                task.setNotes(item.getNotes());
+            }
             if (item.getDueDate() != 0) {
                 task.setDue(new DateTime(item.getDueDate()));
             }
