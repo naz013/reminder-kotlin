@@ -200,6 +200,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         initActionBar();
         initNavigation();
         editReminder();
+        if (SuperUtil.checkNotificationPermission(this)) {
+            SuperUtil.askNotificationPermission(this);
+        }
     }
 
     @Override
