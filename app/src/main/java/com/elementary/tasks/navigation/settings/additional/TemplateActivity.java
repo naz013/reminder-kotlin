@@ -70,7 +70,7 @@ public class TemplateActivity extends ThemedActivity {
                 } else {
                     mItem = BackupTool.getInstance().getTemplate(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException e) {
+            } catch (NullPointerException | IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }

@@ -553,7 +553,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadTemplates: ", e);
         }
     }
@@ -598,7 +598,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadReminders: ", e);
         }
     }
@@ -649,7 +649,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadNotes: ", e);
         }
 
@@ -689,7 +689,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadGroups: ", e);
         }
     }
@@ -728,7 +728,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadBirthdays: ", e);
         }
     }
@@ -767,7 +767,7 @@ public class Dropbox {
                     }
                 }
             }
-        } catch (DropboxException | IOException e) {
+        } catch (DropboxException | IOException | IllegalStateException e) {
             LogUtil.e(TAG, "downloadPlaces: ", e);
         }
     }

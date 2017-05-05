@@ -226,7 +226,7 @@ public class CreateNoteActivity extends ThemedActivity {
             } else {
                 mItem = BackupTool.getInstance().getNote(filePath, null);
             }
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
     }

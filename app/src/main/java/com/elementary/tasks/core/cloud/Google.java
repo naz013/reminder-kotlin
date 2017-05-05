@@ -498,7 +498,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.getGoogleRemindersDir(), null, file -> {
                 try {
                     realmDb.saveObject(backupTool.getTemplate(file.toString(), null));
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadTemplates: " + e.getLocalizedMessage());
                 }
             }));
@@ -519,7 +519,7 @@ public class Google {
                     realmDb.saveObject(reminder);
                     EventControl control = EventControlFactory.getController(context, reminder);
                     control.next();
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());
                 }
             }));
@@ -536,7 +536,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.getGooglePlacesDir(), null, file -> {
                 try {
                     realmDb.saveObject(backupTool.getPlace(file.toString(), null));
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadPlaces: " + e.getLocalizedMessage());
                 }
             }));
@@ -553,7 +553,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.getGoogleNotesDir(), null, file -> {
                 try {
                     realmDb.saveObject(backupTool.getNote(file.toString(), null));
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadNotes: " + e.getLocalizedMessage());
                 }
             }));
@@ -570,7 +570,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.getGoogleGroupsDir(), null, file -> {
                 try {
                     realmDb.saveObject(backupTool.getGroup(file.toString(), null));
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadGroups: " + e.getLocalizedMessage());
                 }
             }));
@@ -587,7 +587,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.getGoogleBirthdaysDir(), null, file -> {
                 try {
                     realmDb.saveObject(backupTool.getBirthday(file.toString(), null));
-                } catch (IOException e) {
+                } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadBirthdays: " + e.getLocalizedMessage());
                 }
             }));

@@ -90,7 +90,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
                 } else {
                     mItem = BackupTool.getInstance().getPlace(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException e) {
+            } catch (NullPointerException | IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }
