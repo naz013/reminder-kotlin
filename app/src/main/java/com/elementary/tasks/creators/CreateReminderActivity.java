@@ -224,7 +224,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 } else {
                     mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException e) {
+            } catch (NullPointerException | IOException | IllegalStateException e) {
                 LogUtil.d(TAG, "loadReminder: " + e.getLocalizedMessage());
             }
         }

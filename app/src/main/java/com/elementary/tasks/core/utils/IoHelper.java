@@ -83,7 +83,7 @@ public class IoHelper {
     public void restoreGroup(boolean delete) {
         try {
             BackupTool.getInstance().importGroups();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {
@@ -117,7 +117,7 @@ public class IoHelper {
     public void restoreReminder(boolean delete) {
         try {
             BackupTool.getInstance().importReminders(mContext);
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {
@@ -126,7 +126,7 @@ public class IoHelper {
                 if (mDrive != null && mDrive.getDrive() != null) {
                     mDrive.getDrive().downloadReminders(mContext, delete);
                 }
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }
@@ -151,7 +151,7 @@ public class IoHelper {
     public void restoreNote(boolean delete) {
         try {
             BackupTool.getInstance().importNotes();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {
@@ -185,7 +185,7 @@ public class IoHelper {
     public void restoreBirthday(boolean delete) {
         try {
             BackupTool.getInstance().importBirthdays();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {
@@ -219,7 +219,7 @@ public class IoHelper {
     public void restorePlaces(boolean delete) {
         try {
             BackupTool.getInstance().importPlaces();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {
@@ -253,7 +253,7 @@ public class IoHelper {
     public void restoreTemplates(boolean delete) {
         try {
             BackupTool.getInstance().importTemplates();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         if (isConnected) {

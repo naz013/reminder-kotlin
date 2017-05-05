@@ -52,6 +52,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             BackupTool.getInstance().importGroups()
         } catch (e: IOException) {
             e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
 
         val list = RealmDb.getInstance().allGroups
@@ -69,6 +71,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             BackupTool.getInstance().importReminders(mContext)
         } catch (e: IOException) {
             e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
 
         //export & import notes
@@ -76,6 +80,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         try {
             BackupTool.getInstance().importNotes()
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
 
@@ -85,6 +91,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             BackupTool.getInstance().importBirthdays()
         } catch (e: IOException) {
             e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
 
         //export & import places
@@ -93,6 +101,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             BackupTool.getInstance().importPlaces()
         } catch (e: IOException) {
             e.printStackTrace()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
         }
 
         //export & import templates
@@ -100,6 +110,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         try {
             BackupTool.getInstance().importTemplates()
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
         try {

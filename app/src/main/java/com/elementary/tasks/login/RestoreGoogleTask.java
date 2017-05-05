@@ -65,7 +65,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_groups));
             try {
                 drive.getDrive().downloadGroups(false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
             List<GroupItem> list = RealmDb.getInstance().getAllGroups();
@@ -81,7 +81,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_reminders));
             try {
                 drive.getDrive().downloadReminders(mContext, false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
 
@@ -89,7 +89,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_notes));
             try {
                 drive.getDrive().downloadNotes(false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
 
@@ -97,7 +97,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_birthdays));
             try {
                 drive.getDrive().downloadBirthdays(false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
 
@@ -105,7 +105,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_places));
             try {
                 drive.getDrive().downloadPlaces(false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
 
@@ -113,12 +113,12 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             publishProgress(mContext.getString(R.string.syncing_templates));
             try {
                 drive.getDrive().downloadTemplates(false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
             try {
                 drive.getDrive().downloadSettings(mContext, false);
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }

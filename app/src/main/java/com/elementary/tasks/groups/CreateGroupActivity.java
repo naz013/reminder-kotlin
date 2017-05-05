@@ -88,7 +88,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
                 } else {
                     mItem = BackupTool.getInstance().getGroup(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException e) {
+            } catch (NullPointerException | IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }

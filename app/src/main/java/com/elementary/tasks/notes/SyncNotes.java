@@ -62,7 +62,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         try {
             BackupTool.getInstance().importNotes();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         BackupTool.getInstance().exportNotes();
