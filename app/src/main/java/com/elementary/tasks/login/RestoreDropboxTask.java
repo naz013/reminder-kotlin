@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -31,6 +32,7 @@ import java.util.List;
 
 public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
 
+    private static final String TAG = "RestoreDropboxTask";
     private Context mContext;
     private SyncListener mListener;
     private ProgressDialog mDialog;
@@ -98,7 +100,11 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            try {
+                mDialog.dismiss();
+            } catch (IllegalArgumentException e) {
+                LogUtil.d(TAG, "onPostExecute: " + e.getLocalizedMessage());
+            }
         }
         if (mContext != null) {
             UpdatesHelper.getInstance(mContext).updateWidget();
