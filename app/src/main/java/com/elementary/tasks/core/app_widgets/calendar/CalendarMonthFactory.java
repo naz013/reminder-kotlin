@@ -70,7 +70,7 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
                 mContext.getSharedPreferences(CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE);
         int prefsMonth = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + mWidgetId, 0);
 
-        mYear = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + mWidgetId, 0);
+        mYear = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + mWidgetId, calendar.get(Calendar.YEAR));
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
         mMonth = prefsMonth + 1;
 
