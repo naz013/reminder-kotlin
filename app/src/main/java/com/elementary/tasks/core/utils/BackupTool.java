@@ -269,6 +269,7 @@ public final class BackupTool {
     }
 
     private boolean hasGroup(List<GroupItem> list, String comparable) {
+        if (comparable == null) return true;
         for (GroupItem item : list) {
             if (comparable.equals(item.getTitle())) {
                 return true;
