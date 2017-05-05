@@ -382,6 +382,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private void sendSMS() {
         if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
             Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS);
+            return;
         }
         showProgressDialog(getString(R.string.sending_message));
         String SENT = "SMS_SENT";
@@ -471,8 +472,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected void sendDataToWear() {
         boolean silentSMS = getPrefs().isAutoSmsEnabled();
-        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && silentSMS)
+        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && silentSMS) {
             return;
+        }
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_REMINDER);
         DataMap map = putDataMapReq.getDataMap();
         map.putInt(SharedConst.KEY_TYPE, mReminder.getType());
@@ -650,6 +652,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) {
+            return;
+        }
         switch (requestCode) {
             case CALL_PERM:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
