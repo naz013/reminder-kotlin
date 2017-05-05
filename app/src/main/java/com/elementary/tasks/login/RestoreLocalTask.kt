@@ -6,9 +6,11 @@ import android.os.AsyncTask
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.utils.BackupTool
+import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.RealmDb
 import java.io.IOException
+import java.lang.IllegalArgumentException
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -125,7 +127,11 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
     override fun onPostExecute(aVoid: Int) {
         super.onPostExecute(aVoid)
         if (mDialog.isShowing) {
-            mDialog.dismiss()
+            try {
+                mDialog.dismiss()
+            } catch (e: IllegalArgumentException) {
+                LogUtil.d("RestoreLocalTask", "onPostExecute: " + e.localizedMessage)
+            }
         }
         UpdatesHelper.getInstance(mContext).updateWidget()
         UpdatesHelper.getInstance(mContext).updateNotesWidget()
