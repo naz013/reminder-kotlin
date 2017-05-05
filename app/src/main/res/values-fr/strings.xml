@@ -538,5 +538,7 @@
     <string name="download_image">Enregistrer l\'image sur une carte SD</string>
     <string name="set_image_for_month">Définir l\'image pour un mois</string>
     <string name="set_to_reminder_screen">Réglé sur l\'écran de rappel</string>
+    <string name="for_correct_work_of_application">Pour un travail d\'application correct, vous devez accorder une autorisation de notification</string>
+    <string name="grant">Subvention</string>
 
 </resources>

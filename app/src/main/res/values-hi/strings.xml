@@ -539,5 +539,7 @@
     <string name="download_image">एसडी कार्ड पर छवि सहेजें</string>
     <string name="set_image_for_month">महीने के लिए छवि सेट करें</string>
     <string name="set_to_reminder_screen">रिमाइंडर स्क्रीन पर सेट करें</string>
+    <string name="for_correct_work_of_application">आवेदन के सही काम के लिए आपको सूचना अनुमति देना होगा</string>
+    <string name="grant">अनुदान</string>
 
 </resources>

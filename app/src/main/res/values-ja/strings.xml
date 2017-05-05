@@ -540,5 +540,7 @@
     <string name="download_image">SDカードに画像を保存する</string>
     <string name="set_image_for_month">月の画像を設定する</string>
     <string name="set_to_reminder_screen">リマインダー画面で設定</string>
+    <string name="for_correct_work_of_application">アプリケーションの正しい作業のためには、通知の許可を与える必要があります</string>
+    <string name="grant">付与</string>
 
 </resources>

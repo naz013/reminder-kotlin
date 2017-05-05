@@ -538,5 +538,7 @@
     <string name="download_image">将图像保存在SD卡上</string>
     <string name="set_image_for_month">设置月份的图像</string>
     <string name="set_to_reminder_screen">设置在提醒屏幕上</string>
+    <string name="for_correct_work_of_application">为了正确的应用工作，您必须授予通知许可</string>
+    <string name="grant">格兰特</string>
 
 </resources>

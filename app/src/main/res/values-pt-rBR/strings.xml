@@ -538,5 +538,7 @@
     <string name="download_image">Guardar imagem no cartão SD</string>
     <string name="set_image_for_month">Definir imagem para o mês</string>
     <string name="set_to_reminder_screen">Definir na tela de lembrete</string>
+    <string name="for_correct_work_of_application">Para o trabalho correto de aplicação você deve conceder a permissão da notificação</string>
+    <string name="grant">Conceder</string>
 
 </resources>

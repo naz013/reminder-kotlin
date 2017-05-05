@@ -539,5 +539,7 @@
     <string name="download_image">Збереження зображення на SD-карті</string>
     <string name="set_image_for_month">Встановити зображення на місяць</string>
     <string name="set_to_reminder_screen">Встановити на екрані нагадування</string>
+    <string name="for_correct_work_of_application">Для коректної роботи програми необхідно надати дозвіл повідомлення</string>
+    <string name="grant">Надати</string>
 
 </resources>

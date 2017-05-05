@@ -539,5 +539,7 @@
     <string name="download_image">Uložte obrázek na kartu SD</string>
     <string name="set_image_for_month">Nastavte obrázek měsíc</string>
     <string name="set_to_reminder_screen">Nastavte na obrazovce připomenutí</string>
+    <string name="for_correct_work_of_application">Pro správnou práci aplikace musíte udělit povolení k oznámení</string>
+    <string name="grant">Udělit</string>
 
 </resources>

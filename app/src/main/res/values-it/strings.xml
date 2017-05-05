@@ -539,5 +539,7 @@
     <string name="download_image">Salvare l\'immagine sulla scheda SD</string>
     <string name="set_image_for_month">Imposta l\'immagine per il mese</string>
     <string name="set_to_reminder_screen">Imposta sullo schermo di promemoria</string>
+    <string name="for_correct_work_of_application">Per il corretto funzionamento dell\'applicazione è necessario concedere l\'autorizzazione di notifica</string>
+    <string name="grant">Concedere</string>
 
 </resources>

@@ -539,4 +539,6 @@
     <string name="download_image">Save image on SD card</string>
     <string name="set_image_for_month">Set image for month</string>
     <string name="set_to_reminder_screen">Set on reminder screen</string>
+    <string name="for_correct_work_of_application">For correct work of application you must grant notification permission</string>
+    <string name="grant">Grant</string>
 </resources>
