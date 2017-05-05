@@ -6,21 +6,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 
-import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
-import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding;
 
@@ -693,13 +691,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                     if (filePath != null) {
                         File file = new File(filePath);
                         if (file.exists()) {
-                            Uri uri;
-                            if (Module.isNougat()) {
-                                uri = FileProvider.getUriForFile(getContext(),
-                                        BuildConfig.APPLICATION_ID + ".provider", file);
-                            } else {
-                                uri = Uri.fromFile(file);
-                            }
+                            Uri uri = UriUtil.getUri(getContext(), file);
                             getPrefs().setReminderImage(uri.toString());
                         }
                     }

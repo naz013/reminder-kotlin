@@ -170,4 +170,8 @@ public class Sound {
             e.printStackTrace();
         }
     }
+
+    public static boolean isDefaultMelody(String defMelody) {
+        return defMelody.equals(Constants.DEFAULT);
+    }
 }

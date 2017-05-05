@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +22,10 @@ import com.elementary.tasks.core.network.Api;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
-import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
@@ -222,12 +221,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
                 folder.mkdirs();
             }
             File imageFile = new File(folder, mSelectedItem.getFilename());
-            Uri destination;
-            if (Module.isNougat()) {
-                destination = FileProvider.getUriForFile(this, getPackageName() + ".provider", imageFile);
-            } else {
-                destination = Uri.fromFile(imageFile);
-            }
+            Uri destination = UriUtil.getUri(this, imageFile);
             getPrefs().setReminderImage(destination.toString());
             new DownloadAsync(this, mSelectedItem.getFilename(), imageFile.toString(), 1080, 1920, mSelectedItem.getId()).execute();
         } else {
