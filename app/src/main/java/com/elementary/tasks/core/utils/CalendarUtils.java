@@ -40,7 +40,8 @@ public final class CalendarUtils {
 
     private static final String TAG = "CalendarUtils";
 
-    private CalendarUtils() {}
+    private CalendarUtils() {
+    }
 
     /**
      * Add event to calendar.
@@ -104,6 +105,7 @@ public final class CalendarUtils {
     public static void addEventToStock(Context context, String summary, long startTime) {
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
                 .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime +
                         (60 * 1000 * Prefs.getInstance(context).getCalendarEventDuration()))
