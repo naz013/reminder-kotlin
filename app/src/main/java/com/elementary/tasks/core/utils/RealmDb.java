@@ -451,7 +451,7 @@ public class RealmDb {
         for (int i = 0; i < items.size(); i++) {
             GroupItem item = items.get(i);
             names.add(item.getTitle());
-            if (item.getUuId().matches(uuId)) {
+            if (item.getUuId() != null && item.getUuId().equals(uuId)) {
                 p.setI(i);
             }
         }
