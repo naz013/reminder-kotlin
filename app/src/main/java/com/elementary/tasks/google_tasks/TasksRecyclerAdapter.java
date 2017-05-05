@@ -130,7 +130,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @BindingAdapter({"loadMarker"})
     public static void loadMarker(View view, String listId) {
-        if (colors.containsKey(listId)) {
+        if (listId != null && colors != null && colors.containsKey(listId)) {
             view.setBackgroundColor(ThemeUtil.getInstance(view.getContext()).getNoteColor(colors.get(listId)));
         }
     }
