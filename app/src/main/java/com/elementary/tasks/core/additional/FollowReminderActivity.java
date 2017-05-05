@@ -93,11 +93,12 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private boolean mTasks = true;
     private String mNumber;
 
-    private Google mGoogleTasks = Google.getInstance(this);
+    private Google mGoogleTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mGoogleTasks = Google.getInstance(this);
         Intent i = getIntent();
         long receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0);
         mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
