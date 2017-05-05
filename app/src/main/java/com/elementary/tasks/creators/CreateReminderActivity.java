@@ -213,6 +213,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (id != null) {
             mReminder = RealmDb.getInstance().getReminder(id);
             isEditing = true;
+            if (mReminder == null) {
+                return;
+            }
             getControl().pause();
         } else {
             try {
@@ -501,7 +504,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             } else {
                 save();
             }
-        } else if (isEditing) {
+        } else if (isEditing && mReminder != null) {
             getControl().resume();
             finish();
         } else {
