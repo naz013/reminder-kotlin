@@ -23,6 +23,7 @@ import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -52,6 +53,8 @@ import java.util.List;
  */
 
 public class TaskActivity extends ThemedActivity {
+
+    private static final String TAG = "TaskActivity";
 
     private ActivityCreateGoogleTaskBinding binding;
     private RoboEditText editField, noteField;
@@ -89,7 +92,11 @@ public class TaskActivity extends ThemedActivity {
 
     private void hideDialog() {
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            try {
+                mDialog.dismiss();
+            } catch (IllegalArgumentException e) {
+                LogUtil.d(TAG, "hideDialog: " + e.getLocalizedMessage());
+            }
         }
     }
 
