@@ -154,7 +154,7 @@ public final class TimeUtil {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
             Date date = GMT_DATE_FORMAT.parse(dateTime);
             calendar.setTime(date);
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException e) {
             e.printStackTrace();
         }
         return calendar.getTimeInMillis();
