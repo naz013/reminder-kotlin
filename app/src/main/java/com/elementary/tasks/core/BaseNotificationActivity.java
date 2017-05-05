@@ -670,7 +670,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected Uri getSoundUri() {
-        if (!TextUtils.isEmpty(getMelody())) {
+        if (!TextUtils.isEmpty(getMelody()) && !Sound.isDefaultMelody(getMelody())) {
             return UriUtil.getUri(this, getMelody());
         } else {
             String defMelody = getPrefs().getMelodyFile();
