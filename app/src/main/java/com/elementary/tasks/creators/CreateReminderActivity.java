@@ -29,6 +29,7 @@ import android.widget.Spinner;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -859,6 +860,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     public void setHasAutoExtra(boolean hasAutoExtra, String label) {
         this.hasAutoExtra = hasAutoExtra;
         this.autoLabel = label;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UpdatesHelper.getInstance(this).updateWidget();
     }
 
     @Override

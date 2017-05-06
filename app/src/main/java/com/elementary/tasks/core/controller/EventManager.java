@@ -46,7 +46,6 @@ public abstract class EventManager implements EventControl {
     protected void save() {
         RealmDb.getInstance().saveObject(mReminder);
         UpdatesHelper.getInstance(mContext).updateWidget();
-        UpdatesHelper.getInstance(mContext).updateCalendarWidget();
         if (Prefs.getInstance(mContext).isSbNotificationEnabled()) {
             mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
