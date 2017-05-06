@@ -541,5 +541,9 @@
     <string name="set_to_reminder_screen">Definir na tela de lembrete</string>
     <string name="for_correct_work_of_application">Para o trabalho correto de aplicação você deve conceder a permissão da notificação</string>
     <string name="grant">Conceder</string>
+    <string name="click_to_hide">Clique para esconder</string>
+    <string name="color_saturation">Saturação de cores</string>
+    <string name="remember_last_used_note_color">Lembrar a última cor usada da nota</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Deslize para a esquerda ou para a direita para ajustar a saturação de cor das notas.</string>
 
 </resources>

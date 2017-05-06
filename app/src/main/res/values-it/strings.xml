@@ -541,5 +541,9 @@
     <string name="set_to_reminder_screen">Imposta sullo schermo di promemoria</string>
     <string name="for_correct_work_of_application">Per il corretto funzionamento dell\'applicazione è necessario concedere l\'autorizzazione di notifica</string>
     <string name="grant">Concedere</string>
+    <string name="click_to_hide">Clicca per nascondere</string>
+    <string name="color_saturation">Saturazione del colore</string>
+    <string name="remember_last_used_note_color">Ricorda l\'ultimo colore usato della nota</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Spostare a sinistra oa destra per regolare la saturazione del colore della nota.</string>
 
 </resources>

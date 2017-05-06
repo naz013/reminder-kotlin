@@ -541,5 +541,9 @@
     <string name="set_to_reminder_screen">रिमाइंडर स्क्रीन पर सेट करें</string>
     <string name="for_correct_work_of_application">आवेदन के सही काम के लिए आपको सूचना अनुमति देना होगा</string>
     <string name="grant">अनुदान</string>
+    <string name="click_to_hide">छिपाने के लिए क्लिक करें</string>
+    <string name="color_saturation">रंग संतृप्ति</string>
+    <string name="remember_last_used_note_color">नोट के अंतिम उपयोग किए गए रंग को याद रखें</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">नोट रंग संतृप्ति समायोजित करने के लिए बाएं या दाएं स्वाइप करें</string>
 
 </resources>

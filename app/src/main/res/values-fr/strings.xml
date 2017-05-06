@@ -540,5 +540,9 @@
     <string name="set_to_reminder_screen">Réglé sur l\'écran de rappel</string>
     <string name="for_correct_work_of_application">Pour un travail d\'application correct, vous devez accorder une autorisation de notification</string>
     <string name="grant">Subvention</string>
+    <string name="click_to_hide">Cliquez pour cacher</string>
+    <string name="color_saturation">Saturation des couleurs</string>
+    <string name="remember_last_used_note_color">Rappelez-vous la dernière couleur utilisée de la note</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Faites glisser vers la gauche ou vers la droite pour régler la saturation des couleurs des notes.</string>
 
 </resources>

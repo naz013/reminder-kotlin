@@ -540,5 +540,9 @@
     <string name="set_to_reminder_screen">设置在提醒屏幕上</string>
     <string name="for_correct_work_of_application">为了正确的应用工作，您必须授予通知许可</string>
     <string name="grant">格兰特</string>
+    <string name="click_to_hide">点击隐藏</string>
+    <string name="color_saturation">颜色饱和度</string>
+    <string name="remember_last_used_note_color">记住上次使用的颜色</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">向左或向右滑动以调整笔记颜色饱和度。</string>
 
 </resources>

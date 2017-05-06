@@ -542,5 +542,9 @@
     <string name="set_to_reminder_screen">リマインダー画面で設定</string>
     <string name="for_correct_work_of_application">アプリケーションの正しい作業のためには、通知の許可を与える必要があります</string>
     <string name="grant">付与</string>
+    <string name="click_to_hide">クリックして非表示にする</string>
+    <string name="color_saturation">彩度</string>
+    <string name="remember_last_used_note_color">最後に使用したメモの色を覚えている</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">ノートの色の彩度を調整するには、左右にスワイプします。</string>
 
 </resources>

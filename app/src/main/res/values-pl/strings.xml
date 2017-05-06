@@ -541,5 +541,9 @@
     <string name="set_to_reminder_screen">Ustaw na ekranie przypomnienia</string>
     <string name="for_correct_work_of_application">Aby poprawnie działać aplikacja, musisz udzielić zgody na powiadomienie</string>
     <string name="grant">Nadać</string>
+    <string name="click_to_hide">Kliknij, aby ukryć</string>
+    <string name="color_saturation">Nasycenie kolorów</string>
+    <string name="remember_last_used_note_color">Pamiętaj ostatnio używany kolor notatki</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Przesuń palcem w lewo lub w prawo, aby wyregulować nasycenie koloru notatki.</string>
 
 </resources>

@@ -541,5 +541,9 @@
     <string name="set_to_reminder_screen">Set auf Erinnerungsbildschirm</string>
     <string name="for_correct_work_of_application">Für eine ordnungsgemäße Bewerbung müssen Sie eine Benachrichtigungserklärung erteilen</string>
     <string name="grant">Gewähren</string>
+    <string name="click_to_hide">Klicken Sie, um zu verbergen</string>
+    <string name="color_saturation">Farbsättigung</string>
+    <string name="remember_last_used_note_color">Denken Sie daran, letzte benutzte Farbe der Notiz</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Wischen Sie nach links oder rechts, um die Noten-Farbsättigung anzupassen.</string>
 
 </resources>
