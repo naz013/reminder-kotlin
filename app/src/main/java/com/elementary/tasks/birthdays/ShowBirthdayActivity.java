@@ -25,6 +25,7 @@ import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -140,7 +141,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (!isScreenResumed()) {
+        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || isBirthdaySilentEnabled()) {
                 getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());

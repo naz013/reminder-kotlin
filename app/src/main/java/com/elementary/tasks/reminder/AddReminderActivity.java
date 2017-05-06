@@ -124,9 +124,6 @@ public class AddReminderActivity extends ThemedActivity {
         if (date != 0) {
             binding.dateView.setDateTime(date);
         }
-        if (!SuperUtil.checkNotificationPermission(this)) {
-            SuperUtil.askNotificationPermission(this);
-        }
     }
 
     private void initActionBar() {

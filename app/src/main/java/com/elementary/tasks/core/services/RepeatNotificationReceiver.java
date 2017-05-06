@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Sound;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -114,9 +115,11 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        Uri uri = getSoundUri(reminder.getMelodyPath(), context);
-        context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        builder.setSound(uri);
+        if (SuperUtil.checkNotificationPermission(context) && !SuperUtil.isDoNotDiasturbEnabled(context)) {
+            Uri uri = getSoundUri(reminder.getMelodyPath(), context);
+            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            builder.setSound(uri);
+        }
         if (Prefs.getInstance(context).isVibrateEnabled()){
             long[] pattern;
             if (Prefs.getInstance(context).isInfiniteVibrateEnabled()){

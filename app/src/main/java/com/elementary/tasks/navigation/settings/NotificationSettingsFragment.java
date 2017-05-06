@@ -18,6 +18,7 @@ import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotificationBinding;
@@ -541,6 +542,9 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.soundOptionPrefs.isChecked();
         binding.soundOptionPrefs.setChecked(!isChecked);
         getPrefs().setSoundInSilentModeEnabled(!isChecked);
+        if (!SuperUtil.checkNotificationPermission(getActivity())) {
+            SuperUtil.askNotificationPermission(getActivity());
+        }
     }
 
     private void initSoundInSilentModePrefs() {
