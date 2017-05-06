@@ -31,7 +31,7 @@ public final class UpdatesHelper {
     private static UpdatesHelper helper;
     private Context mContext;
 
-    private UpdatesHelper(Context context){
+    private UpdatesHelper(Context context) {
         this.mContext = context;
     }
 
@@ -42,19 +42,19 @@ public final class UpdatesHelper {
         return helper;
     }
 
-    public void updateWidget(){
+    public void updateWidget() {
         Intent intent = new Intent(mContext, EventsWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
         int ids[] = AppWidgetManager.getInstance(mContext).getAppWidgetIds(new
                 ComponentName(mContext, EventsWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         mContext.sendBroadcast(intent);
         updateCalendarWidget();
         updateTasksWidget();
     }
 
-    public void updateNotesWidget(){
+    public void updateNotesWidget() {
         Intent intent = new Intent(mContext, NotesWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
@@ -64,7 +64,7 @@ public final class UpdatesHelper {
         mContext.sendBroadcast(intent);
     }
 
-    public void updateCalendarWidget(){
+    public void updateCalendarWidget() {
         Intent intent = new Intent(mContext, CalendarWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
@@ -74,7 +74,7 @@ public final class UpdatesHelper {
         mContext.sendBroadcast(intent);
     }
 
-    public void updateTasksWidget(){
+    public void updateTasksWidget() {
         Intent intent = new Intent(mContext, TasksWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
