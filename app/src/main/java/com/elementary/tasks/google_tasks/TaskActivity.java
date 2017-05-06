@@ -2,7 +2,6 @@ package com.elementary.tasks.google_tasks;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -241,7 +240,7 @@ public class TaskActivity extends ThemedActivity {
                             break;
                         case 1:
                             isDate = true;
-                            dateDialog().show();
+                            dateDialog();
                             break;
                     }
                 }
@@ -253,7 +252,7 @@ public class TaskActivity extends ThemedActivity {
                             break;
                         case 1:
                             isReminder = true;
-                            timeDialog().show();
+                            timeDialog();
                             break;
                     }
                 }
@@ -480,8 +479,8 @@ public class TaskActivity extends ThemedActivity {
         }
     }
 
-    protected Dialog dateDialog() {
-        return new DatePickerDialog(this, myDateCallBack, mYear, mMonth, mDay);
+    protected void dateDialog() {
+        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay);
     }
 
     DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
@@ -496,8 +495,8 @@ public class TaskActivity extends ThemedActivity {
         }
     };
 
-    protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute, getPrefs().is24HourFormatEnabled());
+    protected void timeDialog() {
+        TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute);
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {

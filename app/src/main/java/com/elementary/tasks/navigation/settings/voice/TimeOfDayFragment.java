@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.voice;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -139,7 +138,7 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
     }
 
     private void morningDialog() {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             morningHour = hourOfDay;
             morningMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -148,11 +147,11 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             String time = format.format(calendar.getTime());
             getPrefs().setMorningTime(time);
             morningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
-        }, morningHour, morningMinute, is24).show();
+        }, morningHour, morningMinute);
     }
 
     private void dayDialog() {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             dayHour = hourOfDay;
             dayMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -161,11 +160,11 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             String time = format.format(calendar.getTime());
             getPrefs().setNoonTime(time);
             dayTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
-        }, dayHour, dayMinute, is24).show();
+        }, dayHour, dayMinute);
     }
 
     private void nightDialog() {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             nightHour = hourOfDay;
             nightMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -174,11 +173,11 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             String time = format.format(calendar.getTime());
             getPrefs().setNightTime(time);
             nightTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
-        }, nightHour, nightMinute, is24).show();
+        }, nightHour, nightMinute);
     }
 
     private void eveningDialog() {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             eveningHour = hourOfDay;
             eveningMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -187,12 +186,12 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
             String time = format.format(calendar.getTime());
             getPrefs().setEveningTime(time);
             eveningTime.setText(TimeUtil.getTime(calendar.getTime(), is24));
-        }, eveningHour, eveningMinute,is24).show();
+        }, eveningHour, eveningMinute);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.morningTime:
                 morningDialog();
                 break;

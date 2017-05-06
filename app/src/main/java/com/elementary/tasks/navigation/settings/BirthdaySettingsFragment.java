@@ -131,7 +131,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         Calendar calendar = TimeUtil.getBirthdayCalendar(getPrefs().getBirthdayTime());
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        new TimePickerDialog(getContext(), this, hour, minute, getPrefs().is24HourFormatEnabled()).show();
+        TimeUtil.showTimePicker(getContext(), this, hour, minute);
     }
 
     private void initDaysToPrefs() {

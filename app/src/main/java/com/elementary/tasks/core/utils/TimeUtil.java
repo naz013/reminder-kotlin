@@ -1,6 +1,8 @@
 package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -33,6 +35,7 @@ import java.util.TimeZone;
 public final class TimeUtil {
 
     public static final String GMT = "GMT";
+    private static final String TAG = "TimeUtil";
 
     public static final SimpleDateFormat FORMAT_24 = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
     public static final SimpleDateFormat TIME_STAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault());
@@ -49,7 +52,26 @@ public final class TimeUtil {
 
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
 
-    private TimeUtil(){}
+    private TimeUtil() {
+    }
+
+    public static TimePickerDialog showTimePicker(Context context, TimePickerDialog.OnTimeSetListener listener,
+                                                  int hour, int minute) {
+        boolean is24 = Prefs.getInstance(context).is24HourFormatEnabled();
+        TimePickerDialog dialog = new TimePickerDialog(context, listener, hour, minute, is24);
+        dialog.show();
+        return dialog;
+    }
+
+    public static DatePickerDialog showDatePicker(Context context, DatePickerDialog.OnDateSetListener listener,
+                                                  int year, int month, int dayOfMonth) {
+        DatePickerDialog dialog = new DatePickerDialog(context, listener, year, month, dayOfMonth);
+        if (Module.isLollipop()) {
+            dialog.getDatePicker().setFirstDayOfWeek(Prefs.getInstance(context).getStartDay() + 1);
+        }
+        dialog.show();
+        return dialog;
+    }
 
     public static DateItem getFutureBirthdayDate(Context context, String fullDate) {
         Date date = null;
@@ -138,14 +160,14 @@ public final class TimeUtil {
         return GMT_DATE_FORMAT.format(new Date());
     }
 
-    public static String getGmtFromDateTime(long date){
+    public static String getGmtFromDateTime(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
         return GMT_DATE_FORMAT.format(calendar.getTime());
     }
 
-    public static long getDateTimeFromGmt(String dateTime){
+    public static long getDateTimeFromGmt(String dateTime) {
         if (TextUtils.isEmpty(dateTime)) {
             return 0;
         }
@@ -203,7 +225,7 @@ public final class TimeUtil {
         }
     }
 
-    public static String getDateTimeFromGmt(String dateTime, boolean is24){
+    public static String getDateTimeFromGmt(String dateTime, boolean is24) {
         Calendar calendar = Calendar.getInstance();
         try {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
@@ -223,19 +245,19 @@ public final class TimeUtil {
         return getSimpleDate(getDateTimeFromGmt(gmtDate));
     }
 
-    public static String getSimpleDate(long date){
+    public static String getSimpleDate(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         return SIMPLE_DATE.format(calendar.getTime());
     }
 
-    public static String getDate(long date){
+    public static String getDate(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         return DATE_FORMAT.format(calendar.getTime());
     }
 
-    public static String getSimpleDateTime(long date, boolean is24){
+    public static String getSimpleDateTime(long date, boolean is24) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         if (is24) {
@@ -245,15 +267,15 @@ public final class TimeUtil {
         }
     }
 
-    public static String getDate(Date date){
+    public static String getDate(Date date) {
         return FULL_DATE_FORMAT.format(date);
     }
 
-    public static String getTimeStamp(){
+    public static String getTimeStamp() {
         return TIME_STAMP_FORMAT.format(new Date());
     }
 
-    public static Date getDate(String date){
+    public static Date getDate(String date) {
         try {
             return TIME_24.parse(date);
         } catch (ParseException e) {
@@ -262,7 +284,7 @@ public final class TimeUtil {
         }
     }
 
-    public static int getAge(String dateOfBirth){
+    public static int getAge(String dateOfBirth) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = null;
         try {
@@ -282,7 +304,7 @@ public final class TimeUtil {
         return currentYear - yearOfBirth;
     }
 
-    public static String getDateTime(Date date, boolean is24){
+    public static String getDateTime(Date date, boolean is24) {
         if (is24) {
             return FORMAT_24.format(date);
         } else {
@@ -290,7 +312,7 @@ public final class TimeUtil {
         }
     }
 
-    public static String getTime(Date date, boolean is24){
+    public static String getTime(Date date, boolean is24) {
         if (is24) {
             return TIME_24.format(date);
         } else {
@@ -298,7 +320,7 @@ public final class TimeUtil {
         }
     }
 
-    public static int getAge(int year){
+    public static int getAge(int year) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int mYear = calendar.get(Calendar.YEAR);
@@ -317,7 +339,7 @@ public final class TimeUtil {
         return cal1.getTime();
     }
 
-    public static String generateAfterString(long time){
+    public static String generateAfterString(long time) {
         long s = 1000;
         long m = s * 60;
         long h = m * 60;

@@ -2,7 +2,6 @@ package com.elementary.tasks.notes;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
@@ -137,9 +136,9 @@ public class CreateNoteActivity extends ThemedActivity {
         remindContainer = binding.remindContainer;
         ViewUtils.fadeInAnimation(layoutContainer);
         remindDate = binding.remindDate;
-        remindDate.setOnClickListener(v -> dateDialog().show());
+        remindDate.setOnClickListener(v -> dateDialog());
         remindTime = binding.remindTime;
-        remindTime.setOnClickListener(v -> timeDialog().show());
+        remindTime.setOnClickListener(v -> timeDialog());
         binding.discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
         initImagesList();
         loadNote();
@@ -590,8 +589,8 @@ public class CreateNoteActivity extends ThemedActivity {
         dialog.show();
     }
 
-    protected Dialog dateDialog() {
-        return new DatePickerDialog(this, myDateCallBack, mYear, mMonth, mDay);
+    protected void dateDialog() {
+        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay);
     }
 
     DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
@@ -616,8 +615,8 @@ public class CreateNoteActivity extends ThemedActivity {
         }
     };
 
-    protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mHour, mMinute, getPrefs().is24HourFormatEnabled());
+    protected void timeDialog() {
+        TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute);
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {

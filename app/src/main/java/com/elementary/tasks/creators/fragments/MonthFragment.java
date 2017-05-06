@@ -115,9 +115,8 @@ public class MonthFragment extends RepeatableTypeFragment {
             binding.monthDayField.setText(dayStr);
         }
     };
-    public View.OnClickListener dateClick = v -> new DatePickerDialog(getActivity(), mDateSelect, mYear, mMonth, mDay).show();
-    public View.OnClickListener timeClick = v -> new TimePickerDialog(getActivity(), mTimeSelect, mHour, mMinute,
-            Prefs.getInstance(getActivity()).is24HourFormatEnabled()).show();
+    public View.OnClickListener dateClick = v -> TimeUtil.showDatePicker(getActivity(), mDateSelect, mYear, mMonth, mDay);
+    public View.OnClickListener timeClick = v -> TimeUtil.showTimePicker(getActivity(), mTimeSelect, mHour, mMinute);
 
     public MonthFragment() {
     }
