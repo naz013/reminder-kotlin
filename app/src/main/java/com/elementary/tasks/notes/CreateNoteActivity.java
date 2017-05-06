@@ -18,13 +18,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -103,6 +104,7 @@ public class CreateNoteActivity extends ThemedActivity {
     private int mFontStyle = 9;
     private Uri mImageUri;
     private int mEditPosition = -1;
+    private float mLastX = -1;
 
     private RelativeLayout layoutContainer;
     private LinearLayout remindContainer;
@@ -114,7 +116,7 @@ public class CreateNoteActivity extends ThemedActivity {
 
     private NoteItem mItem;
     private Reminder mReminder;
-    private Toolbar toolbar;
+    private AppBarLayout toolbar;
     private EditText taskField;
 
     private DecodeImagesAsync.DecodeListener mDecodeCallback = new DecodeImagesAsync.DecodeListener() {
@@ -132,7 +134,7 @@ public class CreateNoteActivity extends ThemedActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_note);
         initActionBar();
         initMenu();
-        layoutContainer = binding.layoutContainer;
+        initBgContainer();
         remindContainer = binding.remindContainer;
         ViewUtils.fadeInAnimation(layoutContainer);
         remindDate = binding.remindDate;
@@ -152,9 +154,40 @@ public class CreateNoteActivity extends ThemedActivity {
             showReminder();
         } else {
             mColor = new Random().nextInt(16);
+            if (getPrefs().isNoteColorRememberingEnabled()) {
+                mColor = getPrefs().getLastNoteColor();
+            }
         }
         updateBackground();
         updateTextStyle();
+    }
+
+    private void initBgContainer() {
+        layoutContainer = binding.layoutContainer;
+        binding.touchView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                return true;
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                if (mLastX != -1) {
+                    int currentOpacity = getPrefs().getNoteColorOpacity();
+                    if (x - mLastX > 0) {
+                        if (currentOpacity < 100) {
+                            currentOpacity += 1;
+                        }
+                    } else {
+                        if (currentOpacity > 0) {
+                            currentOpacity -= 1;
+                        }
+                    }
+                    getPrefs().setNoteColorOpacity(currentOpacity);
+                    updateBackground();
+                }
+                mLastX = x;
+                return true;
+            }
+            return false;
+        });
     }
 
     private void initMenu() {
@@ -200,8 +233,8 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void initActionBar() {
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        toolbar = binding.appBar;
+        setSupportActionBar(binding.toolbar);
         taskField = binding.taskMessage;
         taskField.setTextSize(getPrefs().getNoteTextSize() + 12);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -405,6 +438,9 @@ public class CreateNoteActivity extends ThemedActivity {
         AlertDialog dialog = builder.create();
         view.setListener(code -> {
             mColor = code;
+            if (getPrefs().isNoteColorRememberingEnabled()) {
+                getPrefs().setLastNoteColor(mColor);
+            }
             updateBackground();
             dialog.dismiss();
         });

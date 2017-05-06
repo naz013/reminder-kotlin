@@ -122,7 +122,11 @@ public class QuickNoteCoordinator {
         NoteItem item = new NoteItem();
         item.setSummary(text);
         item.setDate(TimeUtil.getGmtDateTime());
-        item.setColor(new Random().nextInt(16));
+        if (Prefs.getInstance(mContext).isNoteColorRememberingEnabled()) {
+            item.setColor(Prefs.getInstance(mContext).getLastNoteColor());
+        } else {
+            item.setColor(new Random().nextInt(16));
+        }
         RealmDb.getInstance().saveObject(item);
         if (Prefs.getInstance(mContext).isNoteReminderEnabled()) {
             addReminderCard(item);

@@ -34,8 +34,10 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
     private FragmentSettingsNotesLayoutBinding binding;
     private View.OnClickListener mNoteReminderClick = view -> changeNoteReminder();
+    private View.OnClickListener mNoteColorRememberClick = view -> changeNoteColorRemembering();
     private View.OnClickListener mNoteTimeClick = view -> showTimePickerDialog();
     private View.OnClickListener mNoteTextSizeClick = view -> showTextSizePickerDialog();
+    private View.OnClickListener mNoteColorOpacityClick = view -> showOpacityPickerDialog();
 
     @Nullable
     @Override
@@ -44,7 +46,25 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
         initNoteReminderPrefs();
         initNoteTime();
         initTextSizePrefs();
+        initNoteColorRememberPrefs();
+        initColorOpacityPrefs();
         return binding.getRoot();
+    }
+
+    private void initNoteColorRememberPrefs() {
+        binding.noteColorRememberPrefs.setOnClickListener(mNoteColorRememberClick);
+        binding.noteColorRememberPrefs.setChecked(getPrefs().isNoteColorRememberingEnabled());
+    }
+
+    private void changeNoteColorRemembering() {
+        boolean isChecked = binding.noteColorRememberPrefs.isChecked();
+        binding.noteColorRememberPrefs.setChecked(!isChecked);
+        getPrefs().setNoteColorRememberingEnabled(!isChecked);
+    }
+
+    private void initColorOpacityPrefs() {
+        binding.noteColorOpacity.setOnClickListener(mNoteColorOpacityClick);
+        showNoteColorSaturation();
     }
 
     private void initTextSizePrefs() {
@@ -70,6 +90,10 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     private void showNoteTime() {
         binding.noteReminderTime.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 String.valueOf(getPrefs().getNoteReminderTime())));
+    }
+
+    private void showNoteColorSaturation() {
+        binding.noteColorOpacity.setDetailText(String.format(Locale.getDefault(), "%d%%", getPrefs().getNoteColorOpacity()));
     }
 
     @Override
@@ -151,6 +175,40 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             getPrefs().setNoteReminderTime(b.seekBar.getProgress());
             showNoteTime();
+            dialogInterface.dismiss();
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+    private void showOpacityPickerDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.color_saturation);
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
+        b.seekBar.setMax(100);
+        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                b.titleView.setText(String.format(Locale.getDefault(), "%d%%", progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        int opacity = getPrefs().getNoteColorOpacity();
+        b.seekBar.setProgress(opacity);
+        b.titleView.setText(String.format(Locale.getDefault(), "%d%%", opacity));
+        builder.setView(b.getRoot());
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+            getPrefs().setNoteColorOpacity(b.seekBar.getProgress());
+            showNoteColorSaturation();
             dialogInterface.dismiss();
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());

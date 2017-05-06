@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IntRange;
 import android.support.annotation.StyleRes;
 
 import com.elementary.tasks.R;
@@ -1226,6 +1227,14 @@ public final class ThemeUtil {
         return getColor(colorPrimaryDark(code));
     }
 
+    public int adjustAlpha(int color, @IntRange(from = 0, to = 100) int factor) {
+        float alpha = (255f * ((float) factor / 100f));
+        int red = android.graphics.Color.red(color);
+        int green = android.graphics.Color.green(color);
+        int blue = android.graphics.Color.blue(color);
+        return android.graphics.Color.argb((int) alpha, red, green, blue);
+    }
+
     @ColorInt
     public int getNoteLightColor(int code) {
         int color;
@@ -1290,7 +1299,8 @@ public final class ThemeUtil {
                 }
                 break;
         }
-        return getColor(color);
+        int alpha = Prefs.getInstance(holder.getContext()).getNoteColorOpacity();
+        return adjustAlpha(getColor(color), alpha);
     }
 
     @DrawableRes

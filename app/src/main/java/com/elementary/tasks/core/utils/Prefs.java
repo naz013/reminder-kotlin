@@ -898,6 +898,7 @@ public final class Prefs extends SharedPrefs {
             uiEd.putInt(AUTO_CHECK_FOR_EVENTS_INTERVAL, 6);
             uiEd.putInt(SOUND_STREAM, 5);
             uiEd.putInt(MAIN_IMAGE_ID, -1);
+            uiEd.putInt(NOTE_COLOR_OPACITY, 100);
             uiEd.putBoolean(TRACKING_NOTIFICATION, true);
             uiEd.putBoolean(RATE_SHOW, false);
             uiEd.putBoolean(IS_CREATE_SHOWN, false);
@@ -1134,6 +1135,9 @@ public final class Prefs extends SharedPrefs {
         if (!hasKey(MAIN_IMAGE_ID)) {
             putInt(MAIN_IMAGE_ID, -1);
         }
+        if (!hasKey(NOTE_COLOR_OPACITY)) {
+            putInt(NOTE_COLOR_OPACITY, 100);
+        }
         if (!hasKey(MAIN_IMAGE_PATH)) {
             putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
         }
@@ -1209,5 +1213,29 @@ public final class Prefs extends SharedPrefs {
 
     public boolean isLiveEnabled() {
         return getBoolean(LIVE_CONVERSATION);
+    }
+
+    public void setNoteColorRememberingEnabled(boolean value) {
+        putBoolean(REMEMBER_NOTE_COLOR, value);
+    }
+
+    public boolean isNoteColorRememberingEnabled() {
+        return getBoolean(REMEMBER_NOTE_COLOR);
+    }
+
+    public int getLastNoteColor() {
+        return getInt(LAST_NOTE_COLOR);
+    }
+
+    public void setLastNoteColor(int count) {
+        putInt(LAST_NOTE_COLOR, count);
+    }
+
+    public int getNoteColorOpacity() {
+        return getInt(NOTE_COLOR_OPACITY);
+    }
+
+    public void setNoteColorOpacity(int count) {
+        putInt(NOTE_COLOR_OPACITY, count);
     }
 }
