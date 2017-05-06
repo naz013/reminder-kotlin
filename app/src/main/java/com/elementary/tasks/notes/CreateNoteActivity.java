@@ -62,6 +62,7 @@ import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
+import com.tapadoo.alerter.Alerter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -160,6 +161,21 @@ public class CreateNoteActivity extends ThemedActivity {
         }
         updateBackground();
         updateTextStyle();
+        showSaturationAlert();
+    }
+
+    private void showSaturationAlert() {
+        if (getPrefs().isNoteHintShowed()) {
+            return;
+        }
+        getPrefs().setNoteHintShowed(true);
+        Alerter.create(this)
+                .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
+                .setText(R.string.click_to_hide)
+                .enableInfiniteDuration(true)
+                .setBackgroundColor(getThemeUtil().colorPrimaryDark(mColor))
+                .setOnClickListener(v -> Alerter.create(CreateNoteActivity.this).hide())
+                .show();
     }
 
     private void initBgContainer() {

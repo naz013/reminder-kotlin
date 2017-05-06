@@ -544,5 +544,7 @@
     <string name="grant">Grant</string>
     <string name="remember_last_used_note_color">Remember last used note color</string>
     <string name="color_saturation">Color saturation</string>
+    <string name="swipe_left_or_right_to_adjust_saturation">Swipe left or right to adjust note color saturation.</string>
+    <string name="click_to_hide">Click to hide</string>
 
 </resources>

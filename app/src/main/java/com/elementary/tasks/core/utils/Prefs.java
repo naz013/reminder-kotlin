@@ -1238,4 +1238,12 @@ public final class Prefs extends SharedPrefs {
     public void setNoteColorOpacity(int count) {
         putInt(NOTE_COLOR_OPACITY, count);
     }
+
+    public void setNoteHintShowed(boolean value) {
+        putBoolean(NOTE_HINT_SHOWED, value);
+    }
+
+    public boolean isNoteHintShowed() {
+        return getBoolean(NOTE_HINT_SHOWED);
+    }
 }
