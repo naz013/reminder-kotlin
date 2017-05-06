@@ -202,6 +202,9 @@ public class Google {
         }
 
         public void updateTasksList(final String listTitle, final String listId) throws IOException {
+            if (listId == null) {
+                return;
+            }
             TaskList taskList = service.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
             service.tasklists().update(listId, taskList).execute();
