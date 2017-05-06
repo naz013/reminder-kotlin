@@ -145,11 +145,11 @@ public class DateTimeView extends RelativeLayout implements
     }
 
     public void selectDate() {
-        new DatePickerDialog(mContext, this, mYear, mMonth, mDay).show();
+        TimeUtil.showDatePicker(mContext, this, mYear, mMonth, mDay);
     }
 
     public void selectTime() {
-        new TimePickerDialog(mContext, this, mHour, mMinute, Prefs.getInstance(mContext).is24HourFormatEnabled()).show();
+        TimeUtil.showTimePicker(mContext, this, mHour, mMinute);
     }
 
     @Override

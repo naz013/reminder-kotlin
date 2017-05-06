@@ -94,8 +94,7 @@ public class WeekFragment extends RepeatableTypeFragment {
             binding.timeField.setText(formattedTime);
         }
     };
-    public View.OnClickListener timeClick = v -> new TimePickerDialog(getActivity(), mTimeSelect, mHour, mMinute,
-            Prefs.getInstance(getActivity()).is24HourFormatEnabled()).show();
+    public View.OnClickListener timeClick = v -> TimeUtil.showTimePicker(getActivity(), mTimeSelect, mHour, mMinute);
 
     public WeekFragment() {
     }
@@ -227,7 +226,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         return cal.getTime();
     }
 
-    private void setCheckForDays(List<Integer> weekdays){
+    private void setCheckForDays(List<Integer> weekdays) {
         if (weekdays.get(0) == 1) {
             binding.sundayCheck.setChecked(true);
         } else binding.sundayCheck.setChecked(false);
@@ -240,7 +239,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         } else binding.tuesdayCheck.setChecked(false);
 
         if (weekdays.get(3) == 1) {
-            binding. wednesdayCheck.setChecked(true);
+            binding.wednesdayCheck.setChecked(true);
         } else binding.wednesdayCheck.setChecked(false);
 
         if (weekdays.get(4) == 1) {

@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.additional;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -198,7 +197,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         });
         mCustomTimeView.setOnClickListener(v -> {
             mCustomRadio.setChecked(true);
-            timeDialog().show();
+            timeDialog();
         });
     }
 
@@ -267,7 +266,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     protected void dateDialog() {
-        new DatePickerDialog(this, myDateCallBack, mYear, mMonth, mDay).show();
+        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay);
     }
 
     DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
@@ -286,8 +285,8 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         }
     };
 
-    protected Dialog timeDialog() {
-        return new TimePickerDialog(this, myCallBack, mCustomHour, mCustomMinute, mIs24Hour);
+    protected void timeDialog() {
+        TimeUtil.showTimePicker(this, myCallBack, mCustomHour, mCustomMinute);
     }
 
     TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {

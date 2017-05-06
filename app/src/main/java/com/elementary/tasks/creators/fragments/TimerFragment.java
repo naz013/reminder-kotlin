@@ -2,7 +2,6 @@ package com.elementary.tasks.creators.fragments;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -244,7 +243,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void fromTime(RoboTextView textView) {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             fromHour = hourOfDay;
             fromMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -252,11 +251,11 @@ public class TimerFragment extends RepeatableTypeFragment {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             textView.setText(getString(R.string.from) + " " + TimeUtil.getTime(calendar.getTime(), true));
-        }, fromHour, fromMinute, true).show();
+        }, fromHour, fromMinute);
     }
 
     private void toTime(RoboTextView textView) {
-        new TimePickerDialog(getContext(), (view, hourOfDay, minute) -> {
+        TimeUtil.showTimePicker(getContext(), (view, hourOfDay, minute) -> {
             toHour = hourOfDay;
             toMinute = minute;
             Calendar calendar = Calendar.getInstance();
@@ -264,6 +263,6 @@ public class TimerFragment extends RepeatableTypeFragment {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendar.set(Calendar.MINUTE, minute);
             textView.setText(getString(R.string.to) + " " + TimeUtil.getTime(calendar.getTime(), true));
-        }, toHour, toMinute, true).show();
+        }, toHour, toMinute);
     }
 }

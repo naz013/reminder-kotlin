@@ -24,6 +24,7 @@ import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding;
 
 import java.io.IOException;
@@ -234,7 +235,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     }
 
     private void dateDialog() {
-        new DatePickerDialog(this, myDateCallBack, myYear, myMonth, myDay).show();
+        TimeUtil.showDatePicker(this, myDateCallBack, myYear, myMonth, myDay);
     }
 
     DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
