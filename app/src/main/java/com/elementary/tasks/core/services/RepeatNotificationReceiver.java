@@ -76,7 +76,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, RepeatNotificationReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
@@ -94,7 +94,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         }
     }
 
-    private void showNotification(Context context, Reminder reminder){
+    private void showNotification(Context context, Reminder reminder) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentTitle(reminder.getSummary());
         builder.setAutoCancel(false);
@@ -105,7 +105,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
             PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             builder.setContentIntent(intent);
         }
-        if (Module.isPro()){
+        if (Module.isPro()) {
             builder.setContentText(context.getString(R.string.app_name_pro));
         } else {
             builder.setContentText(context.getString(R.string.app_name));
@@ -115,21 +115,23 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        if (SuperUtil.checkNotificationPermission(context) && !SuperUtil.isDoNotDiasturbEnabled(context)) {
+        if (!SuperUtil.isDoNotDisturbEnabled(context) ||
+                (SuperUtil.checkNotificationPermission(context) &&
+                        Prefs.getInstance(context).isSoundInSilentModeEnabled())) {
             Uri uri = getSoundUri(reminder.getMelodyPath(), context);
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             builder.setSound(uri);
         }
-        if (Prefs.getInstance(context).isVibrateEnabled()){
+        if (Prefs.getInstance(context).isVibrateEnabled()) {
             long[] pattern;
-            if (Prefs.getInstance(context).isInfiniteVibrateEnabled()){
+            if (Prefs.getInstance(context).isInfiniteVibrateEnabled()) {
                 pattern = new long[]{150, 86400000};
             } else {
                 pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
             }
             builder.setVibrate(pattern);
         }
-        if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()){
+        if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()) {
             if (reminder.getColor() != 0) {
                 builder.setLights(reminder.getColor(), 500, 1000);
             } else {
