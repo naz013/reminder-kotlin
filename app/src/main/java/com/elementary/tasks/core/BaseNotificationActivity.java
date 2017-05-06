@@ -447,12 +447,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
+        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
-                mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-            }
+            mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
         }
         if (isVibrate()) {
             long[] pattern;
@@ -537,13 +535,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
+        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
             LogUtil.d(TAG, "showReminderNotification: " + soundUri);
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
-                mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-            }
+            mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
         }
         if (isVibrate()) {
             long[] pattern;
@@ -599,11 +595,9 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
-                playDefaultMelody();
-            }
+        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
+            playDefaultMelody();
         }
         if (isVibrate()) {
             long[] pattern;

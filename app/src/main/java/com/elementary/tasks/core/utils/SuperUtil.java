@@ -50,16 +50,18 @@ public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
 
-    public static boolean isDoNotDiasturbEnabled(Context context) {
+    public static boolean isDoNotDisturbEnabled(Context context) {
         if (!Module.isMarshmallow()) {
             return false;
         }
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (mNotificationManager.getCurrentInterruptionFilter() == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
                 mNotificationManager.getCurrentInterruptionFilter() == NotificationManager.INTERRUPTION_FILTER_NONE) {
-            return false;
-        } else {
+            LogUtil.d(TAG, "isDoNotDisturbEnabled: true");
             return true;
+        } else {
+            LogUtil.d(TAG, "isDoNotDisturbEnabled: false");
+            return false;
         }
     }
 

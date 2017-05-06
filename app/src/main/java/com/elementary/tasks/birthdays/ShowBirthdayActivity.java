@@ -105,7 +105,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         } else {
             contactPhoto.setVisibility(View.GONE);
         }
-        String years =  TimeUtil.getAgeFormatted(this, mBirthdayItem.getDate());
+        String years = TimeUtil.getAgeFormatted(this, mBirthdayItem.getDate());
         RoboTextView userName = binding.userName;
         userName.setText(mBirthdayItem.getName());
         RoboTextView userNumber = (RoboTextView) findViewById(R.id.userNumber);
@@ -129,7 +129,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         return Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS);
     }
 
-    public void showNotification(int years, String name){
+    public void showNotification(int years, String name) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(name);
         builder.setContentText(TimeUtil.getAgeFormatted(this, years));
@@ -141,20 +141,18 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || isBirthdaySilentEnabled()) {
-                getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
-            }
+        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
+            getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
         }
-        if (isVibrate()){
+        if (isVibrate()) {
             long[] pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
-            if (isBirthdayInfiniteVibration()){
+            if (isBirthdayInfiniteVibration()) {
                 pattern = new long[]{150, 86400000};
             }
             builder.setVibrate(pattern);
         }
-        if (Module.isPro()){
+        if (Module.isPro()) {
             builder.setLights(getLedColor(), 500, 1000);
         }
         boolean isWear = getPrefs().isWearEnabled();
@@ -220,7 +218,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (getPrefs().isFoldingEnabled()){
+        if (getPrefs().isFoldingEnabled()) {
             removeFlags();
             finish();
         } else {
@@ -324,7 +322,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected boolean isBirthdayInfiniteVibration() {
         boolean vibrate = getPrefs().isInfiniteVibrateEnabled();
-        if (Module.isPro() && !isGlobal()){
+        if (Module.isPro() && !isGlobal()) {
             vibrate = getPrefs().isBirthdayInfiniteVibrationEnabled();
         }
         return vibrate;
@@ -333,7 +331,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected boolean isBirthdayInfiniteSound() {
         boolean isLooping = getPrefs().isInfiniteSoundEnabled();
-        if (Module.isPro() && !isGlobal()){
+        if (Module.isPro() && !isGlobal()) {
             isLooping = getPrefs().isBirthdayInfiniteSoundEnabled();
         }
         return isLooping;
@@ -347,7 +345,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected boolean isVibrate() {
         boolean vibrate = getPrefs().isVibrateEnabled();
-        if (Module.isPro() && !isGlobal()){
+        if (Module.isPro() && !isGlobal()) {
             vibrate = getPrefs().isBirthdayVibrationEnabled();
         }
         return vibrate;
