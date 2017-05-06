@@ -50,7 +50,20 @@ public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
 
-    public static boolean checkNotificationPermission(Activity activity) {
+    public static boolean isDoNotDiasturbEnabled(Context context) {
+        if (!Module.isMarshmallow()) {
+            return false;
+        }
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (mNotificationManager.getCurrentInterruptionFilter() == NotificationManager.INTERRUPTION_FILTER_ALARMS ||
+                mNotificationManager.getCurrentInterruptionFilter() == NotificationManager.INTERRUPTION_FILTER_NONE) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean checkNotificationPermission(Context activity) {
         NotificationManager notificationManager =
                 (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Module.isMarshmallow() && !notificationManager.isNotificationPolicyAccessGranted()) {

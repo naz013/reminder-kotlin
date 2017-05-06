@@ -38,6 +38,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SoundStackHolder;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -446,7 +447,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (!isScreenResumed()) {
+        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
             Uri soundUri = getSoundUri();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
@@ -536,7 +537,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        if (!isScreenResumed()) {
+        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
             Uri soundUri = getSoundUri();
             LogUtil.d(TAG, "showReminderNotification: " + soundUri);
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -598,9 +599,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
-        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
-            playDefaultMelody();
+        if (!isScreenResumed() && SuperUtil.checkNotificationPermission(this) && !SuperUtil.isDoNotDiasturbEnabled(this)) {
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am.getRingerMode() == AudioManager.RINGER_MODE_NORMAL || getPrefs().isSoundInSilentModeEnabled()) {
+                playDefaultMelody();
+            }
         }
         if (isVibrate()) {
             long[] pattern;
