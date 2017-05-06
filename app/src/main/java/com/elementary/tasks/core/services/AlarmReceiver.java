@@ -378,24 +378,19 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                     long itemId = item.getId();
                     if (!list.contains(itemId)) {
                         String rrule = item.getRrule();
-                        int repeat = 0;
+                        long repeat = 0;
                         if (rrule != null && !rrule.matches("")) {
                             try {
                                 RecurrenceRule rule = new RecurrenceRule(rrule);
                                 int interval = rule.getInterval();
                                 Freq freq = rule.getFreq();
-                                if (freq == Freq.HOURLY || freq == Freq.MINUTELY || freq == Freq.SECONDLY) {
-                                } else {
-                                    if (freq == Freq.WEEKLY) {
-                                        repeat = interval * 7;
-                                    } else if (freq == Freq.MONTHLY) {
-                                        repeat = interval * 30;
-                                    } else if (freq == Freq.YEARLY) {
-                                        repeat = interval * 365;
-                                    } else {
-                                        repeat = interval;
-                                    }
-                                }
+                                if (freq == Freq.SECONDLY) repeat = interval * TimeCount.SECOND;
+                                else if (freq == Freq.MINUTELY) repeat = interval * TimeCount.MINUTE;
+                                else if (freq == Freq.HOURLY) repeat = interval * TimeCount.HOUR;
+                                else if (freq == Freq.WEEKLY) repeat = interval * 7 * TimeCount.DAY;
+                                else if (freq == Freq.MONTHLY) repeat = interval * 30 * TimeCount.DAY;
+                                else if (freq == Freq.YEARLY) repeat = interval * 365 * TimeCount.DAY;
+                                else repeat = interval * TimeCount.DAY;
                             } catch (InvalidRecurrenceRuleException e) {
                                 e.printStackTrace();
                             }
@@ -422,7 +417,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             return null;
         }
 
-        private void saveReminder(long itemId, String summary, long dtStart, int repeat, String categoryId) {
+        private void saveReminder(long itemId, String summary, long dtStart, long repeat, String categoryId) {
             Reminder reminder = new Reminder();
             reminder.setType(Reminder.BY_DATE);
             reminder.setRepeatInterval(repeat);
