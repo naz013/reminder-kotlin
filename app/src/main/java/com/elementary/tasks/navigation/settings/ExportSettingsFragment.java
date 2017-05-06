@@ -94,7 +94,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             new Thread(() -> {
                 Google gdx = Google.getInstance(getContext());
                 Dropbox dbx = new Dropbox(getContext());
-                if (SuperUtil.isConnected(getContext())) {
+                if (SuperUtil.isConnected(getContext()) && gdx.getDrive() != null) {
                     try {
                         gdx.getDrive().clean();
                     } catch (IOException e) {
