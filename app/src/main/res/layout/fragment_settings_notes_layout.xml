@@ -37,6 +37,22 @@
                 app:prefs_primary_text="@string/text_size"
                 app:prefs_type="none" />
 
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/noteColorRememberPrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/remember_last_used_note_color"
+                app:prefs_type="check" />
+
+            <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/noteColorOpacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/color_saturation"
+                app:prefs_type="none" />
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </layout>
