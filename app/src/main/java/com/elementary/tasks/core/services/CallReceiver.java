@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager;
 import com.elementary.tasks.core.additional.FollowReminderActivity;
 import com.elementary.tasks.core.additional.QuickSmsActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.missed_calls.CallItem;
@@ -51,6 +52,7 @@ public class CallReceiver extends BroadcastReceiver {
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             Prefs prefs = Prefs.getInstance(mContext);
+            LogUtil.d(TAG, "onCallStateChanged: " + incomingNumber);
             if (incomingNumber != null && incomingNumber.length() > 0) {
                 mIncomingNumber = incomingNumber;
             } else {
@@ -81,6 +83,7 @@ public class CallReceiver extends BroadcastReceiver {
                         prevState = state;
                         long currTime = System.currentTimeMillis();
                         if (currTime - startCallTime >= 1000 * 10) {
+                            LogUtil.d(TAG, "onCallStateChanged: is missed " + mIncomingNumber);
                             if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
                                 MissedCallReceiver alarm = new MissedCallReceiver();
                                 CallItem callItem = RealmDb.getInstance().getMissedCall(mIncomingNumber);
@@ -96,6 +99,7 @@ public class CallReceiver extends BroadcastReceiver {
                                 break;
                             }
                         } else {
+                            LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber);
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled()) {
                                 int size = RealmDb.getInstance().getAllTemplates().size();
                                 if (size > 0) {

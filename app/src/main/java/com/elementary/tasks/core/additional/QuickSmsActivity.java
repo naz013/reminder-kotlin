@@ -66,7 +66,7 @@ public class QuickSmsActivity extends ThemedActivity {
 
     private void initData() {
         Intent i = getIntent();
-        number = i.getStringExtra(Constants.INTENT_ID);
+        number = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
     }
 
     private void startSending() {
