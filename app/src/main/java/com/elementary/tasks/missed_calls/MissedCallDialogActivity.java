@@ -100,7 +100,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         TextView remText = (TextView) findViewById(R.id.remText);
         String formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), getPrefs().is24HourFormatEnabled());
         String name = Contacts.getNameFromNumber(mCallItem.getNumber(), this);
-        wearMessage = name + "\n" + mCallItem.getNumber();
+        wearMessage = (name != null ? name : "") + "\n" + mCallItem.getNumber();
         if (mCallItem.getNumber() != null) {
             long conID = Contacts.getIdFromNumber(mCallItem.getNumber(), this);
             Uri photo = Contacts.getPhoto(conID);
@@ -114,6 +114,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
             binding.actionDirect.setText(R.string.from);
             binding.someView.setText(R.string.last_called);
             binding.messageView.setText(formattedTime);
+            binding.container.setVisibility(View.VISIBLE);
         }
         buttonCancel.setOnClickListener(v -> sendSMS());
         binding.buttonOk.setOnClickListener(v -> ok());
@@ -152,7 +153,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     public void onBackPressed() {
         discardMedia();
-        if (getPrefs().isFoldingEnabled()){
+        if (getPrefs().isFoldingEnabled()) {
             removeFlags();
             finish();
         } else {
