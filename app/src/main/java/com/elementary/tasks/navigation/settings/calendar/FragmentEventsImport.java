@@ -203,6 +203,10 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void importEvents() {
+        if (list == null || list.isEmpty()) {
+            Toast.makeText(getContext(), getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (binding.eventCalendar.getSelectedItemPosition() == 0) {
             Toast.makeText(getContext(), getString(R.string.you_dont_select_any_calendar), Toast.LENGTH_SHORT).show();
             return;
