@@ -20,8 +20,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 166
-        versionName '6.0.6'
+        versionCode 167
+        versionName '6.0.7'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -59,7 +59,7 @@ android {
         pro {
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 138
+            versionCode 139
         }
     }
     packagingOptions {
@@ -119,7 +119,7 @@ dependencies {
     compile('com.google.api-client:google-api-client-android:1.22.0') {
         exclude module: 'httpclient'
     }
-    compile('com.google.apis:google-api-services-drive:v3-rev68-1.22.0') {
+    compile('com.google.apis:google-api-services-drive:v3-rev72-1.22.0') {
         exclude module: 'httpclient'
     }
     compile('com.google.apis:google-api-services-tasks:v1-rev47-1.22.0') {
