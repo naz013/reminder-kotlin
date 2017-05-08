@@ -266,7 +266,7 @@ abstract class Worker implements WorkerInterface {
                 try {
                     Integer.parseInt(parts[i + 1]);
                     input = input.replace(parts[i + 1], "");
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 }
                 input = input.replace(part, "");
                 break;
