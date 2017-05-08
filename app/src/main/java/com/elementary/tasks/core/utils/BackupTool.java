@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
@@ -76,7 +77,12 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                        realmDb.saveObject(getTemplate(file.toString(), null));
+                        TemplateItem item = getTemplate(file.toString(), null);
+                        if (item == null || TextUtils.isEmpty(item.getTitle())
+                                || TextUtils.isEmpty(item.getKey())) {
+                            continue;
+                        }
+                        realmDb.saveObject(item);
                     }
                 }
             }
@@ -130,7 +136,12 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) {
-                        realmDb.saveObject(getPlace(file.toString(), null));
+                        PlaceItem item = getPlace(file.toString(), null);
+                        if (item == null || TextUtils.isEmpty(item.getTitle()) ||
+                                TextUtils.isEmpty(item.getKey())) {
+                            continue;
+                        }
+                        realmDb.saveObject(item);
                     }
                 }
             }
@@ -184,7 +195,12 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                        realmDb.saveObject(getBirthday(file.toString(), null));
+                        BirthdayItem item = getBirthday(file.toString(), null);
+                        if (item == null || TextUtils.isEmpty(item.getName())
+                                || TextUtils.isEmpty(item.getUuId())) {
+                            continue;
+                        }
+                        realmDb.saveObject(item);
                     }
                 }
             }
@@ -258,7 +274,8 @@ public final class BackupTool {
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         GroupItem item = getGroup(file.toString(), null);
-                        if (!hasGroup(groupItems, item.getTitle())) {
+                        if (item == null || TextUtils.isEmpty(item.getUuId())) continue;
+                        if (!TextUtils.isEmpty(item.getTitle()) && !hasGroup(groupItems, item.getTitle())) {
                             realmDb.saveObject(item);
                             groupItems.add(item);
                         }
@@ -311,7 +328,15 @@ public final class BackupTool {
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);
+                        if (reminder == null) {
+                            continue;
+                        }
                         if (reminder.isRemoved() || !reminder.isActive()) {
+                            continue;
+                        }
+                        if (TextUtils.isEmpty(reminder.getSummary()) ||
+                                TextUtils.isEmpty(reminder.getEventTime()) ||
+                                TextUtils.isEmpty(reminder.getUuId())) {
                             continue;
                         }
                         if (realmDb.getGroup(reminder.getGroupUuId()) == null) {
@@ -390,7 +415,11 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
-                        realmDb.saveObject(getNote(file.toString(), null));
+                        NoteItem item = getNote(file.toString(), null);
+                        if (item == null || TextUtils.isEmpty(item.getKey())) {
+                            continue;
+                        }
+                        realmDb.saveObject(item);
                     }
                 }
             }
