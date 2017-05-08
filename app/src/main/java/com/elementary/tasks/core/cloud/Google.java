@@ -113,7 +113,7 @@ public class Google {
 
     public class Tasks {
         public boolean insertTask(TaskItem item) throws IOException {
-            if (item.getTitle() == null) {
+            if (TextUtils.isEmpty(item.getTitle())) {
                 return false;
             }
             Task task = new Task();
