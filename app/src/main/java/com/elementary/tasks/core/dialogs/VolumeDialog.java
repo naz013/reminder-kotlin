@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
@@ -34,7 +35,7 @@ public class VolumeDialog extends BaseDialog {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.loudness);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(this));
         b.seekBar.setMax(25);

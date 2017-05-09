@@ -24,6 +24,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -594,7 +595,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showInstallTtsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(R.string.would_you_like_to_install_tts);
         builder.setPositiveButton(R.string.install, (dialogInterface, i) -> {
             dialogInterface.dismiss();

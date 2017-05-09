@@ -21,6 +21,7 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -299,7 +300,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 calendar.setTimeInMillis(tmp + AlarmManager.INTERVAL_HALF_HOUR);
             }
         } while (hour != -1);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_time);
         builder.setItems(time.toArray(new String[time.size()]), (dialog, which) -> {
             dialog.dismiss();

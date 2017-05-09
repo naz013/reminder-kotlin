@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentCalendarSettingsBinding;
 import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor;
@@ -60,7 +61,7 @@ public class CalendarSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showFirstDayDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.first_day));
         String[] items = {getString(R.string.sunday), getString(R.string.monday)};

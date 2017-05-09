@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
@@ -27,7 +28,7 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 abstract class RepeatableTypeFragment extends TypeFragment {
 
     protected void changeLimit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.repeat_limit);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(366);

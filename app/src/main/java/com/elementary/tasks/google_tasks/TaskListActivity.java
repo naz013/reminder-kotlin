@@ -13,6 +13,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.views.ColorPickerView;
@@ -157,7 +158,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(getString(R.string.delete_this_list));
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();

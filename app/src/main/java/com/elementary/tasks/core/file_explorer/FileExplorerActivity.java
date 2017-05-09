@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Sound;
@@ -126,7 +127,7 @@ public class FileExplorerActivity extends ThemedActivity {
     }
 
     private void showFullImage() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(mFileName);
         ImageView imageView = new ImageView(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

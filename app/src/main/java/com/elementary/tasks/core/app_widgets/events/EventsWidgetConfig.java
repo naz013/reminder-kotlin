@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.databinding.CurrentWidgetConfigLayoutBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
@@ -116,7 +117,7 @@ public class EventsWidgetConfig extends ThemedActivity {
     }
 
     private void showTextSizeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.text_size);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(this));
         b.seekBar.setMax(13);

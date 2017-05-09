@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -156,7 +157,7 @@ public class ShopFragment extends TypeFragment {
     }
 
     private void selectDateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         String[] types = new String[]{getString(R.string.no_reminder), getString(R.string.select_time)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_single_choice, types);
         int selection = 0;

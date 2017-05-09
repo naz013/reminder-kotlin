@@ -30,6 +30,7 @@ import com.elementary.tasks.core.drawing.DrawView;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -476,7 +477,7 @@ public class DrawFragment extends BitmapFragment {
             Permissions.requestPermission(getActivity(), REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS);
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.image));
         builder.setItems(new CharSequence[]{getString(R.string.gallery),
                         getString(R.string.take_a_shot)},
@@ -559,7 +560,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void showStyleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.font_style));
         ArrayList<String> contacts = new ArrayList<>();
         contacts.clear();
@@ -688,7 +689,7 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void showTextPickerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         RoboEditText editText = new RoboEditText(getContext());
         editText.setHint(R.string.text);
         builder.setView(editText);

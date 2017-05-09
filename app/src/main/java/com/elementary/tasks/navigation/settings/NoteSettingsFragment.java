@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsNotesLayoutBinding;
 
@@ -112,7 +113,7 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTextSizePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.text_size);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(18);
@@ -146,7 +147,7 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTimePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.time);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(120);
@@ -182,7 +183,7 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showOpacityPickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.color_saturation);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(100);

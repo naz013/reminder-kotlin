@@ -20,6 +20,7 @@ import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -141,7 +142,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void showDaysToDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.days_to_birthday);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5);

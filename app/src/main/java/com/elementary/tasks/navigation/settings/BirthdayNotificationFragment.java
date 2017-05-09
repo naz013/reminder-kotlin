@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.databinding.FragmentBirthdayNotificationsBinding;
@@ -72,7 +73,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showLedColorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.led_color));
         String[] colors = LED.getAllNames(getContext());
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
@@ -124,7 +125,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showSoundDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.melody));
         String[] types = new String[]{getString(R.string.default_string),
@@ -167,7 +168,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
     }
 
     private void showTtsLocaleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.language));
         String locale = getPrefs().getBirthdayTtsLocale();

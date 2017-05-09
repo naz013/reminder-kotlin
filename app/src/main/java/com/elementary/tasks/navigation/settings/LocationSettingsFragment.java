@@ -11,6 +11,7 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -94,7 +95,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTrackerOptionsDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.tracking_settings);
         DialogTrackingSettingsLayoutBinding b = DialogTrackingSettingsLayoutBinding.inflate(LayoutInflater.from(getContext()));
         b.distanceBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -145,7 +146,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showMapTypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.map_type));
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.map_types,
@@ -190,7 +191,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showRadiusPickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5000);

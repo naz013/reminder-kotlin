@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
@@ -38,7 +39,7 @@ public class VoiceResultDialog extends BaseDialog {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = Dialogues.getDialog(this);
         alert.setTitle(getString(R.string.saved));
         String uuId = getIntent().getStringExtra(Constants.INTENT_ID);
         Reminder reminder = RealmDb.getInstance().getReminder(uuId);

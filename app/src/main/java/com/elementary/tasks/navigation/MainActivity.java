@@ -31,6 +31,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -180,7 +181,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void showRateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.rate);
         builder.setMessage(R.string.can_you_rate_this_application);
         builder.setPositiveButton(R.string.rate, (dialogInterface, i) -> {
@@ -207,7 +208,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (!appVersion.contains("beta")) {
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle("Beta");
         builder.setMessage("This version of application may work unstable!");
         builder.setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> dialogInterface.dismiss());
@@ -566,7 +567,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void showProDialog() {
-        new AlertDialog.Builder(this)
+        Dialogues.getDialog(this)
                 .setTitle(getString(R.string.buy_pro))
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +

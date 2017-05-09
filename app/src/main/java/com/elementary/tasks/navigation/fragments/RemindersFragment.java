@@ -387,7 +387,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             arrayAdapter.add(item.getTitle());
             mGroupsIds.add(item.getUuId());
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.choose_group));
         builder.setAdapter(arrayAdapter, (dialog, which) -> {
             dialog.dismiss();

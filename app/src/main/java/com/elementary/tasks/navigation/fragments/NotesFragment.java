@@ -245,7 +245,7 @@ public class NotesFragment extends BaseNavigationFragment {
                 getString(R.string.by_date_za),
                 getString(R.string.name_az),
                 getString(R.string.name_za)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.order));
         builder.setItems(items, (dialog, which) -> {
             String value = null;
@@ -293,7 +293,7 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setMessage(R.string.delete_all_notes);
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
