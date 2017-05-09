@@ -281,10 +281,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     private void start(Context context, String id) {
-        Intent resultIntent = new Intent(context, ReminderDialogActivity.class);
-        resultIntent.putExtra(Constants.INTENT_ID, id);
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        context.startActivity(resultIntent);
+        context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
     }
 
     public void enableReminder(Context context, String uuId) {

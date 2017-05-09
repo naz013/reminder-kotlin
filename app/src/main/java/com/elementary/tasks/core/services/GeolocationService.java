@@ -11,7 +11,6 @@ import android.text.TextUtils;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.location.LocationTracker;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
@@ -160,10 +159,7 @@ public class GeolocationService extends Service {
     private void showReminder(Reminder reminder) {
         if (reminder.isNotificationShown()) return;
         RealmDb.getInstance().saveObject(reminder.setNotificationShown(true));
-        Intent resultIntent = new Intent(getApplicationContext(), ReminderDialogActivity.class);
-        resultIntent.putExtra(Constants.INTENT_ID, reminder.getUuId());
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        getApplication().startActivity(resultIntent);
+        getApplication().startActivity(ReminderDialogActivity.getLaunchIntent(getApplicationContext(), reminder.getUuId()));
     }
 
     private void showNotification(int roundedDistance, Reminder reminder) {
