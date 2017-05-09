@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -85,6 +86,13 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private EventControl mControl;
     private boolean mIsResumed;
 
+    public static Intent getLaunchIntent(Context context, String uuId) {
+        Intent resultIntent = new Intent(context, ReminderDialogActivity.class);
+        resultIntent.putExtra(Constants.INTENT_ID, uuId);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        return resultIntent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
@@ -130,11 +138,11 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.CALL) || Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
             if (!Reminder.isBase(mReminder.getType(), Reminder.BY_SKYPE)) {
                 contactPhoto.setVisibility(View.VISIBLE);
-                long conID = Contacts.getIdFromNumber(mReminder.getTarget(), ReminderDialogActivity.this);
+                long conID = Contacts.getIdFromNumber(mReminder.getTarget(), this);
                 Uri photo = Contacts.getPhoto(conID);
                 if (photo != null) contactPhoto.setImageURI(photo);
                 else contactPhoto.setVisibility(View.GONE);
-                String name = Contacts.getNameFromNumber(mReminder.getTarget(), ReminderDialogActivity.this);
+                String name = Contacts.getNameFromNumber(mReminder.getTarget(), this);
                 if (name == null) name = "";
                 remText.setText(R.string.make_call);
                 contactInfo.setText(name + "\n" + mReminder.getTarget());
@@ -156,11 +164,11 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         } else if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) || Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)) {
             if (!Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE)) {
                 contactPhoto.setVisibility(View.VISIBLE);
-                long conID = Contacts.getIdFromNumber(mReminder.getTarget(), ReminderDialogActivity.this);
+                long conID = Contacts.getIdFromNumber(mReminder.getTarget(), this);
                 Uri photo = Contacts.getPhoto(conID);
                 if (photo != null) contactPhoto.setImageURI(photo);
                 else contactPhoto.setVisibility(View.GONE);
-                String name = Contacts.getNameFromNumber(mReminder.getTarget(), ReminderDialogActivity.this);
+                String name = Contacts.getNameFromNumber(mReminder.getTarget(), this);
                 if (name == null) name = "";
                 remText.setText(R.string.send_sms);
                 contactInfo.setText(name + "\n" + mReminder.getTarget());
@@ -188,7 +196,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 Uri photo = Contacts.getPhoto(conID);
                 if (photo != null) contactPhoto.setImageURI(photo);
                 else contactPhoto.setVisibility(View.GONE);
-                String name = Contacts.getNameFromMail(mReminder.getTarget(), ReminderDialogActivity.this);
+                String name = Contacts.getNameFromMail(mReminder.getTarget(), this);
                 if (name == null) name = "";
                 contactInfo.setText(name + "\n" + mReminder.getTarget());
             } else {
@@ -240,7 +248,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         buttonDelay.setOnClickListener(v -> delay());
         buttonDelayFor.setOnClickListener(v -> {
             showDialog();
-            repeater.cancelAlarm(ReminderDialogActivity.this, getId());
+            repeater.cancelAlarm(this, getId());
             discardNotification(getId());
         });
         buttonCall.setOnClickListener(v -> call());
@@ -254,7 +262,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             showReminder();
         }
         if (isRepeatEnabled()) {
-            repeater.setAlarm(ReminderDialogActivity.this, getUuId(), getId());
+            repeater.setAlarm(this, getUuId(), getId());
         }
         if (isTtsEnabled()) {
             startTts();
@@ -304,11 +312,11 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     public void onBackPressed() {
         discardMedia();
         if (getPrefs().isFoldingEnabled()) {
-            repeater.cancelAlarm(ReminderDialogActivity.this, getId());
+            repeater.cancelAlarm(this, getId());
             removeFlags();
             finish();
         } else {
-            Toast.makeText(ReminderDialogActivity.this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -324,7 +332,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     private void cancelTasks() {
         discardNotification(getId());
-        repeater.cancelAlarm(ReminderDialogActivity.this, getId());
+        repeater.cancelAlarm(this, getId());
     }
 
     public void showDialog() {
@@ -370,7 +378,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 x = 60 * 24 * 7;
             }
             mControl.setDelay(x);
-            Toast.makeText(ReminderDialogActivity.this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             removeFlags();
             finish();
@@ -386,7 +394,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
         showProgressDialog(getString(R.string.sending_message));
         String SENT = "SMS_SENT";
-        PendingIntent sentPI = PendingIntent.getBroadcast(ReminderDialogActivity.this, 0, new Intent(SENT), 0);
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
         registerReceiver(sentReceiver = new SendReceiver(mSendListener), new IntentFilter(SENT));
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(mReminder.getTarget(), null, getSummary(), sentPI, null);
@@ -509,7 +517,8 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         } else if (isAppType()) {
             openApplication();
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)) {
-            TelephonyUtil.sendMail(ReminderDialogActivity.this, mReminder.getTarget(), mReminder.getSubject(), getSummary(), mReminder.getAttachmentFile());
+            TelephonyUtil.sendMail(this, mReminder.getTarget(),
+                    mReminder.getSubject(), getSummary(), mReminder.getAttachmentFile());
         } else {
             makeCall();
         }
@@ -531,7 +540,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     private void makeCall() {
         if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
-            TelephonyUtil.makeCall(mReminder.getTarget(), ReminderDialogActivity.this);
+            TelephonyUtil.makeCall(mReminder.getTarget(), this);
         } else {
             Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE);
         }

@@ -100,9 +100,8 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         builder.setAutoCancel(false);
         builder.setPriority(Notification.PRIORITY_MAX);
         if (Prefs.getInstance(context).isFoldingEnabled() && !Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
-            Intent notificationIntent = new Intent(context, ReminderDialogActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent intent = PendingIntent.getActivity(context, reminder.getUniqueId(),
+                    ReminderDialogActivity.getLaunchIntent(context, reminder.getUuId()), PendingIntent.FLAG_CANCEL_CURRENT);
             builder.setContentIntent(intent);
         }
         if (Module.isPro()) {
