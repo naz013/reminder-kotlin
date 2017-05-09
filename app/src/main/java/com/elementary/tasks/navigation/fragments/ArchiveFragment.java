@@ -35,7 +35,6 @@ import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -188,11 +187,8 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void deleteAll(){
-        for (int i = 0; i < mAdapter.getItemCount(); i++) {
-            WeakReference<Reminder> reminder = new WeakReference<>(mAdapter.getItem(i));
-            deleteReminder(reminder.get());
-            mAdapter.removeItem(i);
-        }
+        RealmDb.getInstance().clearReminderTrash();
+        loadData(mLastGroupId, lastType);
         Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         reloadView();
     }
