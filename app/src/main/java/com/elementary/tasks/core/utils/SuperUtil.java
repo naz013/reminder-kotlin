@@ -76,7 +76,7 @@ public class SuperUtil {
 
     public static void askNotificationPermission(Activity activity) {
         if (Module.isMarshmallow()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            AlertDialog.Builder builder = Dialogues.getDialog(activity);
             builder.setMessage(R.string.for_correct_work_of_application);
             builder.setPositiveButton(R.string.grant, (dialog, which) -> {
                 dialog.dismiss();
@@ -142,7 +142,7 @@ public class SuperUtil {
     }
 
     public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = Dialogues.getDialog(context);
         builder.setItems(actions, (dialog, item) -> {
             dialog.dismiss();
             if (listener != null) listener.onAction(item);

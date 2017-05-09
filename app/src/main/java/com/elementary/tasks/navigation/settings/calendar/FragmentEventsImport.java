@@ -25,6 +25,7 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.CalendarUtils;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -90,7 +91,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     }
 
     private void showIntervalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.interval));
         final CharSequence[] items = {getString(R.string.one_hour),

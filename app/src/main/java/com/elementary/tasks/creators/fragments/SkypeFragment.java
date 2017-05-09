@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -88,7 +89,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
     }
 
     private void showInstallSkypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setMessage(R.string.skype_is_not_installed);
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             dialogInterface.dismiss();

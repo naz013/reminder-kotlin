@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.services.GcmListenerService;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
@@ -120,7 +121,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showThemeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.theme));
         String[] colors = new String[]{getString(R.string.auto), getString(R.string.light), getString(R.string.dark), getString(R.string.amoled)};

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding;
 import com.elementary.tasks.navigation.settings.voice.HelpFragment;
@@ -85,7 +86,7 @@ public class VoiceSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLanguageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.language));
         List<String> locales = Language.getLanguages(getContext());

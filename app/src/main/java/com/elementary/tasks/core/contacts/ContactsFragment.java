@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.databinding.FragmentContactsBinding;
 
 import java.util.List;
@@ -168,7 +169,7 @@ public class ContactsFragment extends Fragment implements LoadListener {
                     numbers[i++] = number;
                     c.moveToNext();
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                AlertDialog.Builder builder = Dialogues.getDialog(mContext);
                 builder.setItems(numbers, (dialog, which) -> {
                     dialog.dismiss();
                     String number = (String) numbers[which];

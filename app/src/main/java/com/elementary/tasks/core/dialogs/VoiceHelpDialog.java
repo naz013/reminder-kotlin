@@ -8,6 +8,7 @@ import android.webkit.WebViewClient;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 
 import java.util.Locale;
 
@@ -35,7 +36,7 @@ public class VoiceHelpDialog extends BaseDialog {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        AlertDialog.Builder alert = Dialogues.getDialog(this);
         alert.setTitle(getString(R.string.help));
         WebView wv = new WebView(this);
         wv.setBackgroundColor(getThemeUtil().getBackgroundStyle());

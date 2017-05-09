@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.elementary.tasks.core.interfaces.LCAMListener;
 
+import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -23,8 +25,16 @@ import com.elementary.tasks.core.interfaces.LCAMListener;
 
 public class Dialogues {
 
+    public static AlertDialog.Builder getDialog(Context context) {
+        if (Prefs.getInstance(context).getAppTheme() == THEME_AMOLED) {
+            return new AlertDialog.Builder(context, ThemeUtil.getInstance(context).getDialogStyle());
+        } else {
+            return new AlertDialog.Builder(context);
+        }
+    }
+
     public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = getDialog(context);
         builder.setItems(actions, (dialog, item) -> {
             dialog.dismiss();
             if (listener != null) listener.onAction(item);

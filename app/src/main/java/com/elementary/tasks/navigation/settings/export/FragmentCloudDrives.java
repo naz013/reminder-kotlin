@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.GoogleLogin;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -72,7 +73,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     };
 
     private void showErrorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setMessage(getString(R.string.failed_to_login));
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
         builder.create().show();

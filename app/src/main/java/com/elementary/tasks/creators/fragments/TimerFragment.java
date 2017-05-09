@@ -16,6 +16,7 @@ import android.widget.ToggleButton;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -152,7 +153,7 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     private void openExclusionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.exclusion);
         DialogExclusionPickerBinding b = getCustomizationView();
         builder.setView(b.getRoot());

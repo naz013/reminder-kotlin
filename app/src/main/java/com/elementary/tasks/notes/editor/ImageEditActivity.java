@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -87,7 +88,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void askDraw(int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(R.string.which_image_you_want_to_use);
         builder.setPositiveButton(R.string.edited, (dialogInterface, i) -> {
             dialogInterface.dismiss();
@@ -103,7 +104,7 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void askCrop(int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(R.string.which_image_you_want_to_use);
         builder.setPositiveButton(R.string.cropped, (dialogInterface, i) -> {
             dialogInterface.dismiss();

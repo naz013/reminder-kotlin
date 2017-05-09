@@ -16,6 +16,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -111,7 +112,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showRepeatTimeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.interval);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(60);
@@ -170,7 +171,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLedColorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.led_color));
         String[] colors = LED.getAllNames(getContext());
@@ -222,7 +223,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showSnoozeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.snooze_time);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(60);
@@ -313,7 +314,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTtsLocaleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.language));
         String locale = getPrefs().getTtsLocale();
@@ -383,7 +384,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLoudnessDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.loudness);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(25);
@@ -427,7 +428,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showStreamDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.sound_stream));
         String[] types = new String[]{getString(R.string.music),
@@ -498,7 +499,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showSoundDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.melody));
         String[] types = new String[]{getString(R.string.default_string),
@@ -627,7 +628,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showImageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.background));
         String[] types = new String[]{getString(R.string.none),

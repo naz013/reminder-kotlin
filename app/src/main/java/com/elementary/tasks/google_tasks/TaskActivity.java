@@ -22,6 +22,7 @@ import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -213,7 +214,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void selectDateAction(final int type) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         String[] types = new String[]{getString(R.string.no_date), getString(R.string.select_date)};
         if (type == 2) {
             types = new String[]{getString(R.string.no_reminder), getString(R.string.select_time)};
@@ -303,7 +304,7 @@ public class TaskActivity extends ThemedActivity {
             names.add(item.getTitle());
             if (item.getListId().matches(listId)) position = i;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_list);
         builder.setSingleChoiceItems(new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, names), position, (dialog, which) -> {
             dialog.dismiss();
@@ -411,7 +412,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(getString(R.string.delete_this_task));
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();

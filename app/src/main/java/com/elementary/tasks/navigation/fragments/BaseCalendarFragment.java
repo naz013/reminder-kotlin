@@ -13,6 +13,7 @@ import com.elementary.tasks.birthdays.CalendarEventsAdapter;
 import com.elementary.tasks.birthdays.DayViewProvider;
 import com.elementary.tasks.birthdays.EventsItem;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
 import com.elementary.tasks.reminder.AddReminderActivity;
@@ -45,7 +46,7 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     private AlertDialog mDialog;
 
     protected void showActionDialog(boolean showEvents) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         DialogActionPickerBinding binding = DialogActionPickerBinding.inflate(LayoutInflater.from(getContext()));
         binding.addBirth.setOnClickListener(view -> {
             mDialog.dismiss();

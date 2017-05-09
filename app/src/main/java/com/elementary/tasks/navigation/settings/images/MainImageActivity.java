@@ -20,6 +20,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.network.Api;
 import com.elementary.tasks.core.network.RetrofitBuilder;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
@@ -232,7 +233,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void showMonthDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setItems(R.array.month_list, (dialogInterface, i) -> setImageForMonth(i));
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -243,7 +244,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             Permissions.requestPermission(this, REQUEST_DOWNLOAD, Permissions.WRITE_EXTERNAL);
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         CharSequence maxSize = mSelectedItem.getHeight() + "x" + mSelectedItem.getWidth();
         builder.setItems(new CharSequence[]{maxSize, "1080x1920", "768x1280", "480x800"}, (dialogInterface, i) -> {
             int width = mSelectedItem.getWidth();

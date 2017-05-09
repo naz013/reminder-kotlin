@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -186,7 +187,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
                 getString(R.string.by_date_za),
                 getString(R.string.active_first),
                 getString(R.string.completed_first)};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(getString(R.string.order));
         builder.setItems(items, (dialog, which) -> {
             if (which == 0) {
@@ -208,7 +209,7 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setMessage(getString(R.string.delete_this_list));
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());

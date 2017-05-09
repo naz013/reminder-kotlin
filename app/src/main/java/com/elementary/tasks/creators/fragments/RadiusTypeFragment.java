@@ -6,6 +6,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -33,7 +34,7 @@ abstract class RadiusTypeFragment extends TypeFragment {
     protected int radius = Prefs.getInstance(getContext()).getRadius();
 
     protected final void showRadiusPickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(5001);

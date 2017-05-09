@@ -17,6 +17,7 @@ import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -80,7 +81,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showCleanDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.clean));
         builder.setNeutralButton(R.string.local, (dialog, which) -> {
@@ -136,7 +137,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showIntervalDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.interval));
         CharSequence[] items = {getString(R.string.one_hour),
@@ -253,7 +254,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showEventDurationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.event_duration);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(120);
@@ -304,7 +305,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         if (mDataList == null || mDataList.isEmpty()) {
             return false;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.choose_calendar);
         builder.setSingleChoiceItems(new ArrayAdapter<CalendarUtils.CalendarItem>(getContext(), android.R.layout.simple_list_item_single_choice) {
             @Override

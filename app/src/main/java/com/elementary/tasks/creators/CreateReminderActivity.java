@@ -36,6 +36,7 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -387,7 +388,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         List<GroupItem> list = new ArrayList<>();
         Position position = new Position();
         final List<String> categories = RealmDb.getInstance().getAllGroupsNames(list, groupId, position);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_group);
         builder.setSingleChoiceItems(new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_single_choice, categories), position.getI(), (dialog, which) -> {
@@ -405,7 +406,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void openCustomizationDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.personalization);
         DialogSelectExtraBinding b = getCustomizationView();
         builder.setView(b.getRoot());
@@ -521,7 +522,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void selectVolume() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.loudness);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(getLayoutInflater());
         b.seekBar.setMax(25);
@@ -554,7 +555,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void chooseLedColor() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setCancelable(false);
         builder.setTitle(getString(R.string.led_color));
         String[] colors = new String[LED.NUM_OF_LEDS];
@@ -581,7 +582,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void askAboutEnabling() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.this_reminder_is_disabled);
         builder.setMessage(R.string.would_you_like_to_enable_it);
         builder.setPositiveButton(R.string.yes, (dialog, which) -> {

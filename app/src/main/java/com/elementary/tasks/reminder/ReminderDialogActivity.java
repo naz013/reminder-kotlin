@@ -32,6 +32,7 @@ import com.elementary.tasks.core.services.SendReceiver;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
@@ -348,7 +349,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 String.format(getString(R.string.x_hours), String.valueOf(24)),
                 String.format(getString(R.string.x_days), String.valueOf(2)),
                 String.format(getString(R.string.x_days), String.valueOf(7))};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(getString(R.string.choose_time));
         builder.setItems(items, (dialog, item1) -> {
             int x = 0;
@@ -528,7 +529,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void showInstallSkypeDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(R.string.skype_is_not_installed);
         builder.setPositiveButton(R.string.yes, (dialogInterface, i) -> {
             dialogInterface.dismiss();

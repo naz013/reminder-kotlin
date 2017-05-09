@@ -47,6 +47,7 @@ import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -445,7 +446,7 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void showColorDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(getString(R.string.change_color));
         DialogColorPickerLayoutBinding binding = DialogColorPickerLayoutBinding.inflate(LayoutInflater.from(this));
         ColorPickerView view = binding.pickerView;
@@ -464,7 +465,7 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void deleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setMessage(getString(R.string.delete_this_note));
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
@@ -487,7 +488,7 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void getImage() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(getString(R.string.image));
         builder.setItems(new CharSequence[]{getString(R.string.gallery),
                         getString(R.string.take_a_shot)},
@@ -597,7 +598,7 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void showStyleDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(getString(R.string.font_style));
         ArrayList<String> contacts = new ArrayList<>();
         contacts.clear();

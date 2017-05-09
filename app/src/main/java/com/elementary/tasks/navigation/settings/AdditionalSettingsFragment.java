@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.views.PrefsView;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -123,7 +124,7 @@ public class AdditionalSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showTimePickerDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.interval);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
         b.seekBar.setMax(60);
