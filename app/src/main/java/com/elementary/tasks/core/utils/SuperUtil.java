@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -49,6 +50,12 @@ import java.util.Locale;
 public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
+
+    public static String getString(Fragment fragment, int id) {
+        if (fragment.isAdded()) {
+            return fragment.getString(id);
+        } else return "";
+    }
 
     public static boolean isDoNotDisturbEnabled(Context context) {
         if (!Module.isMarshmallow()) {

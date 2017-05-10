@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ThemedImageButton;
@@ -141,18 +143,18 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                 }
                 spinnerArray = places;
                 if (spinnerArray.size() == 0) {
-                    Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), SuperUtil.getString(PlacesMapFragment.this, R.string.no_places_found), Toast.LENGTH_SHORT).show();
                 }
                 addSelectAllItem();
                 refreshAdapter(true);
             } else {
-                Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), SuperUtil.getString(PlacesMapFragment.this, R.string.no_places_found), Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
         public void onFailure(Call<PlacesResponse> call, Throwable t) {
-            Toast.makeText(getContext(), getString(R.string.no_places_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), SuperUtil.getString(PlacesMapFragment.this, R.string.no_places_found), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -252,7 +254,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
 
     private void addSelectAllItem() {
         if (spinnerArray != null && spinnerArray.size() > 1) {
-            spinnerArray.add(new GooglePlaceItem(getContext().getString(R.string.add_all), null, null, null, null, null, false));
+            spinnerArray.add(new GooglePlaceItem(SuperUtil.getString(PlacesMapFragment.this, R.string.add_all), null, null, null, null, null, false));
         }
     }
 
@@ -294,11 +296,11 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
             sequence.setConfig(config);
             sequence.addSequenceItem(zoomOut,
-                    getContext().getString(R.string.click_to_expand_collapse_map),
-                    getContext().getString(R.string.got_it));
+                    SuperUtil.getString(PlacesMapFragment.this, R.string.click_to_expand_collapse_map),
+                    SuperUtil.getString(PlacesMapFragment.this, R.string.got_it));
             sequence.addSequenceItem(markers,
-                    getContext().getString(R.string.select_style_for_marker),
-                    getContext().getString(R.string.got_it));
+                    SuperUtil.getString(PlacesMapFragment.this, R.string.select_style_for_marker),
+                    SuperUtil.getString(PlacesMapFragment.this, R.string.got_it));
             sequence.start();
             getPrefs().setShowcase(SHOWCASE, true);
         }
