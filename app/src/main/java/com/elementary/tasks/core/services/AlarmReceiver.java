@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -281,7 +282,11 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     }
 
     private void start(Context context, String id) {
-        context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
+        if (Prefs.getInstance(context).getReminderType() == 0) {
+            context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
+        } else {
+            ReminderUtils.showSimpleReminder(context, id);
+        }
     }
 
     public void enableReminder(Context context, String uuId) {
