@@ -514,7 +514,7 @@ public final class BackupTool {
      * @return Decrypted string
      */
     public static String decrypt(String string) {
-        String result = string;
+        String result = "{ }";
         try {
             byte[] byteString = Base64.decode(string, Base64.DEFAULT);
             result = new String(byteString, "UTF-8");
