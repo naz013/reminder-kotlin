@@ -142,13 +142,17 @@ public final class FlextHelper {
         calendar.setTimeInMillis(eventTime);
         int year = calendar.get(Calendar.YEAR);
         int javaMonth = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DATE);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         try {
             return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);
         } catch (Exception e) {
             calendar.setTimeInMillis(System.currentTimeMillis());
             year = calendar.get(Calendar.YEAR);
-            return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);
+            try {
+                return new DateTime(year, javaMonth + 1, day, 0, 0, 0, 0);
+            } catch (Exception e1) {
+                return new DateTime(year, javaMonth + 1, day - 1, 0, 0, 0, 0);
+            }
         }
     }
 }
