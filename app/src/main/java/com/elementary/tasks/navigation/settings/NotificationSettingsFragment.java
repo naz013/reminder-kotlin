@@ -108,6 +108,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         initRepeatPrefs();
         initRepeatTimePrefs();
         initAutoCallPrefs();
+        initReminderTypePrefs();
         return binding.getRoot();
     }
 
@@ -452,6 +453,44 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
         dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
         dialog.show();
+    }
+
+    private void initReminderTypePrefs() {
+        binding.typePrefs.setOnClickListener(v -> showReminderTypeDialog());
+        showReminderType();
+    }
+
+    private void showReminderTypeDialog() {
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
+        builder.setCancelable(true);
+        builder.setTitle(R.string.notification_type);
+        String[] types = new String[]{
+                getString(R.string.normal),
+                getString(R.string.simple)};
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_single_choice, types);
+        mItemSelect = getPrefs().getReminderType();
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> {
+            if (which != -1) {
+                mItemSelect = which;
+            }
+        });
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            getPrefs().setReminderType(mItemSelect);
+            showReminderType();
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
+        dialog.show();
+    }
+
+    private void showReminderType() {
+        String[] types = new String[]{
+                getString(R.string.normal),
+                getString(R.string.simple)};
+        binding.typePrefs.setDetailText(types[getPrefs().getReminderType()]);
     }
 
     private void initSoundStreamPrefs() {

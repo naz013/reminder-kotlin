@@ -1246,4 +1246,12 @@ public final class Prefs extends SharedPrefs {
     public boolean isNoteHintShowed() {
         return getBoolean(NOTE_HINT_SHOWED);
     }
+
+    public int getReminderType() {
+        return getInt(REMINDER_TYPE);
+    }
+
+    public void setReminderType(int reminderType) {
+        putInt(REMINDER_TYPE, reminderType);
+    }
 }

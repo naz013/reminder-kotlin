@@ -1,8 +1,16 @@
 package com.elementary.tasks.core.utils;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.services.ReminderActionService;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -31,6 +39,76 @@ public final class ReminderUtils {
     public static final int DAY_CHECKED = 1;
 
     private ReminderUtils() {
+
+    }
+
+    private static Uri getSoundUri(String melody, Context context) {
+        if (!TextUtils.isEmpty(melody)) {
+            return UriUtil.getUri(context, melody);
+        } else {
+            String defMelody = Prefs.getInstance(context).getMelodyFile();
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
+                return UriUtil.getUri(context, defMelody);
+            } else {
+                return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
+    }
+
+    public static void showSimpleReminder(Context context, String id) {
+        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        Intent dismissIntent = new Intent(context, ReminderActionService.class);
+        dismissIntent.setAction(ReminderActionService.ACTION_HIDE);
+        dismissIntent.putExtra(Constants.INTENT_ID, id);
+        PendingIntent piDismiss = PendingIntent.getService(context, 0, dismissIntent, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
+        Intent notificationIntent = new Intent(context, ReminderActionService.class);
+        notificationIntent.setAction(ReminderActionService.ACTION_SHOW);
+        notificationIntent.putExtra(Constants.INTENT_ID, id);
+        PendingIntent intent = PendingIntent.getService(context, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        builder.setContentIntent(intent);
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentTitle(reminder.getSummary());
+        String appName;
+        if (Module.isPro()) {
+            appName = context.getString(R.string.app_name_pro);
+        } else {
+            appName = context.getString(R.string.app_name);
+        }
+        if (!SuperUtil.isDoNotDisturbEnabled(context) ||
+                (SuperUtil.checkNotificationPermission(context) &&
+                        Prefs.getInstance(context).isSoundInSilentModeEnabled())) {
+            Uri uri = getSoundUri(reminder.getMelodyPath(), context);
+            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            builder.setSound(uri);
+        }
+        if (Prefs.getInstance(context).isVibrateEnabled()) {
+            long[] pattern;
+            if (Prefs.getInstance(context).isInfiniteVibrateEnabled()) {
+                pattern = new long[]{150, 86400000};
+            } else {
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()) {
+            if (reminder.getColor() != 0) {
+                builder.setLights(reminder.getColor(), 500, 1000);
+            } else {
+                builder.setLights(LED.getLED(Prefs.getInstance(context).getLedColor()), 500, 1000);
+            }
+        }
+        builder.setContentText(appName);
+        builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
+        mNotifyMgr.notify(reminder.getUniqueId(), builder.build());
     }
 
     public static List<Integer> getRepeatArray(String weekdays) {
