@@ -565,18 +565,23 @@ public class ConversationActivity extends ThemedActivity {
         initRecognizer();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        releaseSpeech();
+    private void releaseTts() {
         if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseSpeech();
+        releaseTts();
+    }
+
     private void releaseSpeech() {
         if (speech != null) {
+            speech.stopListening();
             speech.cancel();
             speech.destroy();
             speech = null;
