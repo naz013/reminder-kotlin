@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.LED;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -52,6 +53,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MissedCallDialogActivity extends BaseNotificationActivity {
 
+    private static final String TAG = "MCDialogActivity";
+
     private static final int CALL_PERM = 612;
 
     private ActivityReminderDialogBinding binding;
@@ -69,6 +72,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         super.onCreate(savedInstanceState);
         if (mCallItem == null) {
             finish();
+            return;
         }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
@@ -98,7 +102,14 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         contactPhoto.setVisibility(View.GONE);
 
         TextView remText = (TextView) findViewById(R.id.remText);
-        String formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), getPrefs().is24HourFormatEnabled());
+        String formattedTime = "";
+        if (mCallItem != null) {
+            try {
+                formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), getPrefs().is24HourFormatEnabled());
+            } catch (NullPointerException e) {
+                LogUtil.d(TAG, "onCreate: " + e.getLocalizedMessage());
+            }
+        }
         String name = Contacts.getNameFromNumber(mCallItem.getNumber(), this);
         wearMessage = (name != null ? name : "") + "\n" + mCallItem.getNumber();
         if (mCallItem.getNumber() != null) {
