@@ -267,7 +267,7 @@ public final class TimeCount {
         if (cc.getTimeInMillis() > System.currentTimeMillis()) {
             return cc.getTimeInMillis();
         }
-        cc.set(Calendar.DAY_OF_MONTH, dayOfMonth + 1);
+        cc.set(Calendar.MONTH, cc.get(Calendar.MONTH) + 1);
         while (cc.get(Calendar.DAY_OF_MONTH) != dayOfMonth) {
             cc.setTimeInMillis(cc.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
         }
