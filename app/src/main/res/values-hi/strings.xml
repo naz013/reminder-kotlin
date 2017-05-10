@@ -545,5 +545,8 @@
     <string name="color_saturation">रंग संतृप्ति</string>
     <string name="remember_last_used_note_color">नोट के अंतिम उपयोग किए गए रंग को याद रखें</string>
     <string name="swipe_left_or_right_to_adjust_saturation">नोट रंग संतृप्ति समायोजित करने के लिए बाएं या दाएं स्वाइप करें</string>
+    <string name="notification_type">जानकारी प्रकार</string>
+    <string name="simple">सरलीकृत</string>
+    <string name="full_screen">पूर्ण स्क्रीन</string>
 
 </resources>

@@ -545,5 +545,8 @@
     <string name="color_saturation">Saturace barev</string>
     <string name="remember_last_used_note_color">Pamatujte si poslední použitou barvu poznámky</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Posunutím prstu doleva nebo doprava upravte sytost barvy poznámky.</string>
+    <string name="notification_type">Typ oznámení</string>
+    <string name="simple">Zjednodušený</string>
+    <string name="full_screen">Celá obrazovka</string>
 
 </resources>

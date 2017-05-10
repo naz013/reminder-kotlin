@@ -545,5 +545,8 @@
     <string name="color_saturation">Renk doyumu</string>
     <string name="remember_last_used_note_color">Notun son kullanılan rengini hatırla</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Not renk doygunluğunu ayarlamak için sola veya sağa kaydırın.</string>
+    <string name="notification_type">Bildirim türü</string>
+    <string name="simple">Basitleştirilmiş</string>
+    <string name="full_screen">Tam ekran</string>
 
 </resources>

@@ -545,5 +545,8 @@
     <string name="color_saturation">Saturația culorii</string>
     <string name="remember_last_used_note_color">Amintiți-vă ultima culoare folosită de notă</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Glisați spre stânga sau spre dreapta pentru a ajusta saturația culorii notei.</string>
+    <string name="notification_type">Tipul de notificare</string>
+    <string name="simple">Simplificată</string>
+    <string name="full_screen">Ecran complet</string>
 
 </resources>

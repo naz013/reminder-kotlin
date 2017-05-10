@@ -545,5 +545,8 @@
     <string name="color_saturation">Насыщенность цвета</string>
     <string name="remember_last_used_note_color">Запомните последний использованный цвет примечания</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Проведите пальцем влево или вправо, чтобы настроить насыщенность цвета примечания.</string>
+    <string name="notification_type">Тип уведомления</string>
+    <string name="simple">Упрощенное</string>
+    <string name="full_screen">Полноэкранное</string>
 
 </resources>

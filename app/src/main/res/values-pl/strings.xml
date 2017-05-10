@@ -545,5 +545,8 @@
     <string name="color_saturation">Nasycenie kolorów</string>
     <string name="remember_last_used_note_color">Pamiętaj ostatnio używany kolor notatki</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Przesuń palcem w lewo lub w prawo, aby wyregulować nasycenie koloru notatki.</string>
+    <string name="notification_type">Typ powiadomienia</string>
+    <string name="simple">Uproszczony</string>
+    <string name="full_screen">Pełny ekran</string>
 
 </resources>
