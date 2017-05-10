@@ -544,5 +544,8 @@
     <string name="color_saturation">颜色饱和度</string>
     <string name="remember_last_used_note_color">记住上次使用的颜色</string>
     <string name="swipe_left_or_right_to_adjust_saturation">向左或向右滑动以调整笔记颜色饱和度。</string>
+    <string name="notification_type">通知类型</string>
+    <string name="simple">简</string>
+    <string name="full_screen">全屏</string>
 
 </resources>

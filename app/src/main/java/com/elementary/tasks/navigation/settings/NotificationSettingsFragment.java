@@ -488,7 +488,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private void showReminderType() {
         String[] types = new String[]{
-                getString(R.string.normal),
+                getString(R.string.full_screen),
                 getString(R.string.simple)};
         binding.typePrefs.setDetailText(types[getPrefs().getReminderType()]);
     }

@@ -545,5 +545,8 @@
     <string name="color_saturation">Saturação de cores</string>
     <string name="remember_last_used_note_color">Lembrar a última cor usada da nota</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Deslize para a esquerda ou para a direita para ajustar a saturação de cor das notas.</string>
+    <string name="notification_type">Tipo de notificação</string>
+    <string name="simple">Simplificado</string>
+    <string name="full_screen">Tela cheia</string>
 
 </resources>

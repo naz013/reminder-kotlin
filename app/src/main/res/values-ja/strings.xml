@@ -546,5 +546,8 @@
     <string name="color_saturation">彩度</string>
     <string name="remember_last_used_note_color">最後に使用したメモの色を覚えている</string>
     <string name="swipe_left_or_right_to_adjust_saturation">ノートの色の彩度を調整するには、左右にスワイプします。</string>
+    <string name="notification_type">通知タイプ</string>
+    <string name="simple">簡略化された</string>
+    <string name="full_screen">全画面表示</string>
 
 </resources>

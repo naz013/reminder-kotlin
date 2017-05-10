@@ -545,5 +545,8 @@
     <string name="color_saturation">Насиченість кольору</string>
     <string name="remember_last_used_note_color">Запам\'ятати останній колір замітки</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Проведіть пальцем вліво або вправо, щоб налаштувати рівень насиченості кольору.</string>
+    <string name="notification_type">Тип повідомлення</string>
+    <string name="simple">Спрощене</string>
+    <string name="full_screen">Повноекранне</string>
 
 </resources>

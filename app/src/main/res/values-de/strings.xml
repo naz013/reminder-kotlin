@@ -545,5 +545,8 @@
     <string name="color_saturation">Farbsättigung</string>
     <string name="remember_last_used_note_color">Denken Sie daran, letzte benutzte Farbe der Notiz</string>
     <string name="swipe_left_or_right_to_adjust_saturation">Wischen Sie nach links oder rechts, um die Noten-Farbsättigung anzupassen.</string>
+    <string name="notification_type">Benachrichtigungstyp</string>
+    <string name="simple">Vereinfacht</string>
+    <string name="full_screen">Vollbild</string>
 
 </resources>

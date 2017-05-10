@@ -547,6 +547,7 @@
     <string name="swipe_left_or_right_to_adjust_saturation">Swipe left or right to adjust note color saturation.</string>
     <string name="click_to_hide">Click to hide</string>
     <string name="notification_type">Notification type</string>
-    <string name="simple">Simple</string>
+    <string name="simple">Simplified</string>
+    <string name="full_screen">Full screen</string>
 
 </resources>
