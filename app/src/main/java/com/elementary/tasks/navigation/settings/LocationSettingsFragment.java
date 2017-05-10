@@ -149,8 +149,14 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setCancelable(true);
         builder.setTitle(getString(R.string.map_type));
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.map_types,
-                android.R.layout.simple_list_item_single_choice);
+        String[] types = new String[]{
+                getString(R.string.normal),
+                getString(R.string.satellite),
+                getString(R.string.terrain),
+                getString(R.string.hybrid)
+        };
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_single_choice, types);
         int type = getPrefs().getMapType();
         mItemSelect = getPosition(type);
         builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
