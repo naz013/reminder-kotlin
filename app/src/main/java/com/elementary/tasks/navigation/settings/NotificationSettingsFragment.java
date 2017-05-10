@@ -465,7 +465,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         builder.setCancelable(true);
         builder.setTitle(R.string.notification_type);
         String[] types = new String[]{
-                getString(R.string.normal),
+                getString(R.string.full_screen),
                 getString(R.string.simple)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, types);
