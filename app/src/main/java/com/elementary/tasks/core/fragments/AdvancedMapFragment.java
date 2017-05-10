@@ -28,6 +28,7 @@ import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.AddressAutoCompleteView;
@@ -389,15 +390,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
             sequence.setConfig(config);
             sequence.addSequenceItem(zoomOut,
-                    getContext().getString(R.string.click_to_expand_collapse_map),
-                    getContext().getString(R.string.got_it));
+                    SuperUtil.getString(AdvancedMapFragment.this, R.string.click_to_expand_collapse_map),
+                    SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
             sequence.addSequenceItem(backButton,
-                    getContext().getString(R.string.click_when_add_place),
-                    getContext().getString(R.string.got_it));
+                    SuperUtil.getString(AdvancedMapFragment.this, R.string.click_when_add_place),
+                    SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
             if (Module.isPro()) {
                 sequence.addSequenceItem(markers,
-                        getContext().getString(R.string.select_style_for_marker),
-                        getContext().getString(R.string.got_it));
+                        SuperUtil.getString(AdvancedMapFragment.this, R.string.select_style_for_marker),
+                        SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
             }
             sequence.start();
             getPrefs().setShowcase(SHOWCASE, true);
