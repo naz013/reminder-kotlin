@@ -17,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -139,6 +138,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setNavigationOnClickListener(v -> onDrawerClick());
+    }
+
+    private void onDrawerClick() {
+        if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
+            onBackPressed();
+        } else {
+            binding.drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 
@@ -262,9 +272,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     public void onFragmentSelect(Fragment fragment) {
         this.fragment = fragment;
         if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
-            binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         } else {
-            binding.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
     }
 
@@ -385,10 +395,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void initNavigation() {
-        DrawerLayout drawer = binding.drawerLayout;
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
         mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
         View view = mNavigationView.getHeaderView(0);
