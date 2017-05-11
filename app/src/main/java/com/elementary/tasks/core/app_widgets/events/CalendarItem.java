@@ -33,9 +33,10 @@ public class CalendarItem implements Parcelable {
     private String id;
     private long date;
     private int viewType;
+    private Object item;
 
     public CalendarItem(Type type, String name, String number, String id, String time,
-                        String dayDate, long date, int viewType){
+                        String dayDate, long date, int viewType, Object item){
         this.type = type;
         this.time = time;
         this.viewType = viewType;
@@ -44,6 +45,11 @@ public class CalendarItem implements Parcelable {
         this.id = id;
         this.number = number;
         this.date = date;
+        this.item = item;
+    }
+
+    public Object getItem() {
+        return item;
     }
 
     public int getViewType() {
