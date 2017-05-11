@@ -12,7 +12,6 @@ import android.widget.RemoteViews;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
-import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.reminder.AddReminderActivity;
 
 import java.text.SimpleDateFormat;
@@ -93,9 +92,8 @@ public class EventsWidget extends AppWidgetProvider {
         configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
         rv.setOnClickPendingIntent(R.id.settingsButton, configPendingIntent);
 
-        Intent startActivityIntent = new Intent(context, CreateReminderActivity.class);
-        PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0,
-                startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent startActivityIntent = new Intent(context, EventEditService.class);
+        PendingIntent startActivityPendingIntent = PendingIntent.getService(context, 0, startActivityIntent, 0);
         rv.setPendingIntentTemplate(android.R.id.list, startActivityPendingIntent);
 
         Intent adapter = new Intent(context, EventsService.class);

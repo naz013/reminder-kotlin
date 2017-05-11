@@ -292,6 +292,9 @@
         <service
             android:name=".core.services.ReminderActionService"
             android:exported="true" />
+        <service
+            android:name=".core.app_widgets.events.EventEditService"
+            android:exported="true" />
 
         <receiver
             android:name=".core.app_widgets.new_reminder.AddReminderWidget"
