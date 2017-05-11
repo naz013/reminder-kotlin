@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +111,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
                 date = dT[0];
                 time = dT[1];
             }
-            data.add(new CalendarItem(CalendarItem.Type.REMINDER, summary, item.getTarget(), id, time, date, eventTime, viewType));
+            data.add(new CalendarItem(CalendarItem.Type.REMINDER, summary, item.getTarget(), id, time, date, eventTime, viewType, item));
         }
 
         Prefs prefs = Prefs.getInstance(mContext);
@@ -146,12 +147,38 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    data.add(new CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.getUuId(), birthday, "", eventTime, 1));
+                    data.add(new CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.getUuId(), birthday, "", eventTime, 1, item));
                 }
                 calendar.setTimeInMillis(calendar.getTimeInMillis() + (1000 * 60 * 60 * 24));
                 n++;
             } while (n <= 7);
         }
+        Collections.sort(data, (eventsItem, o2) -> {
+            long time1 = 0, time2 = 0;
+            if (eventsItem.getItem() instanceof BirthdayItem) {
+                BirthdayItem item = (BirthdayItem) eventsItem.getItem();
+                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                if (dateItem != null) {
+                    Calendar calendar = dateItem.getCalendar();
+                    time1 = calendar.getTimeInMillis();
+                }
+            } else if (eventsItem.getItem() instanceof Reminder) {
+                Reminder reminder = (Reminder) eventsItem.getItem();
+                time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+            }
+            if (o2.getItem() instanceof BirthdayItem) {
+                BirthdayItem item = (BirthdayItem) o2.getItem();
+                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                if (dateItem != null) {
+                    Calendar calendar = dateItem.getCalendar();
+                    time2 = calendar.getTimeInMillis();
+                }
+            } else if (o2.getItem() instanceof Reminder) {
+                Reminder reminder = (Reminder) o2.getItem();
+                time2 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+            }
+            return (int) (time1 - time2);
+        });
     }
 
     @Override
