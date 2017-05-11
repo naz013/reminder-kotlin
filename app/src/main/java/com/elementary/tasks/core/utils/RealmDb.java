@@ -156,7 +156,7 @@ public class RealmDb {
     public BirthdayItem getBirthday(String key) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmBirthdayItem item = realm.where(RealmBirthdayItem.class).equalTo("key", key).findFirst();
+        RealmBirthdayItem item = realm.where(RealmBirthdayItem.class).equalTo("uuId", key).findFirst();
         realm.commitTransaction();
         if (item != null) {
             return new BirthdayItem(item);

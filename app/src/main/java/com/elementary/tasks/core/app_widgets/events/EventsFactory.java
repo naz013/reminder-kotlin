@@ -146,7 +146,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    data.add(new CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, null, birthday, "", eventTime, 1));
+                    data.add(new CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.getUuId(), birthday, "", eventTime, 1));
                 }
                 calendar.setTimeInMillis(calendar.getTimeInMillis() + (1000 * 60 * 60 * 24));
                 n++;
@@ -225,6 +225,11 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (item.getId() != null) {
                 Intent fillInIntent = new Intent();
                 fillInIntent.putExtra(Constants.INTENT_ID, item.getId());
+                if (item.getType() == CalendarItem.Type.REMINDER) {
+                    fillInIntent.putExtra(EventEditService.TYPE, true);
+                } else {
+                    fillInIntent.putExtra(EventEditService.TYPE, false);
+                }
                 rView.setOnClickFillInIntent(R.id.taskDate, fillInIntent);
                 rView.setOnClickFillInIntent(R.id.taskTime, fillInIntent);
                 rView.setOnClickFillInIntent(R.id.taskNumber, fillInIntent);
@@ -287,6 +292,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
 
             Intent fillInIntent = new Intent();
             fillInIntent.putExtra(Constants.INTENT_ID, item.getId());
+            fillInIntent.putExtra(EventEditService.TYPE, true);
             rView.setOnClickFillInIntent(R.id.taskText, fillInIntent);
             rView.setOnClickFillInIntent(R.id.itemBg, fillInIntent);
             rView.setOnClickFillInIntent(R.id.todoList, fillInIntent);
