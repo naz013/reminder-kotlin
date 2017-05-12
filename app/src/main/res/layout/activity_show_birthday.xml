@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
                 android:layout_width="@dimen/reminder_photo_size"
                 android:layout_height="@dimen/reminder_photo_size"
                 android:layout_gravity="center"
+                android:contentDescription="@string/acc_contact_photo"
                 android:scaleType="centerCrop"
                 android:visibility="visible"
                 app:civ_border_color="@color/material_grey_dialog"
@@ -97,19 +98,22 @@
                 android:id="@+id/buttonOk"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top" />
+                android:layout_margin="@dimen/reminder_margin_top"
+                android:contentDescription="@string/acc_button_ok" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/buttonCall"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top" />
+                android:layout_margin="@dimen/reminder_margin_top"
+                android:contentDescription="@string/acc_button_make_call" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/buttonSend"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top" />
+                android:layout_margin="@dimen/reminder_margin_top"
+                android:contentDescription="@string/acc_button_send_message" />
 
         </LinearLayout>
     </RelativeLayout>
