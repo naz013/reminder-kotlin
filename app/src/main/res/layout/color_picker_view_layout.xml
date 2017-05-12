@@ -20,6 +20,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/red"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_red" />
 
@@ -29,6 +30,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/purple"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_purple" />
 
@@ -38,6 +40,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/green_light"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_green_light" />
 
@@ -47,6 +50,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/green"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_green" />
 
@@ -63,6 +67,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/blue_light"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_blue_light" />
 
@@ -72,6 +77,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/blue"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_blue" />
 
@@ -81,6 +87,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/yellow"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_yellow" />
 
@@ -90,6 +97,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/orange"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_orange" />
 
@@ -106,6 +114,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/grey"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_cyan" />
 
@@ -115,6 +124,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/pink"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_pink" />
 
@@ -124,6 +134,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/teal"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_teal" />
 
@@ -133,6 +144,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/amber"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_amber" />
 
@@ -151,6 +163,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/dark_purple"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_deep_purple" />
 
@@ -160,6 +173,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/dark_orange"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_deep_orange" />
 
@@ -169,6 +183,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/lime"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_lime" />
 
@@ -178,6 +193,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/indigo"
                 android:scaleType="centerCrop"
                 android:src="@drawable/circle_drawable_indigo" />
 

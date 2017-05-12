@@ -51,8 +51,9 @@
                 android:id="@+id/fab"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_gravity="bottom|right"
+                android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
+                android:contentDescription="@string/acc_add"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/ic_add_white_24dp" />
 
@@ -62,6 +63,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/whitePrimary30"
                 android:overScrollMode="never"
+                android:paddingEnd="88dp"
                 android:paddingRight="88dp"
                 android:scrollbars="none"
                 android:visibility="gone">

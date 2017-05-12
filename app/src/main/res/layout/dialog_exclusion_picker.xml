@@ -39,6 +39,7 @@
                         android:id="@+id/from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/create_margin"
                         android:layout_marginRight="@dimen/create_margin"
                         android:textSize="@dimen/create_text_size_normal"
                         app:font_style="roboto_medium" />

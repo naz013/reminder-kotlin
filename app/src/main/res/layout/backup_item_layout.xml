@@ -20,8 +20,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:orientation="vertical">
 
@@ -33,6 +35,7 @@
                         android:id="@+id/moreButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="?attr/selectableItemBackgroundBorderless"
@@ -45,6 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/moreButton"
+                        android:layout_toStartOf="@+id/moreButton"
                         android:gravity="center_vertical"
                         android:textSize="18sp"
                         app:font_style="roboto_regular" />
@@ -62,7 +66,9 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
+                        android:contentDescription="@string/acc_contact_photo"
                         android:scaleType="centerCrop" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
@@ -70,7 +76,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/userPhoto"
                         android:layout_toRightOf="@+id/userPhoto"
                         android:gravity="center_vertical"
                         android:textSize="18sp"
@@ -89,14 +97,17 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
-                        android:layout_gravity="left|center" />
+                        android:layout_gravity="start|center" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_toEndOf="@+id/usedSizeGraph"
                         android:layout_toRightOf="@+id/usedSizeGraph"
                         android:gravity="center"
                         android:orientation="vertical">

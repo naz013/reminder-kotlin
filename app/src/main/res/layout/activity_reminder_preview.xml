@@ -91,7 +91,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/statusSwitch"
+                        android:layout_toStartOf="@+id/statusSwitch"
                         android:paddingLeft="35dp"
+                        android:paddingStart="35dp"
                         android:textSize="20sp"
                         app:font_style="roboto_regular" />
 
@@ -99,9 +101,11 @@
                         android:id="@+id/statusSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
                         android:clickable="false"
                         app:switch_font_style="roboto_medium" />
 
@@ -133,7 +137,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_alarm"
                     app:tv_icon_light="@drawable/ic_alarm_white"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/location"
@@ -147,7 +151,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_navigation_black_24dp"
                     app:tv_icon_light="@drawable/ic_navigation_white_24dp"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/group"
@@ -161,7 +165,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_local_offer_black_24dp"
                     app:tv_icon_light="@drawable/ic_local_offer_white_24dp"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/number"
@@ -175,7 +179,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_account_black"
                     app:tv_icon_light="@drawable/ic_account_white"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/melody"
@@ -189,7 +193,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_music_note_black_24dp"
                     app:tv_icon_light="@drawable/ic_music_note_white_24dp"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <com.elementary.tasks.core.views.TextViewWithIcon
                     android:id="@+id/repeat"
@@ -203,7 +207,7 @@
                     app:font_style="roboto_regular"
                     app:tv_icon="@drawable/ic_refresh"
                     app:tv_icon_light="@drawable/ic_refresh_white"
-                    app:tv_tint="true"/>
+                    app:tv_tint="true" />
 
                 <LinearLayout
                     android:id="@+id/mapContainer"

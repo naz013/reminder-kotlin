@@ -5,7 +5,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
@@ -92,8 +91,8 @@
                         <RadioGroup
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
                             android:layout_marginTop="8dp"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
                             <com.elementary.tasks.core.views.roboto.RoboRadioButton
@@ -108,7 +107,8 @@
                                 android:id="@+id/typeCall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginStart="16dp"
                                 android:text="@string/make_call"
                                 android:textSize="@dimen/follow_text_size_normal"
                                 app:radio_font_style="roboto_light" />
@@ -174,8 +174,8 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_marginTop="8dp"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp">
 
                             <com.elementary.tasks.core.views.roboto.RoboRadioButton
                                 android:id="@+id/timeTomorrow"
@@ -191,10 +191,12 @@
                                 android:id="@+id/tomorrowTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/timeTomorrow"
                                 android:layout_toRightOf="@+id/timeTomorrow"
-                                android:gravity="center|right"
+                                android:gravity="center|end"
                                 android:padding="5dp"
                                 android:text="21 Feb, 15:45"
                                 android:textSize="@dimen/follow_text_size_normal"
@@ -212,6 +214,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/next_business_day"
                                 android:textSize="@dimen/follow_text_size_normal"
@@ -221,10 +224,12 @@
                                 android:id="@+id/nextWorkingTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/timeNextWorking"
                                 android:layout_toRightOf="@+id/timeNextWorking"
-                                android:gravity="center|right"
+                                android:gravity="center|end"
                                 android:padding="5dp"
                                 android:text="21 Feb, 15:45"
                                 android:textSize="@dimen/follow_text_size_normal"
@@ -242,6 +247,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/after"
                                 android:textSize="@dimen/follow_text_size_normal"
@@ -251,10 +257,12 @@
                                 android:id="@+id/afterTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/timeAfter"
                                 android:layout_toRightOf="@+id/timeAfter"
-                                android:gravity="center|right"
+                                android:gravity="center|end"
                                 android:padding="5dp"
                                 android:text="21 Feb, 15:45"
                                 android:textSize="@dimen/follow_text_size_normal" />
@@ -271,6 +279,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
                                 android:layout_centerVertical="true"
                                 android:text="@string/time"
                                 android:textSize="@dimen/follow_text_size_normal"
@@ -279,10 +288,12 @@
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
+                                android:layout_toEndOf="@+id/timeCustom"
                                 android:layout_toRightOf="@+id/timeCustom"
-                                android:gravity="center|right"
+                                android:gravity="center|end"
                                 android:orientation="horizontal">
 
                                 <com.elementary.tasks.core.views.roboto.RoboTextView
@@ -299,7 +310,8 @@
                                     android:id="@+id/customTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginLeft="6dp"
+                                    android:layout_marginStart="6dp"
                                     android:gravity="center"
                                     android:padding="5dp"
                                     android:text="15:45"

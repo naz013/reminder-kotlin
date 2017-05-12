@@ -53,6 +53,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="16dp"
+                            android:paddingStart="16dp"
                             android:text="@string/reminder"
                             android:textAllCaps="true"
                             android:textSize="18sp"
@@ -78,7 +79,7 @@
                             android:id="@+id/buttonContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="right"
+                            android:gravity="end"
                             android:orientation="horizontal">
 
                             <com.elementary.tasks.core.views.roboto.RoboButton
@@ -93,7 +94,8 @@
                                 android:id="@+id/deleteReminder"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginStart="16dp"
                                 android:background="@null"
                                 android:text="@string/delete"
                                 app:button_font_style="roboto_light" />

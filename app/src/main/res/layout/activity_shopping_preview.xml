@@ -91,7 +91,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/statusSwitch"
+                        android:layout_toStartOf="@+id/statusSwitch"
                         android:paddingLeft="35dp"
+                        android:paddingStart="35dp"
                         android:textSize="20sp"
                         app:font_style="roboto_regular" />
 
@@ -99,9 +101,11 @@
                         android:id="@+id/statusSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
                         android:clickable="false"
                         app:switch_font_style="roboto_medium" />
 

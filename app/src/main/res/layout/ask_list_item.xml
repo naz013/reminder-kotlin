@@ -14,20 +14,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:background="@drawable/rectangle_stroke_blue"
-            android:textColor="@color/blackPrimary"
             android:text="@string/yes"
+            android:textColor="@color/blackPrimary"
             android:textSize="17sp" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/replyNo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/replyYes"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@+id/replyYes"
+            android:layout_toRightOf="@+id/replyYes"
             android:background="@drawable/rectangle_stroke_blue"
-            android:textColor="@color/blackPrimary"
             android:text="@string/no"
+            android:textColor="@color/blackPrimary"
             android:textSize="17sp" />
 
     </RelativeLayout>
