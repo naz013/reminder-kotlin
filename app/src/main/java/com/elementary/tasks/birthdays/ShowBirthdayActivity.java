@@ -1,9 +1,7 @@
 package com.elementary.tasks.birthdays;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -94,10 +92,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         contactPhoto.setVisibility(View.GONE);
 
         if (!TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
-            mBirthdayItem.setNumber(Contacts.getNumber(mBirthdayItem.getName(), ShowBirthdayActivity.this));
+            mBirthdayItem.setNumber(Contacts.getNumber(mBirthdayItem.getName(), this));
         }
         if (mBirthdayItem.getContactId() == 0 && !TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
-            mBirthdayItem.setContactId(Contacts.getIdFromNumber(mBirthdayItem.getNumber(), ShowBirthdayActivity.this));
+            mBirthdayItem.setContactId(Contacts.getIdFromNumber(mBirthdayItem.getNumber(), this));
         }
         Uri photo = Contacts.getPhoto(mBirthdayItem.getContactId());
         if (photo != null) {
@@ -108,16 +106,19 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         String years = TimeUtil.getAgeFormatted(this, mBirthdayItem.getDate());
         RoboTextView userName = binding.userName;
         userName.setText(mBirthdayItem.getName());
+        userName.setContentDescription(mBirthdayItem.getName());
         RoboTextView userNumber = (RoboTextView) findViewById(R.id.userNumber);
         RoboTextView userYears = (RoboTextView) findViewById(R.id.userYears);
         userYears.setText(years);
+        userYears.setContentDescription(years);
         wearMessage = mBirthdayItem.getName() + "\n" + years;
-        if (mBirthdayItem.getNumber() == null || mBirthdayItem.getNumber().matches("")) {
+        if (TextUtils.isEmpty(mBirthdayItem.getNumber())) {
             binding.buttonCall.setVisibility(View.GONE);
             binding.buttonSend.setVisibility(View.GONE);
             userNumber.setVisibility(View.GONE);
         } else {
             userNumber.setText(mBirthdayItem.getNumber());
+            userNumber.setContentDescription(mBirthdayItem.getNumber());
         }
         showNotification(TimeUtil.getAge(mBirthdayItem.getDate()), mBirthdayItem.getName());
         if (isTtsEnabled()) {
@@ -296,6 +297,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected void showSendingError() {
         binding.buttonCall.setImageResource(R.drawable.ic_refresh);
+        binding.buttonCall.setContentDescription(getString(R.string.acc_button_retry_to_send_message));
         if (binding.buttonCall.getVisibility() == View.GONE) {
             binding.buttonCall.setVisibility(View.VISIBLE);
         }
