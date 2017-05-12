@@ -549,5 +549,17 @@
     <string name="notification_type">Notification type</string>
     <string name="simple">Simplified</string>
     <string name="full_screen">Full screen</string>
+    <string name="acc_contact_photo">Contact photo</string>
+    <string name="acc_button_ok">Button OK</string>
+    <string name="acc_button_make_call">Button make call</string>
+    <string name="acc_button_cancel">Button cancel</string>
+    <string name="acc_button_snooze">Button snooze</string>
+    <string name="acc_button_snooze_for">Button snooze for</string>
+    <string name="acc_button_move_to_status_bar">Button Move to Status bar</string>
+    <string name="acc_button_edit">Button Edit</string>
+    <string name="acc_button_send_message">Button send message</string>
+    <string name="acc_button_open_application">Button open application</string>
+    <string name="acc_button_open_link_in_browser">Button open link in browser</string>
+    <string name="acc_button_retry_to_send_message">Button retry to send message</string>
 
 </resources>

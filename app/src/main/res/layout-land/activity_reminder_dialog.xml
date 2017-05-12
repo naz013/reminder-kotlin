@@ -46,19 +46,22 @@
                     android:id="@+id/buttonOk"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_ok" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/buttonCall"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_make_call" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/buttonCancel"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_cancel" />
 
             </LinearLayout>
 
@@ -75,25 +78,29 @@
                     android:id="@+id/buttonDelay"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_snooze" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/buttonDelayFor"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_snooze_for" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/buttonNotification"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_move_to_status_bar" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/buttonEdit"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_margin="@dimen/reminder_margin_top" />
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_edit" />
 
             </LinearLayout>
         </LinearLayout>
@@ -109,6 +116,7 @@
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
+            android:contentDescription="@string/acc_contact_photo"
             android:scaleType="centerCrop"
             android:src="@drawable/photo"
             android:visibility="visible"
