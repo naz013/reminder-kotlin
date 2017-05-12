@@ -70,14 +70,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
                             android:text="@string/none" />
 
                     </RadioGroup>
-
                 </android.support.v7.widget.CardView>
-
             </RelativeLayout>
-
         </LinearLayout>
 
         <RelativeLayout
@@ -126,6 +124,7 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:background="@null"
+                            android:contentDescription="@string/download_image"
                             app:tb_icon="@drawable/ic_get_app_black_24dp"
                             app:tb_icon_light="@drawable/ic_get_app_white_24dp"
                             app:tb_message="@string/download_image" />
@@ -135,7 +134,9 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
                             android:background="@null"
+                            android:contentDescription="@string/set_to_reminder_screen"
                             app:tb_icon="@drawable/ic_notifications_black_24dp"
                             app:tb_icon_light="@drawable/ic_notifications_white_24dp"
                             app:tb_message="@string/set_to_reminder_screen" />
@@ -145,7 +146,9 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
                             android:background="@null"
+                            android:contentDescription="@string/set_image_for_month"
                             app:tb_icon="@drawable/ic_calendar"
                             app:tb_icon_light="@drawable/ic_calendar_white"
                             app:tb_message="@string/set_image_for_month" />

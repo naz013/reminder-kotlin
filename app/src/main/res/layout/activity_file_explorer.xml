@@ -26,8 +26,10 @@
                     style="@style/Widget.AppCompat.ActionButton"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:contentDescription="@string/acc_clear_search_field"
                     app:srcCompat="@drawable/ic_clear_white_24dp" />
 
                 <com.elementary.tasks.core.views.roboto.RoboEditText
@@ -36,9 +38,13 @@
                     android:layout_height="56dp"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/clearButton"
+                    android:layout_toStartOf="@+id/clearButton"
                     android:background="@android:color/transparent"
                     android:hint="@string/type_to_search"
+                    android:paddingEnd="8dp"
                     android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingStart="8dp"
                     android:textColor="@color/whitePrimary"
                     android:textColorHint="@color/whitePrimary"
                     app:edit_font_style="roboto_light" />
@@ -105,6 +111,7 @@
                                 style="@style/Widget.AppCompat.ActionButton"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
+                                android:contentDescription="@string/acc_play"
                                 app:tb_icon="@drawable/ic_play_arrow_black_24dp"
                                 app:tb_icon_light="@drawable/ic_play_arrow_white_24dp" />
 
@@ -114,6 +121,8 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:contentDescription="@string/acc_pause"
                                 app:tb_icon="@drawable/ic_pause_black_24dp"
                                 app:tb_icon_light="@drawable/ic_pause_white_24dp" />
 
@@ -123,6 +132,8 @@
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
                                 android:layout_marginLeft="8dp"
+                                android:layout_marginStart="8dp"
+                                android:contentDescription="@string/acc_stop"
                                 app:tb_icon="@drawable/ic_stop_black_24dp"
                                 app:tb_icon_light="@drawable/ic_stop_white_24dp" />
 
@@ -134,9 +145,11 @@
                     android:id="@+id/fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginEnd="@dimen/fab_margin"
                     android:layout_marginRight="@dimen/fab_margin"
                     android:layout_marginTop="-36dp"
+                    android:contentDescription="@string/acc_select_melody"
                     app:srcCompat="@drawable/ic_done_white_24dp" />
 
             </LinearLayout>

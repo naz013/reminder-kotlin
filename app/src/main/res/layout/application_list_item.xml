@@ -31,6 +31,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:scaleType="fitCenter"
                 app:loadImage='@{item.drawable}' />
@@ -41,6 +42,7 @@
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="72dp"
+                android:layout_marginStart="72dp"
                 android:text="@{item.name}"
                 android:textSize="16sp"
                 app:font_style="roboto_light" />

@@ -58,7 +58,9 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/acc_customize_reminder"
                             app:srcCompat="@drawable/ic_tune_white_24dp" />
 
                         <com.elementary.tasks.core.views.TextViewWithIcon
@@ -66,23 +68,26 @@
                             android:layout_width="wrap_content"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tv_icon_light="@drawable/ic_local_offer_white_24dp"
-                            app:tv_icon="@drawable/ic_local_offer_white_24dp"
                             android:drawablePadding="8dp"
                             android:gravity="center"
-                            android:text="@string/general"
-                            android:maxLines="1"
                             android:maxLength="15"
+                            android:maxLines="1"
+                            android:text="@string/general"
                             android:textColor="@color/material_white"
-                            android:textSize="18sp" />
+                            android:textSize="18sp"
+                            app:tv_icon="@drawable/ic_local_offer_white_24dp"
+                            app:tv_icon_light="@drawable/ic_local_offer_white_24dp" />
 
                         <ImageButton
                             android:id="@+id/voiceButton"
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/voice_control"
                             app:srcCompat="@drawable/ic_microphone_white" />
 
                         <ImageButton
@@ -90,27 +95,33 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:srcCompat="@drawable/ic_lock_button"
-                            android:visibility="gone" />
+                            android:contentDescription="@string/acc_customize_exclusions"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_lock_button" />
 
                         <ImageButton
                             android:id="@+id/melodyButton"
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:srcCompat="@drawable/ic_music_note_white_24dp"
-                            android:visibility="gone" />
+                            android:contentDescription="@string/melody"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_music_note_white_24dp" />
 
                         <ImageButton
                             android:id="@+id/repeatButton"
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:srcCompat="@drawable/ic_refresh_white"
-                            android:visibility="gone" />
+                            android:contentDescription="@string/repeat_limit"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_refresh_white" />
 
                     </LinearLayout>
                 </HorizontalScrollView>

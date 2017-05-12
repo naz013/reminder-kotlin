@@ -12,26 +12,29 @@
             android:id="@+id/dateField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:layout_toLeftOf="@+id/timeField"
+            android:layout_toStartOf="@+id/timeField"
+            android:drawablePadding="8dp"
             android:text="Tue, 5 Nov 2015"
             android:textSize="@dimen/create_text_size_normal"
+            app:font_style="roboto_medium"
             app:tv_icon="@drawable/ic_calendar"
-            app:tv_icon_light="@drawable/ic_calendar_white"
-            android:drawablePadding="8dp"
-            app:font_style="roboto_medium" />
+            app:tv_icon_light="@drawable/ic_calendar_white" />
 
         <com.elementary.tasks.core.views.TextViewWithIcon
             android:id="@+id/timeField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:drawablePadding="8dp"
             android:text="14:05"
             android:textSize="@dimen/create_text_size_normal"
-            android:drawablePadding="8dp"
+            app:font_style="roboto_medium"
             app:tv_icon="@drawable/ic_access_time_black_24dp"
-            app:tv_icon_light="@drawable/ic_access_time_white_24dp"
-            app:font_style="roboto_medium" />
+            app:tv_icon_light="@drawable/ic_access_time_white_24dp" />
 
     </RelativeLayout>
 </merge>

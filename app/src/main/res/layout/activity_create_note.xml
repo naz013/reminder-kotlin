@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="80dp"
-                        android:gravity="center|right"
+                        android:gravity="center|end"
                         android:orientation="horizontal"
                         android:visibility="gone">
 
@@ -83,8 +83,10 @@
                             android:id="@+id/remindTime"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="25dp"
+                            android:layout_marginEnd="24dp"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginRight="24dp"
+                            android:layout_marginStart="12dp"
                             android:gravity="center"
                             android:text="20:00"
                             android:textColor="@color/blackPrimary"
@@ -96,6 +98,7 @@
                             android:layout_width="@dimen/create_note_image_button_size"
                             android:layout_height="@dimen/create_note_image_button_size"
                             android:background="@null"
+                            android:contentDescription="@string/acc_remove_reminder"
                             app:tb_icon="@drawable/ic_clear_black_24dp"
                             app:tb_icon_light="@drawable/ic_clear_white_24dp" />
 
@@ -121,7 +124,9 @@
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_select_color"
                         app:tb_icon="@drawable/ic_palette_black_24dp"
                         app:tb_icon_light="@drawable/ic_palette_white_24dp" />
 
@@ -130,7 +135,9 @@
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_add_image_to_reminder"
                         app:tb_icon="@drawable/ic_image_black_24dp"
                         app:tb_icon_light="@drawable/ic_image_white_24dp" />
 
@@ -139,7 +146,9 @@
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_add_reminder"
                         app:tb_icon="@drawable/ic_alarm"
                         app:tb_icon_light="@drawable/ic_alarm_white" />
 
@@ -148,7 +157,9 @@
                         android:layout_width="56dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_change_text_font_style"
                         app:tb_icon="@drawable/ic_text_format_black_24dp"
                         app:tb_icon_light="@drawable/ic_text_format_white_24dp" />
 

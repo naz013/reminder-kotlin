@@ -47,7 +47,8 @@
                         android:id="@+id/messageAction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:text="@string/sms"
                         android:textSize="@dimen/create_text_size_normal"
                         app:radio_font_style="roboto_regular" />
@@ -67,6 +68,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_select_number_from_contacts"
                     app:tb_icon="@drawable/ic_contacts"
                     app:tb_icon_light="@drawable/ic_contacts_white" />
 
@@ -75,7 +77,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="12dp"
                     android:ems="10"
                     android:gravity="center"
                     android:hint="@string/phone"

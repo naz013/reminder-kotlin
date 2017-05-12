@@ -561,5 +561,25 @@
     <string name="acc_button_open_application">Open application</string>
     <string name="acc_button_open_link_in_browser">Open link in browser</string>
     <string name="acc_button_retry_to_send_message">Retry to send message</string>
+    <string name="acc_select_number_from_contacts">Select number from contacts</string>
+    <string name="acc_remove_reminder">Remove reminder</string>
+    <string name="acc_select_color">Select color</string>
+    <string name="acc_add_image_to_reminder">Add image to reminder</string>
+    <string name="acc_add_reminder">Add reminder</string>
+    <string name="acc_change_text_font_style">Change text font style</string>
+    <string name="acc_customize_reminder">Customize reminder</string>
+    <string name="acc_customize_exclusions">Customize exclusions</string>
+    <string name="acc_clear_search_field">Clear search field</string>
+    <string name="acc_play">Play</string>
+    <string name="acc_pause">Pause</string>
+    <string name="acc_stop">Stop</string>
+    <string name="acc_select_melody">Select melody</string>
+    <string name="acc_crop_image">Crop image</string>
+    <string name="acc_draw_on_image">Draw on image</string>
+    <string name="acc_next">Next</string>
+    <string name="acc_add">Add</string>
+    <string name="acc_previous">Previous</string>
+    <string name="acc_rotate_left">Rotate left</string>
+    <string name="acc_rotate_right">Rotate right</string>
 
 </resources>

@@ -1,26 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright 2016 Nazar Suhovich
-  ~ <p/>
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~ <p/>
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~ <p/>
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -35,12 +21,14 @@
                 android:id="@+id/tasksCount"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/acc_add"
                 android:gravity="center"
-                app:srcCompat="@drawable/ic_add_white_24dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_add_white_24dp" />
 
             <ImageButton
                 android:id="@+id/voiceButton"
@@ -48,10 +36,12 @@
                 android:layout_height="45dp"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/tasksCount"
+                android:layout_toStartOf="@+id/tasksCount"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/voice_control"
                 android:gravity="center"
-                app:srcCompat="@drawable/ic_microphone_white"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_microphone_white" />
 
             <ImageButton
                 android:id="@+id/settingsButton"
@@ -59,17 +49,21 @@
                 android:layout_height="42dp"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/voiceButton"
+                android:layout_toStartOf="@+id/voiceButton"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/action_settings"
                 android:gravity="center"
-                app:srcCompat="@drawable/ic_settings_white"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_settings_white" />
 
             <TextView
                 android:id="@+id/widgetDate"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_toLeftOf="@+id/settingsButton"
+                android:layout_toStartOf="@+id/settingsButton"
                 android:gravity="center"
+                android:maxLines="1"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/blackPrimary"
