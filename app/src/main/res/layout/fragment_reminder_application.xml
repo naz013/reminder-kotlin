@@ -50,11 +50,13 @@
                     android:id="@+id/pickApplication"
                     android:layout_width="@dimen/create_imagebutton_size"
                     android:layout_height="@dimen/create_imagebutton_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/acc_select_application"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     app:tb_icon="@drawable/ic_launch_black_24dp"
-                    app:tb_icon_light="@drawable/ic_launch_white_24dp" />
+                    app:tb_icon_light="@drawable/ic_launch_white_24dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
                 <com.elementary.tasks.core.views.roboto.RoboTextView
                     android:id="@+id/applicationName"
@@ -63,6 +65,8 @@
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/pickApplication"
                     android:layout_toRightOf="@+id/pickApplication"
                     android:gravity="center"
                     android:maxLines="1"
@@ -105,6 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
                     android:text="@string/open_link"
                     android:textSize="@dimen/checkbox_text_size"
                     app:radio_font_style="roboto_light" />

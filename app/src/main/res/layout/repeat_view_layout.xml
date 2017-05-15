@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:background="@null"
             app:tb_icon="@drawable/ic_refresh"
@@ -22,21 +23,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/viewIcon"
             android:layout_toRightOf="@+id/viewIcon"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left|center">
+                android:gravity="start|center">
 
                 <com.elementary.tasks.core.views.roboto.RoboTextView
                     android:id="@+id/text1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:gravity="center|left"
+                    android:gravity="center|start"
                     android:text="@string/repeat"
                     android:textSize="@dimen/create_text_size_normal"
                     app:font_style="roboto_light" />
@@ -46,8 +50,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginLeft="@dimen/create_margin"
                     android:layout_marginRight="10dp"
+                    android:layout_marginStart="@dimen/create_margin"
+                    android:layout_toEndOf="@+id/text1"
                     android:layout_toRightOf="@+id/text1"
                     android:gravity="center"
                     android:inputType="number"
@@ -61,9 +68,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/repeatTitle"
                     android:layout_toRightOf="@+id/repeatTitle"
                     android:entries="@array/repeat_times"
-                    android:gravity="center|left" />
+                    android:gravity="center|start" />
 
             </RelativeLayout>
 

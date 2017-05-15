@@ -83,6 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:text="@string/video_call"
                             android:textSize="@dimen/create_text_size_normal"
                             app:radio_font_style="roboto_light" />
@@ -92,6 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
                             android:text="@string/skype_chat"
                             android:textSize="@dimen/create_text_size_normal"
                             app:radio_font_style="roboto_light" />
@@ -111,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
-                app:repeat_type="days"/>
+                app:repeat_type="days" />
 
         </LinearLayout>
     </ScrollView>

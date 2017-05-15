@@ -57,6 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@+id/clearButton"
+                        android:layout_toStartOf="@+id/clearButton"
                         android:hint="@string/address"
                         android:maxLines="1"
                         android:textSize="@dimen/create_text_size_normal" />
@@ -67,7 +68,9 @@
                         android:layout_height="@dimen/create_imagebutton_size"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:layout_toLeftOf="@+id/mapButton"
+                        android:layout_toStartOf="@+id/mapButton"
                         app:tb_icon="@drawable/ic_clear_black_24dp"
                         app:tb_icon_light="@drawable/ic_clear_white_24dp" />
 
@@ -75,9 +78,11 @@
                         android:id="@+id/mapButton"
                         android:layout_width="@dimen/create_imagebutton_size"
                         android:layout_height="@dimen/create_imagebutton_size"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         app:tb_icon="@drawable/ic_map"
                         app:tb_icon_light="@drawable/ic_map_white" />
 

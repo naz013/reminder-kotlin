@@ -83,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:maxLines="1"
                 android:text="@{item.name}"
                 app:font_style="roboto_medium"
