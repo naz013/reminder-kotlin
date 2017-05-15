@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/deleteButton"
+            android:layout_toStartOf="@+id/deleteButton"
             android:gravity="center">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
@@ -22,6 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/hours"
+                android:layout_toStartOf="@+id/hours"
                 android:gravity="center|bottom"
                 android:text="42"
                 android:textColor="?attr/colorAccent"
@@ -33,8 +35,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/minutesView"
+                android:layout_toStartOf="@+id/minutesView"
                 android:gravity="center|top"
                 android:text="@string/h"
                 android:textSize="20sp"
@@ -45,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/minutes"
+                android:layout_toStartOf="@+id/minutes"
                 android:gravity="center|bottom"
                 android:text="42"
                 android:textColor="?attr/colorAccent"
@@ -56,8 +61,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/secondsView"
+                android:layout_toStartOf="@+id/secondsView"
                 android:gravity="center|bottom"
                 android:text="@string/m"
                 android:textSize="20sp"
@@ -68,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/seconds"
+                android:layout_toStartOf="@+id/seconds"
                 android:gravity="center|bottom"
                 android:text="55"
                 android:textColor="?attr/colorAccent"
@@ -78,6 +86,7 @@
                 android:id="@+id/seconds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:gravity="center|bottom"
@@ -91,13 +100,14 @@
             android:id="@+id/deleteButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:tb_icon="@drawable/ic_backspace"
-            app:tb_icon_light="@drawable/ic_backspace_white"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            app:tb_icon_light="@drawable/ic_backspace_white" />
 
     </RelativeLayout>
 

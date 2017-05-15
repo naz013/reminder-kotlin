@@ -55,10 +55,12 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/addButton"
+                        android:layout_toStartOf="@+id/addButton"
                         android:background="@android:color/transparent"
                         android:hint="@string/task"
                         android:imeOptions="actionNext"
                         android:lines="1"
+                        android:maxLines="1"
                         android:singleLine="true"
                         app:edit_font_style="roboto_light" />
 
@@ -66,8 +68,10 @@
                         android:id="@+id/addButton"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:background="@android:color/transparent"
+                        android:contentDescription="@string/acc_add"
                         app:tb_icon="@drawable/ic_add_black_24dp"
                         app:tb_icon_light="@drawable/ic_add_white_24dp" />
 

@@ -13,6 +13,7 @@
             android:id="@+id/replyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/more_bg_drawable"
             android:gravity="center"

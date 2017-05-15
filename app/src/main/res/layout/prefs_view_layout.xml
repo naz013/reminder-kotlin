@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/dividerTop"
             android:layout_toLeftOf="@+id/viewContainer"
+            android:layout_toStartOf="@+id/viewContainer"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:paddingBottom="12dp"
@@ -59,10 +60,13 @@
             android:id="@+id/viewContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="16dp"
+            android:layout_marginStart="8dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -78,6 +82,7 @@
                 android:id="@+id/prefsValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:clickable="false"
                 android:text="02"
@@ -89,6 +94,7 @@
                 android:id="@+id/prefsView"
                 android:layout_width="@dimen/settings_view_size"
                 android:layout_height="@dimen/settings_view_size"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp" />
 
         </LinearLayout>

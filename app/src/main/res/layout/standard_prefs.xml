@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:text="@string/stroke_width"
             android:textColor="?attr/colorAccent" />
 
@@ -40,12 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="1px" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/labelRight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="40px" />
 
@@ -53,8 +56,10 @@
                 android:id="@+id/widthSeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/labelLeft"
                 android:layout_toLeftOf="@+id/labelRight"
                 android:layout_toRightOf="@+id/labelLeft"
+                android:layout_toStartOf="@+id/labelRight"
                 android:max="40" />
 
         </RelativeLayout>
@@ -63,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/opacity"
             android:textColor="?attr/colorAccent" />
@@ -77,12 +83,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="0%" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/labelRightOpacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="100%" />
 
@@ -90,8 +98,10 @@
                 android:id="@+id/opacitySeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/labelLeftOpacity"
                 android:layout_toLeftOf="@+id/labelRightOpacity"
                 android:layout_toRightOf="@+id/labelLeftOpacity"
+                android:layout_toStartOf="@+id/labelRightOpacity"
                 android:max="255" />
 
         </RelativeLayout>

@@ -58,7 +58,7 @@
                     android:id="@+id/dayCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
+                    android:layout_gravity="center|start"
                     android:checked="true"
                     android:text="@string/select_day"
                     app:radio_font_style="roboto_light" />
@@ -80,7 +80,7 @@
                     android:id="@+id/lastCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
+                    android:layout_gravity="center|start"
                     android:text="@string/last_day"
                     app:radio_font_style="roboto_light" />
 

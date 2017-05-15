@@ -29,14 +29,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:gravity="right"
+                android:gravity="end"
                 android:orientation="horizontal">
 
                 <com.elementary.tasks.core.views.roboto.RoboButton
                     android:id="@+id/buttonYes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:text="@string/yes"
                     app:font_style="roboto_light" />

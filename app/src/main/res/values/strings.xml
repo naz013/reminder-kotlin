@@ -581,5 +581,7 @@
     <string name="acc_previous">Previous</string>
     <string name="acc_rotate_left">Rotate left</string>
     <string name="acc_rotate_right">Rotate right</string>
+    <string name="acc_select_application">Select application</string>
+    <string name="acc_select_file">Select file</string>
 
 </resources>

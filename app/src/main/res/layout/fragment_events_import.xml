@@ -19,10 +19,11 @@
                 <com.elementary.tasks.core.views.roboto.RoboTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
-                    android:textColor="?attr/colorAccent"
-                    android:text="@string/calendar"/>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/calendar"
+                    android:textColor="?attr/colorAccent" />
 
                 <Spinner
                     android:id="@+id/eventCalendar"
@@ -42,6 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/check_automatically"
                     app:check_font_style="roboto_light" />
@@ -50,9 +52,9 @@
                     android:id="@+id/syncInterval"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
+                    android:layout_margin="16dp"
                     android:text="@string/interval"
                     android:textSize="16sp"
-                    android:layout_margin="16dp"
                     app:button_font_style="roboto_regular" />
 
                 <View
