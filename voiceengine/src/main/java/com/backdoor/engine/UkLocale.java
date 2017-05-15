@@ -548,7 +548,30 @@ class UkLocale extends Worker {
     }
 
     @Override
-    protected int findNumber(String input) {
+    protected float findFloat(String input) {
+        if (input.contains("півтор")) {
+            return 1.5f;
+        }
+        if (input.matches("половин*.") || input.matches(" пів*.")) {
+            return 0.5f;
+        }
+        return -1;
+    }
+
+    @Override
+    protected String clearFloats(String input) {
+        String[] parts = input.split("\\s");
+        for (int i = 0; i < parts.length; i++) {
+            String s = parts[i];
+            if (s.contains("півтор") || s.matches("половин*.") || s.matches(" пів*.")) {
+                parts[i] = "";
+            }
+        }
+        return clipStrings(parts);
+    }
+
+    @Override
+    protected float findNumber(String input) {
         int number = -1;
         if (input.matches("нуль")) {
             number = 0;

@@ -45,9 +45,10 @@ public class Recognizer {
             if (action != null) {
                 boolean hasNext = worker.hasNextModifier(local);
                 long date;
-                long multi = worker.getMultiplier(local);
+                Long multi = new Long();
+                worker.getMultiplier(local, multi);
                 if (hasNext) {
-                    date = System.currentTimeMillis() + multi;
+                    date = System.currentTimeMillis() + multi.get();
                 } else {
                     date = worker.getDate(local);
                 }
@@ -101,7 +102,6 @@ public class Recognizer {
                 type = actionType;
             }
         }
-
         boolean repeating;
         long repeat = 0;
         if (repeating = worker.hasRepeat(keyStr)) {
@@ -111,12 +111,10 @@ public class Recognizer {
                 keyStr = worker.clearDaysRepeat(keyStr);
             }
         }
-
         boolean isCalendar;
         if (isCalendar = worker.hasCalendar(keyStr)) {
             keyStr = worker.clearCalendar(keyStr);
         }
-
         boolean today;
         if (today = worker.hasToday(keyStr)) {
             keyStr = worker.clearToday(keyStr);
@@ -129,7 +127,6 @@ public class Recognizer {
         if (tomorrow = worker.hasTomorrow(keyStr)) {
             keyStr = worker.clearTomorrow(keyStr);
         }
-
         Ampm ampm = worker.getAmpm(keyStr);
         if (ampm != null) {
             keyStr = worker.clearAmpm(keyStr);
@@ -154,13 +151,12 @@ public class Recognizer {
         }
 
         boolean hasTimer;
-        long afterTime = 0;
+        Long afterTime = new Long();
         if (hasTimer = worker.isTimer(keyStr)) {
             keyStr = worker.cleanTimer(keyStr);
-            afterTime = worker.getMultiplier(keyStr);
-            keyStr = worker.clearMultiplier(keyStr);
+            keyStr = worker.getMultiplier(keyStr, afterTime);
         }
-
+        System.out.println("parse: " + afterTime.get() + ", input " + keyStr);
         long date = worker.getDate(keyStr);
         if (date != 0) {
             keyStr = worker.clearDate(keyStr);
@@ -182,7 +178,7 @@ public class Recognizer {
         } else if (repeating) {
             time = getRepeatingTime(time, hasWeekday);
         } else if (hasTimer) {
-            time = System.currentTimeMillis() + afterTime;
+            time = System.currentTimeMillis() + afterTime.get();
         } else if (date != 0 || time != 0) {
             time = getDateTime(date, time);
         } else {
@@ -211,7 +207,7 @@ public class Recognizer {
             }
         }
 
-        String task = StringUtils.capitalize(keyStr);
+        String task = StringUtils.capitalize(StringUtils.normalizeSpace(keyStr));
         if (hasAction) {
             task = StringUtils.capitalize(message);
             if ((type == Action.MESSAGE || type == Action.MAIL) && task == null) {

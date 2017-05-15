@@ -59,7 +59,7 @@ abstract class Worker implements WorkerInterface {
 
     protected abstract String[] getWeekdays();
 
-    protected abstract int findNumber(String input);
+    protected abstract float findNumber(String input);
 
     protected abstract int hasHours(String input);
 
@@ -76,74 +76,52 @@ abstract class Worker implements WorkerInterface {
     protected abstract int getMonth(String input);
 
     @Override
-    public long getMultiplier(String input) {
+    public String getMultiplier(String input, Long res) {
+        System.out.println("getMultiplier: " + input);
         String[] parts = input.split("\\s");
-        int[] times = new int[6];
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
-            if (hasSeconds(string)) {
-                try {
-                    if (times[0] == 0) {
-                        times[0] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[0] == 0) {
-                        times[0] = 1;
+            try {
+                float number = Float.parseFloat(string);
+                if (number != -1) {
+                    input = input.replace(parts[i], " ");
+                    parts[i] = "";
+                } else {
+                    continue;
+                }
+                for (int j = i; j < parts.length; j++) {
+                    float multi = getMulti(parts[j]);
+                    if (multi != -1) {
+                        number = number * multi;
+                        input = input.replace(parts[j], " ");
+                        parts[j] = "";
+                        break;
                     }
                 }
-            } else if (hasMinutes(string) != -1) {
-                try {
-                    if (times[1] == 0) {
-                        times[1] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[1] == 0) {
-                        times[1] = 1;
-                    }
+                if (number > 0) {
+                    res.set(res.get() + (long) number);
                 }
-            } else if (hasHours(string) != -1) {
-                try {
-                    if (times[2] == 0) {
-                        times[2] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[2] == 0) {
-                        times[2] = 1;
-                    }
-                }
-            } else if (hasDays(string)) {
-                try {
-                    if (times[3] == 0) {
-                        times[3] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[3] == 0) {
-                        times[3] = 1;
-                    }
-                }
-            } else if (hasWeeks(string)) {
-                try {
-                    if (times[4] == 0) {
-                        times[4] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[4] == 0) {
-                        times[4] = 1;
-                    }
-                }
-            } else if (hasMonth(string)) {
-                try {
-                    if (times[5] == 0) {
-                        times[5] = Integer.parseInt(parts[i - 1]);
-                    }
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                    if (times[5] == 0) {
-                        times[5] = 1;
-                    }
-                }
-            }
+            } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
         }
-        return (times[0] * SECOND) + (times[1] * MINUTE) + (times[2] * HOUR) + (times[3] * DAY) + (times[4] * 7 * DAY) + (times[5] * 30 * DAY);
+        System.out.println("part: " + input + ", " + res);
+        return input;
+    }
+
+    private float getMulti(String input) {
+        if (hasSeconds(input)) {
+            return SECOND;
+        } else if (hasMinutes(input) != -1) {
+            return MINUTE;
+        } else if (hasHours(input) != -1) {
+            return HOUR;
+        } else if (hasDays(input)) {
+            return DAY;
+        } else if (hasWeeks(input)) {
+            return 7 * DAY;
+        } else if (hasMonth(input)) {
+            return 30 * DAY;
+        }
+        return -1;
     }
 
     @Override
@@ -153,45 +131,39 @@ abstract class Worker implements WorkerInterface {
             String string = parts[i];
             if (hasSeconds(string)) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             } else if (hasMinutes(string) != -1) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             } else if (hasHours(string) != -1) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             } else if (hasDays(string)) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             } else if (hasWeeks(string)) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             } else if (hasMonth(string)) {
                 try {
-                    Integer.parseInt(parts[i - 1]);
+                    Float.parseFloat(parts[i - 1]);
                     input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
-                }
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
                 input = input.replace(string, "");
             }
         }
@@ -201,35 +173,44 @@ abstract class Worker implements WorkerInterface {
     @Override
     public String replaceNumbers(String input) {
         String[] parts = input.split("\\s");
+        float allNumber = 0;
+        int beginIndex = -1;
         for (int i = 0; i < parts.length; i++) {
-            int number = getNumber(parts, i);
+            float number = findNumber(parts[i]);
             if (number != -1) {
-                if (number > 20 && (number % 10 > 0)) {
-                    input = input.replace(parts[i] + " " + parts[i + 1], String.valueOf(number));
-                } else {
-                    input = input.replace(parts[i], String.valueOf(number));
+                allNumber += number;
+                input = input.replace(parts[i], "");
+                parts[i] = "";
+                if (beginIndex == -1) {
+                    beginIndex = i;
+                }
+            } else {
+                number = findFloat(parts[i]);
+                if (number != -1) {
+                    allNumber += number;
+                    if (beginIndex == -1) {
+                        beginIndex = i;
+                    }
                 }
             }
         }
-        return input.trim();
+        if (beginIndex != -1 && allNumber != 0) {
+            parts[beginIndex] = String.valueOf(allNumber);
+        }
+        String out = clipStrings(parts);
+        out = clearFloats(out);
+        return out;
     }
 
-    protected int getNumber(String[] parts, int index) {
-        int number = findNumber(parts[index]);
-        if (number == -1) {
-            return -1;
-        }
-        if (number >= 20) {
-            int res = getNumber(parts, index + 1);
-            if (res != -1) {
-                return res + number;
-            } else {
-                return number;
-            }
-        } else {
-            return number;
-        }
+    protected abstract String clearFloats(String input);
+
+    protected String clipStrings(String[] parts) {
+        String out = "";
+        for (String s : parts) out = out + " " + s;
+        return out;
     }
+
+    protected abstract float findFloat(String input);
 
     @Override
     public long getDate(String input) {
@@ -281,16 +262,16 @@ abstract class Worker implements WorkerInterface {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);
         String[] parts = input.split("\\s");
-        int h = -1;
-        int m = -1;
-        int reserveHour = 0;
+        float h = -1;
+        float m = -1;
+        float reserveHour = 0;
         for (int i = parts.length - 1; i >= 0; i--) {
             String part = parts[i];
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
-                int integer;
+                float integer;
                 try {
-                    integer = Integer.parseInt(parts[i - index]);
+                    integer = Float.parseFloat(parts[i - index]);
                 } catch (NumberFormatException e) {
                     integer = 1;
                 }
@@ -302,16 +283,16 @@ abstract class Worker implements WorkerInterface {
             }
             if (hasMinutes(part) != -1) {
                 int index = hasMinutes(part);
-                int integer;
+                float integer;
                 try {
-                    integer = Integer.parseInt(parts[i - index]);
+                    integer = Float.parseFloat(parts[i - index]);
                 } catch (NumberFormatException e) {
                     integer = 0;
                 }
                 m = integer;
             }
             try {
-                reserveHour = Integer.parseInt(parts[i]);
+                reserveHour = Float.parseFloat(parts[i]);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -326,9 +307,9 @@ abstract class Worker implements WorkerInterface {
         }
         if (h != -1) {
             calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, h);
+            calendar.set(Calendar.HOUR_OF_DAY, (int) h);
             if (m != -1) {
-                calendar.set(Calendar.MINUTE, m);
+                calendar.set(Calendar.MINUTE, (int) m);
             } else {
                 calendar.set(Calendar.MINUTE, 0);
             }
@@ -338,7 +319,7 @@ abstract class Worker implements WorkerInterface {
         }
         if (calendar.getTimeInMillis() == 0 && reserveHour != 0) {
             calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, reserveHour);
+            calendar.set(Calendar.HOUR_OF_DAY, (int) reserveHour);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);

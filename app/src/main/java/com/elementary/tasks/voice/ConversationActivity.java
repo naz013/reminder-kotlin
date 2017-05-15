@@ -573,8 +573,8 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
         releaseSpeech();
         releaseTts();
     }
