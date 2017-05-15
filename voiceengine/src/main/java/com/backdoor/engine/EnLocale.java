@@ -83,7 +83,7 @@ class EnLocale extends Worker {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
-            if (!part.matches("on") && !part.matches("in") && !part.matches("at"))
+            if (!part.matches("on") && !part.matches("at"))
                 sb.append(" ").append(part);
         }
         return sb.toString().trim();
@@ -330,18 +330,22 @@ class EnLocale extends Worker {
 
     @Override
     public boolean isTimer(String input) {
-        return input.matches(".*after.*");
+        input = " " + input + " ";
+        return input.matches(".*after.*") || input.matches(".* in .*");
     }
 
     @Override
     public String cleanTimer(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String string = parts[i];
             if (isTimer(string)) {
-                input = input.replace(string, "");
+                parts[i] = "";
                 break;
             }
         }
+        input = clipStrings(parts);
+        input = input.replace(" an ", " ");
         return input.trim();
     }
 
@@ -503,8 +507,31 @@ class EnLocale extends Worker {
     }
 
     @Override
-    protected int findNumber(String input) {
-        int number = -1;
+    protected float findFloat(String input) {
+        if (input.matches("half")) {
+            return 0.5f;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    protected String clearFloats(String input) {
+        if (input.contains("and a half")) {
+            return input.replace("and a half", "");
+        }
+        if (input.contains(" half an ")) {
+            return input.replace("half an", "");
+        }
+        if (input.contains(" in half ")) {
+            return input.replace("half", "");
+        }
+        return input;
+    }
+
+    @Override
+    protected float findNumber(String input) {
+        float number = -1;
         if (input.matches("zero") || input.matches("nil")) number = 0;
         if (input.matches("one") || input.matches("first")) number = 1;
         if (input.matches("two") || input.matches("second")) number = 2;

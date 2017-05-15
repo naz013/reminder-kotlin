@@ -50,7 +50,7 @@ public class ObjectUtil {
                 return field.getInt(clazz) + "";
             } else if (type == Double.TYPE) {
                 return field.getDouble(clazz) + "";
-            } else if (type == Long.TYPE) {
+            } else if (type == java.lang.Long.TYPE) {
                 return field.getLong(clazz) + "";
             } else if (type == Boolean.TYPE) {
                 return field.getBoolean(clazz) + "";

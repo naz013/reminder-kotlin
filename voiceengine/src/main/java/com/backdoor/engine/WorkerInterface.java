@@ -83,7 +83,7 @@ public interface WorkerInterface {
 
     Action getEvent(String input);
 
-    long getMultiplier(String input);
+    String getMultiplier(String input, Long res);
 
     String clearMultiplier(String input);
 

@@ -493,8 +493,31 @@ class RuLocale extends Worker {
     }
 
     @Override
-    protected int findNumber(String input) {
-        int number = -1;
+    protected float findFloat(String input) {
+        if (input.contains("полтор")) {
+            return 1.5f;
+        }
+        if (input.matches("половин*.") || input.matches(" пол*.")) {
+            return 0.5f;
+        }
+        return -1;
+    }
+
+    @Override
+    protected String clearFloats(String input) {
+        String[] parts = input.split("\\s");
+        for (int i = 0; i < parts.length; i++) {
+            String s = parts[i];
+            if (s.contains("полтор") || s.matches("половин*.") || s.matches(" пол*.")) {
+                parts[i] = "";
+            }
+        }
+        return clipStrings(parts);
+    }
+
+    @Override
+    protected float findNumber(String input) {
+        float number = -1;
         if (input.matches("ноль")) number = 0;
         if (input.matches("один") || input.matches("одну") || input.matches("одна")) number = 1;
         if (input.matches("два") || input.matches("две")) number = 2;
