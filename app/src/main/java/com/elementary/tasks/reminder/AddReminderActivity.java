@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.ActivityAddReminderBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
@@ -165,7 +166,10 @@ public class AddReminderActivity extends ThemedActivity {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setSummary(summary);
-        reminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+        GroupItem item = RealmDb.getInstance().getDefaultGroup();
+        if (item != null) {
+            reminder.setGroupUuId(item.getUuId());
+        }
         LogUtil.d(TAG, "save: " + type);
         long startTime = binding.dateView.getDateTime();
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
