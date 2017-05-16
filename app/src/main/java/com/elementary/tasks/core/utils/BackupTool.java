@@ -368,8 +368,12 @@ public final class BackupTool {
     }
 
     public Reminder getReminder(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
-        WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Reminder.class));
-        return item.get();
+        Reminder reminder = null;
+        try {
+            reminder = new Gson().fromJson(readFileToJson(cr, name), Reminder.class);
+        } catch (IllegalStateException ignored) {
+        }
+        return reminder;
     }
 
     public Reminder getReminder(String filePath, String json) throws IOException, IllegalStateException {
