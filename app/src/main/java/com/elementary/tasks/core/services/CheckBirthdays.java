@@ -5,9 +5,9 @@ import android.content.Intent;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
 
 import java.util.List;
 
@@ -38,12 +38,18 @@ public class CheckBirthdays extends IntentService {
         List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(getApplicationContext()).getDaysToBirthday());
         if (list != null && list.size() > 0) {
             for (BirthdayItem item : list){
-                Intent resultIntent = new Intent(getApplicationContext(), ShowBirthdayActivity.class);
-                resultIntent.putExtra(Constants.INTENT_ID, item.getKey());
-                resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                getApplicationContext().startActivity(resultIntent);
+                showBirthday(item);
             }
         }
         stopSelf();
+    }
+
+    private void showBirthday(BirthdayItem item) {
+        if (Prefs.getInstance(getApplicationContext()).getReminderType() == 0) {
+            startActivity(ShowBirthdayActivity.getLaunchIntent(getApplicationContext(), item.getUuId()));
+        } else {
+            ReminderUtils.showSimpleBirthday(getApplicationContext(), item.getUuId());
+        }
+
     }
 }

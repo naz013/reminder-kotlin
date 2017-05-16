@@ -508,7 +508,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(getSummary());
         builder.setContentIntent(intent);
@@ -570,7 +570,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setPriority(Notification.PRIORITY_MAX);
