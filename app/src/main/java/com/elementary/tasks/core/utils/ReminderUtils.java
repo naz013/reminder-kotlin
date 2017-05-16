@@ -10,6 +10,8 @@ import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.services.BirthdayActionService;
 import com.elementary.tasks.core.services.ReminderActionService;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -43,7 +45,7 @@ public final class ReminderUtils {
     }
 
     private static Uri getSoundUri(String melody, Context context) {
-        if (!TextUtils.isEmpty(melody)) {
+        if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody)) {
             return UriUtil.getUri(context, melody);
         } else {
             String defMelody = Prefs.getInstance(context).getMelodyFile();
@@ -53,6 +55,82 @@ public final class ReminderUtils {
                 return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             }
         }
+    }
+
+    public static void showSimpleBirthday(Context context, String id) {
+        BirthdayItem birthdayItem = RealmDb.getInstance().getBirthday(id);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
+        PendingIntent intent = PendingIntent.getService(context, birthdayItem.getUniqueId(),
+                BirthdayActionService.show(context, id), 0);
+        builder.setContentIntent(intent);
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentTitle(birthdayItem.getName());
+        if (!SuperUtil.isDoNotDisturbEnabled(context) ||
+                (SuperUtil.checkNotificationPermission(context) &&
+                        Prefs.getInstance(context).isSoundInSilentModeEnabled())) {
+            String melodyPath;
+            if (Module.isPro() && !isGlobal(context)) {
+                melodyPath = Prefs.getInstance(context).getBirthdayMelody();
+            } else {
+                melodyPath = Prefs.getInstance(context).getMelodyFile();
+            }
+            Uri uri = getSoundUri(melodyPath, context);
+            context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            builder.setSound(uri);
+        }
+        boolean vibrate = Prefs.getInstance(context).isVibrateEnabled();
+        if (Module.isPro() && !isGlobal(context)) {
+            vibrate = Prefs.getInstance(context).isBirthdayVibrationEnabled();
+        }
+        if (vibrate) {
+            vibrate = Prefs.getInstance(context).isInfiniteVibrateEnabled();
+            if (Module.isPro() && !isGlobal(context)) {
+                vibrate = Prefs.getInstance(context).isBirthdayInfiniteVibrationEnabled();
+            }
+            long[] pattern;
+            if (vibrate) {
+                pattern = new long[]{150, 86400000};
+            } else {
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()) {
+            int ledColor = LED.getLED(Prefs.getInstance(context).getLedColor());
+            if (Module.isPro() && !isGlobal(context)) {
+                ledColor = LED.getLED(Prefs.getInstance(context).getBirthdayLedColor());
+            }
+            builder.setLights(ledColor, 500, 1000);
+        }
+        builder.setContentText(context.getString(R.string.birthday));
+
+        PendingIntent piDismiss = PendingIntent.getService(context, birthdayItem.getUniqueId(),
+                BirthdayActionService.hide(context, id), 0);
+        builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+
+        if (!TextUtils.isEmpty(birthdayItem.getNumber())) {
+            PendingIntent piCall = PendingIntent.getService(context, birthdayItem.getUniqueId(),
+                    BirthdayActionService.call(context, id), 0);
+            builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall);
+
+            PendingIntent piSms = PendingIntent.getService(context, birthdayItem.getUniqueId(),
+                    BirthdayActionService.sms(context, id), 0);
+            builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms);
+        }
+
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
+        mNotifyMgr.notify(birthdayItem.getUniqueId(), builder.build());
+    }
+
+    private static boolean isGlobal(Context context) {
+        return Prefs.getInstance(context).isBirthdayGlobalEnabled();
     }
 
     public static void showSimpleReminder(Context context, String id) {
@@ -70,7 +148,7 @@ public final class ReminderUtils {
         Intent notificationIntent = new Intent(context, ReminderActionService.class);
         notificationIntent.setAction(ReminderActionService.ACTION_SHOW);
         notificationIntent.putExtra(Constants.INTENT_ID, id);
-        PendingIntent intent = PendingIntent.getService(context, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent intent = PendingIntent.getService(context, 0, notificationIntent, 0);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setOngoing(true);

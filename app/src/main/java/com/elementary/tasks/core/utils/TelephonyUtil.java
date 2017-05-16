@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import java.io.File;
 
@@ -69,6 +70,9 @@ public final class TelephonyUtil {
     }
 
     public static void sendSms(String number, Context context) {
+        if (TextUtils.isEmpty(number)) {
+            return;
+        }
         Intent smsIntent = new Intent(Intent.ACTION_VIEW);
         smsIntent.setData(Uri.parse("sms:" + number));
         context.startActivity(smsIntent);
@@ -76,6 +80,9 @@ public final class TelephonyUtil {
 
     @SuppressWarnings("MissingPermission")
     public static void makeCall(String number, Context context) {
+        if (TextUtils.isEmpty(number)) {
+            return;
+        }
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + number));
         context.startActivity(callIntent);

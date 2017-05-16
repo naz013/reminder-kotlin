@@ -1,5 +1,7 @@
 package com.elementary.tasks.birthdays;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -65,6 +67,13 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     private BirthdayItem mBirthdayItem;
     private boolean mIsResumed;
     private String wearMessage;
+
+    public static Intent getLaunchIntent(Context context, String uuId) {
+        Intent resultIntent = new Intent(context, ShowBirthdayActivity.class);
+        resultIntent.putExtra(Constants.INTENT_ID, uuId);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        return resultIntent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

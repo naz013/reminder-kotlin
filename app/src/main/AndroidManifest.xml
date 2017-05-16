@@ -293,6 +293,9 @@
             android:name=".core.services.ReminderActionService"
             android:exported="true" />
         <service
+            android:name=".core.services.BirthdayActionService"
+            android:exported="true" />
+        <service
             android:name=".core.app_widgets.events.EventEditService"
             android:exported="true" />
 
@@ -553,7 +556,7 @@
         </provider>
 
         <activity android:name=".intro.IntroActivity" />
-        <activity android:name=".intro.GoogleFixActivity"></activity>
+        <activity android:name=".intro.GoogleFixActivity" />
     </application>
 
 </manifest>

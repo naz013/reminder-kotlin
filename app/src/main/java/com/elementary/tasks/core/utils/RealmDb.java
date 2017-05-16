@@ -146,7 +146,7 @@ public class RealmDb {
     public void deleteBirthday(BirthdayItem item) {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmBirthdayItem birthdayItem = realm.where(RealmBirthdayItem.class).equalTo("key", item.getKey()).findFirst();
+        RealmBirthdayItem birthdayItem = realm.where(RealmBirthdayItem.class).equalTo("uuId", item.getUuId()).findFirst();
         if (birthdayItem != null) {
             birthdayItem.deleteFromRealm();
         }
