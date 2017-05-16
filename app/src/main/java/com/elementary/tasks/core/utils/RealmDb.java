@@ -419,10 +419,17 @@ public class RealmDb {
     public GroupItem getDefaultGroup() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        RealmGroup realmGroup = realm.where(RealmGroup.class).findFirst();
+        RealmResults<RealmGroup> realmGroup = realm.where(RealmGroup.class).findAll();
         realm.commitTransaction();
-        if (realmGroup == null) return null;
-        else return new GroupItem(realmGroup);
+        if (realmGroup != null) {
+            for (int i = 0; i < realmGroup.size(); i++) {
+                RealmGroup group = realmGroup.get(i);
+                if (group != null) {
+                    return new GroupItem(group);
+                }
+            }
+        }
+        return null;
     }
 
     public List<GroupItem> getAllGroups() {
