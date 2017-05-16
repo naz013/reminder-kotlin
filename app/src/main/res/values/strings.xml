@@ -583,5 +583,6 @@
     <string name="acc_rotate_right">Rotate right</string>
     <string name="acc_select_application">Select application</string>
     <string name="acc_select_file">Select file</string>
+    <string name="acc_type_by_voice">Type by voice</string>
 
 </resources>
