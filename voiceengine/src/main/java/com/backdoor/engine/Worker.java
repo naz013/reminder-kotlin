@@ -2,6 +2,7 @@ package com.backdoor.engine;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -82,29 +83,38 @@ abstract class Worker implements WorkerInterface {
         for (int i = 0; i < parts.length; i++) {
             String string = parts[i];
             try {
-                float number = Float.parseFloat(string);
-                if (number != -1) {
-                    input = input.replace(parts[i], " ");
-                    parts[i] = "";
-                } else {
-                    continue;
-                }
-                for (int j = i; j < parts.length; j++) {
-                    float multi = getMulti(parts[j]);
+                float number = 0;
+                try {
+                    number = Float.parseFloat(string);
+                    if (number != -1) {
+                        parts[i] = "";
+                    }
+                    for (int j = i; j < parts.length; j++) {
+                        float multi = getMulti(parts[j]);
+                        if (multi != -1) {
+                            number = number * multi;
+                            parts[j] = "";
+                            break;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    float multi = getMulti(string);
                     if (multi != -1) {
-                        number = number * multi;
-                        input = input.replace(parts[j], " ");
-                        parts[j] = "";
-                        break;
+                        number += multi;
+                        parts[i] = "";
+                    } else {
+                        continue;
                     }
                 }
                 if (number > 0) {
                     res.set(res.get() + (long) number);
                 }
-            } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
+            } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
+            }
         }
-        System.out.println("part: " + input + ", " + res);
-        return input;
+        String out = clipStrings(parts);
+        System.out.println("out: " + out + ", " + res);
+        return out;
     }
 
     private float getMulti(String input) {
@@ -125,52 +135,6 @@ abstract class Worker implements WorkerInterface {
     }
 
     @Override
-    public String clearMultiplier(String input) {
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String string = parts[i];
-            if (hasSeconds(string)) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            } else if (hasMinutes(string) != -1) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            } else if (hasHours(string) != -1) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            } else if (hasDays(string)) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            } else if (hasWeeks(string)) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            } else if (hasMonth(string)) {
-                try {
-                    Float.parseFloat(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {}
-                input = input.replace(string, "");
-            }
-        }
-        return input.trim();
-    }
-
-    @Override
     public String replaceNumbers(String input) {
         String[] parts = input.split("\\s");
         float allNumber = 0;
@@ -179,7 +143,6 @@ abstract class Worker implements WorkerInterface {
             float number = findNumber(parts[i]);
             if (number != -1) {
                 allNumber += number;
-                input = input.replace(parts[i], "");
                 parts[i] = "";
                 if (beginIndex == -1) {
                     beginIndex = i;
@@ -194,11 +157,25 @@ abstract class Worker implements WorkerInterface {
                 }
             }
         }
+        System.out.println("before: " + Arrays.toString(parts));
         if (beginIndex != -1 && allNumber != 0) {
-            parts[beginIndex] = String.valueOf(allNumber);
+            String[] newP = new String[parts.length + 1];
+            for (int i = 0; i < parts.length; i++) {
+                if (i > beginIndex) {
+                    newP[i + 1] = parts[i];
+                } else if (i == beginIndex) {
+                    newP[beginIndex] = String.valueOf(allNumber);
+                    newP[i + 1] = parts[i];
+                } else {
+                    newP[i] = parts[i];
+                }
+            }
+            parts = newP;
         }
+        System.out.println("after " + Arrays.toString(parts));
         String out = clipStrings(parts);
         out = clearFloats(out);
+        System.out.println("replaceNumbers: " + out);
         return out;
     }
 
@@ -211,50 +188,6 @@ abstract class Worker implements WorkerInterface {
     }
 
     protected abstract float findFloat(String input);
-
-    @Override
-    public long getDate(String input) {
-        long mills = 0;
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
-            int month = getMonth(part);
-            if (month != -1) {
-                int integer;
-                try {
-                    integer = Integer.parseInt(parts[i + 1]);
-                } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                    integer = 1;
-                }
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, integer);
-                mills = calendar.getTimeInMillis();
-                break;
-            }
-        }
-        return mills;
-    }
-
-    @Override
-    public String clearDate(String input) {
-        String[] parts = input.split("\\s");
-        for (int i = 0; i < parts.length; i++) {
-            String part = parts[i];
-            int month = getMonth(part);
-            if (month != -1) {
-                try {
-                    Integer.parseInt(parts[i + 1]);
-                    input = input.replace(parts[i + 1], "");
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                }
-                input = input.replace(part, "");
-                break;
-            }
-        }
-        return input.trim();
-    }
 
     @Override
     public long getTime(String input, Ampm ampm, String[] times) {

@@ -55,9 +55,7 @@ public interface WorkerInterface {
 
     String clearTime(String input);
 
-    long getDate(String input);
-
-    String clearDate(String input);
+    String getDate(String input, Long res);
 
     boolean hasCall(String input);
 
@@ -84,8 +82,6 @@ public interface WorkerInterface {
     Action getEvent(String input);
 
     String getMultiplier(String input, Long res);
-
-    String clearMultiplier(String input);
 
     String replaceNumbers(String input);
 

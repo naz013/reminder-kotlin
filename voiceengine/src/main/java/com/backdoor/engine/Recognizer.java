@@ -50,7 +50,9 @@ public class Recognizer {
                 if (hasNext) {
                     date = System.currentTimeMillis() + multi.get();
                 } else {
-                    date = worker.getDate(local);
+                    Long dt = new Long();
+                    worker.getDate(local, dt);
+                    date = dt.get();
                 }
                 Model model = new Model();
                 model.setAction(action);
@@ -157,11 +159,10 @@ public class Recognizer {
             keyStr = worker.getMultiplier(keyStr, afterTime);
         }
         System.out.println("parse: " + afterTime.get() + ", input " + keyStr);
-        long date = worker.getDate(keyStr);
-        if (date != 0) {
-            keyStr = worker.clearDate(keyStr);
-        }
+        Long date = new Long();
+        keyStr = worker.getDate(keyStr, date);
 
+        System.out.println("parse: after date " + keyStr);
         long time = worker.getTime(keyStr, ampm, times);
         if (time != 0) {
             keyStr = worker.clearTime(keyStr);
@@ -179,8 +180,8 @@ public class Recognizer {
             time = getRepeatingTime(time, hasWeekday);
         } else if (hasTimer) {
             time = System.currentTimeMillis() + afterTime.get();
-        } else if (date != 0 || time != 0) {
-            time = getDateTime(date, time);
+        } else if (date.get() != 0 || time != 0) {
+            time = getDateTime(date.get(), time);
         } else {
             return null;
         }
