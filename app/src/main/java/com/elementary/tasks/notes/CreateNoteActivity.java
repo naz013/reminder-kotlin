@@ -17,6 +17,9 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -48,6 +51,7 @@ import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.BitmapUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -65,11 +69,14 @@ import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.tapadoo.alerter.Alerter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -96,6 +103,7 @@ public class CreateNoteActivity extends ThemedActivity {
     public static final int MENU_ITEM_DELETE = 12;
     private static final int REQUEST_SD_CARD = 1112;
     private static final int EDIT_CODE = 11223;
+    private static final int AUDIO_CODE = 255000;
 
     private int mHour = 0;
     private int mMinute = 0;
@@ -121,6 +129,88 @@ public class CreateNoteActivity extends ThemedActivity {
     private AppBarLayout toolbar;
     private EditText taskField;
 
+    private SpeechRecognizer speech = null;
+
+    private RecognitionListener mRecognitionListener = new RecognitionListener() {
+        @Override
+        public void onReadyForSpeech(Bundle bundle) {
+            LogUtil.d(TAG, "onReadyForSpeech: ");
+        }
+
+        @Override
+        public void onBeginningOfSpeech() {
+            LogUtil.d(TAG, "onBeginningOfSpeech: ");
+            showRecording();
+        }
+
+        @Override
+        public void onRmsChanged(float v) {
+            v = v * 2000;
+            double db = 0;
+            if (v > 1) {
+                db = 20 * Math.log10(v);
+            }
+            binding.recordingView.setVolume((float) db);
+        }
+
+        @Override
+        public void onBufferReceived(byte[] bytes) {
+            LogUtil.d(TAG, "onBufferReceived: " + Arrays.toString(bytes));
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+            hideRecording();
+            LogUtil.d(TAG, "onEndOfSpeech: ");
+        }
+
+        @Override
+        public void onError(int i) {
+            LogUtil.d(TAG, "onError: " + i);
+            releaseSpeech();
+            hideRecording();
+        }
+
+        @Override
+        public void onResults(Bundle bundle) {
+            ArrayList res = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            if (res != null && res.size() > 0) {
+                setText(StringUtils.capitalize(res.get(0).toString().toLowerCase()));
+            }
+            LogUtil.d(TAG, "onResults: " + res);
+            releaseSpeech();
+        }
+
+        @Override
+        public void onPartialResults(Bundle bundle) {
+            ArrayList res = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            if (res != null && res.size() > 0) {
+                setText(res.get(0).toString().toLowerCase());
+            }
+            LogUtil.d(TAG, "onPartialResults: " + res);
+        }
+
+        @Override
+        public void onEvent(int i, Bundle bundle) {
+            LogUtil.d(TAG, "onEvent: ");
+        }
+    };
+
+    private void setText(String text) {
+        binding.taskMessage.setText(text);
+        binding.taskMessage.setSelection(binding.taskMessage.getText().length());
+    }
+
+    private void showRecording() {
+        binding.recordingView.start();
+        binding.recordingView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideRecording() {
+        binding.recordingView.stop();
+        binding.recordingView.setVisibility(View.GONE);
+    }
+
     private DecodeImagesAsync.DecodeListener mDecodeCallback = new DecodeImagesAsync.DecodeListener() {
         @Override
         public void onDecode(List<NoteImage> result) {
@@ -143,15 +233,14 @@ public class CreateNoteActivity extends ThemedActivity {
         remindDate.setOnClickListener(v -> dateDialog());
         remindTime = binding.remindTime;
         remindTime.setOnClickListener(v -> timeDialog());
+        binding.micButton.setOnClickListener(v -> micClick());
         binding.discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
         initImagesList();
         loadNote();
         if (mItem != null) {
-            String note = mItem.getSummary();
             mColor = mItem.getColor();
             mFontStyle = mItem.getStyle();
-            taskField.setText(note);
-            taskField.setSelection(taskField.getText().length());
+            setText(mItem.getSummary());
             mAdapter.setImages(mItem.getImages());
             showReminder();
         } else {
@@ -163,6 +252,37 @@ public class CreateNoteActivity extends ThemedActivity {
         updateBackground();
         updateTextStyle();
         showSaturationAlert();
+    }
+
+    private void initRecognizer() {
+        Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        speech = SpeechRecognizer.createSpeechRecognizer(this);
+        speech.setRecognitionListener(mRecognitionListener);
+        speech.startListening(recognizerIntent);
+    }
+
+    private void releaseSpeech() {
+        if (speech != null) {
+            speech.stopListening();
+            speech.cancel();
+            speech.destroy();
+            speech = null;
+        }
+    }
+
+    private void micClick() {
+        if (speech != null) {
+            releaseSpeech();
+            return;
+        }
+        if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
+            Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO);
+            return;
+        }
+        initRecognizer();
     }
 
     private void showSaturationAlert() {
@@ -688,6 +808,7 @@ public class CreateNoteActivity extends ThemedActivity {
         super.onDestroy();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(taskField.getWindowToken(), 0);
+        releaseSpeech();
     }
 
     @Override
@@ -701,6 +822,11 @@ public class CreateNoteActivity extends ThemedActivity {
             case REQUEST_SD_CARD:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getImage();
+                }
+                break;
+            case AUDIO_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    micClick();
                 }
                 break;
         }

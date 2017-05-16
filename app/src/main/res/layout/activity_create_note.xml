@@ -106,6 +106,13 @@
                 </LinearLayout>
             </ScrollView>
 
+            <com.haozhang.lib.AnimatedRecordingView
+                android:id="@+id/recordingView"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_above="@+id/bottomBarView"
+                android:visibility="gone" />
+
             <HorizontalScrollView
                 android:id="@+id/bottomBarView"
                 android:layout_width="match_parent"
@@ -118,6 +125,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
+
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/micButton"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_type_by_voice"
+                        app:tb_icon="@drawable/ic_microphone_black"
+                        app:tb_icon_light="@drawable/ic_microphone_white" />
 
                     <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/colorButton"
