@@ -441,7 +441,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
         fragment.getMapAsync(mMapCallback);
         getFragmentManager().beginTransaction()
-                .add(R.id.map, fragment)
+                .add(binding.map.getId(), fragment)
                 .commit();
         initViews();
         cardSearch = binding.cardSearch;
