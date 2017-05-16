@@ -67,6 +67,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
     public static final String EVENT_KEY = "Events";
     private static final int CALENDAR_PERM = 500;
+    private static final int AUTO_PERM = 501;
 
     private FragmentEventsImportBinding binding;
     private RoboButton syncInterval;
@@ -122,6 +123,14 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
         } else if (mItemSelect == 4) {
             getPrefs().setAutoCheckInterval(48);
         }
+        if (Permissions.checkPermission(getContext(), Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            startCheckService();
+        } else {
+            Permissions.requestPermission(getActivity(), AUTO_PERM, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR);
+        }
+    }
+
+    private void startCheckService() {
         new AlarmReceiver().enableEventCheck(getContext());
     }
 
@@ -194,7 +203,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button:
-                if (Permissions.checkPermission(getActivity(), Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+                if (Permissions.checkPermission(getContext(), Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
                     importEvents();
                 } else {
                     Permissions.requestPermission(getActivity(), 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR);
@@ -241,6 +250,9 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) {
+            return;
+        }
         switch (requestCode) {
             case 101:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -255,6 +267,11 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             case CALENDAR_PERM:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     loadCalendars();
+                }
+                break;
+            case AUTO_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCheckService();
                 }
                 break;
         }
