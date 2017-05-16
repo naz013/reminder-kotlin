@@ -2,8 +2,6 @@ package com.backdoor.engine;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -20,11 +18,65 @@ import static org.junit.Assert.*;
  * limitations under the License.
  */
 public class WorkerTest {
+
+    private static final String[] TEST = new String[]{
+            "in two and half hours read inbox",
+            "in five minutes and a half check mail",
+            "in five and a half seconds check mail",
+            "tomorrow at 15 30 check mail",
+            "after tomorrow at 15 30 check mail",
+            "on may 30 at 15 30 check mail",
+            "after five minutes check mail"
+    };
+
+    private static final String[] TEST_UK = new String[]{
+            "через дві з половиною години перевірити пошту",
+            "через п'ять хвилин перевірити пошту",
+            "через півтори хвилини перевірити пошту",
+            "через півгодини перевірити пошту",
+            "завтра о 15 30 перевірити пошту",
+            "післязавтра о 15 30 перевірити пошту",
+            "30 травня о 15 30 перевірити пошту",
+            "о 20:40 перевірити пошту"
+    };
+
+    private static final String[] TEST_RU = new String[]{
+            "через два с половиной часа проверить почту",
+            "через пять минут проверить почту",
+            "через полторы минуты проверить почту",
+            "через полчаса проверить почту",
+            "завтра в 15 30 проверить почту",
+            "послезавтра в 15 30 проверить почту",
+            "30 мая в 15 30 проверить почту",
+            "в 20:40 проверить почту"
+    };
+
     @Test
     public void replaceNumbers() throws Exception {
-        String input = "in half an hour read inbox";
         Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.EN).setTimes(null).build();
-        Model out = recognizer.parse(input);
-        System.out.print(out);
+        for (String in : TEST) {
+            Model out = recognizer.parse(in);
+            System.out.print(out);
+        }
+    }
+
+    @Test
+    public void checkUk() throws Exception {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.UK).setTimes(null).build();
+        for (String in : TEST_UK) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.print(out);
+        }
+    }
+
+    @Test
+    public void checkRu() throws Exception {
+        Recognizer recognizer = new Recognizer.Builder().setLocale(Locale.RU).setTimes(null).build();
+        for (String in : TEST_RU) {
+            System.out.println("Input " + in);
+            Model out = recognizer.parse(in);
+            System.out.print(out);
+        }
     }
 }

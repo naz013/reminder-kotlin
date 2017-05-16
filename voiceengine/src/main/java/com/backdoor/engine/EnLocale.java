@@ -3,6 +3,7 @@ package com.backdoor.engine;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,13 +40,14 @@ class EnLocale extends Worker {
     @Override
     public String clearCalendar(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String string = parts[i];
             if (string.matches(".*calendar.*")) {
-                input = input.replace(string, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -71,15 +73,16 @@ class EnLocale extends Worker {
     public String clearWeekDays(String input) {
         String[] parts = input.split("\\s");
         String[] weekDays = getWeekdays();
-        for (String part : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
             for (String day : weekDays) {
                 if (part.matches(".*" + day + ".*")) {
-                    input = input.replace(part, "");
+                    parts[i] = "";
                     break;
                 }
             }
         }
-        parts = input.split("\\s");
+        parts = clipStrings(parts).split("\\s");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -115,14 +118,14 @@ class EnLocale extends Worker {
             if (hasDays(part)) {
                 try {
                     Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
-                } catch (NumberFormatException e) {
+                    parts[i - 1] = "";
+                } catch (NumberFormatException ignored) {
                 }
-                input = input.replace(part, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -133,13 +136,14 @@ class EnLocale extends Worker {
     @Override
     public String clearRepeat(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*every.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*every.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -150,13 +154,14 @@ class EnLocale extends Worker {
     @Override
     public String clearTomorrow(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*tomorrow.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*tomorrow.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -179,12 +184,16 @@ class EnLocale extends Worker {
             String part = parts[i];
             if (part.matches("text")) {
                 try {
-                    if (parts[i -1].matches("with")) input = input.replace(parts[i - 1], "");
-                } catch (IndexOutOfBoundsException e) {}
+                    if (parts[i - 1].matches("with")) {
+                        parts[i - 1] = "";
+                    }
+                } catch (IndexOutOfBoundsException ignored) {
+                }
                 input = input.replace(part, "");
+                parts[i] = "";
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -201,12 +210,14 @@ class EnLocale extends Worker {
             String part = parts[i];
             Action type = getMessageType(part);
             if (type != null) {
-                input = input.replace(part, "");
-                if (parts[i + 1].matches("to")) input = input.replace(parts[i + 1], "");
+                parts[i] = "";
+                if (parts[i + 1].matches("to")) {
+                    parts[i + 1] = "";
+                }
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -227,18 +238,19 @@ class EnLocale extends Worker {
     @Override
     public String clearAmpm(String input) {
         String[] parts = input.split("\\s");
-        for (String part : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
             if (getAmpm(part) != null) {
-                input = input.replace(part, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
     protected Date getShortTime(String input) {
-        Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)?(([0-5]?\\d?)?)");
+        Pattern pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
@@ -247,7 +259,7 @@ class EnLocale extends Worker {
                 try {
                     date = format.parse(time);
                     if (date != null) return date;
-                } catch (NullPointerException | ParseException e) {
+                } catch (NullPointerException | ParseException ignored) {
                 }
             }
         }
@@ -261,24 +273,25 @@ class EnLocale extends Worker {
             String part = parts[i];
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
-                input = input.replace(part, "");
+                parts[i] = "";
                 try {
                     Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
-                } catch (NumberFormatException e) {
+                    parts[i - index] = "";
+                } catch (NumberFormatException ignored) {
                 }
             }
             if (hasMinutes(part) != -1) {
                 int index = hasMinutes(part);
                 try {
                     Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
-                } catch (NumberFormatException e) {
+                    parts[i - index] = "";
+                } catch (NumberFormatException ignored) {
                 }
-                input = input.replace(part, "");
+                parts[i] = "";
             }
         }
-        Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)(([0-5]?\\d?)?)");
+        Pattern pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]");
+        input = clipStrings(parts);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
@@ -319,13 +332,14 @@ class EnLocale extends Worker {
     @Override
     public String clearCall(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (hasCall(string)) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (hasCall(part)) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -344,9 +358,35 @@ class EnLocale extends Worker {
                 break;
             }
         }
-        input = clipStrings(parts);
-        input = input.replace(" an ", " ");
-        return input.trim();
+        return clipStrings(parts);
+    }
+
+    @Override
+    public String getDate(String input, Long res) {
+        long mills = 0;
+        String[] parts = input.split("\\s");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            int month = getMonth(part);
+            if (month != -1) {
+                int integer;
+                try {
+                    integer = Integer.parseInt(parts[i + 1]);
+                    parts[i + 1] = "";
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    integer = 1;
+                }
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, integer);
+                mills = calendar.getTimeInMillis();
+                parts[i] = "";
+                break;
+            }
+        }
+        res.set(mills);
+        return clipStrings(parts);
     }
 
     @Override
@@ -357,13 +397,14 @@ class EnLocale extends Worker {
     @Override
     public String clearSender(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String string = parts[i];
             if (hasSender(string)) {
-                input = input.replace(string, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -386,15 +427,17 @@ class EnLocale extends Worker {
 
     @Override
     public Action getAction(String input) {
-        if (input.matches(".*help.*"))
+        if (input.matches(".*help.*")) {
             return Action.HELP;
-        else if (input.matches(".*loudness.*") || input.matches(".*volume.*"))
+        } else if (input.matches(".*loudness.*") || input.matches(".*volume.*")) {
             return Action.VOLUME;
-        else if (input.matches(".*settings.*"))
+        } else if (input.matches(".*settings.*")) {
             return Action.SETTINGS;
-        else if (input.matches(".*report.*"))
+        } else if (input.matches(".*report.*")) {
             return Action.REPORT;
-        else return Action.APP;
+        } else {
+            return Action.APP;
+        }
     }
 
     @Override
@@ -520,11 +563,14 @@ class EnLocale extends Worker {
         if (input.contains("and a half")) {
             return input.replace("and a half", "");
         }
+        if (input.contains("and half")) {
+            return input.replace("and half", "");
+        }
         if (input.contains(" half an ")) {
             return input.replace("half an", "");
         }
         if (input.contains(" in half ")) {
-            return input.replace("half", "");
+            return input.replace("in half", "");
         }
         return input;
     }

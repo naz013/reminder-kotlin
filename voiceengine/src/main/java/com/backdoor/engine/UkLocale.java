@@ -3,6 +3,7 @@ package com.backdoor.engine;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,13 +40,14 @@ class UkLocale extends Worker {
     @Override
     public String clearCalendar(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*календар.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*календар.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -73,15 +75,16 @@ class UkLocale extends Worker {
     public String clearWeekDays(String input) {
         String[] parts = input.split("\\s");
         String[] weekDays = getWeekdays();
-        for (String part : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
             for (String day : weekDays) {
                 if (part.matches(".*" + day + ".*")) {
-                    input = input.replace(part, "");
+                    parts[i] = "";
                     break;
                 }
             }
         }
-        parts = input.split("\\s");
+        parts = clipStrings(parts).split("\\s");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             String part = parts[i].trim();
@@ -118,14 +121,14 @@ class UkLocale extends Worker {
             if (hasDays(part)) {
                 try {
                     Integer.parseInt(parts[i - 1]);
-                    input = input.replace(parts[i - 1], "");
+                    parts[i - 1] = "";
                 } catch (NumberFormatException e) {
                 }
-                input = input.replace(part, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -136,13 +139,14 @@ class UkLocale extends Worker {
     @Override
     public String clearRepeat(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*кожн.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*кожн.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -153,13 +157,14 @@ class UkLocale extends Worker {
     @Override
     public String clearTomorrow(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*завтра.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*завтра.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -185,14 +190,15 @@ class UkLocale extends Worker {
             String part = parts[i];
             if (part.matches("текст(ом)?")) {
                 try {
-                    if (parts[i -1].matches("з")) {
-                        input = input.replace(parts[i - 1], "");
+                    if (parts[i - 1].matches("з")) {
+                        parts[i - 1] = "";
                     }
-                } catch (IndexOutOfBoundsException e) {}
-                input = input.replace(part, "");
+                } catch (IndexOutOfBoundsException ignored) {
+                }
+                parts[i] = "";
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -209,14 +215,14 @@ class UkLocale extends Worker {
     @Override
     public String clearMessageType(String input) {
         String[] parts = input.split("\\s");
-        for (String part : parts) {
-            Action type = getMessageType(part);
+        for (int i = 0; i < parts.length; i++) {
+            Action type = getMessageType(parts[i]);
             if (type != null) {
-                input = input.replace(part, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -239,18 +245,19 @@ class UkLocale extends Worker {
     @Override
     public String clearAmpm(String input) {
         String[] parts = input.split("\\s");
-        for (String part : parts) {
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
             if (getAmpm(part) != null) {
-                input = input.replace(part, "");
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
     protected Date getShortTime(String input) {
-        Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)?(([0-5]?\\d?)?)");
+        Pattern pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]");
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
@@ -261,7 +268,7 @@ class UkLocale extends Worker {
                     if (date != null) {
                         return date;
                     }
-                } catch (NullPointerException | ParseException e) {
+                } catch (NullPointerException | ParseException ignored) {
                 }
             }
         }
@@ -275,24 +282,25 @@ class UkLocale extends Worker {
             String part = parts[i];
             if (hasHours(part) != -1) {
                 int index = hasHours(part);
-                input = input.replace(part, "");
+                parts[i] = "";
                 try {
                     Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
-                } catch (NumberFormatException e) {
+                    parts[i - index] = "";
+                } catch (NumberFormatException ignored) {
                 }
             }
             if (hasMinutes(part) != -1) {
                 int index = hasMinutes(part);
                 try {
                     Integer.parseInt(parts[i - index]);
-                    input = input.replace(parts[i - index], "");
-                } catch (NumberFormatException e) {
+                    parts[i - index] = "";
+                } catch (NumberFormatException ignored) {
                 }
-                input = input.replace(part, "");
+                parts[i] = "";
             }
         }
-        Pattern pattern = Pattern.compile("([01]?\\d|2[0-3])( |:)(([0-5]?\\d?)?)");
+        Pattern pattern = Pattern.compile("([01]?[0-9]|2[0-3])( |:)[0-5][0-9]");
+        input = clipStrings(parts);
         Matcher matcher = pattern.matcher(input);
         if (matcher.find()) {
             String time = matcher.group().trim();
@@ -359,13 +367,14 @@ class UkLocale extends Worker {
     @Override
     public String clearCall(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*дзвонити.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*дзвонити.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -376,13 +385,14 @@ class UkLocale extends Worker {
     @Override
     public String cleanTimer(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (isTimer(string)) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (isTimer(part)) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -393,13 +403,14 @@ class UkLocale extends Worker {
     @Override
     public String clearSender(String input) {
         String[] parts = input.split("\\s");
-        for (String string : parts) {
-            if (string.matches(".*надісл.*")) {
-                input = input.replace(string, "");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.matches(".*надісл.*")) {
+                parts[i] = "";
                 break;
             }
         }
-        return input.trim();
+        return clipStrings(parts);
     }
 
     @Override
@@ -548,11 +559,39 @@ class UkLocale extends Worker {
     }
 
     @Override
+    public String getDate(String input, Long res) {
+        long mills = 0;
+        String[] parts = input.split("\\s");
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            int month = getMonth(part);
+            if (month != -1) {
+                int integer;
+                try {
+                    integer = Integer.parseInt(parts[i - 1]);
+                    parts[i - 1] = "";
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                    integer = 1;
+                }
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, integer);
+                mills = calendar.getTimeInMillis();
+                parts[i] = "";
+                break;
+            }
+        }
+        res.set(mills);
+        return clipStrings(parts);
+    }
+
+    @Override
     protected float findFloat(String input) {
         if (input.contains("півтор")) {
             return 1.5f;
         }
-        if (input.matches("половин*.") || input.matches(" пів*.")) {
+        if (input.contains("половин") || input.contains("пів")) {
             return 0.5f;
         }
         return -1;
@@ -560,14 +599,21 @@ class UkLocale extends Worker {
 
     @Override
     protected String clearFloats(String input) {
+        if (input.contains("з половиною")) {
+            input = input.replace("з половиною", "");
+        }
         String[] parts = input.split("\\s");
         for (int i = 0; i < parts.length; i++) {
             String s = parts[i];
-            if (s.contains("півтор") || s.matches("половин*.") || s.matches(" пів*.")) {
+            if (s.contains("півтор") || s.matches("половин*.")) {
                 parts[i] = "";
             }
         }
-        return clipStrings(parts);
+        input = clipStrings(parts);
+        if (input.contains(" пів")) {
+            input = input.replace("пів", "");
+        }
+        return input;
     }
 
     @Override
