@@ -327,7 +327,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
         fragment.getMapAsync(mMapCallback);
         getFragmentManager().beginTransaction()
-                .add(R.id.map, fragment)
+                .add(binding.mapPlaces.getId(), fragment)
                 .commit();
 
         initViews();
