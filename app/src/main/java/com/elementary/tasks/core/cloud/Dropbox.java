@@ -584,7 +584,7 @@ public class Dropbox {
                     String cloudFile = "/" + dbxFolder + fileName;
                     downloadFile(localFile, cloudFile);
                     Reminder reminder = backupTool.getReminder(localFile.toString(), null);
-                    if (reminder.isRemoved() || !reminder.isActive()) {
+                    if (reminder == null || reminder.isRemoved() || !reminder.isActive()) {
                         continue;
                     }
                     realmDb.saveObject(reminder);

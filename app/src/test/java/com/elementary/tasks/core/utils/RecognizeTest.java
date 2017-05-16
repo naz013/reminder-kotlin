@@ -24,10 +24,6 @@ import static org.junit.Assert.*;
 public class RecognizeTest {
     @Test
     public void findSuggestion() throws Exception {
-        Recognize recognize = new Recognize("uk-UA");
-        String input = "через півтори години перевірити пошту";
-        Model model = recognize.findSuggestion(input);
-        System.out.print(model);
     }
 
 }

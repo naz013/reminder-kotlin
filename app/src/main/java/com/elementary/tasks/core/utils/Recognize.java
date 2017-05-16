@@ -56,13 +56,6 @@ public class Recognize {
     private Context mContext;
     private Recognizer recognizer;
 
-    public Recognize(String locale) {
-        recognizer = new Recognizer.Builder()
-                .setLocale(locale)
-                .setTimes(null)
-                .build();
-    }
-
     public Recognize(Context context) {
         this.mContext = context;
         Prefs prefs = Prefs.getInstance(mContext);
