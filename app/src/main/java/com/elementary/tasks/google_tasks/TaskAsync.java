@@ -44,7 +44,7 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         Google helper = Google.getInstance(mContext);
         boolean isConnected = SuperUtil.isConnected(mContext);
-        if (isConnected && helper.getTasks() != null) {
+        if (isConnected && helper != null && helper.getTasks() != null) {
             Google.Tasks tasks = helper.getTasks();
             if (taskType.matches(TasksConstants.DELETE_TASK)) {
                 try {
