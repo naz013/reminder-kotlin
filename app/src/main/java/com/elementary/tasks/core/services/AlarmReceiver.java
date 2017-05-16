@@ -16,6 +16,7 @@ import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
@@ -83,7 +84,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 new SyncTask(context, null, true).execute();
                 break;
             case ACTION_EVENTS_CHECK:
-                new CheckEventsAsync(context).execute();
+                checkEvents(context);
                 break;
             case ACTION_BIRTHDAY:
                 birthdayAction(context);
@@ -102,6 +103,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
                 break;
+        }
+    }
+
+    private void checkEvents(Context context) {
+        if (Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            new CheckEventsAsync(context).execute();
         }
     }
 

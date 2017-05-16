@@ -3,8 +3,10 @@ package com.elementary.tasks.core.utils;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,21 +50,21 @@ public class Permissions {
 
     private Permissions() {}
 
-    public static boolean checkPermission(Activity a, String... permissions) {
+    public static boolean checkPermission(Context a, String... permissions) {
         if (!Module.isMarshmallow()) {
             return true;
         }
         boolean res = true;
         for (String string : permissions) {
-            if (a.checkSelfPermission(string) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(a, string) != PackageManager.PERMISSION_GRANTED) {
                 res = false;
             }
         }
         return res;
     }
 
-    public static boolean checkPermission(Activity a, String permission) {
-        return !Module.isMarshmallow() || a.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    public static boolean checkPermission(Context a, String permission) {
+        return !Module.isMarshmallow() || ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     public static void requestPermission(Activity a, int requestCode, String... permission){
