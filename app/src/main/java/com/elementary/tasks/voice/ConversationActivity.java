@@ -4,9 +4,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +13,6 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.DisplayMetrics;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 
@@ -78,22 +74,6 @@ public class ConversationActivity extends ThemedActivity {
     private TextToSpeech tts;
     private boolean isTtsReady;
     private AskAction mAskAction;
-
-    private String getLocalized(int id) {
-        if (Module.isJellyMR1()) {
-            Configuration configuration = new Configuration(getResources().getConfiguration());
-            configuration.setLocale(new Locale(Language.getTextLanguage(getPrefs().getVoiceLocale())));
-            return createConfigurationContext(configuration).getResources().getString(id);
-        } else {
-            Resources standardResources = getResources();
-            AssetManager assets = standardResources.getAssets();
-            DisplayMetrics metrics = standardResources.getDisplayMetrics();
-            Configuration config = new Configuration(standardResources.getConfiguration());
-            config.locale = new Locale(Language.getTextLanguage(getPrefs().getVoiceLocale()));
-            Resources defaultResources = new Resources(assets, metrics, config);
-            return defaultResources.getString(id);
-        }
-    }
 
     private TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
@@ -182,6 +162,10 @@ public class ConversationActivity extends ThemedActivity {
         playTts(getLocalized(R.string.did_you_say_something));
     }
 
+    private String getLocalized(int id) {
+        return Language.getLocalized(this, id);
+    }
+
     private void parseResults(List<String> list) {
         LogUtil.d(TAG, "parseResults: " + list);
         if (list == null || list.isEmpty()) {
@@ -209,6 +193,7 @@ public class ConversationActivity extends ThemedActivity {
     private void performAnswer(Model answer) {
         stopView();
         if (mAskAction != null) {
+            mAdapter.removeAsk();
             if (answer.getAction() == Action.YES) {
                 mAskAction.onYes();
             } else if (answer.getAction() == Action.NO) {

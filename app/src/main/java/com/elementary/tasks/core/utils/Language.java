@@ -1,6 +1,10 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 
 import com.elementary.tasks.R;
 
@@ -39,6 +43,22 @@ public class Language {
     public static final String EN = "en-US";
     public static final String RU = "ru-RU";
     public static final String UK = "uk-UA";
+
+    public static String getLocalized(Context context, int id) {
+        if (Module.isJellyMR1()) {
+            Configuration configuration = new Configuration(context.getResources().getConfiguration());
+            configuration.setLocale(new Locale(Language.getTextLanguage(Prefs.getInstance(context).getVoiceLocale())));
+            return context.createConfigurationContext(configuration).getResources().getString(id);
+        } else {
+            Resources standardResources = context.getResources();
+            AssetManager assets = standardResources.getAssets();
+            DisplayMetrics metrics = standardResources.getDisplayMetrics();
+            Configuration config = new Configuration(standardResources.getConfiguration());
+            config.locale = new Locale(Language.getTextLanguage(Prefs.getInstance(context).getVoiceLocale()));
+            Resources defaultResources = new Resources(assets, metrics, config);
+            return defaultResources.getString(id);
+        }
+    }
 
     public static List<String> getLanguages(Context context) {
         List<String> locales = new ArrayList<>();
