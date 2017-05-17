@@ -1,5 +1,7 @@
 package com.elementary.tasks.voice;
 
+import com.backdoor.engine.ObjectUtil;
+
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -51,5 +53,10 @@ class Reply {
 
     public void setObject(Object object) {
         this.object = object;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtil.getObjectPrint(this, Reply.class);
     }
 }

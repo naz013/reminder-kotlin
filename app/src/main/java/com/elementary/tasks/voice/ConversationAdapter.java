@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayHolder;
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.AskListItemBinding;
 import com.elementary.tasks.databinding.GroupListItemBinding;
@@ -133,6 +135,16 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return mData.size();
     }
 
+    public void removeAsk() {
+        int lastIndex = 1;
+        Reply reply = mData.get(lastIndex);
+        if (reply != null && reply.getViewType() == Reply.ASK) {
+            mData.remove(lastIndex);
+            notifyItemRemoved(lastIndex);
+            notifyItemRangeChanged(0, mData.size());
+        }
+    }
+
     private class AskHolder extends RecyclerView.ViewHolder {
 
         private AskListItemBinding binding;
@@ -155,6 +167,8 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             });
             binding.replyNo.setBackgroundResource(themeUtil.getRectangle());
             binding.replyYes.setBackgroundResource(themeUtil.getRectangle());
+            binding.replyNo.setText(Language.getLocalized(mContext, R.string.no));
+            binding.replyYes.setText(Language.getLocalized(mContext, R.string.yes));
         }
 
         void setAskAction(AskAction askAction) {

@@ -421,7 +421,7 @@ class RuLocale extends Worker {
 
     @Override
     public boolean hasDisableReminders(String input) {
-        return input.matches(".*выключи (все)? ?напоминания.*") || input.matches(".*отключи (все)? ?напоминания.*");
+        return input.matches(".*выключи (все)? ?напоминания.*") || input.matches(".*отключи(ть)? (все)? ?напоминания.*");
     }
 
     @Override
