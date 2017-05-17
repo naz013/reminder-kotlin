@@ -549,7 +549,7 @@
     <string name="notification_type">Notification type</string>
     <string name="simple">Simplified</string>
     <string name="full_screen">Full screen</string>
-    <string name="acc_contact_photo">Contact photo</string>
+    <string name="acc_contact_photo">Photo of the contact</string>
     <string name="acc_button_ok">OK</string>
     <string name="acc_button_make_call">Make call</string>
     <string name="acc_button_cancel">Cancel</string>
@@ -569,13 +569,13 @@
     <string name="acc_change_text_font_style">Change text font style</string>
     <string name="acc_customize_reminder">Customize reminder</string>
     <string name="acc_customize_exclusions">Customize exclusions</string>
-    <string name="acc_clear_search_field">Clear search field</string>
+    <string name="acc_clear_search_field">Clear the search field</string>
     <string name="acc_play">Play</string>
     <string name="acc_pause">Pause</string>
     <string name="acc_stop">Stop</string>
     <string name="acc_select_melody">Select melody</string>
     <string name="acc_crop_image">Crop image</string>
-    <string name="acc_draw_on_image">Draw on image</string>
+    <string name="acc_draw_on_image">Draw on the picture</string>
     <string name="acc_next">Next</string>
     <string name="acc_add">Add</string>
     <string name="acc_previous">Previous</string>
@@ -583,7 +583,7 @@
     <string name="acc_rotate_right">Rotate right</string>
     <string name="acc_select_application">Select application</string>
     <string name="acc_select_file">Select file</string>
-    <string name="acc_type_by_voice">Type by voice</string>
+    <string name="acc_type_by_voice">Type text by voice</string>
     <string name="hi_how_can_i_help_you">Hi, how can I help you?</string>
     <string name="did_you_say_something">Did you say something?</string>
     <string name="can_not_recognize_your_command">Can not recognize your command</string>
