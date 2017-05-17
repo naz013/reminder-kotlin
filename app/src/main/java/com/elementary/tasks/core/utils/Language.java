@@ -48,6 +48,19 @@ public class Language {
         return locales;
     }
 
+    public static String getTextLanguage(int code) {
+        switch (code) {
+            case 0:
+                return ENGLISH;
+            case 1:
+                return RUSSIAN;
+            case 2:
+                return UKRAINIAN;
+            default:
+                return ENGLISH;
+        }
+    }
+
     public static String getLanguage(int code) {
         switch (code) {
             case 0:

@@ -409,7 +409,7 @@ class EnLocale extends Worker {
 
     @Override
     public boolean hasNote(String input) {
-        return input.startsWith("note");
+        return input.contains("note");
     }
 
     @Override

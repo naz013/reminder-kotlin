@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +16,9 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.DisplayMetrics;
+import android.widget.ArrayAdapter;
+import android.widget.PopupMenu;
 
 import com.backdoor.engine.Action;
 import com.backdoor.engine.ActionType;
@@ -36,6 +42,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -71,16 +79,32 @@ public class ConversationActivity extends ThemedActivity {
     private boolean isTtsReady;
     private AskAction mAskAction;
 
+    private String getLocalized(int id) {
+        if (Module.isJellyMR1()) {
+            Configuration configuration = new Configuration(getResources().getConfiguration());
+            configuration.setLocale(new Locale(Language.getTextLanguage(getPrefs().getVoiceLocale())));
+            return createConfigurationContext(configuration).getResources().getString(id);
+        } else {
+            Resources standardResources = getResources();
+            AssetManager assets = standardResources.getAssets();
+            DisplayMetrics metrics = standardResources.getDisplayMetrics();
+            Configuration config = new Configuration(standardResources.getConfiguration());
+            config.locale = new Locale(Language.getTextLanguage(getPrefs().getVoiceLocale()));
+            Resources defaultResources = new Resources(assets, metrics, config);
+            return defaultResources.getString(id);
+        }
+    }
+
     private TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(int status) {
             if (status == TextToSpeech.SUCCESS) {
-                int result = tts.setLanguage(Locale.ENGLISH);
+                int result = tts.setLanguage(new Locale(Language.getLanguage(getPrefs().getVoiceLocale())));
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     LogUtil.d(TAG, "This Language is not supported");
                 } else {
                     isTtsReady = true;
-                    addResponse("Hi, how can I help you?");
+                    addResponse(getLocalized(R.string.hi_how_can_i_help_you));
                     new Handler().postDelayed(() -> micClick(), 1500);
                 }
             } else {
@@ -155,7 +179,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void showSilentMessage() {
         stopView();
-        playTts("Did you say something?");
+        playTts(getLocalized(R.string.did_you_say_something));
     }
 
     private void parseResults(List<String> list) {
@@ -178,7 +202,7 @@ public class ConversationActivity extends ThemedActivity {
         } else {
             stopView();
             mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
-            addResponse("Can not recognize your command");
+            addResponse(getLocalized(R.string.can_not_recognize_your_command));
         }
     }
 
@@ -260,18 +284,18 @@ public class ConversationActivity extends ThemedActivity {
 
     private void showUnsupportedMessage() {
         stopView();
-        addResponse("This command not supported on that screen");
+        addResponse(getLocalized(R.string.this_command_not_supported_on_that_screen));
     }
 
     private void showShoppingLists() {
         Container<Reminder> items = new Container<>(DataProvider.getShoppingReminders());
         if (items.isEmpty()) {
-            addResponse("No shopping lists found");
+            addResponse(getLocalized(R.string.no_shopping_lists_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one shopping list");
+                addResponse(getLocalized(R.string.found_one_shopping_list));
             } else {
-                addResponse("Found " + items.getList().size() + " shopping lists");
+                addResponse(getLocalized(R.string.found) + " " + items.getList().size() + " " + getLocalized(R.string.shopping_lists));
             }
             addReminderObject(items.getList().remove(0));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -282,12 +306,13 @@ public class ConversationActivity extends ThemedActivity {
         long time = TimeUtil.getBirthdayTime(getPrefs().getBirthdayTime());
         Container<BirthdayItem> items = new Container<>(DataProvider.getBirthdays(dateTime, time));
         if (items.isEmpty()) {
-            addResponse("No birthdays found");
+            addResponse(getLocalized(R.string.no_birthdays_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one birthday");
+                addResponse(getLocalized(R.string.found_one_birthday));
             } else {
-                addResponse("Found " + items.getList().size() + " birthdays");
+                addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+                        " " + items.getList().size() + " " + getLocalized(R.string.birthdays))));
             }
             addObjectResponse(new Reply(Reply.BIRTHDAY, items.getList().remove(0)));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -297,12 +322,13 @@ public class ConversationActivity extends ThemedActivity {
     private void showEnabledReminders(long dateTime) {
         Container<Reminder> items = new Container<>(DataProvider.getActiveReminders(dateTime));
         if (items.isEmpty()) {
-            addResponse("No reminders found");
+            addResponse(getLocalized(R.string.no_reminders_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one reminder");
+                addResponse(getLocalized(R.string.found_one_reminder));
             } else {
-                addResponse("Found " + items.getList().size() + " reminders");
+                addResponse(getLocalized(R.string.found) + " " + items.getList().size() + " " +
+                        getLocalized(R.string.reminders));
             }
             addReminderObject(items.getList().remove(0));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -312,12 +338,13 @@ public class ConversationActivity extends ThemedActivity {
     private void showGroups() {
         Container<GroupItem> items = new Container<>(DataProvider.getGroups());
         if (items.isEmpty()) {
-            addResponse("No groups found");
+            addResponse(getLocalized(R.string.no_groups_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one group");
+                addResponse(getLocalized(R.string.found_one_group));
             } else {
-                addResponse("Found " + items.getList().size() + " groups");
+                addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+                        " " + items.getList().size() + " " + getLocalized(R.string.groups))));
             }
             addObjectResponse(new Reply(Reply.GROUP, items.getList().remove(0)));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -327,12 +354,13 @@ public class ConversationActivity extends ThemedActivity {
     private void showNotes() {
         Container<NoteItem> items = new Container<>(DataProvider.getNotes());
         if (items.isEmpty()) {
-            addResponse("No notes found");
+            addResponse(getLocalized(R.string.no_notes_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one note");
+                addResponse(getLocalized(R.string.found_one_note));
             } else {
-                addResponse("Found " + items.getList().size() + " notes");
+                addResponse(StringUtils.capitalize(StringUtils.lowerCase(getLocalized(R.string.found) +
+                        " " + items.getList().size() + " " + getLocalized(R.string.notes))));
             }
             addObjectResponse(new Reply(Reply.NOTE, items.getList().remove(0)));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -342,12 +370,13 @@ public class ConversationActivity extends ThemedActivity {
     private void showActiveReminders(long dateTime) {
         Container<Reminder> items = new Container<>(DataProvider.getReminders(dateTime));
         if (items.isEmpty()) {
-            addResponse("No reminders found");
+            addResponse(getLocalized(R.string.no_reminders_found));
         } else {
             if (items.getList().size() == 1) {
-                addResponse("Found one reminder");
+                addResponse(getLocalized(R.string.found_one_reminder));
             } else {
-                addResponse("Found " + items.getList().size() + " reminders");
+                addResponse(getLocalized(R.string.found) + " " + items.getList().size() + " " +
+                        getLocalized(R.string.reminders));
             }
             addReminderObject(items.getList().remove(0));
             if (!items.isEmpty()) addObjectResponse(new Reply(Reply.SHOW_MORE, items));
@@ -364,7 +393,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void groupAction(Model model) {
         stopView();
-        addResponse("Group created");
+        addResponse(getLocalized(R.string.group_created));
         GroupItem item = recognize.createGroup(model);
         addObjectResponse(new Reply(Reply.GROUP, item));
         new Handler().postDelayed(() -> askGroupAction(item), 1000);
@@ -372,7 +401,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void noteAction(Model model) {
         stopView();
-        addResponse("Note created");
+        addResponse(getLocalized(R.string.note_created));
         NoteItem item = recognize.createNote(model.getSummary());
         addObjectResponse(new Reply(Reply.NOTE, item));
         new Handler().postDelayed(() -> askNoteAction(item), 1000);
@@ -380,25 +409,25 @@ public class ConversationActivity extends ThemedActivity {
 
     private void reminderAction(Model model) {
         stopView();
-        addResponse("Reminder created");
+        addResponse(getLocalized(R.string.reminder_created));
         Reminder reminder = recognize.createReminder(model);
         addObjectResponse(new Reply(Reply.REMINDER, reminder));
         new Handler().postDelayed(() -> askReminderAction(reminder), 1000);
     }
 
     private void askGroupAction(GroupItem groupItem) {
-        addResponse("Would you like to save it?");
+        addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 recognize.saveGroup(groupItem, false);
-                addResponse("Group saved");
+                addResponse(getLocalized(R.string.group_saved));
                 mAskAction = null;
             }
 
             @Override
             public void onNo() {
-                addResponse("Group canceled");
+                addResponse(getLocalized(R.string.group_canceled));
                 mAskAction = null;
             }
         };
@@ -407,19 +436,19 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void askReminderAction(Reminder reminder) {
-        addResponse("Would you like to save it?");
+        addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
                 control.start();
-                addResponse("Reminder saved");
+                addResponse(getLocalized(R.string.reminder_saved));
                 mAskAction = null;
             }
 
             @Override
             public void onNo() {
-                addResponse("Reminder canceled");
+                addResponse(getLocalized(R.string.reminder_canceled));
                 mAskAction = null;
             }
         };
@@ -428,12 +457,12 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void askNoteAction(NoteItem noteItem) {
-        addResponse("Would you like to save it?");
+        addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 recognize.saveNote(noteItem, false, false);
-                addResponse("Note saved");
+                addResponse(getLocalized(R.string.note_saved));
                 if (getPrefs().isNoteReminderEnabled()) {
                     new Handler().postDelayed(() -> askQuickReminder(noteItem), 1500);
                 } else {
@@ -443,7 +472,7 @@ public class ConversationActivity extends ThemedActivity {
 
             @Override
             public void onNo() {
-                addResponse("Note canceled");
+                addResponse(getLocalized(R.string.note_canceled));
                 mAskAction = null;
             }
         };
@@ -452,12 +481,12 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void askQuickReminder(NoteItem noteItem) {
-        addResponse("Would you like to add reminder?");
+        addResponse(getLocalized(R.string.would_you_like_to_add_reminder));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 Model model = recognize.findSuggestion(noteItem.getSummary());
-                addResponse("Reminder saved");
+                addResponse(getLocalized(R.string.reminder_saved));
                 if (model != null && model.getType() == ActionType.REMINDER) {
                     Reminder reminder = recognize.createReminder(model);
                     EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
@@ -472,7 +501,7 @@ public class ConversationActivity extends ThemedActivity {
 
             @Override
             public void onNo() {
-                addResponse("Note saved without reminder");
+                addResponse(getLocalized(R.string.note_saved_without_reminder));
                 mAskAction = null;
             }
         };
@@ -492,13 +521,13 @@ public class ConversationActivity extends ThemedActivity {
     private void disableReminders() {
         recognize.disableAllReminders(false);
         stopView();
-        addResponse("All reminders were disabled");
+        addResponse(getLocalized(R.string.all_reminders_were_disabled));
     }
 
     private void clearTrash() {
         recognize.emptyTrash(false, () -> {
             stopView();
-            addResponse("Trash was cleared");
+            addResponse(getLocalized(R.string.trash_was_cleared));
         });
     }
 
@@ -509,7 +538,43 @@ public class ConversationActivity extends ThemedActivity {
         recognize = new Recognize(this);
         initList();
         binding.recordingView.setOnClickListener(view -> micClick());
+        binding.settingsButton.setOnClickListener(v -> showSettingsPopup());
         checkTts();
+    }
+
+    private void showSettingsPopup() {
+        PopupMenu popupMenu = new PopupMenu(this, binding.settingsButton);
+        popupMenu.inflate(R.menu.activity_conversation);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_locale:
+                    showLanguageDialog();
+                    return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
+
+    private void showLanguageDialog() {
+        AlertDialog.Builder builder = Dialogues.getDialog(this);
+        builder.setCancelable(false);
+        builder.setTitle(getString(R.string.language));
+        List<String> locales = Language.getLanguages(this);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_single_choice, locales);
+        int language = getPrefs().getVoiceLocale();
+        builder.setSingleChoiceItems(adapter, language, (dialog, which) -> {
+            if (which != -1) {
+                getPrefs().setVoiceLocale(which);
+            }
+        });
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            dialog.dismiss();
+            recreate();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void playTts(String text) {

@@ -369,7 +369,7 @@ class RuLocale extends Worker {
 
     @Override
     public boolean hasNote(String input) {
-        return input.startsWith("заметка");
+        return input.contains("заметка");
     }
 
     @Override

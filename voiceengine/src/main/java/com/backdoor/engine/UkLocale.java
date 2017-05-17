@@ -415,7 +415,7 @@ class UkLocale extends Worker {
 
     @Override
     public boolean hasNote(String input) {
-        return input.startsWith("нотатка");
+        return input.contains("нотатка");
     }
 
     @Override
