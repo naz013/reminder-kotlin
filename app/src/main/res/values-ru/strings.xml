@@ -575,5 +575,6 @@
     <string name="found_one_note">Найдено одну заметку</string>
     <string name="found_one_group">Найдено одну группу</string>
     <string name="found_one_birthday">Найден один день рождения</string>
+    <string name="can_not_recognize_your_command">Не могу распознать вашу команду</string>
 
 </resources>

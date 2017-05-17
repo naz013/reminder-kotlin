@@ -576,5 +576,6 @@
     <string name="found_one_group">Found one group</string>
     <string name="found_one_birthday">Found one birthday</string>
     <string name="found">Found</string>
+    <string name="can_not_recognize_your_command">Can not recognize your command</string>
 
 </resources>
