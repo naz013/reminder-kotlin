@@ -548,5 +548,32 @@
     <string name="notification_type">Tipo de notificación</string>
     <string name="simple">Simplificado</string>
     <string name="full_screen">Pantalla completa</string>
+    <string name="would_you_like_to_save_it">Would you like to save it?</string>
+    <string name="would_you_like_to_add_reminder">Would you like to add reminder?</string>
+    <string name="trash_was_cleared">Trash was cleared</string>
+    <string name="this_command_not_supported_on_that_screen">This command not supported on that screen</string>
+    <string name="shopping_lists">shopping lists</string>
+    <string name="reminders">reminders</string>
+    <string name="reminder_saved">Reminder saved</string>
+    <string name="reminder_canceled">Reminder canceled</string>
+    <string name="note_saved_without_reminder">Note saved without reminder</string>
+    <string name="note_saved">Note saved</string>
+    <string name="note_created">Note created</string>
+    <string name="note_canceled">Note canceled</string>
+    <string name="no_shopping_lists_found">No shopping lists found</string>
+    <string name="no_reminders_found">No reminders found</string>
+    <string name="no_notes_found">No notes found</string>
+    <string name="no_groups_found">No groups found</string>
+    <string name="no_birthdays_found">No birthdays found</string>
+    <string name="hi_how_can_i_help_you">Hi, how can I help you?</string>
+    <string name="group_saved">Group saved</string>
+    <string name="group_created">Group created</string>
+    <string name="group_canceled">Group canceled</string>
+    <string name="found_one_shopping_list">Found one shopping list</string>
+    <string name="found_one_reminder">Found one reminder</string>
+    <string name="found_one_note">Found one note</string>
+    <string name="found_one_group">Found one group</string>
+    <string name="found_one_birthday">Found one birthday</string>
+    <string name="found">Found</string>
 
 </resources>

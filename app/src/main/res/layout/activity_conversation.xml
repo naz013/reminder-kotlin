@@ -30,5 +30,16 @@
             android:overScrollMode="never"
             android:scrollbars="none" />
 
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            app:tb_icon="@drawable/ic_settings"
+            app:tb_icon_light="@drawable/ic_settings_white"
+            app:tb_message="@string/action_settings" />
+
     </RelativeLayout>
 </layout>
