@@ -34,6 +34,7 @@ public class Language {
     public static final String POLISH = "pl";
     public static final String RUSSIAN = "ru";
     public static final String SPANISH = "es";
+    public static final String UKRAINIAN = "uk";
 
     public static final String EN = "en-US";
     public static final String RU = "ru-RU";
@@ -60,6 +61,21 @@ public class Language {
         }
     }
 
+    public static String getLocaleByPosition(int position) {
+        String locale = Language.ENGLISH;
+        if (position == 0) locale = Language.ENGLISH;
+        if (position == 1) locale = Language.FRENCH;
+        if (position == 2) locale = Language.GERMAN;
+        if (position == 3) locale = Language.ITALIAN;
+        if (position == 4) locale = Language.JAPANESE;
+        if (position == 5) locale = Language.KOREAN;
+        if (position == 6) locale = Language.POLISH;
+        if (position == 7) locale = Language.RUSSIAN;
+        if (position == 8) locale = Language.SPANISH;
+        if (position == 9 && Module.isJellyMR2()) locale = Language.UKRAINIAN;
+        return locale;
+    }
+
     public static int getLocalePosition(String locale) {
         int mItemSelect = 0;
         if (locale.matches(Language.ENGLISH)) {
@@ -80,6 +96,8 @@ public class Language {
             mItemSelect = 7;
         } else if (locale.matches(Language.SPANISH)) {
             mItemSelect = 8;
+        } else if (locale.matches(Language.UKRAINIAN) && Module.isJellyMR2()) {
+            mItemSelect = 9;
         }
         return mItemSelect;
     }
@@ -95,6 +113,9 @@ public class Language {
         names.add(mContext.getString(R.string.polish));
         names.add(mContext.getString(R.string.russian));
         names.add(mContext.getString(R.string.spanish));
+        if (Module.isJellyMR2()) {
+            names.add(mContext.getString(R.string.ukrainian));
+        }
         return names;
     }
 
@@ -139,6 +160,9 @@ public class Language {
                 break;
             case SPANISH:
                 res = new Locale("es", "");
+                break;
+            case UKRAINIAN:
+                res = new Locale("uk", "");
                 break;
         }
         return res;

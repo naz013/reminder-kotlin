@@ -342,17 +342,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void saveTtsLocalePrefs() {
-        String locale = Language.ENGLISH;
-        if (mItemSelect == 0) locale = Language.ENGLISH;
-        if (mItemSelect == 1) locale = Language.FRENCH;
-        if (mItemSelect == 2) locale = Language.GERMAN;
-        if (mItemSelect == 3) locale = Language.ITALIAN;
-        if (mItemSelect == 4) locale = Language.JAPANESE;
-        if (mItemSelect == 5) locale = Language.KOREAN;
-        if (mItemSelect == 6) locale = Language.POLISH;
-        if (mItemSelect == 7) locale = Language.RUSSIAN;
-        if (mItemSelect == 8) locale = Language.SPANISH;
-        getPrefs().setTtsLocale(locale);
+        getPrefs().setTtsLocale(Language.getLocaleByPosition(mItemSelect));
         showTtsLocale();
     }
 
