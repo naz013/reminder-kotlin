@@ -71,8 +71,9 @@ public class CallReceiver extends BroadcastReceiver {
                         prevState = state;
                         boolean isFollow = prefs.isFollowReminderEnabled();
                         if (mIncomingNumber != null && isFollow) {
+                            String number = mIncomingNumber;
                             mContext.startActivity(new Intent(mContext, FollowReminderActivity.class)
-                                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, mIncomingNumber)
+                                    .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
                                     .putExtra(Constants.SELECTED_TIME, startCallTime)
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                             Intent.FLAG_ACTIVITY_SINGLE_TOP));
@@ -85,15 +86,16 @@ public class CallReceiver extends BroadcastReceiver {
                         if (currTime - startCallTime >= 1000 * 10) {
                             LogUtil.d(TAG, "onCallStateChanged: is missed " + mIncomingNumber);
                             if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
+                                String number = mIncomingNumber;
                                 MissedCallReceiver alarm = new MissedCallReceiver();
-                                CallItem callItem = RealmDb.getInstance().getMissedCall(mIncomingNumber);
+                                CallItem callItem = RealmDb.getInstance().getMissedCall(number);
                                 if (callItem != null) {
                                     alarm.cancelAlarm(mContext, callItem.getUniqueId());
                                 } else {
                                     callItem = new CallItem();
                                 }
                                 callItem.setDateTime(currTime);
-                                callItem.setNumber(mIncomingNumber);
+                                callItem.setNumber(number);
                                 RealmDb.getInstance().saveObject(callItem);
                                 alarm.setAlarm(mContext, callItem);
                                 break;
@@ -101,10 +103,11 @@ public class CallReceiver extends BroadcastReceiver {
                         } else {
                             LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber);
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled()) {
+                                String number = mIncomingNumber;
                                 int size = RealmDb.getInstance().getAllTemplates().size();
                                 if (size > 0) {
                                     mContext.startActivity(new Intent(mContext, QuickSmsActivity.class)
-                                            .putExtra(Constants.SELECTED_CONTACT_NUMBER, mIncomingNumber)
+                                            .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
                                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                                 }
                                 break;
