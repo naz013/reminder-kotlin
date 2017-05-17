@@ -622,6 +622,9 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void setPlayerVolume() {
+        if (SuperUtil.isHeadsetUsing(this)) {
+            return;
+        }
         boolean systemVol = getPrefs().isSystemLoudnessEnabled();
         boolean increasing = getPrefs().isIncreasingLoudnessEnabled();
         if (systemVol) {
