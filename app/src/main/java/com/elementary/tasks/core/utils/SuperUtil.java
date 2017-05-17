@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -51,6 +52,11 @@ public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
 
+    public static boolean isHeadsetUsing(Context context) {
+        AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        return manager.isBluetoothA2dpOn() || manager.isWiredHeadsetOn();
+    }
+
     public static String getString(Fragment fragment, int id) {
         if (fragment.isAdded()) {
             return fragment.getString(id);
@@ -75,10 +81,7 @@ public class SuperUtil {
     public static boolean checkNotificationPermission(Context activity) {
         NotificationManager notificationManager =
                 (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Module.isMarshmallow() && !notificationManager.isNotificationPolicyAccessGranted()) {
-            return false;
-        }
-        return true;
+        return !(Module.isMarshmallow() && !notificationManager.isNotificationPolicyAccessGranted());
     }
 
     public static void askNotificationPermission(Activity activity) {
