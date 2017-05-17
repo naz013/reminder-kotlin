@@ -275,6 +275,7 @@ public class CreateNoteActivity extends ThemedActivity {
 
     private void micClick() {
         if (speech != null) {
+            hideRecording();
             releaseSpeech();
             return;
         }
