@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.crashlytics.android.Crashlytics;
 import com.elementary.tasks.core.migration.MigrationTool;
 import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderService;
@@ -18,14 +17,11 @@ import com.elementary.tasks.intro.IntroActivity;
 import com.elementary.tasks.navigation.MainActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import io.fabric.sdk.android.Fabric;
-
 public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         initPrefs();
         if (Prefs.getInstance(this).isGcmEnabled()) {
             FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
