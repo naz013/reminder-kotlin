@@ -64,6 +64,7 @@ import com.elementary.tasks.databinding.DialogSelectExtraBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.Position;
+import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +74,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -518,7 +520,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void deleteReminder() {
         if (mReminder != null) {
-            RealmDb.getInstance().moveToTrash(mReminder.getUuId());
+            if (mReminder.isRemoved()) {
+                RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+                new DeleteFilesAsync(this).execute(mReminder.getUuId());
+            } else {
+                RealmDb.getInstance().moveToTrash(mReminder.getUuId());
+            }
             finish();
         }
     }

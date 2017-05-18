@@ -10,6 +10,7 @@
 -keep class io.realm.** { *; }
 -dontwarn javax.**
 -dontwarn io.realm.**
+-dontwarn com.google.firebase.**
 
 -keep class io.realm.annotations.RealmModule
 

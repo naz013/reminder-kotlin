@@ -149,6 +149,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     private void deleteItem() {
         if (mItem != null) {
             RealmDb.getInstance().deletePlace(mItem);
+            new DeletePlaceFilesAsync(this).execute(mItem.getKey());
         }
         finish();
     }

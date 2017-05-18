@@ -111,6 +111,7 @@ public class PlacesFragment extends BaseNavigationFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.archive_menu, menu);
+        menu.findItem(R.id.action_delete_all).setVisible(false);
         mSearchMenu = menu.findItem(R.id.action_search);
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         if (mSearchMenu != null) {
@@ -122,21 +123,6 @@ public class PlacesFragment extends BaseNavigationFragment {
             mSearchView.setOnCloseListener(mSearchCloseListener);
         }
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete_all:
-                deleteAll();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void deleteAll() {
-
-        refreshView();
     }
 
     @Nullable

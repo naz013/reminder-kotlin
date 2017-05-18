@@ -64,7 +64,9 @@ public class PlacesRecyclerAdapter extends FilterableAdapter<PlaceItem, String, 
     }
 
     public void deleteItem(int position) {
-        RealmDb.getInstance().deletePlace(getUsedData().remove(position));
+        PlaceItem item = getUsedData().remove(position);
+        RealmDb.getInstance().deletePlace(item);
+        new DeletePlaceFilesAsync(mContext).execute(item.getKey());
         removeItem(position);
     }
 

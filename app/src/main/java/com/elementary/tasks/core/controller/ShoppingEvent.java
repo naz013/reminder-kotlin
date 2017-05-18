@@ -33,7 +33,7 @@ class ShoppingEvent extends RepeatableEventManager {
     public boolean start() {
         getReminder().setActive(true);
         super.save();
-        if (!TextUtils.isEmpty(getReminder().getEventTime())) {
+        if (!TextUtils.isEmpty(getReminder().getEventTime()) && TimeCount.isCurrent(getReminder().getEventTime())) {
             new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
         }
         return true;

@@ -31,10 +31,12 @@ class WeeklyEvent extends RepeatableEventManager {
 
     @Override
     public boolean start() {
-        getReminder().setActive(true);
-        super.save();
-        new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
-        super.export();
+        if (TimeCount.isCurrent(getReminder().getEventTime())) {
+            getReminder().setActive(true);
+            super.save();
+            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
+            super.export();
+        }
         return true;
     }
 
