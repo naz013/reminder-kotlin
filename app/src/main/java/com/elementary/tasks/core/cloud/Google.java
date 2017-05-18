@@ -526,7 +526,11 @@ public class Google {
                     if (reminder.isRemoved() || !reminder.isActive()) return;
                     realmDb.saveObject(reminder);
                     EventControl control = EventControlFactory.getController(context, reminder);
-                    control.next();
+                    if (control.canSkip()) {
+                        control.next();
+                    } else {
+                        control.start();
+                    }
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());
                 }

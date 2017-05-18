@@ -35,7 +35,7 @@ public final class LogUtil {
 
     public static void e(String tag, String message, Exception e) {
         if (D) {
-            Log.e(TAG + tag, message + e.getLocalizedMessage());
+            Log.d(TAG + tag, message + e.getLocalizedMessage());
         }
     }
 
