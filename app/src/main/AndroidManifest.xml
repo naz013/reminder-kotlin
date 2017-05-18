@@ -527,9 +527,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="e319ad50eeab199ac7860c9873cac1803c44386c" />
 
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
