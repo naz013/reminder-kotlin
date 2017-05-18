@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
-import com.elementary.tasks.core.async.SyncTask;
+import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -81,7 +81,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 start(context, id);
                 break;
             case ACTION_SYNC_AUTO:
-                new SyncTask(context, null, true).execute();
+                new BackupTask(context).execute();
                 break;
             case ACTION_EVENTS_CHECK:
                 checkEvents(context);

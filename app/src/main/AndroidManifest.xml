@@ -529,10 +529,11 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.dropbox.client2.android.AuthActivity"
+            android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">
             <intent-filter>
+
                 <data android:scheme="db-4zi1d414h0v8sxe" />
 
                 <action android:name="android.intent.action.VIEW" />

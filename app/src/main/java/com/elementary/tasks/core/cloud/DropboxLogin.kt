@@ -6,8 +6,10 @@ import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.nfc.Tag
 import android.provider.Settings
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 
 /**
@@ -29,6 +31,7 @@ import com.elementary.tasks.core.utils.Module
 class DropboxLogin(context: Activity, callback: LoginCallback) {
 
     companion object {
+        const val TAG: String = "DropboxLogin"
         const val MARKET_APP_JUSTREMINDER: String = "com.cray.software.justreminder"
         const val MARKET_APP_JUSTREMINDER_PRO: String = "com.cray.software.justreminderpro"
     }
@@ -62,12 +65,17 @@ class DropboxLogin(context: Activity, callback: LoginCallback) {
     }
 
     fun checkDropboxStatus() {
-        if (mDropbox.checkLink() && mDropbox.isLinked) {
-            mCallback.onSuccess(true)
-        } else if (mDropbox.isLinked) {
+        LogUtil.d(TAG,  "checkDropboxStatus: " + mDropbox.isLinked)
+        if (mDropbox.isLinked) {
             mCallback.onSuccess(true)
         } else {
-            mCallback.onSuccess(false)
+            LogUtil.d(TAG,  "checkDropboxStatus2: " + mDropbox.isLinked)
+            mDropbox.startSession()
+            if (mDropbox.isLinked) {
+                mCallback.onSuccess(true)
+            } else {
+                mCallback.onSuccess(false)
+            }
         }
     }
 

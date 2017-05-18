@@ -832,7 +832,7 @@ public class RealmDb {
         return true;
     }
 
-    public void clearReminderTrash() {
+    public List<String> clearReminderTrash() {
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         String[] fields = new String[]{"eventTime"};
@@ -840,8 +840,15 @@ public class RealmDb {
         RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
         query.equalTo("isRemoved", true);
         RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
-        list.deleteAllFromRealm();
+        List<String> uids = new ArrayList<>();
+        if (list != null) {
+            for (RealmReminder reminder : list) {
+                if (reminder != null) uids.add(reminder.getUuId());
+            }
+            list.deleteAllFromRealm();
+        }
         realm.commitTransaction();
+        return uids;
     }
 
     public boolean moveToTrash(String id){

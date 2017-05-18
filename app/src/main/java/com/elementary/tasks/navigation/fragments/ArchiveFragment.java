@@ -31,6 +31,7 @@ import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentTrashBinding;
 import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -187,7 +188,8 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void deleteAll(){
-        RealmDb.getInstance().clearReminderTrash();
+        List<String> uids = RealmDb.getInstance().clearReminderTrash();
+        new DeleteFilesAsync(getContext()).execute(uids.toArray(new String[uids.size()]));
         loadData(mLastGroupId, lastType);
         Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         reloadView();
@@ -211,6 +213,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
             }
             if (item == 1) {
                 deleteReminder(item1);
+                new DeleteFilesAsync(getContext()).execute(item1.getUuId());
                 mAdapter.removeItem(position);
                 Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                 reloadView();

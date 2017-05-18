@@ -344,7 +344,11 @@ public final class BackupTool {
                         }
                         realmDb.saveObject(reminder);
                         EventControl control = EventControlFactory.getController(mContext, reminder);
-                        control.next();
+                        if (control.canSkip()) {
+                            control.next();
+                        } else {
+                            control.start();
+                        }
                     }
                 }
             }

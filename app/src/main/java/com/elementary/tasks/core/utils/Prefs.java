@@ -1254,4 +1254,20 @@ public final class Prefs extends SharedPrefs {
     public void setReminderType(int reminderType) {
         putInt(REMINDER_TYPE, reminderType);
     }
+
+    public String getDropboxUid() {
+        return getString(DROPBOX_UID);
+    }
+
+    public void setDropboxUid(String uid) {
+        putString(DROPBOX_UID, uid);
+    }
+
+    public String getDropboxToken() {
+        return getString(DROPBOX_TOKEN);
+    }
+
+    public void setDropboxToken(String token) {
+        putString(DROPBOX_TOKEN, token);
+    }
 }

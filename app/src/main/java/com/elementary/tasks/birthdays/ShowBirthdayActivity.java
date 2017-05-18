@@ -223,6 +223,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         if (getPrefs().isAutoBackupEnabled()) {
             new BackupTask(this).execute();
         }
+        new BackupBirthdaysTask(this).execute();
     }
 
     @Override

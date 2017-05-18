@@ -329,6 +329,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (getPrefs().isAutoBackupEnabled()) {
             new BackupTask(this).execute();
         }
+        new BackupReminderTask(this).execute();
     }
 
     @Override

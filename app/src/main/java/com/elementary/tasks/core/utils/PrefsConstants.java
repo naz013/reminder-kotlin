@@ -109,6 +109,8 @@ class PrefsConstants {
     static final String LAST_NOTE_COLOR = "last_note_color";
     static final String NOTE_COLOR_OPACITY = "note_color_opacity";
     static final String REMINDER_TYPE = "notification_type";
+    static final String DROPBOX_UID = "dropbox_uid";
+    static final String DROPBOX_TOKEN = "dropbox_token";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String NOTE_CHANGED = "note_changed";

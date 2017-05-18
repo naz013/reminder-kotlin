@@ -110,7 +110,7 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                     }
                 }
             }
-            if (isLinked && isConnected) {
+            if (isLinked && isConnected && gdx.getDrive() != null) {
                 try {
                     gdx.getDrive().cleanFolder();
                 } catch (IOException e) {

@@ -93,14 +93,12 @@ abstract class SharedPrefs extends PrefsConstants {
     }
 
     String getString(String stringToLoad){
-        String res;
         try {
-            res = prefs.getString(stringToLoad, "");
+            return prefs.getString(stringToLoad, null);
         } catch (NullPointerException e) {
             e.printStackTrace();
-            res = "";
         }
-        return res;
+        return null;
     }
 
     boolean hasKey(String checkString){
