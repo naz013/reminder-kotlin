@@ -34,12 +34,14 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
 import com.elementary.tasks.notes.CreateNoteActivity;
+import com.elementary.tasks.notes.DeleteNoteFilesAsync;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
 import com.elementary.tasks.notes.SyncNotes;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +61,7 @@ import java.util.List;
  */
 
 public class NotesFragment extends BaseNavigationFragment {
+
     public static final int MENU_ITEM_DELETE = 12;
 
     private FragmentNotesBinding binding;
@@ -102,6 +105,7 @@ public class NotesFragment extends BaseNavigationFragment {
                     case 5:
                         RealmDb.getInstance().deleteNote(noteItem);
                         mAdapter.removeItem(position);
+                        new DeleteNoteFilesAsync(getContext()).execute(noteItem.getKey());
                         refreshView();
                         break;
                 }
@@ -308,9 +312,12 @@ public class NotesFragment extends BaseNavigationFragment {
 
     private void deleteAll() {
         List<NoteItem> list = RealmDb.getInstance().getAllNotes(null);
+        List<String> ids = new ArrayList<>();
         for (NoteItem item : list) {
+            ids.add(item.getKey());
             RealmDb.getInstance().deleteNote(item);
         }
+        new DeleteNoteFilesAsync(getContext()).execute(ids.toArray(new String[ids.size()]));
     }
 
     private void previewNote(String id, View view) {

@@ -590,12 +590,17 @@ public class CreateNoteActivity extends ThemedActivity {
         builder.setMessage(getString(R.string.delete_this_note));
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
-            RealmDb.getInstance().deleteNote(mItem);
-            finish();
+            deleteNote();
         });
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void deleteNote() {
+        RealmDb.getInstance().deleteNote(mItem);
+        new DeleteNoteFilesAsync(this).execute(mItem.getKey());
+        finish();
     }
 
     @Override

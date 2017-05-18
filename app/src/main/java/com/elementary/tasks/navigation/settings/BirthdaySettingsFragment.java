@@ -17,6 +17,7 @@ import android.widget.TimePicker;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
@@ -27,6 +28,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -230,9 +232,13 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         new Thread(() -> {
             Looper.prepare();
             List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
+            List<String> ids = new ArrayList<>();
             for (int i = list.size() - 1; i >= 0; i--) {
-                RealmDb.getInstance().deleteBirthday(list.remove(i));
+                BirthdayItem item = list.remove(i);
+                RealmDb.getInstance().deleteBirthday(item);
+                ids.add(item.getUuId());
             }
+            new DeleteBirthdayFilesAsync(getContext()).execute(ids.toArray(new String[ids.size()]));
         }).start();
     }
 

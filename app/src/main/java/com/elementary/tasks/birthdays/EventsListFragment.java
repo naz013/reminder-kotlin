@@ -105,6 +105,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     break;
                 case 1:
                     RealmDb.getInstance().deleteBirthday(birthdayItem);
+                    new DeleteBirthdayFilesAsync(getContext()).execute(birthdayItem.getUuId());
                     reopenFragment();
                     break;
             }

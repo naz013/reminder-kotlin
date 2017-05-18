@@ -230,6 +230,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     private void deleteItem() {
         if (mItem != null) {
             RealmDb.getInstance().deleteBirthday(mItem);
+            new DeleteBirthdayFilesAsync(this).execute(mItem.getUuId());
         }
         closeScreen();
     }

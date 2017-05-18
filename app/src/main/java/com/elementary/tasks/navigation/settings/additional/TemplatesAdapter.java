@@ -82,7 +82,9 @@ class TemplatesAdapter extends FilterableAdapter<TemplateItem, String, Templates
     }
 
     private void deleteTemplate(int position) {
-        RealmDb.getInstance().deleteTemplates(getItem(position));
+        TemplateItem item = getItem(position);
+        RealmDb.getInstance().deleteTemplates(item);
+        new DeleteTemplateFilesAsync(mContext).execute(item.getKey());
         removeItem(position);
     }
 
