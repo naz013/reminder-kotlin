@@ -755,6 +755,30 @@ public class Google {
             } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
         }
 
+        public void deleteTemplateFileByName(String title) throws IOException {
+            if (title == null) {
+                return;
+            }
+            String[] strs = title.split(".");
+            if (strs.length != 0) {
+                title = strs[0];
+            }
+            Drive.Files.List request = driveService.files().list()
+                    .setQ("mimeType = 'text/plain' and name contains '" + title + "'");
+            if (request == null) return;
+            do {
+                FileList files = request.execute();
+                ArrayList<com.google.api.services.drive.model.File> fileList = (ArrayList<com.google.api.services.drive.model.File>) files.getFiles();
+                for (com.google.api.services.drive.model.File f : fileList) {
+                    String fileTitle = f.getName();
+                    if (fileTitle.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
+                        driveService.files().delete(f.getId()).execute();
+                    }
+                }
+                request.setPageToken(files.getNextPageToken());
+            } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+        }
+
         /**
          * Delete application folder from Google Drive.
          */

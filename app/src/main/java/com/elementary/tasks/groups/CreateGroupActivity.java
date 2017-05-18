@@ -149,6 +149,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
     private void deleteItem() {
         if (mItem != null) {
             RealmDb.getInstance().deleteGroup(mItem);
+            new DeleteGroupFilesAsync(this).execute(mItem.getUuId());
         }
         finish();
     }

@@ -44,7 +44,9 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupHolder> {
     }
 
     public void deleteItem(int position) {
-        RealmDb.getInstance().deleteGroup(mDataList.remove(position));
+        GroupItem item = mDataList.remove(position);
+        RealmDb.getInstance().deleteGroup(item);
+        new DeleteGroupFilesAsync(mContext).execute(item.getUuId());
         notifyItemRemoved(position);
         notifyItemRangeChanged(0, mDataList.size());
     }

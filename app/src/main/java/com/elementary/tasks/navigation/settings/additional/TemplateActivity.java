@@ -136,6 +136,7 @@ public class TemplateActivity extends ThemedActivity {
     private void deleteItem() {
         if (mItem != null) {
             RealmDb.getInstance().deleteTemplates(mItem);
+            new DeleteTemplateFilesAsync(this).execute(mItem.getKey());
         }
         finish();
     }
