@@ -202,6 +202,9 @@ public final class CalendarUtils {
      */
     public static List<EventItem> getEvents(Context context, int id) throws SecurityException {
         List<EventItem> list = new ArrayList<>();
+        if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            return list;
+        }
         ContentResolver contentResolver = context.getContentResolver();
         Cursor c = contentResolver.query(CalendarContract.Events.CONTENT_URI,
                 new String[]{CalendarContract.Events.TITLE,
