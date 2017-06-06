@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 
 import java.text.DateFormat;
@@ -87,6 +88,9 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
 
     @Override
     protected Integer doInBackground(Void... params) {
+        if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
+            return 0;
+        }
         ContentResolver cr = mContext.getContentResolver();
         int i = 0;
         String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
