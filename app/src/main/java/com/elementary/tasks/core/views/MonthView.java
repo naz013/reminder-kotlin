@@ -328,9 +328,10 @@ public class MonthView extends View implements View.OnTouchListener {
         int x = (int) motionEvent.getX();
         int y = (int) motionEvent.getY();
         for (int i = 0; i < ROWS * COLS; i++) {
-            if (mCells.get(i).contains(x, y)) {
+            Rect rect = mCells.get(i);
+            if (rect != null && rect.contains(x, y)) {
                 mTouchPosition = i;
-                mTouchRect = mCells.get(i);
+                mTouchRect = rect;
                 mLongClickHandler.postDelayed(mLongRunnable, LONG_CLICK_TIME);
                 break;
             }
