@@ -41,9 +41,11 @@ public class EventEditService extends IntentService {
         if (id != null) {
             if (isReminder) {
                 startActivity(new Intent(getApplicationContext(), CreateReminderActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .putExtra(Constants.INTENT_ID, id));
             } else {
                 startActivity(new Intent(getApplicationContext(), AddBirthdayActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .putExtra(Constants.INTENT_ID, id));
             }
         }
