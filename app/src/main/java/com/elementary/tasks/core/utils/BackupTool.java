@@ -5,6 +5,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Base64InputStream;
+import android.util.Base64OutputStream;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
@@ -18,6 +20,8 @@ import com.elementary.tasks.reminder.models.Reminder;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +29,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -64,9 +67,7 @@ public final class BackupTool {
     }
 
     public void exportTemplates() {
-        for (TemplateItem item : RealmDb.getInstance().getAllTemplates()) {
-            exportTemplate(item);
-        }
+        RealmDb.getInstance().getAllTemplates().forEach(this::exportTemplate);
     }
 
     public void importTemplates() throws IOException, IllegalStateException {
@@ -91,12 +92,11 @@ public final class BackupTool {
 
     public void exportTemplate(TemplateItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getTemplatesDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_TEMPLATE;
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -123,9 +123,7 @@ public final class BackupTool {
     }
 
     public void exportPlaces() {
-        for (PlaceItem item : RealmDb.getInstance().getAllPlaces()) {
-            exportPlace(item);
-        }
+        RealmDb.getInstance().getAllPlaces().forEach(this::exportPlace);
     }
 
     public void importPlaces() throws IOException, IllegalStateException {
@@ -150,12 +148,11 @@ public final class BackupTool {
 
     public void exportPlace(PlaceItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getPlacesDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_PLACE;
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -182,9 +179,7 @@ public final class BackupTool {
     }
 
     public void exportBirthdays() {
-        for (BirthdayItem item : RealmDb.getInstance().getAllBirthdays()) {
-            exportBirthday(item);
-        }
+        RealmDb.getInstance().getAllBirthdays().forEach(this::exportBirthday);
     }
 
     public void importBirthdays() throws IOException, IllegalStateException {
@@ -209,12 +204,11 @@ public final class BackupTool {
 
     public void exportBirthday(BirthdayItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getBirthdaysDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_BIRTHDAY;
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -241,21 +235,18 @@ public final class BackupTool {
     }
 
     public void exportGroups() {
-        for (GroupItem item : RealmDb.getInstance().getAllGroups()) {
-            exportGroup(item);
-        }
+        RealmDb.getInstance().getAllGroups().forEach(this::exportGroup);
     }
 
     public void exportGroup(GroupItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getGroupsDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_GROUP;
             File file = new File(dir, exportFileName);
             LogUtil.d(TAG, "exportGroup: " + file);
             try {
-                writeFile(file, encrypted.get());
+                writeFile(file, jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -313,9 +304,7 @@ public final class BackupTool {
     }
 
     public void exportReminders() {
-        for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
-            exportReminder(item);
-        }
+        RealmDb.getInstance().getEnabledReminders().forEach(this::exportReminder);
     }
 
     public void importReminders(Context mContext) throws IOException, IllegalStateException {
@@ -357,12 +346,11 @@ public final class BackupTool {
 
     public void exportReminder(Reminder item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getRemindersDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_REMINDER;
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -410,9 +398,7 @@ public final class BackupTool {
     }
 
     public void exportNotes() {
-        for (NoteItem item : RealmDb.getInstance().getAllNotes(null)) {
-            exportNote(item);
-        }
+        RealmDb.getInstance().getAllNotes(null).forEach(this::exportNote);
     }
 
     public void importNotes() throws IOException, IllegalStateException {
@@ -436,12 +422,11 @@ public final class BackupTool {
 
     public void exportNote(NoteItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File dir = MemoryUtil.getNotesDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_NOTE;
             try {
-                writeFile(new File(dir, exportFileName), encrypted.get());
+                writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -452,14 +437,13 @@ public final class BackupTool {
 
     public void createNote(NoteItem item, CreateCallback callback) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
-        WeakReference<String> encrypted = new WeakReference<>(encrypt(jsonData.get()));
         File file = null;
         File dir = MemoryUtil.getMailDir();
         if (dir != null) {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_NOTE;
             file = new File(dir, exportFileName);
             try {
-                writeFile(file, encrypted.get());
+                writeFile(file, jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -472,80 +456,65 @@ public final class BackupTool {
     }
 
     public String readFileToJson(ContentResolver cr, Uri name) throws IOException {
-        InputStream is = null;
+        InputStream inputStream = null;
         try {
-            is = cr.openInputStream(name);
+            inputStream = cr.openInputStream(name);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (is == null) {
+        if (inputStream == null) {
             return null;
         }
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        Base64InputStream output64 = new Base64InputStream(inputStream, Base64.DEFAULT);
+        BufferedReader r = new BufferedReader(new InputStreamReader(output64));
         StringBuilder total = new StringBuilder();
         String line;
         while ((line = r.readLine()) != null) {
             total.append(line);
         }
-        WeakReference<String> file = new WeakReference<>(total.toString());
-        WeakReference<String> decrypted = new WeakReference<>(decrypt(file.get()));
-        return decrypted.get();
+        output64.close();
+        inputStream.close();
+        LogUtil.d(TAG, "readFileToJson: " + total.toString());
+        return total.toString();
     }
 
     public String readFileToJson(String path) throws IOException {
-        FileInputStream stream = new FileInputStream(path);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+        FileInputStream inputStream = new FileInputStream(path);
+        Base64InputStream output64 = new Base64InputStream(inputStream, Base64.DEFAULT);
+        BufferedReader r = new BufferedReader(new InputStreamReader(output64));
         StringBuilder total = new StringBuilder();
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = r.readLine()) != null) {
             total.append(line);
         }
-        stream.close();
-        String decr = decrypt(total.toString());
-        LogUtil.d(TAG, "readFileToJson: " + decr);
-        return decr;
+        output64.close();
+        inputStream.close();
+        LogUtil.d(TAG, "readFileToJson: " + total.toString());
+        return total.toString();
     }
 
     private void writeFile(File file, String data) throws IOException {
+        InputStream inputStream = new ByteArrayInputStream(data.getBytes());
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Base64OutputStream output64 = new Base64OutputStream(output, Base64.DEFAULT);
+        try {
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                output64.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        output64.close();
+
         if (file.exists()) {
             file.delete();
         }
         FileWriter fw = new FileWriter(file);
-        fw.write(data);
+        fw.write(output.toString());
         fw.close();
-    }
-
-    /**
-     * Decrypt string to human readable format.
-     *
-     * @param string string to decrypt.
-     * @return Decrypted string
-     */
-    public static String decrypt(String string) {
-        String result = "{ }";
-        try {
-            byte[] byteString = Base64.decode(string, Base64.DEFAULT);
-            result = new String(byteString, "UTF-8");
-        } catch (UnsupportedEncodingException | IllegalArgumentException e1) {
-            LogUtil.d(TAG, "decrypt: " + e1.getLocalizedMessage());
-        }
-        return result;
-    }
-
-    /**
-     * Encrypt string.
-     *
-     * @param string string to encrypt.
-     * @return Encrypted string
-     */
-    public static String encrypt(String string) {
-        byte[] stringByted = null;
-        try {
-            stringByted = string.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
-            LogUtil.d(TAG, "encrypt: " + e.getLocalizedMessage());
-        }
-        return Base64.encodeToString(stringByted, Base64.DEFAULT).trim();
+        output.close();
     }
 
     public interface CreateCallback {
