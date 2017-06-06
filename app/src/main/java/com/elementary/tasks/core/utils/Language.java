@@ -110,6 +110,9 @@ public class Language {
     }
 
     public static int getLocalePosition(String locale) {
+        if (locale == null) {
+            return 0;
+        }
         int mItemSelect = 0;
         if (locale.matches(Language.ENGLISH)) {
             mItemSelect = 0;
@@ -165,6 +168,9 @@ public class Language {
             locale = Prefs.getInstance(context).getBirthdayTtsLocale();
         } else {
             locale = Prefs.getInstance(context).getTtsLocale();
+        }
+        if (locale == null) {
+            return Locale.ENGLISH;
         }
         switch (locale){
             case ENGLISH:
