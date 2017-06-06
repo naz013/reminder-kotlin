@@ -280,6 +280,9 @@ public class Recognize {
 
         @Override
         public ContactOutput findEmail(String input) {
+            if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
+                return null;
+            }
             String number = null;
             String[] parts = input.split("\\s");
             for (String part : parts) {
@@ -306,6 +309,9 @@ public class Recognize {
 
         @Override
         public ContactOutput findNumber(String input) {
+            if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
+                return null;
+            }
             String number = null;
             String[] parts = input.split("\\s");
             for (String part : parts) {

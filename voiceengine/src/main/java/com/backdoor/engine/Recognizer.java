@@ -196,6 +196,9 @@ public class Recognizer {
         }
         if (hasAction && contactsInterface != null) {
             ContactOutput output = contactsInterface.findNumber(keyStr);
+            if (output == null) {
+                return null;
+            }
             keyStr = output.getOutput();
             number = output.getNumber();
             if (type == Action.MAIL) {
