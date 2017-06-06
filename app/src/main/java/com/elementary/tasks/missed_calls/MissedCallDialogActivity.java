@@ -78,7 +78,6 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
-        binding.singleContainer.setVisibility(View.VISIBLE);
         binding.container.setVisibility(View.GONE);
         binding.subjectContainer.setVisibility(View.GONE);
         loadImage(binding.bgImage);
