@@ -67,7 +67,9 @@ public final class BackupTool {
     }
 
     public void exportTemplates() {
-        RealmDb.getInstance().getAllTemplates().forEach(this::exportTemplate);
+        for (TemplateItem item : RealmDb.getInstance().getAllTemplates()) {
+            exportTemplate(item);
+        }
     }
 
     public void importTemplates() throws IOException, IllegalStateException {
@@ -123,7 +125,9 @@ public final class BackupTool {
     }
 
     public void exportPlaces() {
-        RealmDb.getInstance().getAllPlaces().forEach(this::exportPlace);
+        for (PlaceItem item : RealmDb.getInstance().getAllPlaces()) {
+            exportPlace(item);
+        }
     }
 
     public void importPlaces() throws IOException, IllegalStateException {
@@ -179,7 +183,9 @@ public final class BackupTool {
     }
 
     public void exportBirthdays() {
-        RealmDb.getInstance().getAllBirthdays().forEach(this::exportBirthday);
+        for (BirthdayItem item : RealmDb.getInstance().getAllBirthdays()) {
+            exportBirthday(item);
+        }
     }
 
     public void importBirthdays() throws IOException, IllegalStateException {
@@ -235,7 +241,9 @@ public final class BackupTool {
     }
 
     public void exportGroups() {
-        RealmDb.getInstance().getAllGroups().forEach(this::exportGroup);
+        for (GroupItem item : RealmDb.getInstance().getAllGroups()) {
+            exportGroup(item);
+        }
     }
 
     public void exportGroup(GroupItem item) {
@@ -304,7 +312,9 @@ public final class BackupTool {
     }
 
     public void exportReminders() {
-        RealmDb.getInstance().getEnabledReminders().forEach(this::exportReminder);
+        for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
+            exportReminder(reminder);
+        }
     }
 
     public void importReminders(Context mContext) throws IOException, IllegalStateException {
@@ -398,7 +408,9 @@ public final class BackupTool {
     }
 
     public void exportNotes() {
-        RealmDb.getInstance().getAllNotes(null).forEach(this::exportNote);
+        for (NoteItem item : RealmDb.getInstance().getAllNotes(null)) {
+            exportNote(item);
+        }
     }
 
     public void importNotes() throws IOException, IllegalStateException {
