@@ -298,7 +298,11 @@ public class Google {
         }
 
         public void saveSettingsToDrive() throws IOException {
-            String folderId = getFolderId();
+            String folderId = null;
+            try {
+                folderId = getFolderId();
+            } catch (IllegalArgumentException ignored) {
+            }
             if (folderId == null) {
                 return;
             }
@@ -442,7 +446,11 @@ public class Google {
             if (metadata.getFolder() == null) return;
             java.io.File[] files = metadata.getFolder().listFiles();
             if (files == null) return;
-            String folderId = getFolderId();
+            String folderId = null;
+            try {
+                folderId = getFolderId();
+            } catch (IllegalArgumentException ignored) {
+            }
             if (folderId == null) {
                 return;
             }
@@ -831,7 +839,7 @@ public class Google {
          *
          * @return Drive folder identifier.
          */
-        private String getFolderId() throws IOException {
+        private String getFolderId() throws IOException, IllegalArgumentException {
             Drive.Files.List request = driveService.files().list()
                     .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
             if (request == null) return null;
