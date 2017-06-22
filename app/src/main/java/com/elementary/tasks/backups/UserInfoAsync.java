@@ -103,7 +103,10 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     protected void onPostExecute(List<UserItem> list) {
         super.onPostExecute(list);
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            try {
+                mDialog.dismiss();
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         if (listener != null && mContext != null) {
             listener.onReceive(list);

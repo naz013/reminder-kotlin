@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.BitmapUtils;
+import com.elementary.tasks.core.utils.LogUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -103,7 +104,10 @@ public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteIma
     protected void onPostExecute(List<NoteImage> noteImages) {
         super.onPostExecute(noteImages);
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            try {
+                mDialog.dismiss();
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         if (mCallback != null) {
             mCallback.onDecode(noteImages);
