@@ -102,8 +102,7 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
         if (mDialog != null && mDialog.isShowing()) {
             try {
                 mDialog.dismiss();
-            } catch (IllegalArgumentException e) {
-                LogUtil.d(TAG, "onPostExecute: " + e.getLocalizedMessage());
+            } catch (IllegalArgumentException ignored) {
             }
         }
         if (mContext != null) {

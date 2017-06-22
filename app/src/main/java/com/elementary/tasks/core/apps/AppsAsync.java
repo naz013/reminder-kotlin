@@ -87,7 +87,10 @@ public class AppsAsync extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+            try {
+                mDialog.dismiss();
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         if (mListener != null) {
             mListener.onLoaded(mList);
