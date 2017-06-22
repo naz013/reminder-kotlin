@@ -67,10 +67,8 @@ public class RealmDb {
     private static final SimpleDateFormat birthFormat = new SimpleDateFormat("dd|MM", Locale.getDefault());
 
     private static RealmDb instance;
-    private Realm mRealm;
 
     private RealmDb() {
-        mRealm = Realm.getDefaultInstance();
     }
 
     public static RealmDb getInstance() {
@@ -83,7 +81,7 @@ public class RealmDb {
     }
 
     private Realm getRealm() {
-        return mRealm;
+        return Realm.getDefaultInstance();
     }
 
     public void saveObject(Object o) {
