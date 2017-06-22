@@ -302,7 +302,9 @@ public class TaskActivity extends ThemedActivity {
         for (int i = 0; i < list.size(); i++) {
             TaskListItem item = list.get(i);
             names.add(item.getTitle());
-            if (item.getListId().matches(listId)) position = i;
+            if (listId != null && item.getListId() != null && item.getListId().matches(listId)) {
+                position = i;
+            }
         }
         AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_list);
