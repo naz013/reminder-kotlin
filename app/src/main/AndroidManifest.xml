@@ -53,7 +53,7 @@
         android:label="@string/app_title"
         android:supportsRtl="true"
         android:theme="@style/HomeDark.Cyan"
-        tools:replace="android:label, android:theme">
+        tools:replace="android:label">
         <activity android:name=".navigation.MainActivity" />
         <activity
             android:name=".creators.CreateReminderActivity"
