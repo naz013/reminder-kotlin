@@ -3,6 +3,7 @@ package com.elementary.tasks.reminder;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -152,7 +153,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
 
     private void closeWindow() {
         if (Module.isLollipop()) {
-            finishAfterTransition();
+            new Handler().post(this::finishAfterTransition);
         } else {
             finish();
         }
