@@ -507,6 +507,7 @@ public final class BackupTool {
     }
 
     private void writeFile(File file, String data) throws IOException {
+        if (data == null) return;
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         byte[] buffer = new byte[8192];
         int bytesRead;
