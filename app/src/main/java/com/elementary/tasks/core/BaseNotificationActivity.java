@@ -308,7 +308,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         int height = (int) (metrics.heightPixels * 0.75);
-        if (imagePrefs.matches(Constants.DEFAULT)) {
+        if (imagePrefs == null || imagePrefs.matches(Constants.DEFAULT)) {
             if (blur && Module.isPro()) {
                 Picasso.with(this)
                         .load(R.drawable.photo)

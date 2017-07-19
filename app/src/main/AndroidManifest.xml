@@ -555,6 +555,10 @@
 
         <activity android:name=".intro.IntroActivity" />
         <activity android:name=".intro.GoogleFixActivity" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="e319ad50eeab199ac7860c9873cac1803c44386c" />
     </application>
 
 </manifest>
