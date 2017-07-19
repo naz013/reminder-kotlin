@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -270,7 +271,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void closeWindow() {
         if (Module.isLollipop()) {
-            finishAfterTransition();
+            new Handler().post(this::finishAfterTransition);
         } else {
             finish();
         }
