@@ -408,15 +408,10 @@ public class RealmDb {
     public GroupItem getDefaultGroup() {
         Realm realm = getRealm();
         realm.beginTransaction();
-        RealmResults<RealmGroup> realmGroup = realm.where(RealmGroup.class).findAll();
+        RealmGroup realmGroup = realm.where(RealmGroup.class).findFirst();
         realm.commitTransaction();
         if (realmGroup != null) {
-            for (int i = 0; i < realmGroup.size(); i++) {
-                RealmGroup group = realmGroup.get(i);
-                if (group != null) {
-                    return new GroupItem(group);
-                }
-            }
+            return new GroupItem(realmGroup);
         }
         return null;
     }

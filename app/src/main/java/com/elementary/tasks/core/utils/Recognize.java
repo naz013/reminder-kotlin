@@ -218,7 +218,11 @@ public class Recognize {
         } else if (action == Action.MAIL) {
             typeT = Reminder.BY_DATE_EMAIL;
         }
-        String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+        GroupItem item = RealmDb.getInstance().getDefaultGroup();
+        String categoryId = "";
+        if (item != null) {
+            categoryId = item.getUuId();
+        }
         Prefs prefs = Prefs.getInstance(mContext);
         boolean isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR);
         boolean isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK);
