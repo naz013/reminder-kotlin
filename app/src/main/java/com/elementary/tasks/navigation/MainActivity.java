@@ -227,7 +227,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     private void showMainImage() {
         String path = getPrefs().getImagePath();
-        if (!path.isEmpty() && !path.contains("{")) {
+        if (path != null && !path.isEmpty() && !path.contains("{")) {
             String fileName = path;
             if (path.contains("=")) {
                 int index = path.indexOf("=");
