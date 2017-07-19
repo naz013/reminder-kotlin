@@ -2,11 +2,13 @@ package com.elementary.tasks;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -44,6 +46,7 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         Prefs.getInstance(this);
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
