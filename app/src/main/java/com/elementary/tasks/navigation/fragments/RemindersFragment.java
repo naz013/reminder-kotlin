@@ -232,16 +232,18 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                     changeGroup(item1.getGroupUuId(), item1.getUuId());
                     break;
                 case 3:
-                    if (RealmDb.getInstance().moveToTrash(item1.getUuId())) {
-                        EventControl control = EventControlFactory.getController(getContext(), item1.setRemoved(true));
-                        control.stop();
-                        mAdapter.removeItem(position);
-                        refreshFilters();
-                        reloadView();
-                    }
+                    moveToTrash(item1, position);
                     break;
             }
         }, items);
+    }
+
+    private void moveToTrash(Reminder item1, int position) {
+        EventControl control = EventControlFactory.getController(getContext(), item1.setRemoved(true));
+        control.stop();
+        mAdapter.removeItem(position);
+        refreshFilters();
+        reloadView();
     }
 
     private void editReminder(String uuId) {
