@@ -253,10 +253,8 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void removeReminder() {
-        if (RealmDb.getInstance().moveToTrash(item.getUuId())) {
-            EventControl control = EventControlFactory.getController(this, item.setRemoved(true));
-            control.stop();
-        }
+        EventControl control = EventControlFactory.getController(this, item.setRemoved(true));
+        control.stop();
         closeWindow();
     }
 
