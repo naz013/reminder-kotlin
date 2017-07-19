@@ -4,11 +4,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
 
@@ -70,10 +68,10 @@ public class Notifier {
             s.bigPicture(bitmap);
             builder.setStyle(s);
         }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(mContext);
-        mNotifyMgr.notify(item.getUniqueId(), builder.build());
+        NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(item.getUniqueId(), builder.build());
         if (isWear && Module.isJellyMR2()){
-            final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
+            NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
             wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             wearableNotificationBuilder.setContentTitle(content);
             wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));
@@ -84,7 +82,7 @@ public class Notifier {
             wearableNotificationBuilder.setOnlyAlertOnce(true);
             wearableNotificationBuilder.setGroup("GROUP");
             wearableNotificationBuilder.setGroupSummary(false);
-            mNotifyMgr.notify(item.getUniqueId(), wearableNotificationBuilder.build());
+            manager.notify(item.getUniqueId(), wearableNotificationBuilder.build());
         }
     }
 }
