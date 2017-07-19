@@ -3,6 +3,8 @@ package com.elementary.tasks.navigation.settings.images;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +20,8 @@ import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.PhotoListItemBinding;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +160,21 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         PicassoTool.getInstance(imageView.getContext())
                 .getPicasso()
                 .load(url)
-                .error(isDark ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp)
-                .into(imageView);
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        imageView.setImageResource(isDark ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        imageView.setImageResource(isDark ? R.drawable.ic_broken_image_white_24dp : R.drawable.ic_broken_image_black_24dp);
+                    }
+                });
     }
 }
