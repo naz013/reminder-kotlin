@@ -630,11 +630,15 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void releaseSpeech() {
-        if (speech != null) {
-            speech.stopListening();
-            speech.cancel();
-            speech.destroy();
-            speech = null;
+        try {
+            if (speech != null) {
+                speech.stopListening();
+                speech.cancel();
+                speech.destroy();
+                speech = null;
+            }
+        } catch (IllegalArgumentException ignored) {
+
         }
     }
 
