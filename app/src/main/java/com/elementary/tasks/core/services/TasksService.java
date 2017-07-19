@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.services;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -24,18 +26,21 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class TasksService extends IntentService {
+public class TasksService extends Service {
 
-    public TasksService() {
-        super("TasksService");
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
             EventControl control = EventControlFactory.getController(getApplicationContext(), item);
             control.start();
         }
         stopSelf();
+        return START_NOT_STICKY;
     }
 }

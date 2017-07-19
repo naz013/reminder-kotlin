@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.services;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
@@ -27,14 +29,16 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class CheckBirthdays extends IntentService {
+public class CheckBirthdays extends Service {
 
-    public CheckBirthdays() {
-        super("CheckBirthdays");
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(getApplicationContext()).getDaysToBirthday());
         if (list != null && list.size() > 0) {
             for (BirthdayItem item : list){
@@ -42,6 +46,7 @@ public class CheckBirthdays extends IntentService {
             }
         }
         stopSelf();
+        return START_NOT_STICKY;
     }
 
     private void showBirthday(BirthdayItem item) {
