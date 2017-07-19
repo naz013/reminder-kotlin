@@ -74,7 +74,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -524,7 +523,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 RealmDb.getInstance().deleteReminder(mReminder.getUuId());
                 new DeleteFilesAsync(this).execute(mReminder.getUuId());
             } else {
-                RealmDb.getInstance().moveToTrash(mReminder.getUuId());
+                EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
+                control.stop();
             }
             finish();
         }

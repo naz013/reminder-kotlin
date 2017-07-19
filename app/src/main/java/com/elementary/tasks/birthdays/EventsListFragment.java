@@ -157,11 +157,9 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     editReminder(reminder.getUuId());
                     break;
                 case 3:
-                    if (RealmDb.getInstance().moveToTrash(reminder.getUuId())) {
-                        EventControl control = EventControlFactory.getController(getContext(), reminder.setRemoved(true));
-                        control.stop();
-                        reopenFragment();
-                    }
+                    EventControl control = EventControlFactory.getController(getContext(), reminder.setRemoved(true));
+                    control.stop();
+                    reopenFragment();
                     break;
             }
         }, items);
