@@ -132,7 +132,7 @@ public class BirthdayNotificationFragment extends BaseSettingsFragment {
                 getString(R.string.choose_file)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, types);
-        if (getPrefs().getBirthdayMelody().matches(Constants.DEFAULT)) {
+        if (getPrefs().getBirthdayMelody() == null || getPrefs().getBirthdayMelody().matches(Constants.DEFAULT)) {
             mItemSelect = 0;
         } else {
             mItemSelect = 1;
