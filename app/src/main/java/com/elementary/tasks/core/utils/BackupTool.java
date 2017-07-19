@@ -448,6 +448,7 @@ public final class BackupTool {
     }
 
     public void createNote(NoteItem item, CreateCallback callback) {
+        if (item == null) return;
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File file = null;
         File dir = MemoryUtil.getMailDir();
