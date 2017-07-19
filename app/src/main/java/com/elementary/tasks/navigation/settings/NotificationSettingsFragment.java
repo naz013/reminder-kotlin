@@ -535,7 +535,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
                 getString(R.string.choose_file)};
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_single_choice, types);
-        if (getPrefs().getMelodyFile().matches(Constants.DEFAULT)) {
+        if (getPrefs().getMelodyFile() == null || getPrefs().getMelodyFile().matches(Constants.DEFAULT)) {
             mItemSelect = 0;
         } else {
             mItemSelect = 1;
