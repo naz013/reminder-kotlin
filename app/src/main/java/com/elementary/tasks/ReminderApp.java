@@ -1,5 +1,7 @@
 package com.elementary.tasks;
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
@@ -42,6 +44,12 @@ public class ReminderApp extends MultiDexApplication {
     private static final long DB_VERSION = 2;
 
     private Tracker mTracker;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
