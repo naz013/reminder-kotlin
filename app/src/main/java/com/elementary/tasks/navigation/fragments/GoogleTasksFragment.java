@@ -63,7 +63,6 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
     public static final int MENU_ITEM_DELETE = 13;
     public static final int MENU_ITEM_CLEAR = 14;
 
-    private static final String TAG = "TasksFragment";
     private ViewPager pager;
     private ArrayList<TaskListWrapperItem> taskListDatum;
     private int currentPos;
@@ -154,7 +153,8 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         super.onResume();
         try {
             EventBus.getDefault().register(this);
-        } catch (org.greenrobot.eventbus.EventBusException ignored) {}
+        } catch (org.greenrobot.eventbus.EventBusException ignored) {
+        }
         if (getCallback() != null) {
             getCallback().onTitleChange(getStr(R.string.google_tasks));
             getCallback().onFragmentSelect(this);
@@ -168,7 +168,8 @@ public class GoogleTasksFragment extends BaseNavigationFragment {
         super.onPause();
         try {
             EventBus.getDefault().unregister(this);
-        } catch (org.greenrobot.eventbus.EventBusException ignored) {}
+        } catch (org.greenrobot.eventbus.EventBusException ignored) {
+        }
     }
 
     @Subscribe

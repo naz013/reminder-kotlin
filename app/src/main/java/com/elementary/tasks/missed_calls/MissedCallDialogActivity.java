@@ -81,11 +81,11 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         binding.container.setVisibility(View.GONE);
         binding.subjectContainer.setVisibility(View.GONE);
         loadImage(binding.bgImage);
-        FloatingActionButton buttonCancel = (FloatingActionButton) findViewById(R.id.buttonCancel);
-        FloatingActionButton buttonCall = (FloatingActionButton) findViewById(R.id.buttonCall);
-        FloatingActionButton buttonDelay = (FloatingActionButton) findViewById(R.id.buttonDelay);
-        FloatingActionButton buttonDelayFor = (FloatingActionButton) findViewById(R.id.buttonDelayFor);
-        FloatingActionButton buttonNotification = (FloatingActionButton) findViewById(R.id.buttonNotification);
+        FloatingActionButton buttonCancel = findViewById(R.id.buttonCancel);
+        FloatingActionButton buttonCall = findViewById(R.id.buttonCall);
+        FloatingActionButton buttonDelay = findViewById(R.id.buttonDelay);
+        FloatingActionButton buttonDelayFor = findViewById(R.id.buttonDelayFor);
+        FloatingActionButton buttonNotification = findViewById(R.id.buttonNotification);
         colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
                 buttonNotification, binding.buttonEdit);
         buttonDelay.setVisibility(View.GONE);
@@ -101,7 +101,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
-        TextView remText = (TextView) findViewById(R.id.remText);
+        TextView remText = findViewById(R.id.remText);
         String formattedTime = "";
         if (mCallItem != null) {
             try {

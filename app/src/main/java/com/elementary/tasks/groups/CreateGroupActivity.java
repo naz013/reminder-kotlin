@@ -94,7 +94,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         }
     }
 
-    private void saveCroup(){
+    private void saveCroup() {
         String text = binding.editField.getText().toString().trim();
         if (text.length() == 0) {
             binding.editField.setError(getString(R.string.must_be_not_empty));
@@ -154,7 +154,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         finish();
     }
 
-    private void setColor(int i){
+    private void setColor(int i) {
         color = i;
         ThemeUtil cs = ThemeUtil.getInstance(this);
         binding.appBar.setBackgroundColor(cs.getColor(cs.getCategoryColor(i)));

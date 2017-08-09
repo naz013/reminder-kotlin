@@ -25,7 +25,7 @@ public class BackupReminderTask extends AsyncTask<Void, Void, Void> {
 
     private Context mContext;
 
-    public BackupReminderTask(Context context){
+    public BackupReminderTask(Context context) {
         this.mContext = context;
     }
 

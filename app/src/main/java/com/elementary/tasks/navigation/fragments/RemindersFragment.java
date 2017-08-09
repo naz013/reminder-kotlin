@@ -69,8 +69,6 @@ import java.util.Set;
 
 public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener {
 
-    private static final String TAG = "RemindersFragment";
-
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
 

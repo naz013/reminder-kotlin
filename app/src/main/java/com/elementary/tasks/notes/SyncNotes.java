@@ -39,7 +39,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
     private NotificationCompat.Builder builder;
     private SyncListener mListener;
 
-    public SyncNotes(Context context, SyncListener mListener){
+    public SyncNotes(Context context, SyncListener mListener) {
         this.mContext = context;
         builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM);
         this.mListener = mListener;
@@ -93,7 +93,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
         }
-        if (Module.isPro()){
+        if (Module.isPro()) {
             builder.setContentText(mContext.getString(R.string.app_name_pro));
         } else {
             builder.setContentText(mContext.getString(R.string.app_name));

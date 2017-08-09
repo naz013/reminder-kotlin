@@ -97,16 +97,16 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
     }
 
     private void showPlace() {
-        if (mItem != null){
+        if (mItem != null) {
             mGoogleMap.addMarker(new LatLng(mItem.getLat(), mItem.getLng()), mItem.getTitle(), true, true, -1);
             binding.placeName.setText(mItem.getTitle());
         }
     }
 
-    private void addPlace(){
-        if (place != null){
+    private void addPlace() {
+        if (place != null) {
             String name = binding.placeName.getText().toString().trim();
-            if (name.matches("")){
+            if (name.matches("")) {
                 name = placeTitle;
             }
             if (name == null || name.matches("")) {
@@ -115,7 +115,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
             }
             Double latitude = place.latitude;
             Double longitude = place.longitude;
-            if (mItem != null){
+            if (mItem != null) {
                 mItem.setTitle(name);
                 mItem.setLat(latitude);
                 mItem.setLng(longitude);

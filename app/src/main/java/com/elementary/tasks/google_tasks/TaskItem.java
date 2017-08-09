@@ -56,7 +56,8 @@ public class TaskItem {
     @SerializedName("hidden")
     private int hidden;
 
-    public TaskItem() {}
+    public TaskItem() {
+    }
 
     public TaskItem(RealmTask item) {
         this.listId = item.getListId();

@@ -32,7 +32,6 @@ import java.util.Random;
 
 public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
 
-    private static final String TAG = "SyncGoogleTasksAsync";
     private Context mContext;
     private TasksCallback mListener;
 

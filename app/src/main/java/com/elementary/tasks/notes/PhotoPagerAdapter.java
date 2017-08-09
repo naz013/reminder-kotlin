@@ -17,8 +17,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 class PhotoPagerAdapter extends PagerAdapter {
 
-    private static final String TAG = "PhotoPagerAdapter";
-
     private LayoutInflater mLayoutInflater;
     private List<NoteImage> mPhotosUrl;
 

@@ -94,7 +94,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
     private static final int CONTACTS_REQUEST_E = 501;
-    private static final int CONTACTS_REQUEST_C = 502;
     private static final String TAG = "CreateReminderActivity";
     private static final String SHOWCASE = "reminder_showcase";
 
@@ -936,7 +935,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                         context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.list_item_navigation, null);
             }
-            txtTitle = (TextViewWithIcon) convertView.findViewById(R.id.txtTitle);
+            txtTitle = convertView.findViewById(R.id.txtTitle);
             txtTitle.setIcon(0);
             txtTitle.setText(spinnerNavItem.get(position).getTitle());
             txtTitle.setTextColor(context.getResources().getColor(R.color.whitePrimary));
@@ -951,9 +950,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                         context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 convertView = mInflater.inflate(R.layout.list_item_navigation, null);
             }
-            RelativeLayout itemBg = (RelativeLayout) convertView.findViewById(R.id.itemBg);
+            RelativeLayout itemBg = convertView.findViewById(R.id.itemBg);
             itemBg.setBackgroundColor(getThemeUtil().getSpinnerStyle());
-            txtTitle = (TextViewWithIcon) convertView.findViewById(R.id.txtTitle);
+            txtTitle = convertView.findViewById(R.id.txtTitle);
             txtTitle.setIcon(spinnerNavItem.get(position).getIcon());
             if (getThemeUtil().isDark()) {
                 txtTitle.setTextColor(getThemeUtil().getColor(R.color.whitePrimary));

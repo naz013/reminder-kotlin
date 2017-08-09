@@ -92,6 +92,7 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ListItemTaskItemCardBinding binding;
+
         public ViewHolder(final View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);

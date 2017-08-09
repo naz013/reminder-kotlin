@@ -48,9 +48,11 @@ public class GroupsFragment extends BaseNavigationFragment {
         @Override
         public void onItemLongClicked(int position, View view) {
             String[] items = {getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete)};
-            if (mAdapter.getItemCount() == 1) items = new String[]{getString(R.string.change_color), getString(R.string.edit)};
+            if (mAdapter.getItemCount() == 1) {
+                items = new String[]{getString(R.string.change_color), getString(R.string.edit)};
+            }
             Dialogues.showLCAM(getContext(), item -> {
-                switch (item){
+                switch (item) {
                     case 0:
                         changeColor(mAdapter.getItem(position).getUuId());
                         break;
@@ -82,7 +84,7 @@ public class GroupsFragment extends BaseNavigationFragment {
                 getString(R.string.yellow), getString(R.string.orange),
                 getString(R.string.cyan), getString(R.string.pink),
                 getString(R.string.teal), getString(R.string.amber)};
-        if (Module.isPro()){
+        if (Module.isPro()) {
             items = new String[]{getString(R.string.red), getString(R.string.purple),
                     getString(R.string.green), getString(R.string.green_light),
                     getString(R.string.blue), getString(R.string.blue_light),

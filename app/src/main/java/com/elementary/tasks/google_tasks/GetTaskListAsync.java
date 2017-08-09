@@ -32,7 +32,6 @@ import java.util.Random;
 
 public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
 
-    private static final String TAG = "GetTasksListsAsync";
     private Context mContext;
     private TasksCallback mListener;
 

@@ -69,7 +69,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int PRESS_AGAIN_TIME = 2000;
-    private static final String TAG = "MainActivity";
     private static final String CURRENT_SCREEN = "current_screen";
 
     private ActivityMainBinding binding;
@@ -398,10 +397,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
         View view = mNavigationView.getHeaderView(0);
-        mMainImageView = (ImageView) view.findViewById(R.id.headerImage);
+        mMainImageView = view.findViewById(R.id.headerImage);
         mMainImageView.setOnClickListener(view1 -> openImageScreen());
         view.findViewById(R.id.headerItem).setOnClickListener(view12 -> openImageScreen());
-        RoboTextView nameView = (RoboTextView) view.findViewById(R.id.appNameBanner);
+        RoboTextView nameView = view.findViewById(R.id.appNameBanner);
         String appName = getString(R.string.app_name);
         if (Module.isPro()) {
             appName = getString(R.string.app_name_pro);
@@ -417,7 +416,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private void setMenuVisible() {
         Menu menu = mNavigationView.getMenu();
         menu.getItem(4).setVisible(Google.getInstance(this) != null);
-        if (!Module.isPro() && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")){
+        if (!Module.isPro() && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")) {
             menu.getItem(13).setVisible(true);
         } else {
             menu.getItem(13).setVisible(false);

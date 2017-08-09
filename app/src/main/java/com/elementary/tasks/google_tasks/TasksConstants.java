@@ -31,5 +31,6 @@ public class TasksConstants {
     public static final String EDIT = "edit";
     public static final String CREATE = "create";
 
-    private TasksConstants() {}
+    private TasksConstants() {
+    }
 }

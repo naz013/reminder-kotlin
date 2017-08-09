@@ -88,7 +88,7 @@ public class CalendarFragment extends BaseCalendarFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_voice:
-                if (getCallback() != null){
+                if (getCallback() != null) {
                     getCallback().onVoiceAction();
                 }
                 return true;

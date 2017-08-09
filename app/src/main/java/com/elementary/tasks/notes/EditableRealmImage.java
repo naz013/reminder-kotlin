@@ -26,7 +26,8 @@ public class EditableRealmImage extends RealmObject {
     @PrimaryKey
     private int id = 0;
 
-    public EditableRealmImage() {}
+    public EditableRealmImage() {
+    }
 
     public EditableRealmImage(NoteImage image) {
         this.image = image.getImage();

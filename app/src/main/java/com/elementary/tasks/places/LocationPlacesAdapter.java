@@ -74,7 +74,9 @@ public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAd
         Reminder item = mDataList.get(position);
         Place place = item.getPlaces().get(0);
         String name = place.getName();
-        if (item.getPlaces().size() > 1) name = item.getSummary() + " (" + item.getPlaces().size() + ")";
+        if (item.getPlaces().size() > 1) {
+            name = item.getSummary() + " (" + item.getPlaces().size() + ")";
+        }
         holder.binding.setItem(place);
         holder.binding.setName(name);
     }

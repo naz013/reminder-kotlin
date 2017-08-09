@@ -179,7 +179,7 @@ public class EmailFragment extends RepeatableTypeFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 attachment = data.getStringExtra(Constants.FILE_PICKED);
                 if (attachment != null) {
                     File file = new File(attachment);

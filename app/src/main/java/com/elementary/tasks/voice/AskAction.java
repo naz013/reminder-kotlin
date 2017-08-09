@@ -18,5 +18,6 @@ package com.elementary.tasks.voice;
 
 interface AskAction {
     void onYes();
+
     void onNo();
 }

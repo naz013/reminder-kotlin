@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;

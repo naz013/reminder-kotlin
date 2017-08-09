@@ -31,7 +31,7 @@ public class GooglePlaceItem {
     }
 
     public GooglePlaceItem(String name, String id, String icon, String address,
-                           LatLng position, List<String> types, boolean selected){
+                           LatLng position, List<String> types, boolean selected) {
         this.name = name;
         this.id = id;
         this.icon = icon;

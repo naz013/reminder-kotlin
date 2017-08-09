@@ -54,7 +54,8 @@ public abstract class BaseFragment extends Fragment {
         if (mCallback == null) {
             try {
                 mCallback = (FragmentCallback) context;
-            } catch (ClassCastException e) {}
+            } catch (ClassCastException e) {
+            }
         }
     }
 
@@ -67,7 +68,8 @@ public abstract class BaseFragment extends Fragment {
         if (mCallback == null) {
             try {
                 mCallback = (FragmentCallback) activity;
-            } catch (ClassCastException e) {}
+            } catch (ClassCastException e) {
+            }
         }
     }
 
