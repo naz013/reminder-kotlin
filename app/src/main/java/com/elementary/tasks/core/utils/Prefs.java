@@ -280,7 +280,11 @@ public final class Prefs extends SharedPrefs {
     }
 
     public MonthImage getCalendarImages() {
-        return (MonthImage) getObject(CALENDAR_IMAGES, MonthImage.class);
+        try {
+            return (MonthImage) getObject(CALENDAR_IMAGES, MonthImage.class);
+        } catch (ClassCastException e) {
+            return new MonthImage();
+        }
     }
 
     public void setCalendarImages(MonthImage value) {
