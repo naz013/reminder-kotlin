@@ -931,28 +931,6 @@ public final class ThemeUtil {
         return id;
     }
 
-    @StyleRes
-    public int getFullscreenStyle() {
-        int id;
-        if (isDark()) {
-            id = R.style.HomeDarkFullscreen;
-        } else {
-            id = R.style.HomeWhiteFullscreen;
-        }
-        return id;
-    }
-
-    @StyleRes
-    public int getTransparentStyle() {
-        int id;
-        if (isDark()) {
-            id = R.style.HomeDarkTranslucent;
-        } else {
-            id = R.style.HomeWhiteTranslucent;
-        }
-        return id;
-    }
-
     @ColorInt
     public int getBackgroundStyle() {
         int id;
@@ -969,15 +947,6 @@ public final class ThemeUtil {
     }
 
     @ColorInt
-    public int getStatusBarStyle() {
-        if (isDark()) {
-            return getColor(R.color.material_grey);
-        } else {
-            return getColor(colorPrimaryDark());
-        }
-    }
-
-    @ColorInt
     public int getCardStyle() {
         int color;
         if (isDark()) {
@@ -990,14 +959,6 @@ public final class ThemeUtil {
             color = getColor(R.color.whitePrimary);
         }
         return color;
-    }
-
-    public int getRequestOrientation() {
-        return Prefs.getInstance(getContext()).getScreenOrientation();
-    }
-
-    public Marker getMarkerRadiusStyle() {
-        return getMarkerRadiusStyle(Prefs.getInstance(getContext()).getMarkerStyle());
     }
 
     public Marker getMarkerRadiusStyle(int color) {

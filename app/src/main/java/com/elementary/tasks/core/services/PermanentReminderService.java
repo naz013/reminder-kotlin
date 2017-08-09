@@ -141,18 +141,18 @@ public class PermanentReminderService extends Service {
         long prevTime = 0;
         for (int i = 0; i < reminders.size(); i++) {
             Reminder item = reminders.get(i);
-            if (item.getDateTime() > System.currentTimeMillis()){
-                if (prevTime == 0){
+            if (item.getDateTime() > System.currentTimeMillis()) {
+                if (prevTime == 0) {
                     prevTime = item.getDateTime();
                     event = item.getSummary();
-                } else if (item.getDateTime() < prevTime){
+                } else if (item.getDateTime() < prevTime) {
                     prevTime = item.getDateTime();
                     event = item.getSummary();
                 }
             }
         }
-        if (count != 0){
-            if (!TextUtils.isEmpty(event)){
+        if (count != 0) {
+            if (!TextUtils.isEmpty(event)) {
                 remoteViews.setTextViewText(R.id.text, event);
                 remoteViews.setViewVisibility(R.id.featured, View.VISIBLE);
             } else {

@@ -128,7 +128,7 @@ public class AddBirthdayActivity extends ThemedActivity {
                 } else {
                     mItem = BackupTool.getInstance().getBirthday(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException | IllegalStateException e) {
+            } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }

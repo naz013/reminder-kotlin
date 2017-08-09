@@ -39,7 +39,7 @@ public final class ImageCheck {
 
     private static ImageCheck instance;
 
-    private ImageCheck(){
+    private ImageCheck() {
     }
 
     public static ImageCheck getInstance() {
@@ -49,7 +49,7 @@ public final class ImageCheck {
         return instance;
     }
 
-    public String getImage(int month, long id){
+    public String getImage(int month, long id) {
         String res = null;
         File sdPath = Environment.getExternalStorageDirectory();
         File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + "image_cache");
@@ -63,8 +63,8 @@ public final class ImageCheck {
         return res;
     }
 
-    public boolean isImage(int month, long id){
-        if (isSdPresent()){
+    public boolean isImage(int month, long id) {
+        if (isSdPresent()) {
             boolean res = false;
             File sdPath = Environment.getExternalStorageDirectory();
             File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + "image_cache");
@@ -81,7 +81,7 @@ public final class ImageCheck {
         }
     }
 
-    public String getImageUrl(int month, long id){
+    public String getImageUrl(int month, long id) {
         if (id != -1) {
             return BASE_URL + id;
         } else {
@@ -89,7 +89,7 @@ public final class ImageCheck {
         }
     }
 
-    public String getImageName(int month, long id){
+    public String getImageName(int month, long id) {
         if (id != -1) {
             return getFileName(id);
         } else {

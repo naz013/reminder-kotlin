@@ -56,6 +56,7 @@ public class ReminderActionService extends Service {
 
     private void showReminder(String id) {
         Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (reminder == null) return;
         Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(getApplicationContext(), id);
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         startActivity(notificationIntent);
@@ -70,6 +71,7 @@ public class ReminderActionService extends Service {
 
     private void hidePermanent(String id) {
         Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (reminder == null) return;
         EventControl control = EventControlFactory.getController(getApplicationContext(), reminder);
         control.next();
         EventBus.getDefault().post(new ReminderUpdateEvent());

@@ -45,42 +45,42 @@ public class DayViewProvider {
     private boolean isReminders;
     private Context mContext;
 
-    public DayViewProvider(Context mContext){
+    public DayViewProvider(Context mContext) {
         this.mContext = mContext;
         data = new ArrayList<>();
     }
 
-    public void setBirthdays(boolean isBirthdays){
+    public void setBirthdays(boolean isBirthdays) {
         this.isBirthdays = isBirthdays;
     }
 
-    public void setReminders(boolean isReminders){
+    public void setReminders(boolean isReminders) {
         this.isReminders = isReminders;
     }
 
-    public void setTime(long time){
+    public void setTime(long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         this.hour = calendar.get(Calendar.HOUR_OF_DAY);
         this.minute = calendar.get(Calendar.MINUTE);
     }
 
-    public void setFeature(boolean isFeature){
+    public void setFeature(boolean isFeature) {
         this.isFeature = isFeature;
     }
 
-    public List<EventsItem> getData(){
+    public List<EventsItem> getData() {
         return data;
     }
 
-    public List<EventsItem> getMatches(int day, int month, int year, boolean sort){
+    public List<EventsItem> getMatches(int day, int month, int year, boolean sort) {
         List<EventsItem> res = new ArrayList<>();
-        for (EventsItem item : data){
+        for (EventsItem item : data) {
             int mDay = item.getDay();
             int mMonth = item.getMonth();
             int mYear = item.getYear();
             int type = item.getViewType();
-            if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month){
+            if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month) {
                 res.add(item);
             } else {
                 if (mDay == day && mMonth == month && mYear == year) {
@@ -118,7 +118,7 @@ public class DayViewProvider {
         return res;
     }
 
-    public void fillArray(){
+    public void fillArray() {
         if (isBirthdays) {
             loadBirthdays();
         }
@@ -127,7 +127,7 @@ public class DayViewProvider {
         }
     }
 
-    private void loadBirthdays(){
+    private void loadBirthdays() {
         List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
         ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int color = cs.getColor(cs.colorBirthdayCalendar());
@@ -154,7 +154,7 @@ public class DayViewProvider {
         }
     }
 
-    private void loadReminders(){
+    private void loadReminders() {
         List<GroupItem> allGroups = RealmDb.getInstance().getAllGroups();
         Map<String, Integer> map = new HashMap<>();
         for (GroupItem item : allGroups) {
@@ -217,7 +217,6 @@ public class DayViewProvider {
                             max = limit - count;
                         }
                         do {
-//                            item.setEventTime(TimeUtil.getGmtFromDateTime(eventTime));
                             eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item);
                             calendar1.setTimeInMillis(eventTime);
                             if (eventTime == item.getDateTime()) {

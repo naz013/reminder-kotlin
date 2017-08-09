@@ -65,7 +65,7 @@ public class JParser {
         }
     }
 
-    public JsonModel parse(){
+    public JsonModel parse() {
         if (!jsonObject.has(Constants.COLUMN_TECH_VAR)) {
             JsonModel model = new JsonModel();
             model.setAction(getAction());

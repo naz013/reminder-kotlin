@@ -44,22 +44,23 @@ class JMelody {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JMelody->Volume: " + volume +
                 "->Melody: " + melodyPath;
     }
 
-    JMelody(JSONObject jsonObject){
+    JMelody(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JMelody(){
+    JMelody() {
         jsonObject = new JSONObject();
         setMelodyPath(null);
         setVolume(-1);
@@ -73,7 +74,7 @@ class JMelody {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(PATH)){
+        if (jsonObject.has(PATH)) {
             try {
                 melodyPath = jsonObject.getString(PATH);
             } catch (JSONException e) {
@@ -84,6 +85,7 @@ class JMelody {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

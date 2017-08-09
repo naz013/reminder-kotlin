@@ -6,13 +6,13 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -43,7 +43,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class EmailAutoCompleteView extends AutoCompleteTextView {
+public class EmailAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     private static final String TAG = "EmailAutoCompleteView";
 
@@ -144,8 +144,8 @@ public class EmailAutoCompleteView extends AutoCompleteTextView {
                 view = EmailItemLayoutBinding.inflate(LayoutInflater.from(mContext), viewGroup, false).getRoot();
             }
             EmailItem item = items.get(i);
-            RoboTextView nameView = (RoboTextView) view.findViewById(R.id.nameView);
-            RoboTextView emailView = (RoboTextView) view.findViewById(R.id.emailView);
+            RoboTextView nameView = view.findViewById(R.id.nameView);
+            RoboTextView emailView = view.findViewById(R.id.emailView);
             nameView.setText(item.getName());
             emailView.setText(item.getEmail());
             return view;
@@ -201,7 +201,7 @@ public class EmailAutoCompleteView extends AutoCompleteTextView {
         @Override
         protected List<EmailItem> doInBackground(Void... voids) {
             List<EmailItem> list = new ArrayList<>();
-            HashSet<String> emlRecsHS = new HashSet<String>();
+            HashSet<String> emlRecsHS = new HashSet<>();
             ContentResolver cr = mContext.getContentResolver();
             String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
                     ContactsContract.Contacts.DISPLAY_NAME,

@@ -44,12 +44,13 @@ public class Permissions {
     public static final String CALL_PHONE = Manifest.permission.CALL_PHONE;
 
     public static final String SEND_SMS = Manifest.permission.SEND_SMS;
-    
+
     public static final String MANAGE_DOCUMENTS = Manifest.permission.MANAGE_DOCUMENTS;
     public static final String READ_CALLS = Manifest.permission.READ_CALL_LOG;
     public static final String RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
 
-    private Permissions() {}
+    private Permissions() {
+    }
 
     public static boolean checkPermission(Context a, String... permissions) {
         if (!Module.isMarshmallow()) {
@@ -68,7 +69,7 @@ public class Permissions {
         return !Module.isMarshmallow() || ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static void requestPermission(Activity a, int requestCode, String... permission){
+    public static void requestPermission(Activity a, int requestCode, String... permission) {
         int size = permission.length;
         if (size == 1) {
             a.requestPermissions(permission, requestCode);

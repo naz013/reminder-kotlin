@@ -189,6 +189,7 @@ public abstract class FilterableAdapter<V, Q, VH extends RecyclerView.ViewHolder
 
     public interface Filter<V, Q> {
         boolean filter(V v, Q query);
+
         void onFilterEnd(List<V> list, int size, Q query);
     }
 }

@@ -34,6 +34,7 @@ import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityFollowLayoutBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -151,9 +152,9 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(mCurrentTime);
         int currDay = c.get(Calendar.DAY_OF_WEEK);
-        if (currDay == Calendar.FRIDAY){
+        if (currDay == Calendar.FRIDAY) {
             c.setTimeInMillis(mCurrentTime + (1000 * 60 * 60 * 24 * 3));
-        } else if (currDay == Calendar.SATURDAY){
+        } else if (currDay == Calendar.SATURDAY) {
             c.setTimeInMillis(mCurrentTime + (1000 * 60 * 60 * 24 * 2));
         } else {
             c.setTimeInMillis(mCurrentTime + (1000 * 60 * 60 * 24));
@@ -204,10 +205,10 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private void initExportChecks() {
         mCalendarCheck = binding.exportCheck;
         mTasksCheck = binding.taskExport;
-        if (mCalendar || mStock){
+        if (mCalendar || mStock) {
             mCalendarCheck.setVisibility(View.VISIBLE);
         }
-        if (mTasks){
+        if (mTasks) {
             mTasksCheck.setVisibility(View.VISIBLE);
         }
         if (!mCalendar && !mStock && !mTasks) {
@@ -302,18 +303,20 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         }
     };
 
-    private void saveDateTask(){
+    private void saveDateTask() {
         String text = mMessageField.getText().toString().trim();
-        if (text.matches("") && mMessageRadio.isChecked()){
+        if (text.matches("") && mMessageRadio.isChecked()) {
             mMessageField.setError(getString(R.string.must_be_not_empty));
             return;
         }
         int type = getType();
         setUpTimes();
-        String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
         long due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0);
         Reminder reminder = new Reminder();
-        reminder.setGroupUuId(categoryId);
+        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        if (def != null) {
+            reminder.setGroupUuId(def.getUuId());
+        }
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setType(type);
@@ -332,11 +335,11 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     private void setUpTimes() {
-        if (mNextWorkingRadio.isChecked()){
+        if (mNextWorkingRadio.isChecked()) {
             setUpNextBusiness();
-        } else if (mTomorrowRadio.isChecked()){
+        } else if (mTomorrowRadio.isChecked()) {
             setUpTomorrow();
-        } else if (mCustomRadio.isChecked()){
+        } else if (mCustomRadio.isChecked()) {
             mDay = mCustomDay;
             mHour = mCustomHour;
             mMinute = mCustomMinute;
@@ -358,7 +361,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         else return Reminder.BY_DATE_SMS;
     }
 
-    public void removeFlags(){
+    public void removeFlags() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
@@ -367,7 +370,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
+        switch (buttonView.getId()) {
             case R.id.timeTomorrow:
                 if (mTomorrowRadio.isChecked()) {
                     mNextWorkingRadio.setChecked(false);

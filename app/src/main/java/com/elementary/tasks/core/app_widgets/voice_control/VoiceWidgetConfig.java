@@ -41,8 +41,8 @@ import java.util.List;
 
 public class VoiceWidgetConfig extends ThemedActivity {
 
-    public static final  String VOICE_WIDGET_PREF = "widget_pref";
-    public static final  String VOICE_WIDGET_COLOR = "widget_color_";
+    public static final String VOICE_WIDGET_PREF = "widget_pref";
+    public static final String VOICE_WIDGET_COLOR = "widget_color_";
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     private Intent resultValue;
@@ -57,12 +57,12 @@ public class VoiceWidgetConfig extends ThemedActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.voice_widget_config_layout);
         initActionBar();
 
-        Spinner headerBgColor = (Spinner) findViewById(R.id.headerBgColor);
-            boolean isPro = Module.isPro();
+        Spinner headerBgColor = findViewById(R.id.headerBgColor);
+        boolean isPro = Module.isPro();
         List<String> spinnerArray = new ArrayList<>();
         String[] colorsArray = getResources().getStringArray(R.array.color_list);
         Collections.addAll(spinnerArray, colorsArray);
-        if (isPro){
+        if (isPro) {
             spinnerArray.add(getString(R.string.dark_purple));
             spinnerArray.add(getString(R.string.dark_orange));
             spinnerArray.add(getString(R.string.lime));

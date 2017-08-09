@@ -31,7 +31,8 @@ import com.elementary.tasks.core.utils.Module;
 
 public final class WidgetUtils {
 
-    private WidgetUtils() {}
+    private WidgetUtils() {
+    }
 
     public static void setIcon(Context context, RemoteViews rv, @DrawableRes int iconId, @IdRes int viewId) {
         if (Module.isLollipop()) {
@@ -53,7 +54,7 @@ public final class WidgetUtils {
     }
 
     @ColorRes
-    public static int getColor(int code){
+    public static int getColor(int code) {
         int color = 0;
         switch (code) {
             case 0:
@@ -99,8 +100,8 @@ public final class WidgetUtils {
                 color = android.R.color.transparent;
                 break;
             default:
-                if (Module.isPro()){
-                    switch (code){
+                if (Module.isPro()) {
+                    switch (code) {
                         case 14:
                             color = R.color.purpleDeepPrimary;
                             break;
@@ -123,7 +124,7 @@ public final class WidgetUtils {
     }
 
     @DrawableRes
-    public static int getDrawable(int code){
+    public static int getDrawable(int code) {
         int drawable = 0;
         switch (code) {
             case 0:
@@ -166,8 +167,8 @@ public final class WidgetUtils {
                 drawable = R.drawable.rectangle_stroke_transparent;
                 break;
             default:
-                if (Module.isPro()){
-                    switch (code){
+                if (Module.isPro()) {
+                    switch (code) {
                         case 13:
                             drawable = R.drawable.rectangle_stroke_deep_purple;
                             break;

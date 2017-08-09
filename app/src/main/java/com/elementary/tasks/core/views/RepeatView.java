@@ -102,11 +102,11 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         if (isInEditMode()) return;
         View.inflate(context, R.layout.repeat_view_layout, this);
         setOrientation(VERTICAL);
-        repeatTitle = (RoboEditText) findViewById(R.id.repeatTitle);
-        eventView = (RoboTextView) findViewById(R.id.eventView);
-        predictionView = (LinearLayout) findViewById(R.id.predictionView);
-        repeatViewSeek = (SeekBar) findViewById(R.id.repeatViewSeek);
-        Spinner mRepeatType = (Spinner) findViewById(R.id.repeatType);
+        repeatTitle = findViewById(R.id.repeatTitle);
+        eventView = findViewById(R.id.eventView);
+        predictionView = findViewById(R.id.predictionView);
+        repeatViewSeek = findViewById(R.id.repeatViewSeek);
+        Spinner mRepeatType = findViewById(R.id.repeatType);
         mRepeatType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -132,7 +132,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         repeatTitle.setOnClickListener(v -> {
             imm = (InputMethodManager) mContext.getSystemService(
                     Context.INPUT_METHOD_SERVICE);
-            if (!imm.isActive(repeatTitle)){
+            if (!imm.isActive(repeatTitle)) {
                 imm.showSoftInput(repeatTitle, 0);
             }
         });
@@ -206,11 +206,11 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         this.listener = listener;
     }
 
-    public void setMax(int max){
+    public void setMax(int max) {
         repeatViewSeek.setMax(max);
     }
 
-    private void setProgress(int progress){
+    private void setProgress(int progress) {
         this.repeat = progress;
         if (progress < repeatViewSeek.getMax()) {
             repeatViewSeek.setProgress(progress);
@@ -223,7 +223,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
         repeatTitle.setSelection(repeatTitle.getText().length());
     }
 
-    public void setRepeat(long mills){
+    public void setRepeat(long mills) {
         if (mills == 0) {
             setProgress(0);
             return;
@@ -270,7 +270,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         this.repeat = progress;
         repeatTitle.setText(String.valueOf(progress));
-        if (listener != null){
+        if (listener != null) {
             listener.onProgress(progress);
         }
         updatePrediction(progress);
@@ -299,7 +299,7 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
             if (res < repeatViewSeek.getMax()) {
                 setProgress(res);
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

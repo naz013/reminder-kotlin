@@ -27,7 +27,8 @@ public class RealmCalendarEvent extends RealmObject {
     private String event;
     private long eventId;
 
-    public RealmCalendarEvent() {}
+    public RealmCalendarEvent() {
+    }
 
     public RealmCalendarEvent(CalendarEvent item) {
         this.uuId = item.getUuId();

@@ -53,23 +53,24 @@ class JExclusion {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JExclusion->From: " + from +
                 "->To: " + to +
                 "->Hours: " + Collections.singletonList(hours);
     }
 
-    JExclusion(JSONObject jsonObject){
+    JExclusion(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JExclusion(){
+    JExclusion() {
         jsonObject = new JSONObject();
         addExclusion(null, null);
         addExclusion(null);
@@ -83,15 +84,16 @@ class JExclusion {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(TO_HOUR)){
+        if (jsonObject.has(TO_HOUR)) {
             try {
                 to = jsonObject.getString(TO_HOUR);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(HOURS)){
-            Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+        if (jsonObject.has(HOURS)) {
+            Type collectionType = new TypeToken<List<Integer>>() {
+            }.getType();
             try {
                 hours = new Gson().fromJson(jsonObject.get(HOURS).toString(), collectionType);
             } catch (JSONException e) {
@@ -102,6 +104,7 @@ class JExclusion {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {
@@ -110,10 +113,11 @@ class JExclusion {
 
     /**
      * Add range exclusion to Timer.
+     *
      * @param fromHour start time.
-     * @param toHour end time.
+     * @param toHour   end time.
      */
-    private void addExclusion(String fromHour, String toHour){
+    private void addExclusion(String fromHour, String toHour) {
         this.from = fromHour;
         this.to = toHour;
         try {
@@ -126,9 +130,10 @@ class JExclusion {
 
     /**
      * Add excluded hours to Timer.
+     *
      * @param hours list of excluded hours.
      */
-    private void addExclusion(List<Integer> hours){
+    private void addExclusion(List<Integer> hours) {
         if (hours != null) {
             this.hours = hours;
             JSONArray jsonArray = new JSONArray();
@@ -145,9 +150,10 @@ class JExclusion {
 
     /**
      * Get list of excluded hours from Timer.
+     *
      * @return list of hours.
      */
-    public List<Integer> getHours(){
+    public List<Integer> getHours() {
         return hours;
     }
 }

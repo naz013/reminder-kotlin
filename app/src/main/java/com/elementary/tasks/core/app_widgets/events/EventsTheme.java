@@ -43,7 +43,8 @@ public class EventsTheme implements Parcelable {
     private int windowColor;
     private int windowTextColor;
 
-    private EventsTheme() {}
+    private EventsTheme() {
+    }
 
     public EventsTheme(@ColorRes int headerColor, @ColorRes int backgroundColor, @ColorInt int titleColor,
                        @DrawableRes int plusIcon, @DrawableRes int settingsIcon, @DrawableRes int voiceIcon,
@@ -117,11 +118,11 @@ public class EventsTheme implements Parcelable {
         return plusIcon;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    private static int getResColor(Context ctx, int res){
+    private static int getResColor(Context ctx, int res) {
         return ctx.getResources().getColor(res);
     }
 

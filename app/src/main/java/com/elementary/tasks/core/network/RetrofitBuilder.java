@@ -25,12 +25,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class RetrofitBuilder {
 
-    private RetrofitBuilder (){}
+    private RetrofitBuilder() {
+    }
 
     private static Retrofit retrofit;
     private static Retrofit retrofitPlaces;
 
-    private static Retrofit getRetrofitBuilder(){
+    private static Retrofit getRetrofitBuilder() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(UnsplashApi.BASE_URL)
@@ -41,7 +42,7 @@ public final class RetrofitBuilder {
         return retrofit;
     }
 
-    private static Retrofit getPlacesBuilder(){
+    private static Retrofit getPlacesBuilder() {
         if (retrofitPlaces == null) {
             retrofitPlaces = new Retrofit.Builder()
                     .baseUrl(PlacesApi.BASE_URL)
@@ -60,15 +61,15 @@ public final class RetrofitBuilder {
         return placesApi;
     }
 
-    public static UnsplashApi getUnsplashApi(){
+    public static UnsplashApi getUnsplashApi() {
         return api;
     }
 
-    public static String getImageLink(long id){
+    public static String getImageLink(long id) {
         return UnsplashApi.BASE_URL + "/1280/768?image=" + id;
     }
 
-    public static String getImageLink(long id, int width, int height){
+    public static String getImageLink(long id, int width, int height) {
         return UnsplashApi.BASE_URL + "/" + width + "/" + height + "?image=" + id;
     }
 

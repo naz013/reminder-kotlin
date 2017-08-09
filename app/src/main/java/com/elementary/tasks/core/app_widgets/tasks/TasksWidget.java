@@ -48,7 +48,7 @@ public class TasksWidget extends AppWidgetProvider {
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.tasks_widget_layout);
         int theme = sp.getInt(TasksWidgetConfig.TASKS_WIDGET_THEME + widgetID, 0);
         TasksTheme tasksTheme = TasksTheme.getThemes(context).get(theme);
@@ -84,8 +84,7 @@ public class TasksWidget extends AppWidgetProvider {
         adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         rv.setRemoteAdapter(android.R.id.list, adapter);
         appWidgetManager.updateAppWidget(widgetID, rv);
-        appWidgetManager.notifyAppWidgetViewDataChanged(widgetID,
-                android.R.id.list);
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, android.R.id.list);
     }
 
     @Override

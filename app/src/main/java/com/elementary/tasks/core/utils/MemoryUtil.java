@@ -49,7 +49,8 @@ public class MemoryUtil {
     public static final String DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates";
     public static final String DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences";
 
-    private MemoryUtil() {}
+    private MemoryUtil() {
+    }
 
     public static boolean isSdPresent() {
         String state = Environment.getExternalStorageState();

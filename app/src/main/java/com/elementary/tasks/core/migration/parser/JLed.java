@@ -42,22 +42,23 @@ class JLed {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JLed->Color: " + color +
                 "->Status: " + status;
     }
 
-    JLed(JSONObject jsonObject){
+    JLed(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JLed(){
+    JLed() {
         jsonObject = new JSONObject();
         setColor(0);
         setStatus(-1);
@@ -71,7 +72,7 @@ class JLed {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(STATUS)){
+        if (jsonObject.has(STATUS)) {
             try {
                 status = jsonObject.getInt(STATUS);
             } catch (JSONException e) {
@@ -82,6 +83,7 @@ class JLed {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

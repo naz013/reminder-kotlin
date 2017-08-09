@@ -47,10 +47,11 @@ class JShopping {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JShopping->Summary: " + summary +
                 "->Date: " + TimeUtil.getFullDateTime(dateTime, true, true) +
                 "->UUID: " + uuId +
@@ -63,7 +64,7 @@ class JShopping {
      */
     private JSONObject jsonObject;
 
-    JShopping(JSONObject jsonObject){
+    JShopping(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
@@ -78,21 +79,21 @@ class JShopping {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(STATUS)){
+        if (jsonObject.has(STATUS)) {
             try {
                 status = jsonObject.getInt(STATUS);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(DELETED)){
+        if (jsonObject.has(DELETED)) {
             try {
                 deleted = jsonObject.getInt(DELETED);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(DATE)){
+        if (jsonObject.has(DATE)) {
             try {
                 dateTime = jsonObject.getLong(DATE);
             } catch (JSONException e) {
@@ -110,6 +111,7 @@ class JShopping {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

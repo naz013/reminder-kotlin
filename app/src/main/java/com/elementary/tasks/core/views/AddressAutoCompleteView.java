@@ -47,8 +47,6 @@ public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
     private Context mContext;
     private Typeface mTypeface;
     private List<Address> foundPlaces;
-    private ArrayAdapter<String> adapter;
-    private List<String> namesList;
 
     private GeocoderTask task;
 
@@ -56,16 +54,16 @@ public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
         @Override
         public void onAddressReceived(List<Address> addresses) {
             foundPlaces = addresses;
-            namesList = new ArrayList<>();
+            List<String> namesList = new ArrayList<>();
             namesList.clear();
-            for (Address selected:addresses){
+            for (Address selected : addresses) {
                 String addressText = String.format("%s, %s%s",
                         selected.getMaxAddressLineIndex() > 0 ? selected.getAddressLine(0) : "",
                         selected.getMaxAddressLineIndex() > 1 ? selected.getAddressLine(1) + ", " : "",
                         selected.getCountryName());
                 namesList.add(addressText);
             }
-            adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, namesList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, namesList);
             setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }

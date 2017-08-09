@@ -26,7 +26,8 @@ public final class EventControlFactory {
 
     private static final String TAG = "EventControlFactory";
 
-    private EventControlFactory() {}
+    private EventControlFactory() {
+    }
 
     @NonNull
     public static EventControl getController(Context context, @NonNull Reminder reminder) {

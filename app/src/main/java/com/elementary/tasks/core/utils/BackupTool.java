@@ -55,7 +55,8 @@ public final class BackupTool {
     private static final String TAG = "BackupTool";
     private static BackupTool instance;
 
-    private BackupTool() {}
+    private BackupTool() {
+    }
 
     public static BackupTool getInstance() {
         if (instance == null) {

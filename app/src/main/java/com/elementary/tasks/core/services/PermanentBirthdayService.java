@@ -104,7 +104,7 @@ public class PermanentBirthdayService extends Service {
             builder.setContentText(item.getDate() + " | " + item.getName() + " | " + TimeUtil.getAgeFormatted(getApplicationContext(), item.getDate()));
             if (list.size() > 1) {
                 StringBuilder stringBuilder = new StringBuilder();
-                for (BirthdayItem birthdayItem : list){
+                for (BirthdayItem birthdayItem : list) {
                     stringBuilder.append(birthdayItem.getDate()).append(" | ").
                             append(birthdayItem.getName()).append(" | ")
                             .append(TimeUtil.getAgeFormatted(getApplicationContext(), birthdayItem.getDate()));

@@ -32,7 +32,8 @@ public final class MeasureUtils {
 
     private static Dictionary<Integer, Integer> sRecyclerViewItemHeights = new Hashtable<>();
 
-    private MeasureUtils() {}
+    private MeasureUtils() {
+    }
 
     @Px
     public static int dp2px(Context context, int dp) {

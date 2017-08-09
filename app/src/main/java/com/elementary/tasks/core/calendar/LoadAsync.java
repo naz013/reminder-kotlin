@@ -35,7 +35,7 @@ public class LoadAsync extends AsyncTask<Void, Void, Void> {
     private int month;
     private long id;
 
-    public LoadAsync(Context context, int month, long id){
+    public LoadAsync(Context context, int month, long id) {
         this.context = context;
         this.month = month;
         this.id = id;
@@ -45,7 +45,7 @@ public class LoadAsync extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (!ImageCheck.getInstance().isImage(month, id) && mWifi.isConnected()){
+        if (!ImageCheck.getInstance().isImage(month, id) && mWifi.isConnected()) {
             try {
                 Bitmap bitmap = Picasso.with(context)
                         .load(ImageCheck.getInstance().getImageUrl(month, id))

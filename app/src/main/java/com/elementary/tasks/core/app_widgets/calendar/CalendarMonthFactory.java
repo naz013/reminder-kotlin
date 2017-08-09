@@ -202,14 +202,14 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT);
         rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT);
 
-        if (mPagerData.size() > 0){
-            for (WidgetItem item : mPagerData){
+        if (mPagerData.size() > 0) {
+            for (WidgetItem item : mPagerData) {
                 int day = item.getDay();
                 int month = item.getMonth() + 1;
                 int year = item.getYear();
-                if (day == selDay && month == selMonth){
-                    if (item.isHasReminders() && year == selYear){
-                        if (reminderM != 0){
+                if (day == selDay && month == selMonth) {
+                    if (item.isHasReminders() && year == selYear) {
+                        if (reminderM != 0) {
                             rView.setInt(R.id.reminderMark, "setBackgroundResource", reminderM);
                         } else {
                             rView.setInt(R.id.reminderMark, "setBackgroundColor",
@@ -218,8 +218,8 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
                     } else {
                         rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT);
                     }
-                    if (item.isHasBirthdays()){
-                        if (birthdayM != 0){
+                    if (item.isHasBirthdays()) {
+                        if (birthdayM != 0) {
                             rView.setInt(R.id.birthdayMark, "setBackgroundResource", birthdayM);
                         } else {
                             rView.setInt(R.id.birthdayMark, "setBackgroundColor",
@@ -234,8 +234,8 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         }
 
         if (mDay == selDay && mMonth == selMonth && mYear == realYear && mMonth == realMonth + 1
-                && mYear == selYear){
-            if (currentM != 0){
+                && mYear == selYear) {
+            if (currentM != 0) {
                 rView.setInt(R.id.currentMark, "setBackgroundResource", currentM);
             } else {
                 rView.setInt(R.id.currentMark, "setBackgroundColor",
@@ -281,11 +281,11 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         return true;
     }
 
-    static class WidgetItem {
+    private static class WidgetItem {
         private int day, month, year;
         private boolean hasReminders, hasBirthdays;
 
-        public WidgetItem(int day, int month, int year, boolean hasReminders, boolean hasBirthdays){
+        public WidgetItem(int day, int month, int year, boolean hasReminders, boolean hasBirthdays) {
             this.day = day;
             this.month = month;
             this.year = year;
@@ -293,43 +293,43 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
             this.hasBirthdays = hasBirthdays;
         }
 
-        public boolean isHasBirthdays(){
+        public boolean isHasBirthdays() {
             return hasBirthdays;
         }
 
-        public void setHasBirthdays(boolean hasBirthdays){
+        public void setHasBirthdays(boolean hasBirthdays) {
             this.hasBirthdays = hasBirthdays;
         }
 
-        public boolean isHasReminders(){
+        public boolean isHasReminders() {
             return hasReminders;
         }
 
-        public void setHasReminders(boolean hasReminders){
+        public void setHasReminders(boolean hasReminders) {
             this.hasReminders = hasReminders;
         }
 
-        public int getYear(){
+        public int getYear() {
             return year;
         }
 
-        public void setYear(int year){
+        public void setYear(int year) {
             this.year = year;
         }
 
-        public int getMonth(){
+        public int getMonth() {
             return month;
         }
 
-        public void setMonth(int month){
+        public void setMonth(int month) {
             this.month = month;
         }
 
-        public int getDay(){
+        public int getDay() {
             return day;
         }
 
-        public void setDay(int day){
+        public void setDay(int day) {
             this.day = day;
         }
     }

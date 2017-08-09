@@ -71,6 +71,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
         ListItemFileLayoutBinding binding;
+
         public ContactViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -180,7 +181,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         }
     }
 
-    private static int getFileIcon(String file, boolean isDark){
+    private static int getFileIcon(String file, boolean isDark) {
         LogUtil.d(TAG, "getFileIcon: " + file);
         if (isMelody(file)) {
             LogUtil.d(TAG, "getFileIcon: isMelody");
@@ -209,29 +210,29 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         }
     }
 
-    private static boolean isPicture(String file){
+    private static boolean isPicture(String file) {
         return file.contains(".jpg") || file.contains(".jpeg") || file.contains(".png");
     }
 
-    private static boolean isArchive(String file){
+    private static boolean isArchive(String file) {
         return file.contains(".zip") || file.contains(".rar") || file.contains(".tar.gz");
     }
 
-    private static boolean isMovie(String file){
+    private static boolean isMovie(String file) {
         return file.contains(".mov") || file.contains(".3gp") || file.contains(".avi") ||
                 file.contains(".mkv") || file.contains(".vob") || file.contains(".divx") ||
                 file.contains(".mp4") || file.contains(".flv");
     }
 
-    private static boolean isGif(String file){
+    private static boolean isGif(String file) {
         return file.contains(".gif");
     }
 
-    private static boolean isAndroid(String file){
+    private static boolean isAndroid(String file) {
         return file.contains(".apk");
     }
 
-    private static boolean isMelody(String file){
+    private static boolean isMelody(String file) {
         return file.contains(".mp3") || file.contains(".ogg") || file.contains(".m4a") || file.contains(".flac");
     }
 }

@@ -22,29 +22,30 @@ import com.elementary.tasks.BuildConfig;
 
 public class Module {
 
-    private Module() {}
+    private Module() {
+    }
 
-    public static boolean isPro(){
+    public static boolean isPro() {
         return BuildConfig.IS_PRO;
     }
 
-    public static boolean isO(){
+    public static boolean isO() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
-    public static boolean isLollipop(){
+    public static boolean isLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static boolean isMarshmallow(){
+    public static boolean isMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public static boolean isNougat(){
+    public static boolean isNougat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
     }
 
-    public static boolean isKitkat(){
+    public static boolean isKitkat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 

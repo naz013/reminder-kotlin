@@ -54,7 +54,7 @@ public class PrefsView extends RelativeLayout {
     private List<PrefsView> mDependencyViews = new ArrayList<>();
     private List<PrefsView> mReverseDependencyViews = new ArrayList<>();
     private List<OnCheckedListener> mOnCheckedListeners = new ArrayList<>();
-    
+
     public PrefsView(Context context) {
         super(context);
         init(context, null);
@@ -71,13 +71,12 @@ public class PrefsView extends RelativeLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-//        if (isInEditMode()) return;
         View.inflate(context, R.layout.prefs_view_layout, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-        title = (TextView) findViewById(R.id.prefsPrimaryText);
-        detail = (TextView) findViewById(R.id.prefsSecondaryText);
-        prefsValue = (TextView) findViewById(R.id.prefsValue);
-        checkBox = (CheckBox) findViewById(R.id.prefsCheck);
+        title = findViewById(R.id.prefsPrimaryText);
+        detail = findViewById(R.id.prefsSecondaryText);
+        prefsValue = findViewById(R.id.prefsValue);
+        checkBox = findViewById(R.id.prefsCheck);
         dividerTop = findViewById(R.id.dividerTop);
         dividerBottom = findViewById(R.id.dividerBottom);
         prefsView = findViewById(R.id.prefsView);
@@ -200,7 +199,7 @@ public class PrefsView extends RelativeLayout {
     }
 
     public void setDetailText(String text) {
-        if (text == null){
+        if (text == null) {
             detail.setVisibility(GONE);
             return;
         }
@@ -215,7 +214,7 @@ public class PrefsView extends RelativeLayout {
     public void setValueText(String text) {
         prefsValue.setText(text);
     }
-    
+
     public void setViewResource(@DrawableRes int resource) {
         if (resource != 0) {
             Drawable drawableTop;
@@ -248,10 +247,10 @@ public class PrefsView extends RelativeLayout {
         title.setEnabled(enabled);
     }
 
-    public boolean isChecked(){
+    public boolean isChecked() {
         return isChecked;
     }
-    
+
     public void setDividerTop(boolean divider) {
         if (divider) {
             dividerTop.setVisibility(VISIBLE);

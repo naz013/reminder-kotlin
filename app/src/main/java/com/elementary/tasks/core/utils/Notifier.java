@@ -37,7 +37,7 @@ public class Notifier {
 
     private Context mContext;
 
-    public Notifier(Context context){
+    public Notifier(Context context) {
         this.mContext = context;
     }
 
@@ -74,7 +74,7 @@ public class Notifier {
         mNotifyMgr.cancel(id);
     }
 
-    public void showNoteNotification(@NonNull NoteItem item){
+    public void showNoteNotification(@NonNull NoteItem item) {
         Prefs sPrefs = Prefs.getInstance(mContext);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
         builder.setContentText(mContext.getString(R.string.note));
@@ -105,7 +105,7 @@ public class Notifier {
         }
         NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(item.getUniqueId(), builder.build());
-        if (isWear && Module.isJellyMR2()){
+        if (isWear && Module.isJellyMR2()) {
             NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
             wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             wearableNotificationBuilder.setContentTitle(content);

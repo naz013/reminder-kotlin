@@ -20,8 +20,12 @@ import java.util.Date;
 
 public interface FlextListener {
     void onClickDate(Date date);
+
     void onLongClickDate(Date date);
+
     void onMonthChanged(int month, int year);
+
     void onViewCreated();
+
     void onMonthSelected(int month);
 }

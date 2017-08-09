@@ -47,10 +47,11 @@ class JAction {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JAction->Type: " + type +
                 "->Target: " + target +
                 "->Subject: " + subject +
@@ -63,14 +64,14 @@ class JAction {
      */
     private JSONObject jsonObject;
 
-    JAction(JSONObject jsonObject){
+    JAction(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JAction(){
+    JAction() {
         jsonObject = new JSONObject();
         setAuto(-1);
     }
@@ -83,28 +84,28 @@ class JAction {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(TARGET)){
+        if (jsonObject.has(TARGET)) {
             try {
                 target = jsonObject.getString(TARGET);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(SUBJECT)){
+        if (jsonObject.has(SUBJECT)) {
             try {
                 subject = jsonObject.getString(SUBJECT);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(AUTO)){
+        if (jsonObject.has(AUTO)) {
             try {
                 auto = jsonObject.getInt(AUTO);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(ATTACHMENT)){
+        if (jsonObject.has(ATTACHMENT)) {
             try {
                 attachment = jsonObject.getString(ATTACHMENT);
             } catch (JSONException e) {
@@ -115,6 +116,7 @@ class JAction {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

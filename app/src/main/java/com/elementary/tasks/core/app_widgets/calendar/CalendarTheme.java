@@ -34,12 +34,13 @@ public class CalendarTheme implements Parcelable {
     private int windowColor;
     private int windowTextColor;
 
-    private CalendarTheme() {}
+    private CalendarTheme() {
+    }
 
     public CalendarTheme(int itemTextColor, int widgetBgColor, int headerColor, int borderColor,
                          int titleColor, int rowColor, int leftArrow, int rightArrow, int iconPlus, int iconVoice,
                          int iconSettings, String title, int currentMark, int birthdayMark, int reminderMark,
-                         int windowColor, int windowTextColor){
+                         int windowColor, int windowTextColor) {
         this.itemTextColor = itemTextColor;
         this.widgetBgColor = widgetBgColor;
         this.headerColor = headerColor;
@@ -59,67 +60,67 @@ public class CalendarTheme implements Parcelable {
         this.windowTextColor = windowTextColor;
     }
 
-    public int getCurrentMark(){
+    public int getCurrentMark() {
         return currentMark;
     }
 
-    public int getBirthdayMark(){
+    public int getBirthdayMark() {
         return birthdayMark;
     }
 
-    public int getReminderMark(){
+    public int getReminderMark() {
         return reminderMark;
     }
 
-    public void setItemTextColor(int itemTextColor){
+    public void setItemTextColor(int itemTextColor) {
         this.itemTextColor = itemTextColor;
     }
 
-    public int getItemTextColor(){
+    public int getItemTextColor() {
         return itemTextColor;
     }
 
-    public int getRowColor(){
+    public int getRowColor() {
         return rowColor;
     }
 
-    public int getWidgetBgColor(){
+    public int getWidgetBgColor() {
         return widgetBgColor;
     }
 
-    public int getHeaderColor(){
+    public int getHeaderColor() {
         return headerColor;
     }
 
-    public int getBorderColor(){
+    public int getBorderColor() {
         return borderColor;
     }
 
-    public int getTitleColor(){
+    public int getTitleColor() {
         return titleColor;
     }
 
-    public int getLeftArrow(){
+    public int getLeftArrow() {
         return leftArrow;
     }
 
-    public int getRightArrow(){
+    public int getRightArrow() {
         return rightArrow;
     }
 
-    public int getIconPlus(){
+    public int getIconPlus() {
         return iconPlus;
     }
 
-    public int getIconVoice(){
+    public int getIconVoice() {
         return iconVoice;
     }
 
-    public int getIconSettings(){
+    public int getIconSettings() {
         return iconSettings;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -131,11 +132,11 @@ public class CalendarTheme implements Parcelable {
         return windowTextColor;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    private static int getResColor(Context ctx, int res){
+    private static int getResColor(Context ctx, int res) {
         return ctx.getResources().getColor(res);
     }
 

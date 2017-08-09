@@ -25,7 +25,8 @@ public class UserItem {
     private long count;
     private UserInfoAsync.Info kind;
 
-    public UserItem() {}
+    public UserItem() {
+    }
 
     public UserItem(String name, long quota, long used, long count, String photo) {
         this.name = name;

@@ -90,7 +90,7 @@ public class EventsWidgetConfig extends ThemedActivity {
         setResult(RESULT_CANCELED, resultValue);
     }
 
-    private void loadThemes(){
+    private void loadThemes() {
         mThemes = EventsTheme.getThemes(this);
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mThemes);
         binding.themePager.setAdapter(adapter);
@@ -105,7 +105,7 @@ public class EventsWidgetConfig extends ThemedActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add:
                 showTextSizeDialog();
                 return true;

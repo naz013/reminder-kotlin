@@ -695,7 +695,7 @@ public class RealmDb {
         });
     }
 
-    public boolean deleteTaskList(@NonNull String id){
+    public boolean deleteTaskList(@NonNull String id) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
@@ -713,7 +713,7 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public void setDefault(@NonNull String id){
+    public void setDefault(@NonNull String id) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
@@ -721,7 +721,7 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public void setSystemDefault(@NonNull String id){
+    public void setSystemDefault(@NonNull String id) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
@@ -729,7 +729,7 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public void setSimple(@NonNull String id){
+    public void setSimple(@NonNull String id) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", id).findFirst();
@@ -737,7 +737,7 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public void setStatus(@NonNull String id, boolean status){
+    public void setStatus(@NonNull String id, boolean status) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmTask object = realm.where(RealmTask.class).equalTo("taskId", id).findFirst();
@@ -775,7 +775,7 @@ public class RealmDb {
         realm.commitTransaction();
     }
 
-    public boolean deleteReminder(@NonNull String id){
+    public boolean deleteReminder(@NonNull String id) {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();

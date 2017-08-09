@@ -57,6 +57,7 @@ public class AppsRecyclerAdapter extends FilterableAdapter<ApplicationItem, Stri
 
     class ApplicationViewHolder extends RecyclerView.ViewHolder {
         ApplicationListItemBinding binding;
+
         ApplicationViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);

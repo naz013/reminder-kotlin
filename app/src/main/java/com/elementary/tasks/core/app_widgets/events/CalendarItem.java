@@ -36,7 +36,7 @@ public class CalendarItem implements Parcelable {
     private Object item;
 
     public CalendarItem(Type type, String name, String number, String id, String time,
-                        String dayDate, long date, int viewType, Object item){
+                        String dayDate, long date, int viewType, Object item) {
         this.type = type;
         this.time = time;
         this.viewType = viewType;
@@ -60,59 +60,59 @@ public class CalendarItem implements Parcelable {
         this.viewType = viewType;
     }
 
-    public String getDayDate(){
+    public String getDayDate() {
         return dayDate;
     }
 
-    public void setDayDate(String dayDate){
+    public void setDayDate(String dayDate) {
         this.dayDate = dayDate;
     }
 
-    public String getTime(){
+    public String getTime() {
         return time;
     }
 
-    public void setTime(String time){
+    public void setTime(String time) {
         this.time = time;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.id = id;
     }
 
-    public long getDate(){
+    public long getDate() {
         return date;
     }
 
-    public void setDate(long date){
+    public void setDate(long date) {
         this.date = date;
     }
 
-    public Type getType(){
+    public Type getType() {
         return type;
     }
 
-    public void setType(Type type){
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getNumber(){
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(String number){
+    public void setNumber(String number) {
         this.number = number;
     }
 

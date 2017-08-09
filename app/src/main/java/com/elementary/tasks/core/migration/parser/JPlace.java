@@ -57,22 +57,23 @@ class JPlace {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         if (jsonObject != null) return jsonObject.toString();
         else return null;
     }
 
-    JPlace(JSONObject jsonObject){
+    JPlace(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JPlace(){
+    JPlace() {
         jsonObject = new JSONObject();
         setLatitude(0.0);
         setLongitude(0.0);
@@ -98,43 +99,44 @@ class JPlace {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(LATITUDE)){
+        if (jsonObject.has(LATITUDE)) {
             try {
                 latitude = jsonObject.getDouble(LATITUDE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(LONGITUDE)){
+        if (jsonObject.has(LONGITUDE)) {
             try {
                 longitude = jsonObject.getDouble(LONGITUDE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(NAME)){
+        if (jsonObject.has(NAME)) {
             try {
                 name = jsonObject.getString(NAME);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(ADDRESS)){
+        if (jsonObject.has(ADDRESS)) {
             try {
                 address = jsonObject.getString(ADDRESS);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(ID)){
+        if (jsonObject.has(ID)) {
             try {
                 id = jsonObject.getString(ID);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(TYPES)){
-            Type collectionType = new TypeToken<ArrayList<String>>() {}.getType();
+        if (jsonObject.has(TYPES)) {
+            Type collectionType = new TypeToken<ArrayList<String>>() {
+            }.getType();
             try {
                 types = new Gson().fromJson(jsonObject.get(TYPES).toString(), collectionType);
             } catch (JSONException e) {
@@ -145,6 +147,7 @@ class JPlace {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

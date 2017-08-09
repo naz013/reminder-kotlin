@@ -130,7 +130,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
 
         private List<CalendarTheme> arrayList;
 
-        public MyFragmentPagerAdapter(FragmentManager fm, List<CalendarTheme> list) {
+        MyFragmentPagerAdapter(FragmentManager fm, List<CalendarTheme> list) {
             super(fm);
             this.arrayList = list;
         }

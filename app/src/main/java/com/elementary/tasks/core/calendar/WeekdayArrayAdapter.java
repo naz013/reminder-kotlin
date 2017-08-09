@@ -52,13 +52,15 @@ public class WeekdayArrayAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         TextView textView = (TextView) super.getView(position, convertView, parent);
         String item = getItem(position);
-        if (item.length() <= 2) {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-        } else {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        if (item != null) {
+            if (item.length() <= 2) {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+            } else {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            }
         }
         int textColor;
-        if (isDark){
+        if (isDark) {
             textColor = getContext().getResources().getColor(android.R.color.white);
         } else {
             textColor = getContext().getResources().getColor(android.R.color.black);

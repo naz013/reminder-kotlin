@@ -48,7 +48,7 @@ public class EventsDataProvider {
 
     private Map<DateTime, Events> map = new HashMap<>();
 
-    public EventsDataProvider(Context mContext, boolean isReminder, boolean isFeature){
+    public EventsDataProvider(Context mContext, boolean isReminder, boolean isFeature) {
         this.mContext = mContext;
         this.isReminder = isReminder;
         this.isFeature = isFeature;

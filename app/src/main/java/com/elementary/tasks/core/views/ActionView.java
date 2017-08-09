@@ -71,11 +71,11 @@ public class ActionView extends LinearLayout {
         if (isInEditMode()) return;
         View.inflate(context, R.layout.action_view_layout, this);
         setOrientation(VERTICAL);
-        actionBlock = (LinearLayout) findViewById(R.id.actionBlock);
+        actionBlock = findViewById(R.id.actionBlock);
         actionBlock.setVisibility(View.GONE);
-        selectNumber = (ThemedImageButton) findViewById(R.id.selectNumber);
+        selectNumber = findViewById(R.id.selectNumber);
 
-        numberView = (RoboEditText) findViewById(R.id.numberView);
+        numberView = findViewById(R.id.numberView);
         numberView.setFocusableInTouchMode(true);
         numberView.setOnFocusChangeListener((v, hasFocus) -> {
             imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -87,27 +87,27 @@ public class ActionView extends LinearLayout {
         });
         numberView.setOnClickListener(v -> {
             imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (!imm.isActive(numberView)){
+            if (!imm.isActive(numberView)) {
                 imm.showSoftInput(numberView, 0);
             }
         });
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radioGroup = findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener((radioGroup1, i) -> buttonClick(i));
-        callAction = (RoboRadioButton) findViewById(R.id.callAction);
+        callAction = findViewById(R.id.callAction);
         callAction.setChecked(true);
-        messageAction = (RoboRadioButton) findViewById(R.id.messageAction);
-        actionCheck = (RoboCheckBox) findViewById(R.id.actionCheck);
+        messageAction = findViewById(R.id.messageAction);
+        actionCheck = findViewById(R.id.actionCheck);
         actionCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             if (!Permissions.checkPermission(activity, Permissions.READ_CONTACTS)) {
                 Permissions.requestPermission(activity, DateFragment.CONTACTS_ACTION, Permissions.READ_CONTACTS);
                 return;
             }
-            if (b){
+            if (b) {
                 openAction();
             } else {
                 ViewUtils.hideOver(actionBlock);
             }
-            if (listener != null){
+            if (listener != null) {
                 listener.onActionChange(b);
             }
         });
@@ -128,12 +128,12 @@ public class ActionView extends LinearLayout {
     private void buttonClick(int i) {
         switch (i) {
             case R.id.callAction:
-                if (listener != null){
+                if (listener != null) {
                     listener.onTypeChange(false);
                 }
                 break;
             case R.id.messageAction:
-                if (listener != null){
+                if (listener != null) {
                     listener.onTypeChange(true);
                 }
                 break;
@@ -152,17 +152,17 @@ public class ActionView extends LinearLayout {
         this.listener = listener;
     }
 
-    public boolean hasAction(){
+    public boolean hasAction() {
         return actionCheck.isChecked();
     }
 
-    public void setAction(boolean action){
+    public void setAction(boolean action) {
         actionCheck.setChecked(action);
     }
 
-    public int getType(){
-        if (hasAction()){
-            if (callAction.isChecked()){
+    public int getType() {
+        if (hasAction()) {
+            if (callAction.isChecked()) {
                 return TYPE_CALL;
             } else {
                 return TYPE_MESSAGE;
@@ -172,24 +172,25 @@ public class ActionView extends LinearLayout {
         }
     }
 
-    public void setType(int type){
-        if (type == TYPE_CALL){
+    public void setType(int type) {
+        if (type == TYPE_CALL) {
             callAction.setChecked(true);
         } else {
             messageAction.setChecked(true);
         }
     }
 
-    public String getNumber(){
+    public String getNumber() {
         return numberView.getText().toString().trim();
     }
 
-    public void setNumber(String number){
+    public void setNumber(String number) {
         numberView.setText(number);
     }
 
-    public interface OnActionListener{
+    public interface OnActionListener {
         void onActionChange(boolean hasAction);
+
         void onTypeChange(boolean isMessageType);
     }
 }

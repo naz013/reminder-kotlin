@@ -26,11 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * CanvasView.java
- * <p>
- * Copyright (c) 2014 Tomohiro IKEDA (Korilakkuma)
- * Released under the MIT license
+/*
+  CanvasView.java
+  <p>
+  Copyright (c) 2014 Tomohiro IKEDA (Korilakkuma)
+  Released under the MIT license
  */
 
 /**
@@ -334,7 +334,7 @@ public class DrawView extends View implements Observable {
                             break;
                         case CIRCLE:
                             double distanceX = Math.abs((double) (this.startX - x));
-                            double distanceY = Math.abs((double)(this.startY - y));
+                            double distanceY = Math.abs((double) (this.startY - y));
                             double radius = Math.sqrt(Math.pow(distanceX, 2.0) + Math.pow(distanceY, 2.0));
                             path.reset();
                             path.addCircle(this.startX, this.startY, (float) radius, Path.Direction.CCW);
@@ -388,7 +388,6 @@ public class DrawView extends View implements Observable {
 
     /**
      * This method defines processes on MotionEvent.ACTION_DOWN
-     *
      */
     private void onActionUp() {
         if (isDown) {
@@ -411,7 +410,8 @@ public class DrawView extends View implements Observable {
             for (int i = 0; i < historyPointer; i++) {
                 try {
                     elements.get(i).draw(canvas, false);
-                } catch (IndexOutOfBoundsException ignored) {}
+                } catch (IndexOutOfBoundsException ignored) {
+                }
             }
         }
         this.mCanvas = canvas;
@@ -852,7 +852,6 @@ public class DrawView extends View implements Observable {
 
     /**
      * This method is setter for font-family.
-     *
      */
     public void setFontFamily(int position) {
         this.fontFamily = position;
@@ -895,7 +894,7 @@ public class DrawView extends View implements Observable {
         if (this.historyPointer == this.elements.size()) {
             this.elements.add(currentItem);
         } else {
-            this.elements.add(historyPointer , currentItem);
+            this.elements.add(historyPointer, currentItem);
         }
         this.historyPointer++;
         if (mCanvas != null) {

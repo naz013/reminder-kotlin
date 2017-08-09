@@ -23,7 +23,7 @@ public class EventsPagerItem {
     private List<EventsItem> datas;
     private int day, month, year;
 
-    public EventsPagerItem(List<EventsItem> datas, int position, int current, int day, int month, int year){
+    public EventsPagerItem(List<EventsItem> datas, int position, int current, int day, int month, int year) {
         this.datas = datas;
         this.current = current;
         this.position = position;
@@ -32,7 +32,7 @@ public class EventsPagerItem {
         this.year = year;
     }
 
-    public int getMonth(){
+    public int getMonth() {
         return month;
     }
 
@@ -40,43 +40,43 @@ public class EventsPagerItem {
         this.month = month;
     }
 
-    public int getYear(){
+    public int getYear() {
         return year;
     }
 
-    public void setYear(int year){
+    public void setYear(int year) {
         this.year = year;
     }
 
-    public int getDay(){
+    public int getDay() {
         return day;
     }
 
-    public void setDay(int day){
+    public void setDay(int day) {
         this.day = day;
     }
 
-    public int getPosition(){
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(int position){
+    public void setPosition(int position) {
         this.position = position;
     }
 
-    public int getCurrent(){
+    public int getCurrent() {
         return current;
     }
 
-    public void setCurrent(int current){
+    public void setCurrent(int current) {
         this.current = current;
     }
 
-    public List<EventsItem> getDatas(){
+    public List<EventsItem> getDatas() {
         return datas;
     }
 
-    public void setDatas(List<EventsItem> datas){
+    public void setDatas(List<EventsItem> datas) {
         this.datas = datas;
     }
 }
