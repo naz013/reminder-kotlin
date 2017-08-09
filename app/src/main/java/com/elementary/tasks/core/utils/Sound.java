@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -101,7 +102,14 @@ public class Sound {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        if (Module.isLollipop()) {
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+                    .build();
+            mMediaPlayer.setAudioAttributes(attributes);
+        } else {
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
         mMediaPlayer.setLooping(false);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {
@@ -127,12 +135,18 @@ public class Sound {
         }
 
         Prefs prefs = Prefs.getInstance(mContext);
+        int stream = AudioManager.STREAM_MUSIC;
         if (prefs.isSystemLoudnessEnabled()) {
-            mMediaPlayer.setAudioStreamType(prefs.getSoundStream());
-        } else {
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            stream = prefs.getSoundStream();
         }
-
+        if (Module.isLollipop()) {
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setLegacyStreamType(stream)
+                    .build();
+            mMediaPlayer.setAudioAttributes(attributes);
+        } else {
+            mMediaPlayer.setAudioStreamType(stream);
+        }
         mMediaPlayer.setLooping(looping);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         mMediaPlayer.setOnCompletionListener(mp -> isDone = true);
@@ -157,10 +171,17 @@ public class Sound {
             e.printStackTrace();
         }
         Prefs prefs = Prefs.getInstance(mContext);
+        int stream = AudioManager.STREAM_MUSIC;
         if (prefs.isSystemLoudnessEnabled()) {
-            mMediaPlayer.setAudioStreamType(prefs.getSoundStream());
+            stream = prefs.getSoundStream();
+        }
+        if (Module.isLollipop()) {
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setLegacyStreamType(stream)
+                    .build();
+            mMediaPlayer.setAudioAttributes(attributes);
         } else {
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mMediaPlayer.setAudioStreamType(stream);
         }
         mMediaPlayer.setLooping(looping);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);

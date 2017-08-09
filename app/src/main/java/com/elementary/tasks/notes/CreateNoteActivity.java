@@ -64,6 +64,7 @@ import com.elementary.tasks.core.views.ColorPickerView;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -519,7 +520,10 @@ public class CreateNoteActivity extends ThemedActivity {
         mReminder.setActive(true);
         mReminder.setRemoved(false);
         mReminder.setSummary(mItem.getSummary());
-        mReminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        if (def != null) {
+            mReminder.setGroupUuId(def.getUuId());
+        }
         long startTime = calendar.getTimeInMillis();
         mReminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -753,7 +757,7 @@ public class CreateNoteActivity extends ThemedActivity {
                 if (convertView == null) {
                     convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
                 }
-                TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+                TextView textView = convertView.findViewById(android.R.id.text1);
                 textView.setTypeface(getTypeface(position));
                 textView.setText(contacts.get(position));
                 return convertView;

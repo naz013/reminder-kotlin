@@ -1,6 +1,8 @@
 package com.elementary.tasks.core.utils;
 
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.util.Locale;
@@ -55,103 +57,128 @@ public class MemoryUtil {
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
+    @Nullable
     public static File getRemindersDir() {
         return getDir(DIR_SD);
     }
 
+    @Nullable
     public static File getGroupsDir() {
         return getDir(DIR_GROUP_SD);
     }
 
+    @Nullable
     public static File getBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD);
     }
 
+    @Nullable
     public static File getNotesDir() {
         return getDir(DIR_NOTES_SD);
     }
 
+    @Nullable
     public static File getPlacesDir() {
         return getDir(DIR_PLACES_SD);
     }
 
+    @Nullable
     public static File getTemplatesDir() {
         return getDir(DIR_TEMPLATES_SD);
     }
 
+    @Nullable
     public static File getGooglePlacesDir() {
         return getDir(DIR_PLACES_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getGoogleTemplatesDir() {
         return getDir(DIR_TEMPLATES_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getDropboxPlacesDir() {
         return getDir(DIR_PLACES_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getDropboxTemplatesDir() {
         return getDir(DIR_TEMPLATES_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getDropboxRemindersDir() {
         return getDir(DIR_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getDropboxGroupsDir() {
         return getDir(DIR_GROUP_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getDropboxBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getDropboxNotesDir() {
         return getDir(DIR_NOTES_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getGoogleRemindersDir() {
         return getDir(DIR_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getGoogleGroupsDir() {
         return getDir(DIR_GROUP_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getGoogleBirthdaysDir() {
         return getDir(DIR_BIRTHDAY_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getGoogleNotesDir() {
         return getDir(DIR_NOTES_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getMailDir() {
         return getDir(DIR_MAIL_SD);
     }
 
+    @Nullable
     public static File getPrefsDir() {
         return getDir(DIR_PREFS);
     }
 
+    @Nullable
     public static File getGooglePrefsDir() {
         return getDir(DIR_PREFERENCES_SD_GDRIVE_TMP);
     }
 
+    @Nullable
     public static File getDropboxPrefsDir() {
         return getDir(DIR_PREFERENCES_SD_DBX_TMP);
     }
 
+    @Nullable
     public static File getImageCacheDir() {
         return getDir(DIR_IMAGE_CACHE);
     }
 
+    @Nullable
     public static File getParent() {
         return getDir("");
     }
 
-    private static File getDir(String directory) {
+    @Nullable
+    private static File getDir(@NonNull String directory) {
         if (isSdPresent()) {
             File sdPath = Environment.getExternalStorageDirectory();
             File dir = new File(sdPath.toString() + "/JustReminder/" + directory);
@@ -164,10 +191,12 @@ public class MemoryUtil {
         }
     }
 
+    @Nullable
     public static File getImagesDir() {
         return getDir("image_cache");
     }
 
+    @NonNull
     public static String humanReadableByte(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) {

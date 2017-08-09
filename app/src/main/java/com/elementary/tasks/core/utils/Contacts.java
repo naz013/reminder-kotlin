@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,6 +40,7 @@ public final class Contacts {
      * @param contactId contact identifier.
      * @return Contact photo
      */
+    @Nullable
     public static Uri getPhoto(long contactId) {
         if (contactId == 0) {
             return null;
@@ -53,7 +56,8 @@ public final class Contacts {
      * @param context     application context.
      * @return Contact identifier
      */
-    public static int getIdFromNumber(String phoneNumber, Context context) {
+    public static int getIdFromNumber(@Nullable String phoneNumber, Context context) {
+        if (phoneNumber == null) return 0;
         int phoneContactID = 0;
         try {
             String contact = Uri.encode(phoneNumber);
@@ -82,7 +86,8 @@ public final class Contacts {
      * @param context application context.
      * @return Contact identifier
      */
-    public static int getIdFromMail(String eMail, Context context) {
+    public static int getIdFromMail(@Nullable String eMail, Context context) {
+        if (eMail == null) return 0;
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         int contactId = 0;
         ContentResolver contentResolver = context.getContentResolver();
@@ -108,7 +113,9 @@ public final class Contacts {
      * @param context application context.
      * @return Contact name
      */
-    public static String getNameFromMail(String eMail, Context context) {
+    @Nullable
+    public static String getNameFromMail(@Nullable String eMail, Context context) {
+        if (eMail == null) return null;
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         String name = "?";
         ContentResolver contentResolver = context.getContentResolver();
@@ -133,7 +140,8 @@ public final class Contacts {
      * @param context       application context.
      * @return Contact name
      */
-    public static String getNameFromNumber(String contactNumber, Context context) {
+    @Nullable
+    public static String getNameFromNumber(@Nullable String contactNumber, Context context) {
         String phoneContactID = null;
         if (contactNumber != null) {
             try {
@@ -158,39 +166,19 @@ public final class Contacts {
     }
 
     /**
-     * Holder e=mail for contact.
-     *
-     * @param id contact identifier.
-     * @return e-mail
-     */
-    public String getMail(int id) {
-        String mail = null;
-        if (id != 0) {
-            ContentResolver cr = mContext.getContentResolver();
-            Cursor emailCur = cr.query(
-                    ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                    null,
-                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                    new String[]{String.valueOf(id)}, null);
-            while (emailCur.moveToNext()) {
-                mail = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-            }
-            emailCur.close();
-        }
-        return mail;
-    }
-
-    /**
      * Holder contact number by contact name.
      *
      * @param name    contact name.
      * @param context application context.
      * @return Phone number
      */
-    public static String getNumber(String name, Context context) {
+    @NonNull
+    public static String getNumber(@Nullable String name, Context context) {
         String number = "";
         if (name != null) {
             name = name.replaceAll("'", "''");
+        } else {
+            return number;
         }
         String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + name + "%'";
         String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
@@ -203,9 +191,6 @@ public final class Contacts {
             }
         } catch (SQLiteException e) {
             e.printStackTrace();
-        }
-        if (number == null) {
-            number = "noNumber";
         }
         return number;
     }

@@ -2,6 +2,7 @@ package com.elementary.tasks.notes;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.databinding.NoteInputCardBinding;
 import com.elementary.tasks.databinding.NoteReminderCardBinding;
 import com.elementary.tasks.databinding.NoteStatusCardBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -167,7 +169,10 @@ public class QuickNoteCoordinator {
         reminder.setActive(true);
         reminder.setRemoved(false);
         reminder.setSummary(item.getSummary());
-        reminder.setGroupUuId(RealmDb.getInstance().getDefaultGroup().getUuId());
+        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        if (def != null) {
+            reminder.setGroupUuId(def.getUuId());
+        }
         long prefsTime = Prefs.getInstance(mContext).getNoteReminderTime() * TimeCount.MINUTE;
         long startTime = System.currentTimeMillis() + prefsTime;
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -178,7 +183,7 @@ public class QuickNoteCoordinator {
         addNotificationCard(item);
     }
 
-    private void addNotificationCard(NoteItem item) {
+    private void addNotificationCard(@NonNull NoteItem item) {
         NoteStatusCardBinding cardBinding = NoteStatusCardBinding.inflate(LayoutInflater.from(mContext), binding.quickNoteView, false);
         if (Module.isLollipop()) {
             cardBinding.noteStatusCard.setElevation(Configs.CARD_ELEVATION);
@@ -196,7 +201,7 @@ public class QuickNoteCoordinator {
         new Handler().postDelayed(() -> ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard), 250);
     }
 
-    private void showInStatusBar(NoteItem item) {
+    private void showInStatusBar(@NonNull NoteItem item) {
         new Notifier(mContext).showNoteNotification(item);
         hideNoteView();
     }

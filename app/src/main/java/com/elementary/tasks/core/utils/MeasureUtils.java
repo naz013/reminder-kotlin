@@ -9,8 +9,6 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -32,7 +30,6 @@ import java.util.Hashtable;
  */
 public final class MeasureUtils {
 
-    private static Dictionary<Integer, Integer> sListViewItemHeights = new Hashtable<>();
     private static Dictionary<Integer, Integer> sRecyclerViewItemHeights = new Hashtable<>();
 
     private MeasureUtils() {}
@@ -46,50 +43,6 @@ public final class MeasureUtils {
         display.getMetrics(displaymetrics);
 
         return (int) (dp * displaymetrics.density + 0.5f);
-    }
-
-    public static int px2dp(Context context, @Px int px) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        display.getMetrics(displaymetrics);
-
-        return (int) (px / displaymetrics.density + 0.5f);
-    }
-
-    public static int getScrollY(ListView lv) {
-        View c = lv.getChildAt(0);
-        if (c == null) {
-            return 0;
-        }
-
-        int firstVisiblePosition = lv.getFirstVisiblePosition();
-        int top = c.getTop();
-
-        return -top + firstVisiblePosition * c.getHeight();
-    }
-
-    public static int getScrollY(AbsListView lv) {
-        View c = lv.getChildAt(0);
-        if (c == null) {
-            return 0;
-        }
-
-        int firstVisiblePosition = lv.getFirstVisiblePosition();
-        int scrollY = -(c.getTop());
-
-        sListViewItemHeights.put(lv.getFirstVisiblePosition(), c.getHeight());
-
-        if (scrollY < 0) {
-            scrollY = 0;
-        }
-        for (int i = 0; i < firstVisiblePosition; ++i) {
-            if (sListViewItemHeights.get(i) != null) {
-                scrollY += sListViewItemHeights.get(i);
-            }
-        }
-        return scrollY;
     }
 
     public static int getScrollY(RecyclerView rv, int columnCount, boolean mIsGrid) {

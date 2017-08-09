@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -46,7 +48,7 @@ public final class CalendarUtils {
     /**
      * Add event to calendar.
      */
-    public static void addEvent(Context context, Reminder reminder) {
+    public static void addEvent(Context context, @NonNull Reminder reminder) {
         int mId = Prefs.getInstance(context).getCalendarId();
         if (mId != 0) {
             TimeZone tz = TimeZone.getDefault();
@@ -85,7 +87,7 @@ public final class CalendarUtils {
      * @param id event identifier inside application.
      */
     @SuppressWarnings("MissingPermission")
-    public static void deleteEvents(Context context, String id) {
+    public static void deleteEvents(Context context, @NonNull String id) {
         List<CalendarEvent> events = RealmDb.getInstance().getCalendarEvents(id);
         ContentResolver cr = context.getContentResolver();
         for (int i = events.size() - 1; i >= 0; i--) {
@@ -121,46 +123,9 @@ public final class CalendarUtils {
     /**
      * Holder list of available Google calendars.
      *
-     * @return List of calendar identifiers.
-     */
-    public static List<String> getCalendars(Context context) {
-        List<String> ids = new ArrayList<>();
-        ids.clear();
-        Uri uri = CalendarContract.Calendars.CONTENT_URI;
-        String[] mProjection = new String[]{
-                CalendarContract.Calendars._ID,                           // 0
-                CalendarContract.Calendars.ACCOUNT_NAME,                  // 1
-                CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,         // 2
-                CalendarContract.Calendars.OWNER_ACCOUNT                  // 3
-        };
-        Cursor c = null;
-        try {
-            c = context.getContentResolver().query(uri, mProjection, null, null, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (c != null && c.moveToFirst()) {
-            String mID;
-            do {
-                mID = c.getString(c.getColumnIndex(mProjection[0]));
-                ids.add(mID);
-            } while (c.moveToNext());
-        }
-        if (c != null) {
-            c.close();
-        }
-        if (ids.size() == 0) {
-            return null;
-        } else {
-            return ids;
-        }
-    }
-
-    /**
-     * Holder list of available Google calendars.
-     *
      * @return List of CalendarItem's.
      */
+    @Nullable
     public static List<CalendarItem> getCalendarsList(Context context) {
         List<CalendarItem> ids = new ArrayList<>();
         ids.clear();
@@ -200,6 +165,7 @@ public final class CalendarUtils {
      * @param id calendar identifier.
      * @return List of EventItem's.
      */
+    @NonNull
     public static List<EventItem> getEvents(Context context, int id) throws SecurityException {
         List<EventItem> list = new ArrayList<>();
         if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {

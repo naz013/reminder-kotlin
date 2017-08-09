@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -27,19 +28,19 @@ public class DataLoader {
 
     private static Handler handler = new Handler();
 
-    public static void loadActiveReminder(String group, int type, int active, RealmCallback<List<Reminder>> callback) {
+    public static void loadActiveReminder(String group, int type, int active, @NonNull RealmCallback<List<Reminder>> callback) {
         RealmDb.getInstance().getActiveReminders(group, type, active, result -> handler.post(() -> callback.onDataLoaded(result)));
     }
 
-    public static void loadActiveReminder(RealmCallback<List<Reminder>> callback) {
+    public static void loadActiveReminder(@NonNull RealmCallback<List<Reminder>> callback) {
         RealmDb.getInstance().getActiveReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
     }
 
-    public static void loadArchivedReminder(RealmCallback<List<Reminder>> callback) {
+    public static void loadArchivedReminder(@NonNull RealmCallback<List<Reminder>> callback) {
         RealmDb.getInstance().getArchivedReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
     }
 
-    public static void loadArchivedReminder(String group, int type, RealmCallback<List<Reminder>> callback) {
+    public static void loadArchivedReminder(String group, int type, @NonNull RealmCallback<List<Reminder>> callback) {
         RealmDb.getInstance().getArchivedReminders(group, type, result -> handler.post(() -> callback.onDataLoaded(result)));
     }
 }

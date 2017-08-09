@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -27,7 +28,8 @@ public final class EventControlFactory {
 
     private EventControlFactory() {}
 
-    public static EventControl getController(Context context, Reminder reminder) {
+    @NonNull
+    public static EventControl getController(Context context, @NonNull Reminder reminder) {
         EventControl control;
         if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_SHOP)) {
             control = new ShoppingEvent(reminder, context);

@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
 import com.elementary.tasks.BuildConfig;
@@ -26,7 +27,8 @@ import java.io.File;
 
 public final class UriUtil {
 
-    public static Uri getUri(Context context, String filePath) {
+    @NonNull
+    public static Uri getUri(Context context, @NonNull String filePath) {
         if (Module.isNougat()) {
             return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(filePath));
         } else {
@@ -34,7 +36,8 @@ public final class UriUtil {
         }
     }
 
-    public static Uri getUri(Context context, File file) {
+    @NonNull
+    public static Uri getUri(Context context, @NonNull File file) {
         if (Module.isNougat()) {
             return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
         } else {

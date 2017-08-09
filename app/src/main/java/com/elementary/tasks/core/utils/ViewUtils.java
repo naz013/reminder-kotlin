@@ -39,12 +39,13 @@ import com.elementary.tasks.R;
 
 public final class ViewUtils {
 
-    private ViewUtils() {}
+    private ViewUtils() {
+    }
 
     public static ColorStateList getFabState(Context context, @ColorRes int colorNormal, @ColorRes int colorPressed) {
         int[][] states = {
-                new int[] {android.R.attr.state_pressed},
-                new int[] {android.R.attr.state_focused}, new int[] {}
+                new int[]{android.R.attr.state_pressed},
+                new int[]{android.R.attr.state_focused}, new int[]{}
         };
         int colorP = getColor(context, colorPressed);
         int colorN = getColor(context, colorNormal);
@@ -54,14 +55,14 @@ public final class ViewUtils {
 
     public static ColorStateList getFabState(@ColorInt int colorNormal, @ColorInt int colorPressed) {
         int[][] states = {
-                new int[] {android.R.attr.state_pressed},
-                new int[] {android.R.attr.state_focused}, new int[] {}
+                new int[]{android.R.attr.state_pressed},
+                new int[]{android.R.attr.state_focused}, new int[]{}
         };
         int colors[] = {colorPressed, colorNormal, colorNormal};
         return new ColorStateList(states, colors);
     }
 
-    public static Drawable getDrawable (Context context, @DrawableRes int resource){
+    public static Drawable getDrawable(Context context, @DrawableRes int resource) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             return context.getResources().getDrawable(resource, null);
         } else {
@@ -82,31 +83,31 @@ public final class ViewUtils {
         }
     }
 
-    public static void slideInUp(Context context, View view){
+    public static void slideInUp(Context context, View view) {
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_up);
         view.startAnimation(animation);
         view.setVisibility(View.VISIBLE);
     }
 
-    public static void slideOutDown(Context context, View view){
+    public static void slideOutDown(Context context, View view) {
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_down);
         view.startAnimation(animation);
         view.setVisibility(View.GONE);
     }
 
-    public static void slideOutUp(Context context, View view){
+    public static void slideOutUp(Context context, View view) {
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_up_out);
         view.startAnimation(animation);
         view.setVisibility(View.GONE);
     }
 
-    public static void slideInDown(Context context, View view){
+    public static void slideInDown(Context context, View view) {
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_down_in);
         view.startAnimation(animation);
         view.setVisibility(View.VISIBLE);
     }
 
-    public static void fadeInAnimation(View view){
+    public static void fadeInAnimation(View view) {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
         fadeIn.setStartOffset(400);
@@ -115,7 +116,7 @@ public final class ViewUtils {
         view.setVisibility(View.VISIBLE);
     }
 
-    public static void fadeOutAnimation(View view){
+    public static void fadeOutAnimation(View view) {
         Animation fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setDuration(400);
@@ -123,7 +124,7 @@ public final class ViewUtils {
         view.setVisibility(View.GONE);
     }
 
-    public static void show(View view){
+    public static void show(View view) {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
         fadeIn.setStartOffset(400);
@@ -132,7 +133,7 @@ public final class ViewUtils {
         view.setVisibility(View.VISIBLE);
     }
 
-    public static void hide(View view){
+    public static void hide(View view) {
         Animation fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
         fadeOut.setDuration(400);
@@ -140,15 +141,7 @@ public final class ViewUtils {
         view.setVisibility(View.INVISIBLE);
     }
 
-    public static void hideFull(View view){
-        Animation fadeOut = new AlphaAnimation(1, 0);
-        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-        fadeOut.setDuration(400);
-        view.setAnimation(fadeOut);
-        view.setVisibility(View.GONE);
-    }
-
-    public static void showOver(View view){
+    public static void showOver(View view) {
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new OvershootInterpolator());
         fadeIn.setDuration(300);
@@ -156,7 +149,7 @@ public final class ViewUtils {
         view.setVisibility(View.VISIBLE);
     }
 
-    public static void hideOver(View view){
+    public static void hideOver(View view) {
         Animation fadeIn = new AlphaAnimation(1, 0);
         fadeIn.setInterpolator(new OvershootInterpolator());
         fadeIn.setDuration(300);
@@ -238,9 +231,10 @@ public final class ViewUtils {
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 v.getLayoutParams().height = interpolatedTime == 1
                         ? ViewGroup.LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
+                        : (int) (targetHeight * interpolatedTime);
                 v.requestLayout();
             }
+
             @Override
             public boolean willChangeBounds() {
                 return true;
@@ -256,20 +250,21 @@ public final class ViewUtils {
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
+                if (interpolatedTime == 1) {
                     v.setVisibility(View.GONE);
-                } else{
-                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                } else {
+                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
                     v.requestLayout();
                 }
             }
+
             @Override
             public boolean willChangeBounds() {
                 return true;
             }
         };
         // 1dp/ms
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
+        a.setDuration((int) (initialHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
 

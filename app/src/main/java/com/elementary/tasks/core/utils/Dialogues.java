@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.core.interfaces.LCAMListener;
 
@@ -33,7 +34,7 @@ public class Dialogues {
         }
     }
 
-    public static void showLCAM(Context context, final LCAMListener listener, String... actions) {
+    public static void showLCAM(Context context, @Nullable LCAMListener listener, String... actions) {
         AlertDialog.Builder builder = getDialog(context);
         builder.setItems(actions, (dialog, item) -> {
             dialog.dismiss();

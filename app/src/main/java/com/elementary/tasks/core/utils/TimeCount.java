@@ -2,6 +2,8 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
@@ -56,7 +58,7 @@ public final class TimeCount {
         return holder.getContext();
     }
 
-    public long generateNextTimer(Reminder reminder, boolean isNew) {
+    public long generateNextTimer(@NonNull Reminder reminder, boolean isNew) {
         List<Integer> hours = reminder.getHours();
         String fromHour = reminder.getFrom();
         String toHour = reminder.getTo();
@@ -121,11 +123,15 @@ public final class TimeCount {
         }
     }
 
-    public String getRemaining(String dateTime, int delay) {
+    public String getRemaining(@Nullable String dateTime, int delay) {
+        if (TextUtils.isEmpty(dateTime)) {
+            return getRemaining(0);
+        }
         long time = TimeUtil.getDateTimeFromGmt(dateTime);
         return getRemaining(time + (delay * MINUTE));
     }
 
+    @NonNull
     public String getRemaining(long eventTime) {
         long difference = eventTime - System.currentTimeMillis();
         long days = (difference / (DAY));
@@ -208,7 +214,7 @@ public final class TimeCount {
         return getContext().getString(res);
     }
 
-    public long getNextWeekdayTime(long startTime, List<Integer> weekdays, long delay) {
+    public long getNextWeekdayTime(long startTime, @NonNull List<Integer> weekdays, long delay) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(startTime);
         cc.set(Calendar.SECOND, 0);
@@ -227,7 +233,7 @@ public final class TimeCount {
         }
     }
 
-    public long getNextWeekdayTime(Reminder reminder) {
+    public long getNextWeekdayTime(@NonNull Reminder reminder) {
         List<Integer> weekdays = reminder.getWeekdays();
         if (weekdays == null) {
             return 0;
@@ -248,11 +254,11 @@ public final class TimeCount {
         return cc.getTimeInMillis();
     }
 
-    public static boolean isCurrent(String eventTime) {
+    public static boolean isCurrent(@Nullable String eventTime) {
         return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis();
     }
 
-    public long getNextMonthDayTime(Reminder reminder) {
+    public long getNextMonthDayTime(@NonNull Reminder reminder) {
         int dayOfMonth = reminder.getDayOfMonth();
         long fromTime = System.currentTimeMillis();
         if (reminder.getEventTime() != null) {
@@ -291,6 +297,7 @@ public final class TimeCount {
         return cc.getTimeInMillis();
     }
 
+    @NonNull
     public String[] getNextDateTime(long timeLong) {
         String date;
         String time;

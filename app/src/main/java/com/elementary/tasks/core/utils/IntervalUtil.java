@@ -1,6 +1,8 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
 
@@ -34,6 +36,7 @@ public final class IntervalUtil {
 
     private IntervalUtil() {}
 
+    @NonNull
     public static List<Integer> getWeekRepeat(boolean mon, boolean tue, boolean wed, boolean thu, boolean fri,
                                                    boolean sat, boolean sun){
         List<Integer> sb = new ArrayList<>(7);
@@ -47,7 +50,8 @@ public final class IntervalUtil {
         return sb;
     }
 
-    public static boolean isWeekday(List<Integer> weekday) {
+    public static boolean isWeekday(@Nullable List<Integer> weekday) {
+        if (weekday == null) return false;
         for (int day : weekday) {
             if (day == ReminderUtils.DAY_CHECKED) {
                 return true;
@@ -56,6 +60,7 @@ public final class IntervalUtil {
         return false;
     }
 
+    @NonNull
     public static String getInterval(Context mContext, long code){
         long minute = 1000 * 60;
         long day = minute * 60 * 24;

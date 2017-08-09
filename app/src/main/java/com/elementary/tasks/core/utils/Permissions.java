@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 /**
@@ -63,7 +64,7 @@ public class Permissions {
         return res;
     }
 
-    public static boolean checkPermission(Context a, String permission) {
+    public static boolean checkPermission(Context a, @NonNull String permission) {
         return !Module.isMarshmallow() || ContextCompat.checkSelfPermission(a, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -76,9 +77,5 @@ public class Permissions {
             System.arraycopy(permission, 0, array, 0, size);
             a.requestPermissions(array, requestCode);
         }
-    }
-
-    public static void showInfo(Activity a, String permission){
-        a.shouldShowRequestPermissionRationale(permission);
     }
 }

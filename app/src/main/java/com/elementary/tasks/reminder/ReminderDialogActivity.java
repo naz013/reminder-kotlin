@@ -98,8 +98,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
         mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
-        mControl = EventControlFactory.getController(this, mReminder);
         super.onCreate(savedInstanceState);
+        if (mReminder == null) finish();
+        mControl = EventControlFactory.getController(this, mReminder);
         LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(mReminder.getEventTime()));
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
@@ -107,11 +108,11 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         binding.container.setVisibility(View.GONE);
         binding.subjectContainer.setVisibility(View.GONE);
         loadImage(binding.bgImage);
-        buttonCancel = (FloatingActionButton) findViewById(R.id.buttonCancel);
-        FloatingActionButton buttonCall = (FloatingActionButton) findViewById(R.id.buttonCall);
-        buttonDelay = (FloatingActionButton) findViewById(R.id.buttonDelay);
-        FloatingActionButton buttonDelayFor = (FloatingActionButton) findViewById(R.id.buttonDelayFor);
-        FloatingActionButton buttonNotification = (FloatingActionButton) findViewById(R.id.buttonNotification);
+        buttonCancel = findViewById(R.id.buttonCancel);
+        FloatingActionButton buttonCall = findViewById(R.id.buttonCall);
+        buttonDelay = findViewById(R.id.buttonDelay);
+        FloatingActionButton buttonDelayFor = findViewById(R.id.buttonDelayFor);
+        FloatingActionButton buttonNotification = findViewById(R.id.buttonNotification);
         colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
                 buttonNotification, binding.buttonEdit);
         setTextDrawable(buttonDelay, String.valueOf(getPrefs().getSnoozeTime()));
@@ -126,14 +127,14 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
         contactPhoto.setVisibility(View.GONE);
 
-        todoList = (RecyclerView) findViewById(R.id.todoList);
+        todoList = findViewById(R.id.todoList);
         todoList.setLayoutManager(new LinearLayoutManager(this));
         todoList.setVisibility(View.GONE);
 
-        TextView remText = (TextView) findViewById(R.id.remText);
-        TextView contactInfo = (TextView) findViewById(R.id.contactInfo);
-        TextView subjectView = (TextView) findViewById(R.id.subjectView);
-        TextView messageView = (TextView) findViewById(R.id.messageView);
+        TextView remText = findViewById(R.id.remText);
+        TextView contactInfo = findViewById(R.id.contactInfo);
+        TextView subjectView = findViewById(R.id.subjectView);
+        TextView messageView = findViewById(R.id.messageView);
         remText.setText("");
 
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.CALL) || Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
@@ -145,7 +146,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 else contactPhoto.setVisibility(View.GONE);
                 String name = Contacts.getNameFromNumber(mReminder.getTarget(), this);
                 remText.setText(R.string.make_call);
-                String userTitle = (name != null? name : "") + "\n" + mReminder.getTarget();
+                String userTitle = (name != null ? name : "") + "\n" + mReminder.getTarget();
                 contactInfo.setText(userTitle);
                 contactInfo.setContentDescription(userTitle);
                 messageView.setText(getSummary());
