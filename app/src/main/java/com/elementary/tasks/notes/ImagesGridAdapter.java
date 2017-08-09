@@ -80,6 +80,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
         NoteImageListItemBinding binding;
+
         PhotoViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -87,21 +88,11 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
             if (isEditable) {
                 binding.removeButton.setVisibility(View.VISIBLE);
                 binding.removeButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
-                binding.removeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        removeImage(getAdapterPosition());
-                    }
-                });
+                binding.removeButton.setOnClickListener(view -> removeImage(getAdapterPosition()));
                 if (mActions != null && Module.isPro()) {
                     binding.editButton.setVisibility(View.VISIBLE);
                     binding.editButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
-                    binding.editButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mActions.onItemEdit(getAdapterPosition());
-                        }
-                    });
+                    binding.editButton.setOnClickListener(view -> mActions.onItemEdit(getAdapterPosition()));
                 } else {
                     binding.editButton.setVisibility(View.GONE);
                 }

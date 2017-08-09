@@ -201,7 +201,8 @@ public class ImageEditActivity extends ThemedActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (Module.isMarshmallow() && fragment != null) fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Module.isMarshmallow() && fragment != null)
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void saveImage() {

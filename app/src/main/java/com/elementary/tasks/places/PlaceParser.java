@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
  * limitations under the License.
  */
 
-public class PlaceParser {;
+public class PlaceParser {
 
     public static GooglePlaceItem getDetails(Place place) {
         GooglePlaceItem model = new GooglePlaceItem();

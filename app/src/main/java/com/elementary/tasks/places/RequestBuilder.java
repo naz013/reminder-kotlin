@@ -28,9 +28,8 @@ import retrofit2.Call;
 
 public class RequestBuilder {
 
-    private static final String TAG = "RequestBuilder";
-
-    private RequestBuilder() {}
+    private RequestBuilder() {
+    }
 
     public static Call<PlacesResponse> getNearby(double lat, double lng, String name) {
         String req = name.replaceAll("\\s+", "+");

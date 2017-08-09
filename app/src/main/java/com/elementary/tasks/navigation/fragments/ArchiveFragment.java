@@ -187,7 +187,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void deleteAll(){
+    private void deleteAll() {
         List<String> uids = RealmDb.getInstance().clearReminderTrash();
         new DeleteFilesAsync(getContext()).execute(uids.toArray(new String[uids.size()]));
         loadData(mLastGroupId, lastType);
@@ -298,7 +298,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void reloadView() {
-        if (mAdapter != null && mAdapter.getItemCount() > 0){
+        if (mAdapter != null && mAdapter.getItemCount() > 0) {
             mRecyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {

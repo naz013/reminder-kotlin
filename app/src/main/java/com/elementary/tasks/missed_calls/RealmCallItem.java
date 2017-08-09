@@ -31,7 +31,8 @@ public class RealmCallItem extends RealmObject {
     @SerializedName("uniqueId")
     private int uniqueId;
 
-    public RealmCallItem() {}
+    public RealmCallItem() {
+    }
 
     public RealmCallItem(CallItem item) {
         this.number = item.getNumber();

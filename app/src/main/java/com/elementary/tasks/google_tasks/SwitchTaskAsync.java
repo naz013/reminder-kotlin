@@ -25,6 +25,7 @@ import java.io.IOException;
  * limitations under the License.
  */
 class SwitchTaskAsync extends AsyncTask<Void, Void, Boolean> {
+
     private Context mContext;
     private String taskId, listId;
     private TasksCallback mListener;

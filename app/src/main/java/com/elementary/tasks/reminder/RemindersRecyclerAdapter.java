@@ -55,8 +55,6 @@ import java.util.Locale;
 
 public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String, RecyclerView.ViewHolder> {
 
-    private static final String TAG = "RRA";
-
     private Context mContext;
     private RecyclerListener mEventListener;
     private ThemeUtil themeUtil;
@@ -79,7 +77,8 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
         Reminder prevItem = null;
         try {
             prevItem = getUsedData().get(position - 1);
-        } catch (ArrayIndexOutOfBoundsException ignored) {}
+        } catch (ArrayIndexOutOfBoundsException ignored) {
+        }
         if (!item.isActive() && position > 0 && (prevItem != null && prevItem.isActive())) {
             simpleDate = mContext.getString(R.string.disabled);
             listHeader.setText(simpleDate);
@@ -190,7 +189,7 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
         container.setFocusable(false);
         container.removeAllViewsInLayout();
         int count = 0;
-        for (ShopItem list : shoppings){
+        for (ShopItem list : shoppings) {
             ListItemTaskItemWidgetBinding binding = ListItemTaskItemWidgetBinding.inflate(LayoutInflater.from(container.getContext()), null, false);
             ImageView checkView = binding.checkView;
             RoboTextView textView = binding.shopText;
@@ -249,7 +248,7 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
     public static void loadShoppingDate(RoboTextView textView, String eventTime) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
         long due = TimeUtil.getDateTimeFromGmt(eventTime);
-        if (due > 0){
+        if (due > 0) {
             textView.setText(TimeUtil.getFullDateTime(due, is24, false));
             textView.setVisibility(View.VISIBLE);
         } else {

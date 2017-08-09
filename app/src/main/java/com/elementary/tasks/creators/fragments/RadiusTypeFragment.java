@@ -33,7 +33,7 @@ abstract class RadiusTypeFragment extends TypeFragment {
 
     protected int radius = Prefs.getInstance(getContext()).getRadius();
 
-    protected final void showRadiusPickerDialog(){
+    protected final void showRadiusPickerDialog() {
         AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));

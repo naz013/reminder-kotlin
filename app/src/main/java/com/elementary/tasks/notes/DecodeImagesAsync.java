@@ -32,7 +32,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteImage>>{
+public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteImage>> {
 
     private Context mContext;
     private DecodeListener mCallback;

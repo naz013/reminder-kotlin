@@ -89,7 +89,7 @@ public class DayViewFragment extends BaseCalendarFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_voice:
-                if (getCallback() != null){
+                if (getCallback() != null) {
                     getCallback().onVoiceAction();
                 }
                 return true;
@@ -128,7 +128,7 @@ public class DayViewFragment extends BaseCalendarFragment {
 
     private void loadData() {
         Calendar calendar = Calendar.getInstance();
-        if (dateMills != 0){
+        if (dateMills != 0) {
             calendar.setTimeInMillis(dateMills);
             showEvents(calendar.getTime());
         } else {
@@ -166,7 +166,7 @@ public class DayViewFragment extends BaseCalendarFragment {
             int mMonth = calendar.get(Calendar.MONTH);
             int mYear = calendar.get(Calendar.YEAR);
             List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear, true);
-            if (mDay == targetDay && mMonth == targetMonth && mYear == targetYear){
+            if (mDay == targetDay && mMonth == targetMonth && mYear == targetYear) {
                 targetPosition = position;
                 pagerData.add(new EventsPagerItem(datas, position, 1, mDay, mMonth, mYear));
             } else {

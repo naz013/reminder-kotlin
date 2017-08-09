@@ -46,6 +46,7 @@ public class PlacesRecyclerAdapter extends FilterableAdapter<PlaceItem, String, 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         PlaceListItemBinding binding;
+
         public ViewHolder(View v) {
             super(v);
             binding = DataBindingUtil.bind(v);

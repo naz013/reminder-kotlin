@@ -56,7 +56,7 @@ public class DeleteFilesAsync extends AsyncTask<String, Void, Void> {
                 if (file.exists()) file.delete();
             }
             boolean isConnected = SuperUtil.isConnected(mContext);
-            if (isConnected){
+            if (isConnected) {
                 new Dropbox(mContext).deleteReminder(exportFileName);
                 Google google = Google.getInstance(mContext);
                 if (google != null && google.getDrive() != null) {

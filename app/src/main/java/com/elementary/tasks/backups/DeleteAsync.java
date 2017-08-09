@@ -29,7 +29,7 @@ import java.io.IOException;
  * limitations under the License.
  */
 
-public class DeleteAsync extends AsyncTask<String, Void, Integer> {
+public class DeleteAsync extends AsyncTask<File, Void, Integer> {
 
     private Context mContext;
     private ProgressDialog progressDialog;
@@ -50,18 +50,17 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
+    protected Integer doInBackground(File... params) {
         int res = 0;
         if (type == UserInfoAsync.Info.Dropbox) {
             Dropbox dbx = new Dropbox(mContext);
             dbx.startSession();
             boolean isLinked = dbx.isLinked();
             boolean isConnected = SuperUtil.isConnected(mContext);
-            for (String filePath : params) {
-                if (filePath == null) {
+            for (File file : params) {
+                if (file == null) {
                     continue;
                 }
-                File file = new File(filePath);
                 if (!file.exists()) {
                     continue;
                 }
@@ -87,11 +86,10 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
             Google gdx = Google.getInstance(mContext);
             boolean isLinked = gdx != null;
             boolean isConnected = SuperUtil.isConnected(mContext);
-            for (String filePath : params) {
-                if (filePath == null) {
+            for (File file : params) {
+                if (file == null) {
                     continue;
                 }
-                File file = new File(filePath);
                 if (!file.exists()) {
                     continue;
                 }
@@ -118,11 +116,10 @@ public class DeleteAsync extends AsyncTask<String, Void, Integer> {
                 }
             }
         } else if (type == UserInfoAsync.Info.Local) {
-            for (String filePath : params) {
-                if (filePath == null) {
+            for (File file : params) {
+                if (file == null) {
                     continue;
                 }
-                File file = new File(filePath);
                 if (!file.exists()) {
                     continue;
                 }

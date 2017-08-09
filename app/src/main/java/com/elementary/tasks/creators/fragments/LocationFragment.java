@@ -240,7 +240,8 @@ public class LocationFragment extends RadiusTypeFragment {
             LatLng pos = new LatLng(lat, lon);
             String title = getInterface().getSummary();
             if (title != null && title.matches("")) title = pos.toString();
-            if (advancedMapFragment != null) advancedMapFragment.addMarker(pos, title, true, true, radius);
+            if (advancedMapFragment != null)
+                advancedMapFragment.addMarker(pos, title, true, true, radius);
         });
         editReminder();
         return binding.getRoot();

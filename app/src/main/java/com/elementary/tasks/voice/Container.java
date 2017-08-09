@@ -24,7 +24,7 @@ class Container<V> {
     private List<V> list = new ArrayList<>();
     private V type;
 
-    Container( List<V> list) {
+    Container(List<V> list) {
         this.list = list;
         if (!list.isEmpty()) {
             this.type = list.get(0);

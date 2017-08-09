@@ -164,7 +164,7 @@ public class TaskActivity extends ThemedActivity {
 
     private void showReminder() {
         Reminder item = RealmDb.getInstance().getReminder(mItem.getUuId());
-        if (item != null){
+        if (item != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
             timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
@@ -308,15 +308,16 @@ public class TaskActivity extends ThemedActivity {
         }
         AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_list);
-        builder.setSingleChoiceItems(new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, names), position, (dialog, which) -> {
-            dialog.dismiss();
-            if (move) moveTask(list.get(which).getListId());
-            else {
-                listId = list.get(which).getListId();
-                listText.setText(list.get(which).getTitle());
-                reloadColor(list.get(which).getListId());
-            }
-        });
+        builder.setSingleChoiceItems(new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, names),
+                position, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (move) moveTask(list.get(which).getListId());
+                    else {
+                        listId = list.get(which).getListId();
+                        listText.setText(list.get(which).getTitle());
+                        reloadColor(list.get(which).getListId());
+                    }
+                });
         AlertDialog alert = builder.create();
         alert.show();
     }

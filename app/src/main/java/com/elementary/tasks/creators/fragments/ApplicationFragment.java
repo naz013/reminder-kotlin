@@ -186,8 +186,9 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         ApplicationInfo applicationInfo = null;
         try {
             applicationInfo = packageManager.getApplicationInfo(selectedPackage, 0);
-        } catch (final PackageManager.NameNotFoundException ignored) {}
-        return (String)((applicationInfo != null) ? packageManager.getApplicationLabel(applicationInfo) : "???");
+        } catch (final PackageManager.NameNotFoundException ignored) {
+        }
+        return (String) ((applicationInfo != null) ? packageManager.getApplicationLabel(applicationInfo) : "???");
     }
 
     @Override
