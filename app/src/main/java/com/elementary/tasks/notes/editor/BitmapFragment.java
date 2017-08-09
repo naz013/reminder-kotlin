@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes.editor;
 
+import android.support.annotation.Nullable;
+
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 import com.elementary.tasks.notes.NoteImage;
 
@@ -20,7 +22,11 @@ import com.elementary.tasks.notes.NoteImage;
  */
 
 public abstract class BitmapFragment extends BaseNavigationFragment {
+    @Nullable
     public abstract NoteImage getImage();
+
+    @Nullable
     public abstract NoteImage getOriginalImage();
+
     public abstract boolean onBackPressed();
 }

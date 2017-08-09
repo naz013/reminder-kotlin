@@ -69,15 +69,18 @@ public class CropFragment extends BitmapFragment {
     }
 
     private void loadImage() {
-        Glide.with(this)
-                .load(ImageSingleton.getInstance().getItem().getImage())
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        binding.cropImageView.setImageBitmap(resource);
-                    }
-                });
+        NoteImage item = ImageSingleton.getInstance().getItem();
+        if (item != null) {
+            Glide.with(this)
+                    .load(item.getImage())
+                    .asBitmap()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            binding.cropImageView.setImageBitmap(resource);
+                        }
+                    });
+        }
     }
 
     private void initControls() {
@@ -90,8 +93,11 @@ public class CropFragment extends BitmapFragment {
         Bitmap cropped = binding.cropImageView.getCroppedImage();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        ImageSingleton.getInstance().getItem().setImage(outputStream.toByteArray());
-        return ImageSingleton.getInstance().getItem();
+        NoteImage item = ImageSingleton.getInstance().getItem();
+        if (item != null) {
+            item.setImage(outputStream.toByteArray());
+        }
+        return item;
     }
 
     @Override

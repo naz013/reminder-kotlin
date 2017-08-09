@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes.editor;
 
+import android.support.annotation.Nullable;
+
 import com.elementary.tasks.notes.NoteImage;
 
 /**
@@ -20,6 +22,7 @@ import com.elementary.tasks.notes.NoteImage;
 
 class ImageSingleton {
 
+    @Nullable
     private NoteImage mItem;
     private static ImageSingleton instance;
 
@@ -34,15 +37,18 @@ class ImageSingleton {
         return instance;
     }
 
-    public void setItem(NoteImage mItem) {
+    public void setItem(@Nullable NoteImage mItem) {
         this.mItem = mItem;
     }
 
+    @Nullable
     public NoteImage getItem() {
         return mItem;
     }
 
     public void setImage(byte[] bitmapAsByteArray) {
-        mItem.setImage(bitmapAsByteArray);
+        if (mItem != null) {
+            mItem.setImage(bitmapAsByteArray);
+        }
     }
 }
