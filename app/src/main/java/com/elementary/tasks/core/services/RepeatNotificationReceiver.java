@@ -7,15 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Sound;
@@ -95,7 +96,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
     }
 
     private void showNotification(Context context, Reminder reminder) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(reminder.getSummary());
         builder.setAutoCancel(false);
         builder.setPriority(Notification.PRIORITY_MAX);

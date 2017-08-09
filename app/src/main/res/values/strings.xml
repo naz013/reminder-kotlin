@@ -613,5 +613,9 @@
     <string name="would_you_like_to_add_reminder">Would you like to add reminder?</string>
     <string name="note_saved_without_reminder">Note saved without reminder</string>
     <string name="trash_was_cleared">Trash was cleared</string>
+    <string name="reminder_channel">Reminder channel</string>
+    <string name="default_reminder_notifications">Default reminder notifications</string>
+    <string name="info_channel">Info channel</string>
+    <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
 
 </resources>

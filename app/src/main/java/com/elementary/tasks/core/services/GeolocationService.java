@@ -6,13 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -164,7 +165,7 @@ public class GeolocationService extends Service {
 
     private void showNotification(int roundedDistance, Reminder reminder) {
         if (!isNotificationEnabled) return;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), Notifier.CHANNEL_SYSTEM);
         builder.setContentText(String.valueOf(roundedDistance));
         builder.setContentTitle(reminder.getSummary());
         builder.setContentText(String.valueOf(roundedDistance));

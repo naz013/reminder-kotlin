@@ -6,6 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -54,6 +55,7 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Notifier.createChannels(this);
         Fabric.with(this, new Crashlytics());
         Prefs.getInstance(this);
         Realm.init(this);

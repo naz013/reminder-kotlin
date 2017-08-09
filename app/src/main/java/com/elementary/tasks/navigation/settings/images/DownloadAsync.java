@@ -6,14 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -54,7 +55,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         this.width = width;
         this.height = height;
         this.id = id;
-        builder = new NotificationCompat.Builder(context);
+        builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM);
     }
 
     @Override

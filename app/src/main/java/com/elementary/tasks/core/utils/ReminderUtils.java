@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
@@ -15,7 +15,6 @@ import com.elementary.tasks.core.services.BirthdayActionService;
 import com.elementary.tasks.core.services.ReminderActionService;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public final class ReminderUtils {
 
     public static void showSimpleBirthday(Context context, String id) {
         BirthdayItem birthdayItem = RealmDb.getInstance().getBirthday(id);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
         } else {
@@ -139,7 +138,7 @@ public final class ReminderUtils {
         dismissIntent.setAction(ReminderActionService.ACTION_HIDE);
         dismissIntent.putExtra(Constants.INTENT_ID, id);
         PendingIntent piDismiss = PendingIntent.getService(context, 0, dismissIntent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
         } else {
@@ -187,46 +186,6 @@ public final class ReminderUtils {
         builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
         mNotifyMgr.notify(reminder.getUniqueId(), builder.build());
-    }
-
-    public static List<Integer> getRepeatArray(String weekdays) {
-        List<Integer> res = new ArrayList<>();
-        if (Character.toString(weekdays.charAt(6)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(0)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(1)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(2)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(3)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(4)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        if (Character.toString(weekdays.charAt(5)).matches(DAY_CHECK)) {
-            res.add(1);
-        } else {
-            res.add(0);
-        }
-        return res;
     }
 
     public static long getTime(int day, int month, int year, int hour, int minute, long after) {

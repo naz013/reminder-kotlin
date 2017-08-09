@@ -48,16 +48,15 @@ public class ReminderActionService extends Service {
             if (action != null && action.matches(ACTION_HIDE)) {
                 hidePermanent(intent.getStringExtra(Constants.INTENT_ID));
             } else {
-                showReminder(intent);
+                showReminder(intent.getStringExtra(Constants.INTENT_ID));
             }
         }
         return START_STICKY;
     }
 
-    private void showReminder(Intent intent) {
-        Reminder reminder = RealmDb.getInstance().getReminder(intent.getStringExtra(Constants.INTENT_ID));
-        Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(getApplicationContext(),
-                intent.getStringExtra(Constants.INTENT_ID));
+    private void showReminder(String id) {
+        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(getApplicationContext(), id);
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         startActivity(notificationIntent);
         endService(reminder.getUniqueId());

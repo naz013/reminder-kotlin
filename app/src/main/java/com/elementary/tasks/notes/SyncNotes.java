@@ -2,8 +2,8 @@ package com.elementary.tasks.notes;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
@@ -11,6 +11,7 @@ import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
 
     public SyncNotes(Context context, SyncListener mListener){
         this.mContext = context;
-        builder = new NotificationCompat.Builder(context);
+        builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM);
         this.mListener = mListener;
     }
 

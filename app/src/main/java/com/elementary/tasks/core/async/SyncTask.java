@@ -1,14 +1,15 @@
 package com.elementary.tasks.core.async;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.IoHelper;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -34,16 +35,16 @@ import java.util.List;
 public class SyncTask extends AsyncTask<Void, String, Boolean> {
 
     private Context mContext;
-    private NotificationManager mNotifyMgr;
-    private Notification.Builder builder;
+    private NotificationManagerCompat mNotifyMgr;
+    private NotificationCompat.Builder builder;
     private SyncListener mListener;
     private boolean quiet = false;
 
-    public SyncTask(Context context, SyncListener mListener, boolean quiet){
+    public SyncTask(Context context, SyncListener mListener, boolean quiet) {
         this.mContext = context;
         this.mListener = mListener;
         this.quiet = quiet;
-        builder = new Notification.Builder(context);
+        builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
             } else {
                 builder.setSmallIcon(R.mipmap.ic_launcher);
             }
-            mNotifyMgr = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotifyMgr = NotificationManagerCompat.from(mContext);
             mNotifyMgr.notify(2, builder.build());
         }
     }
