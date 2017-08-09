@@ -585,7 +585,7 @@ public class DrawFragment extends BitmapFragment {
                 if (convertView == null) {
                     convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
                 }
-                TextView textView = (TextView) convertView.findViewById(android.R.id.text1);
+                TextView textView = convertView.findViewById(android.R.id.text1);
                 textView.setTypeface(getTypeface(position));
                 textView.setText(contacts.get(position));
                 return convertView;
@@ -599,7 +599,6 @@ public class DrawFragment extends BitmapFragment {
             mView.setFontFamily(which);
             dialog.dismiss();
         });
-//        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -711,7 +710,10 @@ public class DrawFragment extends BitmapFragment {
     }
 
     private void loadImage() {
-        mView.addBitmap(ImageSingleton.getInstance().getItem().getImage());
+        NoteImage image = ImageSingleton.getInstance().getItem();
+        if (image != null) {
+            mView.addBitmap(image.getImage());
+        }
         binding.imageButton.setChecked(true);
     }
 

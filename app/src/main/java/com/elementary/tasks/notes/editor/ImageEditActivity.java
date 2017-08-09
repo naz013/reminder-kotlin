@@ -205,7 +205,9 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void saveImage() {
-        RealmDb.getInstance().saveImage(fragment.getImage());
+        if (fragment.getImage() != null) {
+            RealmDb.getInstance().saveImage(fragment.getImage());
+        }
         ImageSingleton.getInstance().setItem(null);
         setResult(RESULT_OK);
         finish();
