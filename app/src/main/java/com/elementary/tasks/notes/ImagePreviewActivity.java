@@ -79,7 +79,9 @@ public class ImagePreviewActivity extends ThemedActivity {
 
             }
         });
-        setToolbarTitle(binding.photoPager.getCurrentItem());
+        if (mItem != null) {
+            setToolbarTitle(binding.photoPager.getCurrentItem());
+        }
     }
 
     private void setToolbarTitle(int position) {

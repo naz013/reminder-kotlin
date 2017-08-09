@@ -63,7 +63,6 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        mData.clear();
         map.clear();
         List<TaskListItem> list = RealmDb.getInstance().getTaskLists();
         for (TaskListItem item : list) {
