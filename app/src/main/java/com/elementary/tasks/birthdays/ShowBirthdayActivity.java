@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -116,8 +117,8 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         RoboTextView userName = binding.userName;
         userName.setText(mBirthdayItem.getName());
         userName.setContentDescription(mBirthdayItem.getName());
-        RoboTextView userNumber = (RoboTextView) findViewById(R.id.userNumber);
-        RoboTextView userYears = (RoboTextView) findViewById(R.id.userYears);
+        RoboTextView userNumber = findViewById(R.id.userNumber);
+        RoboTextView userYears = findViewById(R.id.userYears);
         userYears.setText(years);
         userYears.setContentDescription(years);
         wearMessage = mBirthdayItem.getName() + "\n" + years;
@@ -140,7 +141,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     public void showNotification(int years, String name) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(name);
         builder.setContentText(TimeUtil.getAgeFormatted(this, years));
         if (Module.isLollipop()) {

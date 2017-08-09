@@ -28,6 +28,10 @@ public class Module {
         return BuildConfig.IS_PRO;
     }
 
+    public static boolean isO(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    }
+
     public static boolean isLollipop(){
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }

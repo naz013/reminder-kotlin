@@ -1,10 +1,13 @@
 package com.elementary.tasks.core.utils;
 
+import android.annotation.TargetApi;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.NotificationCompat;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.notes.NoteImage;
@@ -28,10 +31,41 @@ import com.elementary.tasks.notes.NoteItem;
 
 public class Notifier {
 
+    public static final String CHANNEL_REMINDER = "reminder.channel1";
+    public static final String CHANNEL_SYSTEM = "reminder.channel2";
+
     private Context mContext;
 
     public Notifier(Context context){
         this.mContext = context;
+    }
+
+    public static void createChannels(Context context) {
+        if (Module.isO()) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(createReminderChannel(context));
+            manager.createNotificationChannel(createSystemChannel(context));
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private static NotificationChannel createSystemChannel(Context context) {
+        String name = context.getString(R.string.info_channel);
+        String descr = context.getString(R.string.channel_for_other_info_notifications);
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_SYSTEM, name, importance);
+        mChannel.setDescription(descr);
+        return mChannel;
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private static NotificationChannel createReminderChannel(Context context) {
+        String name = context.getString(R.string.reminder_channel);
+        String descr = context.getString(R.string.default_reminder_notifications);
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_REMINDER, name, importance);
+        mChannel.setDescription(descr);
+        return mChannel;
     }
 
     public static void hideNotification(Context context, int id) {
@@ -41,7 +75,7 @@ public class Notifier {
 
     public void showNoteNotification(NoteItem item){
         Prefs sPrefs = Prefs.getInstance(mContext);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
         builder.setContentText(mContext.getString(R.string.note));
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(mContext, R.color.bluePrimary));
@@ -71,7 +105,7 @@ public class Notifier {
         NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(item.getUniqueId(), builder.build());
         if (isWear && Module.isJellyMR2()){
-            NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext);
+            NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
             wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             wearableNotificationBuilder.setContentTitle(content);
             wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));

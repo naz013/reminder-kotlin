@@ -1,7 +1,6 @@
 package com.elementary.tasks.core;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -36,6 +35,7 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SoundStackHolder;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -420,7 +420,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showMissedReminder(CallItem callItem, String name) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(name);
         builder.setAutoCancel(false);
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
@@ -475,7 +475,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showFavouriteNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(getSummary());
         String appName;
         if (Module.isPro()) {
@@ -509,7 +509,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(getSummary());
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
@@ -564,7 +564,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showTTSNotification(Activity activityClass) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(getSummary());
         Intent notificationIntent = new Intent(this, activityClass.getClass());
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
@@ -573,7 +573,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
-        builder.setPriority(Notification.PRIORITY_MAX);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
         if (getPrefs().isManualRemoveEnabled()) {
             builder.setOngoing(false);
         } else {
@@ -696,7 +696,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected void showWearNotification(String secondaryText) {
         if (Module.isJellyMR2()) {
-            final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this);
+            final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
             wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             wearableNotificationBuilder.setContentTitle(getSummary());
             wearableNotificationBuilder.setContentText(secondaryText);

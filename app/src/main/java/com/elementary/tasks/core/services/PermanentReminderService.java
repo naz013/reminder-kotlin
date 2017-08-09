@@ -6,7 +6,7 @@ import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -16,6 +16,7 @@ import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -89,7 +90,7 @@ public class PermanentReminderService extends Service {
     private void showPermanent() {
         RemoteViews remoteViews = new RemoteViews(getApplication().getPackageName(),
                 R.layout.notification_layout);
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext());
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), Notifier.CHANNEL_REMINDER);
         notification.setAutoCancel(false);
         if (Module.isLollipop()) {
             notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
