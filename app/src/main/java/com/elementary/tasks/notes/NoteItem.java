@@ -1,5 +1,7 @@
 package com.elementary.tasks.notes;
 
+import android.support.annotation.NonNull;
+
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;
 
@@ -51,16 +53,6 @@ public class NoteItem {
         setStyle(item.getStyle());
         setSummary(item.getSummary());
         setUniqueId(item.getUniqueId());
-    }
-
-    public NoteItem(String summary, String key, String date, int color, int style, List<NoteImage> images) {
-        this.summary = summary;
-        this.key = key;
-        this.date = date;
-        this.color = color;
-        this.style = style;
-        this.images = images;
-        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
     public NoteItem() {
@@ -116,11 +108,12 @@ public class NoteItem {
         this.style = style;
     }
 
+    @NonNull
     public List<NoteImage> getImages() {
         return images;
     }
 
-    public void setImages(List<NoteImage> images) {
+    public void setImages(@NonNull List<NoteImage> images) {
         this.images = images;
     }
 
