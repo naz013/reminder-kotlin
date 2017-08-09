@@ -160,11 +160,7 @@ public class EventsDataProvider {
             calendar.setTimeInMillis(System.currentTimeMillis());
             int year = calendar.get(Calendar.YEAR);
             if (date != null) {
-                try {
-                    calendar.setTime(date);
-                } catch (NullPointerException e){
-                    e.printStackTrace();
-                }
+                calendar.setTime(date);
                 int i = -1;
                 while (i < 2) {
                     calendar.set(Calendar.YEAR, year + i);

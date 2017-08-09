@@ -36,6 +36,7 @@ public class RealmImage extends RealmObject {
     }
 
     public void setImage(byte[] image) {
-        this.image = image;
+        this.image = new byte[image.length];
+        System.arraycopy(image, 0, this.image, 0, this.image.length);
     }
 }

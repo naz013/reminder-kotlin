@@ -766,20 +766,6 @@ public class Dropbox {
             if (result == null) {
                 return 0;
             }
-            for (Metadata e : result.getEntries()) {
-//                if () {
-//                    DropboxAPI.Entry entry = mDBApi.metadata(e.path, 1000, null, true, null);
-//                    if (entry == null) {
-//                        continue;
-//                    }
-//                    List<DropboxAPI.Entry> list = entry.contents;
-//                    if (list != null) {
-//                        count += list.size();
-//                    }
-//                } else {
-                    count++;
-//                }
-            }
         } catch (DbxException e) {
             LogUtil.e(TAG, "countFiles: ", e);
         }

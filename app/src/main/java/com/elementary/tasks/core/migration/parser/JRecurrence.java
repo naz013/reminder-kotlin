@@ -174,7 +174,9 @@ class JRecurrence {
         if (weekdays != null) {
             this.weekdays = weekdays;
             JSONArray jsonArray = new JSONArray();
-            for (int day : weekdays) jsonArray.put(day);
+            for (int day : weekdays) {
+                jsonArray.put(day);
+            }
             try {
                 jsonObject.put(WEEKDAYS, jsonArray);
             } catch (JSONException e) {

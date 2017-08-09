@@ -19,14 +19,12 @@ class PhotoPagerAdapter extends PagerAdapter {
 
     private static final String TAG = "PhotoPagerAdapter";
 
-    private Context mContext;
     private LayoutInflater mLayoutInflater;
     private List<NoteImage> mPhotosUrl;
 
 
     PhotoPagerAdapter(Context context, List<NoteImage> images) {
-        mContext = context;
-        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mPhotosUrl = images;
     }
 

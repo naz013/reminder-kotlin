@@ -28,10 +28,7 @@ import android.support.annotation.Nullable;
 
 public final class Contacts {
 
-    private Context mContext;
-
-    public Contacts(Context context) {
-        this.mContext = context;
+    private Contacts() {
     }
 
     /**

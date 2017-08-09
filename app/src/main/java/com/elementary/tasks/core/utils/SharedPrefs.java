@@ -38,19 +38,19 @@ abstract class SharedPrefs extends PrefsConstants {
     private SharedPrefs() {
     }
 
-    SharedPrefs(Context context){
+    SharedPrefs(Context context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    void putString(String stringToSave, String value){
+    void putString(String stringToSave, String value) {
         prefs.edit().putString(stringToSave, value).apply();
     }
 
-    void putInt(String stringToSave, int value){
+    void putInt(String stringToSave, int value) {
         prefs.edit().putInt(stringToSave, value).apply();
     }
 
-    int getInt(String stringToLoad){
+    int getInt(String stringToLoad) {
         int x;
         try {
             x = prefs.getInt(stringToLoad, 0);
@@ -64,11 +64,11 @@ abstract class SharedPrefs extends PrefsConstants {
         return x;
     }
 
-    void putLong(String stringToSave, long value){
+    void putLong(String stringToSave, long value) {
         prefs.edit().putLong(stringToSave, value).apply();
     }
 
-    long getLong(String stringToLoad){
+    long getLong(String stringToLoad) {
         long x;
         try {
             x = prefs.getLong(stringToLoad, 1000);
@@ -92,48 +92,43 @@ abstract class SharedPrefs extends PrefsConstants {
         return value;
     }
 
-    String getString(String stringToLoad){
-        try {
-            return prefs.getString(stringToLoad, null);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return null;
+    String getString(String stringToLoad) {
+        return prefs.getString(stringToLoad, null);
     }
 
-    boolean hasKey(String checkString){
+    boolean hasKey(String checkString) {
         return prefs.contains(checkString);
     }
 
-    void putBoolean(String stringToSave, boolean value){
+    void putBoolean(String stringToSave, boolean value) {
         prefs.edit().putBoolean(stringToSave, value).apply();
     }
 
-    boolean getBoolean(String stringToLoad){
+    boolean getBoolean(String stringToLoad) {
         boolean res;
         try {
             res = prefs.getBoolean(stringToLoad, false);
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             res = Boolean.parseBoolean(prefs.getString(stringToLoad, "false"));
         }
         return res;
     }
 
-    public void saveVersionBoolean(String stringToSave){
+    public void saveVersionBoolean(String stringToSave) {
         prefs.edit().putBoolean(stringToSave, true).apply();
     }
 
-    public boolean getVersion(String stringToLoad){
+    public boolean getVersion(String stringToLoad) {
         boolean res;
         try {
             res = prefs.getBoolean(stringToLoad, false);
-        } catch (ClassCastException e){
+        } catch (ClassCastException e) {
             res = Boolean.parseBoolean(prefs.getString(stringToLoad, "false"));
         }
         return res;
     }
 
-    public void savePrefsBackup(){
+    public void savePrefsBackup() {
         File dir = MemoryUtil.getPrefsDir();
         if (dir != null) {
             File prefsFile = new File(dir + "/" + FileConfig.FILE_NAME_SETTINGS);
@@ -150,7 +145,7 @@ abstract class SharedPrefs extends PrefsConstants {
                 output.writeObject(list);
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
                     if (output != null) {
                         output.flush();
@@ -163,7 +158,7 @@ abstract class SharedPrefs extends PrefsConstants {
         }
     }
 
-    public void loadPrefsFromFile(){
+    public void loadPrefsFromFile() {
         File dir = MemoryUtil.getPrefsDir();
         if (dir == null) {
             return;

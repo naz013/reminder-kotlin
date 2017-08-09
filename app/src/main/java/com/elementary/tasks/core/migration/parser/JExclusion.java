@@ -132,7 +132,9 @@ class JExclusion {
         if (hours != null) {
             this.hours = hours;
             JSONArray jsonArray = new JSONArray();
-            for (int hour : hours) jsonArray.put(hour);
+            for (int hour : hours) {
+                jsonArray.put(hour);
+            }
             try {
                 jsonObject.put(HOURS, jsonArray);
             } catch (JSONException e) {
