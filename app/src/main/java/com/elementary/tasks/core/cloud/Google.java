@@ -209,8 +209,10 @@ public class Google {
             taskList.setTitle(listTitle);
             service.tasklists().update(listId, taskList).execute();
             TaskListItem item = RealmDb.getInstance().getTaskList(listId);
-            item.update(taskList);
-            RealmDb.getInstance().saveObject(item);
+            if (item != null) {
+                item.update(taskList);
+                RealmDb.getInstance().saveObject(item);
+            }
         }
 
         public void deleteTaskList(final String listId) {
@@ -531,7 +533,7 @@ public class Google {
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.getGoogleRemindersDir(), null, file -> {
                 try {
                     Reminder reminder = backupTool.getReminder(file.toString(), null);
-                    if (reminder.isRemoved() || !reminder.isActive()) return;
+                    if (reminder == null || reminder.isRemoved() || !reminder.isActive()) return;
                     realmDb.saveObject(reminder);
                     EventControl control = EventControlFactory.getController(context, reminder);
                     if (control.canSkip()) {

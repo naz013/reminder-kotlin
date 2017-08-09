@@ -54,7 +54,7 @@ public class EventsWidget extends AppWidgetProvider {
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         Calendar cal = new GregorianCalendar();
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMMM yyyy", Locale.getDefault());
         dateFormat.setCalendar(cal);

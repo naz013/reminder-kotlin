@@ -25,7 +25,7 @@ public class BackupSettingTask extends AsyncTask<Void, Void, Void> {
 
     private Context mContext;
 
-    public BackupSettingTask(Context context){
+    public BackupSettingTask(Context context) {
         this.mContext = context;
     }
 

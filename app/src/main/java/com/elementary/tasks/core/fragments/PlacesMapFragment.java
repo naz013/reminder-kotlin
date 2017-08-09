@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -474,7 +473,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         }
     }
 
-    private void loadPlaces(){
+    private void loadPlaces() {
         String req = cardSearch.getText().toString().trim().toLowerCase();
         if (req.matches("")) return;
         cancelSearchTask();
@@ -653,14 +652,14 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 205:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setMyLocation();
                 } else {
                     Toast.makeText(getContext(), R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case 200:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startTracking();
                 } else {
                     Toast.makeText(getContext(), R.string.cant_access_location_services, Toast.LENGTH_SHORT).show();

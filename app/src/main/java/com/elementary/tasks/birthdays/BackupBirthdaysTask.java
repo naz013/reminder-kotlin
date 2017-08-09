@@ -21,11 +21,11 @@ import com.elementary.tasks.core.utils.IoHelper;
  * limitations under the License.
  */
 
-public class BackupBirthdaysTask extends AsyncTask<Void, Void, Void> {
+class BackupBirthdaysTask extends AsyncTask<Void, Void, Void> {
 
     private Context mContext;
 
-    public BackupBirthdaysTask(Context context){
+    BackupBirthdaysTask(Context context) {
         this.mContext = context;
     }
 

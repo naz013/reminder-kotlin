@@ -27,7 +27,7 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils;
  * limitations under the License.
  */
 
-public class VoiceWidget extends AppWidgetProvider{
+public class VoiceWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -40,7 +40,7 @@ public class VoiceWidget extends AppWidgetProvider{
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.voice_widget_layout);
         int widgetColor = sp.getInt(VoiceWidgetConfig.VOICE_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);

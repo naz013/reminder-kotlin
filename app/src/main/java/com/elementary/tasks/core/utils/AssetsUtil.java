@@ -22,10 +22,11 @@ import android.support.annotation.NonNull;
 
 public final class AssetsUtil {
 
-    private AssetsUtil(){}
+    private AssetsUtil() {
+    }
 
     @NonNull
-    public static Typeface getTypeface(@NonNull Context context, int code){
+    public static Typeface getTypeface(@NonNull Context context, int code) {
         Typeface typeface;
         if (code == 0) {
             typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Black.ttf");
@@ -58,7 +59,7 @@ public final class AssetsUtil {
     }
 
     @NonNull
-    public static Typeface getDefaultTypeface(Context context){
+    public static Typeface getDefaultTypeface(Context context) {
         return getTypeface(context, 9);
     }
 }

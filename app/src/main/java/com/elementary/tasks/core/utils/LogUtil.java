@@ -25,7 +25,8 @@ public final class LogUtil {
     private static final String TAG = "Reminder->";
     private static final boolean D = BuildConfig.DEBUG;
 
-    private LogUtil() {}
+    private LogUtil() {
+    }
 
     public static void i(String tag, String message) {
         if (D) {

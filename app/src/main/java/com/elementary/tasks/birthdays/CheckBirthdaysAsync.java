@@ -53,25 +53,25 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
     private ProgressDialog pd;
     private TaskCallback mCallback;
 
-    public CheckBirthdaysAsync(Context context){
+    public CheckBirthdaysAsync(Context context) {
         this.mContext = context;
     }
 
-    public CheckBirthdaysAsync(Context context, boolean showDialog){
+    public CheckBirthdaysAsync(Context context, boolean showDialog) {
         this.mContext = context;
         this.showDialog = showDialog;
-        if (showDialog){
+        if (showDialog) {
             pd = new ProgressDialog(context);
             pd.setMessage(context.getString(R.string.please_wait));
             pd.setCancelable(true);
         }
     }
 
-    public CheckBirthdaysAsync(Context context, boolean showDialog, TaskCallback callback){
+    public CheckBirthdaysAsync(Context context, boolean showDialog, TaskCallback callback) {
         this.mContext = context;
         this.showDialog = showDialog;
         this.mCallback = callback;
-        if (showDialog){
+        if (showDialog) {
             pd = new ProgressDialog(context);
             pd.setMessage(context.getString(R.string.please_wait));
             pd.setCancelable(true);
@@ -93,7 +93,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
         }
         ContentResolver cr = mContext.getContentResolver();
         int i = 0;
-        String[] projection = new String[] { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
+        String[] projection = new String[]{ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME};
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
                 ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
         if (cur == null) {
@@ -110,7 +110,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
             };
             String where = ContactsContract.CommonDataKinds.Event.TYPE + "=" + ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY +
                     " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
-                    "' and "                  + ContactsContract.Data.CONTACT_ID + " = " + contactId;
+                    "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId;
             String sortOrder = ContactsContract.Contacts.DISPLAY_NAME;
             List<BirthdayItem> contacts = RealmDb.getInstance().getAllBirthdays();
             Cursor birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder);
@@ -160,7 +160,7 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
             } catch (final Exception e) {
             }
             if (files > 0) {
-                Toast.makeText(mContext, files + " " +mContext.getString(R.string.events_found),
+                Toast.makeText(mContext, files + " " + mContext.getString(R.string.events_found),
                         Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(mContext, R.string.found_nothing,

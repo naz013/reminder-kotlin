@@ -47,31 +47,31 @@ public class WidgetDataProvider {
     private boolean isFeature;
     private Context mContext;
 
-    public WidgetDataProvider(Context context){
+    public WidgetDataProvider(Context context) {
         this.mContext = context;
         data = new ArrayList<>();
     }
 
-    public void setTime(int hour, int minute){
+    public void setTime(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
     }
 
-    public void setFeature(boolean isFeature){
+    public void setFeature(boolean isFeature) {
         this.isFeature = isFeature;
     }
 
-    public List<Item> getData(){
+    public List<Item> getData() {
         return data;
     }
 
-    public Item getItem(int position){
+    public Item getItem(int position) {
         return data.get(position);
     }
 
-    public boolean hasReminder(int day, int month, int year){
+    public boolean hasReminder(int day, int month, int year) {
         boolean res = false;
-        for (Item item : data){
+        for (Item item : data) {
             if (res) {
                 break;
             }
@@ -84,9 +84,9 @@ public class WidgetDataProvider {
         return res;
     }
 
-    public boolean hasBirthday(int day, int month){
+    public boolean hasBirthday(int day, int month) {
         boolean res = false;
-        for (Item item : data){
+        for (Item item : data) {
             int mDay = item.getDay();
             int mMonth = item.getMonth();
             WidgetType type = item.getType();
@@ -98,13 +98,13 @@ public class WidgetDataProvider {
         return res;
     }
 
-    public void fillArray(){
+    public void fillArray() {
         data.clear();
         loadBirthdays();
         loadReminders();
     }
 
-    public void loadReminders(){
+    public void loadReminders() {
         List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
         for (Reminder item : reminderItems) {
             int mType = item.getType();
@@ -182,7 +182,7 @@ public class WidgetDataProvider {
         }
     }
 
-    public void loadBirthdays(){
+    public void loadBirthdays() {
         List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
         for (BirthdayItem item : list) {
             Date date = null;
@@ -212,38 +212,38 @@ public class WidgetDataProvider {
         private int year;
         private WidgetType type;
 
-        public Item(int day, int month, int year, WidgetType type){
+        public Item(int day, int month, int year, WidgetType type) {
             this.day = day;
             this.month = month;
             this.year = year;
             this.type = type;
         }
 
-        public int getYear(){
+        public int getYear() {
             return year;
         }
 
-        public void setYear(int year){
+        public void setYear(int year) {
             this.year = year;
         }
 
-        public int getMonth(){
+        public int getMonth() {
             return month;
         }
 
-        public void setMonth(int month){
+        public void setMonth(int month) {
             this.month = month;
         }
 
-        public int getDay(){
+        public int getDay() {
             return day;
         }
 
-        public void setDay(int day){
+        public void setDay(int day) {
             this.day = day;
         }
 
-        public WidgetType getType(){
+        public WidgetType getType() {
             return type;
         }
     }

@@ -64,10 +64,10 @@ public class CalendarWidget extends AppWidgetProvider {
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         Calendar cal = new GregorianCalendar();
-        int month  = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetID, 0);
-        int year  = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetID, 0);
+        int month = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetID, 0);
+        int year = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetID, 0);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.YEAR, year);
         StringBuilder monthYearStringBuilder = new StringBuilder(50);
@@ -158,7 +158,7 @@ public class CalendarWidget extends AppWidgetProvider {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAppWidgetOptionsChanged(Context ctxt, AppWidgetManager mgr, int appWidgetId, Bundle newOptions) {
-        RemoteViews updateViews= new RemoteViews(ctxt.getPackageName(), R.layout.calendar_widget_layout);
+        RemoteViews updateViews = new RemoteViews(ctxt.getPackageName(), R.layout.calendar_widget_layout);
         mgr.updateAppWidget(appWidgetId, updateViews);
     }
 }

@@ -41,7 +41,6 @@ import java.util.List;
 
 public class QuickSmsActivity extends ThemedActivity {
 
-    private ActivityQuickSmsLayoutBinding binding;
     private RecyclerView messagesList;
     private SelectableTemplatesAdapter mAdapter;
     private String number;
@@ -50,7 +49,7 @@ public class QuickSmsActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms_layout);
+        ActivityQuickSmsLayoutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms_layout);
         messagesList = binding.messagesList;
         messagesList.setLayoutManager(new LinearLayoutManager(this));
         RoboButton buttonSend = binding.buttonSend;
@@ -79,13 +78,13 @@ public class QuickSmsActivity extends ThemedActivity {
         removeFlags();
     }
 
-    private void loadTemplates(){
+    private void loadTemplates() {
         List<TemplateItem> list = RealmDb.getInstance().getAllTemplates();
         mAdapter = new SelectableTemplatesAdapter(list, this);
         messagesList.setAdapter(mAdapter);
     }
 
-    public void removeFlags(){
+    public void removeFlags() {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
@@ -93,7 +92,7 @@ public class QuickSmsActivity extends ThemedActivity {
         finish();
     }
 
-    private void sendSMS(String number, String message){
+    private void sendSMS(String number, String message) {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);

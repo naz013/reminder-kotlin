@@ -28,7 +28,7 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils;
  * limitations under the License.
  */
 
-public class AddBirthdayWidget extends AppWidgetProvider{
+public class AddBirthdayWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -41,7 +41,7 @@ public class AddBirthdayWidget extends AppWidgetProvider{
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.add_birthday_widget_layout);
         int widgetColor = sp.getInt(AddBirthdayWidgetConfig.ADD_BIRTHDAY_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);

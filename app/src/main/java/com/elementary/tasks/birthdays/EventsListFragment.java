@@ -49,7 +49,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     private List<EventsItem> mDataList = new ArrayList<>();
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
 
-    public void setData(List<EventsItem> datas){
+    public void setData(List<EventsItem> datas) {
         this.mDataList = new ArrayList<>(datas);
     }
 
@@ -78,7 +78,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         loadAdapter();
     }
 
-    public void loadAdapter(){
+    public void loadAdapter() {
         CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), mDataList);
         mAdapter.setEventListener(this);
         binding.recyclerView.setAdapter(mAdapter);
@@ -87,7 +87,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
 
     private void reloadView() {
         int size = mDataList != null ? mDataList.size() : 0;
-        if (size > 0){
+        if (size > 0) {
             binding.recyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {
@@ -96,10 +96,10 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         }
     }
 
-    private void showBirthdayLcam(BirthdayItem birthdayItem, int position) {
+    private void showBirthdayLcam(BirthdayItem birthdayItem) {
         String[] items = {getString(R.string.edit), getString(R.string.delete)};
         Dialogues.showLCAM(getContext(), item -> {
-            switch (item){
+            switch (item) {
                 case 0:
                     editBirthday(birthdayItem);
                     break;
@@ -113,7 +113,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     }
 
     private void reopenFragment() {
-        getCallback().replaceFragment(new DayViewFragment(), getString(R.string.events));;
+        getCallback().replaceFragment(new DayViewFragment(), getString(R.string.events));
     }
 
     private void editBirthday(BirthdayItem item) {
@@ -126,13 +126,13 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
             editBirthday((BirthdayItem) object);
-        } else if (object instanceof Reminder){
+        } else if (object instanceof Reminder) {
             showReminder((Reminder) object);
         }
     }
 
     private void showReminder(Reminder object) {
-        if (Reminder.isSame(object.getType(), Reminder.BY_DATE_SHOP)){
+        if (Reminder.isSame(object.getType(), Reminder.BY_DATE_SHOP)) {
             getContext().startActivity(new Intent(getContext(), ShoppingPreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, object.getUuId()));
         } else {
@@ -145,11 +145,11 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void showActionDialog(Reminder reminder, int position) {
+    private void showActionDialog(Reminder reminder) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.move_to_trash)};
         Dialogues.showLCAM(getContext(), item -> {
-            switch (item){
+            switch (item) {
                 case 0:
                     showReminder(reminder);
                     break;
@@ -169,9 +169,9 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     public void onItemLongClicked(int position, View view) {
         Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
-            showBirthdayLcam((BirthdayItem) object, position);
+            showBirthdayLcam((BirthdayItem) object);
         } else if (object instanceof Reminder) {
-            showActionDialog((Reminder) object, position);
+            showActionDialog((Reminder) object);
         }
     }
 

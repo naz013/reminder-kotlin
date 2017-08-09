@@ -155,7 +155,7 @@ public class ContactsFragment extends Fragment implements LoadListener {
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?",
                 new String[]{name}, null);
-
+        if (c == null) return;
         int phoneIdx = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
         int phoneType = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
         if (c.getCount() > 1) {
@@ -195,6 +195,7 @@ public class ContactsFragment extends Fragment implements LoadListener {
                 mCallback.onContactSelected(null, name);
             }
         }
+        c.close();
     }
 
     private void refreshView(int count) {

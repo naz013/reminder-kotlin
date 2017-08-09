@@ -27,7 +27,8 @@ public final class BitmapUtils {
     private static final int REQUIRED_SIZE = 350;
     private static final String TAG = "BitmapUtils";
 
-    private BitmapUtils() {}
+    private BitmapUtils() {
+    }
 
     public static Bitmap decodeUriToBitmap(Context context, Uri selectedImage) throws FileNotFoundException {
         BitmapFactory.Options o = new BitmapFactory.Options();

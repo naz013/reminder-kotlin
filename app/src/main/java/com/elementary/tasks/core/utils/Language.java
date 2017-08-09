@@ -164,12 +164,13 @@ public class Language {
 
     /**
      * Holder locale for tts.
+     *
      * @param context application context.
      * @param isBirth flag for birthdays.
      * @return Locale
      */
     @Nullable
-    public Locale getLocale(Context context, boolean isBirth){
+    public Locale getLocale(Context context, boolean isBirth) {
         Locale res = null;
         String locale;
         if (isBirth) {
@@ -180,7 +181,7 @@ public class Language {
         if (locale == null) {
             return Locale.ENGLISH;
         }
-        switch (locale){
+        switch (locale) {
             case ENGLISH:
                 res = Locale.ENGLISH;
                 break;

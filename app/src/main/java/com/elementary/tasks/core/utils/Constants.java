@@ -86,5 +86,6 @@ public class Constants {
         public static final String COLUMN_MONTH = "month";
     }
 
-    private Constants() {}
+    private Constants() {
+    }
 }

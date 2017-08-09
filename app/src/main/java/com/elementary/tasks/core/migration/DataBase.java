@@ -88,7 +88,7 @@ class DataBase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            switch (oldVersion){
+            switch (oldVersion) {
                 case 1:
                     db.execSQL(CONTACTS_TABLE_CREATE);
                     db.execSQL(MESSAGES_TABLE_CREATE);
@@ -229,9 +229,9 @@ class DataBase {
     }
 
     private void openGuard() throws SQLiteException {
-        if(isOpen()) return;
+        if (isOpen()) return;
         open();
-        if(isOpen()) return;
+        if (isOpen()) return;
         throw new SQLiteException("Could not open database");
     }
 }

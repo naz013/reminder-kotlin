@@ -94,7 +94,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 new CheckBirthdaysAsync(context).execute();
                 break;
             case ACTION_BIRTHDAY_PERMANENT:
-                if (Prefs.getInstance(context).isBirthdayPermanentEnabled()){
+                if (Prefs.getInstance(context).isBirthdayPermanentEnabled()) {
                     context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
                 }
                 break;
@@ -132,7 +132,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_DELAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
@@ -163,12 +163,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_POSITION_DELAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
 
-    public void enableBirthdayPermanentAlarm(Context context){
+    public void enableBirthdayPermanentAlarm(Context context) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_BIRTHDAY_PERMANENT);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_PERMANENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -197,12 +197,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY_PERMANENT);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_PERMANENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
 
-    public void enableBirthdayCheckAlarm(Context context){
+    public void enableBirthdayCheckAlarm(Context context) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_BIRTHDAY_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -231,7 +231,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
@@ -242,7 +242,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         context.startService(new Intent(context, CheckBirthdays.class));
     }
 
-    public void enableBirthdayAlarm(Context context){
+    public void enableBirthdayAlarm(Context context) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_BIRTHDAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -260,12 +260,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
 
-    public void enableEventCheck(Context context){
+    public void enableEventCheck(Context context) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_EVENTS_CHECK);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -287,7 +287,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_EVENTS_CHECK);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
@@ -345,7 +345,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         }
     }
 
-    public void enableAutoSync(Context context){
+    public void enableAutoSync(Context context) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_SYNC_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -367,7 +367,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_SYNC_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr!= null) {
+        if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
         }
     }
@@ -385,7 +385,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             long currTime = System.currentTimeMillis();
             int calID = Prefs.getInstance(mContext).getEventsCalendar();
             List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
-            if (eventItems.size() > 0){
+            if (eventItems.size() > 0) {
                 List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                 for (CalendarUtils.EventItem item : eventItems) {
                     long itemId = item.getId();
@@ -398,11 +398,14 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                                 int interval = rule.getInterval();
                                 Freq freq = rule.getFreq();
                                 if (freq == Freq.SECONDLY) repeat = interval * TimeCount.SECOND;
-                                else if (freq == Freq.MINUTELY) repeat = interval * TimeCount.MINUTE;
+                                else if (freq == Freq.MINUTELY)
+                                    repeat = interval * TimeCount.MINUTE;
                                 else if (freq == Freq.HOURLY) repeat = interval * TimeCount.HOUR;
                                 else if (freq == Freq.WEEKLY) repeat = interval * 7 * TimeCount.DAY;
-                                else if (freq == Freq.MONTHLY) repeat = interval * 30 * TimeCount.DAY;
-                                else if (freq == Freq.YEARLY) repeat = interval * 365 * TimeCount.DAY;
+                                else if (freq == Freq.MONTHLY)
+                                    repeat = interval * 30 * TimeCount.DAY;
+                                else if (freq == Freq.YEARLY)
+                                    repeat = interval * 365 * TimeCount.DAY;
                                 else repeat = interval * TimeCount.DAY;
                             } catch (InvalidRecurrenceRuleException e) {
                                 e.printStackTrace();

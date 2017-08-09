@@ -54,5 +54,6 @@ public final class FileConfig {
 
     public static final String FILE_NAME_SETTINGS = "app.settings";
 
-    private FileConfig() {}
+    private FileConfig() {
+    }
 }

@@ -33,7 +33,7 @@ public class GeocoderTask extends AsyncTask<String, Void, List<Address>> {
     private Context mContext;
     private GeocoderListener mListener;
 
-    public GeocoderTask(Context mContext, GeocoderListener mListener){
+    public GeocoderTask(Context mContext, GeocoderListener mListener) {
         this.mContext = mContext;
         this.mListener = mListener;
     }
@@ -55,10 +55,10 @@ public class GeocoderTask extends AsyncTask<String, Void, List<Address>> {
 
     @Override
     protected void onPostExecute(List<Address> addresses) {
-        if(addresses == null || addresses.size() == 0){
+        if (addresses == null || addresses.size() == 0) {
             LogUtil.d(TAG, "No Location found");
         } else {
-            if (mListener != null){
+            if (mListener != null) {
                 mListener.onAddressReceived(addresses);
             }
         }
@@ -67,7 +67,7 @@ public class GeocoderTask extends AsyncTask<String, Void, List<Address>> {
     /**
      * Listener for found places list.
      */
-    public interface GeocoderListener{
+    public interface GeocoderListener {
         void onAddressReceived(List<Address> addresses);
     }
 }

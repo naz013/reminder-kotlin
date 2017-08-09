@@ -24,7 +24,7 @@ import com.elementary.tasks.R;
 public final class LED {
     public static final int NUM_OF_LEDS = 17;
 
-    public static final int WHITE= 0xffffffff;
+    public static final int WHITE = 0xffffffff;
     public static final int RED = 0xfff44336;
     public static final int GREEN = 0xff4caf50;
     public static final int BLUE = 0xff2196f3;
@@ -42,7 +42,8 @@ public final class LED {
     public static final int DEEP_ORANGE = 0xffff5722;
     public static final int TEAL = 0xff009688;
 
-    private LED() {}
+    private LED() {
+    }
 
     public static int getLED(int code) {
         if (!Module.isPro()) {

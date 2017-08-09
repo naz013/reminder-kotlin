@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;

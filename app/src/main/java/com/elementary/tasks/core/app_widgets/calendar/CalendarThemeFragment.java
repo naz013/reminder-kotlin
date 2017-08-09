@@ -127,7 +127,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         return binding.getRoot();
     }
 
-    private class WeekdayAdapter extends BaseAdapter{
+    private class WeekdayAdapter extends BaseAdapter {
 
         private List<String> weekdays;
         private int sunday = 1;
@@ -136,7 +136,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         private LayoutInflater inflater;
         private int textColor;
 
-        WeekdayAdapter(Context context, int textColor){
+        WeekdayAdapter(Context context, int textColor) {
             this.context = context;
             this.textColor = textColor;
             inflater = LayoutInflater.from(context);
@@ -147,7 +147,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             // 17 Feb 2013 is Sunday
             DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
             DateTime nextDay = sunday.plusDays(startDayOfWeek - this.sunday);
-            if (getPrefs().getStartDay() == 1){
+            if (getPrefs().getStartDay() == 1) {
                 nextDay = nextDay.plusDays(1);
             }
             for (int i = 0; i < 7; i++) {
@@ -195,7 +195,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         }
     }
 
-    private class MonthGridAdapter extends BaseAdapter{
+    private class MonthGridAdapter extends BaseAdapter {
 
         List<DateTime> datetimeList;
         int startDayOfWeek = 1;
@@ -208,7 +208,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         int bMark;
         int rMark;
 
-        MonthGridAdapter(Context context, int[] resources){
+        MonthGridAdapter(Context context, int[] resources) {
             this.context = context;
             this.textColor = resources[0];
             this.widgetBgColor = resources[1];
@@ -232,7 +232,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             }
             while (weekdayOfFirstDate > 0) {
                 int temp = startDayOfWeek;
-                if (Prefs.getInstance(context).getStartDay() == 1){
+                if (Prefs.getInstance(context).getStartDay() == 1) {
                     temp = startDayOfWeek + 1;
                 }
                 DateTime dateTime = firstDateOfMonth.minusDays(weekdayOfFirstDate - temp);
@@ -304,24 +304,24 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
             currentMark.setBackgroundColor(Color.TRANSPARENT);
             reminderMark.setBackgroundColor(Color.TRANSPARENT);
             birthdayMark.setBackgroundColor(Color.TRANSPARENT);
-            if (selDay == 15){
-                if (rMark != 0){
+            if (selDay == 15) {
+                if (rMark != 0) {
                     reminderMark.setBackgroundResource(rMark);
                 } else {
                     reminderMark.setBackgroundColor(context.getResources()
                             .getColor(themeUtil.colorReminderCalendar()));
                 }
             }
-            if (selDay == 11){
-                if (bMark != 0){
+            if (selDay == 11) {
+                if (bMark != 0) {
                     birthdayMark.setBackgroundResource(bMark);
                 } else {
                     birthdayMark.setBackgroundColor(context.getResources()
                             .getColor(themeUtil.colorBirthdayCalendar()));
                 }
             }
-            if (11 == selDay){
-                if (cMark != 0){
+            if (11 == selDay) {
+                if (cMark != 0) {
                     currentMark.setBackgroundResource(cMark);
                 } else {
                     currentMark.setBackgroundColor(context.getResources()

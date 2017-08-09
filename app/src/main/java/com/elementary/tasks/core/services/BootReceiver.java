@@ -33,22 +33,22 @@ public class BootReceiver extends BroadcastReceiver {
         context.startService(new Intent(context, TasksService.class));
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         Prefs prefs = Prefs.getInstance(context);
-        if (prefs.isBirthdayReminderEnabled()){
+        if (prefs.isBirthdayReminderEnabled()) {
             alarmReceiver.enableBirthdayAlarm(context);
         }
-        if (prefs.isSbNotificationEnabled()){
+        if (prefs.isSbNotificationEnabled()) {
             context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
         }
-        if (prefs.isContactAutoCheckEnabled()){
+        if (prefs.isContactAutoCheckEnabled()) {
             alarmReceiver.enableBirthdayCheckAlarm(context);
         }
-        if (prefs.isAutoEventsCheckEnabled()){
+        if (prefs.isAutoEventsCheckEnabled()) {
             alarmReceiver.enableEventCheck(context);
         }
-        if (prefs.isAutoBackupEnabled()){
+        if (prefs.isAutoBackupEnabled()) {
             alarmReceiver.enableAutoSync(context);
         }
-        if (prefs.isBirthdayPermanentEnabled()){
+        if (prefs.isBirthdayPermanentEnabled()) {
             alarmReceiver.enableBirthdayPermanentAlarm(context);
             context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
         }

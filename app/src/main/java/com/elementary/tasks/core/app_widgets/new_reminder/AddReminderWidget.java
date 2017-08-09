@@ -28,7 +28,7 @@ import com.elementary.tasks.creators.CreateReminderActivity;
  * limitations under the License.
  */
 
-public class AddReminderWidget extends AppWidgetProvider{
+public class AddReminderWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -41,7 +41,7 @@ public class AddReminderWidget extends AppWidgetProvider{
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.add_reminder_widget_layout);
         int widgetColor = sp.getInt(AddReminderWidgetConfig.ADD_REMINDER_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);

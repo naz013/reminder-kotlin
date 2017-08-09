@@ -54,10 +54,11 @@ class JRecurrence {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JRecurrence->Month day: " + monthday +
                 "->Repeat: " + repeat +
                 "->Limit: " + limit +
@@ -70,14 +71,14 @@ class JRecurrence {
      */
     private JSONObject jsonObject;
 
-    JRecurrence(JSONObject jsonObject){
+    JRecurrence(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JRecurrence(){
+    JRecurrence() {
         jsonObject = new JSONObject();
         setMonthday(0);
         setRepeat(0);
@@ -108,7 +109,7 @@ class JRecurrence {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(MONTHDAY)){
+        if (jsonObject.has(MONTHDAY)) {
             try {
                 monthday = jsonObject.getInt(MONTHDAY);
             } catch (JSONException e) {
@@ -116,8 +117,9 @@ class JRecurrence {
             }
         }
 
-        if (jsonObject.has(WEEKDAYS)){
-            Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+        if (jsonObject.has(WEEKDAYS)) {
+            Type collectionType = new TypeToken<List<Integer>>() {
+            }.getType();
             try {
                 weekdays = new Gson().fromJson(jsonObject.get(WEEKDAYS).toString(), collectionType);
             } catch (JSONException e) {
@@ -128,6 +130,7 @@ class JRecurrence {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

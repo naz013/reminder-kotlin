@@ -35,7 +35,7 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
+class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private List<String> mWeekdaysList;
     private Context mContext;
@@ -60,7 +60,7 @@ public class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFac
 
         DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
         DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
-        if (Prefs.getInstance(mContext).getStartDay() == 1){
+        if (Prefs.getInstance(mContext).getStartDay() == 1) {
             nextDay = nextDay.plusDays(1);
         }
         for (int i = 0; i < 7; i++) {

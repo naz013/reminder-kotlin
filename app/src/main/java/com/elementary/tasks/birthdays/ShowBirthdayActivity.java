@@ -153,7 +153,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
         if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
-                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
+                (SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled()))) {
             getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
         }
         if (isVibrate()) {

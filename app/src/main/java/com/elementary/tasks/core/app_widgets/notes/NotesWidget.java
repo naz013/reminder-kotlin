@@ -47,7 +47,7 @@ public class NotesWidget extends AppWidgetProvider {
     }
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    SharedPreferences sp, int widgetID){
+                                    SharedPreferences sp, int widgetID) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.note_widget_layout);
         int theme = sp.getInt(NotesWidgetConfig.NOTES_WIDGET_THEME + widgetID, 0);
         NotesTheme notesTheme = NotesTheme.getThemes(context).get(theme);
@@ -82,8 +82,7 @@ public class NotesWidget extends AppWidgetProvider {
         adapter.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID);
         rv.setRemoteAdapter(android.R.id.list, adapter);
         appWidgetManager.updateAppWidget(widgetID, rv);
-        appWidgetManager.notifyAppWidgetViewDataChanged(widgetID,
-                android.R.id.list);
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetID, android.R.id.list);
     }
 
     @Override

@@ -190,7 +190,7 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
         }
         if (binding.imageView != null && enableImage) {
             ImageCheck check = ImageCheck.getInstance();
-            if (check.isImage(month - 1, photosList[month - 1])){
+            if (check.isImage(month - 1, photosList[month - 1])) {
                 Picasso.with(getActivity()).load(new File(check.getImage(month - 1, photosList[month - 1]))).into(binding.imageView);
             } else {
                 new LoadAsync(getActivity(), month - 1, photosList[month - 1]).execute();

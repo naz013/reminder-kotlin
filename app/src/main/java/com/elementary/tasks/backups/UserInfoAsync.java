@@ -45,7 +45,7 @@ public class UserInfoAsync extends AsyncTask<UserInfoAsync.Info, Integer, List<U
     private DialogListener mDialogListener;
     private int count;
 
-    public UserInfoAsync(Context context, DataListener listener, int count, DialogListener dialogListener){
+    public UserInfoAsync(Context context, DataListener listener, int count, DialogListener dialogListener) {
         this.mContext = context;
         this.listener = listener;
         this.count = count;

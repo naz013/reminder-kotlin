@@ -33,7 +33,7 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class EventsThemeFragment extends Fragment{
+public class EventsThemeFragment extends Fragment {
 
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_DATA = "arg_data";

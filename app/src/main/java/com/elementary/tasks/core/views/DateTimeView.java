@@ -72,8 +72,8 @@ public class DateTimeView extends RelativeLayout implements
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
-        date = (TextViewWithIcon) findViewById(R.id.dateField);
-        time = (TextViewWithIcon) findViewById(R.id.timeField);
+        date = findViewById(R.id.dateField);
+        time = findViewById(R.id.timeField);
         date.setOnClickListener(mDateClick);
         time.setOnClickListener(v -> selectTime());
         this.mContext = context;
@@ -115,7 +115,7 @@ public class DateTimeView extends RelativeLayout implements
         updateDateTime(mills);
     }
 
-    private void updateDateTime(long mills){
+    private void updateDateTime(long mills) {
         if (mills == 0) {
             mills = System.currentTimeMillis();
         }
@@ -130,14 +130,14 @@ public class DateTimeView extends RelativeLayout implements
         updateDate(mills);
     }
 
-    private void updateDate(long mills){
+    private void updateDate(long mills) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
         date.setText(TimeUtil.getDate(cal.getTime()));
         if (mListener != null) mListener.onDateSelect(mills, mDay, mMonth, mYear);
     }
 
-    private void updateTime(long mills){
+    private void updateTime(long mills) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
         time.setText(TimeUtil.getTime(cal.getTime(), Prefs.getInstance(mContext).is24HourFormatEnabled()));
@@ -172,8 +172,9 @@ public class DateTimeView extends RelativeLayout implements
         updateTime(cal.getTimeInMillis());
     }
 
-    public interface OnSelectListener{
+    public interface OnSelectListener {
         void onDateSelect(long mills, int day, int month, int year);
+
         void onTimeSelect(long mills, int hour, int minute);
     }
 }

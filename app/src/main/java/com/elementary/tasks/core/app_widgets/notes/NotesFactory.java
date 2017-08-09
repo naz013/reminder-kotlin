@@ -70,10 +70,10 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
         NoteItem note = notes.get(i);
         rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.getColor()));
 
-        if (note.getImages() != null && note.getImages().size() > 0){
+        if (note.getImages().size() > 0) {
             NoteImage image = note.getImages().get(0);
             Bitmap photo = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
-            if (photo != null){
+            if (photo != null) {
                 rView.setImageViewBitmap(R.id.noteImage, photo);
                 rView.setViewVisibility(R.id.noteImage, View.VISIBLE);
             } else {

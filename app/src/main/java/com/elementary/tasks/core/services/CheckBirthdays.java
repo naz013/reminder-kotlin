@@ -40,8 +40,8 @@ public class CheckBirthdays extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(getApplicationContext()).getDaysToBirthday());
-        if (list != null && list.size() > 0) {
-            for (BirthdayItem item : list){
+        if (list.size() > 0) {
+            for (BirthdayItem item : list) {
                 showBirthday(item);
             }
         }

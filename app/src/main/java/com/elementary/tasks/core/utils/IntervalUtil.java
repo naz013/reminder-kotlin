@@ -34,11 +34,12 @@ public final class IntervalUtil {
     public static final int INTERVAL_THREE_WEEKS = INTERVAL_WEEK * 3;
     public static final int INTERVAL_FOUR_WEEKS = INTERVAL_WEEK * 4;
 
-    private IntervalUtil() {}
+    private IntervalUtil() {
+    }
 
     @NonNull
     public static List<Integer> getWeekRepeat(boolean mon, boolean tue, boolean wed, boolean thu, boolean fri,
-                                                   boolean sat, boolean sun){
+                                              boolean sat, boolean sun) {
         List<Integer> sb = new ArrayList<>(7);
         sb.add(0, sun ? 1 : 0);
         sb.add(1, mon ? 1 : 0);
@@ -61,7 +62,7 @@ public final class IntervalUtil {
     }
 
     @NonNull
-    public static String getInterval(Context mContext, long code){
+    public static String getInterval(Context mContext, long code) {
         long minute = 1000 * 60;
         long day = minute * 60 * 24;
         long tmp = code / minute;

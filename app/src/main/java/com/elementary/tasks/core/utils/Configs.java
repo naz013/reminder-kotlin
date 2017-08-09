@@ -21,5 +21,6 @@ public final class Configs {
     public static final float MAX_VOLUME = 25;
     public static final long MAX_DAYS_COUNT = 120;
 
-    private Configs() {}
+    private Configs() {
+    }
 }

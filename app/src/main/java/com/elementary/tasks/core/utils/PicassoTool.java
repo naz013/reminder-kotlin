@@ -30,7 +30,8 @@ public final class PicassoTool {
     private LruCache lruCache;
     private static PicassoTool instance;
 
-    private PicassoTool() {}
+    private PicassoTool() {
+    }
 
     private PicassoTool(Context context) {
         LogUtil.d(TAG, "PicassoTool: ");

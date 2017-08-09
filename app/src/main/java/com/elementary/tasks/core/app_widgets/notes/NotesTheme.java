@@ -39,7 +39,8 @@ public class NotesTheme implements Parcelable {
     private int windowColor;
     private int windowTextColor;
 
-    private NotesTheme() {}
+    private NotesTheme() {
+    }
 
     public NotesTheme(@ColorRes int headerColor, @ColorRes int backgroundColor, @ColorInt int titleColor,
                       @DrawableRes int plusIcon, @DrawableRes int settingsIcon,
@@ -89,11 +90,11 @@ public class NotesTheme implements Parcelable {
         return plusIcon;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    private static int getResColor(Context ctx, int res){
+    private static int getResColor(Context ctx, int res) {
         return ctx.getResources().getColor(res);
     }
 

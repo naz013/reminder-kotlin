@@ -56,7 +56,7 @@ public class AddReminderWidgetConfig extends ThemedActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.add_reminder_widget_config_layout);
         initActionBar();
 
-        Spinner headerBgColor = (Spinner) findViewById(R.id.headerBgColor);
+        Spinner headerBgColor = findViewById(R.id.headerBgColor);
         boolean isPro = Module.isPro();
         List<String> spinnerArray = new ArrayList<>();
         String[] colorsArray = getResources().getStringArray(R.array.color_list);

@@ -45,23 +45,24 @@ class JExport {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "JExport->Calendar: " + calendar +
                 "->GTasks: " + gTasks +
                 "->CalendarId: " + calendarId;
     }
 
-    JExport(JSONObject jsonObject){
+    JExport(JSONObject jsonObject) {
         if (jsonObject != null) {
             this.jsonObject = jsonObject;
             parse(jsonObject);
         }
     }
 
-    JExport(){
+    JExport() {
         jsonObject = new JSONObject();
         setGtasks(0);
         setCalendar(0);
@@ -76,14 +77,14 @@ class JExport {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(GTASKS)){
+        if (jsonObject.has(GTASKS)) {
             try {
                 gTasks = jsonObject.getInt(GTASKS);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (jsonObject.has(CALENDAR)){
+        if (jsonObject.has(CALENDAR)) {
             try {
                 calendar = jsonObject.getInt(CALENDAR);
             } catch (JSONException e) {
@@ -94,6 +95,7 @@ class JExport {
 
     /**
      * Get current JSON object.
+     *
      * @return JSON object
      */
     JSONObject getJsonObject() {

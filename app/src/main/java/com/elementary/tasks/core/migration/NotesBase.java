@@ -53,7 +53,7 @@ class NotesBase {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            switch (oldVersion){
+            switch (oldVersion) {
                 case 1:
                     db.execSQL("ALTER TABLE " + NOTE_TABLE_NAME + " ADD COLUMN "
                             + Constants.COLUMN_FONT_STYLE + " INTEGER");
@@ -104,8 +104,8 @@ class NotesBase {
 
     private NoteItem noteFromCursor(Cursor c) {
         String note = c.getString(c.getColumnIndex(Constants.COLUMN_NOTE));
-        int color  = c.getInt(c.getColumnIndex(Constants.COLUMN_COLOR));
-        int style  = c.getInt(c.getColumnIndex(Constants.COLUMN_FONT_STYLE));
+        int color = c.getInt(c.getColumnIndex(Constants.COLUMN_COLOR));
+        int style = c.getInt(c.getColumnIndex(Constants.COLUMN_FONT_STYLE));
         byte[] image = c.getBlob(c.getColumnIndex(Constants.COLUMN_IMAGE));
         long id = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
         NoteItem item = new NoteItem();
@@ -125,9 +125,9 @@ class NotesBase {
     }
 
     private void openGuard() throws SQLiteException {
-        if(isOpen()) return;
+        if (isOpen()) return;
         open();
-        if(isOpen()) return;
+        if (isOpen()) return;
         throw new SQLiteException("Could not open database");
     }
 }

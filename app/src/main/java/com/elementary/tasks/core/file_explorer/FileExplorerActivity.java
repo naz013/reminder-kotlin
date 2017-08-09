@@ -241,8 +241,8 @@ public class FileExplorerActivity extends ThemedActivity {
         mFilesList.setAdapter(mAdapter);
     }
 
-    private void play(){
-        if (!mSound.isPlaying()){
+    private void play() {
+        if (!mSound.isPlaying()) {
             if (mPlayerLayout.getVisibility() == View.GONE) {
                 ViewUtils.expand(mPlayerLayout);
             }
@@ -261,13 +261,13 @@ public class FileExplorerActivity extends ThemedActivity {
         }
     }
 
-    private void pause(){
+    private void pause() {
         if (mSound.isPlaying()) {
             mSound.pause();
         }
     }
 
-    private void stop(){
+    private void stop() {
         if (mSound.isPlaying()) {
             mSound.stop();
         }
@@ -326,21 +326,21 @@ public class FileExplorerActivity extends ThemedActivity {
         mDataList = temp;
     }
 
-    private boolean isMelody(String file){
+    private boolean isMelody(String file) {
         return file != null && (file.endsWith(".mp3") || file.endsWith(".ogg")
                 || file.endsWith(".m4a") || file.endsWith(".flac"));
     }
 
-    private boolean isImage(String file){
+    private boolean isImage(String file) {
         return file != null && (file.endsWith(".jpg") || file.endsWith(".jpeg")
                 || file.endsWith(".png") || file.endsWith(".tiff"));
     }
 
-    private int getDirectoryIcon(){
+    private int getDirectoryIcon() {
         return isDark ? R.drawable.ic_folder_white_24dp : R.drawable.ic_folder_black_24dp;
     }
 
-    private int getUndoIcon(){
+    private int getUndoIcon() {
         return isDark ? R.drawable.ic_undo_white_24dp : R.drawable.ic_undo_black_24dp;
     }
 
@@ -375,7 +375,7 @@ public class FileExplorerActivity extends ThemedActivity {
     private View.OnClickListener mListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.fab:
                     saveChoice();
                     break;
