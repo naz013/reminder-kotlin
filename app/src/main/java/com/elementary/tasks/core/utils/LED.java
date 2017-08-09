@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.elementary.tasks.R;
 
@@ -107,6 +108,7 @@ public final class LED {
         return color;
     }
 
+    @NonNull
     public static String[] getAllNames(Context context) {
         String[] colors = new String[LED.NUM_OF_LEDS];
         for (int i = 0; i < LED.NUM_OF_LEDS; i++) {
@@ -115,6 +117,7 @@ public final class LED {
         return colors;
     }
 
+    @NonNull
     public static String getTitle(Context context, int code) {
         String color;
         switch (code) {

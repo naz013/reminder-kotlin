@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
@@ -73,6 +75,7 @@ public final class TimeUtil {
         return dialog;
     }
 
+    @Nullable
     public static DateItem getFutureBirthdayDate(Context context, String fullDate) {
         Date date = null;
         String dateTime = Prefs.getInstance(context).getBirthdayTime();
@@ -103,6 +106,7 @@ public final class TimeUtil {
         return null;
     }
 
+    @NonNull
     public static String getBirthdayTime(int hour, int minute) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -111,7 +115,7 @@ public final class TimeUtil {
         return TIME_24.format(calendar.getTime());
     }
 
-    public static long getBirthdayTime(String time) {
+    public static long getBirthdayTime(@Nullable String time) {
         Calendar calendar = Calendar.getInstance();
         if (time != null) {
             try {
@@ -134,7 +138,8 @@ public final class TimeUtil {
         return calendar.getTimeInMillis();
     }
 
-    public static Calendar getBirthdayCalendar(String time) {
+    @NonNull
+    public static Calendar getBirthdayCalendar(@Nullable String time) {
         Calendar calendar = Calendar.getInstance();
         if (time != null) {
             try {
@@ -155,11 +160,13 @@ public final class TimeUtil {
         return calendar;
     }
 
+    @NonNull
     public static String getGmtDateTime() {
         GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
         return GMT_DATE_FORMAT.format(new Date());
     }
 
+    @NonNull
     public static String getGmtFromDateTime(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
@@ -167,7 +174,7 @@ public final class TimeUtil {
         return GMT_DATE_FORMAT.format(calendar.getTime());
     }
 
-    public static long getDateTimeFromGmt(String dateTime) {
+    public static long getDateTimeFromGmt(@Nullable String dateTime) {
         if (TextUtils.isEmpty(dateTime)) {
             return 0;
         }
@@ -182,6 +189,7 @@ public final class TimeUtil {
         return calendar.getTimeInMillis();
     }
 
+    @NonNull
     public static String getFullDateTime(long date, boolean is24, boolean isLog) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
@@ -196,7 +204,8 @@ public final class TimeUtil {
         }
     }
 
-    public static String getFullDateTime(String date) {
+    @NonNull
+    public static String getFullDateTime(@Nullable String date) {
         if (TextUtils.isEmpty(date)) {
             return "No event time";
         }
@@ -205,7 +214,8 @@ public final class TimeUtil {
         return TIME_STAMP_FORMAT.format(calendar.getTime());
     }
 
-    public static String getRealDateTime(String gmt, int delay, boolean is24) {
+    @NonNull
+    public static String getRealDateTime(@Nullable String gmt, int delay, boolean is24) {
         if (TextUtils.isEmpty(gmt)) {
             return "";
         }
@@ -225,7 +235,8 @@ public final class TimeUtil {
         }
     }
 
-    public static String getDateTimeFromGmt(String dateTime, boolean is24) {
+    @NonNull
+    public static String getDateTimeFromGmt(@Nullable String dateTime, boolean is24) {
         Calendar calendar = Calendar.getInstance();
         try {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
@@ -241,16 +252,19 @@ public final class TimeUtil {
         }
     }
 
-    public static String getSimpleDate(String gmtDate) {
+    @NonNull
+    public static String getSimpleDate(@Nullable String gmtDate) {
         return getSimpleDate(getDateTimeFromGmt(gmtDate));
     }
 
+    @NonNull
     public static String getSimpleDate(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
         return SIMPLE_DATE.format(calendar.getTime());
     }
 
+    @NonNull
     public static String getDate(long date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
@@ -267,15 +281,13 @@ public final class TimeUtil {
         }
     }
 
-    public static String getDate(Date date) {
+    @NonNull
+    public static String getDate(@NonNull Date date) {
         return FULL_DATE_FORMAT.format(date);
     }
 
-    public static String getTimeStamp() {
-        return TIME_STAMP_FORMAT.format(new Date());
-    }
-
-    public static Date getDate(String date) {
+    @Nullable
+    public static Date getDate(@Nullable String date) {
         try {
             return TIME_24.parse(date);
         } catch (ParseException e) {
@@ -284,7 +296,7 @@ public final class TimeUtil {
         }
     }
 
-    public static int getAge(String dateOfBirth) {
+    public static int getAge(@Nullable String dateOfBirth) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date date = null;
         try {
@@ -304,7 +316,8 @@ public final class TimeUtil {
         return currentYear - yearOfBirth;
     }
 
-    public static String getDateTime(Date date, boolean is24) {
+    @NonNull
+    public static String getDateTime(@NonNull Date date, boolean is24) {
         if (is24) {
             return FORMAT_24.format(date);
         } else {
@@ -312,7 +325,8 @@ public final class TimeUtil {
         }
     }
 
-    public static String getTime(Date date, boolean is24) {
+    @NonNull
+    public static String getTime(@NonNull Date date, boolean is24) {
         if (is24) {
             return TIME_24.format(date);
         } else {
@@ -327,6 +341,7 @@ public final class TimeUtil {
         return mYear - year;
     }
 
+    @NonNull
     public static Date getDate(int year, int month, int day) {
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.YEAR, year);
@@ -339,6 +354,7 @@ public final class TimeUtil {
         return cal1.getTime();
     }
 
+    @NonNull
     public static String generateAfterString(long time) {
         long s = 1000;
         long m = s * 60;
@@ -367,7 +383,8 @@ public final class TimeUtil {
         return hourStr + minuteStr + secondStr;
     }
 
-    public static String getAgeFormatted(Context mContext, String date) {
+    @NonNull
+    public static String getAgeFormatted(Context mContext, @Nullable String date) {
         int years = getAge(date);
         StringBuilder result = new StringBuilder();
         String lang = Locale.getDefault().getLanguage().toLowerCase();
@@ -393,6 +410,7 @@ public final class TimeUtil {
         return result.toString();
     }
 
+    @NonNull
     public static String getAgeFormatted(Context mContext, int date) {
         int years = getAge(date);
         StringBuilder result = new StringBuilder();

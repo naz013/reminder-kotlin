@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 
 import com.elementary.tasks.R;
@@ -60,6 +62,7 @@ public class Language {
         }
     }
 
+    @NonNull
     public static List<String> getLanguages(Context context) {
         List<String> locales = new ArrayList<>();
         locales.add(context.getString(R.string.english) + " (" + EN + ")");
@@ -68,6 +71,7 @@ public class Language {
         return locales;
     }
 
+    @NonNull
     public static String getTextLanguage(int code) {
         switch (code) {
             case 0:
@@ -81,6 +85,7 @@ public class Language {
         }
     }
 
+    @NonNull
     public static String getLanguage(int code) {
         switch (code) {
             case 0:
@@ -94,6 +99,7 @@ public class Language {
         }
     }
 
+    @NonNull
     public static String getLocaleByPosition(int position) {
         String locale = Language.ENGLISH;
         if (position == 0) locale = Language.ENGLISH;
@@ -109,7 +115,7 @@ public class Language {
         return locale;
     }
 
-    public static int getLocalePosition(String locale) {
+    public static int getLocalePosition(@Nullable String locale) {
         if (locale == null) {
             return 0;
         }
@@ -138,6 +144,7 @@ public class Language {
         return mItemSelect;
     }
 
+    @NonNull
     public static List<String> getLocaleNames(Context mContext) {
         ArrayList<String> names = new ArrayList<>();
         names.add(mContext.getString(R.string.english));
@@ -158,13 +165,14 @@ public class Language {
     /**
      * Holder locale for tts.
      * @param context application context.
-     * @param birth flag for birthdays.
+     * @param isBirth flag for birthdays.
      * @return Locale
      */
-    public Locale getLocale(Context context, boolean birth){
+    @Nullable
+    public Locale getLocale(Context context, boolean isBirth){
         Locale res = null;
         String locale;
-        if (birth) {
+        if (isBirth) {
             locale = Prefs.getInstance(context).getBirthdayTtsLocale();
         } else {
             locale = Prefs.getInstance(context).getTtsLocale();

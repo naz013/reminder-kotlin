@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Base64InputStream;
@@ -92,7 +94,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportTemplate(TemplateItem item) {
+    public void exportTemplate(@NonNull TemplateItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getTemplatesDir();
         if (dir != null) {
@@ -107,12 +109,14 @@ public final class BackupTool {
         }
     }
 
-    public TemplateItem getTemplate(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public TemplateItem getTemplate(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), TemplateItem.class));
         return item.get();
     }
 
-    public TemplateItem getTemplate(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public TemplateItem getTemplate(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), TemplateItem.class));
             return item.get();
@@ -150,7 +154,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportPlace(PlaceItem item) {
+    public void exportPlace(@NonNull PlaceItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getPlacesDir();
         if (dir != null) {
@@ -165,12 +169,14 @@ public final class BackupTool {
         }
     }
 
-    public PlaceItem getPlace(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public PlaceItem getPlace(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), PlaceItem.class));
         return item.get();
     }
 
-    public PlaceItem getPlace(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public PlaceItem getPlace(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), PlaceItem.class));
             return item.get();
@@ -208,7 +214,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportBirthday(BirthdayItem item) {
+    public void exportBirthday(@NonNull BirthdayItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getBirthdaysDir();
         if (dir != null) {
@@ -223,12 +229,14 @@ public final class BackupTool {
         }
     }
 
-    public BirthdayItem getBirthday(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public BirthdayItem getBirthday(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), BirthdayItem.class));
         return item.get();
     }
 
-    public BirthdayItem getBirthday(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public BirthdayItem getBirthday(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), BirthdayItem.class));
             return item.get();
@@ -246,7 +254,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportGroup(GroupItem item) {
+    public void exportGroup(@NonNull GroupItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getGroupsDir();
         if (dir != null) {
@@ -284,7 +292,7 @@ public final class BackupTool {
         }
     }
 
-    private boolean hasGroup(List<GroupItem> list, String comparable) {
+    private boolean hasGroup(@NonNull List<GroupItem> list, @Nullable String comparable) {
         if (comparable == null) return true;
         for (GroupItem item : list) {
             if (comparable.equals(item.getTitle())) {
@@ -294,12 +302,14 @@ public final class BackupTool {
         return false;
     }
 
-    public GroupItem getGroup(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public GroupItem getGroup(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), GroupItem.class));
         return item.get();
     }
 
-    public GroupItem getGroup(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public GroupItem getGroup(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), GroupItem.class));
             return item.get();
@@ -338,7 +348,7 @@ public final class BackupTool {
                                 TextUtils.isEmpty(reminder.getUuId())) {
                             continue;
                         }
-                        if (realmDb.getGroup(reminder.getGroupUuId()) == null) {
+                        if (realmDb.getGroup(reminder.getGroupUuId()) == null && defaultGroup != null) {
                             reminder.setGroupUuId(defaultGroup.getUuId());
                         }
                         realmDb.saveObject(reminder);
@@ -354,7 +364,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportReminder(Reminder item) {
+    public void exportReminder(@NonNull Reminder item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getRemindersDir();
         if (dir != null) {
@@ -369,7 +379,8 @@ public final class BackupTool {
         }
     }
 
-    public Reminder getReminder(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public Reminder getReminder(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         Reminder reminder = null;
         try {
             reminder = new Gson().fromJson(readFileToJson(cr, name), Reminder.class);
@@ -378,7 +389,8 @@ public final class BackupTool {
         return reminder;
     }
 
-    public Reminder getReminder(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public Reminder getReminder(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<Reminder> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Reminder.class));
             return item.get();
@@ -390,12 +402,14 @@ public final class BackupTool {
         }
     }
 
-    public NoteItem getNote(ContentResolver cr, Uri name) throws IOException, IllegalStateException {
+    @Nullable
+    public NoteItem getNote(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
         return note.get();
     }
 
-    public NoteItem getNote(String filePath, String json) throws IOException, IllegalStateException {
+    @Nullable
+    public NoteItem getNote(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
             WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), NoteItem.class));
             return item.get();
@@ -432,7 +446,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportNote(NoteItem item) {
+    public void exportNote(@NonNull NoteItem item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getNotesDir();
         if (dir != null) {
@@ -447,7 +461,7 @@ public final class BackupTool {
         }
     }
 
-    public void createNote(NoteItem item, CreateCallback callback) {
+    public void createNote(@Nullable NoteItem item, @Nullable CreateCallback callback) {
         if (item == null) return;
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File file = null;
@@ -468,7 +482,8 @@ public final class BackupTool {
         }
     }
 
-    public String readFileToJson(ContentResolver cr, Uri name) throws IOException {
+    @Nullable
+    public String readFileToJson(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException {
         InputStream inputStream = null;
         try {
             inputStream = cr.openInputStream(name);
@@ -491,7 +506,8 @@ public final class BackupTool {
         return total.toString();
     }
 
-    public String readFileToJson(String path) throws IOException {
+    @NonNull
+    public String readFileToJson(@NonNull String path) throws IOException {
         FileInputStream inputStream = new FileInputStream(path);
         Base64InputStream output64 = new Base64InputStream(inputStream, Base64.DEFAULT);
         BufferedReader r = new BufferedReader(new InputStreamReader(output64));
@@ -506,7 +522,7 @@ public final class BackupTool {
         return total.toString();
     }
 
-    private void writeFile(File file, String data) throws IOException {
+    private void writeFile(@NonNull File file, @Nullable String data) throws IOException {
         if (data == null) return;
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         byte[] buffer = new byte[8192];

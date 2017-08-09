@@ -36,7 +36,6 @@ import java.util.List;
 
 public final class ReminderUtils {
 
-    public static final String DAY_CHECK = "1";
     public static final int DAY_CHECKED = 1;
 
     private ReminderUtils() {
@@ -58,6 +57,7 @@ public final class ReminderUtils {
 
     public static void showSimpleBirthday(Context context, String id) {
         BirthdayItem birthdayItem = RealmDb.getInstance().getBirthday(id);
+        if (birthdayItem == null) return;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
@@ -134,6 +134,7 @@ public final class ReminderUtils {
 
     public static void showSimpleReminder(Context context, String id) {
         Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (reminder == null) return;
         Intent dismissIntent = new Intent(context, ReminderActionService.class);
         dismissIntent.setAction(ReminderActionService.ACTION_HIDE);
         dismissIntent.putExtra(Constants.INTENT_ID, id);

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.elementary.tasks.R;
@@ -73,7 +74,7 @@ public class Notifier {
         mNotifyMgr.cancel(id);
     }
 
-    public void showNoteNotification(NoteItem item){
+    public void showNoteNotification(@NonNull NoteItem item){
         Prefs sPrefs = Prefs.getInstance(mContext);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
         builder.setContentText(mContext.getString(R.string.note));

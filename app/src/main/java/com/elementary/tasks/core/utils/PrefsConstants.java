@@ -113,12 +113,6 @@ class PrefsConstants {
     static final String DROPBOX_TOKEN = "dropbox_token";
 
     static final String REMINDER_CHANGED = "reminder_changed";
-    static final String NOTE_CHANGED = "note_changed";
-    static final String GROUP_CHANGED = "group_changed";
-    static final String PLACE_CHANGED = "place_changed";
-    static final String TEMPLATE_CHANGED = "template_changed";
-    static final String TASK_CHANGED = "task_changed";
-    static final String LAST_FRAGMENT = "last_fragment";
     static final String LAST_USED_REMINDER = "last_reminder";
     static final String LAST_LIST = "last_list";
     static final String NOTES_ORDER = "notes_ordering";

@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -29,7 +31,7 @@ public final class TelephonyUtil {
     private TelephonyUtil() {
     }
 
-    public static void sendNote(File file, Context context, String message) {
+    public static void sendNote(@NonNull File file, Context context, @Nullable String message) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         String title = "Note";
@@ -52,7 +54,7 @@ public final class TelephonyUtil {
         context.startActivity(Intent.createChooser(intent, "Send email..."));
     }
 
-    public static void sendMail(Context context, String email, String subject,
+    public static void sendMail(Context context, @NonNull String email, String subject,
                                 String message, String filePath) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -61,10 +63,8 @@ public final class TelephonyUtil {
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (filePath != null) {
             Uri uri = UriUtil.getUri(context, filePath);
-            if (uri != null) {
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         context.startActivity(Intent.createChooser(intent, "Send email..."));
     }
@@ -88,7 +88,7 @@ public final class TelephonyUtil {
         context.startActivity(callIntent);
     }
 
-    public static void openApp(String appPackage, Context context) {
+    public static void openApp(@NonNull String appPackage, Context context) {
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackage);
         try {
             context.startActivity(launchIntent);
@@ -96,7 +96,7 @@ public final class TelephonyUtil {
         }
     }
 
-    public static void openLink(String link, Context context) {
+    public static void openLink(@NonNull String link, Context context) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
         try {
             context.startActivity(browserIntent);

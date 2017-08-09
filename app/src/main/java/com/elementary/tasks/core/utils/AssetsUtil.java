@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,7 +24,8 @@ public final class AssetsUtil {
 
     private AssetsUtil(){}
 
-    public static Typeface getTypeface(Context context, int code){
+    @NonNull
+    public static Typeface getTypeface(@NonNull Context context, int code){
         Typeface typeface;
         if (code == 0) {
             typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Black.ttf");
@@ -55,6 +57,7 @@ public final class AssetsUtil {
         return typeface;
     }
 
+    @NonNull
     public static Typeface getDefaultTypeface(Context context){
         return getTypeface(context, 9);
     }
