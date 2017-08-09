@@ -130,8 +130,8 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     private class WeekdayAdapter extends BaseAdapter{
 
         private List<String> weekdays;
-        private int SUNDAY = 1;
-        private int startDayOfWeek = SUNDAY;
+        private int sunday = 1;
+        private int startDayOfWeek = sunday;
         private Context context;
         private LayoutInflater inflater;
         private int textColor;
@@ -146,7 +146,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
 
             // 17 Feb 2013 is Sunday
             DateTime sunday = new DateTime(2013, 2, 17, 0, 0, 0, 0);
-            DateTime nextDay = sunday.plusDays(startDayOfWeek - SUNDAY);
+            DateTime nextDay = sunday.plusDays(startDayOfWeek - this.sunday);
             if (getPrefs().getStartDay() == 1){
                 nextDay = nextDay.plusDays(1);
             }
@@ -178,7 +178,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.weekday_grid, null);
             }
-            TextView textView = (TextView) convertView.findViewById(R.id.textView1);
+            TextView textView = convertView.findViewById(R.id.textView1);
             textView.setText(weekdays.get(position));
             textView.setTextColor(textColor);
             return convertView;
@@ -198,8 +198,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     private class MonthGridAdapter extends BaseAdapter{
 
         List<DateTime> datetimeList;
-        int SUNDAY = 1;
-        int startDayOfWeek = SUNDAY;
+        int startDayOfWeek = 1;
         int prefsMonth;
         Context context;
         LayoutInflater inflater;
@@ -292,11 +291,11 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
                 convertView = inflater.inflate(R.layout.month_view_grid, null);
             }
             int selDay = datetimeList.get(position).getDay();
-            FrameLayout background = (FrameLayout) convertView.findViewById(R.id.background);
-            TextView textView = (TextView) convertView.findViewById(R.id.textView);
-            TextView currentMark = (TextView) convertView.findViewById(R.id.currentMark);
-            TextView reminderMark = (TextView) convertView.findViewById(R.id.reminderMark);
-            TextView birthdayMark = (TextView) convertView.findViewById(R.id.birthdayMark);
+            FrameLayout background = convertView.findViewById(R.id.background);
+            TextView textView = convertView.findViewById(R.id.textView);
+            TextView currentMark = convertView.findViewById(R.id.currentMark);
+            TextView reminderMark = convertView.findViewById(R.id.reminderMark);
+            TextView birthdayMark = convertView.findViewById(R.id.birthdayMark);
 
             textView.setText(String.valueOf(selDay));
             textView.setTextColor(textColor);

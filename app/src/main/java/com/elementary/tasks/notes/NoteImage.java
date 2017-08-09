@@ -36,7 +36,8 @@ public class NoteImage implements Serializable {
     }
 
     public NoteImage(byte[] image) {
-        this.image = image;
+        this.image = new byte[image.length];
+        System.arraycopy(image, 0, this.image, 0, this.image.length);
     }
 
     public byte[] getImage() {
@@ -44,6 +45,7 @@ public class NoteImage implements Serializable {
     }
 
     public void setImage(byte[] image) {
-        this.image = image;
+        this.image = new byte[image.length];
+        System.arraycopy(image, 0, this.image, 0, this.image.length);
     }
 }

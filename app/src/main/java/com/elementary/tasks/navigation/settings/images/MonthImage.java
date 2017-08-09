@@ -21,16 +21,13 @@ public class MonthImage {
 
     public MonthImage() {}
 
-    public MonthImage(long[] photos) {
-        this.photos = photos;
-    }
-
     public long[] getPhotos() {
         return photos;
     }
 
     public void setPhotos(long[] photos) {
-        this.photos = photos;
+        this.photos = new long[photos.length];
+        System.arraycopy(photos, 0, this.photos, 0, this.photos.length);
     }
 
     public void setPhoto(int month, long value) {

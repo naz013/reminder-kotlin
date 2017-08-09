@@ -23,6 +23,7 @@ import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -138,6 +139,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     public boolean enablePositionDelay(Context context, String id) {
         Reminder item = RealmDb.getInstance().getReminder(id);
+        if (item == null) {
+            return false;
+        }
         long startTime = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         if (startTime == 0 || startTime < System.currentTimeMillis()) {
             return false;
@@ -381,7 +385,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             long currTime = System.currentTimeMillis();
             int calID = Prefs.getInstance(mContext).getEventsCalendar();
             List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
-            if (eventItems != null && eventItems.size() > 0){
+            if (eventItems.size() > 0){
                 List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
                 for (CalendarUtils.EventItem item : eventItems) {
                     long itemId = item.getId();
@@ -405,7 +409,11 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                             }
                         }
                         String summary = item.getTitle();
-                        String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+                        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+                        String categoryId = "";
+                        if (def != null) {
+                            categoryId = def.getUuId();
+                        }
                         Calendar calendar = Calendar.getInstance();
                         long dtStart = item.getDtStart();
                         calendar.setTimeInMillis(dtStart);

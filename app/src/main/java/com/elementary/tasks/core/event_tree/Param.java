@@ -26,7 +26,8 @@ public class Param {
     private int[] params;
 
     public Param(int[] params) {
-        this.params = params;
+        this.params = new int[params.length];
+        System.arraycopy(params, 0, this.params, 0, this.params.length);
     }
 
     public int[] getParams() {

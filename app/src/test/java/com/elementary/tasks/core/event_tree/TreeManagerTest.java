@@ -48,7 +48,7 @@ public class TreeManagerTest {
             Reminder reminder = new Reminder();
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis())).setSummary("Node " + i);
             calendar.setTimeInMillis(calendar.getTimeInMillis() + 1000);
-            root.addNode(reminder);
+            root.addReminder(reminder);
         }
         long procTime = System.currentTimeMillis() - time;
         System.out.println("setup: " + procTime);

@@ -92,7 +92,7 @@ public final class TelephonyUtil {
         Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(appPackage);
         try {
             context.startActivity(launchIntent);
-        } catch (ActivityNotFoundException | NullPointerException ignored) {
+        } catch (ActivityNotFoundException ignored) {
         }
     }
 

@@ -53,6 +53,7 @@ class IntroItem {
     }
 
     public void setImages(@DrawableRes int[] images) {
-        this.images = images;
+        this.images = new int[images.length];
+        System.arraycopy(images, 0, this.images, 0, this.images.length);
     }
 }
