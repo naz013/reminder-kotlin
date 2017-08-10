@@ -15,8 +15,6 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <group android:name="android.intent.group.LAUNCHER" />
             </intent-filter>
         </activity>
 

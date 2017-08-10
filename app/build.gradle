@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'realm-android'
 apply plugin: 'com.google.firebase.firebase-crash'
 apply plugin: 'io.fabric'
@@ -14,6 +13,7 @@ repositories {
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
+    flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
@@ -51,10 +51,12 @@ android {
     }
     productFlavors {
         free {
+            dimension "level"
             applicationId 'com.cray.software.justreminder'
             buildConfigField "boolean", "IS_PRO", "false"
         }
         pro {
+            dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
             versionCode 147
@@ -123,7 +125,7 @@ dependencies {
         exclude module: 'httpclient'
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
+        transitive = true
     }
     compile project(':photoPreview')
     compile project(path: ':shared')
@@ -145,10 +147,14 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.4'
     compile 'com.google.android.gms:play-services-analytics:11.0.4'
     compile 'com.google.android.gms:play-services-wearable:11.0.4'
-    compile 'com.google.firebase:firebase-messaging:11.0.4'
-    compile 'com.google.firebase:firebase-crash:11.0.4'
+    compile ('com.google.firebase:firebase-messaging:11.0.4') {
+        exclude group: 'com.google.guava', module: 'guava-jdk5'
+    }
+    compile ('com.google.firebase:firebase-crash:11.0.4') {
+        exclude group: 'com.google.guava', module: 'guava-jdk5'
+    }
 
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     compile 'com.github.deano2390:MaterialShowcaseView:1.1.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
@@ -158,13 +164,13 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.darwinsys:hirondelle-date4j:1.5.1'
     compile 'com.flaviofaria:kenburnsview:1.0.7'
-    compile 'jp.wasabeef:picasso-transformations:2.1.0'
+    compile 'jp.wasabeef:picasso-transformations:2.1.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
-    compile 'com.tuyenmonkey:mkloader:1.2.0'
+    compile 'com.tuyenmonkey:mkloader:1.3.0'
     compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.tapadoo.android:alerter:1.0.7'
     compile 'com.dropbox.core:dropbox-core-sdk:3.0.3'
