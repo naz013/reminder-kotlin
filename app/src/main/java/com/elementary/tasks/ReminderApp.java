@@ -5,6 +5,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
@@ -57,6 +58,7 @@ public class ReminderApp extends MultiDexApplication {
         super.onCreate();
         Notifier.createChannels(this);
         Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Answers());
         Prefs.getInstance(this);
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
