@@ -16,10 +16,8 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -210,7 +208,6 @@ public class AnimatedRecordingView extends BaseSurfaceView {
         return dp * (metrics.densityDpi / 160f);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private Bitmap getBitmap(int id) {
         Drawable vectorDrawable = mContext.getDrawable(id);
         int h = ((int) convertDpToPixel(24));
