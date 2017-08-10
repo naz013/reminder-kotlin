@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
+import com.elementary.tasks.core.utils.ContextHolder;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
@@ -32,22 +33,22 @@ import java.util.List;
 public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
 
     private static final String TAG = "RestoreDropboxTask";
-    private Context mContext;
+    private ContextHolder mContext;
     private SyncListener mListener;
     private ProgressDialog mDialog;
 
     public RestoreDropboxTask(Context context, SyncListener mListener) {
-        this.mContext = context;
+        this.mContext = new ContextHolder(context);
         this.mListener = mListener;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mDialog = new ProgressDialog(mContext);
-        mDialog.setTitle(mContext.getString(R.string.sync));
+        mDialog = new ProgressDialog(mContext.getContext());
+        mDialog.setTitle(mContext.getContext().getString(R.string.sync));
         mDialog.setCancelable(false);
-        mDialog.setMessage(mContext.getString(R.string.please_wait));
+        mDialog.setMessage(mContext.getContext().getString(R.string.please_wait));
         mDialog.show();
     }
 
@@ -60,12 +61,12 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Dropbox drive = new Dropbox(mContext);
-        publishProgress(mContext.getString(R.string.syncing_groups));
+        Dropbox drive = new Dropbox(mContext.getContext());
+        publishProgress(mContext.getContext().getString(R.string.syncing_groups));
         drive.downloadGroups(false);
         List<GroupItem> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
-            String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
+            String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
             List<Reminder> items = RealmDb.getInstance().getAllReminders();
             for (Reminder item : items) {
                 item.setGroupUuId(defUiID);
@@ -73,23 +74,23 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
             }
         }
 
-        publishProgress(mContext.getString(R.string.syncing_reminders));
+        publishProgress(mContext.getContext().getString(R.string.syncing_reminders));
         drive.downloadReminders(false);
 
         //export & import notes
-        publishProgress(mContext.getString(R.string.syncing_notes));
+        publishProgress(mContext.getContext().getString(R.string.syncing_notes));
         drive.downloadNotes(false);
 
         //export & import birthdays
-        publishProgress(mContext.getString(R.string.syncing_birthdays));
+        publishProgress(mContext.getContext().getString(R.string.syncing_birthdays));
         drive.downloadBirthdays(false);
 
         //export & import places
-        publishProgress(mContext.getString(R.string.syncing_places));
+        publishProgress(mContext.getContext().getString(R.string.syncing_places));
         drive.downloadPlaces(false);
 
         //export & import templates
-        publishProgress(mContext.getString(R.string.syncing_templates));
+        publishProgress(mContext.getContext().getString(R.string.syncing_templates));
         drive.downloadTemplates(false);
         drive.downloadSettings();
         return null;
@@ -105,8 +106,8 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
             }
         }
         if (mContext != null) {
-            UpdatesHelper.getInstance(mContext).updateWidget();
-            UpdatesHelper.getInstance(mContext).updateNotesWidget();
+            UpdatesHelper.getInstance(mContext.getContext()).updateWidget();
+            UpdatesHelper.getInstance(mContext.getContext()).updateNotesWidget();
         }
         if (mListener != null) {
             mListener.onFinish();
