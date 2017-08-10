@@ -1,5 +1,6 @@
 package com.elementary.tasks.creators.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -181,6 +182,7 @@ public class TimerFragment extends RepeatableTypeFragment {
         }
     }
 
+    @SuppressLint("ResourceType")
     private List<Integer> getSelectedList() {
         List<Integer> ids = new ArrayList<>();
         for (ToggleButton button : buttons) {
