@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.RealmDb
+import com.elementary.tasks.core.utils.*
 import java.io.IOException
 import java.lang.IllegalArgumentException
 
@@ -30,14 +27,14 @@ import java.lang.IllegalArgumentException
 
 class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Void, String, Int>() {
 
-    private var mContext: Context = context
+    private var mContext: ContextHolder = ContextHolder(context)
     private var mListener: SyncListener = listener
     private var mDialog: ProgressDialog = ProgressDialog(context)
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mDialog.setTitle(mContext.getString(R.string.sync))
-        mDialog.setMessage(mContext.getString(R.string.please_wait))
+        mDialog.setTitle(mContext.context.getString(R.string.sync))
+        mDialog.setMessage(mContext.context.getString(R.string.please_wait))
         mDialog.show()
     }
 
@@ -49,7 +46,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
     }
 
     override fun doInBackground(vararg p0: Void?): Int {
-        publishProgress(mContext.getString(R.string.syncing_groups))
+        publishProgress(mContext.context.getString(R.string.syncing_groups))
         try {
             BackupTool.getInstance().importGroups()
         } catch (e: IOException) {
@@ -60,7 +57,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
 
         val list = RealmDb.getInstance().allGroups
         if (list.size == 0) {
-            val defUiID = RealmDb.getInstance().setDefaultGroups(mContext)
+            val defUiID = RealmDb.getInstance().setDefaultGroups(mContext.context)
             val items = RealmDb.getInstance().allReminders
             for (item in items) {
                 item.groupUuId = defUiID
@@ -68,9 +65,9 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             }
         }
 
-        publishProgress(mContext.getString(R.string.syncing_reminders))
+        publishProgress(mContext.context.getString(R.string.syncing_reminders))
         try {
-            BackupTool.getInstance().importReminders(mContext)
+            BackupTool.getInstance().importReminders(mContext.context)
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
@@ -78,7 +75,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         }
 
         //export & import notes
-        publishProgress(mContext.getString(R.string.syncing_notes))
+        publishProgress(mContext.context.getString(R.string.syncing_notes))
         try {
             BackupTool.getInstance().importNotes()
         } catch (e: IOException) {
@@ -88,7 +85,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         }
 
         //export & import birthdays
-        publishProgress(mContext.getString(R.string.syncing_birthdays))
+        publishProgress(mContext.context.getString(R.string.syncing_birthdays))
         try {
             BackupTool.getInstance().importBirthdays()
         } catch (e: IOException) {
@@ -98,7 +95,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         }
 
         //export & import places
-        publishProgress(mContext.getString(R.string.syncing_places))
+        publishProgress(mContext.context.getString(R.string.syncing_places))
         try {
             BackupTool.getInstance().importPlaces()
         } catch (e: IOException) {
@@ -108,7 +105,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
         }
 
         //export & import templates
-        publishProgress(mContext.getString(R.string.syncing_templates))
+        publishProgress(mContext.context.getString(R.string.syncing_templates))
         try {
             BackupTool.getInstance().importTemplates()
         } catch (e: IOException) {
@@ -117,7 +114,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             e.printStackTrace()
         }
         try {
-            Prefs.getInstance(mContext).loadPrefsFromFile()
+            Prefs.getInstance(mContext.context).loadPrefsFromFile()
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -133,8 +130,8 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
                 LogUtil.d("RestoreLocalTask", "onPostExecute: " + e.localizedMessage)
             }
         }
-        UpdatesHelper.getInstance(mContext).updateWidget()
-        UpdatesHelper.getInstance(mContext).updateNotesWidget()
+        UpdatesHelper.getInstance(mContext.context).updateWidget()
+        UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
         mListener.onFinish()
     }
 
