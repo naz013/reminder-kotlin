@@ -139,8 +139,6 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
     }
 
     interface SyncListener {
-        fun onFinish() {
-
-        }
+        fun onFinish()
     }
 }
