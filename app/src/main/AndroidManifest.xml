@@ -49,6 +49,7 @@
     <application
         android:name=".ReminderApp"
         android:allowBackup="true"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_title"
         android:supportsRtl="true"

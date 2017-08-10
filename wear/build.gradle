@@ -57,8 +57,8 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.support:wearable:2.0.4'
-    compile 'com.google.android.wearable:wearable:2.0.4'
-    compile 'com.google.android.gms:play-services-wearable:11.0.4'
-    compile project(':shared')
+    implementation 'com.google.android.support:wearable:2.0.4'
+    provided 'com.google.android.wearable:wearable:2.0.4'
+    implementation 'com.google.android.gms:play-services-wearable:11.0.4'
+    implementation project(':shared')
 }

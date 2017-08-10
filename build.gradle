@@ -18,7 +18,6 @@ buildscript {
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 allprojects {
