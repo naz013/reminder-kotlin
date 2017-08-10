@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.utils.ContextHolder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.groups.GroupItem;
@@ -34,22 +35,22 @@ import java.util.List;
 public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
     private static final String TAG = "RestoreGoogleTask";
-    private Context mContext;
+    private ContextHolder mContext;
     private SyncListener mListener;
     private ProgressDialog mDialog;
 
     public RestoreGoogleTask(Context context, SyncListener mListener) {
-        this.mContext = context;
+        this.mContext = new ContextHolder(context);
         this.mListener = mListener;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mDialog = new ProgressDialog(mContext);
-        mDialog.setTitle(mContext.getString(R.string.sync));
+        mDialog = new ProgressDialog(mContext.getContext());
+        mDialog.setTitle(mContext.getContext().getString(R.string.sync));
         mDialog.setCancelable(false);
-        mDialog.setMessage(mContext.getString(R.string.please_wait));
+        mDialog.setMessage(mContext.getContext().getString(R.string.please_wait));
         mDialog.show();
     }
 
@@ -62,9 +63,9 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Google drive = Google.getInstance(mContext);
+        Google drive = Google.getInstance(mContext.getContext());
         if (drive != null) {
-            publishProgress(mContext.getString(R.string.syncing_groups));
+            publishProgress(mContext.getContext().getString(R.string.syncing_groups));
             try {
                 drive.getDrive().downloadGroups(false);
             } catch (IOException | IllegalStateException e) {
@@ -72,7 +73,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             }
             List<GroupItem> list = RealmDb.getInstance().getAllGroups();
             if (list.size() == 0) {
-                String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
+                String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
                 List<Reminder> items = RealmDb.getInstance().getAllReminders();
                 for (Reminder item : items) {
                     item.setGroupUuId(defUiID);
@@ -80,15 +81,15 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
                 }
             }
 
-            publishProgress(mContext.getString(R.string.syncing_reminders));
+            publishProgress(mContext.getContext().getString(R.string.syncing_reminders));
             try {
-                drive.getDrive().downloadReminders(mContext, false);
+                drive.getDrive().downloadReminders(mContext.getContext(), false);
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
 
             //export & import notes
-            publishProgress(mContext.getString(R.string.syncing_notes));
+            publishProgress(mContext.getContext().getString(R.string.syncing_notes));
             try {
                 drive.getDrive().downloadNotes(false);
             } catch (IOException | IllegalStateException e) {
@@ -96,7 +97,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             }
 
             //export & import birthdays
-            publishProgress(mContext.getString(R.string.syncing_birthdays));
+            publishProgress(mContext.getContext().getString(R.string.syncing_birthdays));
             try {
                 drive.getDrive().downloadBirthdays(false);
             } catch (IOException | IllegalStateException e) {
@@ -104,7 +105,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             }
 
             //export & import places
-            publishProgress(mContext.getString(R.string.syncing_places));
+            publishProgress(mContext.getContext().getString(R.string.syncing_places));
             try {
                 drive.getDrive().downloadPlaces(false);
             } catch (IOException | IllegalStateException e) {
@@ -112,14 +113,14 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             }
 
             //export & import templates
-            publishProgress(mContext.getString(R.string.syncing_templates));
+            publishProgress(mContext.getContext().getString(R.string.syncing_templates));
             try {
                 drive.getDrive().downloadTemplates(false);
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
             try {
-                drive.getDrive().downloadSettings(mContext, false);
+                drive.getDrive().downloadSettings(mContext.getContext(), false);
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
@@ -138,8 +139,8 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             }
         }
         if (mContext != null) {
-            UpdatesHelper.getInstance(mContext).updateWidget();
-            UpdatesHelper.getInstance(mContext).updateNotesWidget();
+            UpdatesHelper.getInstance(mContext.getContext()).updateWidget();
+            UpdatesHelper.getInstance(mContext.getContext()).updateNotesWidget();
         }
         if (mListener != null) {
             mListener.onFinish();
