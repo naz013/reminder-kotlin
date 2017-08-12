@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.app_widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -42,6 +43,7 @@ public final class WidgetUtils {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     public static Bitmap getIcon(Context context, @DrawableRes int id) {
         Drawable d = AppCompatDrawableManager.get().getDrawable(context, id);
         Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(),
