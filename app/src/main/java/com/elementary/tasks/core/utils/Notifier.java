@@ -94,7 +94,7 @@ public class Notifier {
             builder.setGroup("GROUP");
             builder.setGroupSummary(true);
         }
-        if (!item.getImages().isEmpty()) {
+        if (!item.getImages().isEmpty() && Module.isMarshmallow()) {
             NoteImage image = item.getImages().get(0);
             Bitmap bitmap = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
             builder.setLargeIcon(bitmap);
