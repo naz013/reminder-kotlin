@@ -363,14 +363,9 @@ public class CreateNoteActivity extends ThemedActivity {
         String id = intent.getStringExtra(Constants.INTENT_ID);
         if (id != null) {
             mItem = RealmDb.getInstance().getNote(id);
-        } else {
+        } else if (intent.getData() != null) {
             String filePath = intent.getStringExtra(Constants.FILE_PICKED);
-            Uri name = null;
-            try {
-                name = intent.getData();
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
+            Uri name = intent.getData();
             loadNoteFromFile(filePath, name);
         }
     }

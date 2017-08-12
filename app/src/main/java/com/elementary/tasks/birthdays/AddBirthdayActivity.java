@@ -118,7 +118,7 @@ public class AddBirthdayActivity extends ThemedActivity {
         String id = intent.getStringExtra(Constants.INTENT_ID);
         if (id != null) {
             mItem = RealmDb.getInstance().getBirthday(id);
-        } else {
+        } else if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();
                 String scheme = name.getScheme();
