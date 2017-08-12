@@ -219,7 +219,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 return;
             }
             getControl().pause();
-        } else {
+        } else if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();
                 String scheme = name.getScheme();
@@ -229,7 +229,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 } else {
                     mReminder = BackupTool.getInstance().getReminder(name.getPath(), null);
                 }
-            } catch (NullPointerException | IOException | IllegalStateException e) {
+            } catch (IOException | IllegalStateException e) {
                 LogUtil.d(TAG, "loadReminder: " + e.getLocalizedMessage());
             }
         }

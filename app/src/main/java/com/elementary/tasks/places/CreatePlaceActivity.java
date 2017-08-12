@@ -80,7 +80,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
         String id = intent.getStringExtra(Constants.INTENT_ID);
         if (id != null) {
             mItem = RealmDb.getInstance().getPlace(id);
-        } else {
+        } else if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();
                 String scheme = name.getScheme();
