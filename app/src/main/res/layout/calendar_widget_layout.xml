@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:id="@+id/widgetBg"
@@ -24,8 +23,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/acc_add"
                 android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_add_white_24dp" />
+                android:visibility="visible" />
 
             <ImageButton
                 android:id="@+id/voiceButton"
@@ -37,8 +35,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/voice_control"
                 android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_microphone_white" />
+                android:visibility="visible" />
 
             <ImageButton
                 android:id="@+id/settingsButton"
@@ -50,8 +47,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/action_settings"
                 android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_settings_white" />
+                android:visibility="visible" />
 
             <ImageButton
                 android:id="@+id/nextMonth"
@@ -63,8 +59,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/acc_next"
                 android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_keyboard_arrow_right_white_24dp" />
+                android:visibility="visible" />
 
             <ImageButton
                 android:id="@+id/prevMonth"
@@ -76,8 +71,7 @@
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/acc_previous"
                 android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_keyboard_arrow_left_white_24dp" />
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/currentDate"

@@ -1,96 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/headerBg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/blackPrimary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/tasksCount"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/acc_add"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/voiceButton"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tasksCount"
+            android:layout_toStartOf="@+id/tasksCount"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/voice_control"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/voiceButton"
+            android:layout_toStartOf="@+id/voiceButton"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/action_settings"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/widgetDate"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_toLeftOf="@+id/settingsButton"
+            android:layout_toStartOf="@+id/settingsButton"
+            android:gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/blackPrimary"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/widgetBg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/material_grey_dialog"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/headerBg"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/blackPrimary"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/tasksCount"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/acc_add"
-                android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_add_white_24dp" />
-
-            <ImageButton
-                android:id="@+id/voiceButton"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/tasksCount"
-                android:layout_toStartOf="@+id/tasksCount"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/voice_control"
-                android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_microphone_white" />
-
-            <ImageButton
-                android:id="@+id/settingsButton"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/voiceButton"
-                android:layout_toStartOf="@+id/voiceButton"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/action_settings"
-                android:gravity="center"
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_settings_white" />
-
-            <TextView
-                android:id="@+id/widgetDate"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_toLeftOf="@+id/settingsButton"
-                android:layout_toStartOf="@+id/settingsButton"
-                android:gravity="center"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/blackPrimary"
-                android:textSize="18sp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/widgetBg"
+        <ListView
+            android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/material_grey_dialog"
-            android:orientation="vertical">
+            android:layout_margin="5dp"
+            android:divider="@null"
+            android:dividerHeight="5dp"
+            android:scrollbars="none" />
 
-            <ListView
-                android:id="@android:id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:divider="@null"
-                android:dividerHeight="5dp"
-                android:scrollbars="none" />
-
-            <TextView
-                android:id="@android:id/empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/no_events" />
-        </LinearLayout>
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_events" />
     </LinearLayout>
 </LinearLayout>

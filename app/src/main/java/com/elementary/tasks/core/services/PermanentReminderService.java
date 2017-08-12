@@ -110,7 +110,7 @@ public class PermanentReminderService extends Service {
         stackBuilder.addParentStack(CreateReminderActivity.class);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-                PendingIntent.FLAG_ONE_SHOT);
+                0);
         remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
         Intent noteIntent = new Intent(getApplicationContext(), CreateNoteActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -118,14 +118,14 @@ public class PermanentReminderService extends Service {
         noteBuilder.addParentStack(CreateNoteActivity.class);
         noteBuilder.addNextIntent(noteIntent);
         PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                0);
         remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent);
         Intent resInt = new Intent(getApplicationContext(), SplashScreen.class);
         TaskStackBuilder stackInt = TaskStackBuilder.create(getApplicationContext());
         stackInt.addParentStack(SplashScreen.class);
         stackInt.addNextIntent(resInt);
         PendingIntent resultPendingInt = stackInt.getPendingIntent(0,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                0);
         remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
         remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
         List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
