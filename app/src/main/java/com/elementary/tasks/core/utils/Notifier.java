@@ -85,7 +85,7 @@ public class Notifier {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_note_white);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_note_nv_white);
         }
         builder.setContentTitle(content);
         boolean isWear = sPrefs.getBoolean(Prefs.WEAR_NOTIFICATION);
@@ -107,7 +107,7 @@ public class Notifier {
         manager.notify(item.getUniqueId(), builder.build());
         if (isWear && Module.isJellyMR2()) {
             NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
-            wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white);
             wearableNotificationBuilder.setContentTitle(content);
             wearableNotificationBuilder.setContentText(mContext.getString(R.string.note));
             wearableNotificationBuilder.setOngoing(false);

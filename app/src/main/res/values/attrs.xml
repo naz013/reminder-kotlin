@@ -120,6 +120,10 @@
             <enum name="roboto_thin" value="10" />
             <enum name="roboto_thin_italic" value="11" />
         </attr>
+        <attr name="drawableLeftCompat" format="reference"/>
+        <attr name="drawableRightCompat" format="reference"/>
+        <attr name="drawableTopCompat" format="reference"/>
+        <attr name="drawableBottomCompat" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="RoboEditText">

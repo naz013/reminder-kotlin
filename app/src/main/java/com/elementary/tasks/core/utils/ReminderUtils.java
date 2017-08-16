@@ -33,10 +33,10 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public final class ReminderUtils {
 
     public static final int DAY_CHECKED = 1;
+    private static final String TAG = "ReminderUtils";
 
     private ReminderUtils() {
 
@@ -62,7 +62,7 @@ public final class ReminderUtils {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_cake_nv_white);
         }
         PendingIntent intent = PendingIntent.getService(context, birthdayItem.getUniqueId(),
                 BirthdayActionService.show(context, id), 0);
@@ -112,16 +112,28 @@ public final class ReminderUtils {
 
         PendingIntent piDismiss = PendingIntent.getService(context, birthdayItem.getUniqueId(),
                 BirthdayActionService.hide(context, id), 0);
-        builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+        if (Module.isLollipop()) {
+            builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+        } else {
+            builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss);
+        }
 
         if (!TextUtils.isEmpty(birthdayItem.getNumber())) {
             PendingIntent piCall = PendingIntent.getService(context, birthdayItem.getUniqueId(),
                     BirthdayActionService.call(context, id), 0);
-            builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall);
+            if (Module.isLollipop()) {
+                builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall);
+            } else {
+                builder.addAction(R.drawable.ic_call_nv_white, context.getString(R.string.make_call), piCall);
+            }
 
             PendingIntent piSms = PendingIntent.getService(context, birthdayItem.getUniqueId(),
                     BirthdayActionService.sms(context, id), 0);
-            builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms);
+            if (Module.isLollipop()) {
+                builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms);
+            } else {
+                builder.addAction(R.drawable.ic_send_nv_white, context.getString(R.string.send_sms), piSms);
+            }
         }
 
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
@@ -133,6 +145,7 @@ public final class ReminderUtils {
     }
 
     public static void showSimpleReminder(Context context, String id) {
+        LogUtil.d(TAG, "showSimpleReminder: ");
         Reminder reminder = RealmDb.getInstance().getReminder(id);
         if (reminder == null) return;
         Intent dismissIntent = new Intent(context, ReminderActionService.class);
@@ -143,7 +156,7 @@ public final class ReminderUtils {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         Intent notificationIntent = new Intent(context, ReminderActionService.class);
         notificationIntent.setAction(ReminderActionService.ACTION_SHOW);
@@ -177,14 +190,18 @@ public final class ReminderUtils {
             builder.setVibrate(pattern);
         }
         if (Module.isPro() && Prefs.getInstance(context).isLedEnabled()) {
-            if (reminder.getColor() != 0) {
+            if (reminder.getColor() != -1) {
                 builder.setLights(reminder.getColor(), 500, 1000);
             } else {
                 builder.setLights(LED.getLED(Prefs.getInstance(context).getLedColor()), 500, 1000);
             }
         }
         builder.setContentText(appName);
-        builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+        if (Module.isLollipop()) {
+            builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
+        } else {
+            builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss);
+        }
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
         mNotifyMgr.notify(reminder.getUniqueId(), builder.build());
     }

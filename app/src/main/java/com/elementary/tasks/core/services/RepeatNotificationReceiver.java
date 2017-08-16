@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.services;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -113,7 +112,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         if (!SuperUtil.isDoNotDisturbEnabled(context) ||
                 (SuperUtil.checkNotificationPermission(context) &&

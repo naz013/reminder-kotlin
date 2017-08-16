@@ -88,6 +88,7 @@ public class PermanentReminderService extends Service {
     }
 
     private void showPermanent() {
+        LogUtil.d(TAG, "showPermanent: ");
         RemoteViews remoteViews = new RemoteViews(getApplication().getPackageName(),
                 R.layout.notification_layout);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), Notifier.CHANNEL_REMINDER);
@@ -95,7 +96,7 @@ public class PermanentReminderService extends Service {
         if (Module.isLollipop()) {
             notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
         } else {
-            notification.setSmallIcon(R.mipmap.ic_launcher);
+            notification.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         notification.setContent(remoteViews);
         notification.setOngoing(true);
@@ -168,6 +169,8 @@ public class PermanentReminderService extends Service {
         WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
         WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
+        LogUtil.d(TAG, "showPermanent: 2");
         startForeground(PERM_ID, notification.build());
+        LogUtil.d(TAG, "showPermanent: 3");
     }
 }

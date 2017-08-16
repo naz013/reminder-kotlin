@@ -66,7 +66,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_get_app_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_get_up_nv_white);
         }
         mNotifyMgr = NotificationManagerCompat.from(mContext);
         mNotifyMgr.notify((int) id, builder.build());
@@ -115,7 +115,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_warning_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_warning_nv_white);
         }
         builder.setAutoCancel(true);
         builder.setWhen(System.currentTimeMillis());
@@ -138,7 +138,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_done_nv_white);
         }
         builder.setAutoCancel(true);
         builder.setWhen(System.currentTimeMillis());

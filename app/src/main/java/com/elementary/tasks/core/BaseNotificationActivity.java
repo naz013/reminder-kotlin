@@ -442,7 +442,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_call_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_call_nv_white);
         }
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
@@ -488,7 +488,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         boolean isWear = getPrefs().isWearEnabled();
         if (isWear && Module.isJellyMR2()) {
@@ -504,6 +504,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showReminderNotification(Activity activity) {
+        LogUtil.d(TAG, "showReminderNotification: ");
         Intent notificationIntent = new Intent(this, activity.getClass());
         notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
@@ -533,7 +534,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
@@ -564,6 +565,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showTTSNotification(Activity activityClass) {
+        LogUtil.d(TAG, "showTTSNotification: ");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(getSummary());
         Intent notificationIntent = new Intent(this, activityClass.getClass());
@@ -593,7 +595,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
         if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
@@ -695,9 +697,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void showWearNotification(String secondaryText) {
+        LogUtil.d(TAG, "showWearNotification: ");
         if (Module.isJellyMR2()) {
             final NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
-            wearableNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            wearableNotificationBuilder.setSmallIcon(R.drawable.ic_notification_nv_white);
             wearableNotificationBuilder.setContentTitle(getSummary());
             wearableNotificationBuilder.setContentText(secondaryText);
             if (Module.isLollipop()) {
