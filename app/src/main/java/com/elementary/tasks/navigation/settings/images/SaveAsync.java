@@ -44,6 +44,7 @@ public class SaveAsync extends AsyncTask<String, Void, Void> {
             fileName = path.substring(index);
         }
         File directory = MemoryUtil.getImageCacheDir();
+        if (directory == null) return null;
         directory.mkdirs();
         File file = new File(directory, fileName + ".jpg");
         try {
