@@ -172,7 +172,7 @@ public class GeolocationService extends Service {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_navigation_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_navigation_nv_white);
         }
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.notify(reminder.getUniqueId(), builder.build());

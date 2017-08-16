@@ -93,7 +93,7 @@ public class PermanentBirthdayService extends Service {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_cake_nv_white);
         }
         builder.setAutoCancel(false);
         builder.setOngoing(true);
@@ -112,7 +112,11 @@ public class PermanentBirthdayService extends Service {
                 }
                 builder.setStyle(new NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()));
             }
-            builder.addAction(R.drawable.ic_clear_white_24dp, getString(R.string.ok), piDismiss);
+            if (Module.isLollipop()) {
+                builder.addAction(R.drawable.ic_clear_white_24dp, getString(R.string.ok), piDismiss);
+            } else {
+                builder.addAction(R.drawable.ic_clear_nv_white, getString(R.string.ok), piDismiss);
+            }
             startForeground(PERM_ID, builder.build());
         } else {
             hidePermanent();

@@ -53,7 +53,7 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cached_white_24dp);
         } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_cached_nv_white);
         }
         mNotifyMgr = NotificationManagerCompat.from(mContext);
         mNotifyMgr.notify(2, builder.build());
@@ -92,6 +92,8 @@ public class SyncNotes extends AsyncTask<Void, Void, Boolean> {
         builder.setContentTitle(mContext.getString(R.string.done));
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_done_white_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_done_nv_white);
         }
         if (Module.isPro()) {
             builder.setContentText(mContext.getString(R.string.app_name_pro));

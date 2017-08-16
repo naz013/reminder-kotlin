@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,34 +24,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_red"
-                    android:drawablePadding="0dp"
-                    android:drawableStart="@drawable/ic_location_pointer_red" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_red" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/purpleCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_purple"
-                    android:drawableStart="@drawable/ic_location_pointer_purple" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_purple" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/greenLightCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_green_light"
-                    android:drawableStart="@drawable/ic_location_pointer_green_light" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_green_light" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/greenCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_green"
-                    android:drawablePadding="0dp"
-                    android:drawableStart="@drawable/ic_location_pointer_green" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_green" />
 
             </RadioGroup>
 
@@ -66,33 +61,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_blue_light"
-                    android:drawableStart="@drawable/ic_location_pointer_blue_light" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_blue_light" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/blueCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_blue"
-                    android:drawablePadding="0dp"
-                    android:drawableStart="@drawable/ic_location_pointer_blue" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_blue" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/yellowCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_yellow"
-                    android:drawableStart="@drawable/ic_location_pointer_yellow" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_yellow" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/orangeCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_orange"
-                    android:drawableStart="@drawable/ic_location_pointer_orange" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_orange" />
 
             </RadioGroup>
 
@@ -108,32 +98,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_cyan"
-                    android:drawableStart="@drawable/ic_location_pointer_cyan" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_cyan" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/pinkCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_pink"
-                    android:drawableStart="@drawable/ic_location_pointer_pink" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_pink" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/tealCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_teal"
-                    android:drawableStart="@drawable/ic_location_pointer_teal" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_teal" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/amberCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_amber"
-                    android:drawableStart="@drawable/ic_location_pointer_amber" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_amber" />
 
             </RadioGroup>
 
@@ -149,32 +135,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_purple_deep"
-                    android:drawableStart="@drawable/ic_location_pointer_purple_deep" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_purple_deep" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/deepOrangeCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_orange_deep"
-                    android:drawableStart="@drawable/ic_location_pointer_orange_deep" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_orange_deep" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/indigoCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_indigo"
-                    android:drawableStart="@drawable/ic_location_pointer_indigo" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_indigo" />
 
                 <com.elementary.tasks.core.views.roboto.RoboRadioButton
                     android:id="@+id/limeCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:drawableLeft="@drawable/ic_location_pointer_lime"
-                    android:drawableStart="@drawable/ic_location_pointer_lime" />
+                    app:drawableLeftCompat="@drawable/ic_location_pointer_lime" />
 
             </RadioGroup>
         </LinearLayout>

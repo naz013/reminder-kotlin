@@ -146,11 +146,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         builder.setContentText(TimeUtil.getAgeFormatted(this, years));
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
-        } else {
-            builder.setSmallIcon(R.mipmap.ic_launcher);
-        }
-        if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        } else {
+            builder.setSmallIcon(R.drawable.ic_cake_nv_white);
         }
         if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled()))) {
