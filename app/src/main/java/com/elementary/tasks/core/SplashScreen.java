@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.migration.MigrationTool;
 import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderService;
-import com.elementary.tasks.core.services.TasksService;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.intro.IntroActivity;
@@ -36,7 +36,7 @@ public class SplashScreen extends AppCompatActivity {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
             if (!Prefs.getInstance(this).getVersion(info.versionName)) {
                 Prefs.getInstance(this).saveVersionBoolean(info.versionName);
-                startService(new Intent(this, TasksService.class));
+                new EnableThread(this).start();
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();

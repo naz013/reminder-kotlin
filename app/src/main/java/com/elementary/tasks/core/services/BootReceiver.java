@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 
 /**
@@ -30,14 +32,18 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         LogUtil.d(TAG, "onReceive: ");
-        context.startService(new Intent(context, TasksService.class));
+        new EnableThread(context).start();
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         Prefs prefs = Prefs.getInstance(context);
         if (prefs.isBirthdayReminderEnabled()) {
             alarmReceiver.enableBirthdayAlarm(context);
         }
         if (prefs.isSbNotificationEnabled()) {
-            context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            if (Module.isO()) {
+                context.startForegroundService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            } else {
+                context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            }
         }
         if (prefs.isContactAutoCheckEnabled()) {
             alarmReceiver.enableBirthdayCheckAlarm(context);
@@ -50,7 +56,11 @@ public class BootReceiver extends BroadcastReceiver {
         }
         if (prefs.isBirthdayPermanentEnabled()) {
             alarmReceiver.enableBirthdayPermanentAlarm(context);
-            context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            if (Module.isO()) {
+                context.startForegroundService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            } else {
+                context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            }
         }
     }
 }
