@@ -24,30 +24,14 @@ import java.util.Date;
 
 public class TreeManager {
 
-    private EventRoot root;
+    private EventLoadMap root;
 
     public TreeManager() {
-        root = new EventRoot();
+        root = new EventLoadMap();
+        addEvents();
     }
 
-    public void addBirthdayEvent(String date, String name) {
-        Date dt = null;
-        try {
-            dt = CheckBirthdaysAsync.DATE_FORMAT.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if (dt != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dt);
-            calendar.set(Calendar.HOUR_OF_DAY, 15);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.YEAR, 2017);
-//            root.addNode(new BirthdayItem(name, date, null, 0, 0, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)));
-        }
-    }
+    private void addEvents() {
 
-    public int getCount() {
-        return root.size();
     }
 }

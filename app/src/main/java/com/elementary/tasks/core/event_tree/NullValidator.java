@@ -16,7 +16,6 @@ package com.elementary.tasks.core.event_tree;
  * limitations under the License.
  */
 
-public interface MoveInterface {
-
-    void moveForvard(long available, long required, int previousIndex, SearchCallback callback);
+public interface NullValidator {
+    void invalidate();
 }
