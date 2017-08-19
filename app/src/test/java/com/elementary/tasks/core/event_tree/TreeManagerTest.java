@@ -36,11 +36,11 @@ public class TreeManagerTest {
     private static final String TAG = "TreeManagerTest";
     private static final int NUM_OF_NODES = 10000;
 
-    private static EventRoot root;
+    private static EventLoadMap root;
 
     @BeforeClass
     public static void setup() {
-        root = new EventRoot();
+        root = new EventLoadMap();
         long time = System.currentTimeMillis();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
