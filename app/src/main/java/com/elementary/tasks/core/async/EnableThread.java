@@ -1,9 +1,6 @@
-package com.elementary.tasks.core.services;
+package com.elementary.tasks.core.async;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.content.Context;
 
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -11,7 +8,7 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.reminder.models.Reminder;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2017 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,21 +23,19 @@ import com.elementary.tasks.reminder.models.Reminder;
  * limitations under the License.
  */
 
-public class TasksService extends Service {
+public class EnableThread extends Thread {
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    private Context context;
+
+    public EnableThread(Context context) {
+        this.context = context;
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void run() {
         for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlFactory.getController(getApplicationContext(), item);
+            EventControl control = EventControlFactory.getController(context, item);
             control.start();
         }
-        stopSelf();
-        return START_NOT_STICKY;
     }
 }
