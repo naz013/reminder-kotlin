@@ -136,12 +136,14 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void removeAsk() {
-        int lastIndex = 1;
-        Reply reply = mData.get(lastIndex);
-        if (reply != null && reply.getViewType() == Reply.ASK) {
-            mData.remove(lastIndex);
-            notifyItemRemoved(lastIndex);
-            notifyItemRangeChanged(0, mData.size());
+        for (int i = 1; i < mData.size(); i++) {
+            Reply reply = mData.get(i);
+            if (reply != null && reply.getViewType() == Reply.ASK) {
+                mData.remove(i);
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(0, mData.size());
+                break;
+            }
         }
     }
 

@@ -5,4 +5,9 @@
         android:id="@+id/action_locale"
         android:title="@string/language" />
 
+    <item
+        android:id="@+id/action_tell"
+        android:checkable="true"
+        android:title="@string/tell_about_event" />
+
 </menu>

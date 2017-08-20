@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -202,6 +203,29 @@ public final class TimeUtil {
                 return FULL_DATE_TIME_12.format(calendar.getTime());
             }
         }
+    }
+
+    @Nullable
+    public static String getVoiceDateTime(@Nullable String date, boolean is24, int locale) {
+        if (TextUtils.isEmpty(date)) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getDateTimeFromGmt(date));
+        Locale loc = new Locale(Language.getTextLanguage(locale));
+        DateFormat format = new SimpleDateFormat("EEEE, MMMM dd yyyy K:mm a", loc);
+        if (locale == 0) {
+            if (is24) {
+                format = new SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc);
+            }
+        } else {
+            if (is24) {
+                format = new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc);
+            } else {
+                format = new SimpleDateFormat("EEEE, dd MMMM yyyy K:mm a", loc);
+            }
+        }
+        return format.format(calendar.getTime());
     }
 
     @NonNull

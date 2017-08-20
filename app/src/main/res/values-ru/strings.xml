@@ -612,5 +612,6 @@
     <string name="acc_stop">Стоп</string>
     <string name="acc_type_by_voice">Введите текст голосом</string>
     <string name="did_you_say_something">Вы что-то сказали?</string>
+    <string name="reminder_created_on">Напоминание создано на</string>
 
 </resources>
