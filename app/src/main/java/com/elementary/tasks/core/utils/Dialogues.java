@@ -2,9 +2,14 @@ package com.elementary.tasks.core.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.PopupMenu;
+import android.view.View;
 
 import com.elementary.tasks.core.interfaces.LCAMListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
 
@@ -26,7 +31,7 @@ import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
 
 public class Dialogues {
 
-    public static AlertDialog.Builder getDialog(Context context) {
+    public static AlertDialog.Builder getDialog(@NonNull Context context) {
         if (Prefs.getInstance(context).getAppTheme() == THEME_AMOLED) {
             return new AlertDialog.Builder(context, ThemeUtil.getInstance(context).getDialogStyle());
         } else {
@@ -34,7 +39,7 @@ public class Dialogues {
         }
     }
 
-    public static void showLCAM(Context context, @Nullable LCAMListener listener, String... actions) {
+    public static void showLCAM(@NonNull Context context, @Nullable LCAMListener listener, @NonNull String... actions) {
         AlertDialog.Builder builder = getDialog(context);
         builder.setItems(actions, (dialog, item) -> {
             dialog.dismiss();
@@ -42,5 +47,20 @@ public class Dialogues {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static void showPopup(@NonNull @NotNull Context context, @NonNull View anchor,
+                                 @Nullable LCAMListener listener, @NonNull String... actions) {
+        PopupMenu popupMenu = new PopupMenu(context, anchor);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (listener != null) {
+                listener.onAction(item.getOrder());
+            }
+            return true;
+        });
+        for (int i = 0; i < actions.length; i++) {
+            popupMenu.getMenu().add(1, i + 1000, i, actions[i]);
+        }
+        popupMenu.show();
     }
 }

@@ -64,8 +64,7 @@
                         android:layout_height="match_parent"
                         android:background="@null"
                         app:tb_icon="@drawable/ic_arrow_back_black_24dp"
-                        app:tb_icon_light="@drawable/ic_arrow_back_white_24dp"
-                        app:tb_message="@string/action_settings" />
+                        app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
 
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
