@@ -26,6 +26,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
@@ -77,7 +78,7 @@ import java.util.List;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
-public class CreateReminderActivity extends ThemedActivity implements ReminderInterface {
+public class CreateReminderActivity extends ThemedActivity implements ReminderInterface, View.OnLongClickListener {
 
     private static final int DATE = 0;
     private static final int TIMER = 1;
@@ -201,12 +202,22 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         isExportToTasks = Google.getInstance(this) != null;
         initActionBar();
         initNavigation();
+        initLongClick();
         editReminder();
+    }
+
+    private void initLongClick() {
+        binding.customButton.setOnLongClickListener(this);
+        binding.groupButton.setOnLongClickListener(this);
+        binding.voiceButton.setOnLongClickListener(this);
+        binding.exclusionButton.setOnLongClickListener(this);
+        binding.melodyButton.setOnLongClickListener(this);
+        binding.repeatButton.setOnLongClickListener(this);
     }
 
     @Override
     protected String getStats() {
-        return "Note " + (mReminder != null ? "edit" : "create");
+        return "Reminder " + (mReminder != null ? "edit" : "create");
     }
 
     private void loadReminder() {
@@ -882,6 +893,31 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (fragment.onBackPressed()) {
             closeScreen();
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        switch (view.getId()) {
+            case R.id.customButton:
+                Toast.makeText(this, getString(R.string.acc_customize_reminder), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.groupButton:
+                Toast.makeText(this, getString(R.string.change_group), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.voiceButton:
+                Toast.makeText(this, getString(R.string.acc_type_by_voice), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.exclusionButton:
+                Toast.makeText(this, getString(R.string.acc_customize_exclusions), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.melodyButton:
+                Toast.makeText(this, getString(R.string.acc_select_melody), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.repeatButton:
+                Toast.makeText(this, getString(R.string.repeat_limit), Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 
     private static class SpinnerItem {
