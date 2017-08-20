@@ -83,7 +83,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private CardView placesListCard;
     private RoboEditText cardSearch;
     private ThemedImageButton zoomOut;
-    private ThemedImageButton places;
     private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
     private RecyclerView placesList;
@@ -402,13 +401,12 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         zoomOut = binding.mapZoom;
         ImageButton layers = binding.layers;
         markers = binding.markers;
-        places = binding.places;
 
         cardClear.setOnClickListener(this);
         zoomOut.setOnClickListener(this);
         layers.setOnClickListener(this);
         markers.setOnClickListener(this);
-        places.setOnClickListener(this);
+        binding.places.setOnClickListener(this);
 
         binding.typeNormal.setOnClickListener(this);
         binding.typeSatellite.setOnClickListener(this);
