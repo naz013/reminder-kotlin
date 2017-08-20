@@ -612,5 +612,9 @@
     <string name="acc_stop">Stop</string>
     <string name="acc_type_by_voice">Tastați textul prin voce</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Spuneți despre evenimente</string>
+    <string name="reminder_created_on">Memento a fost creată pe</string>
+    <string name="reminder_channel">Canal de rememorare</string>
+    <string name="info_channel">Canal de informații</string>
 
 </resources>

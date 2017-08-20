@@ -613,5 +613,8 @@
     <string name="acc_stop">зупинити</string>
     <string name="acc_type_by_voice">Введіть текст за допомогою голосу</string>
     <string name="reminder_created_on">Нагадування створено на </string>
+    <string name="tell_about_event">Проговорювати подію</string>
+    <string name="reminder_channel">Канал нагадування</string>
+    <string name="info_channel">Інформаційний канал</string>
 
 </resources>

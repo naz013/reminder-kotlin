@@ -612,5 +612,9 @@
     <string name="acc_stop">Stop</string>
     <string name="acc_type_by_voice">Zadejte text hlasem</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Řekněte o událostech</string>
+    <string name="reminder_created_on">Připomenutí bylo vytvořeno</string>
+    <string name="reminder_channel">Připomenutí kanálu</string>
+    <string name="info_channel">Informační kanál</string>
 
 </resources>

@@ -611,5 +611,9 @@
     <string name="acc_stop">停止</string>
     <string name="acc_type_by_voice">用语音键入文字</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">告诉事件</string>
+    <string name="reminder_created_on">提醒创建于</string>
+    <string name="reminder_channel">提醒频道</string>
+    <string name="info_channel">信息频道</string>
 
 </resources>

@@ -612,5 +612,9 @@
     <string name="acc_stop">Zatrzymać</string>
     <string name="acc_type_by_voice">Wpisz tekst głosem</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Powiedz o wydarzeniach</string>
+    <string name="reminder_created_on">Przypomnienie zostało utworzone</string>
+    <string name="reminder_channel">Przypomnienie kanału</string>
+    <string name="info_channel">Kanał informacyjny</string>
 
 </resources>

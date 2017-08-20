@@ -613,5 +613,9 @@
     <string name="acc_stop">やめる</string>
     <string name="acc_type_by_voice">テキストを音声で入力する</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">イベントについて教えてください</string>
+    <string name="reminder_created_on">作成されたリマインダー</string>
+    <string name="reminder_channel">リマインダーチャネル</string>
+    <string name="info_channel">情報チャネル</string>
 
 </resources>
