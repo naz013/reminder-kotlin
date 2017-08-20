@@ -87,7 +87,7 @@
                             android:layout_marginLeft="8dp"
                             android:layout_marginStart="8dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/voice_control"
+                            android:contentDescription="@string/acc_type_by_voice"
                             app:srcCompat="@drawable/ic_microphone_white" />
 
                         <ImageButton

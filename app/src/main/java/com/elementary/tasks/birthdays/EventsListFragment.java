@@ -127,7 +127,11 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         if (object instanceof BirthdayItem) {
             editBirthday((BirthdayItem) object);
         } else if (object instanceof Reminder) {
-            showReminder((Reminder) object);
+            if (view.getId() == R.id.button_more) {
+                showActionDialog((Reminder) object, view);
+            } else {
+                showReminder((Reminder) object);
+            }
         }
     }
 
@@ -145,10 +149,10 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void showActionDialog(Reminder reminder) {
+    private void showActionDialog(Reminder reminder, View view) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.move_to_trash)};
-        Dialogues.showLCAM(getContext(), item -> {
+        Dialogues.showPopup(getContext(), view, item -> {
             switch (item) {
                 case 0:
                     showReminder(reminder);
@@ -170,8 +174,6 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         Object object = mDataList.get(position).getObject();
         if (object instanceof BirthdayItem) {
             showBirthdayLcam((BirthdayItem) object);
-        } else if (object instanceof Reminder) {
-            showActionDialog((Reminder) object);
         }
     }
 
