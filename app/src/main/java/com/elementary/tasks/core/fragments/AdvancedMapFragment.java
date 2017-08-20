@@ -69,6 +69,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
 
     private static final String TAG = "AdvancedMapFragment";
     private static final String SHOWCASE = "map_showcase";
+    private static final int REQ_LOC = 1245;
 
     private GoogleMap mMap;
     private CardView layersContainer;
@@ -77,7 +78,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private AddressAutoCompleteView cardSearch;
     private ThemedImageButton zoomOut;
     private ThemedImageButton backButton;
-    private ThemedImageButton places;
     private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
     private RecyclerView placesList;
@@ -334,10 +334,19 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
 
     @SuppressWarnings("MissingPermission")
     public void moveToMyLocation() {
+        if (!Permissions.checkPermission(getContext(), Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(getContext(), REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION);
+            return;
+        }
         if (mMap != null) {
             LocationManager locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+            Location location = null;
+            try {
+                location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+            } catch (IllegalArgumentException e) {
+                LogUtil.e(TAG, "moveToMyLocation: ", e);
+            }
             if (location != null) {
                 LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
                 animate(pos);
@@ -539,7 +548,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         ImageButton layers = binding.layers;
         ImageButton myLocation = binding.myLocation;
         markers = binding.markers;
-        places = binding.places;
         backButton = binding.backButton;
 
         cardClear.setOnClickListener(this);
@@ -547,7 +555,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         layers.setOnClickListener(this);
         myLocation.setOnClickListener(this);
         markers.setOnClickListener(this);
-        places.setOnClickListener(this);
+        binding.places.setOnClickListener(this);
         backButton.setOnClickListener(this);
 
         binding.typeNormal.setOnClickListener(this);
@@ -758,7 +766,15 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) {
+            return;
+        }
         switch (requestCode) {
+            case REQ_LOC:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    moveToMyLocation();
+                }
+                break;
             case 205:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setMyLocation();
