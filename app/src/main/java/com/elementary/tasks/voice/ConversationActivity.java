@@ -13,6 +13,7 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 
@@ -520,10 +521,12 @@ public class ConversationActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation);
+        setSupportActionBar(binding.toolbar);
         recognize = new Recognize(this);
         initList();
         binding.recordingView.setOnClickListener(view -> micClick());
         binding.settingsButton.setOnClickListener(v -> showSettingsPopup());
+        binding.backButton.setOnClickListener(view -> onBackPressed());
         checkTts();
     }
 
