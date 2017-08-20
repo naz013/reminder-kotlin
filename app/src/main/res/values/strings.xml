@@ -370,6 +370,7 @@
     <string name="trash_is_empty">Trash is empty</string>
     <string name="reminder_is_outdated">Reminder is outdated, edit it first</string>
     <string name="reminder_created">Reminder created</string>
+    <string name="reminder_created_on">Reminder created on</string>
     <string name="everyday">Everyday</string>
     <string name="skype_call">Skype call</string>
     <string name="skype_chat">Skype chat</string>
@@ -617,5 +618,6 @@
     <string name="default_reminder_notifications">Default reminder notifications</string>
     <string name="info_channel">Info channel</string>
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
+    <string name="tell_about_event">Tell about event</string>
 
 </resources>

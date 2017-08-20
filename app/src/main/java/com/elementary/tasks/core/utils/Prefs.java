@@ -55,6 +55,14 @@ public final class Prefs extends SharedPrefs {
         return instance;
     }
 
+    public boolean isTellAboutEvent() {
+        return getBoolean(TELL_ABOUT_EVENT);
+    }
+
+    public void setTellAboutEvent(boolean value) {
+        putBoolean(TELL_ABOUT_EVENT, value);
+    }
+
     public boolean isMigrated() {
         return getBoolean(MIGRATION_COMPLETE);
     }

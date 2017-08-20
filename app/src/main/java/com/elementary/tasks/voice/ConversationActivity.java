@@ -13,7 +13,6 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 
@@ -214,6 +213,9 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void performResult(Model model, String s) {
+        if (mAskAction != null) {
+            mAdapter.removeAsk();
+        }
         mAdapter.addReply(new Reply(Reply.REPLY, s.toLowerCase()));
         LogUtil.d(TAG, "performResult: " + model);
         ActionType actionType = model.getType();
@@ -395,10 +397,17 @@ public class ConversationActivity extends ThemedActivity {
 
     private void reminderAction(Model model) {
         stopView();
-        addResponse(getLocalized(R.string.reminder_created));
         Reminder reminder = recognize.createReminder(model);
         addObjectResponse(new Reply(Reply.REMINDER, reminder));
-        new Handler().postDelayed(() -> askReminderAction(reminder), 1000);
+        if (getPrefs().isTellAboutEvent()) {
+            addResponse(getLocalized(R.string.reminder_created_on) + " " +
+                    TimeUtil.getVoiceDateTime(reminder.getEventTime(), getPrefs().is24HourFormatEnabled(), getPrefs().getVoiceLocale()) +
+            ". " + getLocalized(R.string.would_you_like_to_save_it));
+            new Handler().postDelayed(() -> askReminderAction(reminder, false), 8000);
+        } else {
+            addResponse(getLocalized(R.string.reminder_created));
+            new Handler().postDelayed(() -> askReminderAction(reminder, true), 1000);
+        }
     }
 
     private void askGroupAction(GroupItem groupItem) {
@@ -421,8 +430,8 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askReminderAction(Reminder reminder) {
-        addResponse(getLocalized(R.string.would_you_like_to_save_it));
+    private void askReminderAction(Reminder reminder, boolean ask) {
+        if (ask) addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
@@ -533,10 +542,14 @@ public class ConversationActivity extends ThemedActivity {
     private void showSettingsPopup() {
         PopupMenu popupMenu = new PopupMenu(this, binding.settingsButton);
         popupMenu.inflate(R.menu.activity_conversation);
+        popupMenu.getMenu().getItem(1).setChecked(getPrefs().isTellAboutEvent());
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_locale:
                     showLanguageDialog();
+                    return true;
+                case R.id.action_tell:
+                    getPrefs().setTellAboutEvent(!getPrefs().isTellAboutEvent());
                     return true;
             }
             return false;

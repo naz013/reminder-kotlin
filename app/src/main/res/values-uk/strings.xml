@@ -612,5 +612,6 @@
     <string name="acc_select_number_from_contacts">Виберіть номер зі списку контактів</string>
     <string name="acc_stop">зупинити</string>
     <string name="acc_type_by_voice">Введіть текст за допомогою голосу</string>
+    <string name="reminder_created_on">Нагадування створено на </string>
 
 </resources>

@@ -111,6 +111,7 @@ class PrefsConstants {
     static final String REMINDER_TYPE = "notification_type";
     static final String DROPBOX_UID = "dropbox_uid";
     static final String DROPBOX_TOKEN = "dropbox_token";
+    static final String TELL_ABOUT_EVENT = "tell_about_event";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String LAST_USED_REMINDER = "last_reminder";
