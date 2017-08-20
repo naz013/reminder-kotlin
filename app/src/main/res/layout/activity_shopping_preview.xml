@@ -26,6 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_scrollFlags="enterAlways"
+                    app:navigationIcon="@drawable/ic_arrow_back_white_24dp"
                     app:popupTheme="@style/AppTheme.PopupOverlay" />
 
                 <LinearLayout
