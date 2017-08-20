@@ -44,17 +44,13 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
             binding.itemCheck.setVisibility(View.GONE);
         }
         if (mEventListener != null) {
-            binding.itemCard.setOnLongClickListener(view -> {
-                mEventListener.onItemLongClicked(getAdapterPosition(), v);
-                return true;
-            });
             binding.setClick(v1 -> {
                 switch (v1.getId()) {
-                    case R.id.itemCard:
-                        mEventListener.onItemClicked(getAdapterPosition(), binding.itemCheck);
-                        break;
                     case R.id.itemCheck:
                         mEventListener.onItemSwitched(getAdapterPosition(), v1);
+                        break;
+                    default:
+                        mEventListener.onItemClicked(getAdapterPosition(), v1);
                         break;
                 }
             });

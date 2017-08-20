@@ -113,13 +113,16 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
         @Override
         public void onItemClicked(int position, View view) {
-            Reminder reminder = mAdapter.getItem(position);
-            previewReminder(view, reminder.getUuId(), reminder.getType());
+            if (view.getId() == R.id.button_more) {
+                showActionDialog(position, view);
+            } else {
+                Reminder reminder = mAdapter.getItem(position);
+                previewReminder(view, reminder.getUuId(), reminder.getType());
+            }
         }
 
         @Override
         public void onItemLongClicked(int position, View view) {
-            showActionDialog(position, view);
         }
     };
     private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
@@ -217,7 +220,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     private void showActionDialog(int position, View view) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.change_group), getString(R.string.move_to_trash)};
-        Dialogues.showLCAM(getContext(), item -> {
+        Dialogues.showPopup(getContext(), view, item -> {
             Reminder item1 = mAdapter.getItem(position);
             switch (item) {
                 case 0:

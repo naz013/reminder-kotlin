@@ -102,13 +102,16 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
         @Override
         public void onItemClicked(int position, View view) {
-            Reminder reminder = mAdapter.getItem(position);
-            editReminder(reminder.getUuId());
+            if (view.getId() == R.id.button_more) {
+                showActionDialog(position, view);
+            } else {
+                Reminder reminder = mAdapter.getItem(position);
+                editReminder(reminder.getUuId());
+            }
         }
 
         @Override
         public void onItemLongClicked(int position, View view) {
-            showActionDialog(position);
         }
     };
     private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
@@ -204,9 +207,9 @@ public class ArchiveFragment extends BaseNavigationFragment {
         reloadView();
     }
 
-    private void showActionDialog(int position) {
+    private void showActionDialog(int position, View view) {
         final String[] items = {getString(R.string.edit), getString(R.string.delete)};
-        Dialogues.showLCAM(getContext(), item -> {
+        Dialogues.showPopup(getContext(), view, item -> {
             Reminder item1 = mAdapter.getItem(position);
             if (item == 0) {
                 editReminder(item1.getUuId());
