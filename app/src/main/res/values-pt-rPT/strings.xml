@@ -612,5 +612,9 @@
     <string name="acc_stop">Pare</string>
     <string name="acc_type_by_voice">Digite texto por voz</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Conte sobre eventos</string>
+    <string name="reminder_created_on">Lembrete criado em</string>
+    <string name="reminder_channel">Canal de lembrete</string>
+    <string name="info_channel">Canal de informações</string>
 
 </resources>

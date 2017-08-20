@@ -611,5 +611,9 @@
     <string name="acc_stop">Arrêtez</string>
     <string name="acc_type_by_voice">Tapez le texte par la voix</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Renseignez-vous sur les événements</string>
+    <string name="reminder_created_on">Rappel créé le</string>
+    <string name="reminder_channel">Chaîne de rappel</string>
+    <string name="info_channel">Canal d\'information</string>
 
 </resources>

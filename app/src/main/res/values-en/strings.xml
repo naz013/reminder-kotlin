@@ -613,5 +613,8 @@
     <string name="acc_type_by_voice">Type text by voice</string>
     <string name="did_you_say_something">Did you say something?</string>
     <string name="reminder_created_on">Reminder created on</string>
+    <string name="tell_about_event">Tell about event</string>
+    <string name="reminder_channel">Reminder channel</string>
+    <string name="info_channel">Info channel</string>
 
 </resources>

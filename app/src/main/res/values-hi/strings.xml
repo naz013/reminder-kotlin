@@ -612,5 +612,9 @@
     <string name="acc_stop">रुकें</string>
     <string name="acc_type_by_voice">आवाज़ द्वारा पाठ टाइप करें</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">घटनाओं के बारे में बताएं</string>
+    <string name="reminder_created_on">अनुस्मारक पर बनाया गया</string>
+    <string name="reminder_channel">अनुस्मारक चैनल</string>
+    <string name="info_channel">जानकारी चैनल</string>
 
 </resources>

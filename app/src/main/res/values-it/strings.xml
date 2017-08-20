@@ -612,5 +612,9 @@
     <string name="acc_stop">Stop</string>
     <string name="acc_type_by_voice">Digitare il testo in base alla voce</string>
     <string name="did_you_say_something">Did you say something?</string>
+    <string name="tell_about_event">Racconta di eventi</string>
+    <string name="reminder_created_on">Ricordo creato</string>
+    <string name="reminder_channel">Canale promemoria</string>
+    <string name="info_channel">Canale Info</string>
 
 </resources>
