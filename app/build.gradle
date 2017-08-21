@@ -18,8 +18,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 178
-        versionName '6.2'
+        versionCode 179
+        versionName '6.2.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -60,7 +60,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 150
+            versionCode 151
         }
     }
     packagingOptions {
@@ -107,6 +107,8 @@ repositories {
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    wearApp project(':wear')
+
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
