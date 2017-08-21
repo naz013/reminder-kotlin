@@ -616,5 +616,6 @@
     <string name="reminder_created_on">अनुस्मारक पर बनाया गया</string>
     <string name="reminder_channel">अनुस्मारक चैनल</string>
     <string name="info_channel">जानकारी चैनल</string>
+    <string name="add_note">नोट जोड़े</string>
 
 </resources>

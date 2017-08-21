@@ -616,5 +616,6 @@
     <string name="reminder_created_on">Üzerinde hatırlatıcı oluşturuldu</string>
     <string name="reminder_channel">Hatırlatma kanalı</string>
     <string name="info_channel">Bilgi kanalı</string>
+    <string name="add_note">Not ekle</string>
 
 </resources>

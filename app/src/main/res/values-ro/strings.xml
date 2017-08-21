@@ -616,5 +616,6 @@
     <string name="reminder_created_on">Memento a fost creată pe</string>
     <string name="reminder_channel">Canal de rememorare</string>
     <string name="info_channel">Canal de informații</string>
+    <string name="add_note">Adauga notita</string>
 
 </resources>
