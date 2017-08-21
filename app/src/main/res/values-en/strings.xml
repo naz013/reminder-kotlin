@@ -616,5 +616,6 @@
     <string name="tell_about_event">Tell about event</string>
     <string name="reminder_channel">Reminder channel</string>
     <string name="info_channel">Info channel</string>
+    <string name="add_note">Add note</string>
 
 </resources>

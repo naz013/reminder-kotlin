@@ -616,5 +616,6 @@
     <string name="tell_about_event">Проговаривать события</string>
     <string name="reminder_channel">Канал напоминания</string>
     <string name="info_channel">Информационный канал</string>
+    <string name="add_note">Добавить заметку</string>
 
 </resources>

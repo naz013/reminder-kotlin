@@ -615,5 +615,6 @@
     <string name="reminder_created_on">Rappel créé le</string>
     <string name="reminder_channel">Chaîne de rappel</string>
     <string name="info_channel">Canal d\'information</string>
+    <string name="add_note">Ajouter une note</string>
 
 </resources>

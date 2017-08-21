@@ -616,5 +616,6 @@
     <string name="reminder_created_on">Lembrete criado em</string>
     <string name="reminder_channel">Canal de lembrete</string>
     <string name="info_channel">Canal de informações</string>
+    <string name="add_note">Adicionar nota</string>
 
 </resources>

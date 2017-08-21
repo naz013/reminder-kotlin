@@ -616,5 +616,6 @@
     <string name="reminder_created_on">Připomenutí bylo vytvořeno</string>
     <string name="reminder_channel">Připomenutí kanálu</string>
     <string name="info_channel">Informační kanál</string>
+    <string name="add_note">Přidat poznámku</string>
 
 </resources>
