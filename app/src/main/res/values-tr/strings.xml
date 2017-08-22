@@ -617,5 +617,6 @@
     <string name="reminder_channel">Hatırlatma kanalı</string>
     <string name="info_channel">Bilgi kanalı</string>
     <string name="add_note">Not ekle</string>
+    <string name="yearly">Yıllık</string>
 
 </resources>

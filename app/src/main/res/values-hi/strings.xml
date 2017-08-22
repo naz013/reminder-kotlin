@@ -617,5 +617,6 @@
     <string name="reminder_channel">अनुस्मारक चैनल</string>
     <string name="info_channel">जानकारी चैनल</string>
     <string name="add_note">नोट जोड़े</string>
+    <string name="yearly">हर साल</string>
 
 </resources>

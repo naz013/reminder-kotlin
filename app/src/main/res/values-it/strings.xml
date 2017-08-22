@@ -617,5 +617,6 @@
     <string name="reminder_channel">Canale promemoria</string>
     <string name="info_channel">Canale Info</string>
     <string name="add_note">Aggiungi nota</string>
+    <string name="yearly">Annualmente</string>
 
 </resources>
