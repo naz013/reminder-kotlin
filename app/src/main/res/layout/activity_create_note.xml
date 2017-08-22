@@ -49,7 +49,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <EditText
+                    <android.support.text.emoji.widget.EmojiAppCompatEditText
                         android:id="@+id/task_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
