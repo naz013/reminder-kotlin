@@ -1364,6 +1364,8 @@ public final class ThemeUtil {
             return R.drawable.ic_seventeen;
         } else if (Reminder.isBase(type, Reminder.BY_TIME)) {
             return R.drawable.ic_stopwatch;
+        } else if (Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR)) {
+            return R.drawable.ic_balloons;
         } else {
             return R.drawable.ic_bell_illustration;
         }

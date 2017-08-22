@@ -48,6 +48,8 @@ public final class EventControlFactory {
             control = new LocationEvent(reminder, context);
         } else if (Reminder.isSame(reminder.getType(), Reminder.BY_TIME)) {
             control = new TimerEvent(reminder, context);
+        } else if (Reminder.isBase(reminder.getType(), Reminder.BY_DAY_OF_YEAR)) {
+            control = new YearlyEvent(reminder, context);
         } else {
             control = new DateEvent(reminder, context);
         }

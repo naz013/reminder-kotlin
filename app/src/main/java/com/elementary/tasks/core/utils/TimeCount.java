@@ -313,4 +313,21 @@ public final class TimeCount {
         }
         return new String[]{date, time};
     }
+
+    public long getNextYearDayTime(@NonNull Reminder reminder) {
+        int dayOfMonth = reminder.getDayOfMonth();
+        int monthOfYear = reminder.getMonthOfYear();
+        long fromTime = System.currentTimeMillis();
+        if (reminder.getEventTime() != null) {
+            fromTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+        }
+        Calendar cc = Calendar.getInstance();
+        cc.setTimeInMillis(fromTime);
+        cc.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        cc.set(Calendar.MONTH, monthOfYear);
+        while (cc.getTimeInMillis() < System.currentTimeMillis()) {
+            cc.set(Calendar.YEAR, cc.get(Calendar.YEAR) + 1);
+        }
+        return cc.getTimeInMillis();
+    }
 }

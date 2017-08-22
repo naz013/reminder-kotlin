@@ -45,7 +45,7 @@ public class ReminderApp extends MultiDexApplication {
     private static final String NAME_DB = "reminder_db";
     private static final String NAME_DB_PRO = "reminder_db_pro";
 
-    private static final long DB_VERSION = 2;
+    private static final long DB_VERSION = 3;
 
     private Tracker mTracker;
 
@@ -87,11 +87,17 @@ public class ReminderApp extends MultiDexApplication {
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
             LogUtil.d(TAG, "migrate: " + oldVersion + ", " + newVersion + ", " + realm.getSchema());
+            RealmSchema schema = realm.getSchema();
             if (oldVersion == 1) {
-                RealmSchema schema = realm.getSchema();
                 RealmObjectSchema model = schema.get("RealmReminder");
                 model.addField("duration", long.class)
                         .transform(obj -> obj.setLong("duration", 0));
+                model.addField("monthOfYear", int.class)
+                        .transform(obj -> obj.setLong("monthOfYear", 0));
+            } else if (oldVersion == 2) {
+                RealmObjectSchema model = schema.get("RealmReminder");
+                model.addField("monthOfYear", int.class)
+                        .transform(obj -> obj.setLong("monthOfYear", 0));
             }
         }
     }
