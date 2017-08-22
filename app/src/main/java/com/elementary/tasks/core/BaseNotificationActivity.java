@@ -99,6 +99,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     protected TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(int status) {
+            LogUtil.d(TAG, "onInit: ");
             if (status == TextToSpeech.SUCCESS) {
                 int result = tts.setLanguage(getTtsLocale());
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -668,6 +669,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected Locale getTtsLocale() {
+        LogUtil.d(TAG, "getTtsLocale: ");
         return new Language().getLocale(this, false);
     }
 
@@ -716,6 +718,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void playDefaultMelody() {
+        LogUtil.d(TAG, "playDefaultMelody: ");
         try {
             AssetFileDescriptor afd = getAssets().openFd("sounds/beep.mp3");
             mSound.playAlarm(afd, false);
