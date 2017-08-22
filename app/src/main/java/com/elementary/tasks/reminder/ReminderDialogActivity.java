@@ -478,6 +478,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (!isGlobal()) {
             isTTS = mReminder.isNotifyByVoice();
         }
+        LogUtil.d(TAG, "isTtsEnabled: " + isTTS);
         return isTTS;
     }
 

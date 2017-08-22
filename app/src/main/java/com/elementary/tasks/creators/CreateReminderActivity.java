@@ -116,7 +116,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean hasAutoExtra;
     private boolean isExportToTasks;
     private int repeatLimit = -1;
-    private int volume;
+    private int volume = 25;
     private String groupId;
     private String melodyPath;
     private String autoLabel;
@@ -577,7 +577,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
             volume = b.seekBar.getProgress();
             String str = String.format(getString(R.string.selected_loudness_x_for_reminder), String.valueOf(volume));
-            showSnackbar(str, getString(R.string.cancel), v -> volume = -1);
+            showSnackbar(str, getString(R.string.cancel), v -> volume = 25);
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
