@@ -14,7 +14,6 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding;
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding;
 import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment;
 
@@ -197,35 +196,19 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showRadiusPickerDialog(){
-        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
-        builder.setTitle(R.string.radius);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
-        b.seekBar.setMax(5000);
-        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(progress)));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         int radius = getPrefs().getRadius();
-        b.seekBar.setProgress(radius);
-        b.titleView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(radius)));
-        builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            getPrefs().setRadius(b.seekBar.getProgress());
-            showRadius();
+        Dialogues.showRadiusDialog(getContext(), radius, new Dialogues.OnValueSelectedListener<Integer>() {
+            @Override
+            public void onSelected(Integer integer) {
+                getPrefs().setRadius(integer);
+                showRadius();
+            }
+
+            @Override
+            public String getTitle(Integer integer) {
+                return String.format(Locale.getDefault(), getString(R.string.radius_x_meters),
+                        String.valueOf(integer));
+            }
         });
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
-        builder.create().show();
     }
 }

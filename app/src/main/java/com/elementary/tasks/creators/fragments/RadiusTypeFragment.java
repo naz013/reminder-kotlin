@@ -1,15 +1,9 @@
 package com.elementary.tasks.creators.fragments;
 
-import android.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
 import java.util.Locale;
 
@@ -34,42 +28,25 @@ abstract class RadiusTypeFragment extends TypeFragment {
     protected int radius = Prefs.getInstance(getContext()).getRadius();
 
     protected final void showRadiusPickerDialog() {
-        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
-        builder.setTitle(R.string.radius);
-        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
-        b.seekBar.setMax(5001);
-        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        Dialogues.showRadiusDialog(getContext(), radius, new Dialogues.OnValueSelectedListener<Integer>() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                setTitle(b.titleView, progress);
+            public void onSelected(Integer integer) {
+                radius = integer - 1;
+                recreateMarker();
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public String getTitle(Integer integer) {
+                return getTitleString(integer);
             }
         });
-        b.seekBar.setProgress(radius);
-        setTitle(b.titleView, radius + 1);
-        builder.setView(b.getRoot());
-        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            radius = b.seekBar.getProgress() - 1;
-            recreateMarker();
-        });
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
-        builder.create().show();
     }
 
-    private void setTitle(TextView textView, int progress) {
+    private String getTitleString(int progress) {
         if (progress == 0) {
-            textView.setText(getString(R.string.default_string));
+            return getString(R.string.default_string);
         } else {
-            textView.setText(String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(progress - 1)));
+            return String.format(Locale.getDefault(), getString(R.string.radius_x_meters), String.valueOf(progress - 1));
         }
     }
 
