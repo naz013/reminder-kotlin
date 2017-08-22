@@ -349,12 +349,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         spinner = binding.navSpinner;
         ArrayList<SpinnerItem> navSpinner = new ArrayList<>();
         if (getThemeUtil().isDark()) {
-            navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar_white));
+            navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines_white));
             navSpinner.add(new SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white));
             navSpinner.add(new SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white));
             navSpinner.add(new SpinnerItem(getString(R.string.location), R.drawable.ic_map_white));
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white));
-            navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application_white));
+            navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software_white));
             navSpinner.add(new SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar_white));
             navSpinner.add(new SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white));
             navSpinner.add(new SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp));
@@ -363,12 +363,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             if (Module.isPro())
                 navSpinner.add(new SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker_white));
         } else {
-            navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_calendar));
+            navSpinner.add(new SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines));
             navSpinner.add(new SpinnerItem(getString(R.string.timer), R.drawable.ic_timer));
             navSpinner.add(new SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm));
             navSpinner.add(new SpinnerItem(getString(R.string.location), R.drawable.ic_map));
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype));
-            navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application));
+            navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software));
             navSpinner.add(new SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar));
             navSpinner.add(new SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_black));
             navSpinner.add(new SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_black_24dp));
