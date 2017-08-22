@@ -163,6 +163,8 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
             textView.setText(String.format(textView.getContext().getString(R.string.xM), String.valueOf(1)));
         } else if (Reminder.isBase(model.getType(), Reminder.BY_WEEK)) {
             textView.setText(ReminderUtils.getRepeatString(textView.getContext(), model.getWeekdays()));
+        } else if (Reminder.isBase(model.getType(), Reminder.BY_DAY_OF_YEAR)) {
+            textView.setText(textView.getContext().getString(R.string.yearly));
         } else {
             textView.setText(IntervalUtil.getInterval(textView.getContext(), model.getRepeatInterval()));
         }

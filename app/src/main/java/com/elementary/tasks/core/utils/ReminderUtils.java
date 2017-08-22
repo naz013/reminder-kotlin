@@ -319,6 +319,8 @@ public final class ReminderUtils {
             res = context.getString(R.string.e_mail);
         } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
             res = context.getString(R.string.shopping_list);
+        } else if (Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR)) {
+            res = context.getString(R.string.yearly);
         } else {
             res = context.getString(R.string.by_date);
         }

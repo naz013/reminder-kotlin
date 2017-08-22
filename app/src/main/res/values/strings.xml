@@ -620,5 +620,6 @@
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
     <string name="tell_about_event">Tell about event</string>
     <string name="add_note">Add note</string>
+    <string name="yearly">Yearly</string>
 
 </resources>

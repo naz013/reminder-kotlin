@@ -61,6 +61,9 @@ public class Reminder implements RecyclerInterface {
     public static final int BY_PLACES = 80;
     public static final int BY_PLACES_CALL = 81;
     public static final int BY_PLACES_SMS = 82;
+    public static final int BY_DAY_OF_YEAR = 90;
+    public static final int BY_DAY_OF_YEAR_CALL = 91;
+    public static final int BY_DAY_OF_YEAR_SMS = 92;
 
     @SerializedName("summary")
     private String summary;
@@ -112,6 +115,8 @@ public class Reminder implements RecyclerInterface {
     private int volume;
     @SerializedName("dayOfMonth")
     private int dayOfMonth;
+    @SerializedName("monthOfYear")
+    private int monthOfYear;
     @SerializedName("repeatInterval")
     private long repeatInterval;
     @SerializedName("repeatLimit")
@@ -213,6 +218,7 @@ public class Reminder implements RecyclerInterface {
         this.places = item.getPlaces();
         this.shoppings = item.getShoppings();
         this.duration = item.getDuration();
+        this.monthOfYear = item.getMonthOfYear();
         if (fullCopy) {
             this.uuId = item.getUuId();
             this.uniqueId = item.getUniqueId();
@@ -261,6 +267,7 @@ public class Reminder implements RecyclerInterface {
         this.isNotificationShown = item.isNotificationShown();
         this.isLocked = item.isLocked();
         this.duration = item.getDuration();
+        this.monthOfYear = item.getMonthOfYear();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -298,6 +305,14 @@ public class Reminder implements RecyclerInterface {
         reminder.setActive(true);
         reminder.setRemoved(false);
         return reminder;
+    }
+
+    public int getMonthOfYear() {
+        return monthOfYear;
+    }
+
+    public void setMonthOfYear(int monthOfYear) {
+        this.monthOfYear = monthOfYear;
     }
 
     public long getDuration() {

@@ -60,6 +60,7 @@ import com.elementary.tasks.creators.fragments.SkypeFragment;
 import com.elementary.tasks.creators.fragments.TimerFragment;
 import com.elementary.tasks.creators.fragments.TypeFragment;
 import com.elementary.tasks.creators.fragments.WeekFragment;
+import com.elementary.tasks.creators.fragments.YearFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -87,10 +88,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final int SKYPE = 4;
     private static final int APP = 5;
     private static final int MONTH = 6;
-    private static final int GPS_OUT = 7;
-    private static final int SHOP = 8;
-    private static final int EMAIL = 9;
-    private static final int GPS_PLACE = 10;
+    private static final int YEAR = 7;
+    private static final int GPS_OUT = 8;
+    private static final int SHOP = 9;
+    private static final int EMAIL = 10;
+    private static final int GPS_PLACE = 11;
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
@@ -177,6 +179,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                         spinner.setSelection(DATE);
                     }
                     break;
+                case YEAR:
+                    replaceFragment(new YearFragment());
             }
         }
 
@@ -299,6 +303,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case Reminder.BY_DATE_EMAIL:
                 spinner.setSelection(EMAIL);
                 break;
+            case Reminder.BY_DAY_OF_YEAR:
+            case Reminder.BY_DAY_OF_YEAR_CALL:
+            case Reminder.BY_DAY_OF_YEAR_SMS:
+                spinner.setSelection(YEAR);
+                break;
             default:
                 if (Module.isPro()) {
                     switch (mReminder.getType()) {
@@ -347,6 +356,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white));
             navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application_white));
             navSpinner.add(new SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar_white));
+            navSpinner.add(new SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white));
             navSpinner.add(new SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp));
             navSpinner.add(new SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart_white));
             navSpinner.add(new SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_white));
@@ -360,6 +370,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             navSpinner.add(new SpinnerItem(getString(R.string.skype), R.drawable.ic_skype));
             navSpinner.add(new SpinnerItem(getString(R.string.launch_application), R.drawable.ic_application));
             navSpinner.add(new SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar));
+            navSpinner.add(new SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_black));
             navSpinner.add(new SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_black_24dp));
             navSpinner.add(new SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart));
             navSpinner.add(new SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email));
@@ -486,8 +497,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 save();
                 return true;
             case R.id.action_custom_melody:
-                if (Permissions.checkPermission(this,
-                        Permissions.READ_EXTERNAL)) {
+                if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
                     startActivityForResult(new Intent(this, FileExplorerActivity.class),
                             Constants.REQUEST_CODE_SELECTED_MELODY);
                 } else {

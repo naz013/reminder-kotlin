@@ -77,6 +77,8 @@ public class RealmReminder extends RealmObject {
     private int volume;
     @SerializedName("dayOfMonth")
     private int dayOfMonth;
+    @SerializedName("monthOfYear")
+    private int monthOfYear;
     @SerializedName("repeatInterval")
     private long repeatInterval;
     @SerializedName("repeatLimit")
@@ -159,6 +161,7 @@ public class RealmReminder extends RealmObject {
         this.isNotificationShown = item.isNotificationShown();
         this.isLocked = item.isLocked();
         this.duration = item.getDuration();
+        this.monthOfYear = item.getMonthOfYear();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -187,6 +190,14 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public int getMonthOfYear() {
+        return monthOfYear;
+    }
+
+    public void setMonthOfYear(int monthOfYear) {
+        this.monthOfYear = monthOfYear;
     }
 
     public long getDuration() {
