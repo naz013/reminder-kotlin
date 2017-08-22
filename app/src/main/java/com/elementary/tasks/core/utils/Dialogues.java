@@ -5,9 +5,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
 
+import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.LCAMListener;
+import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +34,50 @@ import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
  */
 
 public class Dialogues {
+
+    private static final String TAG = "Dialogues";
+
+    public static void showRadiusDialog(@NonNull Context context, int current, @NonNull OnValueSelectedListener<Integer> listener) {
+        AlertDialog.Builder builder = Dialogues.getDialog(context);
+        builder.setTitle(R.string.radius);
+        DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context));
+        b.seekBar.setMax(5000);
+        while (b.seekBar.getMax() < current && b.seekBar.getMax() < 100000) {
+            b.seekBar.setMax(b.seekBar.getMax() + 1000);
+        }
+        if (current >= 100000) {
+            b.seekBar.setMax(100000);
+        }
+        b.seekBar.setMax(current * 2);
+        b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                b.titleView.setText(listener.getTitle(progress));
+                float perc = (float) progress / (float) b.seekBar.getMax() * 100f;
+                if (perc > 95f && b.seekBar.getMax() < 100000) {
+                    b.seekBar.setMax(b.seekBar.getMax() + 1000);
+                } else if (perc < 15f && b.seekBar.getMax() > 5000) {
+                    b.seekBar.setMax(b.seekBar.getMax() - 1000);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        b.seekBar.setProgress(current);
+        b.titleView.setText(listener.getTitle(current));
+        builder.setView(b.getRoot());
+        builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> listener.onSelected(b.seekBar.getProgress()));
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
 
     public static AlertDialog.Builder getDialog(@NonNull Context context) {
         if (Prefs.getInstance(context).getAppTheme() == THEME_AMOLED) {
@@ -62,5 +110,10 @@ public class Dialogues {
             popupMenu.getMenu().add(1, i + 1000, i, actions[i]);
         }
         popupMenu.show();
+    }
+
+    public interface OnValueSelectedListener<T> {
+        void onSelected(T t);
+        String getTitle(T t);
     }
 }
