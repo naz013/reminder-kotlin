@@ -618,5 +618,6 @@
     <string name="reminder_channel">リマインダーチャネル</string>
     <string name="info_channel">情報チャネル</string>
     <string name="add_note">メモを追加</string>
+    <string name="yearly">毎年</string>
 
 </resources>

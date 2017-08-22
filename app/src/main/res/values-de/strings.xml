@@ -617,5 +617,6 @@
     <string name="reminder_channel">Erinnerungskanal</string>
     <string name="info_channel">Info-Kanal</string>
     <string name="add_note">Notiz hinzufügen</string>
+    <string name="yearly">Jährlich</string>
 
 </resources>

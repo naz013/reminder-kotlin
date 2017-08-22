@@ -617,5 +617,6 @@
     <string name="reminder_channel">Připomenutí kanálu</string>
     <string name="info_channel">Informační kanál</string>
     <string name="add_note">Přidat poznámku</string>
+    <string name="yearly">Každoročně</string>
 
 </resources>

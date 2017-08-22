@@ -617,5 +617,6 @@
     <string name="reminder_channel">Канал нагадування</string>
     <string name="info_channel">Інформаційний канал</string>
     <string name="add_note">Додати нотатку</string>
+    <string name="yearly">Щорічно</string>
 
 </resources>
