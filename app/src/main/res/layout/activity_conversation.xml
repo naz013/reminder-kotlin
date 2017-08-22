@@ -54,8 +54,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:background="@null"
-                        app:tb_icon="@drawable/ic_settings"
-                        app:tb_icon_light="@drawable/ic_settings_white"
+                        app:tb_icon="@drawable/ic_more_vert_black_24dp"
+                        app:tb_icon_light="@drawable/ic_more_vert_white_24dp"
                         app:tb_message="@string/action_settings" />
 
                     <com.elementary.tasks.core.views.ThemedImageButton
