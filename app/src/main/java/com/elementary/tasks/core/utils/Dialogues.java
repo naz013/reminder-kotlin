@@ -36,17 +36,18 @@ import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
 public class Dialogues {
 
     private static final String TAG = "Dialogues";
+    private static final int MAX_RADIUS = 100000;
 
     public static void showRadiusDialog(@NonNull Context context, int current, @NonNull OnValueSelectedListener<Integer> listener) {
         AlertDialog.Builder builder = Dialogues.getDialog(context);
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context));
         b.seekBar.setMax(5000);
-        while (b.seekBar.getMax() < current && b.seekBar.getMax() < 100000) {
+        while (b.seekBar.getMax() < current && b.seekBar.getMax() < MAX_RADIUS) {
             b.seekBar.setMax(b.seekBar.getMax() + 1000);
         }
-        if (current >= 100000) {
-            b.seekBar.setMax(100000);
+        if (current > MAX_RADIUS) {
+            b.seekBar.setMax(MAX_RADIUS);
         }
         b.seekBar.setMax(current * 2);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -54,7 +55,7 @@ public class Dialogues {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 b.titleView.setText(listener.getTitle(progress));
                 float perc = (float) progress / (float) b.seekBar.getMax() * 100f;
-                if (perc > 95f && b.seekBar.getMax() < 100000) {
+                if (perc > 95f && b.seekBar.getMax() < MAX_RADIUS) {
                     b.seekBar.setMax(b.seekBar.getMax() + 1000);
                 } else if (perc < 15f && b.seekBar.getMax() > 5000) {
                     b.seekBar.setMax(b.seekBar.getMax() - 1000);
