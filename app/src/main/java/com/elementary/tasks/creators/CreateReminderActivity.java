@@ -116,7 +116,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean hasAutoExtra;
     private boolean isExportToTasks;
     private int repeatLimit = -1;
-    private int volume = 25;
+    private int volume = -1;
     private String groupId;
     private String melodyPath;
     private String autoLabel;
@@ -554,11 +554,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.loudness);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(getLayoutInflater());
-        b.seekBar.setMax(25);
+        b.seekBar.setMax(26);
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                b.titleView.setText(String.valueOf(progress));
+                b.titleView.setText(getVolumeTitle(progress));
             }
 
             @Override
@@ -571,16 +571,24 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
             }
         });
-        b.seekBar.setProgress(volume);
-        b.titleView.setText(String.valueOf(volume));
+        b.seekBar.setProgress(volume + 1);
+        b.titleView.setText(getVolumeTitle(b.seekBar.getProgress()));
         builder.setView(b.getRoot());
         builder.setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            volume = b.seekBar.getProgress();
-            String str = String.format(getString(R.string.selected_loudness_x_for_reminder), String.valueOf(volume));
-            showSnackbar(str, getString(R.string.cancel), v -> volume = 25);
+            volume = b.seekBar.getProgress() - 1;
+            String str = String.format(getString(R.string.selected_loudness_x_for_reminder), getVolumeTitle(b.seekBar.getProgress()));
+            showSnackbar(str, getString(R.string.cancel), v -> volume = -1);
         });
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.create().show();
+    }
+
+    private String getVolumeTitle(int progress) {
+        if (progress == 0) {
+            return getString(R.string.default_string);
+        } else {
+            return String.valueOf(progress - 1);
+        }
     }
 
     private void chooseLedColor() {
