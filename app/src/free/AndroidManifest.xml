@@ -21,9 +21,4 @@
         android:name="com.cray.software.justreminder.maps.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
     <uses-permission android:name="com.cray.software.justreminder.maps.permission.MAPS_RECEIVE" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-
-    <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="e319ad50eeab199ac7860c9873cac1803c44386c" />
 </manifest>
