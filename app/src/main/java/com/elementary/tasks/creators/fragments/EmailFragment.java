@@ -1,10 +1,6 @@
 package com.elementary.tasks.creators.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,16 +14,11 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderEmailBinding;
 import com.elementary.tasks.reminder.models.Reminder;
-
-import java.io.File;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,21 +38,9 @@ import java.io.File;
 
 public class EmailFragment extends RepeatableTypeFragment {
 
-    private static final int FILE_REQUEST = 323;
     private static final String TAG = "DateFragment";
 
     private FragmentReminderEmailBinding binding;
-    private String attachment;
-
-    public View.OnClickListener fileClick = v -> {
-        if (Permissions.checkPermission(getActivity(), Permissions.READ_EXTERNAL)) {
-            getActivity().startActivityForResult(new Intent(getActivity(), FileExplorerActivity.class)
-                    .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
-        } else {
-            Permissions.requestPermission(getActivity(), 331,
-                    Permissions.READ_EXTERNAL);
-        }
-    };
 
     public EmailFragment() {
     }
@@ -84,7 +63,6 @@ public class EmailFragment extends RepeatableTypeFragment {
         if (reminder == null) {
             reminder = new Reminder();
         }
-        reminder.setAttachmentFile(attachment);
         reminder.setSubject(subjectString);
         reminder.setSummary(getInterface().getSummary());
         reminder.setTarget(email);
@@ -132,7 +110,6 @@ public class EmailFragment extends RepeatableTypeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderEmailBinding.inflate(inflater, container, false);
-        binding.chooseFile.setOnClickListener(fileClick);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());
         getInterface().setEventHint(getString(R.string.message));
@@ -147,10 +124,6 @@ public class EmailFragment extends RepeatableTypeFragment {
         } else {
             binding.exportToTasks.setVisibility(View.GONE);
         }
-        binding.fileName.setOnClickListener(v -> {
-            attachment = null;
-            showAttachment();
-        });
         editReminder();
         return binding.getRoot();
     }
@@ -158,7 +131,6 @@ public class EmailFragment extends RepeatableTypeFragment {
     private void editReminder() {
         if (getInterface().getReminder() == null) return;
         Reminder reminder = getInterface().getReminder();
-        attachment = reminder.getAttachmentFile();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.dateView.setDateTime(reminder.getEventTime());
@@ -166,43 +138,5 @@ public class EmailFragment extends RepeatableTypeFragment {
         binding.repeatView.setRepeat(reminder.getRepeatInterval());
         binding.mail.setText(reminder.getTarget());
         binding.subject.setText(reminder.getSubject());
-        showAttachment();
-    }
-
-    private void showAttachment() {
-        if (attachment != null) {
-            File file = new File(attachment);
-            binding.fileName.setText(file.getName());
-        } else binding.fileName.setText(getString(R.string.no_files_attached));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FILE_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                attachment = data.getStringExtra(Constants.FILE_PICKED);
-                if (attachment != null) {
-                    File file = new File(attachment);
-                    binding.fileName.setText(file.getPath());
-                    getInterface().showSnackbar(String.format(getString(R.string.file_x_attached), file.getName()),
-                            getString(R.string.cancel), v -> {
-                                attachment = null;
-                                binding.fileName.setText(null);
-                            });
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 331:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivityForResult(new Intent(getContext(), FileExplorerActivity.class)
-                            .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
-                }
-                break;
-        }
     }
 }

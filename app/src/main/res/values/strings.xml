@@ -621,5 +621,6 @@
     <string name="tell_about_event">Tell about event</string>
     <string name="add_note">Add note</string>
     <string name="yearly">Anually</string>
+    <string name="attach_file">Attach file</string>
 
 </resources>

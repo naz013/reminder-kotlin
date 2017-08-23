@@ -14,6 +14,7 @@ import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,6 +98,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int MENU_ITEM_DELETE = 12;
     private static final int CONTACTS_REQUEST_E = 501;
+    private static final int FILE_REQUEST = 323;
     private static final String TAG = "CreateReminderActivity";
     private static final String SHOWCASE = "reminder_showcase";
 
@@ -122,6 +124,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private String autoLabel;
     private int ledColor = -1;
     private boolean isEditing;
+    private String attachment;
 
     private Reminder mReminder;
 
@@ -258,6 +261,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (mReminder == null) return;
         binding.taskSummary.setText(mReminder.getSummary());
         showGroup(RealmDb.getInstance().getGroup(mReminder.getGroupUuId()));
+        attachment = mReminder.getAttachmentFile();
+        if (!TextUtils.isEmpty(attachment)) {
+            binding.attachmentButton.setVisibility(View.VISIBLE);
+        }
         initParams();
         switch (mReminder.getType()) {
             case Reminder.BY_DATE:
@@ -399,6 +406,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.customButton.setOnClickListener(v -> openCustomizationDialog());
         binding.groupButton.setOnClickListener(v -> changeGroup());
         binding.melodyButton.setOnClickListener(view -> showCurrentMelody());
+        binding.attachmentButton.setOnClickListener(view -> showAttachmentSnack());
         GroupItem groupItem = RealmDb.getInstance().getDefaultGroup();
         if (groupItem != null) {
             binding.groupButton.setText(groupItem.getTitle());
@@ -516,8 +524,20 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             case android.R.id.home:
                 closeScreen();
                 return true;
+            case R.id.action_attach_file:
+                attachFile();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void attachFile() {
+        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL)) {
+            startActivityForResult(new Intent(this, FileExplorerActivity.class)
+                    .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
+        } else {
+            Permissions.requestPermission(this, 331, Permissions.READ_EXTERNAL);
+        }
     }
 
     private void closeScreen() {
@@ -673,9 +693,25 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             updateMelodyIndicator();
             showCurrentMelody();
         }
+        if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
+            attachment = data.getStringExtra(Constants.FILE_PICKED);
+            if (attachment != null) {
+                binding.attachmentButton.setVisibility(View.VISIBLE);
+                showAttachmentSnack();
+            }
+        }
         if (fragment != null) {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void showAttachmentSnack() {
+        File file = new File(attachment);
+        showSnackbar(String.format(getString(R.string.file_x_attached), file.getName()),
+                getString(R.string.cancel), v -> {
+                    attachment = null;
+                    binding.attachmentButton.setVisibility(View.GONE);
+                });
     }
 
     private void showCurrentMelody() {
@@ -725,6 +761,12 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                     spinner.setSelection(GPS);
                 } else {
                     spinner.setSelection(DATE);
+                }
+                break;
+            case 331:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(this, FileExplorerActivity.class)
+                            .putExtra(Constants.FILE_TYPE, "any"), FILE_REQUEST);
                 }
                 break;
         }
@@ -861,6 +903,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public boolean isExportToTasks() {
         return isExportToTasks;
+    }
+
+    @Override
+    public String getAttachment() {
+        return attachment;
     }
 
     @Override
