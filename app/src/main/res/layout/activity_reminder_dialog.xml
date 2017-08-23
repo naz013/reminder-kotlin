@@ -195,6 +195,15 @@
                     android:layout_margin="@dimen/reminder_margin_top"
                     android:contentDescription="@string/acc_button_cancel" />
 
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/buttonAttachment"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="@dimen/reminder_margin_top"
+                    android:contentDescription="@string/acc_button_cancel"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_attach_file_black_24dp" />
+
             </LinearLayout>
 
             <LinearLayout

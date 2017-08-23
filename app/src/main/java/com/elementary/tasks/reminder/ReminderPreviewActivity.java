@@ -217,8 +217,19 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(catColor));
             }
             binding.dataContainer.removeAllViewsInLayout();
+            showAttachment();
             new Thread(new NoteThread(mReadyCallback, item.getNoteId())).start();
             new Thread(new TaskThread(mReadyCallback, item.getUuId())).start();
+        }
+    }
+
+    private void showAttachment() {
+        if (item.getAttachmentFile() != null) {
+            File file = new File(item.getAttachmentFile());
+            binding.attachmentView.setText(file.getName());
+            binding.attachmentView.setVisibility(View.VISIBLE);
+        } else {
+            binding.attachmentView.setVisibility(View.GONE);
         }
     }
 

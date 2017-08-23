@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,15 +14,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backdoor.shared.SharedConst;
+import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
 import com.elementary.tasks.core.async.BackupTask;
@@ -49,6 +53,8 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -122,6 +128,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
         buttonNotification.setImageResource(R.drawable.ic_favorite_black_24dp);
+        if (mReminder.getAttachmentFile() != null) showAttachmentButton();
 
         CircleImageView contactPhoto = binding.contactPhoto;
         contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
@@ -290,6 +297,51 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
         if (isTtsEnabled()) {
             startTts();
+        }
+    }
+
+    private void showAttachmentButton() {
+        binding.buttonAttachment.setVisibility(View.VISIBLE);
+        binding.buttonAttachment.setOnClickListener(view -> showFile());
+    }
+
+    private void showFile() {
+        String path = mReminder.getAttachmentFile();
+        if (path == null) return;
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Module.isNougat()) {
+            Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", new File(path));
+            intent.setData(uri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setDataAndType(Uri.parse("file://" + path), mime.getMimeTypeFromExtension(fileExt(mReminder.getAttachmentFile()).substring(1)));
+        }
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "Can't find application that can open this file.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String fileExt(String url) {
+        if (url == null) return "";
+        if (url.contains("?")) {
+            url = url.substring(0, url.indexOf("?"));
+        }
+        if (url.lastIndexOf(".") == -1) {
+            return null;
+        } else {
+            String ext = url.substring(url.lastIndexOf(".") + 1);
+            if (ext.contains("%")) {
+                ext = ext.substring(0, ext.indexOf("%"));
+            }
+            if (ext.contains("/")) {
+                ext = ext.substring(0, ext.indexOf("/"));
+            }
+            return ext.toLowerCase();
+
         }
     }
 

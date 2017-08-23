@@ -711,6 +711,7 @@ public class Reminder implements RecyclerInterface {
         setMelodyPath(mInterface.getMelodyPath());
         setVolume(mInterface.getVolume());
         setAuto(mInterface.getAuto());
+        setAttachmentFile(mInterface.getAttachment());
         setActive(true);
         setRemoved(false);
         setDelay(0);

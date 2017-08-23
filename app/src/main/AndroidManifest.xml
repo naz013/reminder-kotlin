@@ -50,6 +50,7 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_title"
         android:supportsRtl="true"
         android:theme="@style/HomeDark.Cyan"

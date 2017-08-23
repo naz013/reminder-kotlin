@@ -55,6 +55,8 @@ public interface ReminderInterface {
 
     String getSummary();
 
+    String getAttachment();
+
     String getMelodyPath();
 
     void showSnackbar(String title);
