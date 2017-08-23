@@ -15,8 +15,6 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-import com.instabug.library.Instabug;
-import com.instabug.library.invocation.InstabugInvocationEvent;
 
 import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
@@ -92,10 +90,6 @@ public class ReminderApp extends MultiDexApplication {
                 .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
-
-        new Instabug.Builder(this, "4a9d4ec9b3810d5a7cd7e9d474d5d3cc")
-                .setInvocationEvent(InstabugInvocationEvent.SHAKE)
-                .build();
     }
 
     public synchronized Tracker getDefaultTracker() {
