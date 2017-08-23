@@ -185,6 +185,7 @@ dependencies {
     implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.tapadoo.android:alerter:1.0.7'
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.3'
+    implementation 'com.instabug.library:instabug:4.2.9'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
