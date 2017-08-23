@@ -1,12 +1,8 @@
 package com.elementary.tasks.core.views;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.os.Build;
-import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,11 +11,9 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 
-import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.GeocoderTask;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,21 +47,32 @@ public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
     private GeocoderTask.GeocoderListener mExecutionCallback = new GeocoderTask.GeocoderListener() {
         @Override
         public void onAddressReceived(List<Address> addresses) {
+            LogUtil.d(TAG, "onAddressReceived: " + addresses);
             foundPlaces = addresses;
             List<String> namesList = new ArrayList<>();
-            namesList.clear();
             for (Address selected : addresses) {
-                String addressText = String.format("%s, %s%s",
-                        selected.getMaxAddressLineIndex() > 0 ? selected.getAddressLine(0) : "",
-                        selected.getMaxAddressLineIndex() > 1 ? selected.getAddressLine(1) + ", " : "",
-                        selected.getCountryName());
-                namesList.add(addressText);
+                namesList.add(formName(selected));
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_dropdown_item_1line, namesList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item, namesList);
             setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
     };
+
+    private String formName(Address address) {
+        if (address.getAddressLine(0) != null) {
+            return address.getAddressLine(0);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(address.getFeatureName());
+        if (address.getAdminArea() != null) {
+            sb.append(", ").append(address.getAdminArea());
+        }
+        if (address.getCountryName() != null) {
+            sb.append(", ").append(address.getCountryName());
+        }
+        return sb.toString();
+    }
 
     public AddressAutoCompleteView(Context context) {
         super(context);
@@ -87,34 +92,6 @@ public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
     private void init(Context context, AttributeSet attrs) {
         this.mContext = context;
         mTypeface = AssetsUtil.getDefaultTypeface(getContext());
-        if (attrs != null) {
-            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.AddressAutoCompleteView, 0, 0);
-            try {
-                Drawable drawableLeft = null;
-                ThemeUtil themeUtil = ThemeUtil.getInstance(context);
-                boolean isDark = themeUtil.isDark();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (isDark) {
-                        drawableLeft = a.getDrawable(R.styleable.AddressAutoCompleteView_icon_light);
-                    } else {
-                        drawableLeft = a.getDrawable(R.styleable.AddressAutoCompleteView_icon_dark);
-                    }
-                } else {
-                    int drawableLeftId = a.getResourceId(R.styleable.AddressAutoCompleteView_icon_dark, -1);
-                    if (isDark) {
-                        drawableLeftId = a.getResourceId(R.styleable.AddressAutoCompleteView_icon_light, -1);
-                    }
-                    if (drawableLeftId != -1) {
-                        drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId);
-                    }
-                }
-                setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-            } catch (Exception e) {
-                LogUtil.d(TAG, "There was an error loading attributes.");
-            } finally {
-                a.recycle();
-            }
-        }
 
         addTextChangedListener(new TextWatcher() {
             @Override

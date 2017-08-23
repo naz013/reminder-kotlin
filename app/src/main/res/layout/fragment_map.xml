@@ -140,9 +140,7 @@
                     android:imeOptions="actionSearch"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:icon_dark="@drawable/ic_search_black_24dp"
-                    app:icon_light="@drawable/ic_search_white_24dp" />
+                    android:textSize="@dimen/create_text_size_normal"/>
 
                 <com.elementary.tasks.core.views.ThemedImageButton
                     android:id="@+id/cardClear"
