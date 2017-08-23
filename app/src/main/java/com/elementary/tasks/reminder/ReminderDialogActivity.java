@@ -683,8 +683,8 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getMaxVolume() {
-        if (!isGlobal()) return mReminder.getVolume();
-        return getPrefs().getLoudness();
+        if (!isGlobal() && mReminder.getVolume() != -1) return mReminder.getVolume();
+        else return getPrefs().getLoudness();
     }
 
     @Override
