@@ -322,11 +322,8 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         mMapType = getPrefs().getMapType();
         isDark = getThemeUtil().isDark();
 
-        com.google.android.gms.maps.MapFragment fragment = com.google.android.gms.maps.MapFragment.newInstance();
-        fragment.getMapAsync(mMapCallback);
-        getFragmentManager().beginTransaction()
-                .add(binding.mapPlaces.getId(), fragment)
-                .commit();
+        binding.mapView.onCreate(savedInstanceState);
+        binding.mapView.getMapAsync(mMapCallback);
 
         initViews();
         cardSearch = binding.cardSearch;
@@ -638,8 +635,44 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
 
     @Override
     public void onResume() {
+        binding.mapView.onResume();
         super.onResume();
         startTracking();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (binding != null) {
+            binding.mapView.onLowMemory();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (binding != null) {
+            binding.mapView.onDestroy();
+        }
+        cancelTracking();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (binding != null) {
+            binding.mapView.onPause();
+        }
+        cancelTracking();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (binding != null) {
+            binding.mapView.onStop();
+        }
+        cancelTracking();
     }
 
     private void startTracking() {
@@ -704,12 +737,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cancelTracking();
-    }
-
     private void cancelTracking() {
         if (mLocList != null) {
             mLocList.removeUpdates();
@@ -726,18 +753,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        cancelTracking();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        cancelTracking();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
         cancelTracking();
     }
 }
