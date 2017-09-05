@@ -15,9 +15,9 @@ import android.view.View
 import android.webkit.WebView
 import android.widget.CheckBox
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync
 import com.elementary.tasks.core.cloud.DropboxLogin
@@ -69,29 +69,33 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loadPhotoView() {
+        val myOptions = RequestOptions()
+                .centerCrop()
+                .override(768, 1280)
+
         Glide.with(this)
                 .load("https://unsplash.it/1080/1920?image=596&blur")
-                .override(768, 1280)
-                .centerCrop()
-                .crossFade()
-                .into(object : SimpleTarget<GlideDrawable>() {
-                    override fun onResourceReady(resource: GlideDrawable?, glideAnimation: GlideAnimation<in GlideDrawable>?) {
-                        binding.imageView2.setImageDrawable(resource?.current)
+                .apply(myOptions)
+                .into(object : SimpleTarget<Drawable>() {
+                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
+                        binding.imageView2.setImageDrawable(resource)
                     }
 
-                    override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                        super.onLoadFailed(e, errorDrawable)
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
                         loadDefaultImage()
                     }
                 })
     }
 
     private fun loadDefaultImage() {
+        val myOptions = RequestOptions()
+                .centerCrop()
+                .override(768, 1280)
+
         Glide.with(this)
                 .load(R.drawable.photo)
-                .override(768, 1280)
-                .centerCrop()
-                .crossFade()
+                .apply(myOptions)
                 .into(binding.imageView2)
     }
 
