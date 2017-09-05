@@ -68,6 +68,7 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
+import com.tapadoo.alerter.Alert;
 import com.tapadoo.alerter.Alerter;
 
 import org.apache.commons.lang3.StringUtils;
@@ -131,6 +132,7 @@ public class CreateNoteActivity extends ThemedActivity {
     private EditText taskField;
 
     private SpeechRecognizer speech = null;
+    private Alert mAlerter;
 
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
@@ -296,12 +298,14 @@ public class CreateNoteActivity extends ThemedActivity {
             return;
         }
         getPrefs().setNoteHintShowed(true);
-        Alerter.create(this)
+        mAlerter = Alerter.create(this)
                 .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
                 .setText(R.string.click_to_hide)
                 .enableInfiniteDuration(true)
-                .setBackgroundColor(getThemeUtil().colorPrimaryDark(mColor))
-                .setOnClickListener(v -> Alerter.create(CreateNoteActivity.this).hide())
+                .setBackgroundColorRes(getThemeUtil().colorPrimaryDark(mColor))
+                .setOnClickListener(v -> {
+                    if (mAlerter != null) mAlerter.hide();
+                })
                 .show();
     }
 
