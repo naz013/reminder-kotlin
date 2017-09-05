@@ -303,7 +303,9 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
     }
 
     private void loadData() {
-        mLastMap = CalendarSingleton.getInstance().getProvider().getEvents();
+        if (CalendarSingleton.getInstance().getProvider() != null) {
+            mLastMap = CalendarSingleton.getInstance().getProvider().getEvents();
+        }
     }
 
     @Override
