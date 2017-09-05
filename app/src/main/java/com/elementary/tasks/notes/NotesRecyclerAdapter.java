@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
@@ -96,7 +97,10 @@ public class NotesRecyclerAdapter extends FilterableAdapter<NoteItem, String, No
     }
 
     private static void setImage(ImageView imageView, byte[] image) {
-        Glide.with(imageView.getContext().getApplicationContext()).load(image).crossFade().override(768, 500).into(imageView);
+        RequestOptions myOptions = new RequestOptions()
+                .fitCenter()
+                .override(768, 500);
+        Glide.with(imageView.getContext().getApplicationContext()).load(image).apply(myOptions).into(imageView);
     }
 
     private static void setClick(ImageView imageView, int position, String key) {

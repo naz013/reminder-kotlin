@@ -143,7 +143,6 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     public static void loadImage(ImageView imageView, NoteImage image) {
         Glide.with(imageView.getContext())
                 .load(image.getImage())
-                .crossFade()
                 .into(imageView);
     }
 

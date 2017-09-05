@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.CropFragmentBinding;
 import com.elementary.tasks.notes.NoteImage;
@@ -72,11 +72,11 @@ public class CropFragment extends BitmapFragment {
         NoteImage item = ImageSingleton.getInstance().getItem();
         if (item != null) {
             Glide.with(this)
-                    .load(item.getImage())
                     .asBitmap()
+                    .load(item.getImage())
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                             binding.cropImageView.setImageBitmap(resource);
                         }
                     });
