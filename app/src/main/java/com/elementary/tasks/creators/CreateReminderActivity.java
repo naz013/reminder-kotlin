@@ -956,6 +956,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     protected void onDestroy() {
         super.onDestroy();
         UpdatesHelper.getInstance(this).updateWidget();
+        UpdatesHelper.getInstance(this).updateCalendarWidget();
     }
 
     @Override
