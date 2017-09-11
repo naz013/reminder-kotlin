@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,12 +13,20 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.SplashScreen;
+import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
+import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Calendar;
 import java.util.List;
@@ -42,7 +51,10 @@ public class Notifier {
 
     public static final String CHANNEL_REMINDER = "reminder.channel1";
     public static final String CHANNEL_SYSTEM = "reminder.channel2";
+
+    private static final String TAG = "Notifier";
     private static final int BIRTHDAY_PERM_ID = 356665;
+    private static final int PERM_ID = 356664;
 
     private Context mContext;
 
@@ -177,5 +189,95 @@ public class Notifier {
     public static void hideBirthdayPermanent(Context context) {
         NotificationManagerCompat manager = NotificationManagerCompat.from(context);
         manager.cancel(BIRTHDAY_PERM_ID);
+    }
+
+    public static void hideReminderPermanent(Context context) {
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        manager.cancel(PERM_ID);
+    }
+
+    public static void showReminderPermanent(Context context) {
+        LogUtil.d(TAG, "showPermanent: ");
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
+        builder.setAutoCancel(false);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
+        }
+        builder.setContent(remoteViews);
+        builder.setOngoing(true);
+        if (Prefs.getInstance(context).isSbIconEnabled()) {
+            builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        } else {
+            builder.setPriority(NotificationCompat.PRIORITY_MIN);
+        }
+        Intent resultIntent = new Intent(context, CreateReminderActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(CreateReminderActivity.class);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+                0);
+        remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
+        Intent noteIntent = new Intent(context, CreateNoteActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        TaskStackBuilder noteBuilder = TaskStackBuilder.create(context);
+        noteBuilder.addParentStack(CreateNoteActivity.class);
+        noteBuilder.addNextIntent(noteIntent);
+        PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
+                0);
+        remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent);
+        Intent resInt = new Intent(context, SplashScreen.class);
+        TaskStackBuilder stackInt = TaskStackBuilder.create(context);
+        stackInt.addParentStack(SplashScreen.class);
+        stackInt.addNextIntent(resInt);
+        PendingIntent resultPendingInt = stackInt.getPendingIntent(0,
+                0);
+        remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
+        remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
+        List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
+        int count = reminders.size();
+        for (int i = reminders.size() - 1; i >= 0; i--) {
+            Reminder item = reminders.get(i);
+            long eventTime = item.getDateTime();
+            if (eventTime <= 0) {
+                reminders.remove(i);
+            }
+        }
+        String event = "";
+        long prevTime = 0;
+        for (int i = 0; i < reminders.size(); i++) {
+            Reminder item = reminders.get(i);
+            if (item.getDateTime() > System.currentTimeMillis()) {
+                if (prevTime == 0) {
+                    prevTime = item.getDateTime();
+                    event = item.getSummary();
+                } else if (item.getDateTime() < prevTime) {
+                    prevTime = item.getDateTime();
+                    event = item.getSummary();
+                }
+            }
+        }
+        if (count != 0) {
+            if (!TextUtils.isEmpty(event)) {
+                remoteViews.setTextViewText(R.id.text, event);
+                remoteViews.setViewVisibility(R.id.featured, View.VISIBLE);
+            } else {
+                remoteViews.setTextViewText(R.id.text, context.getString(R.string.active_reminders) + " " + count);
+                remoteViews.setViewVisibility(R.id.featured, View.GONE);
+            }
+        } else {
+            remoteViews.setTextViewText(R.id.text, context.getString(R.string.no_events));
+            remoteViews.setViewVisibility(R.id.featured, View.GONE);
+        }
+        ThemeUtil cs = ThemeUtil.getInstance(context);
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_alarm_white, R.id.notificationAdd);
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
+        WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
+        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        manager.notify(PERM_ID, builder.build());
     }
 }

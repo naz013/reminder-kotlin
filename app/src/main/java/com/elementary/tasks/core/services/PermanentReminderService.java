@@ -1,30 +1,13 @@
 package com.elementary.tasks.core.services;
 
-import android.app.PendingIntent;
 import android.app.Service;
-import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.RemoteViews;
 
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.SplashScreen;
-import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.creators.CreateReminderActivity;
-import com.elementary.tasks.notes.CreateNoteActivity;
-import com.elementary.tasks.reminder.models.Reminder;
-
-import java.util.List;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -48,129 +31,35 @@ public class PermanentReminderService extends Service {
     public static final String ACTION_HIDE = "com.elementary.tasks.HIDE";
 
     private static final String TAG = "PermanentReminderS";
-    private static final int PERM_ID = 356664;
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if (!Prefs.getInstance(getApplicationContext()).isSbNotificationEnabled()) {
-            hidePermanent();
+            Notifier.hideReminderPermanent(this);
         }
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_SHOW)) {
-                showPermanent();
+                Notifier.showReminderPermanent(this);
             } else {
-                hidePermanent();
+                Notifier.hideReminderPermanent(this);
             }
         } else {
-            hidePermanent();
+            Notifier.hideReminderPermanent(this);
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         LogUtil.d(TAG, "onDestroy: ");
-        hidePermanent();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private void hidePermanent() {
-        stopForeground(true);
-        stopSelf();
-    }
-
-    private void showPermanent() {
-        LogUtil.d(TAG, "showPermanent: ");
-        RemoteViews remoteViews = new RemoteViews(getApplication().getPackageName(),
-                R.layout.notification_layout);
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), Notifier.CHANNEL_REMINDER);
-        notification.setAutoCancel(false);
-        if (Module.isLollipop()) {
-            notification.setSmallIcon(R.drawable.ic_notifications_white_24dp);
-        } else {
-            notification.setSmallIcon(R.drawable.ic_notification_nv_white);
-        }
-        notification.setContent(remoteViews);
-        notification.setOngoing(true);
-        if (Prefs.getInstance(getApplicationContext()).isSbIconEnabled()) {
-            notification.setPriority(NotificationCompat.PRIORITY_MAX);
-        } else {
-            notification.setPriority(NotificationCompat.PRIORITY_MIN);
-        }
-        Intent resultIntent = new Intent(getApplicationContext(), CreateReminderActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-        stackBuilder.addParentStack(CreateReminderActivity.class);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-                0);
-        remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
-        Intent noteIntent = new Intent(getApplicationContext(), CreateNoteActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        TaskStackBuilder noteBuilder = TaskStackBuilder.create(getApplicationContext());
-        noteBuilder.addParentStack(CreateNoteActivity.class);
-        noteBuilder.addNextIntent(noteIntent);
-        PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
-                0);
-        remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent);
-        Intent resInt = new Intent(getApplicationContext(), SplashScreen.class);
-        TaskStackBuilder stackInt = TaskStackBuilder.create(getApplicationContext());
-        stackInt.addParentStack(SplashScreen.class);
-        stackInt.addNextIntent(resInt);
-        PendingIntent resultPendingInt = stackInt.getPendingIntent(0,
-                0);
-        remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
-        remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
-        List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
-        int count = reminders.size();
-        for (int i = reminders.size() - 1; i >= 0; i--) {
-            Reminder item = reminders.get(i);
-            long eventTime = item.getDateTime();
-            if (eventTime <= 0) {
-                reminders.remove(i);
-            }
-        }
-        String event = "";
-        long prevTime = 0;
-        for (int i = 0; i < reminders.size(); i++) {
-            Reminder item = reminders.get(i);
-            if (item.getDateTime() > System.currentTimeMillis()) {
-                if (prevTime == 0) {
-                    prevTime = item.getDateTime();
-                    event = item.getSummary();
-                } else if (item.getDateTime() < prevTime) {
-                    prevTime = item.getDateTime();
-                    event = item.getSummary();
-                }
-            }
-        }
-        if (count != 0) {
-            if (!TextUtils.isEmpty(event)) {
-                remoteViews.setTextViewText(R.id.text, event);
-                remoteViews.setViewVisibility(R.id.featured, View.VISIBLE);
-            } else {
-                remoteViews.setTextViewText(R.id.text, getString(R.string.active_reminders) + " " + count);
-                remoteViews.setViewVisibility(R.id.featured, View.GONE);
-            }
-        } else {
-            remoteViews.setTextViewText(R.id.text, getString(R.string.no_events));
-            remoteViews.setViewVisibility(R.id.featured, View.GONE);
-        }
-        ThemeUtil cs = ThemeUtil.getInstance(getApplicationContext());
-        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_alarm_white, R.id.notificationAdd);
-        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
-        WidgetUtils.setIcon(getApplicationContext(), remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
-        remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
-        LogUtil.d(TAG, "showPermanent: 2");
-        startForeground(PERM_ID, notification.build());
-        LogUtil.d(TAG, "showPermanent: 3");
     }
 }
