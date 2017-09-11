@@ -40,6 +40,7 @@ public class UpdateFilesAsync extends AsyncTask<Reminder, Void, Void> {
     @Override
     protected Void doInBackground(Reminder... params) {
         for (Reminder reminder : params) {
+            if (reminder == null) continue;
             String path = BackupTool.getInstance().exportReminder(reminder);
             if (isConnected) {
                 dropbox.uploadReminderByFileName(path);
