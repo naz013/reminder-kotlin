@@ -191,10 +191,6 @@
   public *;
 }
 
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
-
 -dontwarn org.hamcrest.**
 -dontwarn android.test.**
 -dontwarn android.support.test.**
