@@ -100,7 +100,13 @@ public class GoogleLogin {
                 if (s != null) {
                     mAccountName = s;
                 }
-                progressDlg.dismiss();
+                try {
+                    if (progressDlg != null && progressDlg.isShowing()) {
+                        progressDlg.dismiss();
+                    }
+                } catch (IllegalArgumentException e) {
+
+                }
                 if (mCallback != null) mCallback.onSuccess();
             }
         };
