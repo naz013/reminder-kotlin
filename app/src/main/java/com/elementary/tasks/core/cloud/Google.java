@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.elementary.tasks.backups.UserItem;
@@ -395,6 +396,18 @@ public class Google {
         }
 
         /**
+         * Upload reminder backup file stored on SD Card.
+         */
+        public void saveReminderToDrive(@NonNull String pathToFile) {
+            try {
+                Metadata metadata = new Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.getRemindersDir(), "Reminder Backup", null);
+                saveFileToDrive(pathToFile, metadata);
+            } catch (IOException e) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.getLocalizedMessage());
+            }
+        }
+
+        /**
          * Upload all note backup files stored on SD Card.
          */
         public void saveNotesToDrive() {
@@ -468,6 +481,40 @@ public class Google {
                         .setFields("id")
                         .execute();
             }
+        }
+
+        /**
+         * Upload file from folder to Google Drive.
+         *
+         * @param metadata metadata.
+         * @throws IOException
+         */
+        private void saveFileToDrive(@NonNull String pathToFile, Metadata metadata) throws IOException {
+            if (metadata.getFolder() == null) return;
+            java.io.File[] files = metadata.getFolder().listFiles();
+            if (files == null) return;
+            String folderId = null;
+            try {
+                folderId = getFolderId();
+            } catch (IllegalArgumentException ignored) {
+            }
+            if (folderId == null) {
+                return;
+            }
+            java.io.File f = new java.io.File(pathToFile);
+            if (!f.exists()) {
+                return;
+            }
+            if (!f.getName().endsWith(metadata.getFileExt())) return;
+            removeAllCopies(f.getName());
+            File fileMetadata = new File();
+            fileMetadata.setName(f.getName());
+            fileMetadata.setDescription(metadata.getMeta());
+            fileMetadata.setParents(Collections.singletonList(folderId));
+            FileContent mediaContent = new FileContent("text/plain", f);
+            driveService.files().create(fileMetadata, mediaContent)
+                    .setFields("id")
+                    .execute();
         }
 
         public void download(boolean deleteBackup, Metadata metadata) throws IOException {

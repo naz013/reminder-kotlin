@@ -68,6 +68,7 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
+import com.elementary.tasks.reminder.UpdateFilesAsync;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.apache.commons.lang3.StringUtils;
@@ -565,6 +566,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             } else {
                 EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
                 control.stop();
+                new UpdateFilesAsync(this).execute(mReminder);
             }
             finish();
         }
@@ -655,6 +657,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void save() {
         if (fragment.save()) {
+            new UpdateFilesAsync(this).execute(mReminder);
             finish();
         }
     }

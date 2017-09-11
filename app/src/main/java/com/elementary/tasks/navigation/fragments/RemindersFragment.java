@@ -41,6 +41,7 @@ import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
+import com.elementary.tasks.reminder.UpdateFilesAsync;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -252,10 +253,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void switchReminder(int position) {
-        EventControl control = EventControlFactory.getController(getContext(), mAdapter.getItem(position));
+        Reminder reminder = mAdapter.getItem(position);
+        EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (!control.onOff()) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
+        new UpdateFilesAsync(getContext()).execute(reminder);
         loadData(mLastGroupId, lastType, lastActive);
     }
 
