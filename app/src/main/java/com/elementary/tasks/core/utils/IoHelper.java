@@ -104,7 +104,7 @@ public class IoHelper {
     public void backupReminder() {
         BackupTool.getInstance().exportReminders();
         if (isConnected) {
-            mDropbox.uploadReminder(null);
+            mDropbox.uploadReminderByFileName(null);
             if (mDrive != null && mDrive.getDrive() != null) {
                 mDrive.getDrive().saveRemindersToDrive();
             }

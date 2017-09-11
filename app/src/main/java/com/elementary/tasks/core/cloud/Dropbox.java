@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -215,7 +216,7 @@ public class Dropbox {
      *
      * @param fileName file name.
      */
-    public void uploadReminder(final String fileName) {
+    public void uploadReminderByFileName(@Nullable final String fileName) {
         File dir = MemoryUtil.getRemindersDir();
         if (dir == null) {
             return;

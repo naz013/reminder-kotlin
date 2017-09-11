@@ -365,19 +365,26 @@ public final class BackupTool {
         }
     }
 
-    public void exportReminder(@NonNull Reminder item) {
+    /**
+     * Export reminder object to file.
+     * @param item reminder object
+     * @return Path to file
+     */
+    @Nullable
+    public String exportReminder(@NonNull Reminder item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getRemindersDir();
         if (dir != null) {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_REMINDER;
             try {
-                writeFile(new File(dir, exportFileName), jsonData.get());
+                return writeFile(new File(dir, exportFileName), jsonData.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             LogUtil.i(TAG, "Couldn't find external storage!");
         }
+        return null;
     }
 
     @Nullable
@@ -523,8 +530,15 @@ public final class BackupTool {
         return total.toString();
     }
 
-    private void writeFile(@NonNull File file, @Nullable String data) throws IOException {
-        if (data == null) return;
+    /**
+     * Write data to file.
+     * @param file target file.
+     * @param data object data.
+     * @return Path to file
+     * @throws IOException
+     */
+    private String writeFile(@NonNull File file, @Nullable String data) throws IOException {
+        if (data == null) return null;
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         byte[] buffer = new byte[8192];
         int bytesRead;
@@ -546,6 +560,7 @@ public final class BackupTool {
         fw.write(output.toString());
         fw.close();
         output.close();
+        return file.toString();
     }
 
     public interface CreateCallback {
