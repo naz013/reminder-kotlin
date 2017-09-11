@@ -657,7 +657,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private void save() {
         if (fragment.save()) {
-            new UpdateFilesAsync(this).execute(mReminder);
+            if (mReminder != null) {
+                new UpdateFilesAsync(this).execute(mReminder);
+            }
             finish();
         }
     }
