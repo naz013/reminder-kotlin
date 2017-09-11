@@ -262,6 +262,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) return;
         switch (requestCode) {
             case CONTACTS_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
