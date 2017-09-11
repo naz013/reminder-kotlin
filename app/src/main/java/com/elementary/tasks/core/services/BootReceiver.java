@@ -39,7 +39,7 @@ public class BootReceiver extends BroadcastReceiver {
             alarmReceiver.enableBirthdayAlarm(context);
         }
         if (prefs.isSbNotificationEnabled()) {
-            context.startService(new Intent(context, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            Notifier.showReminderPermanent(context);
         }
         if (prefs.isContactAutoCheckEnabled()) {
             alarmReceiver.enableBirthdayCheckAlarm(context);
