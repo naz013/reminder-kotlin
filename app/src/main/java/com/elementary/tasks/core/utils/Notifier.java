@@ -3,16 +3,24 @@ package com.elementary.tasks.core.utils;
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.services.PermanentBirthdayService;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
+
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,6 +42,7 @@ public class Notifier {
 
     public static final String CHANNEL_REMINDER = "reminder.channel1";
     public static final String CHANNEL_SYSTEM = "reminder.channel2";
+    private static final int BIRTHDAY_PERM_ID = 356665;
 
     private Context mContext;
 
@@ -119,5 +128,54 @@ public class Notifier {
             wearableNotificationBuilder.setGroupSummary(false);
             manager.notify(item.getUniqueId(), wearableNotificationBuilder.build());
         }
+    }
+
+    public static void showBirthdayPermanent(Context context) {
+        Intent dismissIntent = new Intent(context, PermanentBirthdayService.class);
+        dismissIntent.setAction(PermanentBirthdayService.ACTION_HIDE);
+        PendingIntent piDismiss = PendingIntent.getService(context, 0, dismissIntent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        List<BirthdayItem> list = RealmDb.getInstance().getBirthdays(day, month);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_cake_nv_white);
+        }
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentTitle(context.getString(R.string.events));
+        if (list.size() > 0) {
+            BirthdayItem item = list.get(0);
+            builder.setContentText(item.getDate() + " | " + item.getName() + " | " + TimeUtil.getAgeFormatted(context, item.getDate()));
+            if (list.size() > 1) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (BirthdayItem birthdayItem : list) {
+                    stringBuilder.append(birthdayItem.getDate()).append(" | ").
+                            append(birthdayItem.getName()).append(" | ")
+                            .append(TimeUtil.getAgeFormatted(context, birthdayItem.getDate()));
+                    stringBuilder.append("\n");
+                }
+                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()));
+            }
+            if (Module.isLollipop()) {
+                builder.addAction(R.drawable.ic_clear_white_24dp, context.getString(R.string.ok), piDismiss);
+            } else {
+                builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss);
+            }
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            manager.notify(BIRTHDAY_PERM_ID, builder.build());
+        } else {
+            hideBirthdayPermanent(context);
+        }
+    }
+
+    public static void hideBirthdayPermanent(Context context) {
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        manager.cancel(BIRTHDAY_PERM_ID);
     }
 }

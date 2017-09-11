@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 
 /**
@@ -51,7 +52,7 @@ public class BootReceiver extends BroadcastReceiver {
         }
         if (prefs.isBirthdayPermanentEnabled()) {
             alarmReceiver.enableBirthdayPermanentAlarm(context);
-            context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            Notifier.showBirthdayPermanent(context);
         }
     }
 }
