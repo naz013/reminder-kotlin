@@ -38,21 +38,18 @@ public class ShoppingHolder extends RecyclerView.ViewHolder {
         binding = DataBindingUtil.bind(v);
         listHeader = binding.listHeader;
         binding.subBackground.setBackgroundColor(themeUtil.getCardStyle());
-        binding.itemCard.setOnLongClickListener(view -> {
-            if (mEventListener != null) {
-                mEventListener.onItemLongClicked(getAdapterPosition(), v);
-            }
-            return true;
-        });
-        binding.setClick(v1 -> {
-            switch (v1.getId()) {
-                case R.id.itemCard:
-                    if (mEventListener != null) {
-                        mEventListener.onItemClicked(getAdapterPosition(), binding.subBackground);
-                    }
-                    break;
-            }
-        });
+        if (mEventListener != null) {
+            binding.setClick(v1 -> {
+                switch (v1.getId()) {
+                    case R.id.itemCheck:
+                        mEventListener.onItemSwitched(getAdapterPosition(), v1);
+                        break;
+                    default:
+                        mEventListener.onItemClicked(getAdapterPosition(), v1);
+                        break;
+                }
+            });
+        }
     }
 
     public RoboTextView getListHeader() {
