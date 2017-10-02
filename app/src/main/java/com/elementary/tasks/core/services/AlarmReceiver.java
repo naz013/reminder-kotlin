@@ -148,7 +148,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         }
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_POSITION_DELAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (Module.isMarshmallow()) {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
@@ -161,7 +161,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void cancelPositionDelay(Context context, int id) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_POSITION_DELAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
