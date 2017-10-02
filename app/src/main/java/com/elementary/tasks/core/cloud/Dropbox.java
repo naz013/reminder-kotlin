@@ -237,7 +237,7 @@ public class Dropbox {
                 mDBApi.files().uploadBuilder(dbxFolder + fileName)
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis);
-            } catch (DbxException | IOException e) {
+            } catch (DbxException | IOException | NullPointerException e) {
                 LogUtil.e(TAG, "Something went wrong while uploading.", e);
             }
         } else {
