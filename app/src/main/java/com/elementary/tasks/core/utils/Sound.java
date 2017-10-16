@@ -157,7 +157,7 @@ public class Sound {
         }
     }
 
-    public void playAlarm(AssetFileDescriptor afd, boolean looping) {
+    public void playAlarm(AssetFileDescriptor afd) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
@@ -183,7 +183,7 @@ public class Sound {
         } else {
             mMediaPlayer.setAudioStreamType(stream);
         }
-        mMediaPlayer.setLooping(looping);
+        mMediaPlayer.setLooping(false);
         mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
         try {
             mMediaPlayer.prepareAsync();

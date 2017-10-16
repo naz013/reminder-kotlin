@@ -89,7 +89,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private ProgressDialog mSendDialog;
     private Handler handler = new Handler();
 
-    private int currVolume;
     private int streamVol;
     private int mVolume;
     private int mStream;
@@ -225,6 +224,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SoundStackHolder.getInstance().saveDefaultVolume(this);
         super.onCreate(savedInstanceState);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
@@ -252,10 +252,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (!mSound.isSaved()) {
             SoundStackHolder.getInstance().removeFromStack(this);
         }
-        if (!getPrefs().isSystemLoudnessEnabled() && left == 0) {
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            am.setStreamVolume(mStream, currVolume, 0);
-        }
+        SoundStackHolder.getInstance().restoreDefaultVolume(this);
     }
 
     @Override
@@ -633,9 +630,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (systemVol) {
             mStream = getPrefs().getSoundStream();
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
-            streamVol = currVolume;
-            mVolume = currVolume;
+            streamVol = SoundStackHolder.getInstance().getDefaultStreamVolume(mStream);
+            mVolume = streamVol;
             if (increasing) {
                 mVolume = 0;
                 handler.postDelayed(increaseVolume, 750);
@@ -643,8 +639,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             am.setStreamVolume(mStream, mVolume, 0);
         } else {
             AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            mStream = 3;
-            if (instanceCount.get() == 1) currVolume = am.getStreamVolume(mStream);
+            mStream = AudioManager.STREAM_MUSIC;
             float volPercent = (float) getMaxVolume() / Configs.MAX_VOLUME;
             int maxVol = am.getStreamMaxVolume(mStream);
             streamVol = (int) (maxVol * volPercent);
@@ -721,7 +716,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         LogUtil.d(TAG, "playDefaultMelody: ");
         try {
             AssetFileDescriptor afd = getAssets().openFd("sounds/beep.mp3");
-            mSound.playAlarm(afd, false);
+            mSound.playAlarm(afd);
         } catch (IOException e) {
             e.printStackTrace();
             mSound.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false);

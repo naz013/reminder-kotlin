@@ -1,6 +1,8 @@
 package com.elementary.tasks.core.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.media.AudioManager;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,6 +29,9 @@ public class SoundStackHolder {
 
     private static SoundStackHolder instance;
     private Map<Class, Sound> stack = new LinkedHashMap<>();
+    private int mMusicVolume = - 1;
+    private int mAlarmVolume = - 1;
+    private int mNotificationVolume = - 1;
 
     private SoundStackHolder() {
     }
@@ -40,6 +45,44 @@ public class SoundStackHolder {
             }
         }
         return instance;
+    }
+
+    public int getDefaultStreamVolume(int stream) {
+        switch (stream) {
+            case AudioManager.STREAM_ALARM:
+                return mAlarmVolume;
+            case AudioManager.STREAM_MUSIC:
+                return mMusicVolume;
+            case AudioManager.STREAM_NOTIFICATION:
+                return mNotificationVolume;
+        }
+        return 0;
+    }
+
+    public synchronized void saveDefaultVolume(Context context) {
+        if (mMusicVolume == -1 && mNotificationVolume == -1 && mAlarmVolume == -1) {
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (am != null) {
+                mMusicVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+                mAlarmVolume = am.getStreamVolume(AudioManager.STREAM_ALARM);
+                mNotificationVolume = am.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+            }
+        }
+    }
+
+    public synchronized void restoreDefaultVolume(Context context) {
+        if (isLast()) {
+            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (am != null) {
+                am.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
+                am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
+            }
+        }
+    }
+
+    private boolean isLast() {
+        return stack.isEmpty();
     }
 
     public void addToStack(Activity activity, Sound sound) {
