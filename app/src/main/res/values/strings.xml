@@ -622,5 +622,6 @@
     <string name="add_note">Add note</string>
     <string name="yearly">Anually</string>
     <string name="attach_file">Attach file</string>
+    <string name="location_tracking_service_running">Location tracking service running</string>
 
 </resources>
