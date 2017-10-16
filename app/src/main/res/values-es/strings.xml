@@ -618,5 +618,9 @@
     <string name="info_channel">Canal de información</string>
     <string name="add_note">Añadir la nota</string>
     <string name="yearly">Anualmente</string>
+    <string name="location_tracking_service_running">Servicio de seguimiento de ubicación en ejecución</string>
+    <string name="attach_file">Adjuntar archivo</string>
+    <string name="channel_for_other_info_notifications">Canal para otras notificaciones informativas.</string>
+    <string name="default_reminder_notifications">Notificaciones por recordatorio predeterminadas</string>
 
 </resources>

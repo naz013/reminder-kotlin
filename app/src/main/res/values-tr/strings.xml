@@ -618,5 +618,9 @@
     <string name="info_channel">Bilgi kanalı</string>
     <string name="add_note">Not ekle</string>
     <string name="yearly">Yıllık</string>
+    <string name="location_tracking_service_running">Konum izleme servisi çalışıyor</string>
+    <string name="attach_file">Dosya eki</string>
+    <string name="channel_for_other_info_notifications">Diğer bilgilendirme amaçlı bildirimler için kanal</string>
+    <string name="default_reminder_notifications">Varsayılan hatırlatma bildirimleri</string>
 
 </resources>

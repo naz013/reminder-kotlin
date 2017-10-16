@@ -618,5 +618,9 @@
     <string name="info_channel">Informační kanál</string>
     <string name="add_note">Přidat poznámku</string>
     <string name="yearly">Každoročně</string>
+    <string name="location_tracking_service_running">Služba sledování polohy je spuštěna</string>
+    <string name="attach_file">Přiložit soubor</string>
+    <string name="channel_for_other_info_notifications">Kanál pro další informační oznámení</string>
+    <string name="default_reminder_notifications">Výchozí oznámení upozornění</string>
 
 </resources>

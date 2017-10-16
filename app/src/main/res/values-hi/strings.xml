@@ -618,5 +618,9 @@
     <string name="info_channel">जानकारी चैनल</string>
     <string name="add_note">नोट जोड़े</string>
     <string name="yearly">हर साल</string>
+    <string name="location_tracking_service_running">स्थान ट्रैकिंग सेवा चल रही है</string>
+    <string name="attach_file">फ़ाइल जोड़ें</string>
+    <string name="channel_for_other_info_notifications">अन्य सूचनात्मक सूचनाओं के लिए चैनल</string>
+    <string name="default_reminder_notifications">डिफ़ॉल्ट अनुस्मारक सूचनाएं</string>
 
 </resources>
