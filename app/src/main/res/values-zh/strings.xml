@@ -617,5 +617,9 @@
     <string name="info_channel">信息频道</string>
     <string name="add_note">添加备注</string>
     <string name="yearly">每年</string>
+    <string name="location_tracking_service_running">位置跟踪服务运行</string>
+    <string name="attach_file">附加文件</string>
+    <string name="channel_for_other_info_notifications">其他信息通知的频道</string>
+    <string name="default_reminder_notifications">默认提醒通知</string>
 
 </resources>

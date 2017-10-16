@@ -618,5 +618,9 @@
     <string name="info_channel">Информационный канал</string>
     <string name="add_note">Добавить заметку</string>
     <string name="yearly">Ежегодно</string>
+    <string name="location_tracking_service_running">Служба отслеживания местоположений работает</string>
+    <string name="attach_file">Прикрепить файл</string>
+    <string name="channel_for_other_info_notifications">Канал для других информационных уведомлений</string>
+    <string name="default_reminder_notifications">Уведомления по умолчанию для напоминания</string>
 
 </resources>

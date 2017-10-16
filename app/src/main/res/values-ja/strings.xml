@@ -619,5 +619,9 @@
     <string name="info_channel">情報チャネル</string>
     <string name="add_note">メモを追加</string>
     <string name="yearly">毎年</string>
+    <string name="location_tracking_service_running">実行中の位置追跡サービス</string>
+    <string name="attach_file">ファイルを添付する</string>
+    <string name="channel_for_other_info_notifications">その他の情報通知用チャネル</string>
+    <string name="default_reminder_notifications">デフォルトのリマインダー通知</string>
 
 </resources>

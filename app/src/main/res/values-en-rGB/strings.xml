@@ -618,4 +618,8 @@
     <string name="info_channel">Info channel</string>
     <string name="add_note">Add note</string>
     <string name="yearly">Anually</string>
+    <string name="location_tracking_service_running">Location tracking service running</string>
+    <string name="attach_file">Attach file</string>
+    <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
+    <string name="default_reminder_notifications">Default reminder notifications</string>
 </resources>
