@@ -55,6 +55,7 @@ public class GeolocationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         mTracker.removeUpdates();
+        stopForeground(true);
         LogUtil.d(TAG, "geo service stop");
     }
 

@@ -56,7 +56,7 @@ public class SuperUtil {
     private static final String TAG = "SuperUtil";
 
     public static void stopService(Context context, Class clazz) {
-        context.startService(new Intent(context, clazz));
+        context.stopService(new Intent(context, clazz));
     }
 
     public static void startGpsTracking(Context context) {
