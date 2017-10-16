@@ -280,7 +280,6 @@
         <service
             android:name=".core.services.GeolocationService"
             android:exported="true" />
-        <service android:name=".core.services.CheckBirthdays" />
         <service
             android:name=".core.services.PermanentReminderService"
             android:exported="true" />
