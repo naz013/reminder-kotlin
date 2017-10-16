@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
@@ -16,6 +18,7 @@ import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -95,7 +98,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 break;
             case ACTION_BIRTHDAY_PERMANENT:
                 if (Prefs.getInstance(context).isBirthdayPermanentEnabled()) {
-                    context.startService(new Intent(context, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+                    Notifier.showBirthdayPermanent(context);
                 }
                 break;
             case ACTION_POSITION_DELAY:
@@ -239,7 +242,22 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     private void birthdayAction(Context context) {
         cancelBirthdayAlarm(context);
         enableBirthdayAlarm(context);
-        context.startService(new Intent(context, CheckBirthdays.class));
+        new Thread(() -> {
+            List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
+            if (list.size() > 0) {
+                for (BirthdayItem item : list) {
+                    showBirthday(context, item);
+                }
+            }
+        }).start();
+    }
+
+    private void showBirthday(Context context, BirthdayItem item) {
+        if (Prefs.getInstance(context).getReminderType() == 0) {
+            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUuId()));
+        } else {
+            ReminderUtils.showSimpleBirthday(context, item.getUuId());
+        }
     }
 
     public void enableBirthdayAlarm(Context context) {
