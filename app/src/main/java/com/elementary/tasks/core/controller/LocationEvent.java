@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 
 import com.elementary.tasks.core.services.AlarmReceiver;
@@ -43,10 +42,7 @@ class LocationEvent extends EventManager {
         if (new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId())) {
             return true;
         } else {
-            if (!SuperUtil.isServiceRunning(getContext(), GeolocationService.class)) {
-                getContext().startService(new Intent(getContext(), GeolocationService.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
+            SuperUtil.startGpsTracking(getContext());
             return true;
         }
     }
@@ -65,7 +61,7 @@ class LocationEvent extends EventManager {
     private void stopTracking(boolean isPaused) {
         List<Reminder> list = RealmDb.getInstance().getGpsReminders();
         if (list.size() == 0) {
-            getContext().stopService(new Intent(getContext(), GeolocationService.class));
+            SuperUtil.stopService(getContext(), GeolocationService.class);
         }
         boolean hasActive = false;
         for (Reminder item : list) {
@@ -92,7 +88,7 @@ class LocationEvent extends EventManager {
             }
         }
         if (!hasActive) {
-            getContext().stopService(new Intent(getContext(), GeolocationService.class));
+            SuperUtil.stopService(getContext(), GeolocationService.class);
         }
     }
 
@@ -112,10 +108,7 @@ class LocationEvent extends EventManager {
     public boolean resume() {
         if (getReminder().isActive()) {
             boolean b = new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId());
-            if (!b && !SuperUtil.isServiceRunning(getContext(), GeolocationService.class)) {
-                getContext().startService(new Intent(getContext(), GeolocationService.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
+            if (!b) SuperUtil.startGpsTracking(getContext());
         }
         return true;
     }
@@ -130,8 +123,7 @@ class LocationEvent extends EventManager {
         if (isActive()) {
             return stop();
         } else {
-            getReminder().setLocked(false)
-                    .setNotificationShown(false);
+            getReminder().setLocked(false).setNotificationShown(false);
             super.save();
             return start();
         }

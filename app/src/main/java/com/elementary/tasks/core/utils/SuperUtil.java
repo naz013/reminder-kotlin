@@ -26,6 +26,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
 import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.elementary.tasks.core.interfaces.LCAMListener;
+import com.elementary.tasks.core.services.GeolocationService;
 import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.elementary.tasks.voice.ConversationActivity;
 import com.google.android.gms.common.ConnectionResult;
@@ -53,6 +54,23 @@ import java.util.Locale;
 public class SuperUtil {
 
     private static final String TAG = "SuperUtil";
+
+    public static void stopService(Context context, Class clazz) {
+        context.startService(new Intent(context, clazz));
+    }
+
+    public static void startGpsTracking(Context context) {
+        if (SuperUtil.isServiceRunning(context, GeolocationService.class)) {
+            return;
+        }
+        Intent intent = new Intent(context, GeolocationService.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Module.isO()) {
+            context.startForegroundService(intent);
+        } else {
+            context.startService(intent);
+        }
+    }
 
     public static boolean isHeadsetUsing(Context context) {
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

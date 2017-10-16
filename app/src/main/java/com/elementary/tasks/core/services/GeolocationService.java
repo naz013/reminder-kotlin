@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.services;
 
-import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
@@ -40,6 +38,7 @@ import com.elementary.tasks.reminder.models.Reminder;
 public class GeolocationService extends Service {
 
     private static final String TAG = "GeolocationService";
+    public static final int NOTIFICATION_ID = 1245;
 
     private LocationTracker mTracker;
     private boolean isNotificationEnabled;
@@ -70,6 +69,7 @@ public class GeolocationService extends Service {
         isNotificationEnabled = Prefs.getInstance(getApplicationContext()).isDistanceNotificationEnabled();
         stockRadius = Prefs.getInstance(getApplicationContext()).getRadius();
         mTracker = new LocationTracker(getApplicationContext(), mLocationCallback);
+        showDefaultNotification();
         return START_STICKY;
     }
 
@@ -174,7 +174,24 @@ public class GeolocationService extends Service {
         } else {
             builder.setSmallIcon(R.drawable.ic_navigation_nv_white);
         }
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyMgr.notify(reminder.getUniqueId(), builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
+    }
+
+    private void showDefaultNotification() {
+        if (!isNotificationEnabled) return;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), Notifier.CHANNEL_SYSTEM);
+        if (Module.isPro()) {
+            builder.setContentText(getString(R.string.app_name_pro));
+        } else {
+            builder.setContentText(getString(R.string.app_name));
+        }
+
+        builder.setContentTitle(getString(R.string.location_tracking_service_running));
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_navigation_white_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_navigation_nv_white);
+        }
+        startForeground(NOTIFICATION_ID, builder.build());
     }
 }

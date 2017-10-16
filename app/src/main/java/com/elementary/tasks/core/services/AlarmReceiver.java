@@ -102,10 +102,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 }
                 break;
             case ACTION_POSITION_DELAY:
-                if (!SuperUtil.isServiceRunning(context, GeolocationService.class)) {
-                    context.startService(new Intent(context, GeolocationService.class)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                }
+                SuperUtil.startGpsTracking(context);
                 break;
         }
     }
