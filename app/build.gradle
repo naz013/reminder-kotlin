@@ -18,8 +18,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 183
-        versionName '6.2.5'
+        versionCode 184
+        versionName '6.2.6'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -60,7 +60,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 155
+            versionCode 156
         }
     }
     packagingOptions {
@@ -152,27 +152,27 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation "com.android.support:support-emoji-appcompat:26.1.0"
 
-    implementation 'com.google.android.gms:play-services-auth:11.4.0'
-    implementation 'com.google.android.gms:play-services-drive:11.4.0'
-    implementation 'com.google.android.gms:play-services-location:11.4.0'
-    implementation 'com.google.android.gms:play-services-maps:11.4.0'
-    implementation 'com.google.android.gms:play-services-analytics:11.4.0'
-    implementation 'com.google.android.gms:play-services-wearable:11.4.0'
-    implementation('com.google.firebase:firebase-messaging:11.4.0') {
+    implementation 'com.google.android.gms:play-services-auth:11.4.2'
+    implementation 'com.google.android.gms:play-services-drive:11.4.2'
+    implementation 'com.google.android.gms:play-services-location:11.4.2'
+    implementation 'com.google.android.gms:play-services-maps:11.4.2'
+    implementation 'com.google.android.gms:play-services-analytics:11.4.2'
+    implementation 'com.google.android.gms:play-services-wearable:11.4.2'
+    implementation('com.google.firebase:firebase-messaging:11.4.2') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
-    implementation('com.google.firebase:firebase-crash:11.4.0') {
+    implementation('com.google.firebase:firebase-crash:11.4.2') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
 
     implementation 'com.android.support:multidex:1.0.2'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.1.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.2.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'jp.wasabeef:picasso-transformations:2.1.2'
