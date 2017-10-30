@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
@@ -22,6 +21,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -146,11 +146,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private Runnable increaseVolume = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "increaseVolume -> run: " + mVolume + ", " + streamVol);
             if (mVolume < streamVol) {
                 mVolume++;
                 handler.postDelayed(increaseVolume, 750);
-                AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                am.setStreamVolume(mStream, mVolume, 0);
+                AudioManager am = SoundStackHolder.getInstance().getAudioManager();
+                if (am != null) am.setStreamVolume(mStream, mVolume, 0);
             } else handler.removeCallbacks(increaseVolume);
         }
     };
@@ -224,7 +225,8 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SoundStackHolder.getInstance().saveDefaultVolume(this);
+        SoundStackHolder.getInstance().init(this);
+        SoundStackHolder.getInstance().saveDefaultVolume();
         super.onCreate(savedInstanceState);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
@@ -252,7 +254,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (!mSound.isSaved()) {
             SoundStackHolder.getInstance().removeFromStack(this);
         }
-        SoundStackHolder.getInstance().restoreDefaultVolume(this);
+        SoundStackHolder.getInstance().restoreDefaultVolume();
     }
 
     @Override
@@ -622,34 +624,28 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void setPlayerVolume() {
-        if (SuperUtil.isHeadsetUsing(this)) {
-            return;
-        }
+        if (SuperUtil.isHeadsetUsing(this)) return;
+        if (!SuperUtil.hasVolumePermission(this)) return;
+
+        AudioManager am = SoundStackHolder.getInstance().getAudioManager();
+        if (am == null) return;
+
         boolean systemVol = getPrefs().isSystemLoudnessEnabled();
         boolean increasing = getPrefs().isIncreasingLoudnessEnabled();
         if (systemVol) {
             mStream = getPrefs().getSoundStream();
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            streamVol = SoundStackHolder.getInstance().getDefaultStreamVolume(mStream);
-            mVolume = streamVol;
-            if (increasing) {
-                mVolume = 0;
-                handler.postDelayed(increaseVolume, 750);
-            }
-            am.setStreamVolume(mStream, mVolume, 0);
         } else {
-            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             mStream = AudioManager.STREAM_MUSIC;
-            float volPercent = (float) getMaxVolume() / Configs.MAX_VOLUME;
-            int maxVol = am.getStreamMaxVolume(mStream);
-            streamVol = (int) (maxVol * volPercent);
-            mVolume = streamVol;
-            if (increasing) {
-                mVolume = 0;
-                handler.postDelayed(increaseVolume, 750);
-            }
-            am.setStreamVolume(mStream, mVolume, 0);
         }
+        float volPercent = (float) getMaxVolume() / Configs.MAX_VOLUME;
+        int maxVol = am.getStreamMaxVolume(mStream);
+        streamVol = (int) (maxVol * volPercent);
+        mVolume = streamVol;
+        if (increasing) {
+            mVolume = 0;
+            handler.postDelayed(increaseVolume, 750);
+        }
+        am.setStreamVolume(mStream, mVolume, 0);
     }
 
     protected final void showProgressDialog(String message) {

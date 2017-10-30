@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
+import android.support.annotation.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public class SoundStackHolder {
     private int mMusicVolume = - 1;
     private int mAlarmVolume = - 1;
     private int mNotificationVolume = - 1;
+    @Nullable
+    private AudioManager audioManager;
 
     private SoundStackHolder() {
     }
@@ -47,6 +50,17 @@ public class SoundStackHolder {
         return instance;
     }
 
+    public void init(Context context) {
+        if (audioManager != null) return;
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) audioManager.setMode(AudioManager.MODE_NORMAL);
+    }
+
+    @Nullable
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
+
     public int getDefaultStreamVolume(int stream) {
         switch (stream) {
             case AudioManager.STREAM_ALARM:
@@ -59,25 +73,26 @@ public class SoundStackHolder {
         return 0;
     }
 
-    public synchronized void saveDefaultVolume(Context context) {
+    public synchronized void saveDefaultVolume() {
         if (mMusicVolume == -1 && mNotificationVolume == -1 && mAlarmVolume == -1) {
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (am != null) {
-                mMusicVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAlarmVolume = am.getStreamVolume(AudioManager.STREAM_ALARM);
-                mNotificationVolume = am.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+            if (audioManager != null) {
+                mMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                mAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+                mNotificationVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
             }
         }
     }
 
-    public synchronized void restoreDefaultVolume(Context context) {
+    public synchronized void restoreDefaultVolume() {
         if (isLast()) {
-            AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (am != null) {
-                am.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
-                am.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
-                am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
+            if (audioManager != null) {
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
+                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
             }
+            mMusicVolume = -1;
+            mNotificationVolume = -1;
+            mAlarmVolume = -1;
         }
     }
 

@@ -19,6 +19,7 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
+import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -45,7 +46,6 @@ import java.util.Locale;
 
 public class NotificationSettingsFragment extends BaseSettingsFragment {
 
-    private static final String TAG = "NotificationSettings";
     private static final int MELODY_CODE = 125;
 
     private FragmentSettingsNotificationBinding binding;
@@ -364,6 +364,22 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void changeIncreasePrefs() {
+        if (SuperUtil.hasVolumePermission(getContext())) {
+            changeIncrease();
+        } else {
+            openNotificationsSettings();
+        }
+
+    }
+
+    private void openNotificationsSettings() {
+        if (Module.isNougat()) {
+            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            getActivity().startActivityForResult(intent, 1248);
+        }
+    }
+
+    private void changeIncrease() {
         boolean isChecked = binding.increasePrefs.isChecked();
         binding.increasePrefs.setChecked(!isChecked);
         getPrefs().setIncreasingLoudnessEnabled(!isChecked);
@@ -375,6 +391,10 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void showLoudnessDialog() {
+        if (!SuperUtil.hasVolumePermission(getContext())) {
+            openNotificationsSettings();
+            return;
+        }
         AlertDialog.Builder builder = Dialogues.getDialog(getContext());
         builder.setTitle(R.string.loudness);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(getContext()));
@@ -409,7 +429,6 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private void initLoudnessPrefs() {
         binding.volumePrefs.setOnClickListener(mLoudnessClick);
-        binding.volumePrefs.setReverseDependentView(binding.systemPrefs);
         showLoudness();
     }
 
@@ -497,9 +516,11 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
     }
 
     private void changeSystemLoudnessPrefs() {
-        boolean isChecked = binding.systemPrefs.isChecked();
-        binding.systemPrefs.setChecked(!isChecked);
-        getPrefs().setSystemLoudnessEnabled(!isChecked);
+        if (SuperUtil.hasVolumePermission(getContext())) {
+            boolean isChecked = binding.systemPrefs.isChecked();
+            binding.systemPrefs.setChecked(!isChecked);
+            getPrefs().setSystemLoudnessEnabled(!isChecked);
+        } else openNotificationsSettings();
     }
 
     private void initSystemLoudnessPrefs() {
