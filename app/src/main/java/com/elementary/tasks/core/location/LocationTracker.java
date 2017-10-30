@@ -1,10 +1,13 @@
 package com.elementary.tasks.core.location;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 import com.elementary.tasks.core.utils.Prefs;
 
@@ -24,7 +27,6 @@ import com.elementary.tasks.core.utils.Prefs;
  * limitations under the License.
  */
 
-@SuppressWarnings("MissingPermission")
 public class LocationTracker implements LocationListener {
 
     private Context mContext;
@@ -73,6 +75,12 @@ public class LocationTracker implements LocationListener {
         long time = (Prefs.getInstance(mContext).getTrackTime() * 1000) * 2;
         int distance = Prefs.getInstance(mContext).getTrackDistance() * 2;
         if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(mContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(mContext,
+                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, time, distance, this);
         } else {
             mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance, this);
