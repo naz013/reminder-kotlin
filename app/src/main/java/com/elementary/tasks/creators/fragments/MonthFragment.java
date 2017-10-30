@@ -100,19 +100,14 @@ public class MonthFragment extends RepeatableTypeFragment {
     private DatePickerDialog.OnDateSetListener mDateSelect = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+            if (dayOfMonth > 28) {
+                getInterface().showSnackbar(getString(R.string.max_day_supported));
+                return;
+            }
             mDay = dayOfMonth;
             mMonth = monthOfYear;
             mYear = year;
-            final Calendar cal = Calendar.getInstance();
-            cal.set(year, monthOfYear, dayOfMonth);
-            if (mDay > 28) {
-                getInterface().showSnackbar(getString(R.string.max_day_supported));
-            }
-            String dayStr;
-            if (mDay > 28) mDay = 28;
-            if (mDay < 10) dayStr = "0" + mDay;
-            else dayStr = String.valueOf(mDay);
-            binding.monthDayField.setText(dayStr);
+            binding.monthDayField.setText(getZeroedInt(mDay));
         }
     };
     public View.OnClickListener dateClick = v -> TimeUtil.showDatePicker(getActivity(), mDateSelect, mYear, mMonth, mDay);
@@ -231,14 +226,11 @@ public class MonthFragment extends RepeatableTypeFragment {
     }
 
     private void showSelectedDay() {
-        String dayStr;
         if (mDay == 0) {
             mDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         }
         if (mDay > 28) mDay = 28;
-        if (mDay < 10) dayStr = "0" + mDay;
-        else dayStr = String.valueOf(mDay);
-        binding.monthDayField.setText(dayStr);
+        binding.monthDayField.setText(getZeroedInt(mDay));
     }
 
     private void changeUi(boolean b) {

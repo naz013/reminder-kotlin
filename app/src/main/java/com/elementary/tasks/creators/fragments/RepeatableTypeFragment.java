@@ -66,6 +66,14 @@ abstract class RepeatableTypeFragment extends TypeFragment {
         }
     }
 
+    protected String getZeroedInt(int v) {
+        if (v < 9) {
+            return  "0" + v;
+        } else {
+            return String.valueOf(v);
+        }
+    }
+
     private void saveLimit(int progress) {
         int repeatLimit = progress;
         if (progress == 0) repeatLimit = -1;

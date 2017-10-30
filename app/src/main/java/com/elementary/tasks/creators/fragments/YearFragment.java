@@ -96,14 +96,13 @@ public class YearFragment extends RepeatableTypeFragment {
         }
     };
     private DatePickerDialog.OnDateSetListener mDateSelect = (datePicker, year, monthOfYear, dayOfMonth) -> {
+        if (monthOfYear == 1 && dayOfMonth > 28) {
+            getInterface().showSnackbar(getString(R.string.max_day_supported));
+            return;
+        }
         mDay = dayOfMonth;
         mMonth = monthOfYear;
         mYear = year;
-        final Calendar cal = Calendar.getInstance();
-        cal.set(year, monthOfYear, dayOfMonth);
-        if (mDay > 28) {
-            getInterface().showSnackbar(getString(R.string.max_day_supported));
-        }
         showSelectedDay();
     };
     public View.OnClickListener dateClick = v -> TimeUtil.showDatePicker(getActivity(), mDateSelect, mYear, mMonth, mDay);
@@ -224,20 +223,7 @@ public class YearFragment extends RepeatableTypeFragment {
     }
 
     private void showSelectedDay() {
-        String dayStr;
-        String monthStr;
-        if (mDay > 28) {
-            mDay = 28;
-        }
-        if (mDay < 10) {
-            dayStr = "0" + mDay;
-        } else dayStr = String.valueOf(mDay);
-        if (mMonth < 9) {
-            monthStr = "0" + (mMonth + 1);
-        } else {
-            monthStr = String.valueOf(mMonth + 1);
-        }
-        binding.monthDayField.setText(dayStr + "/" + monthStr);
+        binding.monthDayField.setText(getZeroedInt(mDay) + "/" + getZeroedInt(mMonth + 1));
     }
 
     protected Date updateTime(long millis) {
