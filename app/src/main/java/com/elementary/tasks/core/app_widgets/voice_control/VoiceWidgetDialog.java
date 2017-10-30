@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 
-import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.services.PermanentReminderService;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 
@@ -35,28 +32,15 @@ public class VoiceWidgetDialog extends Activity {
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
 
-    private Tracker mTracker;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil cs = ThemeUtil.getInstance(this);
         setTheme(cs.getDialogStyle());
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            ReminderApp application = (ReminderApp) getApplication();
-            mTracker = application.getDefaultTracker();
-        }
         startVoiceRecognitionActivity();
     }
 
     public void startVoiceRecognitionActivity() {
-        if (SuperUtil.isGooglePlayServicesAvailable(this)) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Voice control")
-                    .setAction("Widget")
-                    .setLabel("Widget")
-                    .build());
-        }
         SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false);
     }
 
