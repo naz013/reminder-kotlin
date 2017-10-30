@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -63,6 +64,8 @@ public class NotePreviewActivity extends ThemedActivity {
     private ActivityNotePreviewBinding binding;
 
     private ProgressDialog mProgress;
+
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,7 +253,7 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void closeWindow() {
         if (Module.isLollipop()) {
-            new Handler().post(this::finishAfterTransition);
+            mUiHandler.post(this::finishAfterTransition);
         } else {
             finish();
         }
