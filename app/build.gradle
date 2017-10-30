@@ -101,7 +101,7 @@ android {
 repositories {
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url 'https://jitpack.io' }
-    maven { url "https://maven.google.com" }
+    google()
     jcenter()
     mavenCentral()
 }
@@ -112,19 +112,19 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation('com.google.apis:google-api-services-calendar:v3-rev243-1.22.0') {
+    implementation('com.google.apis:google-api-services-calendar:v3-rev263-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.api-client:google-api-client-android:1.22.0') {
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.apis:google-api-services-drive:v3-rev72-1.22.0') {
+    implementation('com.google.apis:google-api-services-drive:v3-rev87-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.apis:google-api-services-tasks:v1-rev47-1.22.0') {
+    implementation('com.google.apis:google-api-services-tasks:v1-rev48-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.http-client:google-http-client-gson:1.22.0') {
+    implementation('com.google.http-client:google-http-client-gson:1.23.0') {
         exclude module: 'httpclient'
     }
 
