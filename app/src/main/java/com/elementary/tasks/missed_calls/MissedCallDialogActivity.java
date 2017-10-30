@@ -142,11 +142,6 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     }
 
     @Override
-    protected String getStats() {
-        return "Missed call reminder";
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (getPrefs().isWearEnabled()) {

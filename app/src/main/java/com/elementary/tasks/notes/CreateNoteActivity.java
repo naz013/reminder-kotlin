@@ -820,13 +820,8 @@ public class CreateNoteActivity extends ThemedActivity {
     protected void onDestroy() {
         super.onDestroy();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(taskField.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(taskField.getWindowToken(), 0);
         releaseSpeech();
-    }
-
-    @Override
-    protected String getStats() {
-        return "Note " + (mItem != null ? "edit" : "create");
     }
 
     @Override

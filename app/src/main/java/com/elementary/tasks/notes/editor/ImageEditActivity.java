@@ -213,9 +213,4 @@ public class ImageEditActivity extends ThemedActivity {
         setResult(RESULT_OK);
         finish();
     }
-
-    @Override
-    protected String getStats() {
-        return "Image edit";
-    }
 }
