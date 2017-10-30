@@ -59,11 +59,6 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
         showGroup();
     }
 
-    @Override
-    protected String getStats() {
-        return "Group " + (mItem != null ? "edit" : "create");
-    }
-
     private void showGroup() {
         if (mItem != null) {
             binding.editField.setText(mItem.getTitle());

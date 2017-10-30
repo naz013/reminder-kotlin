@@ -13,8 +13,6 @@ import com.crashlytics.android.answers.Answers;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
 
 import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
@@ -48,8 +46,6 @@ public class ReminderApp extends MultiDexApplication {
     private static final String NAME_DB_PRO = "reminder_db_pro";
 
     private static final long DB_VERSION = 3;
-
-    private Tracker mTracker;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -90,14 +86,6 @@ public class ReminderApp extends MultiDexApplication {
                 .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
-    }
-
-    public synchronized Tracker getDefaultTracker() {
-        if (mTracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            mTracker = analytics.newTracker(R.xml.global_tracker);
-        }
-        return mTracker;
     }
 
     private static class Migration implements RealmMigration {

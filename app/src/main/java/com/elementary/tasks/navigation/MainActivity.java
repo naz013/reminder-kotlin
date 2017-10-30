@@ -177,11 +177,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         showMainImage();
     }
 
-    @Override
-    protected String getStats() {
-        return "App opened";
-    }
-
     private boolean isRateDialogShowed() {
         int count = getPrefs().getRateCount();
         count++;

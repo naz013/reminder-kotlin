@@ -223,11 +223,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.repeatButton.setOnLongClickListener(this);
     }
 
-    @Override
-    protected String getStats() {
-        return "Reminder " + (mReminder != null ? "edit" : "create");
-    }
-
     private void loadReminder() {
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);

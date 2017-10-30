@@ -13,6 +13,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
@@ -89,6 +90,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private RepeatNotificationReceiver repeater = new RepeatNotificationReceiver();
     private BroadcastReceiver sentReceiver;
 
+    @Nullable
     private Reminder mReminder;
     private EventControl mControl;
     private boolean mIsResumed;
@@ -306,6 +308,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void showFile() {
+        if (mReminder == null) return;
         String path = mReminder.getAttachmentFile();
         if (path == null) return;
         MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -346,13 +349,8 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAppType() {
-        return Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) ||
-                Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP);
-    }
-
-    @Override
-    protected String getStats() {
-        return "Reminder " + mReminder.getType();
+        return mReminder != null && (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) ||
+                Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP));
     }
 
     @Override
@@ -398,6 +396,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     public void openApplication() {
+        if (mReminder == null) return;
         if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP)) {
             TelephonyUtil.openApp(mReminder.getTarget(), this);
         } else {
@@ -465,6 +464,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void sendSMS() {
+        if (mReminder == null) return;
         if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
             Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS);
             return;
@@ -486,6 +486,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoCallEnabled() {
+        if (mReminder == null) return false;
         boolean is = getPrefs().isAutoCallEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
@@ -494,6 +495,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoLaunchEnabled() {
+        if (mReminder == null) return false;
         boolean is = getPrefs().isAutoLaunchEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
@@ -502,6 +504,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isAutoEnabled() {
+        if (mReminder == null) return false;
         boolean is = getPrefs().isAutoSmsEnabled();
         if (!isGlobal()) {
             is = mReminder.isAuto();
@@ -510,6 +513,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void editReminder() {
+        if (mReminder == null) return;
         mControl.stop();
         removeFlags();
         cancelTasks();
@@ -518,6 +522,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isRepeatEnabled() {
+        if (mReminder == null) return false;
         boolean isRepeat = getPrefs().isNotificationRepeatEnabled();
         if (!isGlobal()) {
             isRepeat = mReminder.isRepeatNotification();
@@ -526,6 +531,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private boolean isTtsEnabled() {
+        if (mReminder == null) return false;
         boolean isTTS = getPrefs().isTtsEnabled();
         if (!isGlobal()) {
             isTTS = mReminder.isNotifyByVoice();
@@ -535,6 +541,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void loadData() {
+        if (mReminder == null) return;
         shoppingAdapter = new ShopListRecyclerAdapter(this, mReminder.getShoppings(),
                 new ShopListRecyclerAdapter.ActionListener() {
                     @Override
@@ -557,6 +564,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void sendDataToWear() {
+        if (mReminder == null) return;
         boolean silentSMS = getPrefs().isAutoSmsEnabled();
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && silentSMS) {
             return;
@@ -575,6 +583,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void call() {
+        if (mReminder == null) return;
         mControl.next();
         removeFlags();
         cancelTasks();
@@ -617,6 +626,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void makeCall() {
+        if (mReminder == null) return;
         if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(mReminder.getTarget(), this);
         } else {
@@ -672,6 +682,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected String getMelody() {
+        if (mReminder == null) return "";
         return mReminder.getMelodyPath();
     }
 
@@ -682,6 +693,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isVibrate() {
+        if (mReminder == null) return false;
         boolean isVibrate = getPrefs().isVibrateEnabled();
         if (!isGlobal()) isVibrate = mReminder.isVibrate();
         return isVibrate;
@@ -689,21 +701,25 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected String getSummary() {
+        if (mReminder == null) return "";
         return mReminder.getSummary();
     }
 
     @Override
     protected String getUuId() {
+        if (mReminder == null) return "";
         return mReminder.getUuId();
     }
 
     @Override
     protected int getId() {
+        if (mReminder == null) return 0;
         return mReminder.getUniqueId();
     }
 
     @Override
     protected int getLedColor() {
+        if (mReminder == null) return 0;
         if (Module.isPro()) {
             if (mReminder.getColor() != -1) {
                 return LED.getLED(mReminder.getColor());
@@ -716,6 +732,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isAwakeDevice() {
+        if (mReminder == null) return false;
         boolean is = getPrefs().isDeviceAwakeEnabled();
         if (!isGlobal()) is = mReminder.isAwake();
         return is;
@@ -723,11 +740,12 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected boolean isGlobal() {
-        return mReminder.isUseGlobal();
+        return mReminder != null && mReminder.isUseGlobal();
     }
 
     @Override
     protected boolean isUnlockDevice() {
+        if (mReminder == null) return false;
         boolean is = getPrefs().isDeviceUnlockEnabled();
         if (!isGlobal()) is = mReminder.isUnlock();
         return is;
@@ -735,6 +753,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getMaxVolume() {
+        if (mReminder == null) return 25;
         if (!isGlobal() && mReminder.getVolume() != -1) return mReminder.getVolume();
         else return getPrefs().getLoudness();
     }

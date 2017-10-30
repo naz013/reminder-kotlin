@@ -202,11 +202,6 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     @Override
-    protected String getStats() {
-        return "Birthday reminder";
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (getPrefs().isWearEnabled()) {

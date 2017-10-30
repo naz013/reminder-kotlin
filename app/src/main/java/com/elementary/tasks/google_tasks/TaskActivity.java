@@ -125,11 +125,6 @@ public class TaskActivity extends ThemedActivity {
         switchDate();
     }
 
-    @Override
-    protected String getStats() {
-        return "Google Task " + (mItem != null ? "edit" : "create");
-    }
-
     private void initTaskEdit(String id) {
         binding.toolbar.setTitle(R.string.edit_task);
         mItem = RealmDb.getInstance().getTask(id);

@@ -110,7 +110,7 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
     protected void onPause() {
         super.onPause();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(binding.searchField.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(binding.searchField.getWindowToken(), 0);
     }
 
     @Override

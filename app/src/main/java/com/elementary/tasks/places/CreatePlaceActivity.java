@@ -70,11 +70,6 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
                 .commit();
     }
 
-    @Override
-    protected String getStats() {
-        return "Place " + (mItem != null ? "edit" : "create");
-    }
-
     private void loadPlace() {
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
