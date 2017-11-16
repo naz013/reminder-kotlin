@@ -176,7 +176,10 @@ public class DayViewFragment extends BaseCalendarFragment {
             calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
         }
         CalendarPagerAdapter pagerAdapter = new CalendarPagerAdapter(Module.isJellyMR2() ? getChildFragmentManager() : getFragmentManager(), pagerData);
-        binding.pager.setAdapter(pagerAdapter);
+        try {
+            binding.pager.setAdapter(pagerAdapter);
+        } catch (IllegalStateException ignored) {
+        }
         binding.pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
