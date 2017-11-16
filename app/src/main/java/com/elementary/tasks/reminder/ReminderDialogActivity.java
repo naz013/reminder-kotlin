@@ -92,6 +92,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Nullable
     private Reminder mReminder;
+    @Nullable
     private EventControl mControl;
     private boolean mIsResumed;
 
@@ -328,13 +329,14 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         }
     }
 
-    private String fileExt(String url) {
+    @NonNull
+    private String fileExt(@Nullable String url) {
         if (url == null) return "";
         if (url.contains("?")) {
             url = url.substring(0, url.indexOf("?"));
         }
         if (url.lastIndexOf(".") == -1) {
-            return null;
+            return "";
         } else {
             String ext = url.substring(url.lastIndexOf(".") + 1);
             if (ext.contains("%")) {
@@ -356,7 +358,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
@@ -364,7 +366,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
@@ -453,7 +455,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             } else if (item1 == 11) {
                 x = 60 * 24 * 7;
             }
-            mControl.setDelay(x);
+            if (mControl != null) mControl.setDelay(x);
             Toast.makeText(this, getString(R.string.reminder_snoozed), Toast.LENGTH_SHORT).show();
             dialog.dismiss();
             removeFlags();
@@ -513,7 +515,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void editReminder() {
-        if (mReminder == null) return;
+        if (mReminder == null || mControl == null) return;
         mControl.stop();
         removeFlags();
         cancelTasks();
@@ -583,7 +585,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void call() {
-        if (mReminder == null) return;
+        if (mReminder == null || mControl == null) return;
         mControl.next();
         removeFlags();
         cancelTasks();
@@ -636,35 +638,43 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void delay() {
-        int delay = getPrefs().getSnoozeTime();
-        mControl.setDelay(delay);
-        removeFlags();
-        cancelTasks();
+        if (mControl != null) {
+            int delay = getPrefs().getSnoozeTime();
+            mControl.setDelay(delay);
+            removeFlags();
+            cancelTasks();
+        }
         finish();
     }
 
     @Override
     protected void cancel() {
-        mControl.stop();
-        removeFlags();
-        cancelTasks();
+        if (mControl != null) {
+            mControl.stop();
+            removeFlags();
+            cancelTasks();
+        }
         finish();
     }
 
     @Override
     protected void favourite() {
-        mControl.next();
-        removeFlags();
-        cancelTasks();
-        showFavouriteNotification();
+        if (mControl != null) {
+            mControl.next();
+            removeFlags();
+            cancelTasks();
+            showFavouriteNotification();
+        }
         finish();
     }
 
     @Override
     protected void ok() {
-        mControl.next();
-        removeFlags();
-        cancelTasks();
+        if (mControl != null) {
+            mControl.next();
+            removeFlags();
+            cancelTasks();
+        }
         finish();
     }
 

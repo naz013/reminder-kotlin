@@ -7,6 +7,8 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -72,11 +74,14 @@ public class TaskActivity extends ThemedActivity {
     private boolean isReminder = false;
     private boolean isDate = false;
 
+    @Nullable
     private TaskItem mItem;
+    @Nullable
     private ProgressDialog mDialog;
 
     private static final int MENU_ITEM_DELETE = 12;
     private static final int MENU_ITEM_MOVE = 14;
+    @NonNull
     private TasksCallback mSimpleCallback = new TasksCallback() {
         @Override
         public void onFailed() {
@@ -158,12 +163,14 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void showReminder() {
-        Reminder item = RealmDb.getInstance().getReminder(mItem.getUuId());
-        if (item != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
-            timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
-            isReminder = true;
+        if (mItem != null) {
+            Reminder item = RealmDb.getInstance().getReminder(mItem.getUuId());
+            if (item != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
+                timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
+                isReminder = true;
+            }
         }
     }
 
@@ -264,25 +271,27 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void moveTask(String listId) {
-        String initListId = mItem.getListId();
-        if (!listId.matches(initListId)) {
-            mItem.setListId(listId);
-            showProgressDialog(getString(R.string.moving_task));
-            new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, new TasksCallback() {
-                @Override
-                public void onFailed() {
-                    hideDialog();
-                }
+        if (mItem != null) {
+            String initListId = mItem.getListId();
+            if (!listId.matches(initListId)) {
+                mItem.setListId(listId);
+                showProgressDialog(getString(R.string.moving_task));
+                new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, new TasksCallback() {
+                    @Override
+                    public void onFailed() {
+                        hideDialog();
+                    }
 
-                @Override
-                public void onComplete() {
-                    RealmDb.getInstance().saveObject(mItem);
-                    hideDialog();
-                    finish();
-                }
-            }).execute();
-        } else {
-            Toast.makeText(this, getString(R.string.this_is_same_list), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onComplete() {
+                        RealmDb.getInstance().saveObject(mItem);
+                        hideDialog();
+                        finish();
+                    }
+                }).execute();
+            } else {
+                Toast.makeText(this, getString(R.string.this_is_same_list), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

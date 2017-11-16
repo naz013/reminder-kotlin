@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -57,6 +58,7 @@ import java.util.List;
 public class NotePreviewActivity extends ThemedActivity {
 
     private NoteItem mItem;
+    @Nullable
     private Reminder mReminder;
     private String mId;
 
@@ -80,9 +82,15 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void initReminderCard() {
         binding.reminderContainer.setVisibility(View.GONE);
-        binding.editReminder.setOnClickListener(v ->
-                startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, mReminder.getUuId())));
+        binding.editReminder.setOnClickListener(v -> editReminder());
         binding.deleteReminder.setOnClickListener(v -> showReminderDeleteDialog());
+    }
+
+    private void editReminder() {
+        if (mReminder != null) {
+            startActivity(new Intent(this, CreateReminderActivity.class)
+                    .putExtra(Constants.INTENT_ID, mReminder.getUuId()));
+        }
     }
 
     private void initImagesList() {
@@ -277,14 +285,20 @@ public class NotePreviewActivity extends ThemedActivity {
         builder.setMessage(R.string.delete_this_reminder);
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
-            EventControl control = EventControlFactory.getController(this, mReminder);
-            control.stop();
-            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
-            binding.reminderContainer.setVisibility(View.GONE);
+            deleteReminder();
         });
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void deleteReminder() {
+        if (mReminder != null) {
+            EventControl control = EventControlFactory.getController(this, mReminder);
+            control.stop();
+            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+            binding.reminderContainer.setVisibility(View.GONE);
+        }
     }
 
     private void deleteNote() {

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -107,6 +108,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private Toolbar toolbar;
     private Spinner spinner;
 
+    @Nullable
     private TypeFragment fragment;
 
     private boolean useGlobal = true;
@@ -127,8 +129,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private boolean isEditing;
     private String attachment;
 
+    @Nullable
     private Reminder mReminder;
 
+    @NonNull
     private AdapterView.OnItemSelectedListener mOnTypeSelectListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -232,7 +236,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             if (mReminder == null) {
                 return;
             }
-            getControl().pause();
+            EventControl control = getControl();
+            if (control != null) control.pause();
         } else if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();
@@ -249,8 +254,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         }
     }
 
+    @Nullable
     private EventControl getControl() {
-        return EventControlFactory.getController(this, mReminder);
+        if (mReminder != null) {
+            return EventControlFactory.getController(this, mReminder);
+        } else return null;
     }
 
     private void editReminder() {
@@ -326,18 +334,20 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void initParams() {
-        useGlobal = mReminder.isUseGlobal();
-        auto = mReminder.isAuto();
-        wake = mReminder.isAwake();
-        unlock = mReminder.isUnlock();
-        notificationRepeat = mReminder.isRepeatNotification();
-        voice = mReminder.isNotifyByVoice();
-        vibration = mReminder.isVibrate();
-        volume = mReminder.getVolume();
-        repeatLimit = mReminder.getRepeatLimit();
-        melodyPath = mReminder.getMelodyPath();
-        ledColor = mReminder.getColor();
-        updateMelodyIndicator();
+        if (mReminder != null) {
+            useGlobal = mReminder.isUseGlobal();
+            auto = mReminder.isAuto();
+            wake = mReminder.isAwake();
+            unlock = mReminder.isUnlock();
+            notificationRepeat = mReminder.isRepeatNotification();
+            voice = mReminder.isNotifyByVoice();
+            vibration = mReminder.isVibrate();
+            volume = mReminder.getVolume();
+            repeatLimit = mReminder.getRepeatLimit();
+            melodyPath = mReminder.getMelodyPath();
+            ledColor = mReminder.getColor();
+            updateMelodyIndicator();
+        }
     }
 
     private void updateMelodyIndicator() {
@@ -545,7 +555,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             }
         } else if (isEditing && mReminder != null) {
             if (!mReminder.isActive()) {
-                getControl().resume();
+                EventControl control = getControl();
+                if (control != null) control.resume();
             }
             finish();
         } else {
@@ -651,7 +662,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void save() {
-        if (fragment.save()) {
+        if (fragment != null && fragment.save()) {
             if (mReminder != null) {
                 new UpdateFilesAsync(this).execute(mReminder);
             }
@@ -956,7 +967,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public void onBackPressed() {
-        if (fragment.onBackPressed()) {
+        if (fragment != null && fragment.onBackPressed()) {
             closeScreen();
         }
     }

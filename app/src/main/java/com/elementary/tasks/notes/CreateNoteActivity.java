@@ -21,6 +21,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
@@ -123,15 +124,21 @@ public class CreateNoteActivity extends ThemedActivity {
     private RoboTextView remindDate, remindTime;
 
     private ActivityCreateNoteBinding binding;
+    @Nullable
     private ImagesGridAdapter mAdapter;
+    @Nullable
     private ProgressDialog mProgress;
 
+    @Nullable
     private NoteItem mItem;
+    @Nullable
     private Reminder mReminder;
     private AppBarLayout toolbar;
     private EditText taskField;
 
+    @Nullable
     private SpeechRecognizer speech = null;
+    @Nullable
     private Alert mAlerter;
 
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
@@ -244,7 +251,7 @@ public class CreateNoteActivity extends ThemedActivity {
             mColor = mItem.getColor();
             mFontStyle = mItem.getStyle();
             setText(mItem.getSummary());
-            mAdapter.setImages(mItem.getImages());
+            if (mAdapter != null) mAdapter.setImages(mItem.getImages());
             showReminder();
         } else {
             mColor = new Random().nextInt(16);
@@ -416,17 +423,21 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void editImage(int position) {
-        NoteImage image = mAdapter.getItem(position);
-        RealmDb.getInstance().saveImage(image);
-        startActivityForResult(new Intent(this, ImageEditActivity.class), EDIT_CODE);
-        this.mEditPosition = position;
+        if (mAdapter != null) {
+            NoteImage image = mAdapter.getItem(position);
+            RealmDb.getInstance().saveImage(image);
+            startActivityForResult(new Intent(this, ImageEditActivity.class), EDIT_CODE);
+            this.mEditPosition = position;
+        }
     }
 
     private void showReminder() {
-        mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
-        if (mReminder != null) {
-            setDateTime(mReminder.getEventTime());
-            ViewUtils.expand(remindContainer);
+        if (mItem != null) {
+            mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
+            if (mReminder != null) {
+                setDateTime(mReminder.getEventTime());
+                ViewUtils.expand(remindContainer);
+            }
         }
     }
 
@@ -453,7 +464,9 @@ public class CreateNoteActivity extends ThemedActivity {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
         }
-        TelephonyUtil.sendNote(file, this, mItem.getSummary());
+        if (mItem != null) {
+            TelephonyUtil.sendNote(file, this, mItem.getSummary());
+        }
     }
 
     private void setDateTime(String eventTime) {
@@ -475,7 +488,8 @@ public class CreateNoteActivity extends ThemedActivity {
 
     private boolean createObject() {
         String note = taskField.getText().toString().trim();
-        List<NoteImage> images = mAdapter.getImages();
+        List<NoteImage> images = new ArrayList<>();
+        if (mAdapter != null) images = mAdapter.getImages();
         if (TextUtils.isEmpty(note) && images.isEmpty()) {
             taskField.setError(getString(R.string.must_be_not_empty));
             return false;
@@ -496,7 +510,7 @@ public class CreateNoteActivity extends ThemedActivity {
             return;
         }
         boolean hasReminder = isReminderAttached();
-        if (!hasReminder) removeNoteFromReminder(mItem.getKey());
+        if (!hasReminder && mItem != null) removeNoteFromReminder(mItem.getKey());
         RealmDb.getInstance().saveObject(mItem);
         if (hasReminder) {
             Calendar calendar = Calendar.getInstance();
@@ -518,7 +532,8 @@ public class CreateNoteActivity extends ThemedActivity {
         mReminder.setNoteId(key);
         mReminder.setActive(true);
         mReminder.setRemoved(false);
-        mReminder.setSummary(mItem.getSummary());
+        if (mItem != null) mReminder.setSummary(mItem.getSummary());
+        else mReminder.setSummary("");
         GroupItem def = RealmDb.getInstance().getDefaultGroup();
         if (def != null) {
             mReminder.setGroupUuId(def.getUuId());
@@ -605,8 +620,10 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void deleteNote() {
-        RealmDb.getInstance().deleteNote(mItem);
-        new DeleteNoteFilesAsync(this).execute(mItem.getKey());
+        if (mItem != null) {
+            RealmDb.getInstance().deleteNote(mItem);
+            new DeleteNoteFilesAsync(this).execute(mItem.getKey());
+        }
         finish();
     }
 
@@ -681,8 +698,10 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void updateImage() {
-        NoteImage image = RealmDb.getInstance().getImage();
-        mAdapter.setImage(image, mEditPosition);
+        if (mAdapter != null) {
+            NoteImage image = RealmDb.getInstance().getImage();
+            mAdapter.setImage(image, mEditPosition);
+        }
     }
 
     private void getImageFromGallery(Intent data) {
@@ -702,7 +721,7 @@ public class CreateNoteActivity extends ThemedActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (bitmapImage != null) {
+        if (bitmapImage != null && mAdapter != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             mAdapter.addImage(new NoteImage(outputStream.toByteArray()));
