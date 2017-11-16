@@ -114,8 +114,11 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteRecursive(child);
+            File[] list = fileOrDirectory.listFiles();
+            if (list != null) {
+                for (File child : list) {
+                    deleteRecursive(child);
+                }
             }
         }
         fileOrDirectory.delete();
