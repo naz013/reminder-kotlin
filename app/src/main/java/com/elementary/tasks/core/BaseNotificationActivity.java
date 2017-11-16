@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
@@ -83,10 +84,15 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private static final String TAG = "BNActivity";
     private static final int MY_DATA_CHECK_CODE = 111;
 
+    @Nullable
     private Sound mSound;
+    @Nullable
     protected GoogleApiClient mGoogleApiClient;
+    @Nullable
     private TextToSpeech tts;
+    @Nullable
     private ProgressDialog mSendDialog;
+    @NonNull
     private Handler handler = new Handler();
 
     private int streamVol;
@@ -95,11 +101,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     private static AtomicInteger instanceCount = new AtomicInteger(0);
 
+    @NonNull
     protected TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(int status) {
             LogUtil.d(TAG, "onInit: ");
-            if (status == TextToSpeech.SUCCESS) {
+            if (status == TextToSpeech.SUCCESS && tts != null) {
                 int result = tts.setLanguage(getTtsLocale());
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     LogUtil.d(TAG, "This Language is not supported");
@@ -122,6 +129,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             }
         }
     };
+    @NonNull
     protected SendListener mSendListener = isSent -> {
         hideProgressDialog();
         if (isSent) {
@@ -130,6 +138,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             showSendingError();
         }
     };
+    @NonNull
     protected GoogleApiClient.ConnectionCallbacks mGoogleCallback = new GoogleApiClient.ConnectionCallbacks() {
         @Override
         public void onConnected(@Nullable Bundle bundle) {
@@ -142,7 +151,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
         }
     };
-
+    @NonNull
     private Runnable increaseVolume = new Runnable() {
         @Override
         public void run() {
@@ -155,7 +164,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             } else handler.removeCallbacks(increaseVolume);
         }
     };
-
+    @NonNull
     protected DataApi.DataListener mDataListener = dataEventBuffer -> {
         LogUtil.d(TAG, "Data received");
         for (DataEvent event : dataEventBuffer) {
@@ -251,7 +260,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         super.onDestroy();
         int left = instanceCount.decrementAndGet();
         LogUtil.d(TAG, "onDestroy: " + left);
-        if (!mSound.isSaved()) {
+        if (mSound != null && !mSound.isSaved()) {
             SoundStackHolder.getInstance().removeFromStack(this);
         }
         SoundStackHolder.getInstance().restoreDefaultVolume();
@@ -375,7 +384,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             tts.stop();
             tts.shutdown();
         }
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_STOP);
             DataMap map = putDataMapReq.getDataMap();
             map.putBoolean(SharedConst.KEY_STOP, true);
@@ -447,7 +456,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+        if (mSound != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
             mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
@@ -536,7 +545,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
-        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+        if (mSound != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
             LogUtil.d(TAG, "showReminderNotification: " + soundUri);
@@ -686,7 +695,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void discardMedia() {
-        mSound.stop();
+        if (mSound != null) mSound.stop();
     }
 
     protected void showWearNotification(String secondaryText) {
@@ -709,6 +718,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void playDefaultMelody() {
+        if (mSound == null) return;
         LogUtil.d(TAG, "playDefaultMelody: ");
         try {
             AssetFileDescriptor afd = getAssets().openFd("sounds/beep.mp3");
