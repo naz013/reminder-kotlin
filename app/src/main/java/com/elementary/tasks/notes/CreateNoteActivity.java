@@ -730,10 +730,12 @@ public class CreateNoteActivity extends ThemedActivity {
 
     private void getImageFromCamera() {
         addImageFromUri(mImageUri);
-        String pathFromURI = getRealPathFromURI(mImageUri);
-        File file = new File(pathFromURI);
-        if (file.exists()) {
-            file.delete();
+        if (mImageUri != null) {
+            String pathFromURI = getRealPathFromURI(mImageUri);
+            File file = new File(pathFromURI);
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 
