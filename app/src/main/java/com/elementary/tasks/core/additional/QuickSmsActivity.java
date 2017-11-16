@@ -2,8 +2,10 @@ package com.elementary.tasks.core.additional;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
@@ -14,6 +16,7 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
@@ -40,6 +43,8 @@ import java.util.List;
  */
 
 public class QuickSmsActivity extends ThemedActivity {
+
+    private static final int REQ_SMS = 425;
 
     private RecyclerView messagesList;
     private SelectableTemplatesAdapter mAdapter;
@@ -69,6 +74,10 @@ public class QuickSmsActivity extends ThemedActivity {
     }
 
     private void startSending() {
+        if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
+            Permissions.requestPermission(this, REQ_SMS, Permissions.SEND_SMS);
+            return;
+        }
         int position = mAdapter.getSelectedPosition();
         TemplateItem item = mAdapter.getItem(position);
         if (item != null) {
@@ -104,5 +113,18 @@ public class QuickSmsActivity extends ThemedActivity {
     @Override
     public void onBackPressed() {
         removeFlags();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length == 0) return;
+        switch (requestCode) {
+            case REQ_SMS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startSending();
+                }
+                break;
+        }
     }
 }
