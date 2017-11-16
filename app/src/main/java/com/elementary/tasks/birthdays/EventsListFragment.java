@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -149,7 +150,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void showActionDialog(Reminder reminder, View view) {
+    private void showActionDialog(@NonNull Reminder reminder, View view) {
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.move_to_trash)};
         Dialogues.showPopup(getContext(), view, item -> {

@@ -8,6 +8,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,19 +79,29 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private AdvancedMapFragment mGoogleMap;
 
     private String id;
-    private Reminder item;
+    @Nullable
+    private Reminder mReminder;
+    @NonNull
     private List<Long> list = new ArrayList<>();
+    @Nullable
     private NoteItem mNoteItem;
+    @Nullable
     private TaskItem mTaskItem;
+    @NonNull
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
+    @NonNull
     private ReadyListener mReadyCallback = object -> {
         if (object == null) return;
         if (object instanceof NoteItem) {
-            showNote((NoteItem) object);
+            this.mNoteItem = (NoteItem) object;
+            showNote();
         } else if (object instanceof TaskItem) {
-            showTask((TaskItem) object);
+            this.mTaskItem = (TaskItem) object;
+            showTask();
         }
     };
+    @NonNull
     private MapCallback mMapReadyCallback = new MapCallback() {
         @Override
         public void onMapReady() {
@@ -96,6 +109,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             showMapData();
         }
     };
+    @NonNull
     private GoogleMap.OnMarkerClickListener mOnMarkerClick = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
@@ -116,56 +130,60 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        item = RealmDb.getInstance().getReminder(id);
+        mReminder = RealmDb.getInstance().getReminder(id);
         loadInfo();
     }
 
-    private void showTask(TaskItem taskItem) {
-        this.mTaskItem = taskItem;
-        ListItemTaskBinding binding = ListItemTaskBinding.inflate(LayoutInflater.from(this));
-        binding.setTaskItem(taskItem);
-        binding.setClick(v -> startActivity(new Intent(ReminderPreviewActivity.this, TaskActivity.class)
-                .putExtra(Constants.INTENT_ID, mTaskItem.getTaskId())
-                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)));
-        this.binding.dataContainer.addView(binding.getRoot());
+    private void showTask() {
+        if (mTaskItem != null) {
+            ListItemTaskBinding binding = ListItemTaskBinding.inflate(LayoutInflater.from(this));
+            binding.setTaskItem(mTaskItem);
+            binding.setClick(v -> startActivity(new Intent(ReminderPreviewActivity.this, TaskActivity.class)
+                    .putExtra(Constants.INTENT_ID, mTaskItem.getTaskId())
+                    .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)));
+            this.binding.dataContainer.addView(binding.getRoot());
+        }
     }
 
-    private void showNote(NoteItem noteItem) {
-        this.mNoteItem = noteItem;
-        NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
-        binding.setNoteItem(noteItem);
-        binding.setClick(v -> startActivity(new Intent(this, NotePreviewActivity.class)
-                .putExtra(Constants.INTENT_ID, mNoteItem.getKey())));
-        this.binding.dataContainer.addView(binding.getRoot());
+    private void showNote() {
+        if (mNoteItem != null) {
+            NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
+            binding.setNoteItem(mNoteItem);
+            binding.setClick(v -> startActivity(new Intent(this, NotePreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, mNoteItem.getKey())));
+            this.binding.dataContainer.addView(binding.getRoot());
+        }
     }
 
     private void showMapData() {
-        Place place = item.getPlaces().get(0);
-        double lat = place.getLatitude();
-        double lon = place.getLongitude();
-        binding.mapContainer.setVisibility(View.VISIBLE);
-        binding.location.setVisibility(View.VISIBLE);
-        binding.location.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), item.getPlaces().size()));
-        mGoogleMap.addMarker(new LatLng(lat, lon), item.getSummary(), true, true, place.getRadius());
+        if (mReminder != null) {
+            Place place = mReminder.getPlaces().get(0);
+            double lat = place.getLatitude();
+            double lon = place.getLongitude();
+            binding.mapContainer.setVisibility(View.VISIBLE);
+            binding.location.setVisibility(View.VISIBLE);
+            binding.location.setText(String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.getLatitude(), place.getLongitude(), mReminder.getPlaces().size()));
+            mGoogleMap.addMarker(new LatLng(lat, lon), mReminder.getSummary(), true, true, place.getRadius());
+        }
     }
 
     private void loadInfo() {
-        if (item != null) {
-            binding.statusSwitch.setChecked(item.isActive());
-            if (!item.isActive()) {
+        if (mReminder != null) {
+            binding.statusSwitch.setChecked(mReminder.isActive());
+            if (!mReminder.isActive()) {
                 binding.statusText.setText(R.string.disabled);
             } else {
                 binding.statusText.setText(R.string.enabled4);
             }
-            binding.taskText.setText(item.getSummary());
-            binding.type.setText(ReminderUtils.getTypeString(this, item.getType()));
-            binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(item.getType()));
-            long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
+            binding.taskText.setText(mReminder.getSummary());
+            binding.type.setText(ReminderUtils.getTypeString(this, mReminder.getType()));
+            binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(mReminder.getType()));
+            long due = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime());
             if (due > 0) {
                 binding.time.setText(TimeUtil.getFullDateTime(due, getPrefs().is24HourFormatEnabled(), false));
-                String repeatStr = IntervalUtil.getInterval(this, item.getRepeatInterval());
-                if (Reminder.isBase(item.getType(), Reminder.BY_WEEK)) {
-                    repeatStr = ReminderUtils.getRepeatString(this, item.getWeekdays());
+                String repeatStr = IntervalUtil.getInterval(this, mReminder.getRepeatInterval());
+                if (Reminder.isBase(mReminder.getType(), Reminder.BY_WEEK)) {
+                    repeatStr = ReminderUtils.getRepeatString(this, mReminder.getWeekdays());
                 }
                 if (repeatStr != null) {
                     binding.repeat.setText(repeatStr);
@@ -176,20 +194,20 @@ public class ReminderPreviewActivity extends ThemedActivity {
                 binding.time.setVisibility(View.GONE);
                 binding.repeat.setVisibility(View.GONE);
             }
-            if (Reminder.isGpsType(item.getType())) {
+            if (Reminder.isGpsType(mReminder.getType())) {
                 initMap();
             } else {
                 binding.location.setVisibility(View.GONE);
                 binding.mapContainer.setVisibility(View.GONE);
             }
-            String numberStr = item.getTarget();
+            String numberStr = mReminder.getTarget();
             if (!TextUtils.isEmpty(numberStr)) {
                 binding.number.setText(numberStr);
             } else {
                 binding.number.setVisibility(View.GONE);
             }
 
-            String melodyStr = item.getMelodyPath();
+            String melodyStr = mReminder.getMelodyPath();
             File file;
             if (!TextUtils.isEmpty(melodyStr)) {
                 file = new File(melodyStr);
@@ -206,7 +224,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             binding.melody.setText(melodyStr);
 
             int catColor = 0;
-            GroupItem group = RealmDb.getInstance().getGroup(item.getGroupUuId());
+            GroupItem group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
             if (group != null) {
                 binding.group.setText(group.getTitle());
                 catColor = group.getColor();
@@ -218,16 +236,20 @@ public class ReminderPreviewActivity extends ThemedActivity {
             }
             binding.dataContainer.removeAllViewsInLayout();
             showAttachment();
-            new Thread(new NoteThread(mReadyCallback, item.getNoteId())).start();
-            new Thread(new TaskThread(mReadyCallback, item.getUuId())).start();
+            new Thread(new NoteThread(mReadyCallback, mReminder.getNoteId())).start();
+            new Thread(new TaskThread(mReadyCallback, mReminder.getUuId())).start();
         }
     }
 
     private void showAttachment() {
-        if (item.getAttachmentFile() != null) {
-            File file = new File(item.getAttachmentFile());
-            binding.attachmentView.setText(file.getName());
-            binding.attachmentView.setVisibility(View.VISIBLE);
+        if (mReminder != null) {
+            if (mReminder.getAttachmentFile() != null) {
+                File file = new File(mReminder.getAttachmentFile());
+                binding.attachmentView.setText(file.getName());
+                binding.attachmentView.setVisibility(View.VISIBLE);
+            } else {
+                binding.attachmentView.setVisibility(View.GONE);
+            }
         } else {
             binding.attachmentView.setVisibility(View.GONE);
         }
@@ -260,18 +282,22 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void editReminder() {
-        startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, item.getUuId()));
+        if (mReminder != null) {
+            startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, mReminder.getUuId()));
+        }
     }
 
     private void removeReminder() {
-        EventControl control = EventControlFactory.getController(this, item.setRemoved(true));
-        control.stop();
+        if (mReminder != null) {
+            EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
+            control.stop();
+        }
         closeWindow();
     }
 
     private void makeCopy() {
-        if (item != null) {
-            int type = item.getType();
+        if (mReminder != null) {
+            int type = mReminder.getType();
             if (!Reminder.isGpsType(type) && !Reminder.isSame(type, Reminder.BY_TIME)) {
                 showDialog();
             }
@@ -280,7 +306,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void closeWindow() {
         if (Module.isLollipop()) {
-            new Handler().post(this::finishAfterTransition);
+            mUiHandler.post(this::finishAfterTransition);
         } else {
             finish();
         }
@@ -322,24 +348,26 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void saveCopy(int which) {
         LogUtil.d(TAG, "saveCopy: " + which);
-        Reminder newItem = item.copy();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.setTimeInMillis(list.get(which));
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(newItem.getEventTime()));
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        while (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        if (mReminder != null) {
+            Reminder newItem = mReminder.copy();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.setTimeInMillis(list.get(which));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(newItem.getEventTime()));
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            while (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+            newItem.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
+            newItem.setStartTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
+            RealmDb.getInstance().saveObject(newItem);
+            EventControl control = EventControlFactory.getController(this, newItem);
+            control.start();
+            Toast.makeText(this, R.string.reminder_created, Toast.LENGTH_SHORT).show();
         }
-        newItem.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
-        newItem.setStartTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
-        RealmDb.getInstance().saveObject(newItem);
-        EventControl control = EventControlFactory.getController(this, newItem);
-        control.start();
-        Toast.makeText(this, R.string.reminder_created, Toast.LENGTH_SHORT).show();
     }
 
     private void initViews() {
@@ -348,12 +376,14 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void switchClick() {
-        EventControl control = EventControlFactory.getController(this, item);
-        if (!control.onOff()) {
-            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+        if (mReminder != null) {
+            EventControl control = EventControlFactory.getController(this, mReminder);
+            if (!control.onOff()) {
+                Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            }
+            mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
+            loadInfo();
         }
-        item = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
-        loadInfo();
     }
 
 

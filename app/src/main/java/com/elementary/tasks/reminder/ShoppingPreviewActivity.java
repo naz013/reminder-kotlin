@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -44,9 +47,13 @@ import com.elementary.tasks.reminder.models.ShopItem;
 public class ShoppingPreviewActivity extends ThemedActivity {
 
     private ActivityShoppingPreviewBinding binding;
+    @Nullable
     private ShopListRecyclerAdapter shoppingAdapter;
     private String id;
+    @Nullable
     private Reminder mReminder;
+    @NonNull
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,24 +102,26 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     }
 
     private void loadData() {
-        shoppingAdapter = new ShopListRecyclerAdapter(this, mReminder.getShoppings(),
-                new ShopListRecyclerAdapter.ActionListener() {
-                    @Override
-                    public void onItemCheck(int position, boolean isChecked) {
-                        ShopItem item = shoppingAdapter.getItem(position);
-                        item.setChecked(!item.isChecked());
-                        shoppingAdapter.updateData();
-                        RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
-                    }
+        if (mReminder != null) {
+            shoppingAdapter = new ShopListRecyclerAdapter(this, mReminder.getShoppings(),
+                    new ShopListRecyclerAdapter.ActionListener() {
+                        @Override
+                        public void onItemCheck(int position, boolean isChecked) {
+                            ShopItem item = shoppingAdapter.getItem(position);
+                            item.setChecked(!item.isChecked());
+                            shoppingAdapter.updateData();
+                            RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                        }
 
-                    @Override
-                    public void onItemDelete(int position) {
-                        shoppingAdapter.delete(position);
-                        RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
-                    }
-                });
-        binding.todoList.setLayoutManager(new LinearLayoutManager(this));
-        binding.todoList.setAdapter(shoppingAdapter);
+                        @Override
+                        public void onItemDelete(int position) {
+                            shoppingAdapter.delete(position);
+                            RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                        }
+                    });
+            binding.todoList.setLayoutManager(new LinearLayoutManager(this));
+            binding.todoList.setAdapter(shoppingAdapter);
+        }
     }
 
     @Override
@@ -140,18 +149,23 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     }
 
     private void editReminder() {
-        startActivity(new Intent(this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, mReminder.getUuId()));
+        if (mReminder != null) {
+            startActivity(new Intent(this, CreateReminderActivity.class)
+                    .putExtra(Constants.INTENT_ID, mReminder.getUuId()));
+        }
     }
 
     private void removeReminder() {
-        EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
-        control.stop();
+        if (mReminder != null) {
+            EventControl control = EventControlFactory.getController(this, mReminder.setRemoved(true));
+            control.stop();
+        }
         closeWindow();
     }
 
     private void closeWindow() {
         if (Module.isLollipop()) {
-            new Handler().post(this::finishAfterTransition);
+            mUiHandler.post(this::finishAfterTransition);
         } else {
             finish();
         }
@@ -162,12 +176,14 @@ public class ShoppingPreviewActivity extends ThemedActivity {
     }
 
     private void switchClick() {
-        EventControl control = EventControlFactory.getController(this, mReminder);
-        if (!control.onOff()) {
-            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+        if (mReminder != null) {
+            EventControl control = EventControlFactory.getController(this, mReminder);
+            if (!control.onOff()) {
+                Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
+            }
+            mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
+            loadInfo();
         }
-        mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
-        loadInfo();
     }
 
     private void initActionBar() {
@@ -177,6 +193,6 @@ public class ShoppingPreviewActivity extends ThemedActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        closeWindow();
     }
 }

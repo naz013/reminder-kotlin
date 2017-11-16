@@ -115,7 +115,7 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
     @Override
     public void onLoaded(List<ApplicationItem> list) {
-        mAdapter = new AppsRecyclerAdapter(this, list, this, mFilter);
+        mAdapter = new AppsRecyclerAdapter(list, this, mFilter);
         mRecyclerView.setAdapter(mAdapter);
     }
 

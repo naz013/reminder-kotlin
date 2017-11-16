@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.apps;
 
-import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
@@ -34,18 +33,16 @@ import java.util.List;
 
 public class AppsRecyclerAdapter extends FilterableAdapter<ApplicationItem, String, AppsRecyclerAdapter.ApplicationViewHolder> {
 
-    private Context mContext;
     private RecyclerClickListener mListener;
 
-    AppsRecyclerAdapter(Context context, List<ApplicationItem> dataItemList, RecyclerClickListener listener, Filter<ApplicationItem, String> filter) {
+    AppsRecyclerAdapter(List<ApplicationItem> dataItemList, RecyclerClickListener listener, Filter<ApplicationItem, String> filter) {
         super(dataItemList, filter);
-        this.mContext = context;
         this.mListener = listener;
     }
 
     @Override
     public ApplicationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new ApplicationViewHolder(ApplicationListItemBinding.inflate(inflater, parent, false).getRoot());
     }
 

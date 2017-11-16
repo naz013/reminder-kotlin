@@ -30,7 +30,7 @@ public final class EventControlFactory {
     }
 
     @NonNull
-    public static EventControl getController(Context context, @NonNull Reminder reminder) {
+    public static EventControl getController(@NonNull Context context, @NonNull Reminder reminder) {
         EventControl control;
         if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_SHOP)) {
             control = new ShoppingEvent(reminder, context);
