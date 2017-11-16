@@ -304,8 +304,10 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void showAttachmentButton() {
-        binding.buttonAttachment.setVisibility(View.VISIBLE);
-        binding.buttonAttachment.setOnClickListener(view -> showFile());
+        if (binding.buttonAttachment != null) {
+            binding.buttonAttachment.setVisibility(View.VISIBLE);
+            binding.buttonAttachment.setOnClickListener(view -> showFile());
+        }
     }
 
     private void showFile() {
