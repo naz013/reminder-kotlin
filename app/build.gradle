@@ -143,25 +143,25 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:support-v13:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:animated-vector-drawable:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation "com.android.support:support-emoji-appcompat:26.1.0"
+    implementation "com.android.support:support-v4:$support_version"
+    implementation "com.android.support:support-v13:$support_version"
+    implementation "com.android.support:cardview-v7:$support_version"
+    implementation "com.android.support:recyclerview-v7:$support_version"
+    implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:animated-vector-drawable:$support_version"
+    implementation "com.android.support:design:$support_version"
+    implementation "com.android.support:support-emoji-appcompat:$support_version"
 
-    implementation 'com.google.android.gms:play-services-auth:11.4.2'
-    implementation 'com.google.android.gms:play-services-drive:11.4.2'
-    implementation 'com.google.android.gms:play-services-location:11.4.2'
-    implementation 'com.google.android.gms:play-services-maps:11.4.2'
-    implementation 'com.google.android.gms:play-services-analytics:11.4.2'
-    implementation 'com.google.android.gms:play-services-wearable:11.4.2'
-    implementation('com.google.firebase:firebase-messaging:11.4.2') {
+    implementation "com.google.android.gms:play-services-auth:$gms_version"
+    implementation "com.google.android.gms:play-services-drive:$gms_version"
+    implementation "com.google.android.gms:play-services-location:$gms_version"
+    implementation "com.google.android.gms:play-services-maps:$gms_version"
+    implementation "com.google.android.gms:play-services-analytics:$gms_version"
+    implementation "com.google.android.gms:play-services-wearable:$gms_version"
+    implementation("com.google.firebase:firebase-messaging:$gms_version") {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
-    implementation('com.google.firebase:firebase-crash:11.4.2') {
+    implementation("com.google.firebase:firebase-crash:$gms_version") {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
 
@@ -176,7 +176,7 @@ dependencies {
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'jp.wasabeef:picasso-transformations:2.1.2'
-    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.3.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
     implementation 'com.google.code.findbugs:jsr305:3.0.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -190,7 +190,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:1.10.19'
     androidTestImplementation 'org.testng:testng:6.9.6'
     androidTestImplementation 'junit:junit:4.12'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
