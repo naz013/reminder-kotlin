@@ -101,7 +101,10 @@ public class TemplateActivity extends ThemedActivity {
     private void showTemplate() {
         if (mItem != null) {
             binding.messageInput.setText(mItem.getTitle());
-            updateLeftView(mItem.getTitle().length());
+            String title = mItem.getTitle();
+            if (title != null) {
+                updateLeftView(title.length());
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.elementary.tasks.navigation.settings.additional;
 
+import android.support.annotation.Nullable;
+
 import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.util.UUID;
@@ -21,6 +23,7 @@ import java.util.UUID;
  */
 
 public class TemplateItem {
+    @Nullable
     private String title;
     private String key;
     private String date;
@@ -33,23 +36,24 @@ public class TemplateItem {
         this.selected = item.isSelected();
     }
 
-    public TemplateItem(String title, String date) {
+    public TemplateItem(@Nullable String title, String date) {
         this.title = title;
         this.date = date;
         this.key = UUID.randomUUID().toString();
     }
 
-    public TemplateItem(String title) {
+    public TemplateItem(@Nullable String title) {
         this.title = title;
         this.date = TimeUtil.getGmtDateTime();
         this.key = UUID.randomUUID().toString();
     }
 
+    @Nullable
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@Nullable String title) {
         this.title = title;
     }
 
