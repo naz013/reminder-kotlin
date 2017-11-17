@@ -3,8 +3,4 @@
 
     <item android:drawable="@color/material_grey" />
 
-    <item
-        android:gravity="center"
-        android:drawable="@mipmap/ic_launcher"/>
-
 </layer-list>
