@@ -3,6 +3,7 @@ package com.elementary.tasks.core.views;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
@@ -41,6 +42,7 @@ public class DateTimeView extends RelativeLayout implements
     private int mYear;
     private int mMonth;
     private int mDay;
+    private boolean isSingleMode = false;
     private Context mContext;
     private OnSelectListener mListener;
 
@@ -81,13 +83,18 @@ public class DateTimeView extends RelativeLayout implements
     }
 
     @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        if (isSingleMode) date.setOnClickListener(l);
+    }
+
+    @Override
     public void setOnLongClickListener(OnLongClickListener l) {
         date.setOnLongClickListener(l);
         time.setOnLongClickListener(l);
     }
 
     public void setSingleText(String text) {
-        boolean isSingleMode = text != null;
+        isSingleMode = text != null;
         if (!isSingleMode) {
             time.setVisibility(VISIBLE);
             date.setOnClickListener(mDateClick);
