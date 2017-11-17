@@ -19,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,9 @@ import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Recognize;
+import com.elementary.tasks.core.utils.SalePrefs;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.core.views.ReturnScrollListener;
@@ -65,7 +68,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback {
+public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback, SalePrefs.SaleObserver {
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int PRESS_AGAIN_TIME = 2000;
@@ -74,6 +77,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private ActivityMainBinding binding;
     private Toolbar toolbar;
     private ImageView mMainImageView;
+    private RoboTextView mSaleBadge;
     private NavigationView mNavigationView;
     private Fragment fragment;
     private QuickNoteCoordinator mNoteView;
@@ -175,6 +179,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             showRateDialog();
         }
         showMainImage();
+        if (!Module.isPro()) {
+            SalePrefs.getInstance().addObserver(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!Module.isPro()) {
+            SalePrefs.getInstance().removeObserver(this);
+        }
     }
 
     private boolean isRateDialogShowed() {
@@ -392,6 +407,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         mNavigationView = binding.navView;
         mNavigationView.setNavigationItemSelectedListener(this);
         View view = mNavigationView.getHeaderView(0);
+        mSaleBadge = view.findViewById(R.id.sale_badge);
+        mSaleBadge.setVisibility(View.GONE);
         mMainImageView = view.findViewById(R.id.headerImage);
         mMainImageView.setOnClickListener(view1 -> openImageScreen());
         view.findViewById(R.id.headerItem).setOnClickListener(view12 -> openImageScreen());
@@ -584,5 +601,21 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
                 .setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss())
                 .setCancelable(true)
                 .create().show();
+    }
+
+    @Override
+    public void onSale(String discount, String expiryDate) {
+        String expiry = TimeUtil.getFireFormatted(this, expiryDate);
+        if (TextUtils.isEmpty(expiry)) {
+            mSaleBadge.setVisibility(View.GONE);
+        } else {
+            mSaleBadge.setVisibility(View.VISIBLE);
+            mSaleBadge.setText("SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + "% until " + expiry);
+        }
+    }
+
+    @Override
+    public void noSale() {
+        mSaleBadge.setVisibility(View.GONE);
     }
 }

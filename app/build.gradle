@@ -164,6 +164,9 @@ dependencies {
     implementation("com.google.firebase:firebase-crash:$gms_version") {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
+    implementation("com.google.firebase:firebase-config:$gms_version") {
+        exclude group: 'com.google.guava', module: 'guava-jdk5'
+    }
 
     implementation 'com.android.support:multidex:1.0.2'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.1.0'

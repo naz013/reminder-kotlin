@@ -54,8 +54,26 @@ public final class TimeUtil {
     public static final SimpleDateFormat SIMPLE_DATE_TIME_12 = new SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault());
 
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
+    private static final SimpleDateFormat FIRE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
 
     private TimeUtil() {
+    }
+
+    @Nullable
+    public static String getFireFormatted(@NonNull Context context, @Nullable String gmt) {
+        if (TextUtils.isEmpty(gmt)) return null;
+        try {
+            FIRE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
+            Date date = FIRE_DATE_FORMAT.parse(gmt);
+            if (Prefs.getInstance(context).is24HourFormatEnabled()) {
+                return FORMAT_24.format(date);
+            } else {
+                return FORMAT_12.format(date);
+            }
+        } catch (ParseException | NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static TimePickerDialog showTimePicker(Context context, TimePickerDialog.OnTimeSetListener listener,
