@@ -191,5 +191,8 @@ public class ShopFragment extends TypeFragment {
         } else {
             binding.dateViewShopping.setSingleText(getString(R.string.no_reminder));
         }
+        binding.dateViewShopping.setOnClickListener(v -> {
+            if (!isReminder) selectDateDialog();
+        });
     }
 }
