@@ -1,5 +1,9 @@
 package com.elementary.tasks.core.utils;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+
 import com.elementary.tasks.R;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -23,58 +27,107 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class SalePrefs {
+public class RemotePrefs {
 
     private static final String SALE_STARTED = "sale_started";
     private static final String SALE_VALUE = "sale_save_value";
     private static final String SALE_EXPIRY_DATE = "sale_until_time_utc";
-    private static final String TAG = "SalePrefs";
+
+    private static final String VERSION_CODE = "version_code";
+    private static final String VERSION_NAME = "version_name";
+
+    private static final String TAG = "RemotePrefs";
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
-    private static SalePrefs instance;
+    private static RemotePrefs instance;
 
     private List<SaleObserver> mObservers = new ArrayList<>();
+    private List<UpdateObserver> mUpdateObservers = new ArrayList<>();
+    private PackageManager pm;
+    private String packageName;
 
-    public static SalePrefs getInstance() {
+    public static RemotePrefs getInstance(Context context) {
         if (instance == null) {
-            synchronized (SalePrefs.class) {
+            synchronized (RemotePrefs.class) {
                 if (instance == null) {
-                    instance = new SalePrefs();
+                    instance = new RemotePrefs(context.getApplicationContext());
                 }
             }
         }
         return instance;
     }
 
-    private SalePrefs() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+    private RemotePrefs(Context context) {
+        this.pm = context.getPackageManager();
+        this.packageName = context.getPackageName();
+        this.mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .build();
-        mFirebaseRemoteConfig.setConfigSettings(configSettings);
-        mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
+        this.mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        this.mFirebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
         fetchConfig();
     }
 
     private void fetchConfig() {
         mFirebaseRemoteConfig.fetch(3600).addOnCompleteListener(task -> {
+            LogUtil.d(TAG, "fetchConfig: " + task.isSuccessful());
             if (task.isSuccessful()) {
                 mFirebaseRemoteConfig.activateFetched();
             }
-            displaySaleMessage();
+            displayVersionMessage();
+            if (!Module.isPro()) displaySaleMessage();
         });
     }
 
-    public void addObserver(SaleObserver observer) {
+    public void addUpdateObserver(UpdateObserver observer) {
+        if (!mUpdateObservers.contains(observer)) {
+            mUpdateObservers.add(observer);
+        }
+        fetchConfig();
+    }
+
+    public void removeUpdateObserver(UpdateObserver observer) {
+        if (mUpdateObservers.contains(observer)) {
+            mUpdateObservers.remove(observer);
+        }
+    }
+
+    public void addSaleObserver(SaleObserver observer) {
         if (!mObservers.contains(observer)) {
             mObservers.add(observer);
         }
         fetchConfig();
     }
 
-    public void removeObserver(SaleObserver observer) {
+    public void removeSaleObserver(SaleObserver observer) {
         if (mObservers.contains(observer)) {
             mObservers.remove(observer);
+        }
+    }
+
+    private void displayVersionMessage() {
+        long versionCode = mFirebaseRemoteConfig.getLong(VERSION_CODE);
+        try {
+            PackageInfo pInfo = pm.getPackageInfo(packageName, 0);
+            int verCode = pInfo.versionCode;
+            if (versionCode > verCode) {
+                String version = mFirebaseRemoteConfig.getString(VERSION_NAME);
+                for (UpdateObserver observer : mUpdateObservers) {
+                    observer.onUpdate(version);
+                }
+                return;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        notifyNoUpdate();
+    }
+
+    private void notifyNoUpdate() {
+        for (UpdateObserver observer : mUpdateObservers) {
+            observer.noUpdate();
         }
     }
 
@@ -95,6 +148,12 @@ public class SalePrefs {
         for (SaleObserver observer : mObservers) {
             observer.noSale();
         }
+    }
+
+    public interface UpdateObserver {
+        void onUpdate(String version);
+
+        void noUpdate();
     }
 
     public interface SaleObserver {

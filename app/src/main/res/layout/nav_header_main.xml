@@ -59,5 +59,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/update_badge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/whitePrimary30"
+            android:padding="4dp"
+            android:textColor="@color/whitePrimary"
+            android:textSize="14sp"
+            app:font_style="roboto_bold"
+            app:layout_constraintBottom_toTopOf="@+id/sale_badge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 </layout>
