@@ -37,7 +37,7 @@ import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Recognize;
-import com.elementary.tasks.core.utils.SalePrefs;
+import com.elementary.tasks.core.utils.RemotePrefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -68,7 +68,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentCallback, SalePrefs.SaleObserver {
+public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener,
+        FragmentCallback, RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
     private static final int PRESS_AGAIN_TIME = 2000;
@@ -78,6 +79,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private Toolbar toolbar;
     private ImageView mMainImageView;
     private RoboTextView mSaleBadge;
+    private RoboTextView mUpdateBadge;
     private NavigationView mNavigationView;
     private Fragment fragment;
     private QuickNoteCoordinator mNoteView;
@@ -179,8 +181,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             showRateDialog();
         }
         showMainImage();
+        RemotePrefs.getInstance(this).addUpdateObserver(this);
         if (!Module.isPro()) {
-            SalePrefs.getInstance().addObserver(this);
+            RemotePrefs.getInstance(this).addSaleObserver(this);
         }
     }
 
@@ -188,8 +191,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     protected void onPause() {
         super.onPause();
         if (!Module.isPro()) {
-            SalePrefs.getInstance().removeObserver(this);
+            RemotePrefs.getInstance(this).removeSaleObserver(this);
         }
+        RemotePrefs.getInstance(this).removeUpdateObserver(this);
     }
 
     private boolean isRateDialogShowed() {
@@ -408,7 +412,9 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         mNavigationView.setNavigationItemSelectedListener(this);
         View view = mNavigationView.getHeaderView(0);
         mSaleBadge = view.findViewById(R.id.sale_badge);
-        mSaleBadge.setVisibility(View.GONE);
+        mUpdateBadge = view.findViewById(R.id.update_badge);
+        mSaleBadge.setVisibility(View.INVISIBLE);
+        mUpdateBadge.setVisibility(View.INVISIBLE);
         mMainImageView = view.findViewById(R.id.headerImage);
         mMainImageView.setOnClickListener(view1 -> openImageScreen());
         view.findViewById(R.id.headerItem).setOnClickListener(view12 -> openImageScreen());
@@ -607,7 +613,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     public void onSale(String discount, String expiryDate) {
         String expiry = TimeUtil.getFireFormatted(this, expiryDate);
         if (TextUtils.isEmpty(expiry)) {
-            mSaleBadge.setVisibility(View.GONE);
+            mSaleBadge.setVisibility(View.INVISIBLE);
         } else {
             mSaleBadge.setVisibility(View.VISIBLE);
             mSaleBadge.setText("SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + "% until " + expiry);
@@ -616,6 +622,17 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void noSale() {
-        mSaleBadge.setVisibility(View.GONE);
+        mSaleBadge.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onUpdate(String version) {
+        mUpdateBadge.setVisibility(View.VISIBLE);
+        mUpdateBadge.setText(getString(R.string.update_available) + ": " + version);
+    }
+
+    @Override
+    public void noUpdate() {
+        mUpdateBadge.setVisibility(View.INVISIBLE);
     }
 }

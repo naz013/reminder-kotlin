@@ -12,4 +12,13 @@
         <key>sale_until_time_utc</key>
         <value>2017-12-31 10:30:00.000</value>
     </entry>
+
+    <entry>
+        <key>version_code</key>
+        <value>0</value>
+    </entry>
+    <entry>
+        <key>version_name</key>
+        <value>5.0.0</value>
+    </entry>
 </defaultsMap>
