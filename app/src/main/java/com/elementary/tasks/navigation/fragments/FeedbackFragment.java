@@ -46,7 +46,7 @@ public class FeedbackFragment extends BaseWebViewFragment {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url != null && url.contains("https://bitbucket.org/nazar_suhovich/just-reminder/issues?status=new&status=open")) {
+                if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     return true;
                 } else {
