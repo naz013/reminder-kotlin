@@ -623,5 +623,6 @@
     <string name="yearly">Anually</string>
     <string name="attach_file">Attach file</string>
     <string name="location_tracking_service_running">Location tracking service running</string>
+    <string name="something_went_wrong">Something went wrong</string>
 
 </resources>
