@@ -108,10 +108,15 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
         mReminder = RealmDb.getInstance().getReminder(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
-        if (mReminder == null) finish();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
+        if (mReminder == null) {
+            Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         mControl = EventControlFactory.getController(this, mReminder);
         LogUtil.d(TAG, "onCreate: " + TimeUtil.getFullDateTime(mReminder.getEventTime()));
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
+
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
         binding.container.setVisibility(View.GONE);
