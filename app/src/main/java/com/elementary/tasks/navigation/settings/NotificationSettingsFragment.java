@@ -20,6 +20,7 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
@@ -47,6 +48,7 @@ import java.util.Locale;
 public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private static final int MELODY_CODE = 125;
+    private static final int PERM_BT = 1425;
 
     private FragmentSettingsNotificationBinding binding;
     private int mItemSelect;
@@ -595,6 +597,8 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         getPrefs().setSoundInSilentModeEnabled(!isChecked);
         if (!SuperUtil.checkNotificationPermission(getActivity())) {
             SuperUtil.askNotificationPermission(getActivity());
+        } else if (!Permissions.checkPermission(getContext(), Permissions.BLUETOOTH)) {
+            Permissions.requestPermission(getActivity(), PERM_BT, Permissions.BLUETOOTH);
         }
     }
 

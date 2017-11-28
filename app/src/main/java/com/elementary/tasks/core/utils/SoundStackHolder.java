@@ -52,8 +52,8 @@ public class SoundStackHolder {
 
     public void init(Context context) {
         if (audioManager != null) return;
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        if (audioManager != null) audioManager.setMode(AudioManager.MODE_NORMAL);
+        audioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) audioManager.setMode(AudioManager.MODE_NORMAL);
     }
 
     @Nullable
