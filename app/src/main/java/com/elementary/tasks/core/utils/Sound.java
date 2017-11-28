@@ -91,6 +91,7 @@ public class Sound {
     }
 
     public void play(String path) {
+        if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return;
         lastFile = path;
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -120,7 +121,7 @@ public class Sound {
     }
 
     public void playAlarm(Uri path, boolean looping) {
-        if (isPlaying()) {
+        if (isPlaying() && !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
             return;
         }
         if (mMediaPlayer != null) {
@@ -158,6 +159,7 @@ public class Sound {
     }
 
     public void playAlarm(AssetFileDescriptor afd) {
+        if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return;
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
         }
