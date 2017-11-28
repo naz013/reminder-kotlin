@@ -49,6 +49,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
 
     private static final int MELODY_CODE = 125;
     private static final int PERM_BT = 1425;
+    private static final int PERM_SD = 1426;
 
     private FragmentSettingsNotificationBinding binding;
     private int mItemSelect;
@@ -111,6 +112,9 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         initRepeatTimePrefs();
         initAutoCallPrefs();
         initReminderTypePrefs();
+        if (!Permissions.checkPermission(getContext(), Permissions.READ_EXTERNAL)) {
+            Permissions.requestPermission(getActivity(), PERM_SD, Permissions.READ_EXTERNAL);
+        }
         return binding.getRoot();
     }
 
