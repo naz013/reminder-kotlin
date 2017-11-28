@@ -83,8 +83,8 @@ public class SoundStackHolder {
         }
     }
 
-    public synchronized void restoreDefaultVolume() {
-        if (isLast()) {
+    public synchronized void restoreDefaultVolume(boolean doNotDisturbEnabled) {
+        if (isLast() && !doNotDisturbEnabled) {
             if (audioManager != null) {
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
