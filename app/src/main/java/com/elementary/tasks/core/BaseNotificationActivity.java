@@ -263,7 +263,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (mSound != null && !mSound.isSaved()) {
             SoundStackHolder.getInstance().removeFromStack(this);
         }
-        SoundStackHolder.getInstance().restoreDefaultVolume();
+        SoundStackHolder.getInstance().restoreDefaultVolume(SuperUtil.isDoNotDisturbEnabled(this));
     }
 
     @Override
