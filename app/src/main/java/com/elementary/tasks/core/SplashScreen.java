@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.migration.MigrationTool;
@@ -17,7 +16,7 @@ import com.elementary.tasks.intro.IntroActivity;
 import com.elementary.tasks.navigation.MainActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends ThemedActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

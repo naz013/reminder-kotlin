@@ -55,6 +55,14 @@ public final class Prefs extends SharedPrefs {
         return instance;
     }
 
+    public int getAppLanguage() {
+        return getInt(APP_LANGUAGE);
+    }
+
+    public void setAppLanguage(int value) {
+        putInt(APP_LANGUAGE, value);
+    }
+
     public boolean isTellAboutEvent() {
         return getBoolean(TELL_ABOUT_EVENT);
     }
@@ -899,6 +907,7 @@ public final class Prefs extends SharedPrefs {
             uiEd.putString(MAIN_IMAGE_PATH, MainImageActivity.DEFAULT_PHOTO);
             uiEd.putString(CALENDAR_IMAGES, new Gson().toJson(new MonthImage()));
             uiEd.putString(CUSTOM_SOUND, Constants.DEFAULT);
+            uiEd.putInt(APP_LANGUAGE, 0);
             uiEd.putInt(START_DAY, 1);
             uiEd.putInt(DAYS_TO_BIRTHDAY, 0);
             uiEd.putInt(NOTIFICATION_REPEAT_INTERVAL, 15);
@@ -1155,6 +1164,9 @@ public final class Prefs extends SharedPrefs {
         }
         if (!hasKey(CUSTOM_SOUND)) {
             putString(CUSTOM_SOUND, Constants.DEFAULT);
+        }
+        if (!hasKey(APP_LANGUAGE)) {
+            putInt(APP_LANGUAGE, 0);
         }
         if (!hasKey(CALENDAR_IMAGES)) {
             putObject(CALENDAR_IMAGES, new MonthImage());
