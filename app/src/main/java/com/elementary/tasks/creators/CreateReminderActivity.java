@@ -501,7 +501,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        ft.commit();
+        try {
+            ft.commitAllowingStateLoss();
+        } catch (IllegalStateException ignored) {}
     }
 
     @Override
