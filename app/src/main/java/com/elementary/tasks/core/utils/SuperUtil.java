@@ -119,7 +119,9 @@ public class SuperUtil {
             builder.setPositiveButton(R.string.grant, (dialog, which) -> {
                 dialog.dismiss();
                 Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-                activity.startActivity(intent);
+                try {
+                    activity.startActivity(intent);
+                } catch (ActivityNotFoundException ignored) {}
             });
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
             builder.create().show();
