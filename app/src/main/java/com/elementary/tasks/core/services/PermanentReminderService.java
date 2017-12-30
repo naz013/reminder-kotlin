@@ -27,6 +27,7 @@ import com.elementary.tasks.core.utils.Prefs;
 
 public class PermanentReminderService extends Service {
 
+    private static final int PERM_ID = 356664;
     public static final String ACTION_SHOW = "com.elementary.tasks.SHOW";
     public static final String ACTION_HIDE = "com.elementary.tasks.HIDE";
 
@@ -35,18 +36,18 @@ public class PermanentReminderService extends Service {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if (!Prefs.getInstance(getApplicationContext()).isSbNotificationEnabled()) {
-            Notifier.hideReminderPermanent(this);
+            stopForeground(true);
         }
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_SHOW)) {
-                Notifier.showReminderPermanent(this);
+                startForeground(PERM_ID, Notifier.showReminderPermanent(this));
             } else {
-                Notifier.hideReminderPermanent(this);
+                stopForeground(true);
             }
         } else {
-            Notifier.hideReminderPermanent(this);
+            stopForeground(true);
         }
         return START_NOT_STICKY;
     }
