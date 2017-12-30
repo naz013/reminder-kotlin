@@ -106,6 +106,7 @@ public class NotesRecyclerAdapter extends FilterableAdapter<NoteItem, String, No
     private static void setClick(ImageView imageView, int position, String key) {
         Context context = imageView.getContext().getApplicationContext();
         imageView.setOnClickListener(view -> context.startActivity(new Intent(context, ImagePreviewActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(Constants.INTENT_ID, key)
                 .putExtra(Constants.INTENT_DELETE, false)
                 .putExtra(Constants.INTENT_POSITION, position)));
@@ -114,12 +115,12 @@ public class NotesRecyclerAdapter extends FilterableAdapter<NoteItem, String, No
     @BindingAdapter({"loadImage"})
     public static void loadImage(LinearLayout container, NoteItem item) {
         List<NoteImage> images = item.getImages();
-        ImageView imageView = (ImageView) container.findViewById(R.id.noteImage);
+        ImageView imageView = container.findViewById(R.id.noteImage);
         if (!images.isEmpty()) {
             WeakReference<NoteImage> image = new WeakReference<>(images.get(0));
             setImage(imageView, image.get().getImage());
             int index = 1;
-            LinearLayout horView = (LinearLayout) container.findViewById(R.id.imagesContainer);
+            LinearLayout horView = container.findViewById(R.id.imagesContainer);
             horView.removeAllViewsInLayout();
             while (index < images.size()) {
                 ImageView imV = new ImageView(container.getContext());
