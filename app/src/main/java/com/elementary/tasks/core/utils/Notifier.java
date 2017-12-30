@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,8 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -53,8 +54,6 @@ public class Notifier {
     public static final String CHANNEL_SYSTEM = "reminder.channel2";
 
     private static final String TAG = "Notifier";
-    private static final int BIRTHDAY_PERM_ID = 356665;
-    private static final int PERM_ID = 356664;
 
     private Context mContext;
 
@@ -142,7 +141,8 @@ public class Notifier {
         }
     }
 
-    public static void showBirthdayPermanent(Context context) {
+    @Nullable
+    public static Notification showBirthdayPermanent(Context context) {
         Intent dismissIntent = new Intent(context, PermanentBirthdayService.class);
         dismissIntent.setAction(PermanentBirthdayService.ACTION_HIDE);
         PendingIntent piDismiss = PendingIntent.getService(context, 0, dismissIntent, 0);
@@ -179,24 +179,14 @@ public class Notifier {
             } else {
                 builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss);
             }
-            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-            manager.notify(BIRTHDAY_PERM_ID, builder.build());
+            return builder.build();
         } else {
-            hideBirthdayPermanent(context);
+            return null;
         }
     }
 
-    public static void hideBirthdayPermanent(Context context) {
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        manager.cancel(BIRTHDAY_PERM_ID);
-    }
-
-    public static void hideReminderPermanent(Context context) {
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        manager.cancel(PERM_ID);
-    }
-
-    public static void showReminderPermanent(Context context) {
+    @NonNull
+    public static Notification showReminderPermanent(Context context) {
         LogUtil.d(TAG, "showPermanent: ");
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
@@ -277,7 +267,6 @@ public class Notifier {
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        manager.notify(PERM_ID, builder.build());
+        return builder.build();
     }
 }

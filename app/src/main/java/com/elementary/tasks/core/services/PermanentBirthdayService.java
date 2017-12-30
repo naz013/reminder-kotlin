@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -27,6 +28,7 @@ import com.elementary.tasks.core.utils.Prefs;
 
 public class PermanentBirthdayService extends Service {
 
+    private static final int BIRTHDAY_PERM_ID = 356665;
     public static final String ACTION_SHOW = "com.elementary.tasks.birthday.SHOW";
     public static final String ACTION_HIDE = "com.elementary.tasks.birthday.HIDE";
 
@@ -35,18 +37,20 @@ public class PermanentBirthdayService extends Service {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         if (!Prefs.getInstance(getApplicationContext()).isBirthdayPermanentEnabled()) {
-            Notifier.hideBirthdayPermanent(this);
+            stopForeground(true);
         }
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_SHOW)) {
-                Notifier.showBirthdayPermanent(this);
+                Notification notification = Notifier.showBirthdayPermanent(this);
+                if (notification != null) startForeground(BIRTHDAY_PERM_ID, notification);
+                else stopForeground(true);
             } else {
-                Notifier.hideBirthdayPermanent(this);
+                stopForeground(true);
             }
         } else {
-            Notifier.hideBirthdayPermanent(this);
+            stopForeground(true);
         }
         stopSelf();
         return START_NOT_STICKY;
