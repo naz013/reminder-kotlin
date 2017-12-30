@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
-apply plugin: 'com.google.firebase.firebase-crash'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -11,15 +10,14 @@ repositories {
 }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 186
-        versionName '6.2.8'
+        targetSdkVersion 27
+        versionCode 187
+        versionName '6.2.9'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -60,7 +58,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 158
+            versionCode 159
         }
     }
     packagingOptions {
@@ -172,7 +170,7 @@ dependencies {
     implementation 'com.github.deano2390:MaterialShowcaseView:1.1.0'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'com.google.code.gson:gson:2.8.1'
