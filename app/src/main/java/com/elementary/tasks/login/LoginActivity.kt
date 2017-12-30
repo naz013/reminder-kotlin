@@ -5,7 +5,6 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -20,6 +19,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync
+import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.utils.Permissions
@@ -30,7 +30,7 @@ import com.elementary.tasks.google_tasks.GetTaskListAsync
 import com.elementary.tasks.google_tasks.TasksCallback
 import com.elementary.tasks.navigation.MainActivity
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : ThemedActivity() {
 
     companion object {
         const val PERM: Int = 103

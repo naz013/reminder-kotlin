@@ -13,6 +13,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
@@ -57,7 +58,37 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initGcmPrefs();
         init24TimePrefs();
         initSavePrefs();
+        initLanguagePrefs();
         return binding.getRoot();
+    }
+
+    private void initLanguagePrefs() {
+        binding.languagePrefs.setOnClickListener(v -> showLanguageDialog());
+        showLanguage();
+    }
+
+    private void showLanguage() {
+        binding.languagePrefs.setDetailText(Language.getScreenLocaleName(getContext()));
+    }
+
+    private void showLanguageDialog() {
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
+        builder.setCancelable(true);
+        builder.setTitle(getString(R.string.application_language));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_single_choice, getResources().getStringArray(R.array.app_languages));
+        int init = getPrefs().getAppLanguage();
+        mItemSelect = init;
+        builder.setSingleChoiceItems(adapter, mItemSelect, (dialog, which) -> mItemSelect = which);
+        builder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+            getPrefs().setAppLanguage(mItemSelect);
+            dialog.dismiss();
+            if (init != mItemSelect) restartApp();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(dialogInterface -> mItemSelect = 0);
+        dialog.setOnDismissListener(dialogInterface -> mItemSelect = 0);
+        dialog.show();
     }
 
     private void initSavePrefs() {
@@ -143,7 +174,7 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
 
     private void restartApp() {
         startActivity(new Intent(getContext(), SplashScreen.class));
-        getActivity().finish();
+        getActivity().finishAffinity();
     }
 
     private void selectMainImage() {

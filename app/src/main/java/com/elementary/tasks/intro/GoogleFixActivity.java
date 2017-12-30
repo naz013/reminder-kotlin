@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.ActivityGoogleFixBinding;
 import com.elementary.tasks.login.LoginActivity;
 
-public class GoogleFixActivity extends AppCompatActivity {
+public class GoogleFixActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

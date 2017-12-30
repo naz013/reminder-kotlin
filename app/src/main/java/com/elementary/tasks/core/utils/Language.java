@@ -1,9 +1,11 @@
 package com.elementary.tasks.core.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -11,6 +13,7 @@ import android.util.DisplayMetrics;
 import com.elementary.tasks.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +49,45 @@ public class Language {
     public static final String RU = "ru-RU";
     public static final String UK = "uk-UA";
 
+    public static Context onAttach(Context context) {
+        return setLocale(context, getScreenLanguage(Prefs.getInstance(context).getAppLanguage()));
+    }
+
+    public static Context setLocale(Context context, Locale locale) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return updateResources(context, locale);
+        }
+        return updateResourcesLegacy(context, locale);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private static Context updateResources(Context context, Locale locale) {
+        Locale.setDefault(locale);
+
+        Configuration configuration = context.getResources().getConfiguration();
+        configuration.setLocale(locale);
+        configuration.setLayoutDirection(locale);
+
+        return context.createConfigurationContext(configuration);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Context updateResourcesLegacy(Context context, Locale locale) {
+        Locale.setDefault(locale);
+
+        Resources resources = context.getResources();
+
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLayoutDirection(locale);
+        }
+
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
+        return context;
+    }
+
     public static String getLocalized(Context context, int id) {
         if (Module.isJellyMR1()) {
             Configuration configuration = new Configuration(context.getResources().getConfiguration());
@@ -69,6 +111,46 @@ public class Language {
         locales.add(context.getString(R.string.russian) + " (" + RU + ")");
         locales.add(context.getString(R.string.ukrainian) + " (" + UK + ")");
         return locales;
+    }
+
+    @NonNull
+    public static Locale getScreenLanguage(int code) {
+        switch (code) {
+            case 0:
+                return Locale.getDefault();
+            case 1:
+                return Locale.ENGLISH;
+            case 2:
+                return Locale.GERMAN;
+            case 3:
+                return new Locale("es", "");
+            case 4:
+                return Locale.FRENCH;
+            case 5:
+                return Locale.ITALIAN;
+            case 6:
+                return new Locale("pt", "");
+            case 7:
+                return new Locale("pl", "");
+            case 8:
+                return new Locale("cs", "");
+            case 9:
+                return new Locale("ro", "");
+            case 10:
+                return new Locale("tr", "");
+            case 11:
+                return new Locale("uk", "");
+            case 12:
+                return new Locale("ru", "");
+            case 13:
+                return Locale.JAPANESE;
+            case 14:
+                return Locale.CHINESE;
+            case 15:
+                return new Locale("hi", "");
+            default:
+                return Locale.getDefault();
+        }
     }
 
     @NonNull
@@ -142,6 +224,18 @@ public class Language {
             mItemSelect = 9;
         }
         return mItemSelect;
+    }
+
+    @NonNull
+    public static String getScreenLocaleName(Context context) {
+        return context.getResources().getStringArray(R.array.app_languages)[Prefs.getInstance(context).getAppLanguage()];
+    }
+
+    @NonNull
+    public static List<String> getScreenLocaleNames(Context context) {
+        ArrayList<String> names = new ArrayList<>();
+        Collections.addAll(names, context.getResources().getStringArray(R.array.app_languages));
+        return names;
     }
 
     @NonNull

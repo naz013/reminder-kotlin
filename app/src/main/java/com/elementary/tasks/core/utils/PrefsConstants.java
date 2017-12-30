@@ -112,6 +112,7 @@ class PrefsConstants {
     static final String DROPBOX_UID = "dropbox_uid";
     static final String DROPBOX_TOKEN = "dropbox_token";
     static final String TELL_ABOUT_EVENT = "tell_about_event";
+    static final String APP_LANGUAGE = "app_language";
 
     static final String REMINDER_CHANGED = "reminder_changed";
     static final String LAST_USED_REMINDER = "last_reminder";
