@@ -2,6 +2,7 @@ package com.elementary.tasks.core.calendar;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.IntRange;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class DateGridFragment extends Fragment {
     private MonthView monthView;
 
     private Map<DateTime, Events> eventsMap = new HashMap<>();
+    @IntRange(from = 1, to = 12)
     private int month;
     private int year;
 
@@ -44,7 +46,7 @@ public class DateGridFragment extends Fragment {
     private MonthView.OnDateLongClick onItemLongClickListener;
 
     public void setDateTime(DateTime dateTime) {
-        this.month = dateTime.getMonth() - 1;
+        this.month = dateTime.getMonth();
         this.year = dateTime.getYear();
         if (monthView != null) {
             monthView.setDate(year, month);

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.annotation.IntRange;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -134,10 +135,10 @@ public class MonthView extends View implements View.OnTouchListener {
         this.eventsMap = eventsMap;
     }
 
-    public void setDate(int year, int month) {
+    public void setDate(int year, @IntRange(from = 1, to = 12) int month) {
         mDateTimeList = new ArrayList<>();
         mDateTimeList.clear();
-        mMonth = month + 1;
+        mMonth = month;
         mYear = year;
         DateTime firstDateOfMonth = new DateTime(mYear, mMonth, 1, 0, 0, 0, 0);
         DateTime lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.getNumDaysInMonth() - 1);
