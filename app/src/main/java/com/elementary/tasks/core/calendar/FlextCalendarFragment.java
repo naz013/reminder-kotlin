@@ -236,16 +236,16 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
         DatePageChangeListener pageChangeListener = initMonthPager(currentDateTime);
         final MonthPagerAdapter pagerAdapter = new MonthPagerAdapter(getFragmentManager());
         fragments = pagerAdapter.getFragments();
-        fragments.get(0).setDate(currentDateTime.getMonth() - 1, currentDateTime.getYear());
+        fragments.get(0).setDate(currentDateTime.getMonth(), currentDateTime.getYear());
         DateTime nextDateTime = currentDateTime.plus(0, 1, 0, 0, 0, 0, 0,
                 DateTime.DayOverflow.LastDay);
-        fragments.get(1).setDate(nextDateTime.getMonth() - 1, nextDateTime.getYear());
+        fragments.get(1).setDate(nextDateTime.getMonth(), nextDateTime.getYear());
         DateTime next2DateTime = nextDateTime.plus(0, 1, 0, 0, 0, 0, 0,
                 DateTime.DayOverflow.LastDay);
-        fragments.get(2).setDate(next2DateTime.getMonth() - 1, next2DateTime.getYear());
+        fragments.get(2).setDate(next2DateTime.getMonth(), next2DateTime.getYear());
         DateTime prevDateTime = currentDateTime.minus(0, 1, 0, 0, 0, 0, 0,
                 DateTime.DayOverflow.LastDay);
-        fragments.get(3).setDate(prevDateTime.getMonth() - 1, prevDateTime.getYear());
+        fragments.get(3).setDate(prevDateTime.getMonth(), prevDateTime.getYear());
         for (int i = 0; i < NUMBER_OF_PAGES; i++) {
             DateGridFragment dateGridFragment = fragments.get(i);
             dateGridFragment.setEventsMap(mLastMap);
