@@ -117,35 +117,39 @@ public class Google {
             if (TextUtils.isEmpty(item.getTitle())) {
                 return false;
             }
-            Task task = new Task();
-            task.setTitle(item.getTitle());
-            if (item.getNotes() != null) {
-                task.setNotes(item.getNotes());
-            }
-            if (item.getDueDate() != 0) {
-                task.setDue(new DateTime(item.getDueDate()));
-            }
-            Task result;
-            String listId = item.getListId();
-            if (!TextUtils.isEmpty(listId)) {
-                result = service.tasks().insert(listId, task).execute();
-            } else {
-                TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();
-                if (taskListItem != null) {
-                    item.setListId(taskListItem.getListId());
-                    result = service.tasks().insert(taskListItem.getListId(), task).execute();
+            try {
+                Task task = new Task();
+                task.setTitle(item.getTitle());
+                if (item.getNotes() != null) {
+                    task.setNotes(item.getNotes());
+                }
+                if (item.getDueDate() != 0) {
+                    task.setDue(new DateTime(item.getDueDate()));
+                }
+                Task result;
+                String listId = item.getListId();
+                if (!TextUtils.isEmpty(listId)) {
+                    result = service.tasks().insert(listId, task).execute();
                 } else {
-                    result = service.tasks().insert("@default", task).execute();
-                    TaskList list = service.tasklists().get("@default").execute();
-                    if (list != null) {
-                        item.setListId(list.getId());
+                    TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();
+                    if (taskListItem != null) {
+                        item.setListId(taskListItem.getListId());
+                        result = service.tasks().insert(taskListItem.getListId(), task).execute();
+                    } else {
+                        result = service.tasks().insert("@default", task).execute();
+                        TaskList list = service.tasklists().get("@default").execute();
+                        if (list != null) {
+                            item.setListId(list.getId());
+                        }
                     }
                 }
-            }
-            if (result != null) {
-                item.update(result);
-                RealmDb.getInstance().saveObject(item);
-                return true;
+                if (result != null) {
+                    item.update(result);
+                    RealmDb.getInstance().saveObject(item);
+                    return true;
+                }
+            } catch (IllegalArgumentException e) {
+                return false;
             }
             return false;
         }
