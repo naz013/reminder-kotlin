@@ -622,5 +622,7 @@
     <string name="attach_file">Allega file</string>
     <string name="channel_for_other_info_notifications">Canale per altre notifiche informative</string>
     <string name="default_reminder_notifications">Notifiche di promemoria predefinite</string>
+    <string name="something_went_wrong">Qualcosa è andato storto</string>
+    <string name="application_language">Linguaggio dell\'applicazione</string>
 
 </resources>

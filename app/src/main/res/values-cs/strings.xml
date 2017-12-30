@@ -622,5 +622,7 @@
     <string name="attach_file">Přiložit soubor</string>
     <string name="channel_for_other_info_notifications">Kanál pro další informační oznámení</string>
     <string name="default_reminder_notifications">Výchozí oznámení upozornění</string>
+    <string name="something_went_wrong">Něco se pokazilo</string>
+    <string name="application_language">Jazyk aplikace</string>
 
 </resources>

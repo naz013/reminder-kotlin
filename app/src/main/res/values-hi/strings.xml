@@ -622,5 +622,7 @@
     <string name="attach_file">फ़ाइल जोड़ें</string>
     <string name="channel_for_other_info_notifications">अन्य सूचनात्मक सूचनाओं के लिए चैनल</string>
     <string name="default_reminder_notifications">डिफ़ॉल्ट अनुस्मारक सूचनाएं</string>
+    <string name="something_went_wrong">कुछ गलत हो गया</string>
+    <string name="application_language">एप्लिकेशन भाषा</string>
 
 </resources>

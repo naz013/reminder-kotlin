@@ -622,5 +622,7 @@
     <string name="attach_file">Załącz plik</string>
     <string name="channel_for_other_info_notifications">Kanał do innych powiadomień informacyjnych</string>
     <string name="default_reminder_notifications">Powiadomienia o powiadomieniach domyślnych</string>
+    <string name="something_went_wrong">Coś poszło nie tak</string>
+    <string name="application_language">Język aplikacji</string>
 
 </resources>

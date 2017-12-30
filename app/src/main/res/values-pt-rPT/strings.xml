@@ -622,5 +622,7 @@
     <string name="attach_file">Anexar arquivo</string>
     <string name="channel_for_other_info_notifications">Canal para outras notificações informativas</string>
     <string name="default_reminder_notifications">Notificações de lembretes padrão</string>
+    <string name="something_went_wrong">Algo deu errado</string>
+    <string name="application_language">Idioma da aplicação</string>
 
 </resources>

@@ -622,5 +622,7 @@
     <string name="attach_file">Прикріпити файл</string>
     <string name="channel_for_other_info_notifications">Канал для інших інформаційних повідомлень</string>
     <string name="default_reminder_notifications">Сповіщення про нагадування за умовчанням</string>
+    <string name="something_went_wrong">Щось пішло не так</string>
+    <string name="application_language">Мова програми</string>
 
 </resources>
