@@ -622,5 +622,7 @@
     <string name="attach_file">Ataseaza fisier</string>
     <string name="channel_for_other_info_notifications">Canal pentru alte notificări informative</string>
     <string name="default_reminder_notifications">Implicit notificări de memento</string>
+    <string name="something_went_wrong">Ceva n-a mers bine</string>
+    <string name="application_language">Limba aplicației</string>
 
 </resources>

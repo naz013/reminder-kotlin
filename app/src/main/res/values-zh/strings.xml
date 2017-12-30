@@ -621,5 +621,7 @@
     <string name="attach_file">附加文件</string>
     <string name="channel_for_other_info_notifications">其他信息通知的频道</string>
     <string name="default_reminder_notifications">默认提醒通知</string>
+    <string name="something_went_wrong">出了些问题</string>
+    <string name="application_language">应用语言</string>
 
 </resources>

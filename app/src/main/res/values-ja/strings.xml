@@ -623,5 +623,7 @@
     <string name="attach_file">ファイルを添付する</string>
     <string name="channel_for_other_info_notifications">その他の情報通知用チャネル</string>
     <string name="default_reminder_notifications">デフォルトのリマインダー通知</string>
+    <string name="something_went_wrong">何かが間違っていた</string>
+    <string name="application_language">アプリケーション言語</string>
 
 </resources>

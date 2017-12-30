@@ -622,5 +622,7 @@
     <string name="attach_file">Dosya eki</string>
     <string name="channel_for_other_info_notifications">Diğer bilgilendirme amaçlı bildirimler için kanal</string>
     <string name="default_reminder_notifications">Varsayılan hatırlatma bildirimleri</string>
+    <string name="something_went_wrong">Bir şeyler yanlış gitti</string>
+    <string name="application_language">Uygulama dili</string>
 
 </resources>
