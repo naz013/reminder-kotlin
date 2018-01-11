@@ -16,8 +16,8 @@ android {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 188
-        versionName '6.2.9'
+        versionCode 189
+        versionName '6.2.10'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         renderscriptTargetApi 20
@@ -58,7 +58,7 @@ android {
             dimension "level"
             applicationId 'com.cray.software.justreminderpro'
             buildConfigField "boolean", "IS_PRO", "true"
-            versionCode 160
+            versionCode 161
         }
     }
     packagingOptions {
@@ -168,7 +168,7 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.2'
     implementation 'com.github.deano2390:MaterialShowcaseView:1.1.0'
-    implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
