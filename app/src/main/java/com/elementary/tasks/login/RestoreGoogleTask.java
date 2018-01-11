@@ -3,6 +3,8 @@ package com.elementary.tasks.login;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
@@ -31,15 +33,17 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
 
     private static final String TAG = "RestoreGoogleTask";
+    @NonNull
     private ContextHolder mContext;
+    @Nullable
     private SyncListener mListener;
+    @Nullable
     private ProgressDialog mDialog;
 
-    public RestoreGoogleTask(Context context, SyncListener mListener) {
+    public RestoreGoogleTask(@NonNull Context context, @Nullable SyncListener mListener) {
         this.mContext = new ContextHolder(context);
         this.mListener = mListener;
     }
@@ -47,18 +51,24 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mDialog = new ProgressDialog(mContext.getContext());
-        mDialog.setTitle(mContext.getContext().getString(R.string.sync));
-        mDialog.setCancelable(false);
-        mDialog.setMessage(mContext.getContext().getString(R.string.please_wait));
-        mDialog.show();
+        try {
+            mDialog = new ProgressDialog(mContext.getContext());
+            mDialog.setTitle(mContext.getContext().getString(R.string.sync));
+            mDialog.setCancelable(false);
+            mDialog.setMessage(mContext.getContext().getString(R.string.please_wait));
+            mDialog.show();
+        } catch (Exception e) {
+            mDialog = null;
+        }
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        mDialog.setMessage(values[0]);
-        mDialog.show();
+        if (mDialog != null) {
+            mDialog.setMessage(values[0]);
+            mDialog.show();
+        }
     }
 
     @Override
@@ -138,10 +148,8 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
                 LogUtil.d(TAG, "onPostExecute: " + e.getLocalizedMessage());
             }
         }
-        if (mContext != null) {
-            UpdatesHelper.getInstance(mContext.getContext()).updateWidget();
-            UpdatesHelper.getInstance(mContext.getContext()).updateNotesWidget();
-        }
+        UpdatesHelper.getInstance(mContext.getContext()).updateWidget();
+        UpdatesHelper.getInstance(mContext.getContext()).updateNotesWidget();
         if (mListener != null) {
             mListener.onFinish();
         }

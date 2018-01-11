@@ -7,6 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.utils.*
 import java.io.IOException
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 /**
@@ -24,25 +25,32 @@ import java.lang.IllegalArgumentException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Void, String, Int>() {
 
     private var mContext: ContextHolder = ContextHolder(context)
     private var mListener: SyncListener = listener
-    private var mDialog: ProgressDialog = ProgressDialog(context)
+    private var mDialog: ProgressDialog? = ProgressDialog(context)
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mDialog.setTitle(mContext.context.getString(R.string.sync))
-        mDialog.setMessage(mContext.context.getString(R.string.please_wait))
-        mDialog.show()
+        try {
+            val dialog = mDialog
+            if (dialog != null) {
+                dialog.setTitle(mContext.context.getString(R.string.sync))
+                dialog.setMessage(mContext.context.getString(R.string.please_wait))
+                dialog.show()
+                mDialog = dialog
+            }
+        } catch (e: Exception) {
+            mDialog = null
+        }
     }
 
     override fun onProgressUpdate(vararg values: String) {
         super.onProgressUpdate(*values)
-        mDialog.setMessage(values[0])
-        mDialog.setCancelable(false)
-        mDialog.show()
+        mDialog?.setMessage(values[0])
+        mDialog?.setCancelable(false)
+        mDialog?.show()
     }
 
     override fun doInBackground(vararg p0: Void?): Int {
@@ -123,12 +131,10 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
 
     override fun onPostExecute(aVoid: Int) {
         super.onPostExecute(aVoid)
-        if (mDialog.isShowing) {
-            try {
-                mDialog.dismiss()
-            } catch (e: IllegalArgumentException) {
-                LogUtil.d("RestoreLocalTask", "onPostExecute: " + e.localizedMessage)
-            }
+        try {
+            mDialog?.dismiss()
+        } catch (e: IllegalArgumentException) {
+            LogUtil.d("RestoreLocalTask", "onPostExecute: " + e.localizedMessage)
         }
         UpdatesHelper.getInstance(mContext.context).updateWidget()
         UpdatesHelper.getInstance(mContext.context).updateNotesWidget()

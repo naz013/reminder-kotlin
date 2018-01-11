@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -17,15 +18,16 @@ import android.content.Context;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public final class ContextHolder {
 
+    @NonNull
     private Context context;
 
-    public ContextHolder(Context context) {
+    public ContextHolder(@NonNull Context context) {
         this.context = context;
     }
 
+    @NonNull
     public Context getContext() {
         return context;
     }
