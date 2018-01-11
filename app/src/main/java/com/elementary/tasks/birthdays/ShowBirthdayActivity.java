@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
@@ -64,9 +65,10 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     private static final int SMS_PERM = 613;
 
     private ActivityShowBirthdayBinding binding;
-
+    @Nullable
     private BirthdayItem mBirthdayItem;
     private boolean mIsResumed;
+    @Nullable
     private String wearMessage;
 
     public static Intent getLaunchIntent(Context context, String uuId) {
@@ -81,6 +83,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
         mBirthdayItem = RealmDb.getInstance().getBirthday(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
+        if (mBirthdayItem == null) finish();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_birthday);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) {
@@ -196,7 +199,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
@@ -204,7 +207,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
@@ -246,9 +249,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     private void makeCall() {
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
+        if (Permissions.checkPermission(this, Permissions.CALL_PHONE) && mBirthdayItem != null) {
             TelephonyUtil.makeCall(mBirthdayItem.getNumber(), this);
-            updateBirthday();
+            updateBirthday(mBirthdayItem);
         } else {
             Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE);
         }
@@ -265,9 +268,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     private void sendSMS() {
-        if (Permissions.checkPermission(ShowBirthdayActivity.this, Permissions.SEND_SMS)) {
+        if (Permissions.checkPermission(ShowBirthdayActivity.this, Permissions.SEND_SMS) && mBirthdayItem != null) {
             TelephonyUtil.sendSms(mBirthdayItem.getNumber(), ShowBirthdayActivity.this);
-            updateBirthday();
+            updateBirthday(mBirthdayItem);
         } else {
             Permissions.requestPermission(ShowBirthdayActivity.this, SMS_PERM, Permissions.SEND_SMS);
         }
@@ -280,15 +283,17 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected void ok() {
-        updateBirthday();
+        updateBirthday(mBirthdayItem);
     }
 
-    private void updateBirthday() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int year = calendar.get(Calendar.YEAR);
-        mBirthdayItem.setShowedYear(year);
-        RealmDb.getInstance().saveObject(mBirthdayItem);
+    private void updateBirthday(@Nullable BirthdayItem birthdayItem) {
+        if (birthdayItem != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            int year = calendar.get(Calendar.YEAR);
+            birthdayItem.setShowedYear(year);
+            RealmDb.getInstance().saveObject(birthdayItem);
+        }
         close();
     }
 
@@ -364,12 +369,16 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected String getUuId() {
-        return mBirthdayItem.getUuId();
+        if (mBirthdayItem != null) {
+            return mBirthdayItem.getUuId();
+        } else return "";
     }
 
     @Override
     protected int getId() {
-        return mBirthdayItem.getUniqueId();
+        if (mBirthdayItem != null) {
+            return mBirthdayItem.getUniqueId();
+        } else return 0;
     }
 
     @Override
