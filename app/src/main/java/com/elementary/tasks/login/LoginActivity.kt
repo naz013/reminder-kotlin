@@ -38,7 +38,6 @@ class LoginActivity : ThemedActivity() {
         const val PERM_LOCAL: Int = 105
         const val PERM_BIRTH: Int = 106
         private const val TERMS_URL = "termsopen.com"
-        private const val TAG: String = "LoginActivity"
     }
 
     private lateinit var binding: ActivityLoginBinding
