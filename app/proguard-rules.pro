@@ -46,6 +46,7 @@
 }
 
 -dontwarn org.apache.**
+-dontwarn de.hdodenhof.circleimageview.**
 -dontwarn ch.boye.**
 -dontwarn com.google.android.gms.**
 -dontwarn com.google.api.client.http.**
