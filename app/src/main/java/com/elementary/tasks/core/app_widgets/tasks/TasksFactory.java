@@ -88,6 +88,9 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
                 TasksWidgetConfig.TASKS_WIDGET_PREF, Context.MODE_PRIVATE);
         RemoteViews rView = new RemoteViews(mContext.getPackageName(),
                 R.layout.list_item_tasks_widget);
+        if (i >= getCount()) {
+            return rView;
+        }
         int theme = sp.getInt(TasksWidgetConfig.TASKS_WIDGET_THEME + widgetID, 0);
         TasksTheme tasksTheme = TasksTheme.getThemes(mContext).get(theme);
         int itemTextColor = tasksTheme.getItemTextColor();
