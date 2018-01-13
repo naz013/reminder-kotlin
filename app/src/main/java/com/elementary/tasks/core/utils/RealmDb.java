@@ -771,7 +771,7 @@ public class RealmDb {
         Realm realm = getRealm();
         realm.beginTransaction();
         RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
-        object.setGroupUuId(groupId);
+        if (object != null) object.setGroupUuId(groupId);
         realm.commitTransaction();
     }
 
@@ -818,7 +818,7 @@ public class RealmDb {
             Realm realm = getRealm();
             String[] fields = new String[]{"isActive", "eventTime"};
             Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
-            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAllSorted(fields, orders);
+            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).sort(fields, orders).findAll();
             List<Reminder> items = new ArrayList<>();
             for (RealmReminder object : list) {
                 WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
@@ -848,7 +848,10 @@ public class RealmDb {
     @NonNull
     public List<Reminder> getGpsReminders() {
         Realm realm = getRealm();
-        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isActive", true).equalTo("isRemoved", false).findAll();
+        List<RealmReminder> list = realm.where(RealmReminder.class)
+                .equalTo("isActive", true)
+                .equalTo("isRemoved", false)
+                .findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             if (Reminder.isGpsType(object.getType())) {
@@ -871,61 +874,12 @@ public class RealmDb {
         return items;
     }
 
-    void getActiveReminders(@Nullable String groupId, int type, int active, @NonNull RealmCallback<List<Reminder>> callback) {
-        new Thread(() -> {
-            Realm realm = getRealm();
-            String[] fields = new String[]{"isActive", "eventTime"};
-            Sort[] orders = new Sort[]{Sort.DESCENDING, Sort.ASCENDING};
-            RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
-            query.equalTo("isRemoved", false);
-            if (groupId != null) {
-                query.equalTo("groupUuId", groupId);
-            }
-            if (type != 0) {
-                query.equalTo("type", type);
-            }
-            if (active != 0) {
-                query.equalTo("isActive", active == 1);
-            }
-            RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
-            List<Reminder> items = new ArrayList<>();
-            for (RealmReminder object : list) {
-                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
-                items.add(reference.get());
-            }
-            callback.onDataLoaded(items);
-        }).start();
-    }
-
-    void getArchivedReminders(@Nullable String groupId, int type, @NonNull RealmCallback<List<Reminder>> callback) {
-        new Thread(() -> {
-            Realm realm = getRealm();
-            String[] fields = new String[]{"eventTime"};
-            Sort[] orders = new Sort[]{Sort.ASCENDING};
-            RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
-            query.equalTo("isRemoved", true);
-            if (groupId != null) {
-                query.equalTo("groupUuId", groupId);
-            }
-            if (type != 0) {
-                query.equalTo("type", type);
-            }
-            RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
-            List<Reminder> items = new ArrayList<>();
-            for (RealmReminder object : list) {
-                WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));
-                items.add(reference.get());
-            }
-            callback.onDataLoaded(items);
-        }).start();
-    }
-
     void getArchivedReminders(@NonNull RealmCallback<List<Reminder>> callback) {
         new Thread(() -> {
             Realm realm = getRealm();
             String[] fields = new String[]{"eventTime"};
             Sort[] orders = new Sort[]{Sort.ASCENDING};
-            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).findAllSorted(fields, orders);
+            List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", true).sort(fields, orders).findAll();
             List<Reminder> items = new ArrayList<>();
             for (RealmReminder object : list) {
                 WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));

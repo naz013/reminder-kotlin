@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Constants;
@@ -34,6 +34,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
+import com.elementary.tasks.reminder.filters.FilterController;
+import com.elementary.tasks.reminder.filters.ReminderFilterCallback;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -57,16 +59,16 @@ import java.util.Set;
  * limitations under the License.
  */
 
-public class ArchiveFragment extends BaseNavigationFragment {
+public class ArchiveFragment extends BaseNavigationFragment implements ReminderFilterCallback {
 
     private FragmentTrashBinding binding;
     private RecyclerView mRecyclerView;
 
     private RemindersRecyclerAdapter mAdapter;
 
-    private ArrayList<String> mGroupsIds;
-    private String mLastGroupId;
-    private int lastType;
+    private List<String> mGroupsIds = new ArrayList<>();
+    @NonNull
+    private FilterController filterController = new FilterController(this);
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
@@ -74,7 +76,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) mAdapter.filter(query);
+            if (mAdapter != null) filterController.setSearchValue(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -83,7 +85,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) mAdapter.filter(newText);
+            if (mAdapter != null) filterController.setSearchValue(newText);
             if (!getCallback().isFiltersVisible()) {
                 showRemindersFilter();
             }
@@ -115,18 +117,6 @@ public class ArchiveFragment extends BaseNavigationFragment {
         }
     };
     private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
-    private FilterableAdapter.Filter<Reminder, String> mFilter = new FilterableAdapter.Filter<Reminder, String>() {
-        @Override
-        public boolean filter(Reminder reminder, String query) {
-            return reminder.getSummary().toLowerCase().contains(query.toLowerCase());
-        }
-
-        @Override
-        public void onFilterEnd(List<Reminder> list, int size, String query) {
-            mRecyclerView.smoothScrollToPosition(0);
-            reloadView();
-        }
-    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -143,7 +133,9 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mSearchView = (SearchView) mSearchMenu.getActionView();
         }
         if (mSearchView != null) {
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            if (searchManager != null) {
+                mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            }
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
             mSearchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
@@ -183,7 +175,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
             getCallback().onFragmentSelect(this);
             getCallback().setClick(null);
         }
-        loadData(mLastGroupId, lastType);
+        loadData();
     }
 
     private void editReminder(String uuId) {
@@ -193,18 +185,13 @@ public class ArchiveFragment extends BaseNavigationFragment {
     private void deleteAll() {
         List<String> uids = RealmDb.getInstance().clearReminderTrash();
         new DeleteFilesAsync(getContext()).execute(uids.toArray(new String[uids.size()]));
-        loadData(mLastGroupId, lastType);
+        loadData();
         Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
         reloadView();
     }
 
     private void showData(List<Reminder> result) {
-        mAdapter = new RemindersRecyclerAdapter(getContext(), result, mFilter);
-        mAdapter.setEventListener(mEventListener);
-        mAdapter.setEditable(false);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-        reloadView();
+        filterController.setOriginal(result);
     }
 
     private void showActionDialog(int position, View view) {
@@ -240,16 +227,15 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mRecyclerView = binding.recyclerView;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RemindersRecyclerAdapter(getContext());
+        mAdapter.setEventListener(mEventListener);
+        mAdapter.setEditable(false);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void loadData(String groupId, int type) {
-        mLastGroupId = groupId;
-        lastType = type;
-        if (groupId != null || type != 0) {
-            DataLoader.loadArchivedReminder(groupId, type, mLoadCallback);
-        } else {
-            DataLoader.loadArchivedReminder(mLoadCallback);
-        }
+    private void loadData() {
+        DataLoader.loadArchivedReminder(mLoadCallback);
     }
 
     private void showRemindersFilter() {
@@ -260,7 +246,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
     }
 
     private void addTypeFilter(List<FilterView.Filter> filters) {
-        List<Reminder> reminders = mAdapter.getUsedData();
+        List<Reminder> reminders = filterController.getOriginal();
         if (reminders.size() == 0) {
             return;
         }
@@ -268,7 +254,7 @@ public class ArchiveFragment extends BaseNavigationFragment {
         for (Reminder reminder : reminders) {
             types.add(reminder.getType());
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> loadData(mLastGroupId, id));
+        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setTypeValue(id));
         filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (Integer integer : types) {
@@ -283,10 +269,9 @@ public class ArchiveFragment extends BaseNavigationFragment {
         mGroupsIds = new ArrayList<>();
         FilterView.Filter filter = new FilterView.Filter((view, id) -> {
             if (id == 0) {
-                loadData(null, lastType);
+                filterController.setGroupValue(null);
             } else {
-                String catId = mGroupsIds.get(id - 1);
-                loadData(catId, lastType);
+                filterController.setGroupValue(mGroupsIds.get(id - 1));
             }
         });
         filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
@@ -308,5 +293,12 @@ public class ArchiveFragment extends BaseNavigationFragment {
             mRecyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onChanged(@NonNull List<Reminder> result) {
+        mAdapter.setData(result);
+        mRecyclerView.smoothScrollToPosition(0);
+        reloadView();
     }
 }
