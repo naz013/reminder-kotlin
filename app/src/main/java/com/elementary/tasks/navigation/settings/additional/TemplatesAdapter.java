@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.ListItemMessageBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,13 +33,39 @@ import java.util.List;
  * limitations under the License.
  */
 
-class TemplatesAdapter extends FilterableAdapter<TemplateItem, String, TemplatesAdapter.ViewHolder> {
+class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder> {
 
     private Context mContext;
+    private List<TemplateItem> mData = new ArrayList<>();
 
-    TemplatesAdapter(Context mContext, List<TemplateItem> mDataList, Filter<TemplateItem, String> filter) {
-        super(mDataList, filter);
+    TemplatesAdapter(Context mContext) {
         this.mContext = mContext;
+    }
+
+    public void setData(List<TemplateItem> list) {
+        this.mData = list;
+        notifyDataSetChanged();
+    }
+
+    public List<TemplateItem> getData() {
+        return mData;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.size();
+    }
+
+    public TemplateItem getItem(int position) {
+        return mData.get(position);
+    }
+
+    public void removeItem(int position) {
+        if (position < mData.size()) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(0, mData.size());
+        }
     }
 
     @Override

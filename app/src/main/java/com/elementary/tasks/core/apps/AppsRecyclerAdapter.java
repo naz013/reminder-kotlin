@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.databinding.ApplicationListItemBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,13 +31,39 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class AppsRecyclerAdapter extends FilterableAdapter<ApplicationItem, String, AppsRecyclerAdapter.ApplicationViewHolder> {
+public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapter.ApplicationViewHolder> {
 
     private RecyclerClickListener mListener;
+    private List<ApplicationItem> mData = new ArrayList<>();
 
-    AppsRecyclerAdapter(List<ApplicationItem> dataItemList, RecyclerClickListener listener, Filter<ApplicationItem, String> filter) {
-        super(dataItemList, filter);
+    AppsRecyclerAdapter(RecyclerClickListener listener) {
         this.mListener = listener;
+    }
+
+    public void setData(List<ApplicationItem> list) {
+        this.mData = list;
+        notifyDataSetChanged();
+    }
+
+    public List<ApplicationItem> getData() {
+        return mData;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.size();
+    }
+
+    public ApplicationItem getItem(int position) {
+        return mData.get(position);
+    }
+
+    public void removeItem(int position) {
+        if (position < mData.size()) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(0, mData.size());
+        }
     }
 
     @Override

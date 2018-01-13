@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -35,10 +35,12 @@ import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.databinding.FragmentNotesBinding;
 import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.DeleteNoteFilesAsync;
+import com.elementary.tasks.notes.NoteFilterController;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
 import com.elementary.tasks.notes.SyncNotes;
+import com.elementary.tasks.reminder.filters.FilterCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,8 +61,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class NotesFragment extends BaseNavigationFragment {
+public class NotesFragment extends BaseNavigationFragment implements FilterCallback<NoteItem> {
 
     public static final int MENU_ITEM_DELETE = 12;
 
@@ -68,6 +69,9 @@ public class NotesFragment extends BaseNavigationFragment {
     private NotesRecyclerAdapter mAdapter;
     private boolean enableGrid = false;
     private ProgressDialog mProgress;
+
+    @NonNull
+    private NoteFilterController filterController = new NoteFilterController(this);
 
     private SimpleListener mEventListener = new SimpleListener() {
         @Override
@@ -118,7 +122,7 @@ public class NotesFragment extends BaseNavigationFragment {
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) mAdapter.filter(query);
+            if (mAdapter != null) filterController.setSearchValue(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -127,7 +131,7 @@ public class NotesFragment extends BaseNavigationFragment {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) mAdapter.filter(newText);
+            if (mAdapter != null) filterController.setSearchValue(newText);
             return false;
         }
     };
@@ -137,18 +141,6 @@ public class NotesFragment extends BaseNavigationFragment {
         return true;
     };
     private SyncNotes.SyncListener mSyncListener = b -> showData();
-    private FilterableAdapter.Filter<NoteItem, String> mFilterCallback = new FilterableAdapter.Filter<NoteItem, String>() {
-        @Override
-        public boolean filter(NoteItem noteItem, String query) {
-            return noteItem.getSummary().toLowerCase().contains(query.toLowerCase());
-        }
-
-        @Override
-        public void onFilterEnd(List<NoteItem> list, int size, String query) {
-            binding.recyclerView.smoothScrollToPosition(0);
-            refreshView();
-        }
-    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -178,7 +170,9 @@ public class NotesFragment extends BaseNavigationFragment {
             mSearchView = (SearchView) mSearchMenu.getActionView();
         }
         if (mSearchView != null) {
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            if (searchManager != null) {
+                mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            }
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mCloseListener);
         }
@@ -241,6 +235,16 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void initList() {
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        enableGrid = getPrefs().isNotesGridEnabled();
+        if (enableGrid) {
+            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        }
+        binding.recyclerView.setLayoutManager(layoutManager);
+        mAdapter = new NotesRecyclerAdapter();
+        mAdapter.setEventListener(mEventListener);
+        binding.recyclerView.setAdapter(mAdapter);
+        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         refreshView();
     }
 
@@ -283,17 +287,7 @@ public class NotesFragment extends BaseNavigationFragment {
     }
 
     private void showData() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        enableGrid = getPrefs().isNotesGridEnabled();
-        if (enableGrid) {
-            layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        }
-        binding.recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new NotesRecyclerAdapter(RealmDb.getInstance().getAllNotes(getPrefs().getNoteOrder()), mFilterCallback);
-        mAdapter.setEventListener(mEventListener);
-        binding.recyclerView.setAdapter(mAdapter);
-        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        refreshView();
+        filterController.setOriginal(RealmDb.getInstance().getAllNotes(getPrefs().getNoteOrder()));
     }
 
     private void deleteDialog() {
@@ -371,5 +365,12 @@ public class NotesFragment extends BaseNavigationFragment {
             binding.emptyItem.setVisibility(View.GONE);
             binding.recyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onChanged(@NonNull List<NoteItem> result) {
+        mAdapter.setData(result);
+        binding.recyclerView.smoothScrollToPosition(0);
+        refreshView();
     }
 }

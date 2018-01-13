@@ -4,9 +4,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,10 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentTemplatesListBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
+import com.elementary.tasks.reminder.filters.FilterCallback;
 
 import java.util.List;
 
@@ -38,8 +38,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class TemplatesFragment extends BaseSettingsFragment {
+public class TemplatesFragment extends BaseSettingsFragment implements FilterCallback<TemplateItem> {
 
     private FragmentTemplatesListBinding binding;
     private TemplatesAdapter adapter;
@@ -47,10 +46,13 @@ public class TemplatesFragment extends BaseSettingsFragment {
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
 
+    @NonNull
+    private TemplateFilterController filterController = new TemplateFilterController(this);
+
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (adapter != null) adapter.filter(query);
+            if (adapter != null) filterController.setSearchValue(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -59,7 +61,7 @@ public class TemplatesFragment extends BaseSettingsFragment {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (adapter != null) adapter.filter(newText);
+            if (adapter != null) filterController.setSearchValue(newText);
             return false;
         }
     };
@@ -67,18 +69,6 @@ public class TemplatesFragment extends BaseSettingsFragment {
     private SearchView.OnCloseListener mCloseListener = () -> {
         showTemplates();
         return true;
-    };
-    private FilterableAdapter.Filter<TemplateItem, String> mFilter = new FilterableAdapter.Filter<TemplateItem, String>() {
-        @Override
-        public boolean filter(TemplateItem templateItem, String query) {
-            return templateItem.getTitle().toLowerCase().contains(query.toLowerCase());
-        }
-
-        @Override
-        public void onFilterEnd(List<TemplateItem> list, int size, String query) {
-            binding.templatesList.smoothScrollToPosition(0);
-            refreshView();
-        }
     };
 
     @Override
@@ -101,7 +91,9 @@ public class TemplatesFragment extends BaseSettingsFragment {
             mSearchView = (SearchView) mSearchMenu.getActionView();
         }
         if (mSearchView != null) {
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            if (searchManager != null) {
+                mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            }
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mCloseListener);
         }
@@ -121,9 +113,10 @@ public class TemplatesFragment extends BaseSettingsFragment {
     }
 
     private void initTemplateList() {
-        RecyclerView recyclerView = binding.templatesList;
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.templatesList.setHasFixedSize(false);
+        binding.templatesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new TemplatesAdapter(getContext());
+        binding.templatesList.setAdapter(adapter);
         refreshView();
     }
 
@@ -140,9 +133,7 @@ public class TemplatesFragment extends BaseSettingsFragment {
     }
 
     private void showTemplates() {
-        adapter = new TemplatesAdapter(getContext(), RealmDb.getInstance().getAllTemplates(), mFilter);
-        binding.templatesList.setAdapter(adapter);
-        refreshView();
+        filterController.setOriginal(RealmDb.getInstance().getAllTemplates());
     }
 
     private void refreshView() {
@@ -153,5 +144,12 @@ public class TemplatesFragment extends BaseSettingsFragment {
             binding.emptyItem.setVisibility(View.GONE);
             binding.templatesList.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onChanged(@NonNull List<TemplateItem> result) {
+        adapter.setData(result);
+        binding.templatesList.smoothScrollToPosition(0);
+        refreshView();
     }
 }

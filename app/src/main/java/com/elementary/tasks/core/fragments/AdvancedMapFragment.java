@@ -634,7 +634,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 emptyItem.setVisibility(View.GONE);
                 binding.placesCard.setVisibility(View.VISIBLE);
                 placesList.setVisibility(View.VISIBLE);
-                placeRecyclerAdapter = new PlacesRecyclerAdapter(getContext(), list, new SimpleListener() {
+                placeRecyclerAdapter = new PlacesRecyclerAdapter(getContext(), new SimpleListener() {
                     @Override
                     public void onItemClicked(int position, View view) {
                         hideLayers();
@@ -649,7 +649,8 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                     public void onItemLongClicked(int position, View view) {
 
                     }
-                }, null);
+                });
+                placeRecyclerAdapter.setData(list);
                 placesList.setAdapter(placeRecyclerAdapter);
             }
         } else {
@@ -657,7 +658,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 emptyItem.setVisibility(View.GONE);
                 placesList.setVisibility(View.VISIBLE);
                 placesList.setAdapter(placeRecyclerAdapter);
-                addMarkers(placeRecyclerAdapter.getUsedData());
+                addMarkers(placeRecyclerAdapter.getData());
             } else {
                 placesList.setVisibility(View.GONE);
                 emptyItem.setVisibility(View.VISIBLE);
