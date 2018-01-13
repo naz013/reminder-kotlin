@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,10 +14,10 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.databinding.ActivityApplicationListBinding;
+import com.elementary.tasks.reminder.filters.FilterCallback;
 
 import java.util.List;
 
@@ -36,25 +36,13 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class ApplicationActivity extends ThemedActivity implements LoadListener, RecyclerClickListener {
+public class ApplicationActivity extends ThemedActivity implements LoadListener, RecyclerClickListener, FilterCallback<ApplicationItem> {
 
     private ActivityApplicationListBinding binding;
     private AppsRecyclerAdapter mAdapter;
 
-    private RecyclerView mRecyclerView;
-    private FilterableAdapter.Filter<ApplicationItem, String> mFilter = new FilterableAdapter.Filter<ApplicationItem, String>() {
-        @Override
-        public boolean filter(ApplicationItem applicationItem, String query) {
-            String text = applicationItem.getName().toLowerCase();
-            return text.contains(query.toLowerCase());
-        }
-
-        @Override
-        public void onFilterEnd(List<ApplicationItem> list, int size, String query) {
-            mRecyclerView.scrollToPosition(0);
-        }
-    };
+    @NonNull
+    private AppFilterController filterController = new AppFilterController(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +55,10 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
     }
 
     private void initRecyclerView() {
-        mRecyclerView = binding.contactsList;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setHasFixedSize(true);
+        binding.contactsList.setLayoutManager(new LinearLayoutManager(this));
+        binding.contactsList.setHasFixedSize(true);
+        mAdapter = new AppsRecyclerAdapter(this);
+        binding.contactsList.setAdapter(mAdapter);
     }
 
     private void initSearchView() {
@@ -82,7 +71,7 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (mAdapter != null) {
-                    mAdapter.filter(s.toString());
+                   filterController.setSearchValue(s.toString());
                 }
             }
 
@@ -115,8 +104,7 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
 
     @Override
     public void onLoaded(List<ApplicationItem> list) {
-        mAdapter = new AppsRecyclerAdapter(list, this, mFilter);
-        mRecyclerView.setAdapter(mAdapter);
+        filterController.setOriginal(list);
     }
 
     @Override
@@ -136,5 +124,11 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void onChanged(@NonNull List<ApplicationItem> result) {
+        mAdapter.setData(result);
+        binding.contactsList.smoothScrollToPosition(0);
     }
 }

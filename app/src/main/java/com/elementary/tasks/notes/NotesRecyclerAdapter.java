@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
@@ -28,6 +28,7 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,18 +47,44 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class NotesRecyclerAdapter extends FilterableAdapter<NoteItem, String, NoteHolder> {
+public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
 
     private SimpleListener mEventListener;
+    private List<NoteItem> mData = new ArrayList<>();
 
-    public NotesRecyclerAdapter(List<NoteItem> list, Filter<NoteItem, String> filter) {
-        super(list, filter);
+    public NotesRecyclerAdapter() {
     }
 
     public void notifyChanged(int position, String id) {
         NoteItem newItem = RealmDb.getInstance().getNote(id);
-        getUsedData().set(position, newItem);
+        mData.set(position, newItem);
         notifyItemChanged(position);
+    }
+
+    public void setData(List<NoteItem> list) {
+        this.mData = list;
+        notifyDataSetChanged();
+    }
+
+    public List<NoteItem> getData() {
+        return mData;
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.size();
+    }
+
+    public NoteItem getItem(int position) {
+        return mData.get(position);
+    }
+
+    public void removeItem(int position) {
+        if (position < mData.size()) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(0, mData.size());
+        }
     }
 
     @Override
