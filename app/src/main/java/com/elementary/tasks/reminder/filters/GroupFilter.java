@@ -19,12 +19,12 @@ import com.elementary.tasks.reminder.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class GroupFilter extends AbstractFilter<String> {
+public class GroupFilter extends AbstractFilter<String, Reminder> {
 
     @Nullable
     private String groupId = null;
 
-    public GroupFilter(@Nullable ReminderFilter filter) {
+    public GroupFilter(@Nullable ObjectFilter<Reminder> filter) {
         super(filter);
     }
 

@@ -24,7 +24,7 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class FilterController {
+public class ReminderFilterController {
 
     @NonNull
     private FilterValue<String> searchValue = new FilterValue<>();
@@ -38,11 +38,11 @@ public class FilterController {
     @NonNull
     private List<Reminder> original = new ArrayList<>();
     @Nullable
-    private ReminderFilterCallback mCallback;
+    private FilterCallback<Reminder> mCallback;
     @Nullable
-    private ReminderFilter mFilter;
+    private ObjectFilter<Reminder> mFilter;
 
-    public FilterController(@Nullable ReminderFilterCallback callback) {
+    public ReminderFilterController(@Nullable FilterCallback<Reminder> callback) {
         this.mCallback = callback;
         initFilters();
     }

@@ -41,8 +41,8 @@ import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
 import com.elementary.tasks.reminder.UpdateFilesAsync;
-import com.elementary.tasks.reminder.filters.FilterController;
-import com.elementary.tasks.reminder.filters.ReminderFilterCallback;
+import com.elementary.tasks.reminder.filters.FilterCallback;
+import com.elementary.tasks.reminder.filters.ReminderFilterController;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,7 +69,8 @@ import java.util.Set;
  * limitations under the License.
  */
 
-public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener, ReminderFilterCallback {
+public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener,
+        FilterCallback<Reminder> {
 
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
@@ -78,7 +79,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private ArrayList<String> mGroupsIds = new ArrayList<>();
     @NonNull
-    private FilterController filterController = new FilterController(this);
+    private ReminderFilterController filterController = new ReminderFilterController(this);
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
