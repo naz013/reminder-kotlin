@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -42,6 +41,8 @@ import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
 import com.elementary.tasks.reminder.UpdateFilesAsync;
+import com.elementary.tasks.reminder.filters.FilterController;
+import com.elementary.tasks.reminder.filters.ReminderFilterCallback;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,17 +69,16 @@ import java.util.Set;
  * limitations under the License.
  */
 
-public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener {
+public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener, ReminderFilterCallback {
 
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
 
     private RemindersRecyclerAdapter mAdapter;
 
-    private ArrayList<String> mGroupsIds;
-    private String mLastGroupId;
-    private int lastType;
-    private int lastActive = -1;
+    private ArrayList<String> mGroupsIds = new ArrayList<>();
+    @NonNull
+    private FilterController filterController = new FilterController(this);
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
@@ -86,7 +86,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) mAdapter.filter(query);
+            if (mAdapter != null) filterController.setSearchValue(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -95,7 +95,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) mAdapter.filter(newText);
+            if (mAdapter != null) filterController.setSearchValue(newText);
             if (!getCallback().isFiltersVisible()) {
                 showRemindersFilter();
             }
@@ -127,18 +127,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         }
     };
     private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
-    private FilterableAdapter.Filter<Reminder, String> mFilter = new FilterableAdapter.Filter<Reminder, String>() {
-        @Override
-        public boolean filter(Reminder reminder, String query) {
-            return reminder.getSummary().toLowerCase().contains(query.toLowerCase());
-        }
-
-        @Override
-        public void onFilterEnd(List<Reminder> list, int size, String query) {
-            mRecyclerView.smoothScrollToPosition(0);
-            reloadView();
-        }
-    };
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -155,7 +143,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             mSearchView = (SearchView) mSearchMenu.getActionView();
         }
         if (mSearchView != null) {
-            mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            if (searchManager != null) {
+                mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+            }
             mSearchView.setOnQueryTextListener(queryTextListener);
             mSearchView.setOnCloseListener(mSearchCloseListener);
             mSearchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
@@ -205,10 +195,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void showData(List<Reminder> result) {
-        mAdapter = new RemindersRecyclerAdapter(getContext(), result, mFilter);
-        mAdapter.setEventListener(mEventListener);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
+        filterController.setOriginal(result);
         reloadView();
     }
 
@@ -259,13 +246,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
         new UpdateFilesAsync(getContext()).execute(reminder);
-        loadData(mLastGroupId, lastType, lastActive);
+        loadData();
     }
 
     private void initList() {
         mRecyclerView = binding.recyclerView;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RemindersRecyclerAdapter(getContext());
+        mAdapter.setEventListener(mEventListener);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -278,12 +269,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             getCallback().setClick(view -> startActivity(new Intent(getContext(), CreateReminderActivity.class)));
             getCallback().onScrollChanged(binding.recyclerView);
         }
-        loadData(mLastGroupId, lastType, lastActive);
+        loadData();
     }
 
     @Subscribe
     public void onEvent(ReminderUpdateEvent e) {
-        loadData(mLastGroupId, lastType, lastActive);
+        loadData();
     }
 
     private void previewReminder(final View view, final String id, final int type) {
@@ -296,14 +287,8 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         }
     }
 
-    private void loadData(String groupId, int type, int active) {
-        mLastGroupId = groupId;
-        lastType = type;
-        if (groupId != null || type != 0 || active != -1) {
-            DataLoader.loadActiveReminder(groupId, type, active, mLoadCallback);
-        } else {
-            DataLoader.loadActiveReminder(mLoadCallback);
-        }
+    private void loadData() {
+        DataLoader.loadActiveReminder(mLoadCallback);
     }
 
     private void reloadView() {
@@ -326,11 +311,11 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void addStatusFilter(List<FilterView.Filter> filters) {
-        List<Reminder> reminders = mAdapter.getUsedData();
+        List<Reminder> reminders = filterController.getOriginal();
         if (reminders.size() == 0) {
             return;
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> loadData(mLastGroupId, lastType, id));
+        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setStatusValue(id));
         filter.add(getFilterAllElement());
         filter.add(new FilterView.FilterElement(R.drawable.ic_power_button, getString(R.string.enabled4), 1));
         filter.add(new FilterView.FilterElement(R.drawable.ic_off, getString(R.string.disabled), 2));
@@ -343,7 +328,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void addTypeFilter(List<FilterView.Filter> filters) {
-        List<Reminder> reminders = mAdapter.getUsedData();
+        List<Reminder> reminders = filterController.getOriginal();
         if (reminders.size() == 0) {
             return;
         }
@@ -351,7 +336,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         for (Reminder reminder : reminders) {
             types.add(reminder.getType());
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> loadData(mLastGroupId, id, lastActive));
+        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setTypeValue(id));
         filter.add(getFilterAllElement());
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (Integer integer : types) {
@@ -366,10 +351,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         mGroupsIds = new ArrayList<>();
         FilterView.Filter filter = new FilterView.Filter((view, id) -> {
             if (id == 0) {
-                loadData(null, lastType, lastActive);
+                filterController.setGroupValue(null);
             } else {
-                String catId = mGroupsIds.get(id - 1);
-                loadData(catId, lastType, lastActive);
+                filterController.setGroupValue(mGroupsIds.get(id - 1));
             }
         });
         filter.add(getFilterAllElement());
@@ -403,7 +387,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                 return;
             }
             RealmDb.getInstance().changeReminderGroup(id, catId);
-            loadData(mLastGroupId, lastType, lastActive);
+            loadData();
         });
         AlertDialog alert = builder.create();
         alert.show();
@@ -417,8 +401,13 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     @Override
     public void endExecution(boolean b) {
-        if (b) {
-            loadData(mLastGroupId, lastType, lastActive);
-        }
+        if (b) loadData();
+    }
+
+    @Override
+    public void onChanged(@NonNull List<Reminder> result) {
+        mAdapter.setData(result);
+        mRecyclerView.smoothScrollToPosition(0);
+        reloadView();
     }
 }

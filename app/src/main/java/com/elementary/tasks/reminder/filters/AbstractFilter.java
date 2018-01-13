@@ -1,12 +1,10 @@
-package com.elementary.tasks.core.utils;
+package com.elementary.tasks.reminder.filters;
 
-import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.reminder.models.Reminder;
 
-import java.util.List;
+import io.reactivex.functions.Consumer;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -23,15 +21,17 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class DataLoader {
+public abstract class AbstractFilter<V> implements ReminderFilter, Consumer<V> {
 
-    private static Handler handler = new Handler();
+    @Nullable
+    private ReminderFilter filter;
 
-    public static void loadActiveReminder(@NonNull RealmCallback<List<Reminder>> callback) {
-        RealmDb.getInstance().getActiveReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
+    public AbstractFilter(@Nullable ReminderFilter filter) {
+        this.filter = filter;
     }
 
-    public static void loadArchivedReminder(@NonNull RealmCallback<List<Reminder>> callback) {
-        RealmDb.getInstance().getArchivedReminders(result -> handler.post(() -> callback.onDataLoaded(result)));
+    @Override
+    public boolean filter(Reminder reminder) {
+        return filter == null || filter.filter(reminder);
     }
 }

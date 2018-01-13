@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.adapter.FilterableAdapter;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.Prefs;
@@ -34,6 +33,7 @@ import com.elementary.tasks.reminder.models.Place;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.elementary.tasks.reminder.models.ShopItem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,30 +53,52 @@ import java.util.Locale;
  * limitations under the License.
  */
 
-public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String, RecyclerView.ViewHolder> {
+public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private RecyclerListener mEventListener;
     private ThemeUtil themeUtil;
     private boolean isEditable = true;
+    private List<Reminder> mData = new ArrayList<>();
 
-    public RemindersRecyclerAdapter(Context context, List<Reminder> list, Filter<Reminder, String> filter) {
-        super(list, filter);
+    public RemindersRecyclerAdapter(Context context) {
         this.mContext = context;
         themeUtil = ThemeUtil.getInstance(context);
+    }
+
+    public void setData(List<Reminder> list) {
+        this.mData = list;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemCount() {
+        return mData.size();
     }
 
     public void setEditable(boolean editable) {
         isEditable = editable;
     }
 
+    public Reminder getItem(int position) {
+        return mData.get(position);
+    }
+
+    public void removeItem(int position) {
+        if (position < mData.size()) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(0, mData.size());
+        }
+    }
+
     private void initLabel(RoboTextView listHeader, int position) {
-        Reminder item = getUsedData().get(position);
+        Reminder item = getItem(position);
         long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         String simpleDate = TimeUtil.getSimpleDate(due);
         Reminder prevItem = null;
         try {
-            prevItem = getUsedData().get(position - 1);
+            prevItem = getItem(position - 1);
         } catch (ArrayIndexOutOfBoundsException ignored) {
         }
         if (!item.isActive() && position > 0 && (prevItem != null && prevItem.isActive())) {
@@ -118,7 +140,7 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Reminder item = getUsedData().get(position);
+        Reminder item = getItem(position);
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;
             reminderHolder.setData(item);
@@ -136,12 +158,12 @@ public class RemindersRecyclerAdapter extends FilterableAdapter<Reminder, String
 
     @Override
     public int getItemViewType(int position) {
-        return getUsedData().get(position).getViewType();
+        return getItem(position).getViewType();
     }
 
     @Override
     public long getItemId(int position) {
-        return getUsedData().get(position).getUniqueId();
+        return getItem(position).getUniqueId();
     }
 
     public void setEventListener(RecyclerListener eventListener) {
