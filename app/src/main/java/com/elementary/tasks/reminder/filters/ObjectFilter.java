@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.filters;
 
-import com.elementary.tasks.reminder.models.Reminder;
-
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -17,6 +15,6 @@ import com.elementary.tasks.reminder.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public interface ReminderFilter {
-    boolean filter(Reminder reminder);
+public interface ObjectFilter<V> {
+    boolean filter(V v);
 }

@@ -21,6 +21,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public interface ReminderFilterCallback {
-    void onChanged(@NonNull List<Reminder> result);
+public interface FilterCallback<V> {
+    void onChanged(@NonNull List<V> result);
 }

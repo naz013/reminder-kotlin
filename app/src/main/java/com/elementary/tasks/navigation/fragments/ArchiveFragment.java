@@ -34,8 +34,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
-import com.elementary.tasks.reminder.filters.FilterController;
-import com.elementary.tasks.reminder.filters.ReminderFilterCallback;
+import com.elementary.tasks.reminder.filters.ReminderFilterController;
+import com.elementary.tasks.reminder.filters.FilterCallback;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ import java.util.Set;
  * limitations under the License.
  */
 
-public class ArchiveFragment extends BaseNavigationFragment implements ReminderFilterCallback {
+public class ArchiveFragment extends BaseNavigationFragment implements FilterCallback<Reminder> {
 
     private FragmentTrashBinding binding;
     private RecyclerView mRecyclerView;
@@ -68,7 +68,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements ReminderF
 
     private List<String> mGroupsIds = new ArrayList<>();
     @NonNull
-    private FilterController filterController = new FilterController(this);
+    private ReminderFilterController filterController = new ReminderFilterController(this);
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;

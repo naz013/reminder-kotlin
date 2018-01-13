@@ -19,12 +19,12 @@ import com.elementary.tasks.reminder.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SearchFilter extends AbstractFilter<String> {
+public class SearchFilter extends AbstractFilter<String, Reminder> {
 
     @Nullable
     private String query = null;
 
-    public SearchFilter(@Nullable ReminderFilter filter) {
+    public SearchFilter(@Nullable ObjectFilter<Reminder> filter) {
         super(filter);
     }
 

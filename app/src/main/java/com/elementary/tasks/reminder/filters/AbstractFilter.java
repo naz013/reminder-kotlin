@@ -2,8 +2,6 @@ package com.elementary.tasks.reminder.filters;
 
 import android.support.annotation.Nullable;
 
-import com.elementary.tasks.reminder.models.Reminder;
-
 import io.reactivex.functions.Consumer;
 
 /**
@@ -21,17 +19,17 @@ import io.reactivex.functions.Consumer;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public abstract class AbstractFilter<V> implements ReminderFilter, Consumer<V> {
+public abstract class AbstractFilter<V, O> implements ObjectFilter<O>, Consumer<V> {
 
     @Nullable
-    private ReminderFilter filter;
+    private ObjectFilter<O> filter;
 
-    public AbstractFilter(@Nullable ReminderFilter filter) {
+    public AbstractFilter(@Nullable ObjectFilter<O> filter) {
         this.filter = filter;
     }
 
     @Override
-    public boolean filter(Reminder reminder) {
-        return filter == null || filter.filter(reminder);
+    public boolean filter(O o) {
+        return filter == null || filter.filter(o);
     }
 }
