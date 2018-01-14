@@ -1,1 +1,1 @@
-include ':app', ':photoPreview', ':shared', ':wear', ':android-animated-recording-view', ':voiceengine'
+include ':app', ':photoPreview', ':shared', ':wear', ':voiceengine'
