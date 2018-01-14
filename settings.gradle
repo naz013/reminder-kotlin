@@ -1,1 +1,1 @@
-include ':app', ':photoPreview', ':shared', ':wear', ':voiceengine'
+include ':app', ':shared', ':wear', ':voiceengine'
