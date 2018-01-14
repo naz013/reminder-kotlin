@@ -133,7 +133,6 @@ dependencies {
         transitive = true
     }
 
-    implementation project(':photoPreview')
     implementation project(path: ':shared')
     implementation project(':voiceengine')
 
