@@ -19,6 +19,8 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 
+import com.elementary.tasks.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 

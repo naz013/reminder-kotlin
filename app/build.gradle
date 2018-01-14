@@ -136,7 +136,6 @@ dependencies {
     implementation project(':photoPreview')
     implementation project(path: ':shared')
     implementation project(':voiceengine')
-    implementation project(':android-animated-recording-view')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt "com.android.databinding:compiler:$android_plugin_version"
