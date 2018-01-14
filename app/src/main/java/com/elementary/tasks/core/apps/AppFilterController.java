@@ -64,6 +64,10 @@ public class AppFilterController {
         this.mFilter = filter;
     }
 
+    public void clearFilter() {
+        setSearchValue("");
+    }
+
     public void setSearchValue(@Nullable String value) {
         if (value == null) {
             searchValue.setValue("");

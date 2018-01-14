@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class ReminderFilterController {
     @NonNull
     private FilterValue<String> searchValue = new FilterValue<>();
     @NonNull
-    private FilterValue<String> groupValue = new FilterValue<>();
+    private FilterValue<List<String>> groupValue = new FilterValue<>();
     @NonNull
     private FilterValue<Integer> typeValue = new FilterValue<>();
     @NonNull
@@ -74,10 +75,15 @@ public class ReminderFilterController {
 
     public void setGroupValue(@Nullable String value) {
         if (value == null) {
-            groupValue.setValue("");
+            groupValue.setValue(Collections.singletonList(""));
         } else {
-            groupValue.setValue(value);
+            groupValue.setValue(Collections.singletonList(value));
         }
+        onChanged();
+    }
+
+    public void setGroupValues(@NonNull List<String> value) {
+        groupValue.setValue(value);
         onChanged();
     }
 
