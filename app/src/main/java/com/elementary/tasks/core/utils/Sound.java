@@ -50,26 +50,40 @@ public class Sound {
         this.mCallback = callback;
     }
 
-    public void stop() {
+    public void stop(boolean notify) {
         if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
+            try {
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+            } catch (IllegalStateException ignored) {
+            }
             isPaused = false;
         }
         if (ringtone != null) {
-            ringtone.stop();
+            try {
+                ringtone.stop();
+            } catch (Exception ignored) {
+            }
         }
+        if (notify) notifyFinish();
     }
 
     public void pause() {
         if (mMediaPlayer != null) {
-            mMediaPlayer.pause();
+            try {
+                mMediaPlayer.pause();
+            } catch (IllegalStateException ignored) {
+            }
             isPaused = true;
         }
     }
 
     public void resume() {
         if (mMediaPlayer != null) {
-            mMediaPlayer.start();
+            try {
+                mMediaPlayer.start();
+            } catch (IllegalStateException ignored) {
+            }
             isPaused = false;
         }
     }
@@ -83,7 +97,11 @@ public class Sound {
     }
 
     public boolean isPlaying() {
-        return mMediaPlayer != null && mMediaPlayer.isPlaying();
+        try {
+            return mMediaPlayer != null && mMediaPlayer.isPlaying();
+        } catch (IllegalStateException e) {
+            return false;
+        }
     }
 
     public boolean isSameFile(String path) {
@@ -93,9 +111,7 @@ public class Sound {
     public void play(String path) {
         if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return;
         lastFile = path;
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-        }
+        stop(false);
         mMediaPlayer = new MediaPlayer();
         try {
             File file = new File(path);
@@ -139,9 +155,7 @@ public class Sound {
         if (isPlaying() && !Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) {
             return;
         }
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-        }
+        stop(false);
         mMediaPlayer = new MediaPlayer();
         try {
             mMediaPlayer.setDataSource(mContext, path);
@@ -182,9 +196,7 @@ public class Sound {
 
     public void playAlarm(AssetFileDescriptor afd) {
         if (!Permissions.checkPermission(mContext, Permissions.READ_EXTERNAL)) return;
-        if (mMediaPlayer != null) {
-            mMediaPlayer.stop();
-        }
+        stop(false);
         if (isDone) {
             return;
         }

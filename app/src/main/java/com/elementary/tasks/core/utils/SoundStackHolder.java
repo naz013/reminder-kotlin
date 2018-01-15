@@ -87,7 +87,7 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
         if (isSystemLoudnessEnabled) mSystemStream = Prefs.getInstance(context).getSoundStream();
         if (mAudioManager != null) return;
 
-        if (mSound != null) mSound.stop();
+        if (mSound != null) mSound.stop(true);
         else mSound = new Sound(context);
 
         mSound.setCallback(this);
@@ -126,8 +126,8 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
             mMusicVolume = -1;
             mNotificationVolume = -1;
             mAlarmVolume = -1;
-            hasDefaultSaved = false;
         }
+        hasDefaultSaved = false;
     }
 
     @Override

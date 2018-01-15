@@ -630,7 +630,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void discardMedia() {
-        if (getSound() != null) getSound().stop();
+        if (getSound() != null) getSound().stop(true);
     }
 
     protected void showWearNotification(String secondaryText) {
