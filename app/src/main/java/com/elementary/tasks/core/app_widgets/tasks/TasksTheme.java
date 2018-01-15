@@ -110,52 +110,52 @@ public class TasksTheme implements Parcelable {
         list.clear();
         list.add(new TasksTheme(R.color.indigoPrimary, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Indigo", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.indigo), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.tealPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Teal", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.teal), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.limePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Lime", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.lime), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.bluePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Blue", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.blue), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.material_grey, R.color.material_divider,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.blackPrimary), "Gray", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.blackPrimary), context.getString(R.string.grey), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.greenPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Green", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.green), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.blackPrimary, R.color.blackPrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Dark", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.dark), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.whitePrimary, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary), R.drawable.ic_add_black_24dp,
-                R.drawable.ic_settings, getResColor(context, R.color.blackPrimary), "White", R.color.material_grey,
+                R.drawable.ic_settings, getResColor(context, R.color.blackPrimary), context.getString(R.string.white), R.color.material_grey,
                 getResColor(context, R.color.whitePrimary)));
 
         list.add(new TasksTheme(R.color.orangePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Orange", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.orange), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.redPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), "Red", R.color.whitePrimary,
+                R.drawable.ic_settings_white, getResColor(context, R.color.whitePrimary), context.getString(R.string.red), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new TasksTheme(R.color.material_grey_dialog, R.color.orangeAccent,
@@ -191,10 +191,8 @@ public class TasksTheme implements Parcelable {
         }
 
         public TasksTheme[] newArray(int size) {
-
             return new TasksTheme[size];
         }
-
     };
 
     public void readFromParcel(Parcel in) {

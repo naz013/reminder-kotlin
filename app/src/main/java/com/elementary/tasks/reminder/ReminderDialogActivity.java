@@ -332,7 +332,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, "Can't find application that can open this file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.cant_find_app_for_that_file_type, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -103,52 +103,52 @@ public class NotesTheme implements Parcelable {
         list.clear();
         list.add(new NotesTheme(R.color.indigoPrimary, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Teal", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.indigo), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.tealPrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Indigo", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.teal), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.limePrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Lime", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.lime), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.bluePrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Blue", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.blue), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.material_grey, R.color.material_divider,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Gray", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.grey), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.greenPrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Green", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.green), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.blackPrimary, R.color.blackPrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Dark", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.dark), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.whitePrimary, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary), R.drawable.ic_add_black_24dp,
-                R.drawable.ic_settings, "White", R.color.material_grey,
+                R.drawable.ic_settings, context.getString(R.string.white), R.color.material_grey,
                 getResColor(context, R.color.whitePrimary)));
 
         list.add(new NotesTheme(R.color.orangePrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Orange", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.orange), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.redPrimaryDark, R.color.whitePrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
-                R.drawable.ic_settings_white, "Red", R.color.whitePrimary,
+                R.drawable.ic_settings_white, context.getString(R.string.red), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new NotesTheme(R.color.material_grey_dialog, R.color.orangeAccent,
@@ -184,10 +184,8 @@ public class NotesTheme implements Parcelable {
         }
 
         public NotesTheme[] newArray(int size) {
-
             return new NotesTheme[size];
         }
-
     };
 
     public void readFromParcel(Parcel in) {

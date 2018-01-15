@@ -132,61 +132,61 @@ public class EventsTheme implements Parcelable {
         list.add(new EventsTheme(R.color.indigoPrimary, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Indigo", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.indigo), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.tealPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Teal", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.teal), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.limePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Lime", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.lime), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.bluePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Blue", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.blue), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.material_grey, R.color.material_divider,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Gray", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.grey), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.greenPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Green", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.green), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.blackPrimary, R.color.blackPrimary,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.whitePrimary), R.color.blackPrimary, 1, "Dark", R.color.whitePrimary,
+                getResColor(context, R.color.whitePrimary), R.color.blackPrimary, 1, context.getString(R.string.dark), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.whitePrimary, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary), R.drawable.ic_add_black_24dp,
                 R.drawable.ic_settings, R.drawable.ic_microphone_black,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "White", R.color.material_grey,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.white), R.color.material_grey,
                 getResColor(context, R.color.whitePrimary)));
 
         list.add(new EventsTheme(R.color.orangePrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Orange", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.orange), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.redPrimaryDark, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary), R.drawable.ic_add_white_24dp,
                 R.drawable.ic_settings_white, R.drawable.ic_microphone_white,
-                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, "Red", R.color.whitePrimary,
+                getResColor(context, R.color.blackPrimary), R.color.whitePrimary, 0, context.getString(R.string.red), R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new EventsTheme(R.color.material_grey_dialog, R.color.orangeAccent,
@@ -226,10 +226,8 @@ public class EventsTheme implements Parcelable {
         }
 
         public EventsTheme[] newArray(int size) {
-
             return new EventsTheme[size];
         }
-
     };
 
     public void readFromParcel(Parcel in) {
