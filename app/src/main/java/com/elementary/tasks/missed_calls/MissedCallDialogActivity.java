@@ -130,7 +130,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         buttonCancel.setOnClickListener(v -> sendSMS());
         binding.buttonOk.setOnClickListener(v -> ok());
         buttonCall.setOnClickListener(v -> call());
-        showMissedReminder(mCallItem, name == null || name.matches("") ? mCallItem.getNumber() : name);
+        showMissedReminder(name == null || name.matches("") ? mCallItem.getNumber() : name);
     }
 
     @Override
