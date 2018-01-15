@@ -8,6 +8,8 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.File;
@@ -37,10 +39,25 @@ public class Sound {
     @Nullable
     private String lastFile;
     @Nullable
-    private Ringtone ringtone;
+    private Ringtone mRingtone;
     private boolean isDone;
     @Nullable
     private PlaybackCallback mCallback;
+    @NonNull
+    private Handler mRingtoneHandler = new Handler();
+    @NonNull
+    private Runnable mRingtoneRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mRingtoneHandler.removeCallbacks(mRingtoneRunnable);
+            if (mRingtone != null && mRingtone.isPlaying()) {
+                mRingtoneHandler.postDelayed(mRingtoneRunnable, 100);
+            } else {
+                mRingtone = null;
+                notifyFinish();
+            }
+        }
+    };
 
     public Sound(Context context) {
         this.mContext = context;
@@ -59,9 +76,10 @@ public class Sound {
             }
             isPaused = false;
         }
-        if (ringtone != null) {
+        if (mRingtone != null) {
+            mRingtoneHandler.removeCallbacks(mRingtoneRunnable);
             try {
-                ringtone.stop();
+                mRingtone.stop();
             } catch (Exception ignored) {
             }
         }
@@ -159,39 +177,44 @@ public class Sound {
         mMediaPlayer = new MediaPlayer();
         try {
             mMediaPlayer.setDataSource(mContext, path);
+            Prefs prefs = Prefs.getInstance(mContext);
+            int stream = AudioManager.STREAM_MUSIC;
+            if (prefs.isSystemLoudnessEnabled()) {
+                stream = prefs.getSoundStream();
+            }
+            if (Module.isLollipop()) {
+                AudioAttributes attributes = new AudioAttributes.Builder()
+                        .setLegacyStreamType(stream)
+                        .build();
+                mMediaPlayer.setAudioAttributes(attributes);
+            } else {
+                mMediaPlayer.setAudioStreamType(stream);
+            }
+            mMediaPlayer.setLooping(looping);
+            mMediaPlayer.setOnPreparedListener(mp -> {
+                notifyStart();
+                mp.start();
+            });
+            mMediaPlayer.setOnCompletionListener(mp -> notifyFinish());
+            mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+                notifyFinish();
+                return false;
+            });
+            try {
+                mMediaPlayer.prepareAsync();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
-            ringtone = RingtoneManager.getRingtone(mContext, path);
-            ringtone.play();
+            playRingtone(path);
         }
+    }
 
-        Prefs prefs = Prefs.getInstance(mContext);
-        int stream = AudioManager.STREAM_MUSIC;
-        if (prefs.isSystemLoudnessEnabled()) {
-            stream = prefs.getSoundStream();
-        }
-        if (Module.isLollipop()) {
-            AudioAttributes attributes = new AudioAttributes.Builder()
-                    .setLegacyStreamType(stream)
-                    .build();
-            mMediaPlayer.setAudioAttributes(attributes);
-        } else {
-            mMediaPlayer.setAudioStreamType(stream);
-        }
-        mMediaPlayer.setLooping(looping);
-        mMediaPlayer.setOnPreparedListener(mp -> {
-            notifyStart();
-            mp.start();
-        });
-        mMediaPlayer.setOnCompletionListener(mp -> notifyFinish());
-        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
-            notifyFinish();
-            return false;
-        });
-        try {
-            mMediaPlayer.prepareAsync();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
+    private void playRingtone(Uri path) {
+        notifyStart();
+        mRingtone = RingtoneManager.getRingtone(mContext, path);
+        mRingtone.play();
+        mRingtoneHandler.postDelayed(mRingtoneRunnable, 100);
     }
 
     public void playAlarm(AssetFileDescriptor afd) {

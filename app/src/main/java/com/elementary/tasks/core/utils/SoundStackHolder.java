@@ -132,6 +132,7 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
 
     @Override
     public void onFinish() {
+        cancelIncreaseSound();
         restoreDefaultVolume();
     }
 
