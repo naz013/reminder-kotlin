@@ -114,7 +114,7 @@ public class FileExplorerActivity extends ThemedActivity {
                 if (isImage(mFileName)) {
                     showFullImage();
                 } else {
-                    Toast.makeText(this, "Not a image file", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.not_a_image_file, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 if (isMelody(mFileName)) {

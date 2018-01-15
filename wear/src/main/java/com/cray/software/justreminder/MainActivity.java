@@ -3,15 +3,12 @@ package com.cray.software.justreminder;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.wearable.view.CircularButton;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backdoor.shared.SharedConst;
@@ -40,11 +37,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        final WatchViewStub stub = findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                CircularButton buttonVoice = (CircularButton) findViewById(R.id.buttonVoice);
+                CircularButton buttonVoice = findViewById(R.id.buttonVoice);
                 buttonVoice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -58,20 +55,15 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                         }
                     }
                 });
-
             }
         });
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
         startService(new Intent(this, WearService.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
-        //startActivity(new Intent(this, HelpActivity.class));
     }
 
     @Override
@@ -119,11 +111,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                     if (language != null) {
                         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
-                        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something");
+                        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.say_something));
                         try {
                             startActivityForResult(intent, 105);
                         } catch (ActivityNotFoundException e){
-                            Toast.makeText(getApplicationContext(), "No recognition engine found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.voice_recognition_not_supported, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

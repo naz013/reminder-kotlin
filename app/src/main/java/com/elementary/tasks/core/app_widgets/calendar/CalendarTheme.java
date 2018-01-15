@@ -26,7 +26,6 @@ import java.util.List;
  */
 
 public class CalendarTheme implements Parcelable {
-
     private int itemTextColor, widgetBgColor, headerColor, borderColor, titleColor, rowColor;
     private int leftArrow, rightArrow, iconPlus, iconVoice, iconSettings;
     private int currentMark, birthdayMark, reminderMark;
@@ -148,7 +147,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Teal", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.teal), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -156,7 +155,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Indigo", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.indigo), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -164,7 +163,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Lime", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.lime), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -172,7 +171,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Blue", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.blue), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.material_divider,
@@ -180,7 +179,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.material_divider,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Gray", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.grey), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -188,7 +187,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Green", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.green), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.whitePrimary), R.color.blackPrimary,
@@ -196,7 +195,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.blackPrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Dark", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.dark), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -204,7 +203,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow_black, R.drawable.simple_right_arrow_black,
                 R.drawable.simple_plus_button_black, R.drawable.simple_voice_button_black,
-                R.drawable.simple_settings_button_black, "White", 0, 0, 0, R.color.material_grey,
+                R.drawable.simple_settings_button_black, context.getString(R.string.white), 0, 0, 0, R.color.material_grey,
                 getResColor(context, R.color.whitePrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -212,7 +211,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Orange", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.orange), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.whitePrimary,
@@ -220,7 +219,7 @@ public class CalendarTheme implements Parcelable {
                 getResColor(context, R.color.whitePrimary), R.color.whitePrimary,
                 R.drawable.simple_left_arrow, R.drawable.simple_right_arrow,
                 R.drawable.simple_plus_button, R.drawable.simple_voice_button,
-                R.drawable.simple_settings_button, "Red", 0, 0, 0, R.color.whitePrimary,
+                R.drawable.simple_settings_button, context.getString(R.string.red), 0, 0, 0, R.color.whitePrimary,
                 getResColor(context, R.color.blackPrimary)));
 
         list.add(new CalendarTheme(getResColor(context, R.color.blackPrimary), R.color.orangeAccent,
@@ -268,10 +267,8 @@ public class CalendarTheme implements Parcelable {
         }
 
         public CalendarTheme[] newArray(int size) {
-
             return new CalendarTheme[size];
         }
-
     };
 
     public void readFromParcel(Parcel in) {
