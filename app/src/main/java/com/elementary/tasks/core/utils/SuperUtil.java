@@ -82,7 +82,7 @@ public class SuperUtil {
 
     public static boolean isHeadsetUsing(Context context) {
         AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        return manager.isBluetoothA2dpOn() || manager.isWiredHeadsetOn();
+        return manager != null && (manager.isBluetoothA2dpOn() || manager.isWiredHeadsetOn());
     }
 
     public static String getString(Fragment fragment, int id) {

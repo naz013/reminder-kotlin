@@ -1,12 +1,11 @@
 package com.elementary.tasks.core.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import android.util.Log;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -23,18 +22,48 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class SoundStackHolder {
+public class SoundStackHolder implements Sound.PlaybackCallback {
 
     private static final String TAG = "SoundStackHolder";
 
     private static SoundStackHolder instance;
-    private Map<Class, Sound> stack = new LinkedHashMap<>();
+    @Nullable
+    private Sound mSound;
+
     private int mMusicVolume = - 1;
     private int mAlarmVolume = - 1;
     private int mNotificationVolume = - 1;
+
+    private boolean isDoNotDisturbEnabled;
+    private boolean isHeadset;
+    private boolean isSystemLoudnessEnabled;
+    private boolean isIncreasingLoudnessEnabled;
+    private boolean hasDefaultSaved;
+    private boolean hasVolumePermission;
+
     @Nullable
-    private AudioManager audioManager;
+    private AudioManager mAudioManager;
+    @NonNull
+    private Handler mHandler = new Handler();
+
+    private int mStreamVol;
+    private int mVolume;
+    private int mStream;
+    private int mMaxVolume;
+    private int mSystemStream;
+
+    @NonNull
+    private Runnable mVolumeIncrease = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "mVolumeIncrease -> run: " + mVolume + ", " + mStreamVol);
+            if (mVolume < mStreamVol) {
+                mVolume++;
+                mHandler.postDelayed(mVolumeIncrease, 750);
+                if (mAudioManager != null) mAudioManager.setStreamVolume(mStream, mVolume, 0);
+            } else mHandler.removeCallbacks(mVolumeIncrease);
+        }
+    };
 
     private SoundStackHolder() {
     }
@@ -51,79 +80,88 @@ public class SoundStackHolder {
     }
 
     public void init(Context context) {
-        if (audioManager != null) return;
-        audioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-        if (audioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) audioManager.setMode(AudioManager.MODE_NORMAL);
+        isHeadset = SuperUtil.isHeadsetUsing(context);
+        hasVolumePermission = SuperUtil.hasVolumePermission(context);
+        isSystemLoudnessEnabled = Prefs.getInstance(context).isSystemLoudnessEnabled();
+        isIncreasingLoudnessEnabled = Prefs.getInstance(context).isIncreasingLoudnessEnabled();
+        if (isSystemLoudnessEnabled) mSystemStream = Prefs.getInstance(context).getSoundStream();
+        if (mAudioManager != null) return;
+
+        if (mSound != null) mSound.stop();
+        else mSound = new Sound(context);
+
+        mSound.setCallback(this);
+        mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) mAudioManager.setMode(AudioManager.MODE_NORMAL);
+        isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context);
+    }
+
+    public void setMaxVolume(int maxVolume) {
+        this.mMaxVolume = maxVolume;
     }
 
     @Nullable
-    public AudioManager getAudioManager() {
-        return audioManager;
+    public Sound getSound() {
+        return mSound;
     }
 
-    public int getDefaultStreamVolume(int stream) {
-        switch (stream) {
-            case AudioManager.STREAM_ALARM:
-                return mAlarmVolume;
-            case AudioManager.STREAM_MUSIC:
-                return mMusicVolume;
-            case AudioManager.STREAM_NOTIFICATION:
-                return mNotificationVolume;
-        }
-        return 0;
-    }
-
-    public synchronized void saveDefaultVolume() {
-        if (mMusicVolume == -1 && mNotificationVolume == -1 && mAlarmVolume == -1) {
-            if (audioManager != null) {
-                mMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAlarmVolume = audioManager.getStreamVolume(AudioManager.STREAM_ALARM);
-                mNotificationVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-            }
+    private synchronized void saveDefaultVolume() {
+        Log.d(TAG, "saveDefaultVolume: " + hasDefaultSaved);
+        if (!hasDefaultSaved && mAudioManager != null) {
+            mMusicVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            mAlarmVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
+            mNotificationVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+            hasDefaultSaved = true;
         }
     }
 
-    public synchronized void restoreDefaultVolume(boolean doNotDisturbEnabled) {
-        if (isLast() && !doNotDisturbEnabled) {
-            if (audioManager != null) {
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
+    private synchronized void restoreDefaultVolume() {
+        Log.d(TAG, "restoreDefaultVolume: " + hasDefaultSaved + ", doNot: " + isDoNotDisturbEnabled + ", am " + mAudioManager);
+        if (hasDefaultSaved && !isDoNotDisturbEnabled) {
+            if (mAudioManager != null) {
+                mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
+                mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
             }
             mMusicVolume = -1;
             mNotificationVolume = -1;
             mAlarmVolume = -1;
+            hasDefaultSaved = false;
         }
     }
 
-    private boolean isLast() {
-        return stack.isEmpty();
+    @Override
+    public void onFinish() {
+        restoreDefaultVolume();
     }
 
-    public void addToStack(Activity activity, Sound sound) {
-        LogUtil.d(TAG, "addToStack: " + activity.getClass());
-        if (!stack.containsKey(activity.getClass())) {
-            stack.put(activity.getClass(), sound);
+    @Override
+    public void onStart() {
+        saveDefaultVolume();
+        setPlayerVolume();
+    }
+
+    private void setPlayerVolume() {
+        cancelIncreaseSound();
+        if (isHeadset) return;
+        if (!hasVolumePermission) return;
+        if (mAudioManager == null) return;
+
+        if (isSystemLoudnessEnabled) mStream = mSystemStream;
+        else mStream = AudioManager.STREAM_MUSIC;
+
+        float volPercent = (float) mMaxVolume / Configs.MAX_VOLUME;
+        int maxVol = mAudioManager.getStreamMaxVolume(mStream);
+        mStreamVol = (int) (maxVol * volPercent);
+        mVolume = mStreamVol;
+        if (isIncreasingLoudnessEnabled) {
+            mVolume = 0;
+            mHandler.postDelayed(mVolumeIncrease, 750);
         }
+        mAudioManager.setStreamVolume(mStream, mVolume, 0);
     }
 
-    public Sound getFromStack(Activity activity) {
-        LogUtil.d(TAG, "getFromStack: " + activity.getClass());
-        if (stack.containsKey(activity.getClass())) {
-            return stack.get(activity.getClass());
-        }
-        return null;
-    }
-
-    public void removeFromStack(Activity activity) {
-        LogUtil.d(TAG, "removeFromStack: " + activity.getClass());
-        if (stack.containsKey(activity.getClass())) {
-            stack.remove(activity.getClass());
-        }
-    }
-
-    public boolean hasInStack(Activity activity) {
-        LogUtil.d(TAG, "hasInStack: " + activity.getClass());
-        return stack.containsKey(activity.getClass());
+    public void cancelIncreaseSound() {
+        mHandler.removeCallbacks(mVolumeIncrease);
     }
 }

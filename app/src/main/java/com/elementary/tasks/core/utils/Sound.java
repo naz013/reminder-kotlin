@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,19 +28,26 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class Sound {
 
     private Context mContext;
+    @Nullable
     private MediaPlayer mMediaPlayer;
     private boolean isPaused;
+    @Nullable
     private String lastFile;
+    @Nullable
     private Ringtone ringtone;
     private boolean isDone;
-    private boolean isSaved;
+    @Nullable
+    private PlaybackCallback mCallback;
 
     public Sound(Context context) {
         this.mContext = context;
+    }
+
+    public void setCallback(@Nullable PlaybackCallback callback) {
+        this.mCallback = callback;
     }
 
     public void stop() {
@@ -64,14 +72,6 @@ public class Sound {
             mMediaPlayer.start();
             isPaused = false;
         }
-    }
-
-    public void setSaved(boolean saved) {
-        isSaved = saved;
-    }
-
-    public boolean isSaved() {
-        return isSaved;
     }
 
     public boolean isDone() {
@@ -112,11 +112,26 @@ public class Sound {
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         }
         mMediaPlayer.setLooping(false);
-        mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
+        mMediaPlayer.setOnPreparedListener(mp -> {
+            notifyStart();
+            mp.start();
+        });
+        mMediaPlayer.setOnCompletionListener(mp -> notifyFinish());
+        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            notifyFinish();
+            return false;
+        });
         try {
             mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void notifyFinish() {
+        isDone = true;
+        if (mCallback != null) {
+            mCallback.onFinish();
         }
     }
 
@@ -149,8 +164,15 @@ public class Sound {
             mMediaPlayer.setAudioStreamType(stream);
         }
         mMediaPlayer.setLooping(looping);
-        mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
-        mMediaPlayer.setOnCompletionListener(mp -> isDone = true);
+        mMediaPlayer.setOnPreparedListener(mp -> {
+            notifyStart();
+            mp.start();
+        });
+        mMediaPlayer.setOnCompletionListener(mp -> notifyFinish());
+        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            notifyFinish();
+            return false;
+        });
         try {
             mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
@@ -186,7 +208,15 @@ public class Sound {
             mMediaPlayer.setAudioStreamType(stream);
         }
         mMediaPlayer.setLooping(false);
-        mMediaPlayer.setOnPreparedListener(MediaPlayer::start);
+        mMediaPlayer.setOnPreparedListener(mp -> {
+            notifyStart();
+            mp.start();
+        });
+        mMediaPlayer.setOnCompletionListener(mp -> notifyFinish());
+        mMediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            notifyFinish();
+            return false;
+        });
         try {
             mMediaPlayer.prepareAsync();
         } catch (IllegalStateException e) {
@@ -194,7 +224,18 @@ public class Sound {
         }
     }
 
+    private void notifyStart() {
+        if (mCallback != null) {
+            mCallback.onStart();
+        }
+    }
+
     public static boolean isDefaultMelody(String defMelody) {
         return defMelody.equals(Constants.DEFAULT);
+    }
+
+    public interface PlaybackCallback {
+        void onStart();
+        void onFinish();
     }
 }

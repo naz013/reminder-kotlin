@@ -27,6 +27,7 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -155,7 +156,8 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         }
         if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && isBirthdaySilentEnabled()))) {
-            getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
+            Sound sound = getSound();
+            if (sound != null) getSound().playAlarm(getSoundUri(), isBirthdayInfiniteSound());
         }
         if (isVibrate()) {
             long[] pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};

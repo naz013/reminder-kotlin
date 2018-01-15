@@ -8,11 +8,9 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
@@ -22,7 +20,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,7 +28,6 @@ import android.widget.ImageView;
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.SendListener;
-import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -44,7 +40,6 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
-import com.elementary.tasks.missed_calls.CallItem;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
@@ -78,26 +73,17 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class BaseNotificationActivity extends ThemedActivity {
 
     private static final String TAG = "BNActivity";
     private static final int MY_DATA_CHECK_CODE = 111;
 
     @Nullable
-    private Sound mSound;
-    @Nullable
     protected GoogleApiClient mGoogleApiClient;
     @Nullable
     private TextToSpeech tts;
     @Nullable
     private ProgressDialog mSendDialog;
-    @NonNull
-    private Handler handler = new Handler();
-
-    private int streamVol;
-    private int mVolume;
-    private int mStream;
 
     private static AtomicInteger instanceCount = new AtomicInteger(0);
 
@@ -151,19 +137,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
         }
     };
-    @NonNull
-    private Runnable increaseVolume = new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "increaseVolume -> run: " + mVolume + ", " + streamVol);
-            if (mVolume < streamVol) {
-                mVolume++;
-                handler.postDelayed(increaseVolume, 750);
-                AudioManager am = SoundStackHolder.getInstance().getAudioManager();
-                if (am != null) am.setStreamVolume(mStream, mVolume, 0);
-            } else handler.removeCallbacks(increaseVolume);
-        }
-    };
+
     @NonNull
     protected DataApi.DataListener mDataListener = dataEventBuffer -> {
         LogUtil.d(TAG, "Data received");
@@ -228,31 +202,30 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
 
     protected abstract int getMaxVolume();
 
+    @Nullable
     protected Sound getSound() {
-        return mSound;
+        return SoundStackHolder.getInstance().getSound();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SoundStackHolder.getInstance().init(this);
-        SoundStackHolder.getInstance().saveDefaultVolume();
         super.onCreate(savedInstanceState);
+        SoundStackHolder.getInstance().init(this);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-        if (savedInstanceState != null && SoundStackHolder.getInstance().hasInStack(this)) {
-            mSound = SoundStackHolder.getInstance().getFromStack(this);
-        } else {
-            mSound = new Sound(this);
-        }
-        mSound.setSaved(false);
         if (getPrefs().isWearEnabled()) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Wearable.API)
                     .addConnectionCallbacks(mGoogleCallback)
                     .build();
         }
-        setPlayerVolume();
         setUpScreenOptions();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SoundStackHolder.getInstance().setMaxVolume(getMaxVolume());
     }
 
     @Override
@@ -260,16 +233,12 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         super.onDestroy();
         int left = instanceCount.decrementAndGet();
         LogUtil.d(TAG, "onDestroy: " + left);
-        if (mSound != null && !mSound.isSaved()) {
-            SoundStackHolder.getInstance().removeFromStack(this);
-        }
-        SoundStackHolder.getInstance().restoreDefaultVolume(SuperUtil.isDoNotDisturbEnabled(this));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(increaseVolume);
+        SoundStackHolder.getInstance().cancelIncreaseSound();
     }
 
     @Override
@@ -278,15 +247,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             discardMedia();
         }
         return super.onTouchEvent(event);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mSound != null) {
-            mSound.setSaved(true);
-            SoundStackHolder.getInstance().addToStack(this, mSound);
-        }
-        super.onSaveInstanceState(outState);
     }
 
     protected void setTextDrawable(FloatingActionButton button, String text) {
@@ -428,7 +388,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         return true;
     }
 
-    protected void showMissedReminder(CallItem callItem, String name) {
+    protected void showMissedReminder(String name) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
         builder.setContentTitle(name);
         builder.setAutoCancel(false);
@@ -456,10 +416,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (Module.isLollipop()) {
             builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
         }
-        if (mSound != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+        if (getSound() != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
-            mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
+            getSound().playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
         }
         if (isVibrate()) {
             long[] pattern;
@@ -545,11 +505,11 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white);
         }
-        if (mSound != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+        if (getSound() != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
                 (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
             Uri soundUri = getSoundUri();
             LogUtil.d(TAG, "showReminderNotification: " + soundUri);
-            mSound.playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
+            getSound().playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
         }
         if (isVibrate()) {
             long[] pattern;
@@ -632,31 +592,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    private void setPlayerVolume() {
-        if (SuperUtil.isHeadsetUsing(this)) return;
-        if (!SuperUtil.hasVolumePermission(this)) return;
-
-        AudioManager am = SoundStackHolder.getInstance().getAudioManager();
-        if (am == null) return;
-
-        boolean systemVol = getPrefs().isSystemLoudnessEnabled();
-        boolean increasing = getPrefs().isIncreasingLoudnessEnabled();
-        if (systemVol) {
-            mStream = getPrefs().getSoundStream();
-        } else {
-            mStream = AudioManager.STREAM_MUSIC;
-        }
-        float volPercent = (float) getMaxVolume() / Configs.MAX_VOLUME;
-        int maxVol = am.getStreamMaxVolume(mStream);
-        streamVol = (int) (maxVol * volPercent);
-        mVolume = streamVol;
-        if (increasing) {
-            mVolume = 0;
-            handler.postDelayed(increaseVolume, 750);
-        }
-        am.setStreamVolume(mStream, mVolume, 0);
-    }
-
     protected final void showProgressDialog(String message) {
         hideProgressDialog();
         mSendDialog = ProgressDialog.show(this, null, message, true, false);
@@ -695,7 +630,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     protected void discardMedia() {
-        if (mSound != null) mSound.stop();
+        if (getSound() != null) getSound().stop();
     }
 
     protected void showWearNotification(String secondaryText) {
@@ -718,14 +653,14 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     }
 
     private void playDefaultMelody() {
-        if (mSound == null) return;
+        if (getSound() == null) return;
         LogUtil.d(TAG, "playDefaultMelody: ");
         try {
             AssetFileDescriptor afd = getAssets().openFd("sounds/beep.mp3");
-            mSound.playAlarm(afd);
+            getSound().playAlarm(afd);
         } catch (IOException e) {
             e.printStackTrace();
-            mSound.playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false);
+            getSound().playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false);
         }
     }
 }
