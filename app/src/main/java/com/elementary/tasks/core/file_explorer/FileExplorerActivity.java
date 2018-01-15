@@ -269,7 +269,7 @@ public class FileExplorerActivity extends ThemedActivity {
 
     private void stop() {
         if (mSound.isPlaying()) {
-            mSound.stop();
+            mSound.stop(true);
         }
         ViewUtils.collapse(mPlayerLayout);
     }
