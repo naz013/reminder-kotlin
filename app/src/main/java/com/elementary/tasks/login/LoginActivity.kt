@@ -1,9 +1,14 @@
 package com.elementary.tasks.login
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableStringBuilder
@@ -25,10 +30,13 @@ import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.RealmDb
+import com.elementary.tasks.creators.CreateReminderActivity
 import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.google_tasks.GetTaskListAsync
 import com.elementary.tasks.google_tasks.TasksCallback
 import com.elementary.tasks.navigation.MainActivity
+import com.elementary.tasks.notes.CreateNoteActivity
+import java.util.*
 
 class LoginActivity : ThemedActivity() {
 
@@ -189,10 +197,38 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun openApplication() {
+        enableShortcuts()
         initGroups()
         Prefs.getInstance(this).isUserLogged = true
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    @SuppressLint("NewApi")
+    private fun enableShortcuts() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            val shortcutManager = getSystemService(ShortcutManager::class.java)
+
+            val shortcut = ShortcutInfo.Builder(this, "id.reminder")
+                    .setShortLabel(getString(R.string.add_reminder_menu))
+                    .setLongLabel(getString(R.string.add_reminder_menu))
+                    .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
+                    .setIntents(arrayOf(
+                            Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                            Intent(Intent.ACTION_VIEW).setClass(this, CreateReminderActivity::class.java)))
+                    .build()
+
+            val shortcut2 = ShortcutInfo.Builder(this, "id.note")
+                    .setShortLabel(getString(R.string.add_note))
+                    .setLongLabel(getString(R.string.add_note))
+                    .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
+                    .setIntents(arrayOf(
+                            Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                            Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)))
+                    .build()
+
+            shortcutManager.dynamicShortcuts = Arrays.asList(shortcut, shortcut2)
+        }
     }
 
     private fun googleLoginClick() {
