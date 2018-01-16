@@ -34,8 +34,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
-import com.elementary.tasks.reminder.filters.ReminderFilterController;
 import com.elementary.tasks.reminder.filters.FilterCallback;
+import com.elementary.tasks.reminder.filters.ReminderFilterController;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -254,7 +254,17 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
         for (Reminder reminder : reminders) {
             types.add(reminder.getType());
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setTypeValue(id));
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                filterController.setTypeValue(id);
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+
+            }
+        });
         filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (Integer integer : types) {
@@ -267,11 +277,21 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
 
     private void addGroupFilter(List<FilterView.Filter> filters) {
         mGroupsIds = new ArrayList<>();
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> {
-            if (id == 0) {
-                filterController.setGroupValue(null);
-            } else {
-                filterController.setGroupValue(mGroupsIds.get(id - 1));
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                if (id == 0) {
+                    filterController.setGroupValue(null);
+                } else {
+                    filterController.setGroupValue(mGroupsIds.get(id - 1));
+                }
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+                List<String> groups = new ArrayList<>();
+                for (Integer i : ids) groups.add(mGroupsIds.get(i - 1));
+                filterController.setGroupValues(groups);
             }
         });
         filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
