@@ -1,6 +1,7 @@
 package com.elementary.tasks;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -90,7 +91,7 @@ public class ReminderApp extends MultiDexApplication {
 
     private static class Migration implements RealmMigration {
         @Override
-        public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+        public void migrate(@NonNull DynamicRealm realm, long oldVersion, long newVersion) {
             LogUtil.d(TAG, "migrate: " + oldVersion + ", " + newVersion + ", " + realm.getSchema());
             RealmSchema schema = realm.getSchema();
             if (oldVersion == 1) {

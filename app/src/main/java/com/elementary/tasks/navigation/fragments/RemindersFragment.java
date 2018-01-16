@@ -316,7 +316,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         if (reminders.size() == 0) {
             return;
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setStatusValue(id));
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                filterController.setStatusValue(id);
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+
+            }
+        });
         filter.add(getFilterAllElement());
         filter.add(new FilterView.FilterElement(R.drawable.ic_power_button, getString(R.string.enabled4), 1));
         filter.add(new FilterView.FilterElement(R.drawable.ic_off, getString(R.string.disabled), 2));
@@ -325,7 +335,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     @NonNull
     private FilterView.FilterElement getFilterAllElement() {
-        return new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0);
+        return new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true);
     }
 
     private void addTypeFilter(List<FilterView.Filter> filters) {
@@ -337,7 +347,17 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         for (Reminder reminder : reminders) {
             types.add(reminder.getType());
         }
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> filterController.setTypeValue(id));
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                filterController.setTypeValue(id);
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+
+            }
+        });
         filter.add(getFilterAllElement());
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (Integer integer : types) {
@@ -350,13 +370,24 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void addGroupFilter(List<FilterView.Filter> filters) {
         mGroupsIds = new ArrayList<>();
-        FilterView.Filter filter = new FilterView.Filter((view, id) -> {
-            if (id == 0) {
-                filterController.setGroupValue(null);
-            } else {
-                filterController.setGroupValue(mGroupsIds.get(id - 1));
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                if (id == 0) {
+                    filterController.setGroupValue(null);
+                } else {
+                    filterController.setGroupValue(mGroupsIds.get(id - 1));
+                }
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+                List<String> groups = new ArrayList<>();
+                for (Integer i : ids) groups.add(mGroupsIds.get(i - 1));
+                filterController.setGroupValues(groups);
             }
         });
+        filter.setChoiceMode(FilterView.ChoiceMode.MULTI);
         filter.add(getFilterAllElement());
         List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
         ThemeUtil util = ThemeUtil.getInstance(getContext());
