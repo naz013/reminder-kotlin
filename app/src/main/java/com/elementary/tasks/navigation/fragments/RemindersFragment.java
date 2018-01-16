@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,11 +73,14 @@ import java.util.Set;
 public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener,
         FilterCallback<Reminder> {
 
+    private static final String TAG = "RemindersFragment";
+
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
 
     private RemindersRecyclerAdapter mAdapter;
 
+    @NonNull
     private ArrayList<String> mGroupsIds = new ArrayList<>();
     @NonNull
     private ReminderFilterController filterController = new ReminderFilterController(this);
@@ -369,7 +373,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void addGroupFilter(List<FilterView.Filter> filters) {
-        mGroupsIds = new ArrayList<>();
+        mGroupsIds.clear();
         FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
             @Override
             public void onClick(View view, int id) {
@@ -382,8 +386,16 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
             @Override
             public void onMultipleSelected(View view, List<Integer> ids) {
+                Log.d(TAG, "onMultipleSelected: " + ids);
                 List<String> groups = new ArrayList<>();
-                for (Integer i : ids) groups.add(mGroupsIds.get(i - 1));
+                for (Integer i : ids) {
+                    if (i == 0) {
+                        filterController.setGroupValue(null);
+                        break;
+                    } else {
+                        groups.add(mGroupsIds.get(i - 1));
+                    }
+                }
                 filterController.setGroupValues(groups);
             }
         });
@@ -400,7 +412,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void changeGroup(final String oldUuId, final String id) {
-        mGroupsIds = new ArrayList<>();
         mGroupsIds.clear();
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.select_dialog_item);
