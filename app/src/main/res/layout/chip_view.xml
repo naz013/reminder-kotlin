@@ -3,20 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:id="@+id/root_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/chip_bg"
         android:orientation="horizontal"
         android:padding="4dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/status_view"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/colorPrimary" />
 
         <ImageView
             android:id="@+id/iconView"
