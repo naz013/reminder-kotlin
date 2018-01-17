@@ -11,7 +11,6 @@
             android:id="@+id/actionCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/action"
             android:textSize="@dimen/checkbox_text_size"
@@ -26,8 +25,7 @@
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
+                android:layout_height="wrap_content">
 
                 <RadioGroup
                     android:id="@+id/radioGroup"
@@ -80,7 +78,6 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
                     android:ems="10"
-                    android:gravity="center"
                     android:hint="@string/phone"
                     android:inputType="text|phone"
                     android:maxLines="1"

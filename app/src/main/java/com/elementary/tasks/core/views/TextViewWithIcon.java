@@ -60,11 +60,12 @@ public class TextViewWithIcon extends RoboTextView {
         } else {
             drawableLeft = AppCompatResources.getDrawable(getContext(), icon);
         }
+        setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 16));
         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-        setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 8));
     }
 
     private void init(Context context, AttributeSet attrs) {
+        setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 16));
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextViewWithIcon, 0, 0);
             try {
@@ -87,7 +88,6 @@ public class TextViewWithIcon extends RoboTextView {
                     }
                 }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
-                setCompoundDrawablePadding(MeasureUtils.dp2px(getContext(), 8));
             } catch (Exception e) {
                 LogUtil.d(TAG, "There was an error loading attributes.");
             } finally {

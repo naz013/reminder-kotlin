@@ -61,7 +61,6 @@ public class FilterView extends LinearLayout {
 
     private void init(final Context context) {
         this.mContext = context;
-        if (isInEditMode()) return;
         setOrientation(VERTICAL);
     }
 

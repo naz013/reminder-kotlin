@@ -13,7 +13,7 @@
     <dimen name="widget_config_margin">15dp</dimen>
     <dimen name="widget_config_margin_top">10dp</dimen>
 
-    <dimen name="create_margin">10dp</dimen>
+    <dimen name="create_margin">16dp</dimen>
     <dimen name="checkbox_text_size">17sp</dimen>
     <dimen name="create_imagebutton_size">50dp</dimen>
     <dimen name="create_text_size_normal">18sp</dimen>
@@ -24,11 +24,11 @@
     <dimen name="settings_text_size_secondary">14sp</dimen>
     <dimen name="settings_view_size">25dp</dimen>
 
-    <dimen name="category_margin">15dp</dimen>
+    <dimen name="category_margin">16dp</dimen>
 
     <dimen name="clouds_padding">10dp</dimen>
     <dimen name="clouds_text_size">20sp</dimen>
-    <dimen name="clouds_margin_top">15dp</dimen>
+    <dimen name="clouds_margin_top">16dp</dimen>
     <dimen name="create_note_text_size">20sp</dimen>
     <dimen name="create_note_image_button_size">40dp</dimen>
     <dimen name="create_note_text_size_secondary">20sp</dimen>
