@@ -50,8 +50,9 @@
                     android:id="@+id/defaultCheck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/default_string"
                     android:textSize="@dimen/checkbox_text_size"
                     app:check_font_style="roboto_light" />
@@ -75,7 +76,9 @@
                     android:id="@+id/pickerView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_marginLeft="@dimen/category_margin"
+                    android:layout_marginRight="@dimen/category_margin"
+                    android:layout_marginTop="@dimen/create_margin" />
 
             </LinearLayout>
         </ScrollView>

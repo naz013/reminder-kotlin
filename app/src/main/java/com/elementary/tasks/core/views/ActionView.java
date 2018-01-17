@@ -68,7 +68,6 @@ public class ActionView extends LinearLayout {
 
     private void init(final Context context, AttributeSet attrs) {
         this.mContext = context;
-        if (isInEditMode()) return;
         View.inflate(context, R.layout.action_view_layout, this);
         setOrientation(VERTICAL);
         actionBlock = findViewById(R.id.actionBlock);

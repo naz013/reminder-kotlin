@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
@@ -32,7 +32,7 @@ import java.util.Calendar;
  * limitations under the License.
  */
 
-public class DateTimeView extends RelativeLayout implements
+public class DateTimeView extends LinearLayout implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private TextViewWithIcon date;
@@ -68,7 +68,7 @@ public class DateTimeView extends RelativeLayout implements
     }
 
     private void init(Context context, AttributeSet attrs) {
-        if (isInEditMode()) return;
+        setOrientation(VERTICAL);
         View.inflate(context, R.layout.date_time_view_layout, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,

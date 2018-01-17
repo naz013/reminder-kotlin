@@ -99,7 +99,6 @@ public class RepeatView extends LinearLayout implements SeekBar.OnSeekBarChangeL
     }
 
     private void init(Context context, AttributeSet attrs) {
-        if (isInEditMode()) return;
         View.inflate(context, R.layout.repeat_view_layout, this);
         setOrientation(VERTICAL);
         repeatTitle = findViewById(R.id.repeatTitle);

@@ -94,7 +94,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:gravity="center"
                     android:text="@string/contact"
                     android:textSize="@dimen/add_birthday_text_size_primary"
                     app:check_font_style="roboto_light" />
