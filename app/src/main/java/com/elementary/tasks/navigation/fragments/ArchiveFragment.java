@@ -265,7 +265,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
 
             }
         });
-        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true));
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (Integer integer : types) {
             filter.add(new FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(getContext(), integer), integer));
@@ -294,7 +294,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
                 filterController.setGroupValues(groups);
             }
         });
-        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true));
         List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (int i = 0; i < groups.size(); i++) {
