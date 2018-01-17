@@ -309,6 +309,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void showRemindersFilter() {
         List<FilterView.Filter> filters = new ArrayList<>();
+        addDateFilter(filters);
         addGroupFilter(filters);
         addTypeFilter(filters);
         addStatusFilter(filters);
@@ -340,6 +341,29 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     @NonNull
     private FilterView.FilterElement getFilterAllElement() {
         return new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true);
+    }
+
+    private void addDateFilter(List<FilterView.Filter> filters) {
+        List<Reminder> reminders = filterController.getOriginal();
+        if (reminders.size() == 0) {
+            return;
+        }
+        FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
+            @Override
+            public void onClick(View view, int id) {
+                filterController.setRangeValue(id);
+            }
+
+            @Override
+            public void onMultipleSelected(View view, List<Integer> ids) {
+
+            }
+        });
+        filter.add(getFilterAllElement());
+        filter.add(new FilterView.FilterElement(0, getString(R.string.permanent), 1));
+        filter.add(new FilterView.FilterElement(0, getString(R.string.today), 2));
+        filter.add(new FilterView.FilterElement(0, getString(R.string.tomorrow), 3));
+        filters.add(filter);
     }
 
     private void addTypeFilter(List<FilterView.Filter> filters) {
