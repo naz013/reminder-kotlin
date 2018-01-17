@@ -2,6 +2,7 @@ package com.elementary.tasks.reminder.filters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -24,8 +25,9 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ReminderFilterController {
+
+    private static final String TAG = "FilterController";
 
     @NonNull
     private FilterValue<String> searchValue = new FilterValue<>();
@@ -35,6 +37,8 @@ public class ReminderFilterController {
     private FilterValue<Integer> typeValue = new FilterValue<>();
     @NonNull
     private FilterValue<Integer> statusValue = new FilterValue<>();
+    @NonNull
+    private FilterValue<DateFilter.DateRange> rangeValue = new FilterValue<>();
 
     @NonNull
     private List<Reminder> original = new ArrayList<>();
@@ -52,7 +56,10 @@ public class ReminderFilterController {
         SearchFilter searchFilter = new SearchFilter(null);
         searchValue.subscribe(searchFilter);
 
-        GroupFilter groupFilter = new GroupFilter(searchFilter);
+        DateFilter dateFilter = new DateFilter(searchFilter);
+        rangeValue.subscribe(dateFilter);
+
+        GroupFilter groupFilter = new GroupFilter(dateFilter);
         groupValue.subscribe(groupFilter);
 
         TypeFilter typeFilter = new TypeFilter(groupFilter);
@@ -94,6 +101,24 @@ public class ReminderFilterController {
 
     public void setStatusValue(int value) {
         statusValue.setValue(value);
+        onChanged();
+    }
+
+    public void setRangeValue(int value) {
+        switch (value) {
+            case 0:
+                this.rangeValue.setValue(DateFilter.DateRange.ALL);
+                break;
+            case 1:
+                this.rangeValue.setValue(DateFilter.DateRange.PERMANENT);
+                break;
+            case 2:
+                this.rangeValue.setValue(DateFilter.DateRange.TODAY);
+                break;
+            case 3:
+                this.rangeValue.setValue(DateFilter.DateRange.TOMORROW);
+                break;
+        }
         onChanged();
     }
 
