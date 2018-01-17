@@ -46,20 +46,20 @@ public class FilterView extends LinearLayout {
 
     public FilterView(Context context) {
         super(context);
-        init(context, null);
+        init(context);
     }
 
     public FilterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init(context);
     }
 
     public FilterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs);
+        init(context);
     }
 
-    private void init(final Context context, AttributeSet attrs) {
+    private void init(final Context context) {
         this.mContext = context;
         if (isInEditMode()) return;
         setOrientation(VERTICAL);
@@ -120,14 +120,15 @@ public class FilterView extends LinearLayout {
             binding.iconView.setImageResource(element.getIconId());
             binding.iconView.setVisibility(VISIBLE);
         }
-        if (element.isChecked) {
-            binding.statusView.setVisibility(VISIBLE);
-        } else {
-            binding.statusView.setVisibility(INVISIBLE);
-        }
+        setStatus(binding, element.isChecked());
         element.setBinding(binding);
         binding.getRoot().setOnClickListener(v -> updateFilter(binding, element.getId(), filter.uuId));
         return binding.getRoot();
+    }
+
+    private void setStatus(ChipViewBinding binding, boolean checked) {
+        if (checked) binding.rootView.setBackgroundResource(R.drawable.chip_selected_bg);
+        else binding.rootView.setBackgroundResource(R.drawable.chip_bg);
     }
 
     @Nullable
@@ -145,17 +146,13 @@ public class FilterView extends LinearLayout {
         if (filter != null) {
             if (filter.getChoiceMode() == ChoiceMode.SINGLE) {
                 for (FilterElement element : filter) {
-                    element.getBinding().statusView.setVisibility(INVISIBLE);
+                    setStatus(element.getBinding(), false);
                     element.setChecked(false);
                 }
                 for (FilterElement element : filter) {
                     if (element.getId() == id) {
                         element.setChecked(true);
-                        if (element.isChecked) {
-                            element.getBinding().statusView.setVisibility(VISIBLE);
-                        } else {
-                            element.getBinding().statusView.setVisibility(INVISIBLE);
-                        }
+                        setStatus(element.getBinding(), element.isChecked());
                         break;
                     }
                 }
@@ -163,11 +160,11 @@ public class FilterView extends LinearLayout {
             } else {
                 for (FilterElement element : filter) {
                     if (id == 0) {
-                        element.getBinding().statusView.setVisibility(INVISIBLE);
+                        setStatus(element.getBinding(), false);
                         element.setChecked(false);
                     } else {
                         if (element.getId() == 0) {
-                            element.getBinding().statusView.setVisibility(INVISIBLE);
+                            setStatus(element.getBinding(), false);
                             element.setChecked(false);
                         }
                     }
@@ -176,11 +173,7 @@ public class FilterView extends LinearLayout {
                 for (FilterElement element : filter) {
                     if (element.getId() == id) {
                         element.setChecked(!element.isChecked());
-                        if (element.isChecked) {
-                            element.getBinding().statusView.setVisibility(VISIBLE);
-                        } else {
-                            element.getBinding().statusView.setVisibility(INVISIBLE);
-                        }
+                        setStatus(element.getBinding(), element.isChecked());
                         break;
                     }
                 }
@@ -188,10 +181,6 @@ public class FilterView extends LinearLayout {
                 filter.getElementClick().onMultipleSelected(v.getRoot(), getSelected(filter));
             }
         }
-    }
-
-    private void unCheckAll(Filter filter) {
-
     }
 
     private List<Integer> getSelected(Filter filter) {
@@ -245,7 +234,7 @@ public class FilterView extends LinearLayout {
         }
 
         @Override
-        public boolean addAll(Collection<? extends FilterElement> c) {
+        public boolean addAll(@NonNull Collection<? extends FilterElement> c) {
             return elements.addAll(c);
         }
 
@@ -268,7 +257,7 @@ public class FilterView extends LinearLayout {
 
     public static class FilterElement {
         @DrawableRes
-        private int iconId;
+        private final int iconId;
         private String title;
         private int id;
         private boolean isChecked;
@@ -304,12 +293,8 @@ public class FilterView extends LinearLayout {
         }
 
         @DrawableRes
-        public int getIconId() {
+        int getIconId() {
             return iconId;
-        }
-
-        public void setIconId(@DrawableRes int iconId) {
-            this.iconId = iconId;
         }
 
         public String getTitle() {
