@@ -115,6 +115,8 @@ public class RealmReminder extends RealmObject {
     private boolean isLocked;
     @SerializedName("duration")
     private long duration;
+    @SerializedName("remindBefore")
+    private long remindBefore;
 
     public RealmReminder() {
     }
@@ -162,6 +164,7 @@ public class RealmReminder extends RealmObject {
         this.isLocked = item.isLocked();
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
+        this.remindBefore = item.getRemindBefore();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -190,6 +193,14 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public long getRemindBefore() {
+        return remindBefore;
+    }
+
+    public void setRemindBefore(long remindBefore) {
+        this.remindBefore = remindBefore;
     }
 
     public int getMonthOfYear() {
