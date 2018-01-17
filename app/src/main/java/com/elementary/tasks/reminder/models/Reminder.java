@@ -153,6 +153,8 @@ public class Reminder implements RecyclerInterface {
     private boolean isLocked;
     @SerializedName("duration")
     private long duration;
+    @SerializedName("remindBefore")
+    private long remindBefore;
 
     public static boolean isBase(int type, int base) {
         int res = type - base;
@@ -219,6 +221,7 @@ public class Reminder implements RecyclerInterface {
         this.shoppings = item.getShoppings();
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
+        this.remindBefore = item.getRemindBefore();
         if (fullCopy) {
             this.uuId = item.getUuId();
             this.uniqueId = item.getUniqueId();
@@ -268,6 +271,7 @@ public class Reminder implements RecyclerInterface {
         this.isLocked = item.isLocked();
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
+        this.remindBefore = item.getRemindBefore();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -305,6 +309,14 @@ public class Reminder implements RecyclerInterface {
         reminder.setActive(true);
         reminder.setRemoved(false);
         return reminder;
+    }
+
+    public long getRemindBefore() {
+        return remindBefore;
+    }
+
+    public void setRemindBefore(long remindBefore) {
+        this.remindBefore = remindBefore;
     }
 
     public int getMonthOfYear() {
