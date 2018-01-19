@@ -12,7 +12,6 @@ import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.backdoor.engine.ObjectUtil;
 import com.elementary.tasks.R;
@@ -115,8 +114,7 @@ public final class CalendarUtils {
                 .putExtra(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder));
         try {
             context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, R.string.stock_android_calendar_not_found, Toast.LENGTH_SHORT).show();
+        } catch (ActivityNotFoundException ignored) {
         }
     }
 
