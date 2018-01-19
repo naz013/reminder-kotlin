@@ -60,10 +60,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class FragmentEventsImport extends BaseSettingsFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-
-    private static final String TAG = "FragmentEventsImport";
 
     public static final String EVENT_KEY = "Events";
     private static final int CALENDAR_PERM = 500;

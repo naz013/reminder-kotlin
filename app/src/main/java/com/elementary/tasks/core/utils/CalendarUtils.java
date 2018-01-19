@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -75,8 +76,7 @@ public final class CalendarUtils {
                     long eventID = Long.parseLong(event.getLastPathSegment());
                     RealmDb.getInstance().saveObject(new CalendarEvent(reminder.getUuId(), event.toString(), eventID));
                 }
-            } catch (Exception e) {
-                Toast.makeText(context, R.string.no_calendars_found, Toast.LENGTH_LONG).show();
+            } catch (Exception ignored) {
             }
         }
     }
@@ -125,6 +125,7 @@ public final class CalendarUtils {
      *
      * @return List of CalendarItem's.
      */
+    @SuppressLint("MissingPermission")
     @Nullable
     public static List<CalendarItem> getCalendarsList(Context context) {
         List<CalendarItem> ids = new ArrayList<>();

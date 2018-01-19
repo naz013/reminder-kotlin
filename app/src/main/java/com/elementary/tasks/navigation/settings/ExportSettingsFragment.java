@@ -45,10 +45,10 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ExportSettingsFragment extends BaseSettingsFragment {
 
     private static final int CALENDAR_CODE = 124;
+    private static final int CALENDAR_PERM = 500;
 
     private List<CalendarUtils.CalendarItem> mDataList;
     private int mItemSelect;
@@ -303,7 +303,19 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
         }
     }
 
+    private boolean checkCalendarPerm() {
+        if (Permissions.checkPermission(getActivity(), Permissions.READ_CALENDAR)) {
+            return true;
+        } else {
+            Permissions.requestPermission(getActivity(), CALENDAR_PERM, Permissions.READ_CALENDAR);
+            return false;
+        }
+    }
+
     private boolean showSelectCalendarDialog() {
+        if (!checkCalendarPerm()) {
+            return false;
+        }
         mDataList = CalendarUtils.getCalendarsList(getContext());
         if (mDataList == null || mDataList.isEmpty()) {
             return false;
@@ -322,7 +334,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_single_choice, parent, false);
                 }
-                CheckedTextView tvName = (CheckedTextView) convertView.findViewById(android.R.id.text1);
+                CheckedTextView tvName = convertView.findViewById(android.R.id.text1);
                 tvName.setText(mDataList.get(position).getName());
                 return convertView;
             }
@@ -359,6 +371,11 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
             case CALENDAR_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     changeExportToCalendarPrefs();
+                }
+                break;
+            case CALENDAR_PERM:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showSelectCalendarDialog();
                 }
                 break;
         }
