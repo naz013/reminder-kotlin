@@ -113,7 +113,7 @@
     <string name="delete">"Excluir"</string>
     <string name="no_notes">"Nenhuma nota"</string>
     <string name="next_event">"Próximo evento"</string>
-    <string name="remind_me">"Lembre-me..."</string>
+    <string name="remind_me">"Lembre-me…"</string>
     <string name="repeat">"Repetir"</string>
     <string name="days">"dias"</string>
     <string name="send">"Mandar"</string>
@@ -122,11 +122,11 @@
     <string name="rate">"Taxa"</string>
     <string name="later">"Mais tarde"</string>
     <string name="never">"Nunca"</string>
-    <string name="url">"Url ..."</string>
+    <string name="url">"Url …"</string>
     <string name="application">"Aplicação"</string>
     <string name="open_link">"Link aberto"</string>
     <string name="select_day">"Escolha um dia"</string>
-    <string name="last_day">"Ultimo dia"</string>
+    <string name="last_day">"Último dia"</string>
     <string name="delay_tracking">"Rastreamento de atraso"</string>
     <string name="current_location">"Localização atual"</string>
     <string name="choose_location">"Escolha a localização"</string>
@@ -221,11 +221,11 @@
     <string name="must_be_not_empty">"Não deve estar vazio!"</string>
     <string name="other_version_detected">"Outra aplicação detectado!"</string>
     <string name="open">"Aberto"</string>
-    <string name="trying_to_log_in">"Tentando se logar ..."</string>
-    <string name="syncing_groups">"A sincronização de grupos ..."</string>
-    <string name="syncing_reminders">"A sincronização de lembretes ..."</string>
-    <string name="syncing_notes">"sincronização de notas ..."</string>
-    <string name="syncing_birthdays">"Sincronizando aniversários ..."</string>
+    <string name="trying_to_log_in">"Tentando se logar …"</string>
+    <string name="syncing_groups">"A sincronização de grupos …"</string>
+    <string name="syncing_reminders">"A sincronização de lembretes …"</string>
+    <string name="syncing_notes">"sincronização de notas …"</string>
+    <string name="syncing_birthdays">"Sincronizando aniversários …"</string>
     <string name="done">"Feito"</string>
     <string name="error_sending">"Erro ao enviar!"</string>
     <string name="delete_this_note">"Excluir esta anotação?"</string>
@@ -308,7 +308,7 @@
     <string name="edit_birthday">"Aniversário Editar"</string>
     <string name="disconnect">"Desligar"</string>
     <string name="you_dont_select_any_calendar">"Você não selecionar um calendário!"</string>
-    <string name="please_wait">"Por favor, espere..."</string>
+    <string name="please_wait">"Por favor, espere…"</string>
     <string name="no_events_found">"Nenhum evento encontrado!"</string>
     <string name="events_found">"evento (s) encontrada"</string>
     <string name="no_files">"Nenhum arquivo"</string>
@@ -348,9 +348,9 @@
     <string name="same_group">"Mesmo grupo!"</string>
     <string name="change_group">"Alterar grupo"</string>
     <string name="move_to_trash">"Mover para lixeira"</string>
-    <string name="retrieving_data">"Recuperando dados ..."</string>
+    <string name="retrieving_data">"Recuperando dados …"</string>
     <string name="all_files_removed">"Todos os arquivos removidos"</string>
-    <string name="deleting">"Excluindo ..."</string>
+    <string name="deleting">"Excluindo …"</string>
     <string name="used_x">"Usado %s"</string>
     <string name="available_x">"Disponível %s"</string>
     <string name="change_color">"Mudar cor"</string>
@@ -393,7 +393,7 @@
     <string name="you_dont_insert_any_message">"Você não inserir uma mensagem!"</string>
     <string name="xM">"%sM"</string>
     <string name="overdue">"Atrasado"</string>
-    <string name="search_place">"Pesquisa lugar ..."</string>
+    <string name="search_place">"Pesquisa lugar …"</string>
     <string name="click_to_select_reminder_type">"Clique para selecionar o tipo de lembrete"</string>
     <string name="to_insert_task_by_voice">"Para inserir tarefa pela voz"</string>
     <string name="click_to_change_reminder_group">"Clique para alterar o grupo para o lembrete"</string>
@@ -458,11 +458,11 @@
     <string name="once">Uma vez</string>
     <string name="times">vezes</string>
     <string name="no_groups">Nenhum grupo</string>
-    <string name="retrieving_tasks">Recuperando tarefas...</string>
-    <string name="saving">Salvando ...</string>
-    <string name="moving_task">Mover tarefa...</string>
-    <string name="deleting_task">Excluindo tarefa...</string>
-    <string name="deleting_list">Excluindo lista...</string>
+    <string name="retrieving_tasks">Recuperando tarefas…</string>
+    <string name="saving">Salvando …</string>
+    <string name="moving_task">Mover tarefa…</string>
+    <string name="deleting_task">Excluindo tarefa…</string>
+    <string name="deleting_list">Excluindo lista…</string>
     <string name="remove_exclusion">Remover exclusão</string>
     <string name="theme_color">Cor do tema</string>
     <string name="light">Luz</string>
@@ -470,8 +470,8 @@
     <string name="x_out_of_x" formatted="false">%d em %d</string>
     <string name="decoding_images">Decodificação de imagens</string>
     <string name="failed_to_sync_google_tasks">Falha ao sincronizar as Tarefas do Google</string>
-    <string name="syncing_places">Sincronizando lugares ...</string>
-    <string name="syncing_templates">Sincronizando modelos de mensagem ...</string>
+    <string name="syncing_places">Sincronizando lugares …</string>
+    <string name="syncing_templates">Sincronizando modelos de mensagem …</string>
     <string name="work">Trabalhos</string>
     <string name="personal">Pessoal</string>
     <string name="auto_call">Chamada automática</string>
@@ -623,5 +623,7 @@
     <string name="default_reminder_notifications">Notificações de lembretes padrão</string>
     <string name="something_went_wrong">Algo deu errado</string>
     <string name="application_language">Idioma da aplicação</string>
+    <string name="not_a_image_file">Não é um arquivo de imagem</string>
+    <string name="cant_find_app_for_that_file_type">Não é possível encontrar o aplicativo que pode abrir este arquivo.</string>
 
 </resources>

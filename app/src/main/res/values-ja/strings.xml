@@ -114,7 +114,7 @@
     <string name="delete">"削除"</string>
     <string name="no_notes">"ノートはありません"</string>
     <string name="next_event">"次のイベント"</string>
-    <string name="remind_me">"私を思い出させます..."</string>
+    <string name="remind_me">"私を思い出させます…"</string>
     <string name="repeat">"繰り返す"</string>
     <string name="days">"日々"</string>
     <string name="send">"送信"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"レート"</string>
     <string name="later">"後で"</string>
     <string name="never">"決して"</string>
-    <string name="url">"URL ..."</string>
+    <string name="url">"URL …"</string>
     <string name="application">"アプリケーション"</string>
     <string name="open_link">"リンクを開きます"</string>
     <string name="select_day">"選択日"</string>
@@ -223,11 +223,11 @@
     <string name="must_be_not_empty">"空であってはならないことを！"</string>
     <string name="other_version_detected">"他のアプリケーションで検出されました！"</string>
     <string name="open">"オープン"</string>
-    <string name="trying_to_log_in">"ログインしようとしています..."</string>
-    <string name="syncing_groups">"グループを同期しています..."</string>
-    <string name="syncing_reminders">"リマインダーを同期しています..."</string>
-    <string name="syncing_notes">"同期のメモ..."</string>
-    <string name="syncing_birthdays">"誕生日を同期しています..."</string>
+    <string name="trying_to_log_in">"ログインしようとしています…"</string>
+    <string name="syncing_groups">"グループを同期しています…"</string>
+    <string name="syncing_reminders">"リマインダーを同期しています…"</string>
+    <string name="syncing_notes">"同期のメモ…"</string>
+    <string name="syncing_birthdays">"誕生日を同期しています…"</string>
     <string name="done">"終わりました"</string>
     <string name="error_sending">"送信エラー！"</string>
     <string name="delete_this_note">"このノートを削除しますか？"</string>
@@ -310,7 +310,7 @@
     <string name="edit_birthday">"編集の誕生日"</string>
     <string name="disconnect">"切断"</string>
     <string name="you_dont_select_any_calendar">"あなたはカレンダーを選択しないでください！"</string>
-    <string name="please_wait">"お待ちください..."</string>
+    <string name="please_wait">"お待ちください…"</string>
     <string name="no_events_found">"イベントが見つかりませんでした！"</string>
     <string name="events_found">"イベント（複数可）が見つかりました"</string>
     <string name="no_files">"ファイルがありません"</string>
@@ -350,9 +350,9 @@
     <string name="same_group">"同じグループ！"</string>
     <string name="change_group">"変更グループ"</string>
     <string name="move_to_trash">"ゴミ箱に移動します"</string>
-    <string name="retrieving_data">"データを取得しています..."</string>
+    <string name="retrieving_data">"データを取得しています…"</string>
     <string name="all_files_removed">"すべてのファイルが削除さ"</string>
-    <string name="deleting">"削除しています..."</string>
+    <string name="deleting">"削除しています…"</string>
     <string name="used_x">"使用%s"</string>
     <string name="available_x">"利用可能な%s"</string>
     <string name="change_color">"変色します"</string>
@@ -395,7 +395,7 @@
     <string name="you_dont_insert_any_message">"あなたがメッセージを挿入しないでください！"</string>
     <string name="xM">"%sヶ月"</string>
     <string name="overdue">"期限を過ぎました"</string>
-    <string name="search_place">"検索場所..."</string>
+    <string name="search_place">"検索場所…"</string>
     <string name="click_to_select_reminder_type">"リマインダーの種類をクリックして選択します"</string>
     <string name="to_insert_task_by_voice">"音声でタスクを挿入するには"</string>
     <string name="click_to_change_reminder_group">"リマインダーのためのグループを変更する場合にクリックします"</string>
@@ -460,11 +460,11 @@
     <string name="once">かつて</string>
     <string name="times">回</string>
     <string name="no_groups">グループはありません</string>
-    <string name="retrieving_tasks">タスクの取得中...</string>
-    <string name="saving">保存中...</string>
-    <string name="moving_task">移動するタスク...</string>
-    <string name="deleting_task">タスクを削除しています...</string>
-    <string name="deleting_list">リストを削除しています...</string>
+    <string name="retrieving_tasks">タスクの取得中…</string>
+    <string name="saving">保存中…</string>
+    <string name="moving_task">移動するタスク…</string>
+    <string name="deleting_task">タスクを削除しています…</string>
+    <string name="deleting_list">リストを削除しています…</string>
     <string name="remove_exclusion">除外を削除</string>
     <string name="theme_color">テーマの色</string>
     <string name="light">光</string>
@@ -472,8 +472,8 @@
     <string name="x_out_of_x" formatted="false">%2$d のうち %1$d</string>
     <string name="decoding_images">画像のデコード</string>
     <string name="failed_to_sync_google_tasks">Googleタスクの同期に失敗しました</string>
-    <string name="syncing_places">場所を同期しています...</string>
-    <string name="syncing_templates">メッセージテンプレートを同期しています...</string>
+    <string name="syncing_places">場所を同期しています…</string>
+    <string name="syncing_templates">メッセージテンプレートを同期しています…</string>
     <string name="work">作業</string>
     <string name="personal">パーソナル</string>
     <string name="auto_call">自動呼び出し</string>
@@ -625,5 +625,7 @@
     <string name="default_reminder_notifications">デフォルトのリマインダー通知</string>
     <string name="something_went_wrong">何かが間違っていた</string>
     <string name="application_language">アプリケーション言語</string>
+    <string name="not_a_image_file">画像ファイルではありません</string>
+    <string name="cant_find_app_for_that_file_type">このファイルを開くことができるアプリケーションが見つかりません。</string>
 
 </resources>

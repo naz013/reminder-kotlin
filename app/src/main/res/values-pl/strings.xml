@@ -114,7 +114,7 @@
     <string name="delete">"Usunąć"</string>
     <string name="no_notes">"Brak notatek"</string>
     <string name="next_event">"Kolejna impreza"</string>
-    <string name="remind_me">"Przypomnij mi..."</string>
+    <string name="remind_me">"Przypomnij mi…"</string>
     <string name="repeat">"Powtarzać"</string>
     <string name="days">"dni"</string>
     <string name="send">"Wysłać"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"Oceniać"</string>
     <string name="later">"Później"</string>
     <string name="never">"Nigdy"</string>
-    <string name="url">"Url ..."</string>
+    <string name="url">"Url …"</string>
     <string name="application">"Aplikacja"</string>
     <string name="open_link">"Otwórz link"</string>
     <string name="select_day">"Wybierz dzień"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"Nie może być puste!"</string>
     <string name="other_version_detected">"Inne zastosowanie wykryte!"</string>
     <string name="open">"Otwarte"</string>
-    <string name="trying_to_log_in">"Starając się zalogować ..."</string>
-    <string name="syncing_groups">"Synchronizacja grup ..."</string>
-    <string name="syncing_reminders">"Synchronizacja przypomnienia ..."</string>
-    <string name="syncing_notes">"Synchronizacja notatek ..."</string>
-    <string name="syncing_birthdays">"Synchronizacja urodzin ..."</string>
+    <string name="trying_to_log_in">"Starając się zalogować …"</string>
+    <string name="syncing_groups">"Synchronizacja grup …"</string>
+    <string name="syncing_reminders">"Synchronizacja przypomnienia …"</string>
+    <string name="syncing_notes">"Synchronizacja notatek …"</string>
+    <string name="syncing_birthdays">"Synchronizacja urodzin …"</string>
     <string name="done">"Gotowe"</string>
     <string name="error_sending">"Błąd podczas wysyłania!"</string>
     <string name="delete_this_note">"Skasować tę notatkę?"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"Edycja urodziny"</string>
     <string name="disconnect">"Rozłączyć się"</string>
     <string name="you_dont_select_any_calendar">"Nie wybierz kalendarz!"</string>
-    <string name="please_wait">"Proszę czekać..."</string>
+    <string name="please_wait">"Proszę czekać…"</string>
     <string name="no_events_found">"Nie znaleziono wydarzeń!"</string>
     <string name="events_found">"Wydarzenie (s) stwierdzono"</string>
     <string name="no_files">"Brak plików"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"Ta sama grupa!"</string>
     <string name="change_group">"Zmień grupę"</string>
     <string name="move_to_trash">"Przenieść do kosza"</string>
-    <string name="retrieving_data">"Pobieranie danych ..."</string>
+    <string name="retrieving_data">"Pobieranie danych …"</string>
     <string name="all_files_removed">"Usunąć wszystkie pliki"</string>
-    <string name="deleting">"Usuwanie ..."</string>
+    <string name="deleting">"Usuwanie …"</string>
     <string name="used_x">"Używany %s"</string>
     <string name="available_x">"Dostępny %s"</string>
     <string name="change_color">"Mienić się"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"Nie wstawić wiadomość!"</string>
     <string name="xM">"%sM"</string>
     <string name="overdue">"Zaległy"</string>
-    <string name="search_place">"Szukaj miejsce ..."</string>
+    <string name="search_place">"Szukaj miejsce …"</string>
     <string name="click_to_select_reminder_type">"Kliknij, aby wybrać rodzaj przypomnienia"</string>
     <string name="to_insert_task_by_voice">"Aby wstawić zadanie za pomocą głosu"</string>
     <string name="click_to_change_reminder_group">"Kliknij, aby zmienić grupę, dla przypomnienia"</string>
@@ -459,11 +459,11 @@
     <string name="once">Jeden raz</string>
     <string name="times">razy</string>
     <string name="no_groups">Brak grup</string>
-    <string name="retrieving_tasks">Odzyskiwanie zadania...</string>
-    <string name="saving">Oszczędność...</string>
-    <string name="moving_task">Przenoszenie zadania...</string>
-    <string name="deleting_task">Usuwanie zadania...</string>
-    <string name="deleting_list">Usuwanie listy...</string>
+    <string name="retrieving_tasks">Odzyskiwanie zadania…</string>
+    <string name="saving">Oszczędność…</string>
+    <string name="moving_task">Przenoszenie zadania…</string>
+    <string name="deleting_task">Usuwanie zadania…</string>
+    <string name="deleting_list">Usuwanie listy…</string>
     <string name="remove_exclusion">Usuń z wykluczeniem</string>
     <string name="theme_color">Kolor motywu</string>
     <string name="light">Lekki</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d z %d</string>
     <string name="decoding_images">Dekodowanie obrazów</string>
     <string name="failed_to_sync_google_tasks">Nie udało się zsynchronizować zadań Google</string>
-    <string name="syncing_places">Synchronizacja miejsc ...</string>
-    <string name="syncing_templates">Synchronizacja szablonów wiadomości ...</string>
+    <string name="syncing_places">Synchronizacja miejsc …</string>
+    <string name="syncing_templates">Synchronizacja szablonów wiadomości …</string>
     <string name="work">Praca</string>
     <string name="personal">Osobisty</string>
     <string name="auto_call">Zadzwoń automatycznego</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Powiadomienia o powiadomieniach domyślnych</string>
     <string name="something_went_wrong">Coś poszło nie tak</string>
     <string name="application_language">Język aplikacji</string>
+    <string name="not_a_image_file">Nie plik obrazu</string>
+    <string name="cant_find_app_for_that_file_type">Nie można znaleźć aplikacji, która może otworzyć ten plik.</string>
 
 </resources>

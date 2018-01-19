@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Default reminder notifications</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="application_language">Application language</string>
+    <string name="not_a_image_file">Not an image file</string>
+    <string name="cant_find_app_for_that_file_type">Can\'t find application that can open this file.</string>
 
 </resources>

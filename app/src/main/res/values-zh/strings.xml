@@ -114,7 +114,7 @@
     <string name="delete">"删除"</string>
     <string name="no_notes">"没有任何记事"</string>
     <string name="next_event">"下一个事件"</string>
-    <string name="remind_me">"提醒我..."</string>
+    <string name="remind_me">"提醒我…"</string>
     <string name="repeat">"重复"</string>
     <string name="days">"天"</string>
     <string name="send">"发送"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"率"</string>
     <string name="later">"后来"</string>
     <string name="never">"决不"</string>
-    <string name="url">"网址..."</string>
+    <string name="url">"网址…"</string>
     <string name="application">"应用"</string>
     <string name="open_link">"打开链接"</string>
     <string name="select_day">"选择天"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"一定不能空！"</string>
     <string name="other_version_detected">"检测其它应用程序！"</string>
     <string name="open">"打开"</string>
-    <string name="trying_to_log_in">"尝试登录..."</string>
-    <string name="syncing_groups">"同步组..."</string>
-    <string name="syncing_reminders">"同步提醒..."</string>
-    <string name="syncing_notes">"同步笔记..."</string>
-    <string name="syncing_birthdays">"同步生日..."</string>
+    <string name="trying_to_log_in">"尝试登录…"</string>
+    <string name="syncing_groups">"同步组…"</string>
+    <string name="syncing_reminders">"同步提醒…"</string>
+    <string name="syncing_notes">"同步笔记…"</string>
+    <string name="syncing_birthdays">"同步生日…"</string>
     <string name="done">"做"</string>
     <string name="error_sending">"发送错误！"</string>
     <string name="delete_this_note">"删除备注？"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"编辑生日"</string>
     <string name="disconnect">"断开"</string>
     <string name="you_dont_select_any_calendar">"你不选择日历！"</string>
-    <string name="please_wait">"请稍候..."</string>
+    <string name="please_wait">"请稍候…"</string>
     <string name="no_events_found">"找不到活动！"</string>
     <string name="events_found">"事件（第）发现"</string>
     <string name="no_files">"没有文件"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"同组！"</string>
     <string name="change_group">"更改群组"</string>
     <string name="move_to_trash">"移到废纸篓"</string>
-    <string name="retrieving_data">"检索数据..."</string>
+    <string name="retrieving_data">"检索数据…"</string>
     <string name="all_files_removed">"所有文件删除"</string>
-    <string name="deleting">"删除..."</string>
+    <string name="deleting">"删除…"</string>
     <string name="used_x">"用于%s"</string>
     <string name="available_x">"可用%s"</string>
     <string name="change_color">"改变颜色"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"你不插入一个消息！"</string>
     <string name="xM">"%s个月"</string>
     <string name="overdue">"过期的"</string>
-    <string name="search_place">"搜索的地方..."</string>
+    <string name="search_place">"搜索的地方…"</string>
     <string name="click_to_select_reminder_type">"单击以选中提醒类型"</string>
     <string name="to_insert_task_by_voice">"要通过语音插入任务"</string>
     <string name="click_to_change_reminder_group">"单击要更改组提醒"</string>
@@ -458,11 +458,11 @@
     <string name="once">一旦</string>
     <string name="times">倍</string>
     <string name="no_groups">没有组</string>
-    <string name="retrieving_tasks">正在检索任务...</string>
-    <string name="saving">保存...</string>
-    <string name="moving_task">正在移动任务...</string>
-    <string name="deleting_task">正在删除任务...</string>
-    <string name="deleting_list">正在删除清单...</string>
+    <string name="retrieving_tasks">正在检索任务…</string>
+    <string name="saving">保存…</string>
+    <string name="moving_task">正在移动任务…</string>
+    <string name="deleting_task">正在删除任务…</string>
+    <string name="deleting_list">正在删除清单…</string>
     <string name="remove_exclusion">删除排除</string>
     <string name="theme_color">主题颜色</string>
     <string name="light">光</string>
@@ -470,8 +470,8 @@
     <string name="x_out_of_x" formatted="false">%d 出 %d</string>
     <string name="decoding_images">解码图像</string>
     <string name="failed_to_sync_google_tasks">无法同步谷歌任务</string>
-    <string name="syncing_places">同步的地方...</string>
-    <string name="syncing_templates">正在同步消息模板...</string>
+    <string name="syncing_places">同步的地方…</string>
+    <string name="syncing_templates">正在同步消息模板…</string>
     <string name="work">工作</string>
     <string name="personal">个人</string>
     <string name="auto_call">自动调用</string>
@@ -623,5 +623,7 @@
     <string name="default_reminder_notifications">默认提醒通知</string>
     <string name="something_went_wrong">出了些问题</string>
     <string name="application_language">应用语言</string>
+    <string name="not_a_image_file">不是图像文件</string>
+    <string name="cant_find_app_for_that_file_type">找不到可以打开此文件的应用程序。</string>
 
 </resources>

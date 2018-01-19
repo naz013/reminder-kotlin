@@ -114,7 +114,7 @@
     <string name="delete">"Ștergere"</string>
     <string name="no_notes">"Nu există note"</string>
     <string name="next_event">"Următorul eveniment"</string>
-    <string name="remind_me">"Aminteste-mi..."</string>
+    <string name="remind_me">"Aminteste-mi…"</string>
     <string name="repeat">"Repeta"</string>
     <string name="days">"zi"</string>
     <string name="send">"Trimite"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"Rată"</string>
     <string name="later">"Mai tarziu"</string>
     <string name="never">"Nu"</string>
-    <string name="url">"Url ..."</string>
+    <string name="url">"Url …"</string>
     <string name="application">"Aplicație"</string>
     <string name="open_link">"Deschide link-ul"</string>
     <string name="select_day">"Selectați zile"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"Nu trebuie să fie gol!"</string>
     <string name="other_version_detected">"Alte aplicații detectat!"</string>
     <string name="open">"Deschis"</string>
-    <string name="trying_to_log_in">"Încercați să vă conectați ..."</string>
-    <string name="syncing_groups">"Se sincronizează grupuri ..."</string>
-    <string name="syncing_reminders">"Se sincronizează memento ..."</string>
-    <string name="syncing_notes">"Notele sincronizează ..."</string>
-    <string name="syncing_birthdays">"Se sincronizează aniversari ..."</string>
+    <string name="trying_to_log_in">"Încercați să vă conectați …"</string>
+    <string name="syncing_groups">"Se sincronizează grupuri …"</string>
+    <string name="syncing_reminders">"Se sincronizează memento …"</string>
+    <string name="syncing_notes">"Notele sincronizează …"</string>
+    <string name="syncing_birthdays">"Se sincronizează aniversari …"</string>
     <string name="done">"Terminat"</string>
     <string name="error_sending">"Eroare la trimiterea!"</string>
     <string name="delete_this_note">"Șterge această notă?"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"Edita zi de naștere"</string>
     <string name="disconnect">"Deconecta"</string>
     <string name="you_dont_select_any_calendar">"Nu selectați un calendar!"</string>
-    <string name="please_wait">"Te rog asteapta..."</string>
+    <string name="please_wait">"Te rog asteapta…"</string>
     <string name="no_events_found">"Nu sunt relatate evenimente!"</string>
     <string name="events_found">"Eveniment (e) găsit"</string>
     <string name="no_files">"Nu sunt fișiere"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"Același grup!"</string>
     <string name="change_group">"Grup schimbare"</string>
     <string name="move_to_trash">"Aruncă la gunoi"</string>
-    <string name="retrieving_data">"Preluarea datelor ..."</string>
+    <string name="retrieving_data">"Preluarea datelor …"</string>
     <string name="all_files_removed">"Toate fișierele eliminate"</string>
-    <string name="deleting">"Se șterge ..."</string>
+    <string name="deleting">"Se șterge …"</string>
     <string name="used_x">"Folosit %s"</string>
     <string name="available_x">"Disponibil %s"</string>
     <string name="change_color">"Schimbare de culoare"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"Nu introduceți un mesaj!"</string>
     <string name="xM">"%s M"</string>
     <string name="overdue">"întârziat"</string>
-    <string name="search_place">"Locul de căutare ..."</string>
+    <string name="search_place">"Locul de căutare …"</string>
     <string name="click_to_select_reminder_type">"Clic pentru a selecta tipul de memento"</string>
     <string name="to_insert_task_by_voice">"Pentru a introduce sarcină prin voce"</string>
     <string name="click_to_change_reminder_group">"Clic pentru a schimba grup pentru memento"</string>
@@ -459,11 +459,11 @@
     <string name="once">O singura data</string>
     <string name="times">ori</string>
     <string name="no_groups">Nu există grupuri</string>
-    <string name="retrieving_tasks">Sarcini Regăsirea...</string>
-    <string name="saving">Economisire...</string>
-    <string name="moving_task">Sarcina în mișcare...</string>
-    <string name="deleting_task">Se șterge sarcina...</string>
-    <string name="deleting_list">Lista șterge...</string>
+    <string name="retrieving_tasks">Sarcini Regăsirea…</string>
+    <string name="saving">Economisire…</string>
+    <string name="moving_task">Sarcina în mișcare…</string>
+    <string name="deleting_task">Se șterge sarcina…</string>
+    <string name="deleting_list">Lista șterge…</string>
     <string name="remove_exclusion">Eliminarea excluziunii</string>
     <string name="theme_color">Culoarea temă</string>
     <string name="light">Ușoară</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d din %d</string>
     <string name="decoding_images">Imagini decodificarea</string>
     <string name="failed_to_sync_google_tasks">Nu a reușit pentru a sincroniza Sarcini Google</string>
-    <string name="syncing_places">"Locuri sincronizeze... "</string>
-    <string name="syncing_templates">Se sincronizează șabloane de mesaje ...</string>
+    <string name="syncing_places">"Locuri sincronizeze… "</string>
+    <string name="syncing_templates">Se sincronizează șabloane de mesaje …</string>
     <string name="work">Muncă</string>
     <string name="personal">Personal</string>
     <string name="auto_call">Apel automat</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Implicit notificări de memento</string>
     <string name="something_went_wrong">Ceva n-a mers bine</string>
     <string name="application_language">Limba aplicației</string>
+    <string name="not_a_image_file">Nu este un fișier imagine</string>
+    <string name="cant_find_app_for_that_file_type">Nu se poate găsi o aplicație care poate deschide acest fișier.</string>
 
 </resources>

@@ -114,7 +114,7 @@
     <string name="delete">"Silmek"</string>
     <string name="no_notes">"Hiçbir notlar"</string>
     <string name="next_event">"Sonraki olay"</string>
-    <string name="remind_me">"Bana hatırlat..."</string>
+    <string name="remind_me">"Bana hatırlat…"</string>
     <string name="repeat">"Tekrar"</string>
     <string name="days">"Günler"</string>
     <string name="send">"Göndermek"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"Oran"</string>
     <string name="later">"Daha sonra"</string>
     <string name="never">"Asla"</string>
-    <string name="url">"URL ..."</string>
+    <string name="url">"URL…"</string>
     <string name="application">"Uygulama"</string>
     <string name="open_link">"Linki aç"</string>
     <string name="select_day">"Seçin gün"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"Boş değil olmalı!"</string>
     <string name="other_version_detected">"Diğer uygulama tespit edildi!"</string>
     <string name="open">"Açık"</string>
-    <string name="trying_to_log_in">"Giriş yapmak için çalışılıyor ..."</string>
-    <string name="syncing_groups">"Grupları senkronize ediliyor ..."</string>
-    <string name="syncing_reminders">"Hatırlatmalar senkronize ediliyor ..."</string>
-    <string name="syncing_notes">"Senkronize ediliyor notlar ..."</string>
-    <string name="syncing_birthdays">"Doğum günü senkronize ediliyor ..."</string>
+    <string name="trying_to_log_in">"Giriş yapmak için çalışılıyor …"</string>
+    <string name="syncing_groups">"Grupları senkronize ediliyor …"</string>
+    <string name="syncing_reminders">"Hatırlatmalar senkronize ediliyor …"</string>
+    <string name="syncing_notes">"Senkronize ediliyor notlar …"</string>
+    <string name="syncing_birthdays">"Doğum günü senkronize ediliyor …"</string>
     <string name="done">"Tamam"</string>
     <string name="error_sending">"Hata gönderme!"</string>
     <string name="delete_this_note">"Bu notu silmek?"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"Düzenleme doğum günü"</string>
     <string name="disconnect">"Kesmek"</string>
     <string name="you_dont_select_any_calendar">"Bir takvim seçmeyin!"</string>
-    <string name="please_wait">"Lütfen bekle..."</string>
+    <string name="please_wait">"Lütfen bekle…"</string>
     <string name="no_events_found">"No events found!"</string>
     <string name="events_found">"olay (lar) bulundu"</string>
     <string name="no_files">"Dosya yok"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"Aynı grup!"</string>
     <string name="change_group">"Değişim grubu"</string>
     <string name="move_to_trash">"Çöp kutusuna taşıyın"</string>
-    <string name="retrieving_data">"veri alınıyor ..."</string>
+    <string name="retrieving_data">"veri alınıyor …"</string>
     <string name="all_files_removed">"Tüm dosyalar kaldırılır"</string>
-    <string name="deleting">"Siliniyor ..."</string>
+    <string name="deleting">"Siliniyor …"</string>
     <string name="used_x">"Kullanılan %s"</string>
     <string name="available_x">"Mevcut %s"</string>
     <string name="change_color">"Rengi değiştir"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"Bir mesaj sokmayın!"</string>
     <string name="xM">"%sA"</string>
     <string name="overdue">"Vadesi geçmiş"</string>
-    <string name="search_place">"Arama yeri ..."</string>
+    <string name="search_place">"Arama yeri …"</string>
     <string name="click_to_select_reminder_type">"Hatırlatma türünü seçmek için tıklayın"</string>
     <string name="to_insert_task_by_voice">"Sesle görevi eklemek için"</string>
     <string name="click_to_change_reminder_group">"Hatırlatıcı grubu değiştirmek için tıklayın"</string>
@@ -459,11 +459,11 @@
     <string name="once">Bir kere</string>
     <string name="times">kere</string>
     <string name="no_groups">Grup yok</string>
-    <string name="retrieving_tasks">Görev alınıyor...</string>
-    <string name="saving">Tasarruf ediliyor...</string>
-    <string name="moving_task">Görev taşınıyor...</string>
-    <string name="deleting_task">Görev siliniyor...</string>
-    <string name="deleting_list">Liste siliniyor...</string>
+    <string name="retrieving_tasks">Görev alınıyor…</string>
+    <string name="saving">Tasarruf ediliyor…</string>
+    <string name="moving_task">Görev taşınıyor…</string>
+    <string name="deleting_task">Görev siliniyor…</string>
+    <string name="deleting_list">Liste siliniyor…</string>
     <string name="remove_exclusion">Hariç tutmayı kaldır</string>
     <string name="theme_color">Tema rengi</string>
     <string name="light">Işık</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d - %d</string>
     <string name="decoding_images">Görüntüleri çözme</string>
     <string name="failed_to_sync_google_tasks">Google Görevler senkronize etmek için başarısız</string>
-    <string name="syncing_places">Yer senkronize ediliyor ...</string>
-    <string name="syncing_templates">İleti şablonlarını senkronize ediliyor ...</string>
+    <string name="syncing_places">Yer senkronize ediliyor …</string>
+    <string name="syncing_templates">İleti şablonlarını senkronize ediliyor …</string>
     <string name="work">İş</string>
     <string name="personal">Kişisel</string>
     <string name="auto_call">Otomatik çağrı</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Varsayılan hatırlatma bildirimleri</string>
     <string name="something_went_wrong">Bir şeyler yanlış gitti</string>
     <string name="application_language">Uygulama dili</string>
+    <string name="not_a_image_file">Resim dosyası değil</string>
+    <string name="cant_find_app_for_that_file_type">Bu dosyayı açabilen bir uygulama bulamıyor.</string>
 
 </resources>

@@ -114,7 +114,7 @@
     <string name="delete">"मिटाना"</string>
     <string name="no_notes">"कोई नोट"</string>
     <string name="next_event">"अगली घटना"</string>
-    <string name="remind_me">"मुझे याद दिलाना..."</string>
+    <string name="remind_me">"मुझे याद दिलाना…"</string>
     <string name="repeat">"दोहराना"</string>
     <string name="days">"दिन"</string>
     <string name="send">"भेजना"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"दर"</string>
     <string name="later">"बाद में"</string>
     <string name="never">"कभी नहीं"</string>
-    <string name="url">"यूआरएल ..."</string>
+    <string name="url">"यूआरएल …"</string>
     <string name="application">"आवेदन"</string>
     <string name="open_link">"खुला लिंक"</string>
     <string name="select_day">"दिन का चयन"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"खाली नहीं किया जाना चाहिए!"</string>
     <string name="other_version_detected">"अन्य आवेदन का पता चला!"</string>
     <string name="open">"खुला"</string>
-    <string name="trying_to_log_in">"में लॉग इन करने की कोशिश कर रहा है ..."</string>
-    <string name="syncing_groups">"समूहों सिंक्रनाइज़ किए जा रहे ..."</string>
-    <string name="syncing_reminders">"अनुस्मारक सिंक्रनाइज़ किए जा रहे ..."</string>
-    <string name="syncing_notes">"सिंक्रनाइज़ किए जा रहे नोटों ..."</string>
-    <string name="syncing_birthdays">"जन्मदिन सिंक्रनाइज़ किए जा रहे ..."</string>
+    <string name="trying_to_log_in">"में लॉग इन करने की कोशिश कर रहा है …"</string>
+    <string name="syncing_groups">"समूहों सिंक्रनाइज़ किए जा रहे …"</string>
+    <string name="syncing_reminders">"अनुस्मारक सिंक्रनाइज़ किए जा रहे …"</string>
+    <string name="syncing_notes">"सिंक्रनाइज़ किए जा रहे नोटों …"</string>
+    <string name="syncing_birthdays">"जन्मदिन सिंक्रनाइज़ किए जा रहे …"</string>
     <string name="done">"कर दिया"</string>
     <string name="error_sending">"भेजने में त्रुटि हुई!"</string>
     <string name="delete_this_note">"इस नोट को मिटाना?"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"जन्मदिन संपादित करें"</string>
     <string name="disconnect">"डिस्कनेक्ट"</string>
     <string name="you_dont_select_any_calendar">"आप एक कैलेंडर का चयन नहीं करते!"</string>
-    <string name="please_wait">"कृपया प्रतीक्षा करें..."</string>
+    <string name="please_wait">"कृपया प्रतीक्षा करें…"</string>
     <string name="no_events_found">"कोई इवेंट नहीं!"</string>
     <string name="events_found">"घटना (s) पाया"</string>
     <string name="no_files">"कोई फाइल नहीं"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"एक ही समूह!"</string>
     <string name="change_group">"समूह बदलें"</string>
     <string name="move_to_trash">"रद्दी में डालें"</string>
-    <string name="retrieving_data">"पुन: प्राप्त डेटा..."</string>
+    <string name="retrieving_data">"पुन: प्राप्त डेटा…"</string>
     <string name="all_files_removed">"सभी फाइलों को हटा दिया"</string>
-    <string name="deleting">\"हटा रहा है...\"</string>
+    <string name="deleting">\"हटा रहा है…\"</string>
     <string name="used_x">"प्रयुक्त %s"</string>
     <string name="available_x">"उपलब्ध %s"</string>
     <string name="change_color">"बदले रंग"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"आप एक संदेश डालने के लिए नहीं है!"</string>
     <string name="xM">"%s M"</string>
     <string name="overdue">"अतिदेय"</string>
-    <string name="search_place">"खोजें जगह है ..."</string>
+    <string name="search_place">"खोजें जगह है …"</string>
     <string name="click_to_select_reminder_type">"अनुस्मारक प्रकार का चयन करने के लिए क्लिक करें"</string>
     <string name="to_insert_task_by_voice">"आवाज से कार्य सम्मिलित करने के लिए"</string>
     <string name="click_to_change_reminder_group">"याद दिलाने के लिए समूह को बदलने के लिए क्लिक करें"</string>
@@ -459,11 +459,11 @@
     <string name="once">एक बार</string>
     <string name="times">बार</string>
     <string name="no_groups">कोई समूह</string>
-    <string name="retrieving_tasks">कार्यों पा रहा है...</string>
-    <string name="saving">सहेजा जा रहा है...</string>
-    <string name="moving_task">कार्य चल रहा है...</string>
-    <string name="deleting_task">कार्य हटा रहा है...</string>
-    <string name="deleting_list">सूची हटा रहा है...</string>
+    <string name="retrieving_tasks">कार्यों पा रहा है…</string>
+    <string name="saving">सहेजा जा रहा है…</string>
+    <string name="moving_task">कार्य चल रहा है…</string>
+    <string name="deleting_task">कार्य हटा रहा है…</string>
+    <string name="deleting_list">सूची हटा रहा है…</string>
     <string name="remove_exclusion">बहिष्कार हटाये</string>
     <string name="theme_color">थीम रंग</string>
     <string name="light">रोशनी</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d बाहर के %d</string>
     <string name="decoding_images">डिकोडिंग छवियों</string>
     <string name="failed_to_sync_google_tasks">Google कार्य सिंक्रनाइज़ करने में विफल</string>
-    <string name="syncing_places">स्थानों सिंक्रनाइज़ किए जा रहे ...</string>
-    <string name="syncing_templates">संदेश टेम्पलेट्स सिंक्रनाइज़ किए जा रहे ...</string>
+    <string name="syncing_places">स्थानों सिंक्रनाइज़ किए जा रहे …</string>
+    <string name="syncing_templates">संदेश टेम्पलेट्स सिंक्रनाइज़ किए जा रहे …</string>
     <string name="work">काम</string>
     <string name="personal">निजी</string>
     <string name="auto_call">ऑटो कॉल</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">डिफ़ॉल्ट अनुस्मारक सूचनाएं</string>
     <string name="something_went_wrong">कुछ गलत हो गया</string>
     <string name="application_language">एप्लिकेशन भाषा</string>
+    <string name="not_a_image_file">छवि फ़ाइल नहीं है</string>
+    <string name="cant_find_app_for_that_file_type">इस फ़ाइल को खोलने वाला एप्लिकेशन नहीं मिल सकता है</string>
 
 </resources>

@@ -114,7 +114,7 @@
     <string name="delete">"Borrar"</string>
     <string name="no_notes">"No hay notas"</string>
     <string name="next_event">"Próximo evento"</string>
-    <string name="remind_me">"Recuérdame..."</string>
+    <string name="remind_me">"Recuérdame…"</string>
     <string name="repeat">"Repetir"</string>
     <string name="days">"Días"</string>
     <string name="send">"Enviar"</string>
@@ -123,7 +123,7 @@
     <string name="rate">"Tarifa"</string>
     <string name="later">"Luego"</string>
     <string name="never">"Nunca"</string>
-    <string name="url">"Url ..."</string>
+    <string name="url">"Url …"</string>
     <string name="application">"Solicitud"</string>
     <string name="open_link">"Enlace abierto"</string>
     <string name="select_day">"Seleccione el día"</string>
@@ -222,11 +222,11 @@
     <string name="must_be_not_empty">"No se deben vaciar!"</string>
     <string name="other_version_detected">"Otra aplicación detectada!"</string>
     <string name="open">"Abierto"</string>
-    <string name="trying_to_log_in">"Tratando de acceder ..."</string>
-    <string name="syncing_groups">"La sincronización de grupos ..."</string>
-    <string name="syncing_reminders">"La sincronización de recordatorios ..."</string>
-    <string name="syncing_notes">"La sincronización de las notas ..."</string>
-    <string name="syncing_birthdays">"La sincronización de los cumpleaños ..."</string>
+    <string name="trying_to_log_in">"Tratando de acceder …"</string>
+    <string name="syncing_groups">"La sincronización de grupos …"</string>
+    <string name="syncing_reminders">"La sincronización de recordatorios …"</string>
+    <string name="syncing_notes">"La sincronización de las notas …"</string>
+    <string name="syncing_birthdays">"La sincronización de los cumpleaños …"</string>
     <string name="done">"Hecho"</string>
     <string name="error_sending">"Error al enviar!"</string>
     <string name="delete_this_note">"Eliminar esta nota?"</string>
@@ -238,7 +238,7 @@
     <string name="alarm">"Despertador"</string>
     <string name="location">"Ubicación"</string>
     <string name="skype">"Skype"</string>
-    <string name="day_of_month">"Dia del mes"</string>
+    <string name="day_of_month">"Día del mes"</string>
     <string name="place_out">"Coloca a cabo"</string>
     <string name="shopping_list">"Lista de la compra"</string>
     <string name="deleted">"Suprimido"</string>
@@ -309,7 +309,7 @@
     <string name="edit_birthday">"Editar cumpleaños"</string>
     <string name="disconnect">"Desconectar"</string>
     <string name="you_dont_select_any_calendar">"No selecciona un calendario!"</string>
-    <string name="please_wait">"Por favor espera..."</string>
+    <string name="please_wait">"Por favor espera…"</string>
     <string name="no_events_found">"No se han encontrado eventos!"</string>
     <string name="events_found">"evento (s) encontrado"</string>
     <string name="no_files">"Sin archivos"</string>
@@ -349,9 +349,9 @@
     <string name="same_group">"Mismo grupo!"</string>
     <string name="change_group">"Cambio de grupo"</string>
     <string name="move_to_trash">"Mover a la papelera"</string>
-    <string name="retrieving_data">"Recuperando datos..."</string>
+    <string name="retrieving_data">"Recuperando datos…"</string>
     <string name="all_files_removed">"Todos los archivos eliminados"</string>
-    <string name="deleting">"Eliminando ..."</string>
+    <string name="deleting">"Eliminando …"</string>
     <string name="used_x">"Se utiliza %s"</string>
     <string name="available_x">"Disponible %s"</string>
     <string name="change_color">"Cambiar el color"</string>
@@ -394,7 +394,7 @@
     <string name="you_dont_insert_any_message">"No inserta un mensaje!"</string>
     <string name="xM">"%sM"</string>
     <string name="overdue">"Atrasado"</string>
-    <string name="search_place">"Buscar lugar ..."</string>
+    <string name="search_place">"Buscar lugar …"</string>
     <string name="click_to_select_reminder_type">"Haga clic para seleccionar el tipo de recordatorio"</string>
     <string name="to_insert_task_by_voice">"Para insertar tarea mediante la voz"</string>
     <string name="click_to_change_reminder_group">"Haga clic para cambiar el grupo de recordatorio"</string>
@@ -459,11 +459,11 @@
     <string name="once">Una vez</string>
     <string name="times">veces</string>
     <string name="no_groups">No hay grupos</string>
-    <string name="retrieving_tasks">Recuperando tareas...</string>
-    <string name="saving">Ahorro...</string>
-    <string name="moving_task">Mover tarea...</string>
-    <string name="deleting_task">Eliminar tarea...</string>
-    <string name="deleting_list">Eliminar lista...</string>
+    <string name="retrieving_tasks">Recuperando tareas…</string>
+    <string name="saving">Ahorro…</string>
+    <string name="moving_task">Mover tarea…</string>
+    <string name="deleting_task">Eliminar tarea…</string>
+    <string name="deleting_list">Eliminar lista…</string>
     <string name="remove_exclusion">Eliminar la exclusión</string>
     <string name="theme_color">Color del tema</string>
     <string name="light">Ligero</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d de cada %d</string>
     <string name="decoding_images">Descodificación de imágenes</string>
     <string name="failed_to_sync_google_tasks">Error al sincronizar las tareas de Google</string>
-    <string name="syncing_places">Sincronizando lugares ...</string>
-    <string name="syncing_templates">Sincronización de plantillas de mensaje ...</string>
+    <string name="syncing_places">Sincronizando lugares …</string>
+    <string name="syncing_templates">Sincronización de plantillas de mensaje …</string>
     <string name="work">Trabajo</string>
     <string name="personal">Personal</string>
     <string name="auto_call">Llamada automática</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Notificaciones por recordatorio predeterminadas</string>
     <string name="something_went_wrong">Algo salió mal</string>
     <string name="application_language">Lenguaje de aplicación</string>
+    <string name="not_a_image_file">No es un archivo de imagen</string>
+    <string name="cant_find_app_for_that_file_type">No se puede encontrar la aplicación que puede abrir este archivo.</string>
 
 </resources>
