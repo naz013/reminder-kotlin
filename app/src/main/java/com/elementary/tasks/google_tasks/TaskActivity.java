@@ -32,6 +32,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding;
+import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
@@ -401,7 +402,8 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private String saveReminder(String task) {
-        String categoryId = RealmDb.getInstance().getAllGroups().get(0).getUuId();
+        GroupItem group = RealmDb.getInstance().getDefaultGroup();
+        if (group == null) return null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(mYear, mMonth, mDay, mHour, mMinute);
@@ -409,7 +411,7 @@ public class TaskActivity extends ThemedActivity {
         Reminder reminder = new Reminder();
         reminder.setType(Reminder.BY_DATE);
         reminder.setSummary(task);
-        reminder.setGroupUuId(categoryId);
+        reminder.setGroupUuId(group.getUuId());
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
         RealmDb.getInstance().saveObject(reminder);
