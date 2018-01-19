@@ -459,11 +459,11 @@
     <string name="once">Однажды</string>
     <string name="times">раз</string>
     <string name="no_groups">Нет групп</string>
-    <string name="retrieving_tasks">Получение заданий...</string>
-    <string name="saving">Сохранение...</string>
-    <string name="moving_task">Перемещение задачи...</string>
-    <string name="deleting_task">Удаление задачи...</string>
-    <string name="deleting_list">Удаление списка...</string>
+    <string name="retrieving_tasks">Получение заданий…</string>
+    <string name="saving">Сохранение…</string>
+    <string name="moving_task">Перемещение задачи…</string>
+    <string name="deleting_task">Удаление задачи…</string>
+    <string name="deleting_list">Удаление списка…</string>
     <string name="remove_exclusion">Удалить исключение</string>
     <string name="theme_color">Цвет темы</string>
     <string name="light">Светлая</string>
@@ -471,8 +471,8 @@
     <string name="x_out_of_x" formatted="false">%d из %d</string>
     <string name="decoding_images">Декодирование изображений</string>
     <string name="failed_to_sync_google_tasks">Не удалось синхронизировать Задачи Google</string>
-    <string name="syncing_places">Синхронизация мест ...</string>
-    <string name="syncing_templates">Синхронизация шаблонов сообщений ...</string>
+    <string name="syncing_places">Синхронизация мест …</string>
+    <string name="syncing_templates">Синхронизация шаблонов сообщений …</string>
     <string name="work">Работа</string>
     <string name="personal">Личные</string>
     <string name="auto_call">Автоматический вызов</string>
@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Уведомления по умолчанию для напоминания</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="application_language">Язык приложения</string>
+    <string name="not_a_image_file">Не файл изображения</string>
+    <string name="cant_find_app_for_that_file_type">Не удается найти приложение, которое может открыть этот файл.</string>
 
 </resources>

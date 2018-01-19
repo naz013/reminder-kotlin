@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Výchozí oznámení upozornění</string>
     <string name="something_went_wrong">Něco se pokazilo</string>
     <string name="application_language">Jazyk aplikace</string>
+    <string name="not_a_image_file">Ne obrazový soubor</string>
+    <string name="cant_find_app_for_that_file_type">Nelze najít aplikaci, která může tento soubor otevřít.</string>
 
 </resources>

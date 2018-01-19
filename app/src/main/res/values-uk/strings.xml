@@ -624,5 +624,7 @@
     <string name="default_reminder_notifications">Сповіщення про нагадування за умовчанням</string>
     <string name="something_went_wrong">Щось пішло не так</string>
     <string name="application_language">Мова програми</string>
+    <string name="not_a_image_file">Не файл зображення</string>
+    <string name="cant_find_app_for_that_file_type">Не вдається знайти програму, яка може відкрити цей файл.</string>
 
 </resources>
