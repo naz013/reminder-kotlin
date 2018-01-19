@@ -15,20 +15,20 @@
       },
       "oauth_client": [
         {
-          "client_id": "257660336951-urfa5m6oqiuqapa4rflaq6cahk9lsu3t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.cray.software.justreminderpro",
-            "certificate_hash": "FAD7B7E2F4D256C9D797312DF745BACCCF325489"
-          }
-        },
-        {
           "client_id": "257660336951-lhmtvfr3s2m35n9v74gd6nt6ujfkrvb7.apps.googleusercontent.com",
           "client_type": 3
         },
         {
           "client_id": "257660336951-hmpoomki6j6v4ksvqa3t0ojuaije8db2.apps.googleusercontent.com",
           "client_type": 3
+        },
+        {
+          "client_id": "257660336951-urfa5m6oqiuqapa4rflaq6cahk9lsu3t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cray.software.justreminderpro",
+            "certificate_hash": "fad7b7e2f4d256c9d797312df745bacccf325489"
+          }
         },
         {
           "client_id": "257660336951-hkrl4kdf4ce9i444hqgqomm437ql1fpn.apps.googleusercontent.com",
