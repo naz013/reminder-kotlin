@@ -47,40 +47,35 @@
                 android:layout_marginRight="16dp"
                 android:orientation="vertical">
 
-                <TableLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TableRow
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/dateIcon"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@null"
+                        android:scaleType="center"
+                        app:tb_icon="@drawable/ic_calendar"
+                        app:tb_icon_light="@drawable/ic_calendar_white" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/birthDate"
                         android:layout_width="match_parent"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:text="25/05/1985"
+                        android:textSize="@dimen/add_birthday_text_size_primary"
+                        app:font_style="roboto_medium" />
 
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/dateIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
-                            android:background="@null"
-                            android:scaleType="center"
-                            app:tb_icon="@drawable/ic_calendar"
-                            app:tb_icon_light="@drawable/ic_calendar_white" />
-
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/birthDate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:background="?android:attr/selectableItemBackground"
-                            android:gravity="center"
-                            android:text="25/05/1985"
-                            android:textSize="@dimen/add_birthday_text_size_primary"
-                            app:font_style="roboto_medium" />
-
-                    </TableRow>
-
-                </TableLayout>
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -93,7 +88,8 @@
                     android:id="@+id/contactCheck"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
+                    android:paddingStart="@dimen/checkbox_padding"
+                    android:paddingEnd="@dimen/checkbox_padding"
                     android:text="@string/contact"
                     android:textSize="@dimen/add_birthday_text_size_primary"
                     app:check_font_style="roboto_light" />
@@ -103,15 +99,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/view_margin_top"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:visibility="visible">
 
                     <com.elementary.tasks.core.views.ThemedImageButton
                         android:id="@+id/pickContact"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:background="@android:color/transparent"
                         android:clickable="false"
                         android:contentDescription="@string/acc_select_number_from_contacts"
@@ -126,6 +121,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
                         android:ems="10"
                         android:hint="@string/phone"
                         android:inputType="phone"
