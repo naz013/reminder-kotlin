@@ -626,5 +626,12 @@
     <string name="application_language">Язык приложения</string>
     <string name="not_a_image_file">Не файл изображения</string>
     <string name="cant_find_app_for_that_file_type">Не удается найти приложение, которое может открыть этот файл.</string>
+    <string name="every">Каждые</string>
+    <string name="invalid_remind_before_parameter">Недопустимый параметр «напоминать раньше»</string>
+    <string name="weeks_before">недель до</string>
+    <string name="days_before">дней до</string>
+    <string name="hours_before">часов до</string>
+    <string name="minutes_before">минут до</string>
+    <string name="seconds_before">секунд до</string>
 
 </resources>

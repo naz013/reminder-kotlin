@@ -626,5 +626,12 @@
     <string name="application_language">Lenguaje de aplicación</string>
     <string name="not_a_image_file">No es un archivo de imagen</string>
     <string name="cant_find_app_for_that_file_type">No se puede encontrar la aplicación que puede abrir este archivo.</string>
+    <string name="every">Cada</string>
+    <string name="invalid_remind_before_parameter">Parámetro \"recordar antes\" inválido</string>
+    <string name="weeks_before">semanas antes</string>
+    <string name="days_before">días antes</string>
+    <string name="hours_before">horas antes</string>
+    <string name="minutes_before">minutos antes</string>
+    <string name="seconds_before">segundos antes</string>
 
 </resources>

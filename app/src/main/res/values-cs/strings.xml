@@ -626,5 +626,12 @@
     <string name="application_language">Jazyk aplikace</string>
     <string name="not_a_image_file">Ne obrazový soubor</string>
     <string name="cant_find_app_for_that_file_type">Nelze najít aplikaci, která může tento soubor otevřít.</string>
+    <string name="every">Každý</string>
+    <string name="invalid_remind_before_parameter">Neplatný parametr \"připomenout před\"</string>
+    <string name="weeks_before">týdny předtím</string>
+    <string name="days_before">dní předtím</string>
+    <string name="hours_before">hodiny před</string>
+    <string name="minutes_before">minut před</string>
+    <string name="seconds_before">sekund před</string>
 
 </resources>

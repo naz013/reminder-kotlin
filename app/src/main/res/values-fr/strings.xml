@@ -625,5 +625,12 @@
     <string name="application_language">Langage d\'application</string>
     <string name="not_a_image_file">Pas un fichier image</string>
     <string name="cant_find_app_for_that_file_type">Impossible de trouver l\'application pouvant ouvrir ce fichier.</string>
+    <string name="every">Chaque</string>
+    <string name="invalid_remind_before_parameter">Le paramètre \"recall before\" n\'est pas valide</string>
+    <string name="weeks_before">semaines avant</string>
+    <string name="days_before">jours avant</string>
+    <string name="hours_before">heures avant</string>
+    <string name="minutes_before">minutes avant</string>
+    <string name="seconds_before">secondes avant</string>
 
 </resources>
