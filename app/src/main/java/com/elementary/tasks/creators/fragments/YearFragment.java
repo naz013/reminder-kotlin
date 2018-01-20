@@ -1,8 +1,6 @@
 package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
@@ -24,16 +21,15 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
+import com.elementary.tasks.core.views.DateTimeView;
 import com.elementary.tasks.databinding.FragmentReminderYearBinding;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,7 +46,6 @@ import java.util.Date;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class YearFragment extends RepeatableTypeFragment {
 
     private static final String TAG = "WeekFragment";
@@ -83,30 +78,6 @@ public class YearFragment extends RepeatableTypeFragment {
             }
         }
     };
-    private TimePickerDialog.OnTimeSetListener mTimeSelect = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-            mHour = hourOfDay;
-            mMinute = minute;
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            c.set(Calendar.MINUTE, minute);
-            String formattedTime = TimeUtil.getTime(c.getTime(), Prefs.getInstance(getActivity()).is24HourFormatEnabled());
-            binding.timeField.setText(formattedTime);
-        }
-    };
-    private DatePickerDialog.OnDateSetListener mDateSelect = (datePicker, year, monthOfYear, dayOfMonth) -> {
-        if (monthOfYear == 1 && dayOfMonth > 28) {
-            getInterface().showSnackbar(getString(R.string.max_day_supported));
-            return;
-        }
-        mDay = dayOfMonth;
-        mMonth = monthOfYear;
-        mYear = year;
-        showSelectedDay();
-    };
-    public View.OnClickListener dateClick = v -> TimeUtil.showDatePicker(getActivity(), mDateSelect, mYear, mMonth, mDay);
-    public View.OnClickListener timeClick = v -> TimeUtil.showTimePicker(getActivity(), mTimeSelect, mHour, mMinute);
 
     public YearFragment() {
     }
@@ -195,10 +166,25 @@ public class YearFragment extends RepeatableTypeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderYearBinding.inflate(inflater, container, false);
-        binding.monthDayField.setOnClickListener(dateClick);
-        binding.timeField.setOnClickListener(timeClick);
-        binding.timeField.setText(TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
+        binding.dateView.setDateFormat(TimeUtil.SIMPLE_DATE);
+        binding.dateView.setEventListener(new DateTimeView.OnSelectListener() {
+            @Override
+            public void onDateSelect(long mills, int day, int month, int year) {
+                if (month == 1 && day > 28) {
+                    getInterface().showSnackbar(getString(R.string.max_day_supported));
+                    return;
+                }
+                mDay = day;
+                mMonth = month;
+                mYear = year;
+            }
+
+            @Override
+            public void onTimeSelect(long mills, int hour, int minute) {
+                mHour = hour;
+                mMinute = minute;
+            }
+        });
         binding.actionView.setListener(mActionListener);
         binding.actionView.setActivity(getActivity());
         binding.actionView.setContactClickListener(view -> selectContact());
@@ -217,21 +203,26 @@ public class YearFragment extends RepeatableTypeFragment {
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
         mMonth = calendar.get(Calendar.MONTH);
         mYear = calendar.get(Calendar.YEAR);
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = calendar.get(Calendar.MINUTE);
+        binding.dateView.setDateTime(System.currentTimeMillis());
         editReminder();
-        showSelectedDay();
         return binding.getRoot();
     }
 
-    private void showSelectedDay() {
-        binding.monthDayField.setText(getZeroedInt(mDay) + "/" + getZeroedInt(mMonth + 1));
-    }
-
-    protected Date updateTime(long millis) {
-        final Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(millis);
-        mHour = cal.get(Calendar.HOUR_OF_DAY);
-        mMinute = cal.get(Calendar.MINUTE);
-        return cal.getTime();
+    private void updateDateTime(Reminder reminder) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = calendar.get(Calendar.MINUTE);
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.DAY_OF_MONTH, reminder.getDayOfMonth());
+        calendar.set(Calendar.MONTH, reminder.getMonthOfYear());
+        calendar.set(Calendar.HOUR_OF_DAY, mHour);
+        calendar.set(Calendar.MINUTE, mMinute);
+        binding.dateView.setDateTime(calendar.getTimeInMillis());
+        mDay = reminder.getDayOfMonth();
+        mMonth = reminder.getMonthOfYear();
     }
 
     private void editReminder() {
@@ -239,8 +230,7 @@ public class YearFragment extends RepeatableTypeFragment {
         Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
-        binding.timeField.setText(TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.getEventTime())),
-                Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
+        updateDateTime(reminder);
         mDay = reminder.getDayOfMonth();
         mMonth = reminder.getMonthOfYear();
         if (reminder.getTarget() != null) {

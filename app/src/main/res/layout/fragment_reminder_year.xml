@@ -42,42 +42,13 @@
                 android:visibility="visible"
                 app:check_font_style="roboto_light" />
 
-            <LinearLayout
+            <com.elementary.tasks.core.views.DateTimeView
+                android:id="@+id/dateView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/monthDayField"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:ems="10"
-                    android:focusable="true"
-                    android:text="25/08"
-                    android:textSize="@dimen/create_text_size_primary"
-                    app:font_style="roboto_medium" />
-
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/timeField"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="8dp"
-                    android:text="14:05"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:font_style="roboto_medium" />
-
-            </LinearLayout>
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp" />
 
             <com.elementary.tasks.core.views.ActionView
                 android:id="@+id/actionView"

@@ -328,6 +328,12 @@ public final class TimeUtil {
         return FULL_DATE_FORMAT.format(date);
     }
 
+    @NonNull
+    public static String getDate(@NonNull Date date, @NonNull DateFormat format) {
+        format.setTimeZone(TimeZone.getDefault());
+        return format.format(date);
+    }
+
     @Nullable
     public static Date getDate(@Nullable String date) {
         try {
