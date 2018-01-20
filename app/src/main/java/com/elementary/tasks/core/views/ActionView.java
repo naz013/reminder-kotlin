@@ -44,10 +44,9 @@ public class ActionView extends LinearLayout {
     private RoboRadioButton messageAction;
     private ThemedImageButton selectNumber;
     private RoboEditText numberView;
-    private InputMethodManager imm;
+    private InputMethodManager mImm;
 
-    private Context mContext;
-    private Activity activity;
+    private Activity mActivity;
 
     private OnActionListener listener;
 
@@ -67,7 +66,6 @@ public class ActionView extends LinearLayout {
     }
 
     private void init(final Context context, AttributeSet attrs) {
-        this.mContext = context;
         View.inflate(context, R.layout.action_view_layout, this);
         setOrientation(VERTICAL);
         actionBlock = findViewById(R.id.actionBlock);
@@ -77,17 +75,17 @@ public class ActionView extends LinearLayout {
         numberView = findViewById(R.id.numberView);
         numberView.setFocusableInTouchMode(true);
         numberView.setOnFocusChangeListener((v, hasFocus) -> {
-            imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mImm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             if (!hasFocus) {
-                imm.hideSoftInputFromWindow(numberView.getWindowToken(), 0);
+                mImm.hideSoftInputFromWindow(numberView.getWindowToken(), 0);
             } else {
-                imm.showSoftInput(numberView, 0);
+                mImm.showSoftInput(numberView, 0);
             }
         });
         numberView.setOnClickListener(v -> {
-            imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (!imm.isActive(numberView)) {
-                imm.showSoftInput(numberView, 0);
+            mImm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!mImm.isActive(numberView)) {
+                mImm.showSoftInput(numberView, 0);
             }
         });
         radioGroup = findViewById(R.id.radioGroup);
@@ -97,8 +95,8 @@ public class ActionView extends LinearLayout {
         messageAction = findViewById(R.id.messageAction);
         actionCheck = findViewById(R.id.actionCheck);
         actionCheck.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (!Permissions.checkPermission(activity, Permissions.READ_CONTACTS)) {
-                Permissions.requestPermission(activity, DateFragment.CONTACTS_ACTION, Permissions.READ_CONTACTS);
+            if (!Permissions.checkPermission(mActivity, Permissions.READ_CONTACTS)) {
+                Permissions.requestPermission(mActivity, DateFragment.CONTACTS_ACTION, Permissions.READ_CONTACTS);
                 return;
             }
             if (b) {
@@ -140,7 +138,7 @@ public class ActionView extends LinearLayout {
     }
 
     public void setActivity(Activity activity) {
-        this.activity = activity;
+        this.mActivity = activity;
     }
 
     public void setContactClickListener(OnClickListener contactClickListener) {
