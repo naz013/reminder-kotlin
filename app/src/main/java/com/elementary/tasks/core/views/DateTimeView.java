@@ -3,6 +3,7 @@ package com.elementary.tasks.core.views;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 
 /**
@@ -32,7 +34,6 @@ import java.util.Calendar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class DateTimeView extends LinearLayout implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -46,6 +47,8 @@ public class DateTimeView extends LinearLayout implements
     private boolean isSingleMode = false;
     private Context mContext;
     private OnSelectListener mListener;
+    @NonNull
+    private DateFormat mDateFormat = TimeUtil.FULL_DATE_FORMAT;
 
     private View.OnClickListener mDateClick = view -> selectDate();
 
@@ -81,6 +84,11 @@ public class DateTimeView extends LinearLayout implements
         time.setOnClickListener(v -> selectTime());
         this.mContext = context;
         updateDateTime(0);
+    }
+
+    public void setDateFormat(@NonNull DateFormat format) {
+        this.mDateFormat = format;
+        this.invalidate();
     }
 
     @Override
@@ -141,7 +149,7 @@ public class DateTimeView extends LinearLayout implements
     private void updateDate(long mills) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
-        date.setText(TimeUtil.getDate(cal.getTime()));
+        date.setText(TimeUtil.getDate(cal.getTime(), mDateFormat));
         if (mListener != null) mListener.onDateSelect(mills, mDay, mMonth, mYear);
     }
 
