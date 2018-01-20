@@ -66,6 +66,12 @@ public class SkypeFragment extends RepeatableTypeFragment {
             getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
             return false;
         }
+        long startTime = binding.dateView.getDateTime();
+        long before = binding.beforeView.getBeforeValue();
+        if (before > 0 && startTime - before < System.currentTimeMillis()) {
+            Toast.makeText(getContext(), R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (reminder == null) {
             reminder = new Reminder();
         }
@@ -76,7 +82,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(getInterface());
-        long startTime = binding.dateView.getDateTime();
+        reminder.setRemindBefore(before);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
@@ -172,6 +178,7 @@ public class SkypeFragment extends RepeatableTypeFragment {
         binding.dateView.setDateTime(reminder.getEventTime());
         binding.repeatView.setDateTime(reminder.getEventTime());
         binding.repeatView.setRepeat(reminder.getRepeatInterval());
+        binding.beforeView.setBefore(reminder.getRemindBefore());
         int type = reminder.getType();
         if (type == Reminder.BY_SKYPE_CALL) binding.skypeCall.setChecked(true);
         else if (type == Reminder.BY_SKYPE_VIDEO) binding.skypeVideo.setChecked(true);

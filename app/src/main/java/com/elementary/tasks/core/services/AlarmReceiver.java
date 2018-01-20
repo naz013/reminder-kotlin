@@ -76,6 +76,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         LogUtil.d(TAG, "onReceive: Action - " + action + ", time - " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
+        if (action == null) return;
         Intent service = new Intent(context, AlarmReceiver.class);
         context.startService(service);
         switch (action) {
@@ -120,6 +121,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.putExtra(Constants.INTENT_ID, uuId);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         if (Module.isMarshmallow()) {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (min * time), alarmIntent);
         } else {
@@ -150,6 +152,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_POSITION_DELAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return false;
         if (Module.isMarshmallow()) {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
         } else {
@@ -173,6 +176,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY_PERMANENT);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_PERMANENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         long currTime = calendar.getTimeInMillis();
@@ -207,6 +211,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         long currTime = calendar.getTimeInMillis();
@@ -262,6 +267,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_BIRTHDAY);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         String time = Prefs.getInstance(context).getBirthdayTime();
         if (Module.isMarshmallow()) {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayTime(time), alarmIntent);
@@ -285,6 +291,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_EVENTS_CHECK);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int interval = Prefs.getInstance(context).getAutoCheckInterval();
@@ -328,6 +335,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         if (due == 0) {
             return;
         }
+        if (item.getRemindBefore() != 0) {
+            due -= item.getRemindBefore();
+        }
         if (!Reminder.isBase(item.getType(), Reminder.BY_TIME)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(due);
@@ -336,6 +346,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         }
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         if (Module.isMarshmallow()) {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, due, alarmIntent);
         } else {
@@ -365,6 +376,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ACTION_SYNC_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmMgr == null) return;
         Calendar calendar = Calendar.getInstance();
         int interval = Prefs.getInstance(context).getAutoBackupInterval();
         calendar.setTimeInMillis(System.currentTimeMillis() + (AlarmManager.INTERVAL_HOUR * interval));

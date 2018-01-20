@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/viewIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="7dp"
+            android:background="@null"
+            app:tb_icon="@drawable/ic_notifications_black_24dp"
+            app:tb_icon_light="@drawable/ic_notifications_white_24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.elementary.tasks.core.views.roboto.RoboEditText
+                    android:id="@+id/before_value_view"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:edit_font_style="roboto_medium" />
+
+                <Spinner
+                    android:id="@+id/before_type_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/before_times"
+                    android:gravity="center|start" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</merge>

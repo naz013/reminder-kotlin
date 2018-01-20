@@ -44,7 +44,7 @@
 
                 <com.elementary.tasks.core.views.roboto.RoboEditText
                     android:id="@+id/repeatTitle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
@@ -56,7 +56,6 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="3"
-                    android:minWidth="64dp"
                     android:textSize="@dimen/create_text_size_normal"
                     app:edit_font_style="roboto_medium" />
 

@@ -30,10 +30,8 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public final class TimeCount {
 
-    private static final String TAG = "TimeCount";
     public static final long SECOND = 1000;
     public static final long MINUTE = 60 * SECOND;
     public static final long HOUR = MINUTE * 60;
@@ -238,6 +236,7 @@ public final class TimeCount {
         if (weekdays == null) {
             return 0;
         }
+        long beforeValue = reminder.getRemindBefore();
         Calendar cc = Calendar.getInstance();
         if (reminder.getEventTime() != null) {
             cc.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
@@ -246,10 +245,10 @@ public final class TimeCount {
         cc.set(Calendar.MILLISECOND, 0);
         while (true) {
             int mDay = cc.get(Calendar.DAY_OF_WEEK);
-            if (weekdays.get(mDay - 1) == 1 && cc.getTimeInMillis() > System.currentTimeMillis()) {
+            if (weekdays.get(mDay - 1) == 1 && cc.getTimeInMillis() - beforeValue > System.currentTimeMillis()) {
                 break;
             }
-            cc.setTimeInMillis(cc.getTimeInMillis() + DAY);
+            cc.setTimeInMillis(cc.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
         }
         return cc.getTimeInMillis();
     }
@@ -264,13 +263,14 @@ public final class TimeCount {
         if (reminder.getEventTime() != null) {
             fromTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
         }
+        long beforeValue = reminder.getRemindBefore();
         if (dayOfMonth == 0) {
-            return getLastMonthDayTime(fromTime);
+            return getLastMonthDayTime(fromTime, beforeValue);
         }
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        if (cc.getTimeInMillis() > System.currentTimeMillis()) {
+        if (cc.getTimeInMillis() - beforeValue > System.currentTimeMillis()) {
             return cc.getTimeInMillis();
         }
         cc.set(Calendar.MONTH, cc.get(Calendar.MONTH) + 1);
@@ -280,13 +280,13 @@ public final class TimeCount {
         return cc.getTimeInMillis();
     }
 
-    private long getLastMonthDayTime(long fromTime) {
+    private long getLastMonthDayTime(long fromTime, long beforeValue) {
         Calendar cc = Calendar.getInstance();
         cc.setTimeInMillis(fromTime);
         while (true) {
             int lastDay = cc.getActualMaximum(Calendar.DAY_OF_MONTH);
             cc.set(Calendar.DAY_OF_MONTH, lastDay);
-            if (cc.getTimeInMillis() > System.currentTimeMillis()) {
+            if (cc.getTimeInMillis() - beforeValue > System.currentTimeMillis()) {
                 break;
             }
             cc.set(Calendar.DAY_OF_MONTH, 1);
@@ -318,6 +318,7 @@ public final class TimeCount {
         int dayOfMonth = reminder.getDayOfMonth();
         int monthOfYear = reminder.getMonthOfYear();
         long fromTime = System.currentTimeMillis();
+        long beforeValue = reminder.getRemindBefore();
         if (reminder.getEventTime() != null) {
             fromTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
         }
@@ -325,7 +326,7 @@ public final class TimeCount {
         cc.setTimeInMillis(fromTime);
         cc.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         cc.set(Calendar.MONTH, monthOfYear);
-        while (cc.getTimeInMillis() < System.currentTimeMillis()) {
+        while (cc.getTimeInMillis() - beforeValue < System.currentTimeMillis()) {
             cc.set(Calendar.YEAR, cc.get(Calendar.YEAR) + 1);
         }
         return cc.getTimeInMillis();

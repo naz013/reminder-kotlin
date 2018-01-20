@@ -138,6 +138,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(getInterface());
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(getTime()));
+        reminder.setRemindBefore(binding.beforeView.getBeforeValue());
         long startTime = TimeCount.getInstance(getContext()).getNextWeekdayTime(reminder);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -269,6 +270,7 @@ public class WeekFragment extends RepeatableTypeFragment {
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
         binding.timeField.setText(TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.getEventTime())),
                 Prefs.getInstance(getActivity()).is24HourFormatEnabled()));
+        binding.beforeView.setBefore(reminder.getRemindBefore());
         if (reminder.getWeekdays() != null && reminder.getWeekdays().size() > 0) {
             setCheckForDays(reminder.getWeekdays());
         }

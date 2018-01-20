@@ -19,8 +19,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/add_to_calendar"
                 android:textSize="16sp"
                 android:visibility="visible"
@@ -34,8 +34,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:paddingStart="@dimen/checkbox_padding"
                 android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/google_tasks"
                 android:textSize="16sp"
                 android:visibility="visible"
@@ -65,6 +65,15 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 app:repeat_type="days" />
+
+            <com.elementary.tasks.core.views.BeforePickerView
+                android:id="@+id/before_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:before_type="minutes" />
 
         </LinearLayout>
     </ScrollView>
