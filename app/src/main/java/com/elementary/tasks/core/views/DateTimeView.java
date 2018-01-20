@@ -37,15 +37,14 @@ import java.util.Calendar;
 public class DateTimeView extends LinearLayout implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private RoboTextView date;
-    private RoboTextView time;
+    private RoboTextView mDateView;
+    private RoboTextView mTimeView;
     private int mHour;
     private int mMinute;
     private int mYear;
     private int mMonth;
     private int mDay;
     private boolean isSingleMode = false;
-    private Context mContext;
     private OnSelectListener mListener;
     @NonNull
     private DateFormat mDateFormat = TimeUtil.FULL_DATE_FORMAT;
@@ -78,11 +77,10 @@ public class DateTimeView extends LinearLayout implements
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
-        date = findViewById(R.id.dateField);
-        time = findViewById(R.id.timeField);
-        date.setOnClickListener(mDateClick);
-        time.setOnClickListener(v -> selectTime());
-        this.mContext = context;
+        mDateView = findViewById(R.id.dateField);
+        mTimeView = findViewById(R.id.timeField);
+        mDateView.setOnClickListener(mDateClick);
+        mTimeView.setOnClickListener(v -> selectTime());
         updateDateTime(0);
     }
 
@@ -93,25 +91,25 @@ public class DateTimeView extends LinearLayout implements
 
     @Override
     public void setOnClickListener(@Nullable OnClickListener l) {
-        if (isSingleMode) date.setOnClickListener(l);
+        if (isSingleMode) mDateView.setOnClickListener(l);
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
-        date.setOnLongClickListener(l);
-        time.setOnLongClickListener(l);
+        mDateView.setOnLongClickListener(l);
+        mTimeView.setOnLongClickListener(l);
     }
 
     public void setSingleText(String text) {
         isSingleMode = text != null;
         if (!isSingleMode) {
-            time.setVisibility(VISIBLE);
-            date.setOnClickListener(mDateClick);
+            mTimeView.setVisibility(VISIBLE);
+            mDateView.setOnClickListener(mDateClick);
             updateDateTime(0);
         } else {
-            date.setText(text);
-            date.setOnClickListener(null);
-            time.setVisibility(GONE);
+            mDateView.setText(text);
+            mDateView.setOnClickListener(null);
+            mTimeView.setVisibility(GONE);
         }
     }
 
@@ -149,23 +147,23 @@ public class DateTimeView extends LinearLayout implements
     private void updateDate(long mills) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
-        date.setText(TimeUtil.getDate(cal.getTime(), mDateFormat));
+        mDateView.setText(TimeUtil.getDate(cal.getTime(), mDateFormat));
         if (mListener != null) mListener.onDateSelect(mills, mDay, mMonth, mYear);
     }
 
     private void updateTime(long mills) {
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(mills);
-        time.setText(TimeUtil.getTime(cal.getTime(), Prefs.getInstance(mContext).is24HourFormatEnabled()));
+        mTimeView.setText(TimeUtil.getTime(cal.getTime(), Prefs.getInstance(getContext()).is24HourFormatEnabled()));
         if (mListener != null) mListener.onTimeSelect(mills, mHour, mMinute);
     }
 
     public void selectDate() {
-        TimeUtil.showDatePicker(mContext, this, mYear, mMonth, mDay);
+        TimeUtil.showDatePicker(getContext(), this, mYear, mMonth, mDay);
     }
 
     public void selectTime() {
-        TimeUtil.showTimePicker(mContext, this, mHour, mMinute);
+        TimeUtil.showTimePicker(getContext(), this, mHour, mMinute);
     }
 
     @Override
