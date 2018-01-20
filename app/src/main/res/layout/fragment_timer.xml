@@ -11,6 +11,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.elementary.tasks.core.views.TimerPickerView
+                android:id="@+id/timerPickerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp" />
+
+            <com.elementary.tasks.core.views.RepeatView
+                android:id="@+id/repeatView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:repeat_type="minutes" />
+
             <com.elementary.tasks.core.views.roboto.RoboCheckBox
                 android:id="@+id/exportToCalendar"
                 android:layout_width="match_parent"
@@ -40,23 +57,6 @@
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:check_font_style="roboto_light" />
-
-            <com.elementary.tasks.core.views.TimerPickerView
-                android:id="@+id/timerPickerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp" />
-
-            <com.elementary.tasks.core.views.RepeatView
-                android:id="@+id/repeatView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                app:repeat_type="minutes" />
 
         </LinearLayout>
     </ScrollView>
