@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,10 +19,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:paddingStart="@dimen/checkbox_padding"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/add_to_calendar"
                 android:textSize="16sp"
                 android:visibility="visible"
@@ -33,27 +34,43 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="16dp"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:paddingStart="@dimen/checkbox_padding"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/google_tasks"
                 android:textSize="16sp"
                 android:visibility="visible"
                 app:check_font_style="roboto_light" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/timeField"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:clickable="true"
-                android:padding="8dp"
-                android:text="14:05"
-                android:textSize="@dimen/create_text_size_normal"
-                app:font_style="roboto_medium" />
+                android:orientation="horizontal">
+
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@null"
+                    android:clickable="false"
+                    app:tb_icon="@drawable/ic_access_time_black_24dp"
+                    app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/timeField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="12dp"
+                    android:textSize="@dimen/create_text_size_normal"
+                    app:font_style="roboto_medium"
+                    tools:text="14:05" />
+
+            </LinearLayout>
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"

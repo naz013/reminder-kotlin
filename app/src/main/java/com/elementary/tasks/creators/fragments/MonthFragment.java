@@ -235,10 +235,10 @@ public class MonthFragment extends RepeatableTypeFragment {
 
     private void changeUi(boolean b) {
         if (b) {
-            ViewUtils.collapse(binding.monthDayField);
+            ViewUtils.collapse(binding.dayView);
             mDay = 0;
         } else {
-            ViewUtils.expand(binding.monthDayField);
+            ViewUtils.expand(binding.dayView);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             mDay = calendar.get(Calendar.DAY_OF_MONTH);
