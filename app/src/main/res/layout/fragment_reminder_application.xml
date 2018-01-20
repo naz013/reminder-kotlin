@@ -19,6 +19,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/add_to_calendar"
                 android:textSize="16sp"
                 android:visibility="visible"
@@ -32,6 +34,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
                 android:text="@string/google_tasks"
                 android:textSize="16sp"
                 android:visibility="visible"
@@ -58,6 +62,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:paddingEnd="@dimen/checkbox_padding"
+                    android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/application"
                     android:textSize="@dimen/checkbox_text_size"
                     app:radio_font_style="roboto_light" />
@@ -68,26 +74,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
+                    android:paddingEnd="@dimen/checkbox_padding"
+                    android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/open_link"
                     android:textSize="@dimen/checkbox_text_size"
                     app:radio_font_style="roboto_light" />
             </RadioGroup>
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/applicationLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <com.elementary.tasks.core.views.ThemedImageButton
                     android:id="@+id/pickApplication"
-                    android:layout_width="@dimen/create_imagebutton_size"
-                    android:layout_height="@dimen/create_imagebutton_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_application"
                     app:tb_icon="@drawable/ic_launch_black_24dp"
@@ -97,25 +104,23 @@
                     android:id="@+id/applicationName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/pickApplication"
-                    android:layout_toRightOf="@+id/pickApplication"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginStart="12dp"
                     android:maxLines="1"
                     android:text="@string/application_not_selected"
                     android:textSize="@dimen/create_text_size_normal"
                     app:font_style="roboto_light" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <com.elementary.tasks.core.views.roboto.RoboEditText
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="@string/url"

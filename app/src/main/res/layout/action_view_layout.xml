@@ -12,8 +12,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingLeft="@dimen/checkbox_padding"
             android:paddingStart="@dimen/checkbox_padding"
+            android:paddingEnd="@dimen/checkbox_padding"
             android:text="@string/action"
             android:textSize="@dimen/checkbox_text_size"
             app:check_font_style="roboto_light" />
@@ -39,8 +39,8 @@
                         android:id="@+id/callAction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/checkbox_padding"
                         android:paddingStart="@dimen/checkbox_padding"
+                        android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/make_call"
                         android:textSize="@dimen/create_text_size_normal"
                         app:radio_font_style="roboto_regular" />
@@ -51,8 +51,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginStart="16dp"
-                        android:paddingLeft="@dimen/checkbox_padding"
                         android:paddingStart="@dimen/checkbox_padding"
+                        android:paddingEnd="@dimen/checkbox_padding"
                         android:text="@string/sms"
                         android:textSize="@dimen/create_text_size_normal"
                         app:radio_font_style="roboto_regular" />

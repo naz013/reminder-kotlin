@@ -21,10 +21,11 @@
                     android:id="@+id/attackDelay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
+                    android:paddingEnd="@dimen/checkbox_padding"
+                    android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/delay_tracking"
                     android:textSize="@dimen/checkbox_text_size"
                     app:check_font_style="roboto_light" />
@@ -105,7 +106,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/mapFrame"
