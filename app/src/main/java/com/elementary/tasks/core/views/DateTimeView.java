@@ -13,6 +13,7 @@ import android.widget.TimePicker;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.views.roboto.RoboTextView;
 
 import java.util.Calendar;
 
@@ -35,8 +36,8 @@ import java.util.Calendar;
 public class DateTimeView extends LinearLayout implements
         DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private TextViewWithIcon date;
-    private TextViewWithIcon time;
+    private RoboTextView date;
+    private RoboTextView time;
     private int mHour;
     private int mMinute;
     private int mYear;

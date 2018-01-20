@@ -7,32 +7,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
-        <com.elementary.tasks.core.views.TextViewWithIcon
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:clickable="false"
+            android:contentDescription="@string/date_and_time"
+            app:tb_icon="@drawable/ic_access_time_black_24dp"
+            app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
             android:id="@+id/dateField"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1.2"
+            android:text="Tue, 5 Nov 2015"
+            android:textSize="@dimen/create_text_size_normal"
+            app:font_style="roboto_medium" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/timeField"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:drawablePadding="8dp"
-            android:text="Tue, 5 Nov 2015"
-            android:textSize="@dimen/create_text_size_normal"
-            app:font_style="roboto_medium"
-            app:tv_icon="@drawable/ic_calendar"
-            app:tv_icon_light="@drawable/ic_calendar_white" />
-
-        <com.elementary.tasks.core.views.TextViewWithIcon
-            android:id="@+id/timeField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:drawablePadding="8dp"
+            android:layout_weight="0.8"
+            android:gravity="end"
             android:text="14:05"
             android:textSize="@dimen/create_text_size_normal"
-            app:font_style="roboto_medium"
-            app:tv_icon="@drawable/ic_access_time_black_24dp"
-            app:tv_icon_light="@drawable/ic_access_time_white_24dp" />
+            app:font_style="roboto_medium" />
 
     </LinearLayout>
 </merge>
