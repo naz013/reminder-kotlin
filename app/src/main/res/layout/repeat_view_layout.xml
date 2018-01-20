@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/viewIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="7dp"
             android:background="@null"
             app:tb_icon="@drawable/ic_refresh"
             app:tb_icon_light="@drawable/ic_refresh_white" />
@@ -22,10 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/viewIcon"
-            android:layout_toRightOf="@+id/viewIcon"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -41,7 +38,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:gravity="center|start"
-                    android:text="@string/repeat"
+                    android:text="@string/every"
                     android:textSize="@dimen/create_text_size_normal"
                     app:font_style="roboto_light" />
 
@@ -59,7 +56,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="3"
-                    android:minWidth="50dp"
+                    android:minWidth="64dp"
                     android:textSize="@dimen/create_text_size_normal"
                     app:edit_font_style="roboto_medium" />
 
@@ -74,12 +71,6 @@
                     android:gravity="center|start" />
 
             </RelativeLayout>
-
-            <SeekBar
-                android:id="@+id/repeatViewSeek"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="365" />
 
             <LinearLayout
                 android:id="@+id/predictionView"
@@ -106,5 +97,5 @@
 
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </merge>

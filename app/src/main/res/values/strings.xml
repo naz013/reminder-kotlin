@@ -627,5 +627,6 @@
     <string name="application_language">Application language</string>
     <string name="not_a_image_file">Not an image file</string>
     <string name="cant_find_app_for_that_file_type">Can\'t find application that can open this file.</string>
+    <string name="every">Every</string>
 
 </resources>
