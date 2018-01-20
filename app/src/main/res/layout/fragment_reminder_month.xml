@@ -13,36 +13,6 @@
             android:layout_marginBottom="88dp"
             android:orientation="vertical">
 
-            <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                android:id="@+id/exportToCalendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:text="@string/add_to_calendar"
-                android:textSize="16sp"
-                android:visibility="visible"
-                app:check_font_style="roboto_light" />
-
-            <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                android:id="@+id/exportToTasks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:paddingEnd="@dimen/checkbox_padding"
-                android:paddingStart="@dimen/checkbox_padding"
-                android:text="@string/google_tasks"
-                android:textSize="16sp"
-                android:visibility="visible"
-                app:check_font_style="roboto_light" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,14 +105,6 @@
 
             </RadioGroup>
 
-            <com.elementary.tasks.core.views.ActionView
-                android:id="@+id/actionView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp" />
-
             <com.elementary.tasks.core.views.BeforePickerView
                 android:id="@+id/before_view"
                 android:layout_width="match_parent"
@@ -151,6 +113,44 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 app:before_type="minutes" />
+
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/exportToCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
+                android:text="@string/add_to_calendar"
+                android:textSize="16sp"
+                android:visibility="visible"
+                app:check_font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/exportToTasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:paddingStart="@dimen/checkbox_padding"
+                android:text="@string/google_tasks"
+                android:textSize="16sp"
+                android:visibility="visible"
+                app:check_font_style="roboto_light" />
+
+            <com.elementary.tasks.core.views.ActionView
+                android:id="@+id/actionView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
     </ScrollView>
