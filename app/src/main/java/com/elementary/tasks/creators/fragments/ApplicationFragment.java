@@ -76,6 +76,12 @@ public class ApplicationFragment extends RepeatableTypeFragment {
             if (!number.startsWith("http://") && !number.startsWith("https://"))
                 number = "http://" + number;
         }
+        long startTime = binding.dateView.getDateTime();
+        long before = binding.beforeView.getBeforeValue();
+        if (before > 0 && startTime - before < System.currentTimeMillis()) {
+            Toast.makeText(getContext(), R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (reminder == null) {
             reminder = new Reminder();
         }
@@ -86,7 +92,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(getInterface());
-        long startTime = binding.dateView.getDateTime();
+        reminder.setRemindBefore(before);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
@@ -169,6 +175,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         binding.dateView.setDateTime(reminder.getEventTime());
         binding.repeatView.setDateTime(reminder.getEventTime());
         binding.repeatView.setRepeat(reminder.getRepeatInterval());
+        binding.beforeView.setBefore(reminder.getRemindBefore());
         if (reminder.getTarget() != null) {
             if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_APP)) {
                 binding.application.setChecked(true);

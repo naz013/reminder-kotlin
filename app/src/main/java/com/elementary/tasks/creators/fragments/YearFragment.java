@@ -118,6 +118,7 @@ public class YearFragment extends RepeatableTypeFragment {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(getInterface());
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(getTime()));
+        reminder.setRemindBefore(binding.beforeView.getBeforeValue());
         long startTime = TimeCount.getInstance(getContext()).getNextYearDayTime(reminder);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -230,6 +231,7 @@ public class YearFragment extends RepeatableTypeFragment {
         Reminder reminder = getInterface().getReminder();
         binding.exportToCalendar.setChecked(reminder.isExportToCalendar());
         binding.exportToTasks.setChecked(reminder.isExportToTasks());
+        binding.beforeView.setBefore(reminder.getRemindBefore());
         updateDateTime(reminder);
         mDay = reminder.getDayOfMonth();
         mMonth = reminder.getMonthOfYear();

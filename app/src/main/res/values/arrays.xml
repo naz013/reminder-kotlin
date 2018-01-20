@@ -35,6 +35,14 @@
         <item>@string/weeks</item>
     </string-array>
 
+    <string-array name="before_times">
+        <item>@string/seconds_before</item>
+        <item>@string/minutes_before</item>
+        <item>@string/hours_before</item>
+        <item>@string/days_before</item>
+        <item>@string/weeks_before</item>
+    </string-array>
+
     <string-array name="color_list">
         <item>@string/red</item>
         <item>@string/purple</item>

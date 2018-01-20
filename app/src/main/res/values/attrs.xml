@@ -33,6 +33,16 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="BeforePickerView">
+        <attr name="before_type" format="enum">
+            <enum name="seconds" value="0" />
+            <enum name="minutes" value="1" />
+            <enum name="hours" value="2" />
+            <enum name="days" value="3" />
+            <enum name="weeks" value="4" />
+        </attr>
+    </declare-styleable>
+
     <declare-styleable name="IconRadioButton">
         <attr name="ir_text_size" format="dimension" />
         <attr name="ir_text" format="string" />
@@ -115,10 +125,10 @@
             <enum name="roboto_thin" value="10" />
             <enum name="roboto_thin_italic" value="11" />
         </attr>
-        <attr name="drawableLeftCompat" format="reference"/>
-        <attr name="drawableRightCompat" format="reference"/>
-        <attr name="drawableTopCompat" format="reference"/>
-        <attr name="drawableBottomCompat" format="reference"/>
+        <attr name="drawableLeftCompat" format="reference" />
+        <attr name="drawableRightCompat" format="reference" />
+        <attr name="drawableTopCompat" format="reference" />
+        <attr name="drawableBottomCompat" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="RoboEditText">

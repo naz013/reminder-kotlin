@@ -154,6 +154,12 @@ public class AddReminderActivity extends ThemedActivity {
                 type = Reminder.BY_DATE_SMS;
             }
         }
+        long startTime = binding.dateView.getDateTime();
+        long before = binding.beforeView.getBeforeValue();
+        if (before > 0 && startTime - before < System.currentTimeMillis()) {
+            Toast.makeText(this, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
+            return;
+        }
         Reminder reminder = new Reminder();
         reminder.setTarget(number);
         reminder.setType(type);
@@ -166,7 +172,7 @@ public class AddReminderActivity extends ThemedActivity {
             reminder.setGroupUuId(item.getUuId());
         }
         LogUtil.d(TAG, "save: " + type);
-        long startTime = binding.dateView.getDateTime();
+        reminder.setRemindBefore(before);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));

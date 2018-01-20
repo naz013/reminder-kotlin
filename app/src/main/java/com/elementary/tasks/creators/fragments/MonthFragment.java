@@ -151,6 +151,7 @@ public class MonthFragment extends RepeatableTypeFragment {
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setClear(getInterface());
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(getTime()));
+        reminder.setRemindBefore(binding.beforeView.getBeforeValue());
         long startTime = TimeCount.getInstance(getContext()).getNextMonthDayTime(reminder);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -267,6 +268,7 @@ public class MonthFragment extends RepeatableTypeFragment {
             mDay = reminder.getDayOfMonth();
             binding.dayCheck.setChecked(true);
         }
+        binding.beforeView.setBefore(reminder.getRemindBefore());
         if (reminder.getTarget() != null) {
             binding.actionView.setAction(true);
             binding.actionView.setNumber(reminder.getTarget());
