@@ -626,5 +626,12 @@
     <string name="application_language">Limba aplicației</string>
     <string name="not_a_image_file">Nu este un fișier imagine</string>
     <string name="cant_find_app_for_that_file_type">Nu se poate găsi o aplicație care poate deschide acest fișier.</string>
+    <string name="every">Fiecare</string>
+    <string name="invalid_remind_before_parameter">Parametrul \"Amintește-te înainte\" nevalid</string>
+    <string name="weeks_before">săptămâni înainte</string>
+    <string name="days_before">zile înainte</string>
+    <string name="hours_before">ore înainte</string>
+    <string name="minutes_before">minute înainte</string>
+    <string name="seconds_before">secunde înainte de</string>
 
 </resources>

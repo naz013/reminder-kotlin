@@ -627,5 +627,12 @@
     <string name="application_language">アプリケーション言語</string>
     <string name="not_a_image_file">画像ファイルではありません</string>
     <string name="cant_find_app_for_that_file_type">このファイルを開くことができるアプリケーションが見つかりません。</string>
+    <string name="every">すべて</string>
+    <string name="invalid_remind_before_parameter">「前に思い出させる」パラメータが無効です</string>
+    <string name="weeks_before">数週間前</string>
+    <string name="days_before">数日前</string>
+    <string name="hours_before">数時間前</string>
+    <string name="minutes_before">数分前</string>
+    <string name="seconds_before">数秒前</string>
 
 </resources>

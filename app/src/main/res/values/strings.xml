@@ -633,6 +633,6 @@
     <string name="hours_before">hours before</string>
     <string name="days_before">days before</string>
     <string name="weeks_before">weeks before</string>
-    <string name="invalid_remind_before_parameter">Invalid remind before parameter</string>
+    <string name="invalid_remind_before_parameter">Invalid \"remind before\" parameter</string>
 
 </resources>

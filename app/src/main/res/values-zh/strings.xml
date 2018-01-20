@@ -625,5 +625,12 @@
     <string name="application_language">应用语言</string>
     <string name="not_a_image_file">不是图像文件</string>
     <string name="cant_find_app_for_that_file_type">找不到可以打开此文件的应用程序。</string>
+    <string name="every">一切</string>
+    <string name="invalid_remind_before_parameter">“以前提醒”参数无效</string>
+    <string name="weeks_before">周前</string>
+    <string name="days_before">前几天</string>
+    <string name="hours_before">几个小时前</string>
+    <string name="minutes_before">之前分钟</string>
+    <string name="seconds_before">几秒钟之前</string>
 
 </resources>
