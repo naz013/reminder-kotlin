@@ -800,9 +800,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length == 0) {
-            return;
-        }
+        if (grantResults.length == 0) return;
         switch (requestCode) {
             case REQ_LOC:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

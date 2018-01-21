@@ -747,6 +747,10 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (Module.isMarshmallow() && fragment != null) {
+            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        if (grantResults.length == 0) return;
         switch (requestCode) {
             case CONTACTS_REQUEST_E:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -783,8 +787,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
                 }
                 break;
         }
-        if (Module.isMarshmallow() && fragment != null)
-            fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

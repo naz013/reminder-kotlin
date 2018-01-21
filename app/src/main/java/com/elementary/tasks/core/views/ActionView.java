@@ -2,6 +2,8 @@ package com.elementary.tasks.core.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,7 +16,6 @@ import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
-import com.elementary.tasks.creators.fragments.DateFragment;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,6 +37,7 @@ public class ActionView extends LinearLayout {
 
     public static final int TYPE_CALL = 1;
     public static final int TYPE_MESSAGE = 2;
+    private static final int REQ_CONTACTS = 32564;
 
     private RoboCheckBox actionCheck;
     private LinearLayout actionBlock;
@@ -96,7 +98,8 @@ public class ActionView extends LinearLayout {
         actionCheck = findViewById(R.id.actionCheck);
         actionCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             if (!Permissions.checkPermission(mActivity, Permissions.READ_CONTACTS)) {
-                Permissions.requestPermission(mActivity, DateFragment.CONTACTS_ACTION, Permissions.READ_CONTACTS);
+                actionCheck.setChecked(false);
+                Permissions.requestPermission(mActivity, REQ_CONTACTS, Permissions.READ_CONTACTS);
                 return;
             }
             if (b) {
@@ -183,6 +186,17 @@ public class ActionView extends LinearLayout {
 
     public void setNumber(String number) {
         numberView.setText(number);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length == 0) return;
+        switch (requestCode) {
+            case REQ_CONTACTS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    actionCheck.setChecked(true);
+                }
+                break;
+        }
     }
 
     public interface OnActionListener {
