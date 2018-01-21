@@ -360,9 +360,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             }
         });
         filter.add(getFilterAllElement());
-        filter.add(new FilterView.FilterElement(0, getString(R.string.permanent), 1));
-        filter.add(new FilterView.FilterElement(0, getString(R.string.today), 2));
-        filter.add(new FilterView.FilterElement(0, getString(R.string.tomorrow), 3));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_push_pin, getString(R.string.permanent), 1));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_calendar_illustration, getString(R.string.today), 2));
+        filter.add(new FilterView.FilterElement(R.drawable.ic_calendar_illustration, getString(R.string.tomorrow), 3));
         filters.add(filter);
     }
 
