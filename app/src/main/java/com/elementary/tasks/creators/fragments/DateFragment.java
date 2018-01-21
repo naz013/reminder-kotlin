@@ -48,7 +48,6 @@ public class DateFragment extends RepeatableTypeFragment {
 
     private static final String TAG = "DateFragment";
     private static final int CONTACTS = 112;
-    public static final int CONTACTS_ACTION = 113;
 
     private FragmentDateBinding binding;
     private ActionView.OnActionListener mActionListener = new ActionView.OnActionListener() {
@@ -208,15 +207,12 @@ public class DateFragment extends RepeatableTypeFragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        binding.actionView.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length == 0) return;
         switch (requestCode) {
             case CONTACTS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     selectContact();
-                }
-                break;
-            case CONTACTS_ACTION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    binding.actionView.setAction(true);
                 }
                 break;
         }
