@@ -34,7 +34,7 @@ class ShoppingEvent extends RepeatableEventManager {
         getReminder().setActive(true);
         super.save();
         if (!TextUtils.isEmpty(getReminder().getEventTime()) && TimeCount.isCurrent(getReminder().getEventTime())) {
-            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
+            super.enableReminder();
         }
         return true;
     }
@@ -81,7 +81,7 @@ class ShoppingEvent extends RepeatableEventManager {
         }
         getReminder().setDelay(delay);
         super.save();
-        new AlarmReceiver().enableDelay(getContext(), getReminder().getUniqueId(), delay, getReminder().getUuId());
+        super.setDelay(delay);
     }
 
     @Override
