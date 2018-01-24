@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
-import com.elementary.tasks.core.services.MissedCallReceiver;
+import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
@@ -59,8 +59,6 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     private static final int CALL_PERM = 612;
 
     private ActivityReminderDialogBinding binding;
-
-    private MissedCallReceiver alarm = new MissedCallReceiver();
 
     private CallItem mCallItem;
     private boolean mIsResumed;
@@ -231,7 +229,9 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     }
 
     private void removeMissed() {
-        alarm.cancelAlarm(getApplicationContext(), getId());
+        if (mCallItem != null) {
+            EventJobService.cancelMissedCall(mCallItem.getNumber());
+        }
         discardNotification(getId());
         RealmDb.getInstance().deleteMissedCall(mCallItem);
     }

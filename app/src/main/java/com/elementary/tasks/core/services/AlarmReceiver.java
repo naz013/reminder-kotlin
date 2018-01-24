@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
-import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
@@ -21,7 +19,6 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.groups.GroupItem;
@@ -54,11 +51,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     private static final int AUTO_SYNC_ID = Integer.MAX_VALUE - 1;
     private static final int BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2;
-    private static final int BIRTHDAY_ID = Integer.MAX_VALUE - 3;
     private static final int BIRTHDAY_CHECK_ID = Integer.MAX_VALUE - 4;
     private static final int EVENTS_CHECK_ID = Integer.MAX_VALUE - 5;
 
-    private static final String ACTION_BIRTHDAY = "com.elementary.alarm.BIRTHDAY";
     private static final String ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT";
     private static final String ACTION_BIRTHDAY_AUTO = "com.elementary.alarm.BIRTHDAY_AUTO";
     private static final String ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO";
@@ -79,9 +74,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 break;
             case ACTION_EVENTS_CHECK:
                 checkEvents(context);
-                break;
-            case ACTION_BIRTHDAY:
-                birthdayAction(context);
                 break;
             case ACTION_BIRTHDAY_AUTO:
                 new CheckBirthdaysAsync(context).execute();
@@ -164,51 +156,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_BIRTHDAY_AUTO);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-        }
-    }
-
-    private void birthdayAction(Context context) {
-        cancelBirthdayAlarm(context);
-        enableBirthdayAlarm(context);
-        new Thread(() -> {
-            List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
-            if (list.size() > 0) {
-                for (BirthdayItem item : list) {
-                    showBirthday(context, item);
-                }
-            }
-        }).start();
-    }
-
-    private void showBirthday(Context context, BirthdayItem item) {
-        if (Prefs.getInstance(context).getReminderType() == 0) {
-            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUuId()));
-        } else {
-            ReminderUtils.showSimpleBirthday(context, item.getUuId());
-        }
-    }
-
-    public void enableBirthdayAlarm(Context context) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_BIRTHDAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr == null) return;
-        String time = Prefs.getInstance(context).getBirthdayTime();
-        if (Module.isMarshmallow()) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayTime(time), alarmIntent);
-        } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, TimeUtil.getBirthdayTime(time), alarmIntent);
-        }
-    }
-
-    public void cancelBirthdayAlarm(Context context) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_BIRTHDAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);
