@@ -1,8 +1,13 @@
 package com.elementary.tasks.core.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.birthdays.ShowBirthdayActivity;
+import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -10,6 +15,7 @@ import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.missed_calls.MissedCallDialogActivity;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.evernote.android.job.Job;
@@ -18,6 +24,7 @@ import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
 import java.util.Calendar;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -39,18 +46,82 @@ import timber.log.Timber;
 public class EventJobService extends Job {
 
     private static final String TAG = "EventJobService";
+    private static final String EVENT_BIRTHDAY = "event_birthday";
+    private static final String EVENT_BIRTHDAY_CHECK = "event_birthday_check";
+    private static final String EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent";
+    private static final String EVENT_CHECK = "event_check";
+    private static final String EVENT_SYNC = "event_sync";
+
     private static final String ARG_LOCATION = "arg_location";
+    private static final String ARG_MISSED = "arg_missed";
+    private static final String ARG_REPEAT = "arg_repeat";
 
     @NonNull
     @Override
     protected Result onRunJob(@NonNull Params params) {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.getTag());
-        if (!params.getExtras().getBoolean(ARG_LOCATION, false)) {
-            start(getContext(), params.getTag());
-        } else {
-            SuperUtil.startGpsTracking(getContext());
+        switch (params.getTag()) {
+            case EVENT_BIRTHDAY:
+                birthdayAction(getContext());
+                break;
+            default: {
+                PersistableBundleCompat bundle = params.getExtras();
+                if (bundle.getBoolean(ARG_MISSED, false)) {
+                    openMissedScreen(params.getTag());
+                    enableMissedCall(getContext(), params.getTag());
+                } else if (bundle.getBoolean(ARG_LOCATION, false)) {
+                    SuperUtil.startGpsTracking(getContext());
+                } else {
+                    start(getContext(), params.getTag());
+                }
+            }
+            break;
         }
         return Result.SUCCESS;
+    }
+
+    private void birthdayAction(Context context) {
+        cancelBithdayAlarm();
+        enableBirthdayAlarm(context);
+        new Thread(() -> {
+            List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
+            if (list.size() > 0) {
+                for (BirthdayItem item : list) {
+                    showBirthday(context, item);
+                }
+            }
+        }).start();
+    }
+
+    private void showBirthday(Context context, BirthdayItem item) {
+        if (Prefs.getInstance(context).getReminderType() == 0) {
+            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUuId()));
+        } else {
+            ReminderUtils.showSimpleBirthday(context, item.getUuId());
+        }
+    }
+
+    public static void cancelBithdayAlarm() {
+        cancelReminder(EVENT_BIRTHDAY);
+    }
+
+    public static void enableBirthdayAlarm(Context context) {
+        String time = Prefs.getInstance(context).getBirthdayTime();
+        long mills = TimeUtil.getBirthdayTime(time);
+        new JobRequest.Builder(EVENT_BIRTHDAY)
+                .setExact(mills - System.currentTimeMillis())
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
+                .setRequiresBatteryNotLow(false)
+                .build()
+                .schedule();
+    }
+
+    private void openMissedScreen(String tag) {
+        Intent resultIntent = new Intent(getContext(), MissedCallDialogActivity.class);
+        resultIntent.putExtra(Constants.INTENT_ID, tag);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        getContext().startActivity(resultIntent);
     }
 
     private void start(Context context, String id) {
@@ -59,6 +130,27 @@ public class EventJobService extends Job {
         } else {
             ReminderUtils.showSimpleReminder(context, id);
         }
+    }
+
+    static void enableMissedCall(Context context, @Nullable String number) {
+        if (number == null) return;
+        int time = Prefs.getInstance(context).getMissedReminderTime();
+        long mills = System.currentTimeMillis() + (time * (1000 * 60));
+        PersistableBundleCompat bundle = new PersistableBundleCompat();
+        bundle.putBoolean(ARG_MISSED, true);
+        new JobRequest.Builder(number)
+                .setExact(mills - System.currentTimeMillis())
+                .setRequiresCharging(false)
+                .setRequiresDeviceIdle(false)
+                .setRequiresBatteryNotLow(false)
+                .setExtras(bundle)
+                .build()
+                .schedule();
+    }
+
+    public static void cancelMissedCall(@Nullable String number) {
+        if (number == null) return;
+        cancelReminder(number);
     }
 
     public static void enableDelay(int time, String uuId) {

@@ -20,6 +20,7 @@ import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.birthdays.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
+import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.PermanentBirthdayService;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
@@ -221,10 +222,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         binding.birthReminderPrefs.setChecked(!isChecked);
         getPrefs().setBirthdayReminderEnabled(!isChecked);
         if (!isChecked) {
-            new AlarmReceiver().enableBirthdayAlarm(getContext());
+            EventJobService.enableBirthdayAlarm(getContext());
         } else {
             cleanBirthdays();
-            new AlarmReceiver().cancelBirthdayAlarm(getContext());
+            EventJobService.cancelBithdayAlarm();
         }
     }
 
@@ -256,7 +257,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         getPrefs().setBirthdayTime(TimeUtil.getBirthdayTime(i, i1));
         initBirthdayTimePrefs();
         if (getPrefs().isBirthdayReminderEnabled()) {
-            new AlarmReceiver().enableBirthdayAlarm(getContext());
+            EventJobService.enableBirthdayAlarm(getContext());
         }
     }
 

@@ -36,7 +36,7 @@ public class BootReceiver extends BroadcastReceiver {
         AlarmReceiver alarmReceiver = new AlarmReceiver();
         Prefs prefs = Prefs.getInstance(context);
         if (prefs.isBirthdayReminderEnabled()) {
-            alarmReceiver.enableBirthdayAlarm(context);
+            EventJobService.enableBirthdayAlarm(context);
         }
         if (prefs.isSbNotificationEnabled()) {
             Notifier.showReminderPermanent(context);

@@ -42,8 +42,10 @@ public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener();
-        telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        if (telephony != null) {
+            CustomPhoneStateListener customPhoneListener = new CustomPhoneStateListener();
+            telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
         mContext = context;
     }
 
@@ -87,17 +89,16 @@ public class CallReceiver extends BroadcastReceiver {
                             LogUtil.d(TAG, "onCallStateChanged: is missed " + mIncomingNumber);
                             if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
                                 String number = mIncomingNumber;
-                                MissedCallReceiver alarm = new MissedCallReceiver();
                                 CallItem callItem = RealmDb.getInstance().getMissedCall(number);
                                 if (callItem != null) {
-                                    alarm.cancelAlarm(mContext, callItem.getUniqueId());
+                                    EventJobService.cancelMissedCall(callItem.getNumber());
                                 } else {
                                     callItem = new CallItem();
                                 }
                                 callItem.setDateTime(currTime);
                                 callItem.setNumber(number);
                                 RealmDb.getInstance().saveObject(callItem);
-                                alarm.setAlarm(mContext, callItem);
+                                EventJobService.enableMissedCall(mContext, callItem.getNumber());
                                 break;
                             }
                         } else {
