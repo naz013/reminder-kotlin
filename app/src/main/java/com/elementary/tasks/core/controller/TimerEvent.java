@@ -2,7 +2,6 @@ package com.elementary.tasks.core.controller;
 
 import android.content.Context;
 
-import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -37,7 +36,7 @@ class TimerEvent extends RepeatableEventManager {
         if (TimeCount.isCurrent(getReminder().getEventTime())) {
             getReminder().setActive(true);
             super.save();
-            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
+            super.enableReminder();
             super.export();
         }
         return true;
@@ -105,7 +104,7 @@ class TimerEvent extends RepeatableEventManager {
         }
         getReminder().setDelay(delay);
         super.save();
-        new AlarmReceiver().enableDelay(getContext(), getReminder().getUniqueId(), delay, getReminder().getUuId());
+        super.setDelay(delay);
     }
 
     @Override

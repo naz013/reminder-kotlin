@@ -3,7 +3,7 @@ package com.elementary.tasks.core.controller;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.elementary.tasks.core.services.AlarmReceiver;
+import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.GeolocationService;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -39,7 +39,7 @@ class LocationEvent extends EventManager {
     public boolean start() {
         getReminder().setActive(true);
         super.save();
-        if (new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId())) {
+        if (EventJobService.enablePositionDelay(getReminder().getUuId())) {
             return true;
         } else {
             SuperUtil.startGpsTracking(getContext());
@@ -49,7 +49,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        new AlarmReceiver().cancelPositionDelay(getContext(), getReminder().getUniqueId());
+        EventJobService.cancelReminder(getReminder().getUuId());
         RealmDb.getInstance().saveObject(getReminder().setActive(false));
         Notifier.hideNotification(getContext(), getReminder().getUniqueId());
         getReminder().setActive(false);
@@ -94,7 +94,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean pause() {
-        new AlarmReceiver().cancelPositionDelay(getContext(), getReminder().getUniqueId());
+        EventJobService.cancelReminder(getReminder().getUuId());
         stopTracking(true);
         return true;
     }
@@ -107,7 +107,7 @@ class LocationEvent extends EventManager {
     @Override
     public boolean resume() {
         if (getReminder().isActive()) {
-            boolean b = new AlarmReceiver().enablePositionDelay(getContext(), getReminder().getUuId());
+            boolean b = EventJobService.enablePositionDelay(getReminder().getUuId());
             if (!b) SuperUtil.startGpsTracking(getContext());
         }
         return true;

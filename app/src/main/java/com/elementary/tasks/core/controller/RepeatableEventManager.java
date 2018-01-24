@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Google;
-import com.elementary.tasks.core.services.AlarmReceiver;
+import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
@@ -37,6 +37,10 @@ abstract class RepeatableEventManager extends EventManager {
         super(reminder, context);
     }
 
+    protected void enableReminder() {
+        EventJobService.enableReminder(getReminder().getUuId());
+    }
+
     protected void export() {
         if (getReminder().isExportToTasks()) {
             long due = TimeUtil.getDateTimeFromGmt(getReminder().getEventTime());
@@ -62,7 +66,7 @@ abstract class RepeatableEventManager extends EventManager {
     @Override
     public boolean resume() {
         if (getReminder().isActive()) {
-            new AlarmReceiver().enableReminder(getContext(), getReminder().getUuId());
+            enableReminder();
         }
         return true;
     }
@@ -70,8 +74,7 @@ abstract class RepeatableEventManager extends EventManager {
     @Override
     public boolean pause() {
         Notifier.hideNotification(getContext(), getReminder().getUniqueId());
-        new AlarmReceiver().cancelReminder(getContext(), getReminder().getUniqueId());
-        new AlarmReceiver().cancelDelay(getContext(), getReminder().getUniqueId());
+        EventJobService.cancelReminder(getReminder().getUuId());
         new RepeatNotificationReceiver().cancelAlarm(getContext(), getReminder().getUniqueId());
         return true;
     }
@@ -81,5 +84,10 @@ abstract class RepeatableEventManager extends EventManager {
         getReminder().setActive(false);
         save();
         return pause();
+    }
+
+    @Override
+    public void setDelay(int delay) {
+        EventJobService.enableDelay(delay, getReminder().getUuId());
     }
 }

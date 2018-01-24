@@ -15,7 +15,6 @@ import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.CalendarUtils;
-import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
@@ -23,11 +22,9 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.dmfs.rfc5545.recur.Freq;
@@ -61,13 +58,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     private static final int BIRTHDAY_CHECK_ID = Integer.MAX_VALUE - 4;
     private static final int EVENTS_CHECK_ID = Integer.MAX_VALUE - 5;
 
-    private static final String ACTION_REMINDER = "com.elementary.alarm.REMINDER";
     private static final String ACTION_BIRTHDAY = "com.elementary.alarm.BIRTHDAY";
     private static final String ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT";
     private static final String ACTION_BIRTHDAY_AUTO = "com.elementary.alarm.BIRTHDAY_AUTO";
     private static final String ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO";
-    private static final String ACTION_DELAY = "com.elementary.alarm.DELAY";
-    private static final String ACTION_POSITION_DELAY = "com.elementary.alarm.DELAY_POSITION";
     private static final String ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK";
 
     private static final String TAG = "AlarmReceiver";
@@ -80,11 +74,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Intent service = new Intent(context, AlarmReceiver.class);
         context.startService(service);
         switch (action) {
-            case ACTION_REMINDER:
-            case ACTION_DELAY:
-                String id = intent.getStringExtra(Constants.INTENT_ID);
-                start(context, id);
-                break;
             case ACTION_SYNC_AUTO:
                 new BackupTask(context).execute();
                 break;
@@ -102,72 +91,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                     Notifier.showBirthdayPermanent(context);
                 }
                 break;
-            case ACTION_POSITION_DELAY:
-                SuperUtil.startGpsTracking(context);
-                break;
         }
     }
 
     private void checkEvents(Context context) {
         if (Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             new CheckEventsAsync(context).execute();
-        }
-    }
-
-    public void enableDelay(Context context, int id, int time, String uuId) {
-        long min = TimeCount.MINUTE;
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_DELAY);
-        intent.putExtra(Constants.INTENT_ID, uuId);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr == null) return;
-        if (Module.isMarshmallow()) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (min * time), alarmIntent);
-        } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (min * time), alarmIntent);
-        }
-    }
-
-    public void cancelDelay(Context context, int id) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_DELAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-        }
-    }
-
-    public boolean enablePositionDelay(Context context, String id) {
-        Reminder item = RealmDb.getInstance().getReminder(id);
-        if (item == null) {
-            return false;
-        }
-        long startTime = TimeUtil.getDateTimeFromGmt(item.getEventTime());
-        if (startTime == 0 || startTime < System.currentTimeMillis()) {
-            return false;
-        }
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_POSITION_DELAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr == null) return false;
-        if (Module.isMarshmallow()) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
-        } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, startTime, alarmIntent);
-        }
-        return true;
-    }
-
-    public void cancelPositionDelay(Context context, int id) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_POSITION_DELAY);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
         }
     }
 
@@ -308,63 +237,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setAction(ACTION_EVENTS_CHECK);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr != null) {
-            alarmMgr.cancel(alarmIntent);
-        }
-    }
-
-    private void start(Context context, String id) {
-        if (Prefs.getInstance(context).getReminderType() == 0) {
-            context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
-        } else {
-            ReminderUtils.showSimpleReminder(context, id);
-        }
-    }
-
-    public void enableReminder(Context context, String uuId) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_REMINDER);
-        intent.putExtra(Constants.INTENT_ID, uuId);
-        Reminder item = RealmDb.getInstance().getReminder(uuId);
-        long due = 0;
-        if (item != null) {
-            due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
-        }
-        LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
-        if (due == 0) {
-            return;
-        }
-        if (item.getRemindBefore() != 0) {
-            due -= item.getRemindBefore();
-        }
-        if (!Reminder.isBase(item.getType(), Reminder.BY_TIME)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(due);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-        }
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, item.getUniqueId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (alarmMgr == null) return;
-        if (Module.isMarshmallow()) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, due, alarmIntent);
-        } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, due, alarmIntent);
-        }
-    }
-
-    public boolean isEnabledReminder(Context context, int id) {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_REMINDER);
-        return PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_NO_CREATE) != null;
-    }
-
-    public void cancelReminder(Context context, int id) {
-        LogUtil.d(TAG, "cancelReminder: " + id);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction(ACTION_REMINDER);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmMgr != null) {
             alarmMgr.cancel(alarmIntent);

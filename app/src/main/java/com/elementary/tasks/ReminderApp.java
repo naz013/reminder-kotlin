@@ -11,9 +11,11 @@ import android.support.v4.provider.FontRequest;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
+import com.evernote.android.job.JobManager;
 
 import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
@@ -22,6 +24,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
+import timber.log.Timber;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -57,6 +60,7 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Timber.plant(new Timber.DebugTree());
         final FontRequest fontRequest = new FontRequest(
                 "com.google.android.gms.fonts",
                 "com.google.android.gms",
@@ -77,8 +81,7 @@ public class ReminderApp extends MultiDexApplication {
                 });
         EmojiCompat.init(config);
         Notifier.createChannels(this);
-        Fabric.with(this, new Crashlytics());
-        Fabric.with(this, new Answers());
+        Fabric.with(this, new Crashlytics(), new Answers());
         Prefs.getInstance(this);
         Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
@@ -87,6 +90,7 @@ public class ReminderApp extends MultiDexApplication {
                 .migration(new Migration())
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
+        JobManager.create(this).addJobCreator(tag -> new EventJobService());
     }
 
     private static class Migration implements RealmMigration {
