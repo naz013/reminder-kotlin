@@ -22,7 +22,6 @@ import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.backdoor.shared.SharedConst;
@@ -42,6 +41,7 @@ import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
@@ -146,11 +146,15 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         todoList.setLayoutManager(new LinearLayoutManager(this));
         todoList.setVisibility(View.GONE);
 
-        TextView remText = findViewById(R.id.remText);
-        TextView contactInfo = findViewById(R.id.contactInfo);
-        TextView subjectView = findViewById(R.id.subjectView);
-        TextView messageView = findViewById(R.id.messageView);
-        remText.setText("");
+        binding.remText.setText("");
+
+        if (!TextUtils.isEmpty(mReminder.getEventTime()) && Reminder.isGpsType(mReminder.getType())) {
+            binding.reminderTime.setText(TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(mReminder.getEventTime()),
+                    Prefs.getInstance(this).is24HourFormatEnabled(), false));
+            binding.reminderTime.setVisibility(View.VISIBLE);
+        } else {
+            binding.reminderTime.setVisibility(View.GONE);
+        }
 
         if (Reminder.isKind(mReminder.getType(), Reminder.Kind.CALL) || Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
             if (!Reminder.isBase(mReminder.getType(), Reminder.BY_SKYPE)) {
@@ -160,24 +164,24 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 if (photo != null) contactPhoto.setImageURI(photo);
                 else contactPhoto.setVisibility(View.GONE);
                 String name = Contacts.getNameFromNumber(mReminder.getTarget(), this);
-                remText.setText(R.string.make_call);
+                binding.remText.setText(R.string.make_call);
                 String userTitle = (name != null ? name : "") + "\n" + mReminder.getTarget();
-                contactInfo.setText(userTitle);
-                contactInfo.setContentDescription(userTitle);
-                messageView.setText(getSummary());
-                messageView.setContentDescription(getSummary());
+                binding.contactInfo.setText(userTitle);
+                binding.contactInfo.setContentDescription(userTitle);
+                binding.messageView.setText(getSummary());
+                binding.messageView.setContentDescription(getSummary());
             } else {
                 if (Reminder.isSame(mReminder.getType(), Reminder.BY_SKYPE_VIDEO)) {
-                    remText.setText(R.string.video_call);
+                    binding.remText.setText(R.string.video_call);
                 } else {
-                    remText.setText(R.string.skype_call);
+                    binding.remText.setText(R.string.skype_call);
                 }
-                contactInfo.setText(mReminder.getTarget());
-                contactInfo.setContentDescription(mReminder.getTarget());
-                messageView.setText(getSummary());
-                messageView.setContentDescription(getSummary());
+                binding.contactInfo.setText(mReminder.getTarget());
+                binding.contactInfo.setContentDescription(mReminder.getTarget());
+                binding.messageView.setText(getSummary());
+                binding.messageView.setContentDescription(getSummary());
                 if (TextUtils.isEmpty(getSummary())) {
-                    messageView.setVisibility(View.GONE);
+                    binding.messageView.setVisibility(View.GONE);
                     binding.someView.setVisibility(View.GONE);
                 }
             }
@@ -190,18 +194,18 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 if (photo != null) contactPhoto.setImageURI(photo);
                 else contactPhoto.setVisibility(View.GONE);
                 String name = Contacts.getNameFromNumber(mReminder.getTarget(), this);
-                remText.setText(R.string.send_sms);
+                binding.remText.setText(R.string.send_sms);
                 String userInfo = (name != null ? name : "") + "\n" + mReminder.getTarget();
-                contactInfo.setText(userInfo);
-                contactInfo.setContentDescription(userInfo);
-                messageView.setText(getSummary());
-                messageView.setContentDescription(getSummary());
+                binding.contactInfo.setText(userInfo);
+                binding.contactInfo.setContentDescription(userInfo);
+                binding.messageView.setText(getSummary());
+                binding.messageView.setContentDescription(getSummary());
             } else {
-                remText.setText(R.string.skype_chat);
-                contactInfo.setText(mReminder.getTarget());
-                contactInfo.setContentDescription(mReminder.getTarget());
-                messageView.setText(getSummary());
-                messageView.setContentDescription(getSummary());
+                binding.remText.setText(R.string.skype_chat);
+                binding.contactInfo.setText(mReminder.getTarget());
+                binding.contactInfo.setContentDescription(mReminder.getTarget());
+                binding.messageView.setText(getSummary());
+                binding.messageView.setContentDescription(getSummary());
             }
             if (!getPrefs().isAutoSmsEnabled()) {
                 buttonCall.setVisibility(View.VISIBLE);
@@ -217,7 +221,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             buttonCall.setVisibility(View.VISIBLE);
             buttonCall.setImageResource(R.drawable.ic_send_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_send_message));
-            remText.setText(R.string.e_mail);
+            binding.remText.setText(R.string.e_mail);
             int conID = Contacts.getIdFromMail(mReminder.getTarget(), this);
             if (conID != 0) {
                 Uri photo = Contacts.getPhoto(conID);
@@ -225,16 +229,16 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 else contactPhoto.setVisibility(View.GONE);
                 String name = Contacts.getNameFromMail(mReminder.getTarget(), this);
                 String userInfo = (name != null ? name : "") + "\n" + mReminder.getTarget();
-                contactInfo.setText(userInfo);
-                contactInfo.setContentDescription(userInfo);
+                binding.contactInfo.setText(userInfo);
+                binding.contactInfo.setContentDescription(userInfo);
             } else {
-                contactInfo.setText(mReminder.getTarget());
-                contactInfo.setContentDescription(mReminder.getTarget());
+                binding.contactInfo.setText(mReminder.getTarget());
+                binding.contactInfo.setContentDescription(mReminder.getTarget());
             }
-            messageView.setText(getSummary());
-            messageView.setContentDescription(getSummary());
-            subjectView.setText(mReminder.getSubject());
-            subjectView.setContentDescription(mReminder.getSubject());
+            binding.messageView.setText(getSummary());
+            binding.messageView.setContentDescription(getSummary());
+            binding.subjectView.setText(mReminder.getSubject());
+            binding.subjectView.setContentDescription(mReminder.getSubject());
             binding.container.setVisibility(View.VISIBLE);
             binding.subjectContainer.setVisibility(View.VISIBLE);
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP)) {
@@ -246,26 +250,26 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             }
             String nameA = (String) ((applicationInfo != null) ? packageManager.getApplicationLabel(applicationInfo) : "???");
             String label = getSummary() + "\n\n" + nameA + "\n" + mReminder.getTarget();
-            remText.setText(label);
-            remText.setContentDescription(label);
+            binding.remText.setText(label);
+            binding.remText.setContentDescription(label);
             buttonCall.setVisibility(View.VISIBLE);
             buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_open_application));
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK)) {
             String label = getSummary() + "\n\n" + mReminder.getTarget();
-            remText.setText(label);
-            remText.setContentDescription(label);
+            binding.remText.setText(label);
+            binding.remText.setContentDescription(label);
             buttonCall.setVisibility(View.VISIBLE);
             buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_open_link_in_browser));
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_SHOP)) {
-            remText.setText(getSummary());
-            remText.setContentDescription(getSummary());
+            binding.remText.setText(getSummary());
+            binding.remText.setContentDescription(getSummary());
             buttonCall.setVisibility(View.GONE);
             loadData();
         } else {
-            remText.setText(getSummary());
-            remText.setContentDescription(getSummary());
+            binding.remText.setText(getSummary());
+            binding.remText.setContentDescription(getSummary());
             buttonCall.setVisibility(View.GONE);
         }
 

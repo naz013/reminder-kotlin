@@ -134,8 +134,8 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            app:cardCornerRadius="5dp"
-            app:contentPadding="10dp"
+            app:cardCornerRadius="4dp"
+            app:contentPadding="8dp"
             app:layout_constraintBottom_toTopOf="@+id/buttonGroup"
             app:layout_constraintLeft_toRightOf="@+id/contactPhoto"
             app:layout_constraintRight_toRightOf="parent"
@@ -145,23 +145,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/remText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:text="@string/e_mail"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="@dimen/reminder_text_size_normal" />
+
+                <TextView
+                    android:id="@+id/reminder_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="@string/e_mail"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="17sp" />
 
                 <LinearLayout
                     android:id="@+id/container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:orientation="vertical"
                     android:visibility="visible">
 
@@ -178,14 +187,15 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="25dp"
                             android:text="@string/to"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/contactInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/actionDirect"
-                            android:textSize="17sp" />
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
 
                     </RelativeLayout>
 
@@ -193,7 +203,7 @@
                         android:id="@+id/subjectContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="8dp">
 
                         <TextView
                             android:id="@+id/subjectDirect"
@@ -204,21 +214,22 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="25dp"
                             android:text="@string/subject"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/subjectView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/subjectDirect"
-                            android:textSize="17sp" />
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="8dp">
 
                         <TextView
                             android:id="@+id/someView"
@@ -229,14 +240,15 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="25dp"
                             android:text="@string/message"
-                            android:textSize="17sp" />
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/messageView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/someView"
-                            android:textSize="17sp" />
+                            android:textSize="17sp"
+                            android:textStyle="bold" />
 
                     </RelativeLayout>
 
@@ -246,7 +258,7 @@
                     android:id="@+id/todoList"
                     android:layout_width="250dp"
                     android:layout_height="250dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:overScrollMode="never"
                     android:scrollbars="none"
                     android:visibility="gone" />
