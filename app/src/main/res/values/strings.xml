@@ -634,5 +634,6 @@
     <string name="days_before">days before</string>
     <string name="weeks_before">weeks before</string>
     <string name="invalid_remind_before_parameter">Invalid \"remind before\" parameter</string>
+    <string name="p_until">% until</string>
 
 </resources>

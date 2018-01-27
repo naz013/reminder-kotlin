@@ -616,7 +616,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             mSaleBadge.setVisibility(View.INVISIBLE);
         } else {
             mSaleBadge.setVisibility(View.VISIBLE);
-            mSaleBadge.setText("SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + "% until " + expiry);
+            mSaleBadge.setText("SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry);
         }
     }
 
@@ -629,6 +629,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     public void onUpdate(String version) {
         mUpdateBadge.setVisibility(View.VISIBLE);
         mUpdateBadge.setText(getString(R.string.update_available) + ": " + version);
+        mUpdateBadge.setOnClickListener(v -> SuperUtil.launchMarket(MainActivity.this));
     }
 
     @Override
