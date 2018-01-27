@@ -225,7 +225,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
             EventJobService.enableBirthdayAlarm(getContext());
         } else {
             cleanBirthdays();
-            EventJobService.cancelBithdayAlarm();
+            EventJobService.cancelBirthdayAlarm();
         }
     }
 

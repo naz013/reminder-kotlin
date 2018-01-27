@@ -81,7 +81,7 @@ public class EventJobService extends Job {
     }
 
     private void birthdayAction(Context context) {
-        cancelBithdayAlarm();
+        cancelBirthdayAlarm();
         enableBirthdayAlarm(context);
         new Thread(() -> {
             List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
@@ -101,7 +101,7 @@ public class EventJobService extends Job {
         }
     }
 
-    public static void cancelBithdayAlarm() {
+    public static void cancelBirthdayAlarm() {
         cancelReminder(EVENT_BIRTHDAY);
     }
 
