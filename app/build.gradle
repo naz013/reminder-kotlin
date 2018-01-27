@@ -155,6 +155,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-maps:$gms_version"
     implementation "com.google.android.gms:play-services-analytics:$gms_version"
     implementation "com.google.android.gms:play-services-wearable:$gms_version"
+    implementation "com.google.android.gms:play-services-gcm:$gms_version"
     implementation("com.google.firebase:firebase-messaging:$gms_version") {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
