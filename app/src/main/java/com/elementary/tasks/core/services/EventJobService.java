@@ -143,7 +143,9 @@ public class EventJobService extends Job {
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
+                .setRequiresStorageNotLow(false)
                 .setExtras(bundle)
+                .setUpdateCurrent(true)
                 .build()
                 .schedule();
     }
@@ -161,6 +163,8 @@ public class EventJobService extends Job {
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
+                .setRequiresStorageNotLow(false)
+                .setUpdateCurrent(true)
                 .build()
                 .schedule();
     }
@@ -181,6 +185,8 @@ public class EventJobService extends Job {
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
+                .setRequiresStorageNotLow(false)
+                .setUpdateCurrent(true)
                 .setExtras(bundle)
                 .build()
                 .schedule();
@@ -211,6 +217,8 @@ public class EventJobService extends Job {
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
+                .setRequiresStorageNotLow(false)
+                .setUpdateCurrent(true)
                 .build()
                 .schedule();
     }
