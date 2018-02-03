@@ -9,7 +9,8 @@ import android.support.annotation.Nullable;
 import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.migration.MigrationTool;
 import com.elementary.tasks.core.services.GcmListenerService;
-import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.intro.IntroActivity;
@@ -26,7 +27,7 @@ public class SplashScreen extends ThemedActivity {
             FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
         }
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
-            startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW);
         }
     }
 

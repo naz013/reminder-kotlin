@@ -14,12 +14,13 @@ import android.widget.SeekBar;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FileExplorerActivity;
-import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
@@ -638,7 +639,7 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         boolean isChecked = binding.statusIconPrefs.isChecked();
         binding.statusIconPrefs.setChecked(!isChecked);
         getPrefs().setSbIconEnabled(!isChecked);
-        getContext().startService(new Intent(getContext(), PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        Notifier.updateReminderPermanent(getContext(), PermanentReminderReceiver.ACTION_SHOW);
     }
 
     private void initSbIconPrefs() {
@@ -652,9 +653,9 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         binding.permanentNotificationPrefs.setChecked(!isChecked);
         getPrefs().setSbNotificationEnabled(!isChecked);
         if (getPrefs().isSbNotificationEnabled()) {
-            getContext().startService(new Intent(getContext(), PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            Notifier.updateReminderPermanent(getContext(), PermanentReminderReceiver.ACTION_SHOW);
         } else {
-            getContext().startService(new Intent(getContext(), PermanentReminderService.class).setAction(PermanentReminderService.ACTION_HIDE));
+            Notifier.updateReminderPermanent(getContext(), PermanentReminderReceiver.ACTION_HIDE);
         }
     }
 

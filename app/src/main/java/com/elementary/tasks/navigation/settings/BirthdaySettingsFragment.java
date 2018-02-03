@@ -21,7 +21,7 @@ import com.elementary.tasks.birthdays.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.EventJobService;
-import com.elementary.tasks.core.services.PermanentBirthdayService;
+import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -190,10 +190,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         binding.birthdayPermanentPrefs.setChecked(!isChecked);
         getPrefs().setBirthdayPermanentEnabled(!isChecked);
         if (!isChecked) {
-            getContext().startService(new Intent(getContext(), PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+            getContext().sendBroadcast(new Intent(getContext(), PermanentBirthdayReceiver.class).setAction(PermanentBirthdayReceiver.ACTION_SHOW));
             new AlarmReceiver().enableBirthdayPermanentAlarm(getContext());
         } else {
-            getContext().startService(new Intent(getContext(), PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_HIDE));
+            getContext().sendBroadcast(new Intent(getContext(), PermanentBirthdayReceiver.class).setAction(PermanentBirthdayReceiver.ACTION_HIDE));
             new AlarmReceiver().cancelBirthdayPermanentAlarm(getContext());
         }
     }

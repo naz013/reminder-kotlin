@@ -52,8 +52,8 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_title"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/HomeDark.Cyan"
         tools:replace="android:label">
@@ -278,18 +278,35 @@
         <service
             android:name=".core.services.GeolocationService"
             android:exported="true" />
-        <service
-            android:name=".core.services.PermanentReminderService"
-            android:exported="true" />
-        <service
-            android:name=".core.services.PermanentBirthdayService"
-            android:exported="true" />
-        <service
-            android:name=".core.services.ReminderActionService"
-            android:exported="true" />
-        <service
-            android:name=".core.services.BirthdayActionService"
-            android:exported="true" />
+
+        <receiver android:name=".core.services.PermanentReminderReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.SHOW" />
+                <action android:name="com.elementary.tasks.HIDE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".core.services.PermanentBirthdayReceiver">
+            <intent-filter>
+                <action android:name="com.elementary.tasks.birthday.SHOW" />
+                <action android:name="com.elementary.tasks.birthday.HIDE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".core.services.ReminderActionService" >
+            <intent-filter>
+                <action android:name="com.elementary.tasks.reminder.SHOW_SCREEN" />
+                <action android:name="com.elementary.tasks.reminder.SIMPLE_HIDE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".core.services.BirthdayActionService" >
+            <intent-filter>
+                <action android:name="com.elementary.tasks.birthday.SHOW_SCREEN" />
+                <action android:name="com.elementary.tasks.birthday.CALL" />
+                <action android:name="com.elementary.tasks.birthday.SMS" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".core.app_widgets.events.EventEditService"
             android:exported="true" />

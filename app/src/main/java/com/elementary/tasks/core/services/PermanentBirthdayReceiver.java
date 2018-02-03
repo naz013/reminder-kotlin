@@ -1,12 +1,9 @@
 package com.elementary.tasks.core.services;
 
-import android.app.Notification;
-import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 
@@ -25,46 +22,27 @@ import com.elementary.tasks.core.utils.Prefs;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class PermanentBirthdayReceiver extends BroadcastReceiver {
 
-public class PermanentBirthdayService extends Service {
-
-    private static final int BIRTHDAY_PERM_ID = 356665;
+    public static final int BIRTHDAY_PERM_ID = 356665;
     public static final String ACTION_SHOW = "com.elementary.tasks.birthday.SHOW";
     public static final String ACTION_HIDE = "com.elementary.tasks.birthday.HIDE";
 
-    private static final String TAG = "PermanentBirthdayS";
-
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if (!Prefs.getInstance(getApplicationContext()).isBirthdayPermanentEnabled()) {
-            stopForeground(true);
+    public void onReceive(Context context, Intent intent) {
+        if (!Prefs.getInstance(context).isBirthdayPermanentEnabled()) {
+            Notifier.hideNotification(context, BIRTHDAY_PERM_ID);
+            return;
         }
         if (intent != null) {
             String action = intent.getAction();
-            LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_SHOW)) {
-                Notification notification = Notifier.showBirthdayPermanent(this);
-                if (notification != null) startForeground(BIRTHDAY_PERM_ID, notification);
-                else stopForeground(true);
+                Notifier.showBirthdayPermanent(context);
             } else {
-                stopForeground(true);
+                Notifier.hideNotification(context, BIRTHDAY_PERM_ID);
             }
         } else {
-            stopForeground(true);
+            Notifier.hideNotification(context, BIRTHDAY_PERM_ID);
         }
-        stopSelf();
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LogUtil.d(TAG, "onDestroy: ");
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }
