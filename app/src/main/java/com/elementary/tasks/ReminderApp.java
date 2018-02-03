@@ -60,7 +60,7 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Timber.plant(new Timber.DebugTree());
+        if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         final FontRequest fontRequest = new FontRequest(
                 "com.google.android.gms.fonts",
                 "com.google.android.gms",

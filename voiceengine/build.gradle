@@ -1,12 +1,11 @@
 apply plugin: 'java'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'org.apache.commons:commons-lang3:3.6'
-    implementation 'junit:junit:4.12'
-    implementation 'com.intellij:annotations:12.0@jar'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
 }
 
 sourceCompatibility = "1.8"

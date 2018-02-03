@@ -86,11 +86,11 @@ public class GoogleLogin {
     private void getAndUseAuthTokenInAsyncTask(Account account) {
         mUiHandler.post(this::showProgress);
         new Thread(() -> {
-            String token = getAccessToken(account);
+            final String token = getAccessToken(account);
             mUiHandler.post(() -> {
+                hideProgress();
                 if (token != null) {
                     if (token.equals(RT_CODE)) {
-                        hideProgress();
                         if (rtIntent != null) {
                             activity.startActivityForResult(rtIntent, REQUEST_ACCOUNT_PICKER);
                         } else {
@@ -98,17 +98,17 @@ public class GoogleLogin {
                         }
                     } else {
                         finishLogin();
-                        hideProgress();
                         if (mCallback != null) mCallback.onSuccess();
                     }
                 } else {
                     if (mCallback != null) mCallback.onFail();
                 }
             });
-        });
+        }).start();
     }
 
     private void hideProgress() {
+        Timber.d("hideProgress: ");
         try {
             if (mProgress != null && mProgress.isShowing()) {
                 mProgress.dismiss();
@@ -119,6 +119,7 @@ public class GoogleLogin {
     }
 
     private void showProgress() {
+        Timber.d("showProgress: ");
         if (mProgress != null && mProgress.isShowing()) return;
         mProgress = new ProgressDialog(activity, ProgressDialog.STYLE_SPINNER);
         mProgress.setMessage(activity.getString(R.string.trying_to_log_in));
@@ -129,6 +130,7 @@ public class GoogleLogin {
 
     @Nullable
     private String getAccessToken(@NonNull Account account) {
+        Timber.d("getAccessToken: ");
         try {
             String scope = "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS;
             String token = GoogleAuthUtil.getToken(activity, account, scope);
@@ -139,10 +141,13 @@ public class GoogleLogin {
             Timber.d("getAccessToken: re-try");
             return RT_CODE;
         } catch (ActivityNotFoundException e) {
+            Timber.d("getAccessToken: null");
             return null;
         } catch (GoogleAuthException e) {
+            Timber.d("getAccessToken: null");
             return null;
         } catch (IOException e) {
+            Timber.d("getAccessToken: null");
             return null;
         }
     }

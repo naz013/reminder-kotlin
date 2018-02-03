@@ -201,6 +201,7 @@ public class Google {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (taskLists == null) return new ArrayList<>();
             return taskLists;
         }
 
