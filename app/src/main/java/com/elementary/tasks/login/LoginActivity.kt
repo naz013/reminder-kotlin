@@ -36,6 +36,7 @@ import com.elementary.tasks.google_tasks.GetTaskListAsync
 import com.elementary.tasks.google_tasks.TasksCallback
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.CreateNoteActivity
+import timber.log.Timber
 import java.util.*
 
 class LoginActivity : ThemedActivity() {
@@ -57,10 +58,12 @@ class LoginActivity : ThemedActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         googleLogin = GoogleLogin(this, object : GoogleLogin.LoginCallback {
             override fun onSuccess() {
+                Timber.d("onSuccess: ")
                 loadDataFromGoogle()
             }
 
             override fun onFail() {
+                Timber.d("onFail: ")
                 showLoginError()
             }
         })
@@ -302,9 +305,5 @@ class LoginActivity : ThemedActivity() {
             PERM_LOCAL -> restoreLocalData()
             PERM_BIRTH -> importBirthdays()
         }
-    }
-
-    override fun onBackPressed() {
-        finish()
     }
 }
