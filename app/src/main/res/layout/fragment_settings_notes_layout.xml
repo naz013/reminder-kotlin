@@ -19,7 +19,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/quick_note_reminder"
                 app:prefs_secondary_text="@string/enable_creating_reminder_for_quick_note"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/noteReminderTime"
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/remember_last_used_note_color"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/noteColorOpacity"
