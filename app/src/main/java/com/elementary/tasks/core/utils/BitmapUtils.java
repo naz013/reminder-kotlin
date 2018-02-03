@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.io.FileNotFoundException;
 
@@ -25,12 +26,12 @@ import java.io.FileNotFoundException;
 public final class BitmapUtils {
 
     private static final int REQUIRED_SIZE = 350;
-    private static final String TAG = "BitmapUtils";
 
     private BitmapUtils() {
     }
 
-    public static Bitmap decodeUriToBitmap(Context context, Uri selectedImage) throws FileNotFoundException {
+    @NonNull
+    public static Bitmap decodeUriToBitmap(@NonNull Context context, @NonNull Uri selectedImage) throws FileNotFoundException {
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(context.getContentResolver().openInputStream(selectedImage), null, o);
