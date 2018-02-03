@@ -57,7 +57,7 @@ public class Recognize {
     private Context mContext;
     private Recognizer recognizer;
 
-    public Recognize(Context context) {
+    public Recognize(@NonNull Context context) {
         this.mContext = context;
         Prefs prefs = Prefs.getInstance(mContext);
         String language = Language.getLanguage(prefs.getVoiceLocale());
@@ -79,7 +79,7 @@ public class Recognize {
     }
 
     @Nullable
-    public Reminder findResults(ArrayList matches) {
+    public Reminder findResults(@NonNull ArrayList matches) {
         for (int i = 0; i < matches.size(); i++) {
             Object key = matches.get(i);
             String keyStr = key.toString();
@@ -92,7 +92,7 @@ public class Recognize {
         return null;
     }
 
-    public void parseResults(ArrayList matches, boolean isWidget) {
+    public void parseResults(@NonNull ArrayList matches, boolean isWidget) {
         for (int i = 0; i < matches.size(); i++) {
             Object key = matches.get(i);
             String keyStr = key.toString();
@@ -243,7 +243,7 @@ public class Recognize {
     }
 
     @NonNull
-    public NoteItem createNote(String note) {
+    public NoteItem createNote(@Nullable String note) {
         int color = new Random().nextInt(15);
         NoteItem item = new NoteItem();
         item.setColor(color);
@@ -265,7 +265,7 @@ public class Recognize {
     }
 
     @NonNull
-    public Reminder saveQuickReminder(String key, String summary) {
+    public Reminder saveQuickReminder(@Nullable String key, @Nullable String summary) {
         long after = Prefs.getInstance(mContext).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
         long due = System.currentTimeMillis() + after;
         Reminder mReminder = new Reminder();

@@ -12,6 +12,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
@@ -66,19 +67,25 @@ public class ConversationActivity extends ThemedActivity {
     private static final int AUDIO_CODE = 255000;
     private static final int CHECK_CODE = 1651;
 
+    @Nullable
     private SpeechRecognizer speech = null;
     private ActivityConversationBinding binding;
 
+    @Nullable
     private ConversationAdapter mAdapter;
+    @Nullable
     private Recognize recognize;
+    @Nullable
     private TextToSpeech tts;
     private boolean isTtsReady;
+    @Nullable
     private AskAction mAskAction;
 
+    @NonNull
     private TextToSpeech.OnInitListener mTextToSpeechListener = new TextToSpeech.OnInitListener() {
         @Override
         public void onInit(int status) {
-            if (status == TextToSpeech.SUCCESS) {
+            if (status == TextToSpeech.SUCCESS && tts != null) {
                 int result = tts.setLanguage(new Locale(Language.getLanguage(getPrefs().getVoiceLocale())));
                 if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     LogUtil.d(TAG, "This Language is not supported");
@@ -92,6 +99,7 @@ public class ConversationActivity extends ThemedActivity {
             }
         }
     };
+    @NonNull
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
         public void onReadyForSpeech(Bundle bundle) {
@@ -150,6 +158,7 @@ public class ConversationActivity extends ThemedActivity {
             LogUtil.d(TAG, "onEvent: ");
         }
     };
+    @NonNull
     private ConversationAdapter.InsertCallback mInsertCallback = new ConversationAdapter.InsertCallback() {
         @Override
         public void onItemAdded() {
@@ -162,12 +171,14 @@ public class ConversationActivity extends ThemedActivity {
         playTts(getLocalized(R.string.did_you_say_something));
     }
 
+    @NonNull
     private String getLocalized(int id) {
         return Language.getLocalized(this, id);
     }
 
-    private void parseResults(List<String> list) {
+    private void parseResults(@Nullable List<String> list) {
         LogUtil.d(TAG, "parseResults: " + list);
+        if (recognize == null) return;
         if (list == null || list.isEmpty()) {
             showSilentMessage();
             return;
@@ -185,14 +196,14 @@ public class ConversationActivity extends ThemedActivity {
             performResult(model, suggestion);
         } else {
             stopView();
-            mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
+            if (mAdapter != null) mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
             addResponse(getLocalized(R.string.can_not_recognize_your_command));
         }
     }
 
-    private void performAnswer(Model answer) {
+    private void performAnswer(@NonNull Model answer) {
         stopView();
-        if (mAskAction != null) {
+        if (mAskAction != null && mAdapter != null) {
             mAdapter.removeAsk();
             if (answer.getAction() == Action.YES) {
                 mAskAction.onYes();
@@ -207,16 +218,16 @@ public class ConversationActivity extends ThemedActivity {
         binding.recordingView.stop();
     }
 
-    private void addObjectResponse(Reply reply) {
+    private void addObjectResponse(@NonNull Reply reply) {
         stopView();
-        mAdapter.addReply(reply);
+        if (mAdapter != null) mAdapter.addReply(reply);
     }
 
-    private void performResult(Model model, String s) {
+    private void performResult(@NonNull Model model, @NonNull String s) {
         if (mAskAction != null) {
-            mAdapter.removeAsk();
+            if (mAdapter != null) mAdapter.removeAsk();
         }
-        mAdapter.addReply(new Reply(Reply.REPLY, s.toLowerCase()));
+        if (mAdapter != null) mAdapter.addReply(new Reply(Reply.REPLY, s.toLowerCase()));
         LogUtil.d(TAG, "performResult: " + model);
         ActionType actionType = model.getType();
         if (actionType == ActionType.REMINDER) {
@@ -371,7 +382,7 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void addReminderObject(Reminder reminder) {
+    private void addReminderObject(@NonNull Reminder reminder) {
         if (reminder.getViewType() == Reminder.REMINDER) {
             addObjectResponse(new Reply(Reply.REMINDER, reminder));
         } else {
@@ -379,24 +390,27 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void groupAction(Model model) {
+    private void groupAction(@NonNull Model model) {
         stopView();
+        if (recognize == null) return;
         addResponse(getLocalized(R.string.group_created));
         GroupItem item = recognize.createGroup(model);
         addObjectResponse(new Reply(Reply.GROUP, item));
         new Handler().postDelayed(() -> askGroupAction(item), 1000);
     }
 
-    private void noteAction(Model model) {
+    private void noteAction(@NonNull Model model) {
         stopView();
+        if (recognize == null) return;
         addResponse(getLocalized(R.string.note_created));
         NoteItem item = recognize.createNote(model.getSummary());
         addObjectResponse(new Reply(Reply.NOTE, item));
         new Handler().postDelayed(() -> askNoteAction(item), 1000);
     }
 
-    private void reminderAction(Model model) {
+    private void reminderAction(@NonNull Model model) {
         stopView();
+        if (recognize == null) return;
         Reminder reminder = recognize.createReminder(model);
         addObjectResponse(new Reply(Reply.REMINDER, reminder));
         if (getPrefs().isTellAboutEvent()) {
@@ -410,11 +424,12 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void askGroupAction(GroupItem groupItem) {
+    private void askGroupAction(@NonNull GroupItem groupItem) {
         addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
+                if (recognize == null) return;
                 recognize.saveGroup(groupItem, false);
                 addResponse(getLocalized(R.string.group_saved));
                 mAskAction = null;
@@ -430,7 +445,7 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askReminderAction(Reminder reminder, boolean ask) {
+    private void askReminderAction(@NonNull Reminder reminder, boolean ask) {
         if (ask) addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
@@ -451,11 +466,12 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askNoteAction(NoteItem noteItem) {
+    private void askNoteAction(@NonNull NoteItem noteItem) {
         addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
+                if (recognize == null) return;
                 recognize.saveNote(noteItem, false, false);
                 addResponse(getLocalized(R.string.note_saved));
                 if (getPrefs().isNoteReminderEnabled()) {
@@ -475,11 +491,12 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askQuickReminder(NoteItem noteItem) {
+    private void askQuickReminder(@NonNull NoteItem noteItem) {
         addResponse(getLocalized(R.string.would_you_like_to_add_reminder));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
+                if (recognize == null) return;
                 Model model = recognize.findSuggestion(noteItem.getSummary());
                 addResponse(getLocalized(R.string.reminder_saved));
                 if (model != null && model.getType() == ActionType.REMINDER) {
@@ -505,21 +522,23 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void addAskReply() {
-        mAdapter.addReply(new Reply(Reply.ASK, createAsk(mAskAction)));
+        if (mAdapter != null && mAskAction != null) mAdapter.addReply(new Reply(Reply.ASK, createAsk(mAskAction)));
     }
 
-    private void addResponse(String message) {
-        mAdapter.addReply(new Reply(Reply.RESPONSE, message));
+    private void addResponse(@NonNull String message) {
+        if (mAdapter != null) mAdapter.addReply(new Reply(Reply.RESPONSE, message));
         playTts(message);
     }
 
     private void disableReminders() {
+        if (recognize == null) return;
         recognize.disableAllReminders(false);
         stopView();
         addResponse(getLocalized(R.string.all_reminders_were_disabled));
     }
 
     private void clearTrash() {
+        if (recognize == null) return;
         recognize.emptyTrash(false, () -> {
             stopView();
             addResponse(getLocalized(R.string.trash_was_cleared));
@@ -578,8 +597,8 @@ public class ConversationActivity extends ThemedActivity {
         dialog.show();
     }
 
-    private void playTts(String text) {
-        if (!isTtsReady) return;
+    private void playTts(@NonNull String text) {
+        if (!isTtsReady || tts == null) return;
         if (Module.isLollipop()) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
         } else {
@@ -619,7 +638,7 @@ public class ConversationActivity extends ThemedActivity {
 
     private void micClick() {
         if (binding.recordingView.isWorking()) {
-            speech.stopListening();
+            if (speech != null) speech.stopListening();
             stopView();
             return;
         }
@@ -635,6 +654,7 @@ public class ConversationActivity extends ThemedActivity {
         if (tts != null) {
             tts.stop();
             tts.shutdown();
+            tts = null;
         }
     }
 
@@ -702,7 +722,8 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private AskAction createAsk(AskAction askAction) {
+    @NonNull
+    private AskAction createAsk(@NonNull AskAction askAction) {
         return new AskAction() {
             @Override
             public void onYes() {
