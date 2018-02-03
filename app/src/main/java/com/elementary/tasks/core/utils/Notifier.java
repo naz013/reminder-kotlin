@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.utils;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,7 +20,8 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
-import com.elementary.tasks.core.services.PermanentBirthdayService;
+import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.NoteImage;
@@ -64,8 +63,10 @@ public class Notifier {
     public static void createChannels(Context context) {
         if (Module.isO()) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(createReminderChannel(context));
-            manager.createNotificationChannel(createSystemChannel(context));
+            if (manager != null) {
+                manager.createNotificationChannel(createReminderChannel(context));
+                manager.createNotificationChannel(createSystemChannel(context));
+            }
         }
     }
 
@@ -90,8 +91,13 @@ public class Notifier {
     }
 
     public static void hideNotification(Context context, int id) {
-        NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyMgr.cancel(id);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) manager.cancel(id);
+    }
+
+    public static void updateReminderPermanent(Context context, String action) {
+        context.sendBroadcast(new Intent(context, PermanentReminderReceiver.class)
+                .setAction(action));
     }
 
     public void showNoteNotification(@NonNull NoteItem item) {
@@ -124,7 +130,7 @@ public class Notifier {
             builder.setStyle(s);
         }
         NotificationManager manager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(item.getUniqueId(), builder.build());
+        if (manager != null) manager.notify(item.getUniqueId(), builder.build());
         if (isWear && Module.isJellyMR2()) {
             NotificationCompat.Builder wearableNotificationBuilder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
             wearableNotificationBuilder.setSmallIcon(R.drawable.ic_note_nv_white);
@@ -137,15 +143,15 @@ public class Notifier {
             wearableNotificationBuilder.setOnlyAlertOnce(true);
             wearableNotificationBuilder.setGroup("GROUP");
             wearableNotificationBuilder.setGroupSummary(false);
-            manager.notify(item.getUniqueId(), wearableNotificationBuilder.build());
+            if (manager != null)
+                manager.notify(item.getUniqueId(), wearableNotificationBuilder.build());
         }
     }
 
-    @Nullable
-    public static Notification showBirthdayPermanent(Context context) {
-        Intent dismissIntent = new Intent(context, PermanentBirthdayService.class);
-        dismissIntent.setAction(PermanentBirthdayService.ACTION_HIDE);
-        PendingIntent piDismiss = PendingIntent.getService(context, 0, dismissIntent, 0);
+    public static void showBirthdayPermanent(Context context) {
+        Intent dismissIntent = new Intent(context, PermanentBirthdayReceiver.class);
+        dismissIntent.setAction(PermanentBirthdayReceiver.ACTION_HIDE);
+        PendingIntent piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -179,14 +185,13 @@ public class Notifier {
             } else {
                 builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss);
             }
-            return builder.build();
-        } else {
-            return null;
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null)
+                manager.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build());
         }
     }
 
-    @NonNull
-    public static Notification showReminderPermanent(Context context) {
+    public static void showReminderPermanent(Context context) {
         LogUtil.d(TAG, "showPermanent: ");
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
@@ -203,28 +208,23 @@ public class Notifier {
         } else {
             builder.setPriority(NotificationCompat.PRIORITY_MIN);
         }
-        Intent resultIntent = new Intent(context, CreateReminderActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent resultIntent = new Intent(context, CreateReminderActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(CreateReminderActivity.class);
         stackBuilder.addNextIntentWithParentStack(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-                0);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, 0);
         remoteViews.setOnClickPendingIntent(R.id.notificationAdd, resultPendingIntent);
-        Intent noteIntent = new Intent(context, CreateNoteActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent noteIntent = new Intent(context, CreateNoteActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         TaskStackBuilder noteBuilder = TaskStackBuilder.create(context);
         noteBuilder.addParentStack(CreateNoteActivity.class);
         noteBuilder.addNextIntent(noteIntent);
-        PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0,
-                0);
+        PendingIntent notePendingIntent = noteBuilder.getPendingIntent(0, 0);
         remoteViews.setOnClickPendingIntent(R.id.noteAdd, notePendingIntent);
         Intent resInt = new Intent(context, SplashScreen.class);
         TaskStackBuilder stackInt = TaskStackBuilder.create(context);
         stackInt.addParentStack(SplashScreen.class);
         stackInt.addNextIntent(resInt);
-        PendingIntent resultPendingInt = stackInt.getPendingIntent(0,
-                0);
+        PendingIntent resultPendingInt = stackInt.getPendingIntent(0, 0);
         remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
         remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
         List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
@@ -267,6 +267,7 @@ public class Notifier {
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_note_white, R.id.noteAdd);
         WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon);
         remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()));
-        return builder.build();
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) manager.notify(PermanentReminderReceiver.PERM_ID, builder.build());
     }
 }

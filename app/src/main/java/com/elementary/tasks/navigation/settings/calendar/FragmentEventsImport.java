@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,9 +22,10 @@ import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.services.AlarmReceiver;
-import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -377,7 +377,7 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             if (result > 0) {
                 Toast.makeText(mContext, result + " " + getString(R.string.events_found), Toast.LENGTH_SHORT).show();
                 UpdatesHelper.getInstance(mContext).updateCalendarWidget();
-                mContext.startService(new Intent(mContext, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+                Notifier.updateReminderPermanent(mContext, PermanentReminderReceiver.ACTION_SHOW);
             }
         }
     }

@@ -1,16 +1,14 @@
 package com.elementary.tasks.core.services;
 
-import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
@@ -32,18 +30,16 @@ import java.util.Calendar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class BirthdayActionService extends BroadcastReceiver {
 
-public class BirthdayActionService extends Service {
-
-    public static final String ACTION_SHOW = "com.elementary.tasks.reminder.SHOW";
-    public static final String ACTION_HIDE = "com.elementary.tasks.reminder.HIDE";
-    public static final String ACTION_CALL = "com.elementary.tasks.reminder.CALL";
-    public static final String ACTION_SMS = "com.elementary.tasks.reminder.SMS";
+    public static final String ACTION_SHOW = "com.elementary.tasks.birthday.SHOW_SCREEN";
+    public static final String ACTION_CALL = "com.elementary.tasks.birthday.CALL";
+    public static final String ACTION_SMS = "com.elementary.tasks.birthday.SMS";
 
     private static final String TAG = "BirthdayActionService";
 
     public static Intent hide(Context context, String id) {
-        return intent(context, id, ACTION_HIDE);
+        return intent(context, id, PermanentBirthdayReceiver.ACTION_HIDE);
     }
 
     public static Intent call(Context context, String id) {
@@ -65,28 +61,6 @@ public class BirthdayActionService extends Service {
         return intent;
     }
 
-    @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if (intent != null) {
-            String action = intent.getAction();
-            LogUtil.d(TAG, "onStartCommand: " + action);
-            if (action != null) {
-                if (action.matches(ACTION_HIDE)) {
-                    hidePermanent(intent.getStringExtra(Constants.INTENT_ID));
-                } else if (action.matches(ACTION_CALL)) {
-                    makeCall(intent);
-                } else if (action.matches(ACTION_SMS)) {
-                    sendSms(intent);
-                } else {
-                    showReminder(intent);
-                }
-            } else {
-                stopSelf();
-            }
-        }
-        return START_STICKY;
-    }
-
     private void updateBirthday(BirthdayItem item) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -95,50 +69,59 @@ public class BirthdayActionService extends Service {
         RealmDb.getInstance().saveObject(item);
     }
 
-    private void sendSms(Intent intent) {
+    private void sendSms(Context context, Intent intent) {
         BirthdayItem item = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
-        if (Permissions.checkPermission(getApplicationContext(), Permissions.SEND_SMS)) {
-            TelephonyUtil.sendSms(item.getNumber(), getApplicationContext());
+        if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
+            TelephonyUtil.sendSms(item.getNumber(), context);
             updateBirthday(item);
         } else {
-            hidePermanent(intent.getStringExtra(Constants.INTENT_ID));
+            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
         }
     }
 
-    private void makeCall(Intent intent) {
+    private void makeCall(Context context, Intent intent) {
         BirthdayItem item = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
-        if (Permissions.checkPermission(getApplicationContext(), Permissions.CALL_PHONE)) {
-            TelephonyUtil.makeCall(item.getNumber(), this);
+        if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
+            TelephonyUtil.makeCall(item.getNumber(), context);
             updateBirthday(item);
         } else {
-            hidePermanent(intent.getStringExtra(Constants.INTENT_ID));
+            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
         }
     }
 
-    private void showReminder(Intent intent) {
+    private void showReminder(Context context, Intent intent) {
         BirthdayItem reminder = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
-        Intent notificationIntent = ShowBirthdayActivity.getLaunchIntent(getApplicationContext(),
-                intent.getStringExtra(Constants.INTENT_ID));
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
-        startActivity(notificationIntent);
-        endService(reminder.getUniqueId());
+        if (reminder != null) {
+            Intent notificationIntent = ShowBirthdayActivity.getLaunchIntent(context,
+                    intent.getStringExtra(Constants.INTENT_ID));
+            notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
+            context.startActivity(notificationIntent);
+            Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID);
+        }
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    private void hidePermanent(String id) {
+    private void hidePermanent(Context context, String id) {
         BirthdayItem item = RealmDb.getInstance().getBirthday(id);
-        updateBirthday(item);
-        endService(item.getUniqueId());
+        if (item != null) {
+            updateBirthday(item);
+            Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID);
+        }
     }
 
-    private void endService(int id) {
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.cancel(id);
-        stopSelf();
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent != null) {
+            String action = intent.getAction();
+            LogUtil.d(TAG, "onStartCommand: " + action);
+            if (action != null) {
+                if (action.matches(ACTION_CALL)) {
+                    makeCall(context, intent);
+                } else if (action.matches(ACTION_SMS)) {
+                    sendSms(context, intent);
+                } else {
+                    showReminder(context, intent);
+                }
+            }
+        }
     }
 }

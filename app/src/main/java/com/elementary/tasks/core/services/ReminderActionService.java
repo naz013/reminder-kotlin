@@ -1,9 +1,8 @@
 package com.elementary.tasks.core.services;
 
-import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.elementary.tasks.core.controller.EventControl;
@@ -32,55 +31,46 @@ import org.greenrobot.eventbus.EventBus;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class ReminderActionService extends BroadcastReceiver {
 
-public class ReminderActionService extends Service {
-
-    public static final String ACTION_SHOW = "com.elementary.tasks.reminder.SHOW";
-    public static final String ACTION_HIDE = "com.elementary.tasks.reminder.HIDE";
+    public static final String ACTION_SHOW = "com.elementary.tasks.reminder.SHOW_SCREEN";
+    public static final String ACTION_HIDE = "com.elementary.tasks.reminder.SIMPLE_HIDE";
 
     private static final String TAG = "ReminderActionService";
 
+    private void showReminder(Context context, String id) {
+        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (reminder == null) return;
+        Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id);
+        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
+        context.startActivity(notificationIntent);
+        endService(context, reminder.getUniqueId());
+    }
+
+    private void hidePermanent(Context context, String id) {
+        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (reminder == null) return;
+        EventControl control = EventControlFactory.getController(context, reminder);
+        control.next();
+        EventBus.getDefault().post(new ReminderUpdateEvent());
+        endService(context, reminder.getUniqueId());
+    }
+
+    private void endService(Context context, int id) {
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
+        mNotifyMgr.cancel(id);
+    }
+
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+    public void onReceive(Context context, Intent intent) {
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_HIDE)) {
-                hidePermanent(intent.getStringExtra(Constants.INTENT_ID));
+                hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
             } else {
-                showReminder(intent.getStringExtra(Constants.INTENT_ID));
+                showReminder(context, intent.getStringExtra(Constants.INTENT_ID));
             }
         }
-        return START_STICKY;
-    }
-
-    private void showReminder(String id) {
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
-        if (reminder == null) return;
-        Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(getApplicationContext(), id);
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
-        startActivity(notificationIntent);
-        endService(reminder.getUniqueId());
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    private void hidePermanent(String id) {
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
-        if (reminder == null) return;
-        EventControl control = EventControlFactory.getController(getApplicationContext(), reminder);
-        control.next();
-        EventBus.getDefault().post(new ReminderUpdateEvent());
-        endService(reminder.getUniqueId());
-    }
-
-    private void endService(int id) {
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.cancel(id);
-        stopSelf();
     }
 }

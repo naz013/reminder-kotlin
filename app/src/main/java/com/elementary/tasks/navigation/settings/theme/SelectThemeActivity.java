@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.theme;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -8,8 +7,9 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ColorPickerView;
 
@@ -38,17 +38,17 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_theme_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle(getString(R.string.theme_color));
         int loaded = getPrefs().getAppThemeColor();
-        ColorPickerView pickerView = (ColorPickerView) findViewById(R.id.pickerView);
+        ColorPickerView pickerView = findViewById(R.id.pickerView);
         pickerView.setListener(this);
         pickerView.setSelectedColor(loaded);
 
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab = findViewById(R.id.fab);
         mFab.setBackgroundTintList(ViewUtils.getFabState(this, getThemeUtil().colorAccent(), getThemeUtil().colorPrimary()));
     }
 
@@ -77,7 +77,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
 
     private void updateNotification() {
         if (getPrefs().isSbNotificationEnabled()) {
-            startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+            Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW);
         }
     }
 

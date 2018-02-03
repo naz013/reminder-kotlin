@@ -17,7 +17,7 @@ import android.widget.DatePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.services.PermanentBirthdayService;
+import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
@@ -219,7 +219,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     private void closeScreen() {
         setResult(RESULT_OK);
         finish();
-        startService(new Intent(this, PermanentBirthdayService.class).setAction(PermanentBirthdayService.ACTION_SHOW));
+        sendBroadcast(new Intent(this, PermanentBirthdayReceiver.class).setAction(PermanentBirthdayReceiver.ACTION_SHOW));
     }
 
     private void deleteItem() {

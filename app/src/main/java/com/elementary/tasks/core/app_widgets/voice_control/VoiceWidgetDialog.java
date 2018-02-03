@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 
-import com.elementary.tasks.core.services.PermanentReminderService;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class VoiceWidgetDialog extends Activity {
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
@@ -51,7 +51,7 @@ public class VoiceWidgetDialog extends Activity {
             new Recognize(VoiceWidgetDialog.this).parseResults(matches, true);
             super.onActivityResult(requestCode, resultCode, data);
         }
-        startService(new Intent(this, PermanentReminderService.class).setAction(PermanentReminderService.ACTION_SHOW));
+        Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW);
         finish();
     }
 

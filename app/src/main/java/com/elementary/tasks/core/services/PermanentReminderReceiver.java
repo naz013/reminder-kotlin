@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.services;
 
-import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 
@@ -24,43 +22,26 @@ import com.elementary.tasks.core.utils.Prefs;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class PermanentReminderReceiver extends BroadcastReceiver {
 
-public class PermanentReminderService extends Service {
-
-    private static final int PERM_ID = 356664;
+    public static final int PERM_ID = 356664;
     public static final String ACTION_SHOW = "com.elementary.tasks.SHOW";
     public static final String ACTION_HIDE = "com.elementary.tasks.HIDE";
 
-    private static final String TAG = "PermanentReminderS";
-
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if (!Prefs.getInstance(getApplicationContext()).isSbNotificationEnabled()) {
-            stopForeground(true);
+    public void onReceive(Context context, Intent intent) {
+        if (!Prefs.getInstance(context).isSbNotificationEnabled()) {
+            Notifier.hideNotification(context, PERM_ID);
         }
         if (intent != null) {
             String action = intent.getAction();
-            LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null && action.matches(ACTION_SHOW)) {
-                startForeground(PERM_ID, Notifier.showReminderPermanent(this));
+                Notifier.showReminderPermanent(context);
             } else {
-                stopForeground(true);
+                Notifier.hideNotification(context, PERM_ID);
             }
         } else {
-            stopForeground(true);
+            Notifier.hideNotification(context, PERM_ID);
         }
-        return START_NOT_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        LogUtil.d(TAG, "onDestroy: ");
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }
