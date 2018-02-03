@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/missed_call_reminder"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/missedTimePrefs"
@@ -35,7 +35,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/quick_sms"
                 app:prefs_secondary_text="@string/show_quick_answer_window"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/templatesPrefs"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/after_call_reminder"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

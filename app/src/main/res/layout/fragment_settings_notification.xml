@@ -47,7 +47,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/blur"
                 app:prefs_pro="true"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/manual_remove"
                 app:prefs_secondary_text="@string/allow_removing_notification_manually"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/permanentNotificationPrefs"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/permanent_notification"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/statusIconPrefs"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/show_icon"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:layout_width="match_parent"
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/vibrate"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/infiniteVibrateOptionPrefs"
@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/infinite_vibrate"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/soundOptionPrefs"
@@ -122,7 +122,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/sound_in_silent_mode"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/infiniteSoundOptionPrefs"
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/infinite_sound"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/chooseSoundPrefs"
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/system_loudness"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/streamPrefs"
@@ -170,14 +170,15 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/increasing_loudness"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/ttsPrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/voice_notification" />
+                app:prefs_primary_text="@string/voice_notification"
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/localePrefs"
@@ -206,7 +207,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/turn_on_screen"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/unlockScreenPrefs"
@@ -214,7 +215,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/unlock_screen"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/autoCallPrefs"
@@ -223,7 +224,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/auto_call"
                 app:prefs_secondary_text="@string/enable_making_phone_calls_automatically"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/silentSMSOptionPrefs"
@@ -232,7 +233,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/send_sms"
                 app:prefs_secondary_text="@string/enable_sending_sms_automatically"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/autoLaunchPrefs"
@@ -241,7 +242,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/launch_application"
                 app:prefs_secondary_text="@string/enable_launching_application_automatically"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/delayForPrefs"
@@ -258,7 +259,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/led_notification"
                 app:prefs_pro="true"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/chooseLedColorPrefs"
@@ -275,7 +276,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/repeat_notification"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/repeatIntervalPrefs"

@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/show_reminders"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/reminderColorPrefs"
@@ -67,7 +67,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/feature_events"
                 app:prefs_secondary_text="@string/show_calculated_feature_events"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/bgImagePrefs"
@@ -76,7 +76,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/background"
                 app:prefs_secondary_text="@string/need_to_download_additional_images"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

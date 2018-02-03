@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/_24_hour_time_format"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/mainImagePrefs"
@@ -59,7 +59,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/smart_fold"
                 app:prefs_secondary_text="@string/enable_folding_reminder_window"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/savePrefs"
@@ -68,7 +68,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/save_on_exit"
                 app:prefs_secondary_text="@string/enable_saving_item_automatically"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/wearPrefs"
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/android_wear_notification"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/gcmPrefs"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/receive_notifications_about_application_update"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/export_to_google_calendar"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/eventDurationPrefs"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/export_to_stock_calendar"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/autoBackupPrefs"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/automatically_backup"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/syncIntervalPrefs"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/backup_settings"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

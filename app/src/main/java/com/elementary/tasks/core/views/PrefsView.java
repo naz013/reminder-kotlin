@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.v7.content.res.AppCompatResources;
+import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -37,11 +38,13 @@ import java.util.List;
 
 public class PrefsView extends RelativeLayout {
 
-    private int check = 0;
-    private int text = 2;
-    private int view = 1;
+    private static final int CHECK = 0;
+    private static final int SWITCH = 1;
+    private static final int VIEW = 2;
+    private static final int TEXT = 3;
 
     private CheckBox checkBox;
+    private SwitchCompat switchView;
     private TextView title;
     private TextView detail;
     private TextView prefsValue;
@@ -49,7 +52,7 @@ public class PrefsView extends RelativeLayout {
 
     private boolean isChecked;
     private boolean isForPro;
-    private int viewType = check;
+    private int viewType = CHECK;
 
     private List<PrefsView> mDependencyViews = new ArrayList<>();
     private List<PrefsView> mReverseDependencyViews = new ArrayList<>();
@@ -80,6 +83,7 @@ public class PrefsView extends RelativeLayout {
         dividerTop = findViewById(R.id.dividerTop);
         dividerBottom = findViewById(R.id.dividerBottom);
         prefsView = findViewById(R.id.prefsView);
+        switchView = findViewById(R.id.prefs_switch);
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(
                     attrs, R.styleable.PrefsView, 0, 0);
@@ -96,7 +100,7 @@ public class PrefsView extends RelativeLayout {
                 divTop = a.getBoolean(R.styleable.PrefsView_prefs_divider_top, false);
                 divBottom = a.getBoolean(R.styleable.PrefsView_prefs_divider_bottom, false);
                 isForPro = a.getBoolean(R.styleable.PrefsView_prefs_pro, false);
-                viewType = a.getInt(R.styleable.PrefsView_prefs_type, check);
+                viewType = a.getInt(R.styleable.PrefsView_prefs_type, CHECK);
                 res = a.getInt(R.styleable.PrefsView_prefs_view_resource, 0);
             } catch (Exception e) {
                 LogUtil.e("PrefsView", "There was an error loading attributes.", e);
@@ -175,23 +179,28 @@ public class PrefsView extends RelativeLayout {
     }
 
     private void setView() {
-        if (viewType == check) {
-            checkBox.setVisibility(VISIBLE);
-            prefsValue.setVisibility(GONE);
-            prefsView.setVisibility(GONE);
-        } else if (viewType == text) {
-            checkBox.setVisibility(GONE);
-            prefsValue.setVisibility(VISIBLE);
-            prefsView.setVisibility(GONE);
-        } else if (viewType == view) {
-            checkBox.setVisibility(GONE);
-            prefsValue.setVisibility(GONE);
-            prefsView.setVisibility(VISIBLE);
-        } else {
-            checkBox.setVisibility(GONE);
-            prefsValue.setVisibility(GONE);
-            prefsView.setVisibility(GONE);
+        hideAll();
+        switch (viewType) {
+            case CHECK:
+                checkBox.setVisibility(VISIBLE);
+                break;
+            case SWITCH:
+                switchView.setVisibility(VISIBLE);
+                break;
+            case TEXT:
+                prefsValue.setVisibility(VISIBLE);
+                break;
+            case VIEW:
+                prefsView.setVisibility(VISIBLE);
+                break;
         }
+    }
+
+    private void hideAll() {
+        checkBox.setVisibility(GONE);
+        switchView.setVisibility(GONE);
+        prefsValue.setVisibility(GONE);
+        prefsView.setVisibility(GONE);
     }
 
     public void setTitleText(String text) {
@@ -229,7 +238,8 @@ public class PrefsView extends RelativeLayout {
 
     public void setChecked(boolean checked) {
         this.isChecked = checked;
-        checkBox.setChecked(checked);
+        if (viewType == CHECK) checkBox.setChecked(checked);
+        else if (viewType == SWITCH) switchView.setChecked(checked);
         if (mOnCheckedListeners != null) {
             for (OnCheckedListener listener : mOnCheckedListeners) {
                 listener.onCheckedChange(checked);
@@ -240,6 +250,7 @@ public class PrefsView extends RelativeLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
+        switchView.setEnabled(enabled);
         checkBox.setEnabled(enabled);
         prefsView.setEnabled(enabled);
         prefsValue.setEnabled(enabled);

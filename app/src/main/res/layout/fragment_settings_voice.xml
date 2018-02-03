@@ -42,7 +42,7 @@
                 app:prefs_divider_bottom="true"
                 app:prefs_primary_text="@string/live_conversation"
                 app:prefs_secondary_text="@string/enable_an_experimental_voice_control"
-                app:prefs_type="check" />
+                app:prefs_type="check_switch" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
