@@ -5,7 +5,8 @@ import android.media.AudioManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import timber.log.Timber;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -23,8 +24,6 @@ import android.util.Log;
  * limitations under the License.
  */
 public class SoundStackHolder implements Sound.PlaybackCallback {
-
-    private static final String TAG = "SoundStackHolder";
 
     private static SoundStackHolder instance;
     @Nullable
@@ -56,7 +55,7 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
     private Runnable mVolumeIncrease = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "mVolumeIncrease -> run: " + mVolume + ", " + mStreamVol);
+            Timber.d("mVolumeIncrease -> run: " + mVolume + ", " + mStreamVol);
             if (mVolume < mStreamVol) {
                 mVolume++;
                 mHandler.postDelayed(mVolumeIncrease, 750);
@@ -106,7 +105,7 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
     }
 
     private synchronized void saveDefaultVolume() {
-        Log.d(TAG, "saveDefaultVolume: " + hasDefaultSaved);
+        Timber.d("saveDefaultVolume: %s", hasDefaultSaved);
         if (!hasDefaultSaved && mAudioManager != null) {
             mMusicVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             mAlarmVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
@@ -116,12 +115,15 @@ public class SoundStackHolder implements Sound.PlaybackCallback {
     }
 
     private synchronized void restoreDefaultVolume() {
-        Log.d(TAG, "restoreDefaultVolume: " + hasDefaultSaved + ", doNot: " + isDoNotDisturbEnabled + ", am " + mAudioManager);
+        Timber.d("restoreDefaultVolume: " + hasDefaultSaved + ", doNot: " + isDoNotDisturbEnabled + ", am " + mAudioManager);
         if (hasDefaultSaved && !isDoNotDisturbEnabled) {
             if (mAudioManager != null) {
-                mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
-                mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
+                try {
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0);
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0);
+                } catch (SecurityException ignored) {
+                }
             }
             mMusicVolume = -1;
             mNotificationVolume = -1;
