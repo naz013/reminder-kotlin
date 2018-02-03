@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
@@ -19,6 +22,8 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.tasks.TasksScopes;
 
 import java.io.IOException;
+
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -40,19 +45,26 @@ import static android.app.Activity.RESULT_OK;
 
 public class GoogleLogin {
 
-    private static final String TAG = "GoogleLogin";
     private static final int REQUEST_AUTHORIZATION = 1;
     private static final int REQUEST_ACCOUNT_PICKER = 3;
+    private static final String RT_CODE = "rt";
 
     private Google mGoogle;
     private Activity activity;
     private String mAccountName;
+    @Nullable
     private LoginCallback mCallback;
+    @NonNull
+    private Handler mUiHandler = new Handler(Looper.getMainLooper());
+    @Nullable
+    private ProgressDialog mProgress;
+    @Nullable
+    private Intent rtIntent;
 
-    public GoogleLogin(Activity activity, LoginCallback mCallback) {
+    public GoogleLogin(Activity activity, @Nullable LoginCallback mCallback) {
         this.activity = activity;
         this.mCallback = mCallback;
-        mGoogle = Google.getInstance(activity);
+        this.mGoogle = Google.getInstance(activity);
     }
 
     public void logOut() {
@@ -72,63 +84,65 @@ public class GoogleLogin {
     }
 
     private void getAndUseAuthTokenInAsyncTask(Account account) {
-        AsyncTask<Account, String, String> task = new AsyncTask<Account, String, String>() {
-            ProgressDialog progressDlg;
-            AsyncTask<Account, String, String> me = this;
-
-            @Override
-            protected void onPreExecute() {
-                progressDlg = new ProgressDialog(activity, ProgressDialog.STYLE_SPINNER);
-                progressDlg.setMax(100);
-                progressDlg.setMessage(activity.getString(R.string.trying_to_log_in));
-                progressDlg.setCancelable(false);
-                progressDlg.setIndeterminate(false);
-                progressDlg.setOnCancelListener(dialog -> {
-                    progressDlg.dismiss();
-                    me.cancel(true);
-                });
-                progressDlg.show();
-            }
-
-            @Override
-            protected String doInBackground(Account... params) {
-                return getAccessToken(params[0]);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                if (s != null) {
-                    mAccountName = s;
-                }
-                try {
-                    if (progressDlg != null && progressDlg.isShowing()) {
-                        progressDlg.dismiss();
+        mUiHandler.post(this::showProgress);
+        new Thread(() -> {
+            String token = getAccessToken(account);
+            mUiHandler.post(() -> {
+                if (token != null) {
+                    if (token.equals(RT_CODE)) {
+                        hideProgress();
+                        if (rtIntent != null) {
+                            activity.startActivityForResult(rtIntent, REQUEST_ACCOUNT_PICKER);
+                        } else {
+                            if (mCallback != null) mCallback.onFail();
+                        }
+                    } else {
+                        finishLogin();
+                        hideProgress();
+                        if (mCallback != null) mCallback.onSuccess();
                     }
-                } catch (IllegalArgumentException e) {
-
+                } else {
+                    if (mCallback != null) mCallback.onFail();
                 }
-                if (mCallback != null) mCallback.onSuccess();
-            }
-        };
-        task.execute(account);
+            });
+        });
     }
 
-    private String getAccessToken(Account account) {
+    private void hideProgress() {
+        try {
+            if (mProgress != null && mProgress.isShowing()) {
+                mProgress.dismiss();
+            }
+        } catch (IllegalArgumentException ignored) {
+        }
+        mProgress = null;
+    }
+
+    private void showProgress() {
+        if (mProgress != null && mProgress.isShowing()) return;
+        mProgress = new ProgressDialog(activity, ProgressDialog.STYLE_SPINNER);
+        mProgress.setMessage(activity.getString(R.string.trying_to_log_in));
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+        mProgress.show();
+    }
+
+    @Nullable
+    private String getAccessToken(@NonNull Account account) {
         try {
             String scope = "oauth2:" + DriveScopes.DRIVE + " " + TasksScopes.TASKS;
-            return GoogleAuthUtil.getToken(activity, account, scope);
+            String token = GoogleAuthUtil.getToken(activity, account, scope);
+            Timber.d("getAccessToken: ok");
+            return token;
         } catch (UserRecoverableAuthException e) {
-            activity.startActivityForResult(e.getIntent(), REQUEST_ACCOUNT_PICKER);
-            e.printStackTrace();
-            return null;
+            rtIntent = e.getIntent();
+            Timber.d("getAccessToken: re-try");
+            return RT_CODE;
         } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
             return null;
         } catch (GoogleAuthException e) {
-            e.printStackTrace();
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -138,7 +152,6 @@ public class GoogleLogin {
             mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             GoogleAccountManager gam = new GoogleAccountManager(activity);
             getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName));
-            finishLogin();
         } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
             mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             finishLogin();

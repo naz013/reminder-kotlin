@@ -56,7 +56,6 @@ class LoginActivity : ThemedActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         googleLogin = GoogleLogin(this, object : GoogleLogin.LoginCallback {
-
             override fun onSuccess() {
                 loadDataFromGoogle()
             }

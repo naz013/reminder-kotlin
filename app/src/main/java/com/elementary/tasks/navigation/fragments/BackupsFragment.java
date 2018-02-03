@@ -46,7 +46,6 @@ import java.util.List;
 public class BackupsFragment extends BaseNavigationFragment {
 
     private static final int SD_CODE = 623;
-    private static final String TAG = "BackupsFragment";
 
     private InfoAdapter mAdapter;
     private UserInfoAsync mTask;
