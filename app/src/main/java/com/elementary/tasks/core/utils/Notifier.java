@@ -77,6 +77,7 @@ public class Notifier {
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_SYSTEM, name, importance);
         mChannel.setDescription(descr);
+        mChannel.setShowBadge(false);
         return mChannel;
     }
 
@@ -87,6 +88,7 @@ public class Notifier {
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel mChannel = new NotificationChannel(CHANNEL_REMINDER, name, importance);
         mChannel.setDescription(descr);
+        mChannel.setShowBadge(true);
         return mChannel;
     }
 
