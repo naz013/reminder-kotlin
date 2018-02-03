@@ -134,7 +134,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
     }
@@ -142,7 +142,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (getPrefs().isWearEnabled()) {
+        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
             Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
             mGoogleApiClient.disconnect();
         }
