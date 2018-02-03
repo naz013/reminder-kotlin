@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.elementary.tasks.backups.UserItem;
@@ -28,6 +29,7 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.About;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
@@ -65,15 +67,20 @@ public class Google {
     private static final String APPLICATION_NAME = "Reminder/6.0";
     private static final String FOLDER_NAME = "Reminder";
 
+    @Nullable
     private Drive driveService;
-    private com.google.api.services.tasks.Tasks service;
+    @Nullable
+    private Tasks tasksService;
 
-    private Tasks mTasks;
+    @Nullable
+    private GTasks mTasks;
+    @Nullable
     private Drives mDrives;
 
+    @Nullable
     private static Google instance = null;
 
-    private Google(Context context) throws IllegalStateException {
+    private Google(@NonNull Context context) throws IllegalStateException {
         String user = Prefs.getInstance(context).getDriveUser();
         if (user.matches(".*@.*")) {
             GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS));
@@ -81,21 +88,17 @@ public class Google {
             JsonFactory mJsonFactory = GsonFactory.getDefaultInstance();
             HttpTransport mTransport = AndroidHttp.newCompatibleTransport();
             driveService = new Drive.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
-            service = new com.google.api.services.tasks.Tasks.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
+            tasksService = new com.google.api.services.tasks.Tasks.Builder(mTransport, mJsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
             mDrives = new Drives();
-            mTasks = new Tasks();
+            mTasks = new GTasks();
         } else {
             logOut();
             throw new IllegalArgumentException("Not logged to Google");
         }
     }
 
-    void logOut() {
-        Prefs.getInstance().setDriveUser(Prefs.DRIVE_USER_NONE);
-        instance = null;
-    }
-
-    public static Google getInstance(Context context) {
+    @Nullable
+    public static Google getInstance(@NonNull Context context) {
         try {
             instance = new Google(context.getApplicationContext());
         } catch (IllegalArgumentException | NullPointerException e) {
@@ -104,17 +107,24 @@ public class Google {
         return instance;
     }
 
-    public Tasks getTasks() {
+    void logOut() {
+        Prefs.getInstance().setDriveUser(Prefs.DRIVE_USER_NONE);
+        instance = null;
+    }
+
+    @Nullable
+    public GTasks getTasks() {
         return mTasks;
     }
 
+    @Nullable
     public Drives getDrive() {
         return mDrives;
     }
 
-    public class Tasks {
-        public boolean insertTask(TaskItem item) throws IOException {
-            if (TextUtils.isEmpty(item.getTitle())) {
+    public class GTasks {
+        public boolean insertTask(@NonNull TaskItem item) throws IOException {
+            if (TextUtils.isEmpty(item.getTitle()) || tasksService == null) {
                 return false;
             }
             try {
@@ -129,15 +139,15 @@ public class Google {
                 Task result;
                 String listId = item.getListId();
                 if (!TextUtils.isEmpty(listId)) {
-                    result = service.tasks().insert(listId, task).execute();
+                    result = tasksService.tasks().insert(listId, task).execute();
                 } else {
                     TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();
                     if (taskListItem != null) {
                         item.setListId(taskListItem.getListId());
-                        result = service.tasks().insert(taskListItem.getListId(), task).execute();
+                        result = tasksService.tasks().insert(taskListItem.getListId(), task).execute();
                     } else {
-                        result = service.tasks().insert("@default", task).execute();
-                        TaskList list = service.tasklists().get("@default").execute();
+                        result = tasksService.tasks().insert("@default", task).execute();
+                        TaskList list = tasksService.tasklists().get("@default").execute();
                         if (list != null) {
                             item.setListId(list.getId());
                         }
@@ -154,51 +164,58 @@ public class Google {
             return false;
         }
 
-        public void updateTaskStatus(String status, String listId, String taskId) throws IOException {
-            Task task = service.tasks().get(listId, taskId).execute();
+        public void updateTaskStatus(@NonNull String status, String listId, String taskId) throws IOException {
+            if (tasksService == null) return;
+            Task task = tasksService.tasks().get(listId, taskId).execute();
             task.setStatus(status);
             if (status.matches(TASKS_NEED_ACTION)) {
                 task.setCompleted(Data.NULL_DATE_TIME);
             }
             task.setUpdated(new DateTime(System.currentTimeMillis()));
-            service.tasks().update(listId, task.getId(), task).execute();
+            tasksService.tasks().update(listId, task.getId(), task).execute();
         }
 
-        public void deleteTask(TaskItem item) throws IOException {
-            if (item.getListId() == null) return;
-            service.tasks().delete(item.getListId(), item.getTaskId()).execute();
+        public void deleteTask(@NonNull TaskItem item) throws IOException {
+            if (item.getListId() == null || tasksService == null) return;
+            tasksService.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
 
-        public void updateTask(TaskItem item) throws IOException {
-            Task task = service.tasks().get(item.getListId(), item.getTaskId()).execute();
+        public void updateTask(@NonNull TaskItem item) throws IOException {
+            if (tasksService == null) return;
+            Task task = tasksService.tasks().get(item.getListId(), item.getTaskId()).execute();
             task.setStatus(TASKS_NEED_ACTION);
             task.setTitle(item.getTitle());
             task.setCompleted(Data.NULL_DATE_TIME);
             if (item.getDueDate() != 0) task.setDue(new DateTime(item.getDueDate()));
             if (item.getNotes() != null) task.setNotes(item.getNotes());
             task.setUpdated(new DateTime(System.currentTimeMillis()));
-            service.tasks().update(item.getListId(), task.getId(), task).execute();
+            tasksService.tasks().update(item.getListId(), task.getId(), task).execute();
         }
 
+        @NonNull
         public List<Task> getTasks(String listId) {
             List<Task> taskLists = new ArrayList<>();
+            if (tasksService == null) return taskLists;
             try {
-                taskLists = service.tasks().list(listId).execute().getItems();
+                taskLists = tasksService.tasks().list(listId).execute().getItems();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return taskLists;
         }
 
+        @Nullable
         public TaskLists getTaskLists() throws IOException {
-            return service.tasklists().list().execute();
+            if (tasksService == null) return null;
+            return tasksService.tasklists().list().execute();
         }
 
         public void insertTasksList(String listTitle, int color) {
+            if (tasksService == null) return;
             TaskList taskList = new TaskList();
             taskList.setTitle(listTitle);
             try {
-                TaskList result = service.tasklists().insert(taskList).execute();
+                TaskList result = tasksService.tasklists().insert(taskList).execute();
                 TaskListItem item = new TaskListItem(result, color);
                 RealmDb.getInstance().saveObject(item);
             } catch (IOException e) {
@@ -206,13 +223,13 @@ public class Google {
             }
         }
 
-        public void updateTasksList(final String listTitle, final String listId) throws IOException {
-            if (listId == null) {
+        public void updateTasksList(final String listTitle, @Nullable String listId) throws IOException {
+            if (listId == null || tasksService == null) {
                 return;
             }
-            TaskList taskList = service.tasklists().get(listId).execute();
+            TaskList taskList = tasksService.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
-            service.tasklists().update(listId, taskList).execute();
+            tasksService.tasklists().update(listId, taskList).execute();
             TaskListItem item = RealmDb.getInstance().getTaskList(listId);
             if (item != null) {
                 item.update(taskList);
@@ -220,25 +237,34 @@ public class Google {
             }
         }
 
-        public void deleteTaskList(final String listId) {
+        public void deleteTaskList(@Nullable String listId) {
+            if (listId == null || tasksService == null) {
+                return;
+            }
             try {
-                service.tasklists().delete(listId).execute();
+                tasksService.tasklists().delete(listId).execute();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        public void clearTaskList(final String listId) {
+        public void clearTaskList(@Nullable String listId) {
+            if (listId == null || tasksService == null) {
+                return;
+            }
             try {
-                service.tasks().clear(listId).execute();
+                tasksService.tasks().clear(listId).execute();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        public boolean moveTask(TaskItem item, String oldList) {
+        public boolean moveTask(@NonNull TaskItem item, String oldList) {
+            if (tasksService == null) {
+                return false;
+            }
             try {
-                Task task = service.tasks().get(oldList, item.getTaskId()).execute();
+                Task task = tasksService.tasks().get(oldList, item.getTaskId()).execute();
                 if (task != null) {
                     TaskItem clone = new TaskItem(item);
                     clone.setListId(oldList);
@@ -258,7 +284,9 @@ public class Google {
          *
          * @return user info object
          */
+        @Nullable
         public UserItem getData() {
+            if (driveService == null) return null;
             try {
                 About about = driveService.about().get().setFields("user, storageQuota").execute();
                 About.StorageQuota quota = about.getStorageQuota();
@@ -275,8 +303,9 @@ public class Google {
          *
          * @return number of files in local folder.
          */
-        public int countFiles() throws IOException {
+        int countFiles() throws IOException {
             int count = 0;
+            if (driveService == null) return 0;
             Drive.Files.List request = driveService.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files");
             do {
                 FileList files = request.execute();
@@ -310,7 +339,7 @@ public class Google {
                 folderId = getFolderId();
             } catch (IllegalArgumentException ignored) {
             }
-            if (folderId == null) {
+            if (folderId == null || driveService == null) {
                 return;
             }
             java.io.File folder = MemoryUtil.getPrefsDir();
@@ -332,7 +361,8 @@ public class Google {
             }
         }
 
-        private void removeAllCopies(String fileName) throws IOException {
+        private void removeAllCopies(@NonNull String fileName) throws IOException {
+            if (driveService == null || TextUtils.isEmpty(fileName)) return;
             Drive.Files.List request = driveService.files().list()
                     .setQ("mimeType = 'text/plain' and name contains '" + fileName + "'")
                     .setFields("nextPageToken, files");
@@ -346,9 +376,10 @@ public class Google {
             } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
         }
 
-        public void downloadSettings(Context context, boolean deleteFile) throws IOException {
+        public void downloadSettings(@NonNull Context context, boolean deleteFile) throws IOException {
+            if (driveService == null) return;
             java.io.File folder = MemoryUtil.getPrefsDir();
-            if (!folder.exists() && !folder.mkdirs()) {
+            if (folder == null || !folder.exists() && !folder.mkdirs()) {
                 return;
             }
             Drive.Files.List request = driveService.files().list()
@@ -461,8 +492,9 @@ public class Google {
          * @param metadata metadata.
          * @throws IOException
          */
-        private void saveToDrive(Metadata metadata) throws IOException {
+        private void saveToDrive(@NonNull Metadata metadata) throws IOException {
             if (metadata.getFolder() == null) return;
+            if (driveService == null) return;
             java.io.File[] files = metadata.getFolder().listFiles();
             if (files == null) return;
             String folderId = null;
@@ -493,8 +525,9 @@ public class Google {
          * @param metadata metadata.
          * @throws IOException
          */
-        private void saveFileToDrive(@NonNull String pathToFile, Metadata metadata) throws IOException {
+        private void saveFileToDrive(@NonNull String pathToFile, @NonNull Metadata metadata) throws IOException {
             if (metadata.getFolder() == null) return;
+            if (driveService == null) return;
             java.io.File[] files = metadata.getFolder().listFiles();
             if (files == null) return;
             String folderId = null;
@@ -521,9 +554,10 @@ public class Google {
                     .execute();
         }
 
-        public void download(boolean deleteBackup, Metadata metadata) throws IOException {
+        public void download(boolean deleteBackup, @NonNull Metadata metadata) throws IOException {
+            if (driveService == null) return;
             java.io.File folder = metadata.getFolder();
-            if (!folder.exists() && !folder.mkdirs()) {
+            if (folder == null || !folder.exists() && !folder.mkdirs()) {
                 return;
             }
             Drive.Files.List request = driveService.files().list()
@@ -671,9 +705,9 @@ public class Google {
          *
          * @param title file name.
          */
-        public void deleteReminderFileByName(String title) throws IOException {
+        public void deleteReminderFileByName(@Nullable String title) throws IOException {
             LogUtil.d(TAG, "deleteReminderFileByName: " + title);
-            if (title == null) {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -701,8 +735,8 @@ public class Google {
          *
          * @param title file name.
          */
-        public void deleteNoteFileByName(String title) throws IOException {
-            if (title == null) {
+        public void deleteNoteFileByName(@Nullable String title) throws IOException {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -730,8 +764,8 @@ public class Google {
          *
          * @param title file name.
          */
-        public void deleteGroupFileByName(String title) throws IOException {
-            if (title == null) {
+        public void deleteGroupFileByName(@Nullable String title) throws IOException {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -754,17 +788,13 @@ public class Google {
             } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
         }
 
-        public void deleteFileById(String id) throws IOException {
-            driveService.files().delete(id).execute();
-        }
-
         /**
          * Delete birthday backup file from Google Drive by file name.
          *
          * @param title file name.
          */
-        public void deleteBirthdayFileByName(String title) throws IOException {
-            if (title == null) {
+        public void deleteBirthdayFileByName(@Nullable String title) throws IOException {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -792,8 +822,8 @@ public class Google {
          *
          * @param title file name.
          */
-        public void deletePlaceFileByName(String title) throws IOException {
-            if (title == null) {
+        public void deletePlaceFileByName(@Nullable String title) throws IOException {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -816,8 +846,8 @@ public class Google {
             } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
         }
 
-        public void deleteTemplateFileByName(String title) throws IOException {
-            if (title == null) {
+        public void deleteTemplateFileByName(@Nullable String title) throws IOException {
+            if (title == null || driveService == null) {
                 return;
             }
             String[] strs = title.split(".");
@@ -844,6 +874,7 @@ public class Google {
          * Delete application folder from Google Drive.
          */
         public void clean() throws IOException {
+            if (driveService == null) return;
             Drive.Files.List request = driveService.files().list()
                     .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
             if (request == null) return;
@@ -867,6 +898,7 @@ public class Google {
          * @throws IOException
          */
         public void cleanFolder() throws IOException {
+            if (driveService == null) return;
             Drive.Files.List request = driveService.files().list()
                     .setQ("mimeType = 'text/plain' and (name contains '" + FileConfig.FILE_NAME_SETTINGS + "' " +
                             "or name contains '" + FileConfig.FILE_NAME_TEMPLATE + "' " +
@@ -892,7 +924,9 @@ public class Google {
          *
          * @return Drive folder identifier.
          */
+        @Nullable
         private String getFolderId() throws IOException, IllegalArgumentException {
+            if (driveService == null) return null;
             Drive.Files.List request = driveService.files().list()
                     .setQ("mimeType = 'application/vnd.google-apps.folder' and name contains '" + FOLDER_NAME + "'");
             if (request == null) return null;
@@ -920,7 +954,9 @@ public class Google {
          * @return Drive folder
          * @throws IOException
          */
+        @Nullable
         private File createFolder() throws IOException {
+            if (driveService == null) return null;
             File folder = new File();
             folder.setName(FOLDER_NAME);
             folder.setMimeType("application/vnd.google-apps.folder");
@@ -930,35 +966,42 @@ public class Google {
 
         private class Metadata {
 
-            private String fileExt;
-            private java.io.File folder;
-            private String meta;
-            private Action action;
+            @NonNull
+            private final String fileExt;
+            @Nullable
+            private final java.io.File folder;
+            @Nullable
+            private final String meta;
+            @Nullable
+            private final Action action;
 
-            Metadata(String fileExt, java.io.File folder, String meta, Action action) {
+            Metadata(@NonNull String fileExt, @Nullable java.io.File folder, @Nullable String meta, @Nullable Action action) {
                 this.fileExt = fileExt;
                 this.folder = folder;
                 this.meta = meta;
                 this.action = action;
             }
 
+            @Nullable
             public Action getAction() {
                 return action;
             }
 
+            @NonNull
             String getFileExt() {
                 return fileExt;
             }
 
+            @Nullable
             java.io.File getFolder() {
                 return folder;
             }
 
+            @Nullable
             String getMeta() {
                 return meta;
             }
         }
-
     }
 
     private interface Action {

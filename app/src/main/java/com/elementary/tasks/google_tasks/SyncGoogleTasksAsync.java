@@ -2,6 +2,7 @@ package com.elementary.tasks.google_tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
@@ -11,6 +12,7 @@ import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
@@ -32,23 +34,27 @@ import java.util.Random;
 
 public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
 
-    private Context mContext;
+    @Nullable
     private TasksCallback mListener;
+    @Nullable
+    private Google mGoogle;
+    @Nullable
+    private WeakReference<UpdatesHelper> mHelper;
 
-    public SyncGoogleTasksAsync(Context context, TasksCallback listener) {
-        this.mContext = context;
+    public SyncGoogleTasksAsync(Context context, @Nullable TasksCallback listener) {
+        this.mGoogle = Google.getInstance(context);
+        this.mHelper = new WeakReference<>(UpdatesHelper.getInstance(context));
         this.mListener = listener;
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        Google helper = Google.getInstance(mContext);
-        if (helper == null || helper.getTasks() == null) {
+        if (mGoogle == null || mGoogle.getTasks() == null) {
             return false;
         }
         TaskLists lists = null;
         try {
-            lists = helper.getTasks().getTaskLists();
+            lists = mGoogle.getTasks().getTaskLists();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,18 +70,16 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
                     taskList = new TaskListItem(item, color);
                 }
                 RealmDb.getInstance().saveObject(taskList);
-                List<Task> tasks = helper.getTasks().getTasks(listId);
-                if (tasks != null) {
-                    for (Task task : tasks) {
-                        TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                        if (taskItem != null) {
-                            taskItem.setListId(listId);
-                            taskItem.update(task);
-                        } else {
-                            taskItem = new TaskItem(task, listId);
-                        }
-                        RealmDb.getInstance().saveObject(taskItem);
+                List<Task> tasks = mGoogle.getTasks().getTasks(listId);
+                for (Task task : tasks) {
+                    TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
+                    if (taskItem != null) {
+                        taskItem.setListId(listId);
+                        taskItem.update(task);
+                    } else {
+                        taskItem = new TaskItem(task, listId);
                     }
+                    RealmDb.getInstance().saveObject(taskItem);
                 }
             }
         }
@@ -85,7 +89,10 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aVoid) {
         super.onPostExecute(aVoid);
-        UpdatesHelper.getInstance(mContext).updateTasksWidget();
+        if (mHelper != null) {
+            UpdatesHelper helper = mHelper.get();
+            if (helper != null) helper.updateTasksWidget();
+        }
         if (mListener != null) {
             mListener.onComplete();
         }

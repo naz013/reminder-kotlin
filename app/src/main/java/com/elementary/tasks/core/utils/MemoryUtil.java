@@ -26,28 +26,28 @@ import java.util.Locale;
 public class MemoryUtil {
 
     public static final String DIR_SD = "backup";
-    public static final String DIR_IMAGE_CACHE = "img";
-    public static final String DIR_PREFS = "preferences";
+    private static final String DIR_IMAGE_CACHE = "img";
+    private static final String DIR_PREFS = "preferences";
     public static final String DIR_NOTES_SD = "notes";
     public static final String DIR_GROUP_SD = "groups";
     public static final String DIR_BIRTHDAY_SD = "birthdays";
     public static final String DIR_PLACES_SD = "places";
     public static final String DIR_TEMPLATES_SD = "templates";
-    public static final String DIR_MAIL_SD = "mail_attachments";
-    public static final String DIR_SD_DBX_TMP = "tmp_dropbox";
-    public static final String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
-    public static final String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
-    public static final String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
-    public static final String DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places";
-    public static final String DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates";
-    public static final String DIR_PREFERENCES_SD_DBX_TMP = "tmp_dropbox_preferences";
-    public static final String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
-    public static final String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
-    public static final String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
-    public static final String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
-    public static final String DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places";
-    public static final String DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates";
-    public static final String DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences";
+    private static final String DIR_MAIL_SD = "mail_attachments";
+    private static final String DIR_SD_DBX_TMP = "tmp_dropbox";
+    private static final String DIR_NOTES_SD_DBX_TMP = "tmp_dropbox_notes";
+    private static final String DIR_GROUP_SD_DBX_TMP = "tmp_dropbox_groups";
+    private static final String DIR_BIRTHDAY_SD_DBX_TMP = "tmp_dropbox_birthdays";
+    private static final String DIR_PLACES_SD_DBX_TMP = "tmp_dropbox_places";
+    private static final String DIR_TEMPLATES_SD_DBX_TMP = "tmp_dropbox_templates";
+    private static final String DIR_PREFERENCES_SD_DBX_TMP = "tmp_dropbox_preferences";
+    private static final String DIR_SD_GDRIVE_TMP = "tmp_gdrive";
+    private static final String DIR_NOTES_SD_GDRIVE_TMP = "tmp_gdrive_notes";
+    private static final String DIR_GROUP_SD_GDRIVE_TMP = "tmp_gdrive_group";
+    private static final String DIR_BIRTHDAY_SD_GDRIVE_TMP = "tmp_gdrive_birthdays";
+    private static final String DIR_PLACES_SD_GDRIVE_TMP = "tmp_gdrive_places";
+    private static final String DIR_TEMPLATES_SD_GDRIVE_TMP = "tmp_gdrive_templates";
+    private static final String DIR_PREFERENCES_SD_GDRIVE_TMP = "tmp_gdrive_preferences";
 
     private MemoryUtil() {
     }
