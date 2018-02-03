@@ -412,8 +412,12 @@ public final class BackupTool {
 
     @Nullable
     public NoteItem getNote(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
-        WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
-        return note.get();
+        try {
+            WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
+            return note.get();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Nullable
