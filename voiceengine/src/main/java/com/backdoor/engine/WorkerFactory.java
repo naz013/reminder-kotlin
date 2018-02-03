@@ -1,5 +1,7 @@
 package com.backdoor.engine;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -15,10 +17,10 @@ package com.backdoor.engine;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class WorkerFactory {
 
-    static WorkerInterface getWorker(String locale) {
+    @NotNull
+    static WorkerInterface getWorker(@NotNull String locale) {
         if (locale.matches(Locale.EN)) {
             return new EnLocale();
         } else if (locale.matches(Locale.UK)) {
