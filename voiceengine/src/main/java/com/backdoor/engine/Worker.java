@@ -1,8 +1,5 @@
 package com.backdoor.engine;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -193,7 +190,7 @@ abstract class Worker implements WorkerInterface {
     protected abstract float findFloat(String input);
 
     @Override
-    public long getTime(@NotNull String input, @Nullable Ampm ampm, @NotNull String[] times) {
+    public long getTime(String input, Ampm ampm, String[] times) {
         System.out.println("getTime: " + ampm + ", input " + input);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(0);

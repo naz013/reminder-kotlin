@@ -1,8 +1,5 @@
 package com.backdoor.engine;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 
 /**
@@ -54,7 +51,7 @@ public interface WorkerInterface {
 
     String clearAmpm(String input);
 
-    long getTime(@NotNull String input, @Nullable Ampm ampm, @NotNull String[] times);
+    long getTime(String input, Ampm ampm, String[] times);
 
     String clearTime(String input);
 

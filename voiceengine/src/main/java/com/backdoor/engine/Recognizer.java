@@ -1,8 +1,6 @@
 package com.backdoor.engine;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Calendar;
 import java.util.List;
@@ -22,24 +20,22 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 public class Recognizer {
 
-    @NotNull
+    private static final String TAG = "Recognizer";
+
     private String[] times;
-    @NotNull
     private WorkerInterface worker;
-    @Nullable
     private ContactsInterface contactsInterface;
 
-    private Recognizer(@NotNull String[] times, @NotNull String locale, @Nullable ContactsInterface contactsInterface) {
+    private Recognizer(String[] times, String locale, ContactsInterface contactsInterface) {
         this.times = times;
         this.contactsInterface = contactsInterface;
-        this.worker = WorkerFactory.getWorker(locale);
+        worker = WorkerFactory.getWorker(locale);
     }
 
-    @Nullable
-    public Model parse(@Nullable String string) {
-        if (string == null || string.equals("")) return null;
+    public Model parse(String string) {
         String keyStr = string.toLowerCase().trim();
         keyStr = worker.replaceNumbers(keyStr);
         System.out.println("parse: " + keyStr + ", worker " + worker);
@@ -391,39 +387,35 @@ public class Recognizer {
         public Builder() {
         }
 
-        public TimeBuilder setLocale(@NotNull String locale) {
+        public TimeBuilder setLocale(String locale) {
             return new TimeBuilder(locale);
         }
 
         public class TimeBuilder {
 
-            @NotNull
             private String locale;
 
-            TimeBuilder(@NotNull String locale) {
+            TimeBuilder(String locale) {
                 this.locale = locale;
             }
 
-            public ExtraBuilder setTimes(@NotNull String[] times) {
+            public ExtraBuilder setTimes(String[] times) {
                 return new ExtraBuilder(locale, times);
             }
         }
 
         public class ExtraBuilder {
 
-            @Nullable
             private ContactsInterface contactsInterface;
-            @NotNull
             private String[] times;
-            @NotNull
             private String locale;
 
-            ExtraBuilder(@NotNull String locale, @NotNull String[] times) {
+            ExtraBuilder(String locale, String[] times) {
                 this.locale = locale;
                 this.times = times;
             }
 
-            public ExtraBuilder setContactsInterface(@Nullable ContactsInterface contactsInterface) {
+            public ExtraBuilder setContactsInterface(ContactsInterface contactsInterface) {
                 this.contactsInterface = contactsInterface;
                 return this;
             }
