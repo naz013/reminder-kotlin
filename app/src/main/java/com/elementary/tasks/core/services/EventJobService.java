@@ -229,8 +229,6 @@ public class EventJobService extends Job {
 
     public static void cancelReminder(String tag) {
         Timber.i("cancelReminder: %s", tag);
-        for (Job job : JobManager.instance().getAllJobsForTag(tag)) {
-            job.cancel();
-        }
+        JobManager.instance().cancelAllForTag(tag);
     }
 }
