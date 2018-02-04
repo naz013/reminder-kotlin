@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.filters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.elementary.tasks.reminder.models.Reminder;
 
@@ -26,8 +25,6 @@ import java.util.List;
  * limitations under the License.
  */
 public class ReminderFilterController {
-
-    private static final String TAG = "FilterController";
 
     @NonNull
     private FilterValue<String> searchValue = new FilterValue<>();
@@ -140,5 +137,12 @@ public class ReminderFilterController {
             } else list.add(reminder);
         }
         if (mCallback != null) mCallback.onChanged(list);
+    }
+
+    public void remove(@NonNull Reminder reminder) {
+        if (original.contains(reminder)) {
+            original.remove(reminder);
+            onChanged();
+        }
     }
 }

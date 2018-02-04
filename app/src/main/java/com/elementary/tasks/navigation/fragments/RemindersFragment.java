@@ -11,7 +11,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,6 +52,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -236,6 +237,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         EventControl control = EventControlFactory.getController(getContext(), item1.setRemoved(true));
         control.stop();
         mAdapter.removeItem(position);
+        filterController.remove(item1);
         refreshFilters();
         reloadView();
     }
@@ -410,7 +412,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
             @Override
             public void onMultipleSelected(View view, List<Integer> ids) {
-                Log.d(TAG, "onMultipleSelected: " + ids);
+                Timber.d("onMultipleSelected: %s", ids);
                 List<String> groups = new ArrayList<>();
                 for (Integer i : ids) {
                     if (i == 0) {
