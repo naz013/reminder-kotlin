@@ -59,10 +59,10 @@ public class EventsDataProvider {
         DateTime key = FlextHelper.convertToDateTime(eventTime);
         if (map.containsKey(key)) {
             Events events = map.get(key);
-            events.addEvent(summary, color, type);
+            events.addEvent(summary, color, type, eventTime);
             map.put(key, events);
         } else {
-            Events events = new Events(summary, color, type);
+            Events events = new Events(summary, color, type, eventTime);
             map.put(key, events);
         }
     }

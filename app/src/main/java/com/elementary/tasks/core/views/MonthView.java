@@ -226,10 +226,10 @@ public class MonthView extends View implements View.OnTouchListener {
             Rect r = rects.get(index);
             int cX = r.centerX();
             int cY = r.centerY();
-            if (index < maxEvents - 1) {
-                WeakReference<Events.Event> next = new WeakReference<>(events.getNextWithoutMoving());
-                if (next.get() != null) {
-                    Rect end = rects.get(index + 1);
+            if (index > 0 && index < maxEvents - 1) {
+                WeakReference<Events.Event> prev = new WeakReference<>(events.getPreviousWithoutMoving());
+                if (prev.get() != null) {
+                    Rect end = rects.get(index - 1);
                     canvas.drawLine(cX, cY, end.centerX(), end.centerY(), circlePaint);
                 }
             }
