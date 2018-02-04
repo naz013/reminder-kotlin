@@ -50,10 +50,9 @@ class LocationEvent extends EventManager {
     @Override
     public boolean stop() {
         EventJobService.cancelReminder(getReminder().getUuId());
-        RealmDb.getInstance().saveObject(getReminder().setActive(false));
-        Notifier.hideNotification(getContext(), getReminder().getUniqueId());
         getReminder().setActive(false);
         super.save();
+        Notifier.hideNotification(getContext(), getReminder().getUniqueId());
         stopTracking(false);
         return true;
     }

@@ -414,9 +414,10 @@ public class TaskActivity extends ThemedActivity {
         reminder.setGroupUuId(group.getUuId());
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
-        RealmDb.getInstance().saveObject(reminder);
-        EventControl control = EventControlFactory.getController(this, reminder);
-        control.start();
+        RealmDb.getInstance().saveReminder(reminder, () -> {
+            EventControl control = EventControlFactory.getController(TaskActivity.this, reminder);
+            control.start();
+        });
         return reminder.getUuId();
     }
 

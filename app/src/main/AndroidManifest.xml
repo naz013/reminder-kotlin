@@ -297,6 +297,7 @@
             <intent-filter>
                 <action android:name="com.elementary.tasks.reminder.SHOW_SCREEN" />
                 <action android:name="com.elementary.tasks.reminder.SIMPLE_HIDE" />
+                <action android:name="com.elementary.tasks.reminder.RUN" />
             </intent-filter>
         </receiver>
         <receiver

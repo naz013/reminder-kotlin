@@ -3,8 +3,10 @@ package com.elementary.tasks.creators.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.reminder.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,7 +29,8 @@ public abstract class TypeFragment extends Fragment {
     private Context mContext;
     private ReminderInterface mInterface;
 
-    public abstract boolean save();
+    @Nullable
+    public abstract Reminder prepare();
 
     @Override
     public Context getContext() {

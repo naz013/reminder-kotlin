@@ -281,9 +281,10 @@ public class Recognize {
         }
         mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
-        RealmDb.getInstance().saveObject(mReminder);
-        EventControl control = EventControlFactory.getController(mContext, mReminder);
-        control.start();
+        RealmDb.getInstance().saveReminder(mReminder, () -> {
+            EventControl control = EventControlFactory.getController(mContext, mReminder);
+            control.start();
+        });
         return mReminder;
     }
 

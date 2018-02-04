@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -46,25 +44,25 @@ public class EmailFragment extends RepeatableTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        if (getInterface() == null) return false;
+    public Reminder prepare() {
+        if (getInterface() == null) return null;
         Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_DATE_EMAIL;
         String email = binding.mail.getText().toString().trim();
         if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*")) {
             getInterface().showSnackbar(getString(R.string.email_is_incorrect));
-            return false;
+            return null;
         }
         String subjectString = binding.subject.getText().toString().trim();
         if (TextUtils.isEmpty(subjectString)) {
             getInterface().showSnackbar(getString(R.string.you_dont_insert_any_message));
-            return false;
+            return null;
         }
         long startTime = binding.dateView.getDateTime();
         long before = binding.beforeView.getBeforeValue();
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(getContext(), R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
         if (reminder == null) {
             reminder = new Reminder();
@@ -84,10 +82,9 @@ public class EmailFragment extends RepeatableTypeFragment {
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        return control.start();
+        return reminder;
     }
 
     @Override

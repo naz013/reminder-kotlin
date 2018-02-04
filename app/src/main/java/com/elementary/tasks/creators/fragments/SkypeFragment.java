@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.SuperUtil;
@@ -49,28 +47,28 @@ public class SkypeFragment extends RepeatableTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        if (getInterface() == null) return false;
+    public Reminder prepare() {
+        if (getInterface() == null) return null;
         if (!SuperUtil.isSkypeClientInstalled(getContext())) {
             showInstallSkypeDialog();
-            return false;
+            return null;
         }
-        Reminder reminder = getInterface().getReminder();
-        int type = getType(binding.skypeGroup.getCheckedRadioButtonId());
         if (TextUtils.isEmpty(getInterface().getSummary())) {
             getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
-            return false;
+            return null;
         }
         String number = binding.skypeContact.getText().toString().trim();
         if (TextUtils.isEmpty(number)) {
             getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
-            return false;
+            return null;
         }
+        Reminder reminder = getInterface().getReminder();
+        int type = getType(binding.skypeGroup.getCheckedRadioButtonId());
         long startTime = binding.dateView.getDateTime();
         long before = binding.beforeView.getBeforeValue();
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(getContext(), R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
         if (reminder == null) {
             reminder = new Reminder();
@@ -88,10 +86,9 @@ public class SkypeFragment extends RepeatableTypeFragment {
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        return control.start();
+        return reminder;
     }
 
     private void showInstallSkypeDialog() {

@@ -79,6 +79,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
@@ -665,11 +666,20 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void save() {
-        if (fragment != null && fragment.save()) {
-            if (mReminder != null) {
-                new UpdateFilesAsync(this).execute(mReminder);
+        if (fragment != null) {
+            Reminder reminder = fragment.prepare();
+            if (reminder != null) {
+                Timber.d("save: %s", reminder);
+                RealmDb.getInstance().saveReminder(reminder, () -> {
+                    Timber.d("after save: %s", RealmDb.getInstance().getReminder(reminder.getUuId()));
+                    EventControl control = EventControlFactory.getController(this, reminder);
+                    control.start();
+                    if (mReminder != null) {
+                        new UpdateFilesAsync(this).execute(mReminder);
+                    }
+                    finish();
+                });
             }
-            finish();
         }
     }
 

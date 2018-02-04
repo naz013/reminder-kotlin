@@ -467,7 +467,8 @@ public class Dropbox {
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxTemplatesFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                realmDb.saveObject(backupTool.getReminder(localFile.toString(), null));
+                Reminder reminder = backupTool.getReminder(localFile.toString(), null);
+                if (reminder != null) realmDb.saveReminder(reminder, null);
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
@@ -508,13 +509,14 @@ public class Dropbox {
                 if (reminder == null || reminder.isRemoved() || !reminder.isActive()) {
                     continue;
                 }
-                realmDb.saveObject(reminder);
-                EventControl control = EventControlFactory.getController(mContext, reminder);
-                if (control.canSkip()) {
-                    control.next();
-                } else {
-                    control.start();
-                }
+                realmDb.saveReminder(reminder, () -> {
+                    EventControl control = EventControlFactory.getController(mContext, reminder);
+                    if (control.canSkip()) {
+                        control.next();
+                    } else {
+                        control.start();
+                    }
+                });
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();

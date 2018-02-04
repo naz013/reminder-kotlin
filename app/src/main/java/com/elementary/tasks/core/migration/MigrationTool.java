@@ -51,7 +51,7 @@ public class MigrationTool {
         RemindersBase base = new RemindersBase(context);
         base.open();
         for (Reminder reminder : base.queryAllReminders()) {
-            realmDb.saveObject(reminder);
+            realmDb.saveReminder(reminder, null);
         }
         base.close();
     }

@@ -16,7 +16,6 @@ import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity;
-import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
@@ -125,20 +124,10 @@ public class EventJobService extends Job {
     }
 
     private void start(Context context, String id) {
-        int windowType = Prefs.getInstance(context).getReminderType();
-        boolean ignore = Prefs.getInstance(context).isIgnoreWindowType();
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
-        if (!ignore) {
-            if (reminder != null) {
-                windowType = reminder.getWindowType();
-            }
-        }
-        Timber.d("start: ignore -> %b, event -> %s", ignore, reminder);
-        if (windowType == 0) {
-            context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
-        } else {
-            ReminderUtils.showSimpleReminder(context, id);
-        }
+        Intent intent = new Intent(context, ReminderActionService.class);
+        intent.setAction(ReminderActionService.ACTION_RUN);
+        intent.putExtra(Constants.INTENT_ID, id);
+        context.sendBroadcast(intent);
     }
 
     static void enableMissedCall(Context context, @Nullable String number) {
@@ -202,26 +191,29 @@ public class EventJobService extends Job {
         return true;
     }
 
-    public static void enableReminder(String uuId) {
-        Reminder item = RealmDb.getInstance().getReminder(uuId);
+    public static void enableReminder(@Nullable Reminder reminder) {
         long due = 0;
-        if (item != null) {
-            due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
+        if (reminder != null) {
+            due = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
         }
         LogUtil.d(TAG, "enableReminder: " + TimeUtil.getFullDateTime(due, true, true));
         if (due == 0) {
             return;
         }
-        if (item.getRemindBefore() != 0) {
-            due -= item.getRemindBefore();
+        if (reminder.getRemindBefore() != 0) {
+            due -= reminder.getRemindBefore();
         }
-        if (!Reminder.isBase(item.getType(), Reminder.BY_TIME)) {
+        if (!Reminder.isBase(reminder.getType(), Reminder.BY_TIME)) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(due);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
+            due = calendar.getTimeInMillis();
         }
-        new JobRequest.Builder(item.getUuId())
+        if (due <= System.currentTimeMillis()) {
+            return;
+        }
+        new JobRequest.Builder(reminder.getUuId())
                 .setExact(due - System.currentTimeMillis())
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)

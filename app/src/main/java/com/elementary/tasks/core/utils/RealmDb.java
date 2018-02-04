@@ -101,8 +101,6 @@ public class RealmDb {
             saveTaskList((TaskListItem) o);
         } else if (o instanceof GroupItem) {
             saveGroup((GroupItem) o);
-        } else if (o instanceof Reminder) {
-            saveReminder((Reminder) o);
         } else if (o instanceof CalendarEvent) {
             saveCalendarEvent((CalendarEvent) o);
         } else if (o instanceof CallItem) {
@@ -122,7 +120,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(imageItems);
         realm.commitTransaction();
-        realm.close();
     }
 
     public void saveImage(@NonNull NoteImage item) {
@@ -130,7 +127,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new EditableRealmImage(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -149,7 +145,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmBirthdayItem(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteBirthday(@NonNull BirthdayItem item) {
@@ -160,7 +155,6 @@ public class RealmDb {
             birthdayItem.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -237,7 +231,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmCallItem(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteMissedCall(@NonNull CallItem item) {
@@ -248,7 +241,6 @@ public class RealmDb {
             callItem.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -267,7 +259,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmCalendarEvent(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteCalendarEvent(@NonNull CalendarEvent item) {
@@ -278,7 +269,6 @@ public class RealmDb {
             event.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @NonNull
@@ -310,7 +300,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTemplate(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteTemplates(@NonNull TemplateItem item) {
@@ -321,7 +310,6 @@ public class RealmDb {
             template.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -357,7 +345,6 @@ public class RealmDb {
         realm.copyToRealmOrUpdate(new RealmGroup(new GroupItem(context.getString(R.string.work), random.nextInt(16))));
         realm.copyToRealmOrUpdate(new RealmGroup(new GroupItem(context.getString(R.string.personal), random.nextInt(16))));
         realm.commitTransaction();
-        realm.close();
         return def.getUuId();
     }
 
@@ -366,7 +353,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmGroup(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteGroup(@NonNull GroupItem item) {
@@ -386,7 +372,6 @@ public class RealmDb {
             }
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -406,7 +391,6 @@ public class RealmDb {
             object.setColor(color);
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -456,7 +440,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmPlace(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deletePlace(@NonNull PlaceItem item) {
@@ -467,7 +450,6 @@ public class RealmDb {
             object.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -498,7 +480,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmNote(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteNote(@NonNull NoteItem item) {
@@ -509,7 +490,6 @@ public class RealmDb {
             object.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -531,7 +511,6 @@ public class RealmDb {
             object.setColor(color);
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @NonNull
@@ -554,7 +533,7 @@ public class RealmDb {
                 order = Sort.DESCENDING;
             }
         }
-        List<RealmNote> list = realm.where(RealmNote.class).findAllSorted(field, order);
+        List<RealmNote> list = realm.where(RealmNote.class).sort(field, order).findAll();
         List<NoteItem> items = new ArrayList<>();
         for (RealmNote object : list) {
             WeakReference<NoteItem> reference = new WeakReference<>(new NoteItem(object));
@@ -568,7 +547,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTask(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void deleteTask(@NonNull TaskItem item) {
@@ -579,7 +557,6 @@ public class RealmDb {
             object.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -621,7 +598,7 @@ public class RealmDb {
                 order = Sort.DESCENDING;
             }
         }
-        List<RealmTask> list = realm.where(RealmTask.class).findAllSorted(field, order);
+        List<RealmTask> list = realm.where(RealmTask.class).sort(field, order).findAll();
         List<TaskItem> items = new ArrayList<>();
         for (RealmTask object : list) {
             WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
@@ -653,7 +630,7 @@ public class RealmDb {
                 order = Sort.DESCENDING;
             }
         }
-        List<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).findAllSorted(field, order);
+        List<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).sort(field, order).findAll();
         List<TaskItem> items = new ArrayList<>();
         for (RealmTask object : list) {
             WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
@@ -668,7 +645,6 @@ public class RealmDb {
             RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).findAll();
             list.deleteAllFromRealm();
         });
-        realm.close();
     }
 
     public void deleteTasks() {
@@ -677,7 +653,6 @@ public class RealmDb {
             RealmResults<RealmTask> list = realm.where(RealmTask.class).findAll();
             list.deleteAllFromRealm();
         });
-        realm.close();
     }
 
     public void deleteCompletedTasks(@NonNull String listId) {
@@ -686,7 +661,6 @@ public class RealmDb {
             RealmResults<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).equalTo("status", Google.TASKS_COMPLETE).findAll();
             list.deleteAllFromRealm();
         });
-        realm.close();
     }
 
     @Nullable
@@ -723,7 +697,6 @@ public class RealmDb {
             RealmResults<RealmTaskList> list = realm.where(RealmTaskList.class).findAll();
             list.deleteAllFromRealm();
         });
-        realm.close();
     }
 
     public boolean deleteTaskList(@NonNull String id) {
@@ -734,7 +707,6 @@ public class RealmDb {
             object.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
         return true;
     }
 
@@ -743,7 +715,6 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmTaskList(item));
         realm.commitTransaction();
-        realm.close();
     }
 
     public void setDefault(@NonNull String id) {
@@ -754,7 +725,6 @@ public class RealmDb {
             object.setDef(1);
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     public void setSystemDefault(@NonNull String id) {
@@ -765,7 +735,6 @@ public class RealmDb {
             object.setSystemDefault(1);
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     public void setSimple(@NonNull String id) {
@@ -776,7 +745,6 @@ public class RealmDb {
             object.setDef(0);
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     public void setStatus(@NonNull String id, boolean status) {
@@ -793,7 +761,6 @@ public class RealmDb {
             }
         }
         realm.commitTransaction();
-        realm.close();
     }
 
     @Nullable
@@ -818,7 +785,6 @@ public class RealmDb {
         RealmReminder object = realm.where(RealmReminder.class).equalTo("uuId", id).findFirst();
         if (object != null) object.setGroupUuId(groupId);
         realm.commitTransaction();
-        realm.close();
     }
 
     public boolean deleteReminder(@NonNull String id) {
@@ -829,7 +795,6 @@ public class RealmDb {
             object.deleteFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
         return true;
     }
 
@@ -841,7 +806,7 @@ public class RealmDb {
         Sort[] orders = new Sort[]{Sort.ASCENDING};
         RealmQuery<RealmReminder> query = realm.where(RealmReminder.class);
         query.equalTo("isRemoved", true);
-        RealmResults<RealmReminder> list = query.findAllSorted(fields, orders);
+        RealmResults<RealmReminder> list = query.sort(fields, orders).findAll();
         List<String> uids = new ArrayList<>();
         if (list != null) {
             for (RealmReminder reminder : list) {
@@ -850,13 +815,16 @@ public class RealmDb {
             list.deleteAllFromRealm();
         }
         realm.commitTransaction();
-        realm.close();
         return uids;
     }
 
-    private void saveReminder(@NonNull Reminder item) {
+    public void saveReminder(@NonNull Reminder item, @Nullable Realm.Transaction.OnSuccess listener) {
         try (Realm realm = getRealm()) {
-            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(new RealmReminder(item)));
+            if (listener != null) {
+                realm.executeTransactionAsync(r -> r.copyToRealmOrUpdate(new RealmReminder(item)), listener);
+            } else {
+                realm.executeTransaction(r -> r.copyToRealmOrUpdate(new RealmReminder(item)));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -885,7 +853,8 @@ public class RealmDb {
         List<RealmReminder> list = realm.where(RealmReminder.class)
                 .equalTo("isActive", true)
                 .equalTo("isRemoved", false)
-                .findAllSorted(fields, orders);
+                .sort(fields, orders)
+                .findAll();
         List<Reminder> items = new ArrayList<>();
         for (RealmReminder object : list) {
             WeakReference<Reminder> reference = new WeakReference<>(new Reminder(object));

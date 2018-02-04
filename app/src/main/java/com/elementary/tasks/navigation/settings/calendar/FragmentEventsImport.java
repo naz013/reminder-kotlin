@@ -362,9 +362,10 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             reminder.setSummary(summary);
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
-            RealmDb.getInstance().saveObject(reminder);
-            EventControl control = EventControlFactory.getController(mContext, reminder);
-            control.start();
+            RealmDb.getInstance().saveReminder(reminder, () -> {
+                EventControl control = EventControlFactory.getController(mContext, reminder);
+                control.start();
+            });
             CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
             RealmDb.getInstance().saveObject(event);
         }

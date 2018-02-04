@@ -15,8 +15,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -64,14 +62,14 @@ public class TimerFragment extends RepeatableTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        if (getInterface() == null) return false;
-        Reminder reminder = getInterface().getReminder();
+    public Reminder prepare() {
+        if (getInterface() == null) return null;
         long after = binding.timerPickerView.getTimerValue();
         if (after == 0) {
             Toast.makeText(getContext(), getString(R.string.you_dont_insert_timer_time), Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
+        Reminder reminder = getInterface().getReminder();
         if (reminder == null) {
             reminder = new Reminder();
         }
@@ -93,10 +91,9 @@ public class TimerFragment extends RepeatableTypeFragment {
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        return control.start();
+        return reminder;
     }
 
     @Override
