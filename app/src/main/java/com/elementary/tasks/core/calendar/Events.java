@@ -1,5 +1,7 @@
 package com.elementary.tasks.core.calendar;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,8 +34,8 @@ public class Events {
         events.add(event);
     }
 
-    public Events(String task, int color, Type type) {
-        Event event = new Event(task, color, type);
+    public Events(String task, int color, Type type, long time) {
+        Event event = new Event(task, color, type, time);
         if (events != null) {
             events.add(event);
         } else {
@@ -47,8 +49,8 @@ public class Events {
         mPosition = 0;
     }
 
-    public int addEvent(String task, int color, Type type) {
-        Event event = new Event(task, color, type);
+    public int addEvent(String task, int color, Type type, long time) {
+        Event event = new Event(task, color, type, time);
         if (events != null) {
             events.add(event);
         } else {
@@ -58,8 +60,18 @@ public class Events {
         return events.indexOf(event);
     }
 
+    @Nullable
     public Event getNextWithoutMoving() {
         int index = mPosition + 1;
+        if (events != null && index < events.size()) {
+            return events.get(index);
+        } else return null;
+    }
+
+    @Nullable
+    public Event getPreviousWithoutMoving() {
+        if (mPosition == 0) return null;
+        int index = mPosition - 1;
         if (events != null && index < events.size()) {
             return events.get(index);
         } else return null;
@@ -102,13 +114,6 @@ public class Events {
         private int color;
         private Type type;
         private long time;
-
-        @Deprecated
-        Event(String task, int color, Type type) {
-            this.task = task;
-            this.color = color;
-            this.type = type;
-        }
 
         public Event(String task, int color, Type type, long time) {
             this.task = task;
@@ -155,5 +160,4 @@ public class Events {
                     " || color: " + color + " || type " + type;
         }
     }
-
 }
