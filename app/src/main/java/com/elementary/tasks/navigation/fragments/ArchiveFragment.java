@@ -214,6 +214,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
     private void deleteReminder(Reminder reminder) {
         RealmDb.getInstance().deleteReminder(reminder.getUuId());
         CalendarUtils.deleteEvents(getContext(), reminder.getUuId());
+        filterController.remove(reminder);
         refreshFilters();
     }
 
