@@ -562,13 +562,13 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                         ShopItem item = shoppingAdapter.getItem(position);
                         item.setChecked(!item.isChecked());
                         shoppingAdapter.updateData();
-                        RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                        RealmDb.getInstance().saveReminder(mReminder.setShoppings(shoppingAdapter.getData()), null);
                     }
 
                     @Override
                     public void onItemDelete(int position) {
                         shoppingAdapter.delete(position);
-                        RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                        RealmDb.getInstance().saveReminder(mReminder.setShoppings(shoppingAdapter.getData()), null);
                     }
                 });
         todoList.setAdapter(shoppingAdapter);

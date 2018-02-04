@@ -81,7 +81,7 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
             List<Reminder> items = RealmDb.getInstance().getAllReminders();
             for (Reminder item : items) {
                 item.setGroupUuId(defUiID);
-                RealmDb.getInstance().saveObject(item);
+                RealmDb.getInstance().saveReminder(item, null);
             }
         }
 

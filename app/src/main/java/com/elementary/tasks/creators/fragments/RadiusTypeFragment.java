@@ -4,6 +4,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.Locale;
 
@@ -53,11 +54,11 @@ abstract class RadiusTypeFragment extends TypeFragment {
     protected abstract void recreateMarker();
 
     @Override
-    public boolean save() {
+    public Reminder prepare() {
         if (!SuperUtil.checkLocationEnable(getContext())) {
             SuperUtil.showLocationAlert(getContext(), getInterface());
-            return false;
+            return null;
         }
-        return true;
+        return new Reminder();
     }
 }

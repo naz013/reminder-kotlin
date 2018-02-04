@@ -69,7 +69,7 @@ class RestoreLocalTask(context: Context, listener: SyncListener) : AsyncTask<Voi
             val items = RealmDb.getInstance().allReminders
             for (item in items) {
                 item.groupUuId = defUiID
-                RealmDb.getInstance().saveObject(item)
+                RealmDb.getInstance().saveReminder(item, null)
             }
         }
 

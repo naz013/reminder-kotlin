@@ -107,16 +107,18 @@ public class ShoppingPreviewActivity extends ThemedActivity {
                     new ShopListRecyclerAdapter.ActionListener() {
                         @Override
                         public void onItemCheck(int position, boolean isChecked) {
-                            ShopItem item = shoppingAdapter.getItem(position);
-                            item.setChecked(!item.isChecked());
-                            shoppingAdapter.updateData();
-                            RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                            if (shoppingAdapter != null) {
+                                ShopItem item = shoppingAdapter.getItem(position);
+                                item.setChecked(!item.isChecked());
+                                shoppingAdapter.updateData();
+                                RealmDb.getInstance().saveReminder(mReminder.setShoppings(shoppingAdapter.getData()), null);
+                            }
                         }
 
                         @Override
                         public void onItemDelete(int position) {
-                            shoppingAdapter.delete(position);
-                            RealmDb.getInstance().saveObject(mReminder.setShoppings(shoppingAdapter.getData()));
+                            if (shoppingAdapter != null) shoppingAdapter.delete(position);
+                            RealmDb.getInstance().saveReminder(mReminder.setShoppings(shoppingAdapter.getData()), null);
                         }
                     });
             binding.todoList.setLayoutManager(new LinearLayoutManager(this));

@@ -38,7 +38,7 @@ abstract class RepeatableEventManager extends EventManager {
     }
 
     protected void enableReminder() {
-        EventJobService.enableReminder(getReminder().getUuId());
+        EventJobService.enableReminder(getReminder());
     }
 
     protected void export() {

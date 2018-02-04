@@ -16,8 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
@@ -133,26 +131,26 @@ public class LocationFragment extends RadiusTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        super.save();
-        if (getInterface() == null) return false;
+    public Reminder prepare() {
+        if (super.prepare() == null) return null;
+        if (getInterface() == null) return null;
         Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_LOCATION;
         boolean isAction = binding.actionView.hasAction();
         if (TextUtils.isEmpty(getInterface().getSummary()) && !isAction) {
             getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
-            return false;
+            return null;
         }
         if (lastPos == null) {
             getInterface().showSnackbar(getString(R.string.you_dont_select_place));
-            return false;
+            return null;
         }
         String number = null;
         if (isAction) {
             number = binding.actionView.getNumber();
             if (TextUtils.isEmpty(number)) {
                 getInterface().showSnackbar(getString(R.string.you_dont_insert_number));
-                return false;
+                return null;
             }
             if (binding.actionView.getType() == ActionView.TYPE_CALL) {
                 type = Reminder.BY_LOCATION_CALL;
@@ -180,9 +178,7 @@ public class LocationFragment extends RadiusTypeFragment {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
         }
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        control.start();
-        return true;
+        return reminder;
     }
 
     @Override

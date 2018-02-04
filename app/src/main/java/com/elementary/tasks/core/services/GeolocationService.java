@@ -153,14 +153,14 @@ public class GeolocationService extends Service {
             }
         } else {
             if (roundedDistance < getRadius(place.getRadius())) {
-                RealmDb.getInstance().saveObject(reminder.setLocked(true));
+                RealmDb.getInstance().saveReminder(reminder.setLocked(true), null);
             }
         }
     }
 
     private void showReminder(Reminder reminder) {
         if (reminder.isNotificationShown()) return;
-        RealmDb.getInstance().saveObject(reminder.setNotificationShown(true));
+        RealmDb.getInstance().saveReminder(reminder.setNotificationShown(true), null);
         getApplication().startActivity(ReminderDialogActivity.getLaunchIntent(getApplicationContext(), reminder.getUuId()));
     }
 

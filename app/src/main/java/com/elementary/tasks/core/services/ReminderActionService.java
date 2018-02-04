@@ -9,12 +9,16 @@ import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.reminder.ReminderDialogActivity;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
+
+import timber.log.Timber;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -35,6 +39,7 @@ public class ReminderActionService extends BroadcastReceiver {
 
     public static final String ACTION_SHOW = "com.elementary.tasks.reminder.SHOW_SCREEN";
     public static final String ACTION_HIDE = "com.elementary.tasks.reminder.SIMPLE_HIDE";
+    public static final String ACTION_RUN = "com.elementary.tasks.reminder.RUN";
 
     private static final String TAG = "ReminderActionService";
 
@@ -66,10 +71,28 @@ public class ReminderActionService extends BroadcastReceiver {
         if (intent != null) {
             String action = intent.getAction();
             LogUtil.d(TAG, "onStartCommand: " + action);
-            if (action != null && action.matches(ACTION_HIDE)) {
-                hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
-            } else {
-                showReminder(context, intent.getStringExtra(Constants.INTENT_ID));
+            if (action != null) {
+                if (action.matches(ACTION_HIDE)) {
+                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
+                } else if (action.matches(ACTION_RUN)) {
+                    String id = intent.getStringExtra(Constants.INTENT_ID);
+                    int windowType = Prefs.getInstance(context).getReminderType();
+                    boolean ignore = Prefs.getInstance(context).isIgnoreWindowType();
+                    Reminder reminder = RealmDb.getInstance().getReminder(id);
+                    if (!ignore) {
+                        if (reminder != null) {
+                            windowType = reminder.getWindowType();
+                        }
+                    }
+                    Timber.d("start: ignore -> %b, event -> %s", ignore, reminder);
+                    if (windowType == 0) {
+                        context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
+                    } else {
+                        ReminderUtils.showSimpleReminder(context, id);
+                    }
+                } else {
+                    showReminder(context, intent.getStringExtra(Constants.INTENT_ID));
+                }
             }
         }
     }

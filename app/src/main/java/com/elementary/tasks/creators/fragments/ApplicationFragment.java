@@ -17,8 +17,6 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.apps.ApplicationActivity;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -56,8 +54,8 @@ public class ApplicationFragment extends RepeatableTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        if (getInterface() == null) return false;
+    public Reminder prepare() {
+        if (getInterface() == null) return null;
         Reminder reminder = getInterface().getReminder();
         int type = getType();
         String number;
@@ -65,13 +63,13 @@ public class ApplicationFragment extends RepeatableTypeFragment {
             number = selectedPackage;
             if (TextUtils.isEmpty(number)) {
                 getInterface().showSnackbar(getString(R.string.you_dont_select_application));
-                return false;
+                return null;
             }
         } else {
             number = binding.phoneNumber.getText().toString().trim();
             if (TextUtils.isEmpty(number) || number.matches(".*https?://")) {
                 getInterface().showSnackbar(getString(R.string.you_dont_insert_link));
-                return false;
+                return null;
             }
             if (!number.startsWith("http://") && !number.startsWith("https://"))
                 number = "http://" + number;
@@ -80,7 +78,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         long before = binding.beforeView.getBeforeValue();
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(getContext(), R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
         if (reminder == null) {
             reminder = new Reminder();
@@ -98,10 +96,9 @@ public class ApplicationFragment extends RepeatableTypeFragment {
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
         if (!TimeCount.isCurrent(reminder.getEventTime())) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        return control.start();
+        return reminder;
     }
 
     private int getType() {

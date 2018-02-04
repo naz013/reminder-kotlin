@@ -363,10 +363,11 @@ public class ReminderPreviewActivity extends ThemedActivity {
             }
             newItem.setEventTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
             newItem.setStartTime(TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis()));
-            RealmDb.getInstance().saveObject(newItem);
-            EventControl control = EventControlFactory.getController(this, newItem);
-            control.start();
-            Toast.makeText(this, R.string.reminder_created, Toast.LENGTH_SHORT).show();
+            RealmDb.getInstance().saveReminder(newItem, () -> {
+                EventControl control = EventControlFactory.getController(this, newItem);
+                control.start();
+                Toast.makeText(this, R.string.reminder_created, Toast.LENGTH_SHORT).show();
+            });
         }
     }
 

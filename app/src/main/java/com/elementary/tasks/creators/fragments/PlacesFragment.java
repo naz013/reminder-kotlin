@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.fragments.PlacesMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
@@ -82,21 +80,19 @@ public class PlacesFragment extends RadiusTypeFragment {
     }
 
     @Override
-    public boolean save() {
-        super.save();
-        if (getInterface() == null) {
-            return false;
-        }
+    public Reminder prepare() {
+        if (super.prepare() == null) return null;
+        if (getInterface() == null) return null;
         Reminder reminder = getInterface().getReminder();
         int type = Reminder.BY_PLACES;
         if (TextUtils.isEmpty(getInterface().getSummary())) {
             getInterface().showSnackbar(getString(R.string.task_summary_is_empty));
-            return false;
+            return null;
         }
         List<Place> places = placesMap.getPlaces();
         if (places.size() == 0) {
             getInterface().showSnackbar(getString(R.string.you_dont_select_place));
-            return false;
+            return null;
         }
         if (reminder == null) {
             reminder = new Reminder();
@@ -110,9 +106,7 @@ public class PlacesFragment extends RadiusTypeFragment {
         reminder.setEventTime(null);
         reminder.setStartTime(null);
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-        EventControl control = EventControlFactory.getController(getContext(), reminder);
-        control.start();
-        return true;
+        return reminder;
     }
 
     @Override

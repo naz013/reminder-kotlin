@@ -620,13 +620,14 @@ public class Google {
                 try {
                     Reminder reminder = backupTool.getReminder(file.toString(), null);
                     if (reminder == null || reminder.isRemoved() || !reminder.isActive()) return;
-                    realmDb.saveObject(reminder);
-                    EventControl control = EventControlFactory.getController(context, reminder);
-                    if (control.canSkip()) {
-                        control.next();
-                    } else {
-                        control.start();
-                    }
+                    realmDb.saveReminder(reminder, () -> {
+                        EventControl control = EventControlFactory.getController(context, reminder);
+                        if (control.canSkip()) {
+                            control.next();
+                        } else {
+                            control.start();
+                        }
+                    });
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());
                 }

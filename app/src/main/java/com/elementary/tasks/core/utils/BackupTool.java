@@ -352,13 +352,14 @@ public final class BackupTool {
                         if (realmDb.getGroup(reminder.getGroupUuId()) == null && defaultGroup != null) {
                             reminder.setGroupUuId(defaultGroup.getUuId());
                         }
-                        realmDb.saveObject(reminder);
-                        EventControl control = EventControlFactory.getController(mContext, reminder);
-                        if (control.canSkip()) {
-                            control.next();
-                        } else {
-                            control.start();
-                        }
+                        realmDb.saveReminder(reminder, () -> {
+                            EventControl control = EventControlFactory.getController(mContext, reminder);
+                            if (control.canSkip()) {
+                                control.next();
+                            } else {
+                                control.start();
+                            }
+                        });
                     }
                 }
             }

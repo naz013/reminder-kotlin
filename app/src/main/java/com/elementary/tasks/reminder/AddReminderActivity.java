@@ -170,7 +170,7 @@ public class AddReminderActivity extends ThemedActivity {
         if (item != null) {
             reminder.setGroupUuId(item.getUuId());
         }
-        LogUtil.d(TAG, "save: " + type);
+        LogUtil.d(TAG, "prepare: " + type);
         reminder.setRemindBefore(before);
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
@@ -179,14 +179,13 @@ public class AddReminderActivity extends ThemedActivity {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;
         }
-        RealmDb.getInstance().saveObject(reminder);
-        EventControl control = EventControlFactory.getController(this, reminder);
-        if (!control.start()) {
-            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        setResult(RESULT_OK);
-        finish();
+        RealmDb.getInstance().saveReminder(reminder, () -> {
+            EventControl control = EventControlFactory.getController(AddReminderActivity.this, reminder);
+            control.start();
+            setResult(RESULT_OK);
+            finish();
+        });
+
     }
 
     private void selectContact() {
