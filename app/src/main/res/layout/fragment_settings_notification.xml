@@ -33,6 +33,14 @@
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/ignore_window_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="Ignore window type parameter for each reminder"
+                app:prefs_type="check_switch" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/imagePrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

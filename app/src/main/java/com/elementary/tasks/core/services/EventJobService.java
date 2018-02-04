@@ -125,7 +125,16 @@ public class EventJobService extends Job {
     }
 
     private void start(Context context, String id) {
-        if (Prefs.getInstance(context).getReminderType() == 0) {
+        int windowType = Prefs.getInstance(context).getReminderType();
+        boolean ignore = Prefs.getInstance(context).isIgnoreWindowType();
+        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        if (!ignore) {
+            if (reminder != null) {
+                windowType = reminder.getWindowType();
+            }
+        }
+        Timber.d("start: ignore -> %b, event -> %s", ignore, reminder);
+        if (windowType == 0) {
             context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id));
         } else {
             ReminderUtils.showSimpleReminder(context, id);

@@ -43,6 +43,8 @@ public interface ReminderInterface {
 
     int getRepeatLimit();
 
+    int getWindowType();
+
     String getGroup();
 
     void setRepeatLimit(int repeatLimit);

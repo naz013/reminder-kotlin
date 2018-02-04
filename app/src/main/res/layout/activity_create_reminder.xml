@@ -134,6 +134,17 @@
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_refresh_white" />
 
+                        <ToggleButton
+                            android:id="@+id/window_type_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginStart="8dp"
+                            android:textOn="@string/simple"
+                            android:textOff="@string/full_screen"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:visibility="visible" />
+
                     </LinearLayout>
                 </HorizontalScrollView>
             </LinearLayout>

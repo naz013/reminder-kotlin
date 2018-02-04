@@ -113,10 +113,22 @@ public class NotificationSettingsFragment extends BaseSettingsFragment {
         initRepeatTimePrefs();
         initAutoCallPrefs();
         initReminderTypePrefs();
+        initIgnoreWindowTypePrefs();
         if (!Permissions.checkPermission(getContext(), Permissions.READ_EXTERNAL)) {
             Permissions.requestPermission(getActivity(), PERM_SD, Permissions.READ_EXTERNAL);
         }
         return binding.getRoot();
+    }
+
+    private void changeIgnoreWindowTypePrefs() {
+        boolean isChecked = binding.ignoreWindowType.isChecked();
+        binding.ignoreWindowType.setChecked(!isChecked);
+        getPrefs().setIgnoreWindowType(!isChecked);
+    }
+
+    private void initIgnoreWindowTypePrefs() {
+        binding.ignoreWindowType.setOnClickListener(v -> changeIgnoreWindowTypePrefs());
+        binding.ignoreWindowType.setChecked(getPrefs().isIgnoreWindowType());
     }
 
     private void showRepeatTimeDialog() {

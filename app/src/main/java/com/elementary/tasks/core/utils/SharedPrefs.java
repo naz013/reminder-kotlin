@@ -32,7 +32,6 @@ import java.util.Map;
 
 abstract class SharedPrefs extends PrefsConstants {
 
-    private static final String TAG = "SharedPrefs";
     private SharedPreferences prefs;
 
     private SharedPrefs() {
