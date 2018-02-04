@@ -951,6 +951,7 @@ public final class Prefs extends SharedPrefs {
             uiEd.putBoolean(INCREASING_VOLUME, false);
             uiEd.putBoolean(GCM_ENABLED, true);
             uiEd.putBoolean(LIVE_CONVERSATION, true);
+            uiEd.putBoolean(IGNORE_WINDOW_TYPE, true);
             if (Module.isPro()) {
                 uiEd.putBoolean(BIRTHDAY_LED_STATUS, false);
                 uiEd.putBoolean(LED_STATUS, true);
@@ -1153,6 +1154,9 @@ public final class Prefs extends SharedPrefs {
         if (!hasKey(LIVE_CONVERSATION)) {
             putBoolean(LIVE_CONVERSATION, true);
         }
+        if (!hasKey(IGNORE_WINDOW_TYPE)) {
+            putBoolean(IGNORE_WINDOW_TYPE, true);
+        }
         if (!hasKey(MAIN_IMAGE_ID)) {
             putInt(MAIN_IMAGE_ID, -1);
         }
@@ -1293,5 +1297,13 @@ public final class Prefs extends SharedPrefs {
 
     public void setDropboxToken(String token) {
         putString(DROPBOX_TOKEN, token);
+    }
+
+    public void setIgnoreWindowType(boolean value) {
+        putBoolean(IGNORE_WINDOW_TYPE, value);
+    }
+
+    public boolean isIgnoreWindowType() {
+        return getBoolean(IGNORE_WINDOW_TYPE);
     }
 }

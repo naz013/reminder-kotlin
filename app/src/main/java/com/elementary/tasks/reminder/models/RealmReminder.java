@@ -117,6 +117,8 @@ public class RealmReminder extends RealmObject {
     private long duration;
     @SerializedName("remindBefore")
     private long remindBefore;
+    @SerializedName("windowType")
+    private int windowType = 0;
 
     public RealmReminder() {
     }
@@ -165,6 +167,7 @@ public class RealmReminder extends RealmObject {
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
         this.remindBefore = item.getRemindBefore();
+        this.windowType = item.getWindowType();
         this.places = new RealmList<>();
         for (Place place : item.getPlaces()) {
             places.add(new RealmPlace2(place));
@@ -193,6 +196,14 @@ public class RealmReminder extends RealmObject {
             }
         }
         return strings;
+    }
+
+    public int getWindowType() {
+        return windowType;
+    }
+
+    public void setWindowType(int windowType) {
+        this.windowType = windowType;
     }
 
     public long getRemindBefore() {

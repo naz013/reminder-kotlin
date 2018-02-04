@@ -269,6 +269,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (!TextUtils.isEmpty(attachment)) {
             binding.attachmentButton.setVisibility(View.VISIBLE);
         }
+        binding.windowTypeSwitch.setChecked(mReminder.getWindowType() == 1);
         initParams();
         switch (mReminder.getType()) {
             case Reminder.BY_DATE:
@@ -893,6 +894,11 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     public int getRepeatLimit() {
         return repeatLimit;
+    }
+
+    @Override
+    public int getWindowType() {
+        return binding.windowTypeSwitch.isChecked() ? 1 : 0;
     }
 
     @Override

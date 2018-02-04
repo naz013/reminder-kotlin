@@ -155,6 +155,8 @@ public class Reminder implements RecyclerInterface {
     private long duration;
     @SerializedName("remindBefore")
     private long remindBefore;
+    @SerializedName("windowType")
+    private int windowType = 0;
 
     public static boolean isBase(int type, int base) {
         int res = type - base;
@@ -222,6 +224,7 @@ public class Reminder implements RecyclerInterface {
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
         this.remindBefore = item.getRemindBefore();
+        this.windowType = item.getWindowType();
         if (fullCopy) {
             this.uuId = item.getUuId();
             this.uniqueId = item.getUniqueId();
@@ -272,6 +275,7 @@ public class Reminder implements RecyclerInterface {
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
         this.remindBefore = item.getRemindBefore();
+        this.windowType = item.getWindowType();
         this.places = new ArrayList<>();
         for (RealmPlace2 place : item.getPlaces()) {
             places.add(new Place(place));
@@ -309,6 +313,14 @@ public class Reminder implements RecyclerInterface {
         reminder.setActive(true);
         reminder.setRemoved(false);
         return reminder;
+    }
+
+    public int getWindowType() {
+        return windowType;
+    }
+
+    public void setWindowType(int windowType) {
+        this.windowType = windowType;
     }
 
     public long getRemindBefore() {
@@ -734,6 +746,7 @@ public class Reminder implements RecyclerInterface {
         setUseGlobal(mInterface.getUseGlobal());
         setUnlock(mInterface.getUnlock());
         setAwake(mInterface.getWake());
+        setWindowType(mInterface.getWindowType());
     }
 
     public long getDateTime() {
