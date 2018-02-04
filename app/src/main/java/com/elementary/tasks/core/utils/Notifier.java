@@ -153,7 +153,7 @@ public class Notifier {
     public static void showBirthdayPermanent(Context context) {
         Intent dismissIntent = new Intent(context, PermanentBirthdayReceiver.class);
         dismissIntent.setAction(PermanentBirthdayReceiver.ACTION_HIDE);
-        PendingIntent piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, 0);
+        PendingIntent piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int day = calendar.get(Calendar.DAY_OF_MONTH);

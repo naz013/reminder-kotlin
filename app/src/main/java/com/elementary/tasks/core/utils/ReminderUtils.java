@@ -65,7 +65,7 @@ public final class ReminderUtils {
             builder.setSmallIcon(R.drawable.ic_cake_nv_white);
         }
         PendingIntent intent = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
-                BirthdayActionService.show(context, id), 0);
+                BirthdayActionService.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setOngoing(true);
@@ -111,7 +111,7 @@ public final class ReminderUtils {
         builder.setContentText(context.getString(R.string.birthday));
 
         PendingIntent piDismiss = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
-                BirthdayActionService.hide(context, id), 0);
+                BirthdayActionService.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
         if (Module.isLollipop()) {
             builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
         } else {
@@ -120,7 +120,7 @@ public final class ReminderUtils {
 
         if (!TextUtils.isEmpty(birthdayItem.getNumber())) {
             PendingIntent piCall = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
-                    BirthdayActionService.call(context, id), 0);
+                    BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
             if (Module.isLollipop()) {
                 builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall);
             } else {
@@ -128,7 +128,7 @@ public final class ReminderUtils {
             }
 
             PendingIntent piSms = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
-                    BirthdayActionService.sms(context, id), 0);
+                    BirthdayActionService.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
             if (Module.isLollipop()) {
                 builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms);
             } else {
@@ -151,7 +151,7 @@ public final class ReminderUtils {
         Intent dismissIntent = new Intent(context, ReminderActionService.class);
         dismissIntent.setAction(ReminderActionService.ACTION_HIDE);
         dismissIntent.putExtra(Constants.INTENT_ID, id);
-        PendingIntent piDismiss = PendingIntent.getBroadcast(context, 0, dismissIntent, 0);
+        PendingIntent piDismiss = PendingIntent.getBroadcast(context, reminder.getUniqueId(), dismissIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
@@ -161,7 +161,7 @@ public final class ReminderUtils {
         Intent notificationIntent = new Intent(context, ReminderActionService.class);
         notificationIntent.setAction(ReminderActionService.ACTION_SHOW);
         notificationIntent.putExtra(Constants.INTENT_ID, id);
-        PendingIntent intent = PendingIntent.getBroadcast(context, 0, notificationIntent, 0);
+        PendingIntent intent = PendingIntent.getBroadcast(context, reminder.getUniqueId(), notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setOngoing(true);
