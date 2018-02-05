@@ -633,5 +633,7 @@
     <string name="hours_before">ore înainte</string>
     <string name="minutes_before">minute înainte</string>
     <string name="seconds_before">secunde înainte de</string>
+    <string name="ignore_window_type_parameter_for_each_event">Ignorați parametrul de tip fereastră pentru fiecare eveniment</string>
+    <string name="p_until">% până</string>
 
 </resources>
