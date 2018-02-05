@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:prefs_divider_bottom="true"
-                app:prefs_primary_text="Ignore window type parameter for each reminder"
+                app:prefs_primary_text="@string/ignore_window_type_parameter_for_each_event"
                 app:prefs_type="check_switch" />
 
             <com.elementary.tasks.core.views.PrefsView

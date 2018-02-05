@@ -633,5 +633,7 @@
     <string name="hours_before">godziny przed</string>
     <string name="minutes_before">minuty przed</string>
     <string name="seconds_before">sekund przed</string>
+    <string name="ignore_window_type_parameter_for_each_event">Zignoruj parametr typu okna dla każdego zdarzenia</string>
+    <string name="p_until">% do</string>
 
 </resources>
