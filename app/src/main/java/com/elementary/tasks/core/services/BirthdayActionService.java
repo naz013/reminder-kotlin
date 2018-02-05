@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.Actions;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
@@ -32,9 +33,9 @@ import java.util.Calendar;
  */
 public class BirthdayActionService extends BroadcastReceiver {
 
-    public static final String ACTION_SHOW = "com.elementary.tasks.birthday.SHOW_SCREEN";
-    public static final String ACTION_CALL = "com.elementary.tasks.birthday.CALL";
-    public static final String ACTION_SMS = "com.elementary.tasks.birthday.SMS";
+    public static final String ACTION_SHOW = Actions.Birthday.ACTION_SHOW_FULL;
+    public static final String ACTION_CALL = Actions.Birthday.ACTION_CALL;
+    public static final String ACTION_SMS = Actions.Birthday.ACTION_SMS;
 
     private static final String TAG = "BirthdayActionService";
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.elementary.tasks.Actions;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
@@ -37,9 +38,9 @@ import timber.log.Timber;
  */
 public class ReminderActionService extends BroadcastReceiver {
 
-    public static final String ACTION_SHOW = "com.elementary.tasks.reminder.SHOW_SCREEN";
-    public static final String ACTION_HIDE = "com.elementary.tasks.reminder.SIMPLE_HIDE";
-    public static final String ACTION_RUN = "com.elementary.tasks.reminder.RUN";
+    public static final String ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL;
+    public static final String ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE;
+    public static final String ACTION_RUN = Actions.Reminder.ACTION_RUN;
 
     private static final String TAG = "ReminderActionService";
 

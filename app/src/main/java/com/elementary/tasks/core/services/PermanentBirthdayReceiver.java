@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.Actions;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 
@@ -25,8 +26,8 @@ import com.elementary.tasks.core.utils.Prefs;
 public class PermanentBirthdayReceiver extends BroadcastReceiver {
 
     public static final int BIRTHDAY_PERM_ID = 356665;
-    public static final String ACTION_SHOW = "com.elementary.tasks.birthday.SHOW";
-    public static final String ACTION_HIDE = "com.elementary.tasks.birthday.HIDE";
+    public static final String ACTION_SHOW = Actions.Birthday.ACTION_SB_SHOW;
+    public static final String ACTION_HIDE = Actions.Birthday.ACTION_SB_HIDE;
 
     @Override
     public void onReceive(Context context, Intent intent) {
