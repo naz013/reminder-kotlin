@@ -125,6 +125,20 @@
                     app:tv_icon="@drawable/ic_format_text"
                     app:tv_icon_light="@drawable/ic_format_text_white" />
 
+                <com.elementary.tasks.core.views.TextViewWithIcon
+                    android:id="@+id/window_type_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:drawablePadding="16dp"
+                    android:textSize="18sp"
+                    app:font_style="roboto_regular"
+                    app:tv_icon="@drawable/ic_notifications_black_24dp"
+                    app:tv_icon_light="@drawable/ic_notifications_white_24dp"
+                    app:tv_tint="true" />
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/todoList"
                     android:layout_width="match_parent"

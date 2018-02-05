@@ -29,6 +29,7 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.Sound;
@@ -175,6 +176,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             } else {
                 binding.statusText.setText(R.string.enabled4);
             }
+            binding.windowTypeView.setText(getWindowType(mReminder.getWindowType()));
             binding.taskText.setText(mReminder.getSummary());
             binding.type.setText(ReminderUtils.getTypeString(this, mReminder.getType()));
             binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(mReminder.getType()));
@@ -239,6 +241,15 @@ public class ReminderPreviewActivity extends ThemedActivity {
             new Thread(new NoteThread(mReadyCallback, mReminder.getNoteId())).start();
             new Thread(new TaskThread(mReadyCallback, mReminder.getUuId())).start();
         }
+    }
+
+    private String getWindowType(int reminderWType) {
+        int windowType = Prefs.getInstance(this).getReminderType();
+        boolean ignore = Prefs.getInstance(this).isIgnoreWindowType();
+        if (!ignore) {
+            windowType = reminderWType;
+        }
+        return windowType == 0 ? getString(R.string.full_screen) : getString(R.string.simple);
     }
 
     private void showAttachment() {

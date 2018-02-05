@@ -20,6 +20,7 @@ import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.creators.CreateReminderActivity;
@@ -84,6 +85,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
             } else {
                 binding.switchWrapper.setVisibility(View.VISIBLE);
             }
+            binding.windowTypeView.setText(getWindowType(mReminder.getWindowType()));
             binding.taskText.setText(mReminder.getSummary());
             binding.type.setText(ReminderUtils.getTypeString(this, mReminder.getType()));
             binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(mReminder.getType()));
@@ -99,6 +101,15 @@ public class ShoppingPreviewActivity extends ThemedActivity {
             }
             loadData();
         }
+    }
+
+    private String getWindowType(int reminderWType) {
+        int windowType = Prefs.getInstance(this).getReminderType();
+        boolean ignore = Prefs.getInstance(this).isIgnoreWindowType();
+        if (!ignore) {
+            windowType = reminderWType;
+        }
+        return windowType == 0 ? getString(R.string.full_screen) : getString(R.string.simple);
     }
 
     private void loadData() {
