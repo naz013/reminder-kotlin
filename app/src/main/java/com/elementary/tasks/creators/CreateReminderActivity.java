@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
@@ -671,7 +673,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
             if (reminder != null) {
                 Timber.d("save: %s", reminder);
                 RealmDb.getInstance().saveReminder(reminder, () -> {
-                    Timber.d("after save: %s", RealmDb.getInstance().getReminder(reminder.getUuId()));
+                    if (BuildConfig.DEBUG) {
+                        Timber.d("after save: %s", RealmDb.getInstance().getReminder(reminder.getUuId()));
+                    }
                     EventControl control = EventControlFactory.getController(this, reminder);
                     control.start();
                     if (mReminder != null) {

@@ -146,12 +146,11 @@ public class ShopFragment extends TypeFragment {
         mAdapter.setData(reminder.getShoppings());
         if (!TextUtils.isEmpty(reminder.getEventTime())) {
             isReminder = true;
-            switchDate();
             binding.dateViewShopping.setDateTime(reminder.getEventTime());
         } else {
             isReminder = false;
         }
-
+        switchDate();
     }
 
     private void selectDateDialog() {
