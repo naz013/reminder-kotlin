@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.elementary.tasks.Actions;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 
@@ -25,8 +26,8 @@ import com.elementary.tasks.core.utils.Prefs;
 public class PermanentReminderReceiver extends BroadcastReceiver {
 
     public static final int PERM_ID = 356664;
-    public static final String ACTION_SHOW = "com.elementary.tasks.SHOW";
-    public static final String ACTION_HIDE = "com.elementary.tasks.HIDE";
+    public static final String ACTION_SHOW = Actions.Reminder.ACTION_SB_SHOW;
+    public static final String ACTION_HIDE = Actions.Reminder.ACTION_SB_HIDE;
 
     @Override
     public void onReceive(Context context, Intent intent) {
