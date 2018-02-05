@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,13 +86,13 @@ public class ShopFragment extends TypeFragment {
         if (isReminder) {
             long startTime = binding.dateViewShopping.getDateTime();
             String time = TimeUtil.getGmtFromDateTime(startTime);
-            reminder.setStartTime(time);
-            reminder.setEventTime(time);
             LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true));
             if (!TimeCount.isCurrent(time)) {
                 Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
                 return null;
             }
+            reminder.setStartTime(time);
+            reminder.setEventTime(time);
         } else {
             reminder.setEventTime(null);
             reminder.setStartTime(null);
@@ -143,7 +144,7 @@ public class ShopFragment extends TypeFragment {
         Reminder reminder = getInterface().getReminder();
         binding.dateViewShopping.setDateTime(reminder.getEventTime());
         mAdapter.setData(reminder.getShoppings());
-        if (reminder.getEventTime() != null) {
+        if (!TextUtils.isEmpty(reminder.getEventTime())) {
             isReminder = true;
             switchDate();
             binding.dateViewShopping.setDateTime(reminder.getEventTime());
