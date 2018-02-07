@@ -134,6 +134,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
         binding.buttonEdit.setImageResource(R.drawable.ic_create_black_24dp);
         buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
+        binding.buttonRefresh.setVisibility(View.GONE);
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
         buttonNotification.setImageResource(R.drawable.ic_favorite_black_24dp);
         if (mReminder.getAttachmentFile() != null) showAttachmentButton();
@@ -273,6 +274,13 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             buttonCall.setVisibility(View.GONE);
         }
 
+        if (Reminder.isBase(mReminder.getType(), Reminder.BY_TIME)) {
+            binding.buttonRefresh.setVisibility(View.VISIBLE);
+            binding.buttonRefresh.setOnClickListener(v -> startAgain());
+        } else {
+            binding.buttonRefresh.setVisibility(View.GONE);
+        }
+
         if (Reminder.isGpsType(mReminder.getType())) {
             buttonDelay.setVisibility(View.GONE);
             buttonDelayFor.setVisibility(View.GONE);
@@ -310,6 +318,16 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         if (isTtsEnabled()) {
             startTts();
         }
+    }
+
+    private void startAgain() {
+        if (mControl != null) {
+            mControl.next();
+            mControl.onOff();
+            removeFlags();
+            cancelTasks();
+        }
+        finish();
     }
 
     private void showAttachmentButton() {
