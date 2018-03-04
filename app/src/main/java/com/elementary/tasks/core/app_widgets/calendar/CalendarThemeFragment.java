@@ -3,6 +3,7 @@ package com.elementary.tasks.core.app_widgets.calendar;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -51,7 +52,8 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
     static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
     static final String ARGUMENT_DATA = "arg_data";
     private int pageNumber;
-    private List<CalendarTheme> list;
+    @NonNull
+    private List<CalendarTheme> list = new ArrayList<>();
 
     private ThemeUtil themeUtil;
 
@@ -69,7 +71,8 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         super.onCreate(savedInstanceState);
         Bundle intent = getArguments();
         pageNumber = intent.getInt(ARGUMENT_PAGE_NUMBER);
-        list = intent.getParcelableArrayList(ARGUMENT_DATA);
+        List<CalendarTheme> list = intent.getParcelableArrayList(ARGUMENT_DATA);
+        if (list != null) this.list = list;
     }
 
     @Override

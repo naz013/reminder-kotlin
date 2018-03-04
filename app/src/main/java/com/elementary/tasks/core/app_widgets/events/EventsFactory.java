@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -52,8 +53,9 @@ import java.util.Map;
 
 public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private static final String TAG = "EventsFactory";
+    @NonNull
     private List<CalendarItem> data = new ArrayList<>();
+    @NonNull
     private Map<String, Reminder> map = new HashMap<>();
     private Context mContext;
     private TimeCount mCount;

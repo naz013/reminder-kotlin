@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -36,6 +37,7 @@ import java.util.List;
 
 class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
+    @NonNull
     private List<NoteItem> notes = new ArrayList<>();
     private Context mContext;
     private ThemeUtil themeUtil;
@@ -47,16 +49,17 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
+        notes.clear();
     }
 
     @Override
     public void onDataSetChanged() {
-        notes = RealmDb.getInstance().getAllNotes(null);
+        notes.addAll(RealmDb.getInstance().getAllNotes(null));
     }
 
     @Override
     public void onDestroy() {
-        notes = null;
+        notes.clear();
     }
 
     @Override

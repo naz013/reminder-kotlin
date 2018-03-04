@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -40,7 +41,9 @@ import hirondelle.date4j.DateTime;
 
 public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private List<DateTime> mDateTimeList;
+    @NonNull
+    private List<DateTime> mDateTimeList = new ArrayList<>();
+    @NonNull
     private List<WidgetItem> mPagerData = new ArrayList<>();
     private Context mContext;
     private int mWidgetId;
@@ -55,12 +58,12 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
 
     @Override
     public void onCreate() {
-
+        mDateTimeList.clear();
+        mPagerData.clear();
     }
 
     @Override
     public void onDataSetChanged() {
-        mDateTimeList = new ArrayList<>();
         mDateTimeList.clear();
 
         Calendar calendar = Calendar.getInstance();
@@ -157,7 +160,8 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
 
     @Override
     public void onDestroy() {
-
+        mDateTimeList.clear();
+        mPagerData.clear();
     }
 
     @Override
@@ -285,7 +289,7 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
         private int day, month, year;
         private boolean hasReminders, hasBirthdays;
 
-        public WidgetItem(int day, int month, int year, boolean hasReminders, boolean hasBirthdays) {
+        WidgetItem(int day, int month, int year, boolean hasReminders, boolean hasBirthdays) {
             this.day = day;
             this.month = month;
             this.year = year;
@@ -293,20 +297,12 @@ public class CalendarMonthFactory implements RemoteViewsService.RemoteViewsFacto
             this.hasBirthdays = hasBirthdays;
         }
 
-        public boolean isHasBirthdays() {
+        boolean isHasBirthdays() {
             return hasBirthdays;
         }
 
-        public void setHasBirthdays(boolean hasBirthdays) {
-            this.hasBirthdays = hasBirthdays;
-        }
-
-        public boolean isHasReminders() {
+        boolean isHasReminders() {
             return hasReminders;
-        }
-
-        public void setHasReminders(boolean hasReminders) {
-            this.hasReminders = hasReminders;
         }
 
         public int getYear() {
