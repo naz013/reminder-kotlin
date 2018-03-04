@@ -28,7 +28,6 @@ import java.util.Locale;
 
 public final class Prefs extends SharedPrefs {
 
-    private static final String TAG = "Prefs";
     public static final String DRIVE_USER_NONE = "none";
 
     private static Prefs instance = null;

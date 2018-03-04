@@ -74,8 +74,6 @@ import timber.log.Timber;
 public class RemindersFragment extends BaseNavigationFragment implements SyncTask.SyncListener,
         FilterCallback<Reminder> {
 
-    private static final String TAG = "RemindersFragment";
-
     private FragmentRemindersBinding binding;
     private RecyclerView mRecyclerView;
 
@@ -124,7 +122,9 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                 showActionDialog(position, view);
             } else {
                 Reminder reminder = mAdapter.getItem(position);
-                previewReminder(view, reminder.getUuId(), reminder.getType());
+                if (reminder != null) {
+                    previewReminder(view, reminder.getUuId(), reminder.getType());
+                }
             }
         }
 
@@ -212,10 +212,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
     }
 
     private void showActionDialog(int position, View view) {
+        Reminder item1 = mAdapter.getItem(position);
+        if (item1 == null) return;
         final String[] items = {getString(R.string.open), getString(R.string.edit),
                 getString(R.string.change_group), getString(R.string.move_to_trash)};
         Dialogues.showPopup(getContext(), view, item -> {
-            Reminder item1 = mAdapter.getItem(position);
+
             switch (item) {
                 case 0:
                     previewReminder(view, item1.getUuId(), item1.getType());
@@ -248,6 +250,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     private void switchReminder(int position) {
         Reminder reminder = mAdapter.getItem(position);
+        if (reminder == null) return;
         EventControl control = EventControlFactory.getController(getContext(), reminder);
         if (!control.onOff()) {
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();

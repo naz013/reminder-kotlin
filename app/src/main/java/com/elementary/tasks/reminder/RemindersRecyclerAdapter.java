@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -80,8 +81,10 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         isEditable = editable;
     }
 
+    @Nullable
     public Reminder getItem(int position) {
-        return mData.get(position);
+        if (position >= 0 && position < mData.size()) return mData.get(position);
+        return null;
     }
 
     public void removeItem(int position) {
@@ -94,6 +97,7 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     private void initLabel(RoboTextView listHeader, int position) {
         Reminder item = getItem(position);
+        if (item == null) return;
         long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
         String simpleDate = TimeUtil.getSimpleDate(due);
         Reminder prevItem = null;
@@ -158,12 +162,16 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getViewType();
+        Reminder item = getItem(position);
+        if (item == null) return 0;
+        return item.getViewType();
     }
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getUniqueId();
+        Reminder item = getItem(position);
+        if (item == null) return 0;
+        return item.getUniqueId();
     }
 
     public void setEventListener(RecyclerListener eventListener) {
