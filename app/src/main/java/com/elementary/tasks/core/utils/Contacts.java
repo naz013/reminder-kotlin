@@ -54,7 +54,7 @@ public final class Contacts {
      * @return Contact identifier
      */
     public static int getIdFromNumber(@Nullable String phoneNumber, Context context) {
-        if (phoneNumber == null) return 0;
+        if (phoneNumber == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0;
         int phoneContactID = 0;
         try {
             String contact = Uri.encode(phoneNumber);
@@ -84,7 +84,7 @@ public final class Contacts {
      * @return Contact identifier
      */
     public static int getIdFromMail(@Nullable String eMail, Context context) {
-        if (eMail == null) return 0;
+        if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return 0;
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         int contactId = 0;
         ContentResolver contentResolver = context.getContentResolver();
@@ -112,7 +112,7 @@ public final class Contacts {
      */
     @Nullable
     public static String getNameFromMail(@Nullable String eMail, Context context) {
-        if (eMail == null) return null;
+        if (eMail == null || !Permissions.checkPermission(context, Permissions.READ_CONTACTS)) return null;
         Uri uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Email.CONTENT_FILTER_URI, Uri.encode(eMail));
         String name = "?";
         ContentResolver contentResolver = context.getContentResolver();
@@ -140,7 +140,7 @@ public final class Contacts {
     @Nullable
     public static String getNameFromNumber(@Nullable String contactNumber, Context context) {
         String phoneContactID = null;
-        if (contactNumber != null) {
+        if (contactNumber != null && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
             try {
                 String contact = Uri.encode(contactNumber);
                 Cursor contactLookupCursor = context.getContentResolver().query(
@@ -172,7 +172,7 @@ public final class Contacts {
     @NonNull
     public static String getNumber(@Nullable String name, Context context) {
         String number = "";
-        if (name != null) {
+        if (name != null && Permissions.checkPermission(context, Permissions.READ_CONTACTS)) {
             name = name.replaceAll("'", "''");
         } else {
             return number;
