@@ -495,7 +495,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     private void sendSMS() {
-        if (mReminder == null) return;
+        if (mReminder == null || TextUtils.isEmpty(getSummary())) return;
         if (!Permissions.checkPermission(this, Permissions.SEND_SMS)) {
             Permissions.requestPermission(this, SMS_PERM, Permissions.SEND_SMS);
             return;
