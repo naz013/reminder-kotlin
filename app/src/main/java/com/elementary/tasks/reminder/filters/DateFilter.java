@@ -25,8 +25,6 @@ import java.util.Calendar;
  */
 public class DateFilter extends AbstractFilter<DateFilter.DateRange, Reminder> {
 
-    private static final String TAG = "DateFilter";
-
     private DateRange range = DateRange.ALL;
 
     DateFilter(@Nullable ObjectFilter<Reminder> filter) {
@@ -59,7 +57,7 @@ public class DateFilter extends AbstractFilter<DateFilter.DateRange, Reminder> {
         return compareDay(time, 0);
     }
 
-    private boolean compareDay(String time, int daysAfter) {
+    private boolean compareDay(@Nullable String time, int daysAfter) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis() + daysAfter * AlarmManager.INTERVAL_DAY);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -72,6 +70,7 @@ public class DateFilter extends AbstractFilter<DateFilter.DateRange, Reminder> {
         calendar.set(Calendar.SECOND, 59);
         calendar.set(Calendar.MILLISECOND, 999);
         String end = TimeUtil.getGmtFromDateTime(calendar.getTimeInMillis());
+        if (time == null) return false;
         int st = time.compareTo(start);
         int ed = time.compareTo(end);
         return st >= 0 && ed <= 0;
