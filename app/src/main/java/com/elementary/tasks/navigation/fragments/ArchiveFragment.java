@@ -108,7 +108,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
                 showActionDialog(position, view);
             } else {
                 Reminder reminder = mAdapter.getItem(position);
-                editReminder(reminder.getUuId());
+                if (reminder != null) editReminder(reminder.getUuId());
             }
         }
 
@@ -198,6 +198,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
         final String[] items = {getString(R.string.edit), getString(R.string.delete)};
         Dialogues.showPopup(getContext(), view, item -> {
             Reminder item1 = mAdapter.getItem(position);
+            if (item1 == null) return;
             if (item == 0) {
                 editReminder(item1.getUuId());
             }
