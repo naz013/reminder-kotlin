@@ -211,8 +211,9 @@ class EnLocale extends Worker {
             Action type = getMessageType(part);
             if (type != null) {
                 parts[i] = "";
-                if (parts[i + 1].matches("to")) {
-                    parts[i + 1] = "";
+                int nextIndex = i + 1;
+                if (nextIndex < parts.length && parts[nextIndex].matches("to")) {
+                    parts[nextIndex] = "";
                 }
                 break;
             }
