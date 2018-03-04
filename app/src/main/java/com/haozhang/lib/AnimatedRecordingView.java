@@ -148,6 +148,10 @@ public class AnimatedRecordingView extends BaseSurfaceView {
             mPaint.setAlpha((int) (160 + 95 * i));
             mStopAnimIndex++;
         }
+        if (mBitmapLogo == null) {
+            canvas.restore();
+            return;
+        }
         float left = mWidthCenter - mBitmapLogo.getWidth() / 2;
         if (isStopLeft) {
             left = LOGO_LEFT_MARGIN;
