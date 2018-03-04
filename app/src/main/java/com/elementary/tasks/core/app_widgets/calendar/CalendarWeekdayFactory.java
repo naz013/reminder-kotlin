@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -37,7 +38,8 @@ import hirondelle.date4j.DateTime;
 
 class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    private List<String> mWeekdaysList;
+    @NonNull
+    private List<String> mWeekdaysList = new ArrayList<>();
     private Context mContext;
     private int mWidgetId;
     private int SUNDAY = 1;
@@ -50,11 +52,11 @@ class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
+        mWeekdaysList.clear();
     }
 
     @Override
     public void onDataSetChanged() {
-        mWeekdaysList = new ArrayList<>();
         mWeekdaysList.clear();
         SimpleDateFormat fmt = new SimpleDateFormat("EEE", Locale.getDefault());
 
@@ -72,6 +74,7 @@ class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDestroy() {
+        mWeekdaysList.clear();
     }
 
     @Override

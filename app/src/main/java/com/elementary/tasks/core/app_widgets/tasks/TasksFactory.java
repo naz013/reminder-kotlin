@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -38,14 +39,15 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private Context mContext;
     private int widgetID;
     private ThemeUtil cs;
-    private List<TaskItem> mData;
-    private Map<String, Integer> map;
+    @NonNull
+    private List<TaskItem> mData = new ArrayList<>();
+    @NonNull
+    private Map<String, Integer> map = new HashMap<>();
 
     TasksFactory(Context ctx, Intent intent) {
         mContext = ctx;
@@ -56,9 +58,9 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
-        mData = new ArrayList<>();
+        mData.clear();
         cs = ThemeUtil.getInstance(mContext);
-        map = new HashMap<>();
+        map.clear();
     }
 
     @Override
