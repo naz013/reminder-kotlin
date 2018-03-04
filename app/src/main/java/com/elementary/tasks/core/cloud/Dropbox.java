@@ -200,6 +200,7 @@ public class Dropbox {
             } else {
                 folder = dbxFolder;
             }
+            if (fis == null) return;
             try {
                 String filePath = folder + fileLoopName;
                 mDBApi.files().uploadBuilder(filePath)
@@ -233,6 +234,7 @@ public class Dropbox {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            if (fis == null) return;
             try {
                 mDBApi.files().uploadBuilder(dbxFolder + fileName)
                         .withMode(WriteMode.OVERWRITE)
@@ -713,6 +715,7 @@ public class Dropbox {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            if (fis == null) return;
             try {
                 mDBApi.files().uploadBuilder(dbxSettingsFolder + file.getName())
                         .withMode(WriteMode.OVERWRITE)
