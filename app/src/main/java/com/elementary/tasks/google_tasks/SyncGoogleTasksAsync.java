@@ -71,6 +71,7 @@ public class SyncGoogleTasksAsync extends AsyncTask<Void, Void, Boolean> {
                 }
                 RealmDb.getInstance().saveObject(taskList);
                 List<Task> tasks = mGoogle.getTasks().getTasks(listId);
+                if (tasks.isEmpty()) return false;
                 for (Task task : tasks) {
                     TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
                     if (taskItem != null) {

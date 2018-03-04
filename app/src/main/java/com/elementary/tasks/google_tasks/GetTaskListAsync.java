@@ -72,6 +72,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
                     RealmDb.getInstance().setDefault(listItem.getListId());
                     RealmDb.getInstance().setSystemDefault(listItem.getListId());
                     List<Task> tasks = mGoogle.getTasks().getTasks(listId);
+                    if (tasks.isEmpty()) return false;
                     for (Task task : tasks) {
                         TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
                         if (taskItem != null) {
