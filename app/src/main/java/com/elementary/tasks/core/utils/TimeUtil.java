@@ -70,7 +70,7 @@ public final class TimeUtil {
             } else {
                 return FORMAT_12.format(date);
             }
-        } catch (ParseException | NumberFormatException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         return null;
@@ -100,7 +100,7 @@ public final class TimeUtil {
         String dateTime = Prefs.getInstance(context).getBirthdayTime();
         try {
             date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate);
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         if (date != null) {
@@ -150,7 +150,7 @@ public final class TimeUtil {
                 if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
                     calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
                 }
-            } catch (ParseException e) {
+            } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         }
@@ -172,7 +172,7 @@ public final class TimeUtil {
                 if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
                     calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
                 }
-            } catch (ParseException e) {
+            } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         }
@@ -202,7 +202,7 @@ public final class TimeUtil {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
             Date date = GMT_DATE_FORMAT.parse(dateTime);
             calendar.setTime(date);
-        } catch (ParseException | NumberFormatException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         return calendar.getTimeInMillis();
@@ -267,7 +267,7 @@ public final class TimeUtil {
             Date date = GMT_DATE_FORMAT.parse(gmt);
             calendar.setTime(date);
             calendar.setTimeInMillis(calendar.getTimeInMillis() + (delay * TimeCount.MINUTE));
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         if (is24) {
@@ -284,7 +284,7 @@ public final class TimeUtil {
             GMT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone(GMT));
             Date date = GMT_DATE_FORMAT.parse(dateTime);
             calendar.setTime(date);
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         if (is24) {
@@ -338,8 +338,7 @@ public final class TimeUtil {
     public static Date getDate(@Nullable String date) {
         try {
             return TIME_24.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             return null;
         }
     }
@@ -349,7 +348,7 @@ public final class TimeUtil {
         Date date = null;
         try {
             date = format.parse(dateOfBirth);
-        } catch (ParseException e) {
+        } catch (ParseException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
         }
         Calendar calendar = Calendar.getInstance();
