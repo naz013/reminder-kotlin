@@ -102,6 +102,7 @@ public final class BackupTool {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_TEMPLATE;
             try {
                 writeFile(new File(dir, exportFileName), jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -162,6 +163,7 @@ public final class BackupTool {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_PLACE;
             try {
                 writeFile(new File(dir, exportFileName), jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -222,6 +224,7 @@ public final class BackupTool {
             String exportFileName = item.getUuId() + FileConfig.FILE_NAME_BIRTHDAY;
             try {
                 writeFile(new File(dir, exportFileName), jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -264,6 +267,7 @@ public final class BackupTool {
             LogUtil.d(TAG, "exportGroup: " + file);
             try {
                 writeFile(file, jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -466,6 +470,7 @@ public final class BackupTool {
             String exportFileName = item.getKey() + FileConfig.FILE_NAME_NOTE;
             try {
                 writeFile(new File(dir, exportFileName), jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -484,6 +489,7 @@ public final class BackupTool {
             file = new File(dir, exportFileName);
             try {
                 writeFile(file, jsonData.get());
+                jsonData.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -548,6 +554,7 @@ public final class BackupTool {
      * @return Path to file
      * @throws IOException
      */
+    @Nullable
     private String writeFile(@NonNull File file, @Nullable String data) throws IOException {
         if (data == null) return null;
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
