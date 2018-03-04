@@ -106,9 +106,10 @@ public class EventJobService extends Job {
 
     public static void enableBirthdayAlarm(Context context) {
         String time = Prefs.getInstance(context).getBirthdayTime();
-        long mills = TimeUtil.getBirthdayTime(time);
+        long mills = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis();
+        if (mills <= 0) return;
         new JobRequest.Builder(EVENT_BIRTHDAY)
-                .setExact(mills - System.currentTimeMillis())
+                .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
@@ -133,11 +134,11 @@ public class EventJobService extends Job {
     static void enableMissedCall(Context context, @Nullable String number) {
         if (number == null) return;
         int time = Prefs.getInstance(context).getMissedReminderTime();
-        long mills = System.currentTimeMillis() + (time * (1000 * 60));
+        long mills = (time * (1000 * 60));
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putBoolean(ARG_MISSED, true);
         new JobRequest.Builder(number)
-                .setExact(mills - System.currentTimeMillis())
+                .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
@@ -156,8 +157,12 @@ public class EventJobService extends Job {
     public static void enableDelay(int time, String uuId) {
         long min = TimeCount.MINUTE;
         long due = System.currentTimeMillis() + (min * time);
+        long mills = due - System.currentTimeMillis();
+        if (due == 0 || mills <= 0) {
+            return;
+        }
         new JobRequest.Builder(uuId)
-                .setExact(due - System.currentTimeMillis())
+                .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
@@ -172,14 +177,15 @@ public class EventJobService extends Job {
         if (item == null) {
             return false;
         }
-        long startTime = TimeUtil.getDateTimeFromGmt(item.getEventTime());
-        if (startTime == 0 || startTime < System.currentTimeMillis()) {
+        long due = TimeUtil.getDateTimeFromGmt(item.getEventTime());
+        long mills = due - System.currentTimeMillis();
+        if (due == 0 || mills <= 0) {
             return false;
         }
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putBoolean(ARG_LOCATION, true);
         new JobRequest.Builder(item.getUuId())
-                .setExact(startTime - System.currentTimeMillis())
+                .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
@@ -210,11 +216,12 @@ public class EventJobService extends Job {
             calendar.set(Calendar.MILLISECOND, 0);
             due = calendar.getTimeInMillis();
         }
-        if (due <= System.currentTimeMillis()) {
+        long mills = due - System.currentTimeMillis();
+        if (mills <= 0) {
             return;
         }
         new JobRequest.Builder(reminder.getUuId())
-                .setExact(due - System.currentTimeMillis())
+                .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
                 .setRequiresBatteryNotLow(false)
