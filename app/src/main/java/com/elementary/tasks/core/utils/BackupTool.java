@@ -515,8 +515,11 @@ public final class BackupTool {
         }
         output64.close();
         inputStream.close();
-        LogUtil.d(TAG, "readFileToJson: " + total.toString());
-        return total.toString();
+        String res = total.toString();
+        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]"))) return res;
+        else {
+            throw new IOException("Bad JSON");
+        }
     }
 
     @NonNull
@@ -531,8 +534,11 @@ public final class BackupTool {
         }
         output64.close();
         inputStream.close();
-        LogUtil.d(TAG, "readFileToJson: " + total.toString());
-        return total.toString();
+        String res = total.toString();
+        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]"))) return res;
+        else {
+            throw new IOException("Bad JSON");
+        }
     }
 
     /**
