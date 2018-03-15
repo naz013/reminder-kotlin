@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -34,7 +35,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @NonNull
@@ -67,10 +67,23 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
         return notes.size();
     }
 
+    @Nullable
+    private NoteItem getItem(int position) {
+        try {
+            return notes.get(position);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
     @Override
     public RemoteViews getViewAt(int i) {
         RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_note_widget);
-        NoteItem note = notes.get(i);
+        NoteItem note = getItem(i);
+        if (note == null) {
+            rView.setTextViewText(R.id.note, "Failed to load note!");
+            return rView;
+        }
         rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.getColor()));
 
         if (note.getImages().size() > 0) {
@@ -111,6 +124,6 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public boolean hasStableIds() {
-        return true;
+        return false;
     }
 }
