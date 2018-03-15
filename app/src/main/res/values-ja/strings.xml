@@ -636,5 +636,6 @@
     <string name="seconds_before">数秒前</string>
     <string name="ignore_window_type_parameter_for_each_event">各イベントのウィンドウタイプパラメータを無視する</string>
     <string name="p_until">％まで</string>
+    <string name="failed_to_load">Failed to load!</string>
 
 </resources>

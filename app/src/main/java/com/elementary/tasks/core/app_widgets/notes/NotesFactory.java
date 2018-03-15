@@ -54,6 +54,7 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
+        notes.clear();
         notes.addAll(RealmDb.getInstance().getAllNotes(null));
     }
 
@@ -81,7 +82,7 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_note_widget);
         NoteItem note = getItem(i);
         if (note == null) {
-            rView.setTextViewText(R.id.note, "Failed to load note!");
+            rView.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load));
             return rView;
         }
         rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.getColor()));

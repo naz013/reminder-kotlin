@@ -635,5 +635,6 @@
     <string name="seconds_before">sekund před</string>
     <string name="ignore_window_type_parameter_for_each_event">Ignorujte parametr typu okna pro každou událost</string>
     <string name="p_until">% až do</string>
+    <string name="failed_to_load">Failed to load!</string>
 
 </resources>

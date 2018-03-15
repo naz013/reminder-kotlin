@@ -59,8 +59,8 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onCreate() {
         mData.clear();
-        cs = ThemeUtil.getInstance(mContext);
         map.clear();
+        cs = ThemeUtil.getInstance(mContext);
     }
 
     @Override
@@ -70,7 +70,8 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         for (TaskListItem item : list) {
             map.put(item.getListId(), item.getColor());
         }
-        mData = RealmDb.getInstance().getTasks(null);
+        mData.clear();
+        mData.addAll(RealmDb.getInstance().getTasks(null));
     }
 
     @Override
@@ -91,6 +92,9 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews rView = new RemoteViews(mContext.getPackageName(),
                 R.layout.list_item_tasks_widget);
         if (i >= getCount()) {
+            rView.setTextViewText(R.id.task, mContext.getString(R.string.failed_to_load));
+            rView.setTextViewText(R.id.note, "");
+            rView.setTextViewText(R.id.taskDate, "");
             return rView;
         }
         int theme = sp.getInt(TasksWidgetConfig.TASKS_WIDGET_THEME + widgetID, 0);

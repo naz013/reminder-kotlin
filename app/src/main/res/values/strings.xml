@@ -620,7 +620,7 @@
     <string name="channel_for_other_info_notifications">Channel for other informative notifications</string>
     <string name="tell_about_event">Tell about event</string>
     <string name="add_note">Add note</string>
-    <string name="yearly">Anually</string>
+    <string name="yearly">Annually</string>
     <string name="attach_file">Attach file</string>
     <string name="location_tracking_service_running">Location tracking service running</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -636,5 +636,6 @@
     <string name="invalid_remind_before_parameter">Invalid \"remind before\" parameter</string>
     <string name="p_until">% until</string>
     <string name="ignore_window_type_parameter_for_each_event">Ignore window type parameter for each event</string>
+    <string name="failed_to_load">Failed to load!</string>
 
 </resources>

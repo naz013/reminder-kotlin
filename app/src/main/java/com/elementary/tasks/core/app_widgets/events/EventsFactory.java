@@ -77,6 +77,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         data.clear();
+        map.clear();
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
         List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
         for (Reminder item : reminderItems) {
