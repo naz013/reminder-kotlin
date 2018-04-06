@@ -3,6 +3,7 @@ package com.elementary.tasks.core.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.Actions;
 import com.elementary.tasks.birthdays.BirthdayItem;
@@ -101,7 +102,8 @@ public class BirthdayActionService extends BroadcastReceiver {
         }
     }
 
-    private void hidePermanent(Context context, String id) {
+    private void hidePermanent(Context context, @Nullable String id) {
+        if (id == null) return;
         BirthdayItem item = RealmDb.getInstance().getBirthday(id);
         if (item != null) {
             updateBirthday(item);
@@ -119,6 +121,8 @@ public class BirthdayActionService extends BroadcastReceiver {
                     makeCall(context, intent);
                 } else if (action.matches(ACTION_SMS)) {
                     sendSms(context, intent);
+                } else if (action.matches(PermanentBirthdayReceiver.ACTION_HIDE)) {
+                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
                 } else {
                     showReminder(context, intent);
                 }
