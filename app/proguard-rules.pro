@@ -1,5 +1,3 @@
--libraryjars libs
-
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
 -keepattributes InnerClasses,EnclosingMethod
