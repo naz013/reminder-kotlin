@@ -56,8 +56,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.support:wearable:2.2.0'
-    provided 'com.google.android.wearable:wearable:2.2.0'
-    implementation 'com.google.android.gms:play-services-wearable:11.8.0'
+    implementation 'com.google.android.support:wearable:2.3.0'
+    compileOnly 'com.google.android.wearable:wearable:2.3.0'
+    implementation 'com.google.android.gms:play-services-wearable:12.0.1'
     implementation project(':shared')
 }
