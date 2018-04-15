@@ -8,14 +8,12 @@ import android.support.annotation.Nullable;
 
 import com.elementary.tasks.core.async.EnableThread;
 import com.elementary.tasks.core.migration.MigrationTool;
-import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.intro.IntroActivity;
 import com.elementary.tasks.navigation.MainActivity;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 public class SplashScreen extends ThemedActivity {
 
@@ -23,9 +21,6 @@ public class SplashScreen extends ThemedActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPrefs();
-        if (Prefs.getInstance(this).isGcmEnabled()) {
-            FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
-        }
         if (Prefs.getInstance(this).isSbNotificationEnabled()) {
             Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW);
         }

@@ -11,14 +11,12 @@ import android.widget.ArrayAdapter;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.SplashScreen;
-import com.elementary.tasks.core.services.GcmListenerService;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.FragmentSettingsGeneralBinding;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -55,7 +53,6 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         initMainImage();
         initSmartFold();
         initWearNotification();
-        initGcmPrefs();
         init24TimePrefs();
         initSavePrefs();
         initLanguagePrefs();
@@ -111,22 +108,6 @@ public class GeneralSettingsFragment extends BaseSettingsFragment {
         boolean is24 = binding.time24hourPrefs.isChecked();
         getPrefs().set24HourFormatEnabled(!is24);
         binding.time24hourPrefs.setChecked(!is24);
-    }
-
-    private void initGcmPrefs() {
-        binding.gcmPrefs.setChecked(getPrefs().isGcmEnabled());
-        binding.gcmPrefs.setOnClickListener(view -> changeGcmPrefs());
-    }
-
-    private void changeGcmPrefs() {
-        boolean isChecked = binding.gcmPrefs.isChecked();
-        getPrefs().setGcmEnabled(!isChecked);
-        binding.gcmPrefs.setChecked(!isChecked);
-        if (!isChecked) {
-            FirebaseMessaging.getInstance().subscribeToTopic(GcmListenerService.TOPIC_NAME);
-        } else {
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(GcmListenerService.TOPIC_NAME);
-        }
     }
 
     private void initAppTheme() {
