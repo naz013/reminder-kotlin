@@ -858,14 +858,6 @@ public final class Prefs extends SharedPrefs {
         putString(TASKS_ORDER, value);
     }
 
-    public boolean isGcmEnabled() {
-        return getBoolean(GCM_ENABLED);
-    }
-
-    public void setGcmEnabled(boolean value) {
-        putBoolean(GCM_ENABLED, value);
-    }
-
     public void initPrefs(Context context) {
         File settingsUI = new File("/data/data/" + context.getPackageName() + "/shared_prefs/" + PREFS_NAME + ".xml");
         if (!settingsUI.exists()) {
