@@ -9,6 +9,7 @@
 -dontwarn javax.**
 -dontwarn io.realm.**
 -dontwarn com.google.firebase.**
+-dontwarn okhttp3.internal.platform.**
 
 -keep class io.realm.annotations.RealmModule
 
@@ -63,6 +64,7 @@
 -dontnote org.json.**
 -dontnote org.dmfs.rfc5545.**
 -dontnote com.backdoor.simpleai.**
+-dontnote okhttp3.internal.platform.**
 
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
