@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.elementary.tasks.Actions;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
@@ -76,6 +77,7 @@ public class BirthdayActionService extends BroadcastReceiver {
         if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
             TelephonyUtil.sendSms(item.getNumber(), context);
             updateBirthday(item);
+            finish(context, item.getUniqueId());
         } else {
             hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
         }
@@ -86,6 +88,7 @@ public class BirthdayActionService extends BroadcastReceiver {
         if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(item.getNumber(), context);
             updateBirthday(item);
+            finish(context, item.getUniqueId());
         } else {
             hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
         }
@@ -107,8 +110,14 @@ public class BirthdayActionService extends BroadcastReceiver {
         BirthdayItem item = RealmDb.getInstance().getBirthday(id);
         if (item != null) {
             updateBirthday(item);
-            Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID);
+            finish(context, item.getUniqueId());
         }
+    }
+
+    private static void finish(Context context, int id) {
+        Notifier.hideNotification(context, id);
+        UpdatesHelper.getInstance(context).updateWidget();
+        UpdatesHelper.getInstance(context).updateCalendarWidget();
     }
 
     @Override
