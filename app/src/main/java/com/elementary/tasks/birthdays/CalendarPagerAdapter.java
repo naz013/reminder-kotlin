@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,21 +22,18 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class CalendarPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<EventsPagerItem> datas;
+    private List<EventsPagerItem> datas = new ArrayList<>();
 
     public CalendarPagerAdapter(final FragmentManager fm, final List<EventsPagerItem> datas) {
         super(fm);
-        this.datas = datas;
+        this.datas.addAll(datas);
     }
 
     @Override
     public Fragment getItem(final int position) {
-        EventsListFragment fragment = new EventsListFragment();
-        fragment.setData(datas.get(position).getDatas());
-        return fragment;
+        return EventsListFragment.newInstance(datas.get(position));
     }
 
     @Override

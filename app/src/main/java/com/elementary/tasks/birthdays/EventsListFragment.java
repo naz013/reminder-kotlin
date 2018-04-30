@@ -28,6 +28,8 @@ import com.elementary.tasks.reminder.models.Reminder;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -44,22 +46,29 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class EventsListFragment extends BaseFragment implements RecyclerListener {
+public class EventsListFragment extends BaseFragment implements RecyclerListener, DayViewProvider.Callback, DayViewProvider.InitCallback {
+
+    private static final String ARGUMENT_PAGE_NUMBER = "arg_page";
 
     private FragmentEventsListBinding binding;
     private List<EventsItem> mDataList = new ArrayList<>();
-    static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
+    @Nullable
+    private EventsPagerItem mItem;
 
-    public void setData(List<EventsItem> datas) {
-        this.mDataList = new ArrayList<>(datas);
+    public static EventsListFragment newInstance(EventsPagerItem item) {
+        EventsListFragment pageFragment = new EventsListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARGUMENT_PAGE_NUMBER, item);
+        pageFragment.setArguments(bundle);
+        return pageFragment;
     }
 
-    public static EventsListFragment newInstance(int page) {
-        EventsListFragment pageFragment = new EventsListFragment();
-        Bundle arguments = new Bundle();
-        arguments.putInt(ARGUMENT_PAGE_NUMBER, page);
-        pageFragment.setArguments(arguments);
-        return pageFragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mItem = (EventsPagerItem) getArguments().getSerializable(ARGUMENT_PAGE_NUMBER);
+        }
     }
 
     @Override
@@ -70,13 +79,34 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         if (getCallback() != null) {
             getCallback().onScrollChanged(binding.recyclerView);
         }
+        reloadView();
+        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
+        if (provider != null) {
+            provider.addObserver(this);
+        }
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
+        if (provider != null) {
+            provider.removeCallback(this);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         loadAdapter();
+    }
+
+    private void loadData() {
+        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
+        if (provider != null && mItem != null) {
+            provider.findMatches(mItem.getDay(), mItem.getMonth(), mItem.getYear(), true, this);
+        }
     }
 
     public void loadAdapter() {
@@ -181,5 +211,18 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     @Override
     public void onItemSwitched(int position, View view) {
 
+    }
+
+    @Override
+    public void apply(@NonNull List<EventsItem> list) {
+        Timber.d("apply: %d, %s", list.size(), mItem);
+        this.mDataList.clear();
+        this.mDataList.addAll(list);
+        if (isResumed()) loadAdapter();
+    }
+
+    @Override
+    public void onFinish() {
+        loadData();
     }
 }

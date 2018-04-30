@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.CalendarPagerAdapter;
-import com.elementary.tasks.birthdays.DayViewProvider;
-import com.elementary.tasks.birthdays.EventsItem;
 import com.elementary.tasks.birthdays.EventsPagerItem;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
@@ -24,7 +22,6 @@ import com.elementary.tasks.databinding.FragmentDayViewBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,7 +38,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class DayViewFragment extends BaseCalendarFragment {
 
     private static final String DATE_KEY = "date";
@@ -127,6 +123,7 @@ public class DayViewFragment extends BaseCalendarFragment {
     }
 
     private void loadData() {
+        initProvider();
         Calendar calendar = Calendar.getInstance();
         if (dateMills != 0) {
             calendar.setTimeInMillis(dateMills);
@@ -147,17 +144,6 @@ public class DayViewFragment extends BaseCalendarFragment {
 
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        String time = getPrefs().getBirthdayTime();
-        boolean isFeature = getPrefs().isFutureEventEnabled();
-        boolean isRemindersEnabled = getPrefs().isRemindersInCalendarEnabled();
-
-        DayViewProvider provider = new DayViewProvider(getContext());
-        provider.setBirthdays(true);
-        provider.setTime(TimeUtil.getBirthdayTime(time));
-        provider.setReminders(isRemindersEnabled);
-        provider.setFeature(isFeature);
-        provider.fillArray();
-
         int position = 0;
         int targetPosition = -1;
         calendar.add(Calendar.DAY_OF_MONTH, -100);
@@ -165,12 +151,11 @@ public class DayViewFragment extends BaseCalendarFragment {
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
             int mMonth = calendar.get(Calendar.MONTH);
             int mYear = calendar.get(Calendar.YEAR);
-            List<EventsItem> datas = provider.getMatches(mDay, mMonth, mYear, true);
             if (mDay == targetDay && mMonth == targetMonth && mYear == targetYear) {
                 targetPosition = position;
-                pagerData.add(new EventsPagerItem(datas, position, 1, mDay, mMonth, mYear));
+                pagerData.add(new EventsPagerItem(position, 1, mDay, mMonth, mYear));
             } else {
-                pagerData.add(new EventsPagerItem(datas, position, 0, mDay, mMonth, mYear));
+                pagerData.add(new EventsPagerItem(position, 0, mDay, mMonth, mYear));
             }
             position++;
             calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);

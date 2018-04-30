@@ -2,6 +2,7 @@ package com.elementary.tasks.birthdays;
 
 import android.content.Context;
 import android.databinding.BindingAdapter;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -40,14 +41,12 @@ import java.util.List;
 
 public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<EventsItem> mDataList;
+    private List<EventsItem> mDataList = new ArrayList<>();
     private ThemeUtil cs;
     private RecyclerListener mEventListener;
 
-    public CalendarEventsAdapter(final Context context, List<EventsItem> list) {
-        if (list != null) {
-            mDataList = new ArrayList<>(list);
-        }
+    public CalendarEventsAdapter(final Context context, @NonNull List<EventsItem> list) {
+        mDataList.addAll(list);
         cs = ThemeUtil.getInstance(context);
     }
 
@@ -68,7 +67,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public final void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+    public final void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof BirthdayHolder) {
             BirthdayItem item = (BirthdayItem) mDataList.get(position).getObject();
             BirthdayHolder birthdayHolder = (BirthdayHolder) holder;

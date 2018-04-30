@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.birthdays.EventsDataSingleton;
 import com.elementary.tasks.birthdays.RealmBirthdayItem;
 import com.elementary.tasks.core.calendar.CalendarEvent;
 import com.elementary.tasks.core.calendar.RealmCalendarEvent;
@@ -145,6 +146,7 @@ public class RealmDb {
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(new RealmBirthdayItem(item));
         realm.commitTransaction();
+        EventsDataSingleton.getInstance().setChanged();
     }
 
     public void deleteBirthday(@NonNull BirthdayItem item) {
@@ -820,6 +822,7 @@ public class RealmDb {
 
     public void saveReminder(@NonNull Reminder item, @Nullable Realm.Transaction.OnSuccess listener) {
         try (Realm realm = getRealm()) {
+            EventsDataSingleton.getInstance().setChanged();
             if (listener != null) {
                 realm.executeTransactionAsync(r -> r.copyToRealmOrUpdate(new RealmReminder(item)), listener);
             } else {
