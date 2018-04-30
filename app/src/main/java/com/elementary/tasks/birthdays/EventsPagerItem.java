@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,13 +18,11 @@ import java.util.List;
  * limitations under the License.
  */
 
-public class EventsPagerItem {
+public class EventsPagerItem implements Serializable {
     private int position, current;
-    private List<EventsItem> datas;
     private int day, month, year;
 
-    public EventsPagerItem(List<EventsItem> datas, int position, int current, int day, int month, int year) {
-        this.datas = datas;
+    public EventsPagerItem(int position, int current, int day, int month, int year) {
         this.current = current;
         this.position = position;
         this.day = day;
@@ -72,11 +70,14 @@ public class EventsPagerItem {
         this.current = current;
     }
 
-    public List<EventsItem> getDatas() {
-        return datas;
-    }
-
-    public void setDatas(List<EventsItem> datas) {
-        this.datas = datas;
+    @Override
+    public String toString() {
+        return "EventsPagerItem{" +
+                "position=" + position +
+                ", current=" + current +
+                ", day=" + day +
+                ", month=" + month +
+                ", year=" + year +
+                '}';
     }
 }

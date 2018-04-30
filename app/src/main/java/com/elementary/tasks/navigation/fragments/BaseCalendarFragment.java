@@ -11,7 +11,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.CalendarEventsAdapter;
 import com.elementary.tasks.birthdays.DayViewProvider;
-import com.elementary.tasks.birthdays.EventsItem;
+import com.elementary.tasks.birthdays.EventsDataSingleton;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -19,7 +19,6 @@ import com.elementary.tasks.databinding.DialogActionPickerBinding;
 import com.elementary.tasks.reminder.AddReminderActivity;
 
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -84,32 +83,46 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
     }
 
     private void loadEvents(DialogActionPickerBinding binding) {
-        new Thread(() -> {
-            CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), getEventsData());
-            binding.getRoot().post(() -> {
-                binding.eventsList.setAdapter(mAdapter);
-                binding.eventsList.setVisibility(View.VISIBLE);
-                binding.loadingView.setVisibility(View.GONE);
+        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
+        if (provider != null && provider.isReady()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateMills);
+            int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+            int mMonth = calendar.get(Calendar.MONTH);
+            int mYear = calendar.get(Calendar.YEAR);
+            provider.findMatches(mDay, mMonth, mYear, true, list -> {
+                if (binding != null && getContext() != null) {
+                    CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), list);
+                    binding.eventsList.setAdapter(mAdapter);
+                    binding.eventsList.setVisibility(View.VISIBLE);
+                    binding.loadingView.setVisibility(View.GONE);
+                }
             });
-        }).start();
+        }
     }
 
-    private List<EventsItem> getEventsData() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        initProvider();
+    }
+
+    protected void initProvider() {
         String time = getPrefs().getBirthdayTime();
         boolean isFeature = getPrefs().isFutureEventEnabled();
         boolean isRemindersEnabled = getPrefs().isRemindersInCalendarEnabled();
-        DayViewProvider provider = new DayViewProvider(getContext());
-        provider.setBirthdays(true);
-        provider.setTime(TimeUtil.getBirthdayTime(time));
-        provider.setReminders(isRemindersEnabled);
-        provider.setFeature(isFeature);
-        provider.fillArray();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(dateMills);
-        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-        int mMonth = calendar.get(Calendar.MONTH);
-        int mYear = calendar.get(Calendar.YEAR);
-        return provider.getMatches(mDay, mMonth, mYear, true);
+        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
+        if (provider == null) {
+            provider = new DayViewProvider(getContext());
+            EventsDataSingleton.getInstance().setProvider(provider);
+        }
+        if (!provider.isInProgress()) {
+            provider.setBirthdays(true);
+            provider.setTime(TimeUtil.getBirthdayTime(time));
+            provider.setReminders(isRemindersEnabled);
+            provider.setFeature(isFeature);
+            provider.fillArray();
+        }
     }
 
     private void addReminder() {

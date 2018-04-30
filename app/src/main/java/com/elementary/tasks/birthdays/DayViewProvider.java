@@ -2,6 +2,10 @@ package com.elementary.tasks.birthdays;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -20,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -37,15 +43,53 @@ import java.util.Map;
  */
 public class DayViewProvider {
 
+    @NonNull
     private List<EventsItem> data = new ArrayList<>();
     private int hour, minute;
     private boolean isFeature;
     private boolean isBirthdays;
     private boolean isReminders;
+    private volatile boolean isDataChanged;
+    private volatile boolean isReady;
+    private volatile boolean isInProgress = false;
     private Context mContext;
+    @NonNull
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    @NonNull
+    private Map<Callback, CancelableRunnable> map = new HashMap<>();
+    @NonNull
+    private List<InitCallback> observers = new ArrayList<>();
 
     public DayViewProvider(Context mContext) {
         this.mContext = mContext;
+        this.isDataChanged = true;
+    }
+
+    public void addObserver(@NonNull InitCallback callback) {
+        if (!observers.contains(callback)) observers.add(callback);
+        if (isReady) callback.onFinish();
+    }
+
+    public void removeObserver(@NonNull InitCallback callback) {
+        if (observers.contains(callback)) observers.remove(callback);
+    }
+
+    private void notifyInitFinish() {
+        mHandler.post(() -> {
+            for (InitCallback callback : observers) callback.onFinish();
+        });
+    }
+
+    public boolean isInProgress() {
+        return isInProgress;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setDataChanged(boolean dataChanged) {
+        isDataChanged = dataChanged;
     }
 
     public void setBirthdays(boolean isBirthdays) {
@@ -67,61 +111,41 @@ public class DayViewProvider {
         this.isFeature = isFeature;
     }
 
-    public List<EventsItem> getData() {
-        return data;
+    public void removeCallback(@NonNull Callback callback) {
+        if (map.containsKey(callback)) {
+            CancelableRunnable runnable = map.get(callback);
+            if (runnable != null) {
+                runnable.setCallback(null);
+                runnable.setCanceled(true);
+            }
+            map.remove(callback);
+        }
     }
 
-    public List<EventsItem> getMatches(int day, int month, int year, boolean sort) {
-        List<EventsItem> res = new ArrayList<>();
-        for (EventsItem item : data) {
-            int mDay = item.getDay();
-            int mMonth = item.getMonth();
-            int mYear = item.getYear();
-            int type = item.getViewType();
-            if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month) {
-                res.add(item);
-            } else {
-                if (mDay == day && mMonth == month && mYear == year) {
-                    res.add(item);
-                }
-            }
-        }
-        if (!sort) return res;
-        Collections.sort(res, (eventsItem, t1) -> {
-            long time1 = 0, time2 = 0;
-            if (eventsItem.getObject() instanceof BirthdayItem) {
-                BirthdayItem item = (BirthdayItem) eventsItem.getObject();
-                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
-                if (dateItem != null) {
-                    Calendar calendar = dateItem.getCalendar();
-                    time1 = calendar.getTimeInMillis();
-                }
-            } else if (eventsItem.getObject() instanceof Reminder) {
-                Reminder reminder = (Reminder) eventsItem.getObject();
-                time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
-            }
-            if (t1.getObject() instanceof BirthdayItem) {
-                BirthdayItem item = (BirthdayItem) t1.getObject();
-                TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
-                if (dateItem != null) {
-                    Calendar calendar = dateItem.getCalendar();
-                    time2 = calendar.getTimeInMillis();
-                }
-            } else if (t1.getObject() instanceof Reminder) {
-                Reminder reminder = (Reminder) t1.getObject();
-                time2 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
-            }
-            return (int) (time1 - time2);
-        });
-        return res;
+    public void findMatches(int day, int month, int year, boolean sort, @NonNull final Callback callback) {
+        removeCallback(callback);
+        CancelableRunnable runnable = new CancelableRunnable(day, month, year, sort, callback);
+        map.put(callback, runnable);
+        new Thread(runnable).start();
     }
 
     public void fillArray() {
-        if (isBirthdays) {
-            loadBirthdays();
-        }
-        if (isReminders) {
-            loadReminders();
+        if (isDataChanged || data.isEmpty()) {
+            data.clear();
+            isInProgress = true;
+            new Thread(() -> {
+                isDataChanged = false;
+                isReady = false;
+                if (isBirthdays) {
+                    loadBirthdays();
+                }
+                if (isReminders) {
+                    loadReminders();
+                }
+                isReady = true;
+                isInProgress = false;
+                notifyInitFinish();
+            }).start();
         }
     }
 
@@ -190,11 +214,12 @@ public class DayViewProvider {
                             max = limit - count;
                         }
                         List<Integer> list = item.getWeekdays();
+                        long baseTime = item.getDateTime();
                         do {
                             calendar1.setTimeInMillis(calendar1.getTimeInMillis() +
                                     AlarmManager.INTERVAL_DAY);
                             eventTime = calendar1.getTimeInMillis();
-                            if (eventTime == item.getDateTime()) {
+                            if (eventTime == baseTime) {
                                 continue;
                             }
                             int weekDay = calendar1.get(Calendar.DAY_OF_WEEK);
@@ -214,10 +239,11 @@ public class DayViewProvider {
                         if (isLimited) {
                             max = limit - count;
                         }
+                        long baseTime = item.getDateTime();
                         do {
                             eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item);
                             calendar1.setTimeInMillis(eventTime);
-                            if (eventTime == item.getDateTime()) {
+                            if (eventTime == baseTime) {
                                 continue;
                             }
                             mDay = calendar1.get(Calendar.DAY_OF_MONTH);
@@ -258,6 +284,103 @@ public class DayViewProvider {
                     }
                 }
             }
+        }
+    }
+
+    private void notifyEnd(@Nullable Callback callback, @NonNull List<EventsItem> list) {
+        if (callback != null) {
+            removeCallback(callback);
+            callback.apply(list);
+        }
+    }
+
+    public interface InitCallback {
+        void onFinish();
+    }
+
+    public interface Callback {
+        void apply(@NonNull List<EventsItem> list);
+    }
+
+    private class CancelableRunnable implements Runnable {
+        private volatile boolean isCanceled;
+        private final int day;
+        private final int month;
+        private final int year;
+        private final boolean sort;
+        @Nullable
+        private Callback callback;
+
+        CancelableRunnable(int day, int month, int year, boolean sort, @Nullable Callback callback) {
+            this.day = day;
+            this.month = month;
+            this.year = year;
+            this.sort = sort;
+            this.callback = callback;
+        }
+
+        public void setCallback(@Nullable Callback callback) {
+            this.callback = callback;
+        }
+
+        public void setCanceled(boolean canceled) {
+            isCanceled = canceled;
+        }
+
+        @Override
+        public void run() {
+            if (isCanceled) return;
+            List<EventsItem> res = new ArrayList<>();
+            for (EventsItem item : new ArrayList<>(data)) {
+                if (item == null) continue;
+                int mDay = item.getDay();
+                int mMonth = item.getMonth();
+                int mYear = item.getYear();
+                int type = item.getViewType();
+                if (type == AdapterItem.BIRTHDAY && mDay == day && mMonth == month) {
+                    res.add(item);
+                } else {
+                    if (mDay == day && mMonth == month && mYear == year) {
+                        res.add(item);
+                    }
+                }
+                if (isCanceled) break;
+            }
+            Timber.d("run: %d", res.size());
+            if (isCanceled) return;
+            if (!sort) {
+                mHandler.post(() -> notifyEnd(callback, res));
+                return;
+            }
+            if (isCanceled) return;
+            Collections.sort(res, (eventsItem, t1) -> {
+                long time1 = 0, time2 = 0;
+                if (eventsItem.getObject() instanceof BirthdayItem) {
+                    BirthdayItem item = (BirthdayItem) eventsItem.getObject();
+                    TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                    if (dateItem != null) {
+                        Calendar calendar = dateItem.getCalendar();
+                        time1 = calendar.getTimeInMillis();
+                    }
+                } else if (eventsItem.getObject() instanceof Reminder) {
+                    Reminder reminder = (Reminder) eventsItem.getObject();
+                    time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+                }
+                if (t1.getObject() instanceof BirthdayItem) {
+                    BirthdayItem item = (BirthdayItem) t1.getObject();
+                    TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
+                    if (dateItem != null) {
+                        Calendar calendar = dateItem.getCalendar();
+                        time2 = calendar.getTimeInMillis();
+                    }
+                } else if (t1.getObject() instanceof Reminder) {
+                    Reminder reminder = (Reminder) t1.getObject();
+                    time2 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
+                }
+                return (int) (time1 - time2);
+            });
+            if (isCanceled) return;
+            mHandler.post(() -> notifyEnd(callback, res));
         }
     }
 }

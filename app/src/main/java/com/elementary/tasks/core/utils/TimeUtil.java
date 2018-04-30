@@ -38,7 +38,6 @@ import java.util.TimeZone;
 public final class TimeUtil {
 
     public static final String GMT = "GMT";
-    private static final String TAG = "TimeUtil";
 
     public static final SimpleDateFormat FORMAT_24 = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
     public static final SimpleDateFormat TIME_STAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault());
