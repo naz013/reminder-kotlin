@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -8,26 +8,23 @@
 
         <com.flaviofaria.kenburnsview.KenBurnsView
             android:id="@+id/imageView"
-            android:layout_width="395dp"
-            android:layout_height="643dp"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintLeft_toLeftOf="parent"
-            card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/titleCard"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            card_view:cardCornerRadius="0dp"
-            card_view:layout_constraintLeft_toLeftOf="parent"
-            card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent">
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/monthYear"
@@ -42,17 +39,13 @@
             android:id="@+id/card"
             android:layout_width="0dp"
             android:layout_height="56dp"
-            android:layout_margin="10dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            card_view:cardCornerRadius="0dp"
-            card_view:layout_constraintHorizontal_bias="0.333"
-            card_view:layout_constraintLeft_toLeftOf="parent"
-            card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/titleCard">
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleCard">
 
             <GridView
                 android:id="@+id/weekday_gridview"
@@ -70,15 +63,13 @@
             android:id="@+id/pagerCard"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            card_view:cardCornerRadius="0dp"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintLeft_toLeftOf="parent"
-            card_view:layout_constraintRight_toRightOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/card">
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card">
 
             <com.elementary.tasks.core.calendar.InfiniteViewPager
                 android:id="@+id/months_infinite_pager"
@@ -87,5 +78,17 @@
                 android:layout_margin="2dp" />
 
         </android.support.v7.widget.CardView>
+
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:id="@+id/loaderView"
+            android:layout_width="112dp"
+            android:layout_height="112dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pagerCard"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pagerCard"
+            app:mk_color="?attr/colorAccent"
+            app:mk_type="Sharingan" />
+
     </android.support.constraint.ConstraintLayout>
 </layout>

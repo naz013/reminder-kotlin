@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -52,7 +53,6 @@ import timber.log.Timber;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class FlextCalendarFragment extends BaseNavigationFragment implements EventsDataProvider.Callback {
 
     private static final String TAG = "FlextCalendarFragment";
@@ -118,6 +118,8 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
 
     private FlextListener caldroidListener;
     private FragmentFlextCalBinding binding;
+    @Nullable
+    private DatePageChangeListener pageChangeListener;
 
     public WeekdayArrayAdapter getNewWeekdayAdapter() {
         return new WeekdayArrayAdapter(getActivity(), android.R.layout.simple_list_item_1,
@@ -235,7 +237,7 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
 
     private void setupDateGridPages() {
         DateTime currentDateTime = new DateTime(year, month, 1, 0, 0, 0, 0);
-        DatePageChangeListener pageChangeListener = initMonthPager(currentDateTime);
+        pageChangeListener = initMonthPager(currentDateTime);
         final MonthPagerAdapter pagerAdapter = new MonthPagerAdapter(getFragmentManager());
         fragments = pagerAdapter.getFragments();
         fragments.get(0).setDate(currentDateTime.getMonth(), currentDateTime.getYear());
@@ -293,6 +295,7 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
                              Bundle savedInstanceState) {
         retrieveInitialArgs();
         binding = FragmentFlextCalBinding.inflate(inflater, container, false);
+        binding.loaderView.setVisibility(View.VISIBLE);
         WeekdayArrayAdapter weekdaysAdapter = getNewWeekdayAdapter();
         binding.weekdayGridview.setAdapter(weekdaysAdapter);
         setupDateGridPages();
@@ -338,12 +341,23 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
     @Override
     public void onReady() {
         Timber.d("onReady: ");
+        binding.loaderView.setVisibility(View.GONE);
         EventsDataProvider provider = CalendarSingleton.getInstance().getProvider();
         if (provider != null) {
-            this.mLastMap = provider.getEvents();
+            this.mLastMap.clear();
+            this.mLastMap.putAll(provider.getEvents());
         }
-        setupDateGridPages();
-        refreshView();
+        refreshFragments();
+    }
+
+    private void refreshFragments() {
+        if (binding.monthsInfinitePager.getAdapter() != null) {
+            InfinitePagerAdapter adapter = (InfinitePagerAdapter) binding.monthsInfinitePager.getAdapter();
+            adapter.notifyDataSetChanged();
+        }
+        if (pageChangeListener != null) {
+            pageChangeListener.refreshAdapters(1000);
+        }
     }
 
     private class DatePageChangeListener implements ViewPager.OnPageChangeListener {

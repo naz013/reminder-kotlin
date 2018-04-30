@@ -33,8 +33,6 @@ import hirondelle.date4j.DateTime;
 
 public class DateGridFragment extends Fragment {
 
-    private static final String TAG = "DateGridFragment";
-
     private MonthView monthView;
 
     private Map<DateTime, Events> eventsMap = new HashMap<>();

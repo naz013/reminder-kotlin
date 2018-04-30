@@ -35,7 +35,6 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class DayViewProvider {
 
     private List<EventsItem> data = new ArrayList<>();
@@ -47,7 +46,6 @@ public class DayViewProvider {
 
     public DayViewProvider(Context mContext) {
         this.mContext = mContext;
-        data = new ArrayList<>();
     }
 
     public void setBirthdays(boolean isBirthdays) {
