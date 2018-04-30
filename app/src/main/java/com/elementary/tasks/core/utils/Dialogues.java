@@ -35,14 +35,14 @@ import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
 
 public class Dialogues {
 
-    private static final String TAG = "Dialogues";
     private static final int MAX_RADIUS = 100000;
+    private static final int MAX_DEF_RADIUS = 5000;
 
     public static void showRadiusDialog(@NonNull Context context, int current, @NonNull OnValueSelectedListener<Integer> listener) {
         AlertDialog.Builder builder = Dialogues.getDialog(context);
         builder.setTitle(R.string.radius);
         DialogWithSeekAndTitleBinding b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context));
-        b.seekBar.setMax(5000);
+        b.seekBar.setMax(MAX_DEF_RADIUS);
         while (b.seekBar.getMax() < current && b.seekBar.getMax() < MAX_RADIUS) {
             b.seekBar.setMax(b.seekBar.getMax() + 1000);
         }
@@ -50,6 +50,9 @@ public class Dialogues {
             b.seekBar.setMax(MAX_RADIUS);
         }
         b.seekBar.setMax(current * 2);
+        if (current == 0) {
+            b.seekBar.setMax(MAX_DEF_RADIUS);
+        }
         b.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
