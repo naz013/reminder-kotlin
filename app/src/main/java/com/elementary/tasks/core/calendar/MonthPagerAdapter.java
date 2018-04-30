@@ -41,7 +41,7 @@ public class MonthPagerAdapter extends FragmentStatePagerAdapter {
         this.fragments = fragments;
     }
 
-    public MonthPagerAdapter(FragmentManager fm) {
+    MonthPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
