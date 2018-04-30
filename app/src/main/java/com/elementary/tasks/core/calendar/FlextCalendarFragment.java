@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import hirondelle.date4j.DateTime;
+import timber.log.Timber;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -51,7 +53,7 @@ import hirondelle.date4j.DateTime;
  * limitations under the License.
  */
 
-public class FlextCalendarFragment extends BaseNavigationFragment {
+public class FlextCalendarFragment extends BaseNavigationFragment implements EventsDataProvider.Callback {
 
     private static final String TAG = "FlextCalendarFragment";
 
@@ -293,7 +295,6 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
         binding = FragmentFlextCalBinding.inflate(inflater, container, false);
         WeekdayArrayAdapter weekdaysAdapter = getNewWeekdayAdapter();
         binding.weekdayGridview.setAdapter(weekdaysAdapter);
-        loadData();
         setupDateGridPages();
         refreshView();
         if (caldroidListener != null) {
@@ -303,8 +304,15 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
     }
 
     private void loadData() {
-        if (CalendarSingleton.getInstance().getProvider() != null) {
-            mLastMap = CalendarSingleton.getInstance().getProvider().getEvents();
+        EventsDataProvider provider = CalendarSingleton.getInstance().getProvider();
+        if (provider != null) {
+            if (provider.isReady()) {
+                Timber.d("loadData: isReady");
+                onReady();
+            } else {
+                Timber.d("loadData: wait");
+                provider.addObserver(this);
+            }
         }
     }
 
@@ -316,7 +324,26 @@ public class FlextCalendarFragment extends BaseNavigationFragment {
             getCallback().setClick(CalendarSingleton.getInstance().getFabClick());
         }
         loadData();
-        LogUtil.d(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventsDataProvider provider = CalendarSingleton.getInstance().getProvider();
+        if (provider != null) {
+            provider.removeObserver(this);
+        }
+    }
+
+    @Override
+    public void onReady() {
+        Timber.d("onReady: ");
+        EventsDataProvider provider = CalendarSingleton.getInstance().getProvider();
+        if (provider != null) {
+            this.mLastMap = provider.getEvents();
+        }
+        setupDateGridPages();
+        refreshView();
     }
 
     private class DatePageChangeListener implements ViewPager.OnPageChangeListener {
