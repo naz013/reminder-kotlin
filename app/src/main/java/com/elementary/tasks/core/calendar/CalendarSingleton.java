@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.calendar;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.elementary.tasks.birthdays.EventsDataProvider;
@@ -23,6 +24,7 @@ import com.elementary.tasks.birthdays.EventsDataProvider;
 public class CalendarSingleton {
 
     private static CalendarSingleton instance;
+    @Nullable
     private EventsDataProvider provider;
     private View.OnClickListener fabClick;
 
@@ -48,10 +50,11 @@ public class CalendarSingleton {
         return fabClick;
     }
 
-    public void setProvider(EventsDataProvider provider) {
+    public void setProvider(@Nullable EventsDataProvider provider) {
         this.provider = provider;
     }
 
+    @Nullable
     public EventsDataProvider getProvider() {
         return provider;
     }

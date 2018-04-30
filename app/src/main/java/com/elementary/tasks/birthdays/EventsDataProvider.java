@@ -2,6 +2,9 @@ package com.elementary.tasks.birthdays;
 
 import android.app.AlarmManager;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.calendar.FlextHelper;
@@ -14,6 +17,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,22 +41,50 @@ import hirondelle.date4j.DateTime;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class EventsDataProvider {
 
     private static final String TAG = "EventsDataProvider";
 
-    private Context mContext;
-    private boolean isReminder = false;
-    private boolean isFeature = false;
-
+    private boolean isReminder;
+    private boolean isFeature;
+    private volatile boolean isReady;
+    private List<Callback> observers = new ArrayList<>();
+    @NonNull
     private Map<DateTime, Events> map = new HashMap<>();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public EventsDataProvider(Context mContext, boolean isReminder, boolean isFeature) {
-        this.mContext = mContext;
+    public EventsDataProvider(@NonNull final Context context, boolean isReminder, boolean isFeature) {
         this.isReminder = isReminder;
         this.isFeature = isFeature;
-        map = new HashMap<>();
+        this.isReady = false;
+        new Thread(() -> loadEvents(context)).start();
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void addObserver(Callback callback) {
+        if (!observers.contains(callback)) observers.add(callback);
+    }
+
+    public void removeObserver(Callback callback) {
+        if (observers.contains(callback)) observers.add(callback);
+    }
+
+    private void notifyObservers(final List<Callback> callbacks) {
+        mHandler.post(() -> {
+            if (!observers.isEmpty()) {
+                for (Callback callback : callbacks) {
+                    callback.onReady();
+                }
+            }
+        });
+    }
+
+    @NonNull
+    public Map<DateTime, Events> getEvents() {
+        return map;
     }
 
     private void setEvent(long eventTime, String summary, int color, Events.Type type) {
@@ -67,11 +99,11 @@ public class EventsDataProvider {
         }
     }
 
-    public Map<DateTime, Events> getEvents() {
+    private void loadEvents(Context context) {
         map.clear();
-        ThemeUtil cs = ThemeUtil.getInstance(mContext);
+        ThemeUtil cs = ThemeUtil.getInstance(context);
         int bColor = cs.getColor(cs.colorBirthdayCalendar());
-        TimeCount timeCount = TimeCount.getInstance(mContext);
+        TimeCount timeCount = TimeCount.getInstance(context);
         if (isReminder) {
             int rColor = cs.getColor(cs.colorReminderCalendar());
             List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
@@ -169,6 +201,11 @@ public class EventsDataProvider {
                 }
             }
         }
-        return map;
+        isReady = true;
+        notifyObservers(new ArrayList<>(observers));
+    }
+
+    public interface Callback {
+        void onReady();
     }
 }
