@@ -356,7 +356,7 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
             adapter.notifyDataSetChanged();
         }
         if (pageChangeListener != null) {
-            pageChangeListener.refreshAdapters(1000);
+            pageChangeListener.refreshAdapters(pageChangeListener.getCurrentPage());
         }
     }
 
@@ -365,6 +365,10 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
         private int currentPage = InfiniteViewPager.OFFSET;
         private DateTime currentDateTime;
         private List<DateGridFragment> flextGridAdapters;
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
 
         void setFlextGridAdapters(List<DateGridFragment> flextGridAdapters) {
             this.flextGridAdapters = flextGridAdapters;
