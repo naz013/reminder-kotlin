@@ -147,6 +147,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
         List<NoteImage> images = item.getImages();
         ImageView imageView = container.findViewById(R.id.noteImage);
         if (!images.isEmpty()) {
+            imageView.setVisibility(View.VISIBLE);
             WeakReference<NoteImage> image = new WeakReference<>(images.get(0));
             setImage(imageView, image.get().getImage());
             int index = 1;
@@ -166,6 +167,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
             }
         } else {
             imageView.setImageDrawable(null);
+            imageView.setVisibility(View.GONE);
         }
     }
 
