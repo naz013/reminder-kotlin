@@ -26,6 +26,7 @@ import com.elementary.tasks.navigation.settings.other.OssFragment;
 import com.elementary.tasks.navigation.settings.other.PermissionsFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -90,7 +91,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
         Permissions.requestPermission(getActivity(), position, mDataList.get(position).getPermission());
     }
 
-    private boolean loadDataToList(){
+    private boolean loadDataToList() {
         mDataList.clear();
         if (!Permissions.checkPermission(getActivity(), Permissions.ACCESS_COARSE_LOCATION)) {
             mDataList.add(new Item(getString(R.string.course_location), Permissions.ACCESS_COARSE_LOCATION));
@@ -171,7 +172,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
                 if (convertView == null) {
                     convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
                 }
-                TextView tvName = (TextView) convertView.findViewById(android.R.id.text1);
+                TextView tvName = convertView.findViewById(android.R.id.text1);
                 tvName.setText(mDataList.get(position).getTitle());
                 return convertView;
             }
@@ -189,6 +190,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
         if (Module.isPro()) name = getString(R.string.app_name_pro);
         else name = getString(R.string.app_name);
         binding.appName.setText(name.toUpperCase());
+        binding.translatorsList.setText(getTranslators());
         PackageInfo pInfo;
         try {
             pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
@@ -200,10 +202,17 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
         builder.create().show();
     }
 
+    private String getTranslators() {
+        List<String> list = Arrays.asList(getResources().getStringArray(R.array.app_translators));
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) sb.append(s).append("\n");
+        return sb.toString();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length == 0) return;
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             showPermissionDialog();
         }
     }

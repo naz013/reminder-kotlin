@@ -636,5 +636,6 @@
     <string name="ignore_window_type_parameter_for_each_event">Ignorar parámetro de tipo de ventana para cada evento</string>
     <string name="p_until">% hasta</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>

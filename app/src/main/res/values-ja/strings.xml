@@ -637,5 +637,6 @@
     <string name="ignore_window_type_parameter_for_each_event">各イベントのウィンドウタイプパラメータを無視する</string>
     <string name="p_until">％まで</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>

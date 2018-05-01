@@ -637,5 +637,6 @@
     <string name="p_until">% until</string>
     <string name="ignore_window_type_parameter_for_each_event">Ignore window type parameter for each event</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>
