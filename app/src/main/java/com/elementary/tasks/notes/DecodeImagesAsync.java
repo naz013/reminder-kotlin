@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.BitmapUtils;
-import com.elementary.tasks.core.utils.LogUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -39,7 +38,7 @@ public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteIma
     private int max;
     private ProgressDialog mDialog;
 
-    public DecodeImagesAsync(Context context, DecodeListener listener, int max) {
+    DecodeImagesAsync(Context context, DecodeListener listener, int max) {
         this.mContext = context;
         this.mCallback = listener;
         this.max = max;
@@ -103,11 +102,11 @@ public class DecodeImagesAsync extends AsyncTask<ClipData, Integer, List<NoteIma
     @Override
     protected void onPostExecute(List<NoteImage> noteImages) {
         super.onPostExecute(noteImages);
-        if (mDialog != null && mDialog.isShowing()) {
-            try {
+        try {
+            if (mDialog != null && mDialog.isShowing()) {
                 mDialog.dismiss();
-            } catch (IllegalArgumentException ignored) {
             }
+        } catch (IllegalArgumentException ignored) {
         }
         if (mCallback != null) {
             mCallback.onDecode(noteImages);

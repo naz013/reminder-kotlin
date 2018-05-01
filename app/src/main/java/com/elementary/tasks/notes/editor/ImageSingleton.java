@@ -49,6 +49,8 @@ class ImageSingleton {
     public void setImage(byte[] bitmapAsByteArray) {
         if (mItem != null) {
             mItem.setImage(bitmapAsByteArray);
+        } else {
+            mItem = new NoteImage(bitmapAsByteArray);
         }
     }
 }

@@ -9,6 +9,8 @@ import com.elementary.tasks.BuildConfig;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 /**
  * Copyright 2017 Nazar Suhovich
  * <p/>
@@ -29,6 +31,7 @@ public final class UriUtil {
 
     @NonNull
     public static Uri getUri(Context context, @NonNull String filePath) {
+        Timber.d("getUri: %s", BuildConfig.APPLICATION_ID);
         if (Module.isNougat()) {
             return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(filePath));
         } else {
@@ -38,6 +41,7 @@ public final class UriUtil {
 
     @NonNull
     public static Uri getUri(Context context, @NonNull File file) {
+        Timber.d("getUri: %s", BuildConfig.APPLICATION_ID);
         if (Module.isNougat()) {
             return FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
         } else {

@@ -1,8 +1,11 @@
 package com.elementary.tasks.notes;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,6 +26,7 @@ import java.io.Serializable;
 public class NoteImage implements Serializable {
 
     @SerializedName("image")
+    @Nullable
     private byte[] image;
 
     public NoteImage() {
@@ -48,5 +52,12 @@ public class NoteImage implements Serializable {
     public void setImage(byte[] image) {
         this.image = new byte[image.length];
         System.arraycopy(image, 0, this.image, 0, this.image.length);
+    }
+
+    @Override
+    public String toString() {
+        return "NoteImage{" +
+                "image=" + Arrays.toString(image) +
+                '}';
     }
 }

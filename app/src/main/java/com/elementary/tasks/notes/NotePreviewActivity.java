@@ -94,7 +94,7 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void initImagesList() {
-        mAdapter = new ImagesGridAdapter(this);
+        mAdapter = new ImagesGridAdapter();
         binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
         binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
         binding.imagesList.setHasFixedSize(true);

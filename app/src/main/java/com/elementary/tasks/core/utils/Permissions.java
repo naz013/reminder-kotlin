@@ -49,6 +49,7 @@ public class Permissions {
     public static final String READ_CALLS = Manifest.permission.READ_CALL_LOG;
     public static final String RECORD_AUDIO = Manifest.permission.RECORD_AUDIO;
     public static final String BLUETOOTH = Manifest.permission.BLUETOOTH;
+    public static final String CAMERA = Manifest.permission.CAMERA;
 
     private Permissions() {
     }
