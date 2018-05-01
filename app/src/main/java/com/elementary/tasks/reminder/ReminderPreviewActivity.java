@@ -150,7 +150,8 @@ public class ReminderPreviewActivity extends ThemedActivity {
         if (mNoteItem != null) {
             NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
             binding.setNoteItem(mNoteItem);
-            binding.setClick(v -> startActivity(new Intent(this, NotePreviewActivity.class)
+            binding.noteClick.setOnClickListener(v ->
+                    startActivity(new Intent(ReminderPreviewActivity.this, NotePreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, mNoteItem.getKey())));
             this.binding.dataContainer.addView(binding.getRoot());
         }

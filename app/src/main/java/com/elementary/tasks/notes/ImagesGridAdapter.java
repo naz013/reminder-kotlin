@@ -1,16 +1,16 @@
 package com.elementary.tasks.notes;
 
-import android.content.Context;
 import android.content.Intent;
-import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -35,17 +35,13 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder> {
 
-    private Context mContext;
-    private List<NoteImage> mDataList;
+    private List<NoteImage> mDataList = new ArrayList<>();
     private boolean isEditable;
     private AdapterActions mActions;
 
-    ImagesGridAdapter(Context context) {
-        this.mContext = context;
-        this.mDataList = new ArrayList<>();
+    ImagesGridAdapter() {
     }
 
     public void setEditable(boolean editable, AdapterActions adapterActions) {
@@ -61,16 +57,16 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
         return mDataList.get(position);
     }
 
+    @NonNull
     @Override
-    public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+    public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new PhotoViewHolder(NoteImageListItemBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(PhotoViewHolder holder, int position) {
-        NoteImage item = mDataList.get(position);
-        holder.binding.setItem(item);
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
+        loadImage(holder.binding.photoView, mDataList.get(position));
     }
 
     @Override
@@ -84,14 +80,14 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
         PhotoViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
-            binding.photoView.setOnClickListener(view -> performClick(getAdapterPosition()));
+            binding.photoView.setOnClickListener(view -> performClick(view, getAdapterPosition()));
             if (isEditable) {
                 binding.removeButton.setVisibility(View.VISIBLE);
-                binding.removeButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                binding.removeButton.setBackgroundResource(ThemeUtil.getInstance(itemView.getContext()).getIndicator());
                 binding.removeButton.setOnClickListener(view -> removeImage(getAdapterPosition()));
                 if (mActions != null && Module.isPro()) {
                     binding.editButton.setVisibility(View.VISIBLE);
-                    binding.editButton.setBackgroundResource(ThemeUtil.getInstance(mContext).getIndicator());
+                    binding.editButton.setBackgroundResource(ThemeUtil.getInstance(itemView.getContext()).getIndicator());
                     binding.editButton.setOnClickListener(view -> mActions.onItemEdit(getAdapterPosition()));
                 } else {
                     binding.editButton.setVisibility(View.GONE);
@@ -117,7 +113,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
 
     void addNextImages(List<NoteImage> list) {
         mDataList.addAll(list);
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0, mDataList.size());
     }
 
     void setImage(NoteImage image, int position) {
@@ -130,20 +126,20 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
         notifyDataSetChanged();
     }
 
-    private void performClick(int position) {
+    private void performClick(View view, int position) {
         NoteItem item = new NoteItem();
         item.setImages(mDataList);
         RealmDb.getInstance().saveObject(item);
-        mContext.startActivity(new Intent(mContext, ImagePreviewActivity.class)
+        view.getContext().startActivity(new Intent(view.getContext(), ImagePreviewActivity.class)
                 .putExtra(Constants.INTENT_ID, item.getKey())
                 .putExtra(Constants.INTENT_POSITION, position));
     }
 
-    @BindingAdapter("loadImage")
-    public static void loadImage(ImageView imageView, NoteImage image) {
-        Glide.with(imageView.getContext())
-                .load(image.getImage())
-                .into(imageView);
+    public void loadImage(ImageView imageView, NoteImage image) {
+        new Thread(() -> {
+            Bitmap bmp = BitmapFactory.decodeByteArray(image.getImage(), 0, image.getImage().length);
+            imageView.post(() -> imageView.setImageBitmap(bmp));
+        }).start();
     }
 
     public interface AdapterActions {

@@ -22,7 +22,6 @@ import com.elementary.tasks.databinding.NoteListItemBinding;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class NoteHolder extends RecyclerView.ViewHolder {
 
     private NoteListItemBinding binding;
@@ -32,9 +31,9 @@ public class NoteHolder extends RecyclerView.ViewHolder {
         super(v);
         this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
-        binding.setClick(v1 -> {
+        binding.noteClick.setOnClickListener(v12 -> {
             if (mEventListener != null) {
-                mEventListener.onItemClicked(getAdapterPosition(), v1);
+                mEventListener.onItemClicked(getAdapterPosition(), v12);
             }
         });
         binding.noteClick.setOnLongClickListener(view -> {

@@ -6,17 +6,14 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -55,6 +52,7 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.PhotoSelectionUtil;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
@@ -99,12 +97,10 @@ import java.util.Random;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class CreateNoteActivity extends ThemedActivity {
+public class CreateNoteActivity extends ThemedActivity implements PhotoSelectionUtil.UriCallback {
 
     private static final String TAG = "CreateNoteActivity";
     public static final int MENU_ITEM_DELETE = 12;
-    private static final int REQUEST_SD_CARD = 1112;
     private static final int EDIT_CODE = 11223;
     private static final int AUDIO_CODE = 255000;
 
@@ -115,7 +111,6 @@ public class CreateNoteActivity extends ThemedActivity {
     private int mDay = 1;
     private int mColor = 0;
     private int mFontStyle = 9;
-    private Uri mImageUri;
     private int mEditPosition = -1;
     private float mLastX = -1;
 
@@ -140,6 +135,8 @@ public class CreateNoteActivity extends ThemedActivity {
     private SpeechRecognizer speech = null;
     @Nullable
     private Alert mAlerter;
+    @Nullable
+    private PhotoSelectionUtil photoSelectionUtil;
 
     private RecognitionListener mRecognitionListener = new RecognitionListener() {
         @Override
@@ -234,6 +231,9 @@ public class CreateNoteActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_note);
+
+        photoSelectionUtil = new PhotoSelectionUtil(this, this);
+
         initActionBar();
         initMenu();
         initBgContainer();
@@ -347,7 +347,9 @@ public class CreateNoteActivity extends ThemedActivity {
     private void initMenu() {
         binding.bottomBarView.setBackgroundColor(getThemeUtil().getBackgroundStyle());
         binding.colorButton.setOnClickListener(view -> showColorDialog());
-        binding.imageButton.setOnClickListener(view -> selectImages());
+        binding.imageButton.setOnClickListener(view -> {
+            if (photoSelectionUtil != null) photoSelectionUtil.selectImage();
+        });
         binding.reminderButton.setOnClickListener(view -> switchReminder());
         binding.fontButton.setOnClickListener(view -> showStyleDialog());
     }
@@ -358,14 +360,6 @@ public class CreateNoteActivity extends ThemedActivity {
             ViewUtils.expand(remindContainer);
         } else {
             ViewUtils.collapse(remindContainer);
-        }
-    }
-
-    private void selectImages() {
-        if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            getImage();
-        } else {
-            Permissions.requestPermission(this, REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
         }
     }
 
@@ -386,11 +380,13 @@ public class CreateNoteActivity extends ThemedActivity {
         setSupportActionBar(binding.toolbar);
         taskField = binding.taskMessage;
         taskField.setTextSize(getPrefs().getNoteTextSize() + 12);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setElevation(0f);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setElevation(0f);
+        }
         toolbar.setVisibility(View.VISIBLE);
     }
 
@@ -413,10 +409,9 @@ public class CreateNoteActivity extends ThemedActivity {
     }
 
     private void initImagesList() {
-        mAdapter = new ImagesGridAdapter(this);
+        mAdapter = new ImagesGridAdapter();
         binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
         binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
-        binding.imagesList.setHasFixedSize(true);
         binding.imagesList.setItemAnimator(new DefaultItemAnimator());
         mAdapter.setEditable(true, this::editImage);
         binding.imagesList.setAdapter(mAdapter);
@@ -637,59 +632,12 @@ public class CreateNoteActivity extends ThemedActivity {
         return true;
     }
 
-    private void getImage() {
-        AlertDialog.Builder builder = Dialogues.getDialog(this);
-        builder.setTitle(getString(R.string.image));
-        builder.setItems(new CharSequence[]{getString(R.string.gallery),
-                        getString(R.string.take_a_shot)},
-                (dialog, which) -> {
-                    switch (which) {
-                        case 0: {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType("image/*");
-                            if (Module.isJellyMR2()) {
-                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                            }
-                            startActivityForResult(Intent.createChooser(intent, getString(R.string.image)), Constants.ACTION_REQUEST_GALLERY);
-                        }
-                        break;
-                        case 1: {
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.TITLE, "Picture");
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-                            mImageUri = getContentResolver().insert(
-                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                            startActivityForResult(intent, Constants.ACTION_REQUEST_CAMERA);
-                        }
-                        break;
-                        default:
-                            break;
-                    }
-                });
-        builder.show();
-    }
-
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (photoSelectionUtil != null)
+            photoSelectionUtil.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case Constants.ACTION_REQUEST_GALLERY:
-                    getImageFromGallery(data);
-                    break;
-                case Constants.ACTION_REQUEST_CAMERA:
-                    getImageFromCamera();
-                    break;
                 case EDIT_CODE:
                     if (mEditPosition != -1) updateImage();
                     break;
@@ -701,15 +649,6 @@ public class CreateNoteActivity extends ThemedActivity {
         if (mAdapter != null) {
             NoteImage image = RealmDb.getInstance().getImage();
             mAdapter.setImage(image, mEditPosition);
-        }
-    }
-
-    private void getImageFromGallery(Intent data) {
-        if (data.getData() != null) {
-            addImageFromUri(data.getData());
-        } else if (data.getClipData() != null) {
-            ClipData mClipData = data.getClipData();
-            new DecodeImagesAsync(this, mDecodeCallback, mClipData.getItemCount()).execute(mClipData);
         }
     }
 
@@ -725,17 +664,6 @@ public class CreateNoteActivity extends ThemedActivity {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             mAdapter.addImage(new NoteImage(outputStream.toByteArray()));
-        }
-    }
-
-    private void getImageFromCamera() {
-        addImageFromUri(mImageUri);
-        if (mImageUri != null) {
-            String pathFromURI = getRealPathFromURI(mImageUri);
-            File file = new File(pathFromURI);
-            if (file.exists()) {
-                file.delete();
-            }
         }
     }
 
@@ -773,7 +701,7 @@ public class CreateNoteActivity extends ThemedActivity {
                 android.R.layout.simple_list_item_single_choice, contacts) {
             @NonNull
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 if (convertView == null) {
                     convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null);
                 }
@@ -848,17 +776,23 @@ public class CreateNoteActivity extends ThemedActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length == 0) return;
+        if (photoSelectionUtil != null)
+            photoSelectionUtil.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case REQUEST_SD_CARD:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getImage();
-                }
-                break;
             case AUDIO_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     micClick();
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onImageSelected(@Nullable Uri uri, @Nullable ClipData clipData) {
+        if (uri != null) {
+            addImageFromUri(uri);
+        } else if (clipData != null) {
+            new DecodeImagesAsync(this, mDecodeCallback, clipData.getItemCount()).execute(clipData);
         }
     }
 }

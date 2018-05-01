@@ -3,6 +3,9 @@ package com.elementary.tasks.notes;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.BindingAdapter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
@@ -87,14 +88,15 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
         }
     }
 
+    @NonNull
     @Override
-    public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new NoteHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
     }
 
     @Override
-    public void onBindViewHolder(final NoteHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final NoteHolder holder, final int position) {
         holder.setData(getItem(position));
     }
 
@@ -124,10 +126,11 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     }
 
     private static void setImage(ImageView imageView, byte[] image) {
-        RequestOptions myOptions = new RequestOptions()
-                .fitCenter()
-                .override(768, 500);
-        Glide.with(imageView.getContext().getApplicationContext()).load(image).apply(myOptions).into(imageView);
+        new Thread(() -> {
+            Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+            imageView.post(() -> imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp,
+                    imageView.getWidth(), imageView.getHeight(), false)));
+        }).start();
     }
 
     private static void setClick(ImageView imageView, int position, String key) {
