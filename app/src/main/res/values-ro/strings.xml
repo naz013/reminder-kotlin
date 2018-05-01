@@ -636,5 +636,6 @@
     <string name="ignore_window_type_parameter_for_each_event">Ignorați parametrul de tip fereastră pentru fiecare eveniment</string>
     <string name="p_until">% până</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>

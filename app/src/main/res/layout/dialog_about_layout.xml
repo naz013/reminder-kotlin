@@ -6,7 +6,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="16dp"
         android:paddingLeft="24dp"
@@ -41,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:textSize="@dimen/about_secondary_text_size"
                 app:font_style="roboto_thin" />
@@ -51,12 +50,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:text="@string/copyright"
                 android:textSize="@dimen/about_secondary_text_size"
                 app:font_style="roboto_thin" />
 
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/translators"
+                android:textSize="@dimen/about_secondary_text_size"
+                app:font_style="roboto_thin" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/translators_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/about_secondary_text_size"
+                    app:font_style="roboto_thin" />
+
+            </ScrollView>
         </LinearLayout>
     </LinearLayout>
 </layout>

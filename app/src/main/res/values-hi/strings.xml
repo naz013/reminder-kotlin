@@ -636,5 +636,6 @@
     <string name="ignore_window_type_parameter_for_each_event">प्रत्येक ईवेंट के लिए विंडो प्रकार पैरामीटर को अनदेखा करें</string>
     <string name="p_until">% तक</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>

@@ -636,5 +636,6 @@
     <string name="ignore_window_type_parameter_for_each_event">Ігнорувати параметр типу вікна для кожної події</string>
     <string name="p_until">% до</string>
     <string name="failed_to_load">Failed to load!</string>
+    <string name="translators">Translators:</string>
 
 </resources>
