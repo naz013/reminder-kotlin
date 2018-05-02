@@ -12,17 +12,17 @@ Screenshots
 
 <p float="left">
   <img src="https://github.com/naz013/Reminder/raw/master/res/reminder_scr.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr_1.jpg" width="300" />
+  <img src="https://github.com/naz013/Reminder/raw/master/res/scr1.jpg" width="300" />
 </p>
 
 <p float="left">
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr_2.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr_3.jpg" width="300" />
+  <img src="https://github.com/naz013/Reminder/raw/master/res/scr2.jpg" width="300" />
+  <img src="https://github.com/naz013/Reminder/raw/master/res/scr3.jpg" width="300" />
 </p>
 
 <p float="left">
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr_4.jpg" width="300" />
-  <img src="https://github.com/naz013/Reminder/raw/master/res/scr_5.jpg" width="300" />
+  <img src="https://github.com/naz013/Reminder/raw/master/res/scr4.jpg" width="300" />
+  <img src="https://github.com/naz013/Reminder/raw/master/res/scr5.jpg" width="300" />
 </p>
 
 # Contributions are welcome.
