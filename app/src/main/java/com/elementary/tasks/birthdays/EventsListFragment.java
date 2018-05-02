@@ -46,7 +46,8 @@ import timber.log.Timber;
  * limitations under the License.
  */
 
-public class EventsListFragment extends BaseFragment implements RecyclerListener, DayViewProvider.Callback, DayViewProvider.InitCallback {
+public class EventsListFragment extends BaseFragment implements RecyclerListener,
+        DayViewProvider.Callback, DayViewProvider.InitCallback {
 
     private static final String ARGUMENT_PAGE_NUMBER = "arg_page";
 
@@ -92,6 +93,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         super.onDestroy();
         DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
         if (provider != null) {
+            provider.removeObserver(this);
             provider.removeCallback(this);
         }
     }

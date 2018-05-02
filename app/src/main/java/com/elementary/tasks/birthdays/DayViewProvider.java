@@ -130,12 +130,11 @@ public class DayViewProvider {
     }
 
     public void fillArray() {
-        if (isDataChanged || data.isEmpty()) {
-            data.clear();
+        if ((isDataChanged || data.isEmpty()) && !isInProgress) {
+            isReady = false;
             isInProgress = true;
             new Thread(() -> {
-                isDataChanged = false;
-                isReady = false;
+                data.clear();
                 if (isBirthdays) {
                     loadBirthdays();
                 }
@@ -144,6 +143,7 @@ public class DayViewProvider {
                 }
                 isReady = true;
                 isInProgress = false;
+                isDataChanged = false;
                 notifyInitFinish();
             }).start();
         }
@@ -331,6 +331,7 @@ public class DayViewProvider {
         public void run() {
             if (isCanceled) return;
             List<EventsItem> res = new ArrayList<>();
+            Timber.d("run: d->%d, m->%d, y->%d, data-> %s", day, month, year, data);
             for (EventsItem item : new ArrayList<>(data)) {
                 if (item == null) continue;
                 int mDay = item.getDay();

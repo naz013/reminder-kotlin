@@ -20,7 +20,7 @@ public class EventsItem extends AdapterItem {
 
     private int day, month, year, color;
 
-    public EventsItem(int viewType, Object object, int day, int month, int year, int color) {
+    EventsItem(int viewType, Object object, int day, int month, int year, int color) {
         super(viewType, object);
         this.day = day;
         this.month = month;
@@ -58,5 +58,14 @@ public class EventsItem extends AdapterItem {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "EvI{" +
+                "d=" + day +
+                ", m=" + month +
+                ", y=" + year +
+                '}';
     }
 }
