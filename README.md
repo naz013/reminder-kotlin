@@ -5,7 +5,7 @@
 Powerful task manager and reminder.
 
 <a href='https://play.google.com/store/apps/details?id=com.cray.software.justreminder&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>
+<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width='150'/>
 </a>
 
 Screenshots
@@ -24,6 +24,8 @@ Screenshots
   <img src="https://github.com/naz013/Reminder/raw/master/res/scr_4.jpg" width="300" />
   <img src="https://github.com/naz013/Reminder/raw/master/res/scr_5.jpg" width="300" />
 </p>
+
+# Contributions are welcome.
 
 License
 -------
