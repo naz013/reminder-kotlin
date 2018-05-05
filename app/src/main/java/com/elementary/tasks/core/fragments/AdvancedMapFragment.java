@@ -97,7 +97,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private String markerTitle;
     private int markerRadius = -1;
     private int markerStyle = -1;
-    private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private LatLng lastPos;
     private float strokeWidth = 3f;
 
@@ -122,7 +121,7 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             mMap = googleMap;
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.getUiSettings().setCompassEnabled(true);
-            mMap.setMapType(mMapType);
+            setStyle(mMap);
             setMyLocation();
             mMap.setOnMapClickListener(onMapClickListener);
             setOnMarkerClick(onMarkerClickListener);
@@ -191,16 +190,8 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         this.mCallback = callback;
     }
 
-    public void setMarkerTitle(String markerTitle) {
-        this.markerTitle = markerTitle;
-    }
-
     public void setMarkerRadius(int markerRadius) {
         this.markerRadius = markerRadius;
-    }
-
-    public void setMarkerStyle(int markerStyle) {
-        this.markerStyle = markerStyle;
     }
 
     public int getMarkerStyle() {
@@ -434,7 +425,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         initArgs();
         binding = FragmentMapBinding.inflate(inflater, container, false);
         markerRadius = getPrefs().getRadius();
-        mMapType = getPrefs().getMapType();
         if (!Module.isPro()) {
             markerStyle = getPrefs().getMarkerStyle();
         }
@@ -604,14 +594,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             } else {
                 groupThree.addView(ib);
             }
-        }
-    }
-
-    private void setMapType(int type) {
-        if (mMap != null) {
-            mMap.setMapType(type);
-            getPrefs().setMapType(type);
-            ViewUtils.hideOver(layersContainer);
         }
     }
 
@@ -839,16 +821,16 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 moveToMyLocation();
                 break;
             case R.id.typeNormal:
-                setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                setMapType(mMap, GoogleMap.MAP_TYPE_NORMAL, this::hideLayers);
                 break;
             case R.id.typeHybrid:
-                setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                setMapType(mMap, GoogleMap.MAP_TYPE_HYBRID, this::hideLayers);
                 break;
             case R.id.typeSatellite:
-                setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                setMapType(mMap, GoogleMap.MAP_TYPE_SATELLITE, this::hideLayers);
                 break;
             case R.id.typeTerrain:
-                setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                setMapType(mMap, GoogleMap.MAP_TYPE_TERRAIN, this::hideLayers);
                 break;
             case R.id.places:
                 togglePlaces();

@@ -37,6 +37,15 @@
                 app:prefs_type="none" />
 
             <com.elementary.tasks.core.views.PrefsView
+                android:id="@+id/mapStylePrefs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefs_divider_bottom="true"
+                app:prefs_primary_text="@string/map_style"
+                app:prefs_view_resource="@drawable/preview_map_dark"
+                app:prefs_type="view" />
+
+            <com.elementary.tasks.core.views.PrefsView
                 android:id="@+id/markerStylePrefs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -27,6 +27,7 @@ class PrefsConstants {
     protected static final String DRIVE_USER = "ggl_user";
     protected static final String SCREEN = "screen";
     protected static final String MAP_TYPE = "new_map_type";
+    protected static final String MAP_STYLE = "new_map_style";
     protected static final String LOCATION_RADIUS = "radius";
     protected static final String TRACKING_NOTIFICATION = "tracking_notification";
     static final String VIBRATION_STATUS = "vibration_status";

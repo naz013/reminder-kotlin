@@ -362,6 +362,14 @@ public final class Prefs extends SharedPrefs {
         putInt(MAP_TYPE, value);
     }
 
+    public int getMapStyle() {
+        return getInt(MAP_STYLE);
+    }
+
+    public void setMapStyle(int value) {
+        putInt(MAP_STYLE, value);
+    }
+
     public int getTrackDistance() {
         return getInt(TRACK_DISTANCE);
     }
@@ -911,6 +919,7 @@ public final class Prefs extends SharedPrefs {
             uiEd.putInt(SOUND_STREAM, 5);
             uiEd.putInt(MAIN_IMAGE_ID, -1);
             uiEd.putInt(NOTE_COLOR_OPACITY, 100);
+            uiEd.putInt(MAP_STYLE, 6);
             uiEd.putBoolean(TRACKING_NOTIFICATION, true);
             uiEd.putBoolean(RATE_SHOW, false);
             uiEd.putBoolean(IS_CREATE_SHOWN, false);
@@ -1162,6 +1171,9 @@ public final class Prefs extends SharedPrefs {
         }
         if (!hasKey(APP_LANGUAGE)) {
             putInt(APP_LANGUAGE, 0);
+        }
+        if (!hasKey(MAP_STYLE)) {
+            putInt(MAP_STYLE, 6);
         }
         if (!hasKey(CALENDAR_IMAGES)) {
             putObject(CALENDAR_IMAGES, new MonthImage());

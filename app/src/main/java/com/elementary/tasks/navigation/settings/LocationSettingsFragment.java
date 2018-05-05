@@ -12,9 +12,11 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.DialogTrackingSettingsLayoutBinding;
 import com.elementary.tasks.databinding.FragmentSettingsLocationBinding;
+import com.elementary.tasks.navigation.settings.location.MapStyleFragment;
 import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment;
 
 import java.util.Locale;
@@ -59,6 +61,19 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         return binding.getRoot();
     }
 
+    private void initMapStylePrefs() {
+        binding.mapStylePrefs.setOnClickListener(v -> openMapStylesFragment());
+        binding.mapStylePrefs.setDetailText(getString(ThemeUtil.getInstance(getContext()).getStyleName()));
+        binding.mapStylePrefs.setViewResource(ThemeUtil.getInstance(getContext()).getMapStylePreview());
+        binding.mapStylePrefs.setEnabled(Prefs.getInstance(getContext()).getMapType() == 3);
+    }
+
+    private void openMapStylesFragment() {
+        if (getCallback() != null) {
+            getCallback().replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style));
+        }
+    }
+
     private void initMarkerStylePrefs() {
         binding.markerStylePrefs.setOnClickListener(mStyleClick);
         showMarkerStyle();
@@ -87,6 +102,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
     public void onResume() {
         super.onResume();
         showMarkerStyle();
+        initMapStylePrefs();
         if (getCallback() != null) {
             getCallback().onTitleChange(getString(R.string.location));
             getCallback().onFragmentSelect(this);
@@ -162,6 +178,7 @@ public class LocationSettingsFragment extends BaseSettingsFragment {
         builder.setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> {
             getPrefs().setMapType(mItemSelect + 1);
             showMapType();
+            initMapStylePrefs();
             dialogInterface.dismiss();
         });
         AlertDialog dialog = builder.create();
