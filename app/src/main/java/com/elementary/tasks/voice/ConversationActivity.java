@@ -60,7 +60,6 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ConversationActivity extends ThemedActivity {
 
     private static final String TAG = "ConversationActivity";
@@ -549,7 +548,6 @@ public class ConversationActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation);
-        setSupportActionBar(binding.toolbar);
         recognize = new Recognize(this);
         initList();
         binding.recordingView.setOnClickListener(view -> micClick());
