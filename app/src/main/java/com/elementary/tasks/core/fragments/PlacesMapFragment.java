@@ -95,7 +95,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private boolean isDark = false;
     private int mRadius = -1;
     private int markerStyle = -1;
-    private int mMapType = GoogleMap.MAP_TYPE_NORMAL;
     private double mLat, mLng;
 
     private LocationTracker mLocList;
@@ -115,7 +114,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             mMap = googleMap;
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.getUiSettings().setCompassEnabled(true);
-            mMap.setMapType(mMapType);
+            setStyle(mMap);
             setMyLocation();
             mMap.setOnMapClickListener(latLng -> {
                 hideLayers();
@@ -133,7 +132,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     };
     private Callback<PlacesResponse> mSearchCallback = new Callback<PlacesResponse>() {
         @Override
-        public void onResponse(Call<PlacesResponse> call, Response<PlacesResponse> response) {
+        public void onResponse(@NonNull Call<PlacesResponse> call, Response<PlacesResponse> response) {
             if (response.code() == Api.OK) {
                 List<GooglePlaceItem> places = new ArrayList<>();
                 for (com.elementary.tasks.core.network.places.Place place : response.body().getResults()) {
@@ -151,7 +150,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         }
 
         @Override
-        public void onFailure(Call<PlacesResponse> call, Throwable t) {
+        public void onFailure(@NonNull Call<PlacesResponse> call, @NonNull Throwable t) {
             Toast.makeText(getContext(), SuperUtil.getString(PlacesMapFragment.this, R.string.no_places_found), Toast.LENGTH_SHORT).show();
         }
     };
@@ -243,13 +242,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         }
     }
 
-    public void addMarkers(List<Place> list) {
-        mMap.clear();
-        toModels(list, false);
-        addSelectAllItem();
-        refreshAdapter(false);
-    }
-
     private void addSelectAllItem() {
         if (spinnerArray != null && spinnerArray.size() > 1) {
             spinnerArray.add(new GooglePlaceItem(SuperUtil.getString(PlacesMapFragment.this, R.string.add_all), null, null, null, null, null, false));
@@ -319,7 +311,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         initArgs();
         binding = FragmentPlacesMapBinding.inflate(inflater, container, false);
         mRadius = getPrefs().getRadius();
-        mMapType = getPrefs().getMapType();
         isDark = getThemeUtil().isDark();
 
         binding.mapView.onCreate(savedInstanceState);
@@ -423,7 +414,9 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager)
                 getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(cardSearch.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(cardSearch.getWindowToken(), 0);
+        }
     }
 
     private void loadMarkers() {
@@ -449,14 +442,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
             } else {
                 groupThree.addView(ib);
             }
-        }
-    }
-
-    private void setMapType(int type) {
-        if (mMap != null) {
-            mMap.setMapType(type);
-            getPrefs().setMapType(type);
-            ViewUtils.hideOver(layersContainer);
         }
     }
 
@@ -718,16 +703,16 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
                 toggleLayers();
                 break;
             case R.id.typeNormal:
-                setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                setMapType(mMap, GoogleMap.MAP_TYPE_NORMAL, this::hideLayers);
                 break;
             case R.id.typeHybrid:
-                setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                setMapType(mMap, GoogleMap.MAP_TYPE_HYBRID, this::hideLayers);
                 break;
             case R.id.typeSatellite:
-                setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                setMapType(mMap, GoogleMap.MAP_TYPE_SATELLITE, this::hideLayers);
                 break;
             case R.id.typeTerrain:
-                setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                setMapType(mMap, GoogleMap.MAP_TYPE_TERRAIN, this::hideLayers);
                 break;
             case R.id.places:
                 togglePlaces();

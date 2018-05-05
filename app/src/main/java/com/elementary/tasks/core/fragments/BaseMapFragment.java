@@ -18,8 +18,10 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.MapStyleOptions;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,6 +44,8 @@ public abstract class BaseMapFragment extends Fragment {
     private Activity mContext;
     private ThemeUtil mColor;
     private Prefs mPrefs;
+
+    private int mMapType = GoogleMap.MAP_TYPE_TERRAIN;
 
     public Activity getContext() {
         return mContext;
@@ -71,11 +75,38 @@ public abstract class BaseMapFragment extends Fragment {
         }
     }
 
+    protected void setStyle(@NonNull GoogleMap map, int mapType) {
+        mMapType = mapType;
+        map.setMapStyle(null);
+        if (mapType == 3) {
+            boolean res = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                    getActivity(), mColor.getMapStyleJson()));
+            if (!res) {
+                map.setMapType(mapType);
+            }
+        } else {
+            map.setMapType(mapType);
+        }
+    }
+
+    protected void setStyle(@NonNull GoogleMap map) {
+        setStyle(map, mMapType);
+    }
+
+    protected void setMapType(@NonNull GoogleMap map, int type, @Nullable Function function) {
+        setStyle(map, type);
+        getPrefs().setMapType(type);
+        if (function != null) {
+            function.apply();
+        }
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mColor = ThemeUtil.getInstance(mContext);
         mPrefs = Prefs.getInstance(mContext);
+        mMapType = mPrefs.getMapType();
     }
 
     protected BitmapDescriptor getDescriptor(int resId) {
@@ -107,5 +138,9 @@ public abstract class BaseMapFragment extends Fragment {
         Canvas canvas = new Canvas(bm);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bm);
+    }
+
+    interface Function {
+        void apply();
     }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntRange;
+import android.support.annotation.RawRes;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 
 import com.elementary.tasks.R;
@@ -1369,6 +1371,76 @@ public final class ThemeUtil {
         } else {
             return R.drawable.ic_bell_illustration;
         }
+    }
+
+    @StringRes
+    public int getStyleName() {
+        int style = Prefs.getInstance(getContext()).getMapStyle();
+        switch (style) {
+            case 0:
+                return R.string.day;
+            case 1:
+                return R.string.retro;
+            case 2:
+                return R.string.silver;
+            case 3:
+                return R.string.night;
+            case 4:
+                return R.string.dark;
+            case 5:
+                return R.string.aubergine;
+            case 6:
+                return R.string.auto;
+        }
+        return R.string.auto;
+    }
+
+    @RawRes
+    public int getMapStyleJson() {
+        int style = Prefs.getInstance(getContext()).getMapStyle();
+        switch (style) {
+            case 0:
+                return R.raw.map_terrain_day;
+            case 1:
+                return R.raw.map_terrain_retro;
+            case 2:
+                return R.raw.map_terrain_silver;
+            case 3:
+                return R.raw.map_terrain_night;
+            case 4:
+                return R.raw.map_terrain_dark;
+            case 5:
+                return R.raw.map_terrain_aubergine;
+            case 6: {
+                if (isDark()) return R.raw.map_terrain_night;
+                else return R.raw.map_terrain_day;
+            }
+        }
+        return R.raw.map_terrain_day;
+    }
+
+    @DrawableRes
+    public int getMapStylePreview() {
+        int style = Prefs.getInstance(getContext()).getMapStyle();
+        switch (style) {
+            case 0:
+                return R.drawable.preview_map_day;
+            case 1:
+                return R.drawable.preview_map_retro;
+            case 2:
+                return R.drawable.preview_map_silver;
+            case 3:
+                return R.drawable.preview_map_night;
+            case 4:
+                return R.drawable.preview_map_dark;
+            case 5:
+                return R.drawable.preview_map_aubergine;
+            case 6: {
+                if (isDark()) return R.drawable.preview_map_night;
+                else return R.drawable.preview_map_day;
+            }
+        }
+        return R.drawable.preview_map_day;
     }
 
     private interface Color {
