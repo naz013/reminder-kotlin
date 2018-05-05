@@ -11,15 +11,38 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            app:cardElevation="2dp">
+            android:orientation="vertical">
 
-            <com.haozhang.lib.AnimatedRecordingView
-                android:id="@+id/recordingView"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
+                android:layout_height="match_parent">
 
+                <com.haozhang.lib.AnimatedRecordingView
+                    android:id="@+id/recordingView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible" />
+
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/settingsButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@null"
+                    app:tb_icon="@drawable/ic_settings"
+                    app:tb_icon_light="@drawable/ic_settings_white"
+                    app:tb_message="@string/action_settings" />
+
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    app:tb_icon="@drawable/ic_arrow_back_black_24dp"
+                    app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
+
+            </RelativeLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
@@ -29,45 +52,5 @@
             android:layout_above="@+id/micLayout"
             android:overScrollMode="never"
             android:scrollbars="none" />
-
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@android:color/transparent">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/settingsButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:background="@null"
-                        app:tb_icon="@drawable/ic_more_vert_black_24dp"
-                        app:tb_icon_light="@drawable/ic_more_vert_white_24dp"
-                        app:tb_message="@string/action_settings" />
-
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/backButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:background="@null"
-                        app:tb_icon="@drawable/ic_arrow_back_black_24dp"
-                        app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
-
-                </RelativeLayout>
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.AppBarLayout>
     </RelativeLayout>
 </layout>
