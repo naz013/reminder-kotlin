@@ -637,5 +637,9 @@
     <string name="p_until">% तक</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
+    <string name="map_style">मानचित्र की शैली</string>
+    <string name="silver">चांदी</string>
+    <string name="retro">रेट्रो</string>
+    <string name="aubergine">बैंगन</string>
 
 </resources>
