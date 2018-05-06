@@ -637,5 +637,9 @@
     <string name="p_until">% until</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
+    <string name="map_style">Style of Map</string>
+    <string name="silver">Silver</string>
+    <string name="retro">Retro</string>
+    <string name="aubergine">Aubergine</string>
 
 </resources>

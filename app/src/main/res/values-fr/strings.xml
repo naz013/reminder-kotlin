@@ -636,5 +636,9 @@
     <string name="p_until">% jusqu\'à</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
+    <string name="map_style">Style de la carte</string>
+    <string name="silver">Argent</string>
+    <string name="retro">Rétro</string>
+    <string name="aubergine">Aubergine</string>
 
 </resources>

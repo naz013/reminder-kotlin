@@ -637,5 +637,9 @@
     <string name="p_until">% a kadar</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
+    <string name="map_style">Haritanın stili</string>
+    <string name="silver">Gümüş</string>
+    <string name="retro">Retro</string>
+    <string name="aubergine">Patlıcan</string>
 
 </resources>

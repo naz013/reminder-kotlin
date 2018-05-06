@@ -638,5 +638,9 @@
     <string name="p_until">％まで</string>
     <string name="failed_to_load">Failed to load!</string>
     <string name="translators">Translators:</string>
+    <string name="map_style">マップのスタイル</string>
+    <string name="silver">銀</string>
+    <string name="retro">レトロ</string>
+    <string name="aubergine">茄子</string>
 
 </resources>
