@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -23,6 +22,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MapStyleOptions;
 
+import androidx.fragment.app.Fragment;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -38,7 +39,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class BaseMapFragment extends Fragment {
 
     private Activity mContext;

@@ -71,8 +71,6 @@ import retrofit2.Response;
  */
 public class PlacesMapFragment extends BaseMapFragment implements View.OnClickListener {
 
-    private static final String SHOWCASE = "places_showcase";
-
     private FragmentPlacesMapBinding binding;
     private GoogleMap mMap;
     private CardView layersContainer;
@@ -82,7 +80,6 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
     private ThemedImageButton zoomOut;
     private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
-    private RecyclerView placesList;
     private LinearLayout emptyItem;
 
     private List<GooglePlaceItem> spinnerArray = new ArrayList<>();
@@ -312,8 +309,7 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         groupTwo = binding.groupTwo;
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
-        placesList = binding.placesList;
-        placesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.placesList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
@@ -464,12 +460,12 @@ public class PlacesMapFragment extends BaseMapFragment implements View.OnClickLi
         });
         if (spinnerArray != null && spinnerArray.size() > 0) {
             emptyItem.setVisibility(View.GONE);
-            placesList.setVisibility(View.VISIBLE);
-            placesList.setAdapter(placesAdapter);
+            binding.placesList.setVisibility(View.VISIBLE);
+            binding.placesList.setAdapter(placesAdapter);
             addMarkers();
             if (!isPlacesVisible() && show) ViewUtils.slideInUp(getContext(), placesListCard);
         } else {
-            placesList.setVisibility(View.GONE);
+            binding.placesList.setVisibility(View.GONE);
             emptyItem.setVisibility(View.VISIBLE);
         }
     }

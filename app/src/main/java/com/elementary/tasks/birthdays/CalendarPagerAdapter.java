@@ -1,11 +1,11 @@
 package com.elementary.tasks.birthdays;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v13.app.FragmentStatePagerAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,7 +22,7 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class CalendarPagerAdapter extends FragmentStatePagerAdapter {
+public class CalendarPagerAdapter extends FragmentPagerAdapter {
 
     private List<EventsPagerItem> datas = new ArrayList<>();
 

@@ -46,7 +46,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class MapFragment extends BaseNavigationFragment {
 
     private FragmentEventsMapBinding binding;

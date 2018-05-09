@@ -15,7 +15,6 @@ package com.elementary.tasks.navigation.fragments;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class BaseNavigationFragment extends BaseFragment {
 
     @Override

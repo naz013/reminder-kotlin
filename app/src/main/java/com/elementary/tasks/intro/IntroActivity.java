@@ -1,17 +1,18 @@
 package com.elementary.tasks.intro;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.databinding.ActivityIntroBinding;
 import com.elementary.tasks.login.LoginActivity;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 public class IntroActivity extends ThemedActivity {
 
@@ -22,7 +23,7 @@ public class IntroActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
 
-        SlidePagerAdapter mPagerAdapter = new SlidePagerAdapter(getFragmentManager());
+        SlidePagerAdapter mPagerAdapter = new SlidePagerAdapter(getSupportFragmentManager());
         binding.viewPager.setAdapter(mPagerAdapter);
         binding.indicator.setViewPager(binding.viewPager);
 
@@ -70,7 +71,7 @@ public class IntroActivity extends ThemedActivity {
         }
     }
 
-    private class SlidePagerAdapter extends FragmentStatePagerAdapter {
+    private class SlidePagerAdapter extends FragmentPagerAdapter {
 
         SlidePagerAdapter(FragmentManager fm) {
             super(fm);

@@ -20,7 +20,6 @@ import com.elementary.tasks.notes.NoteImage;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class BitmapFragment extends BaseNavigationFragment {
     @Nullable
     public abstract NoteImage getImage();

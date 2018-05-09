@@ -23,7 +23,6 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 abstract class RadiusTypeFragment extends TypeFragment {
 
     protected int radius = Prefs.getInstance(getContext()).getRadius();

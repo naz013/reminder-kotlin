@@ -1,10 +1,11 @@
 package com.elementary.tasks.core.calendar;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,7 +22,6 @@ import android.view.MotionEvent;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class InfiniteViewPager extends ViewPager {
 
     public static final int OFFSET = 1000;

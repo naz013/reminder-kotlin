@@ -64,7 +64,7 @@ public class CreatePlaceActivity extends ThemedActivity implements MapListener, 
         mGoogleMap.setListener(this);
         mGoogleMap.setCallback(this);
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, mGoogleMap)
                 .addToBackStack(null)
                 .commit();

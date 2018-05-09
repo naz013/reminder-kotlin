@@ -1,7 +1,6 @@
 package com.elementary.tasks.notes.editor;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -18,6 +17,8 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -136,7 +137,7 @@ public class ImageEditActivity extends ThemedActivity {
 
     public void replaceFragment(BitmapFragment fragment) {
         this.fragment = fragment;
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container, fragment, null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);

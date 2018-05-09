@@ -137,8 +137,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     kapt "com.android.databinding:compiler:$android_plugin_version"
 
-    implementation "com.android.support:animated-vector-drawable:$support_version"
     implementation "com.android.support:support-emoji-appcompat:$support_version"
+    implementation "com.android.support:support-media-compat:$support_version"
 
     implementation 'com.google.android.material:material:1.0.0-alpha1'
 
@@ -169,7 +169,6 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.tuyenmonkey:mkloader:1.3.0'
-    implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.3'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'

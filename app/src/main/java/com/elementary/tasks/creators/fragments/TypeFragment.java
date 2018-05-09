@@ -1,12 +1,13 @@
 package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.reminder.models.Reminder;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,7 +24,6 @@ import com.elementary.tasks.reminder.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class TypeFragment extends Fragment {
 
     private Context mContext;
