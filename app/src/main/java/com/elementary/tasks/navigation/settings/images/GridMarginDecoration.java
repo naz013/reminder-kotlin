@@ -1,8 +1,9 @@
 package com.elementary.tasks.navigation.settings.images;
 
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -19,7 +20,6 @@ import android.view.View;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class GridMarginDecoration extends RecyclerView.ItemDecoration {
 
     private int space;

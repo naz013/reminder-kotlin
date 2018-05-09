@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +28,8 @@ import com.elementary.tasks.reminder.filters.FilterCallback;
 
 import java.util.List;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -44,7 +45,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class PlacesFragment extends BaseNavigationFragment implements FilterCallback<PlaceItem> {
 
     private FragmentPlacesBinding binding;

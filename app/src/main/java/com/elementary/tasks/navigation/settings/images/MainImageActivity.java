@@ -7,9 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +34,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,7 +56,6 @@ import retrofit2.Response;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class MainImageActivity extends ThemedActivity implements CompoundButton.OnCheckedChangeListener {
 
     public static final String DEFAULT_PHOTO = "https://unsplash.it/1280/768?image=33";

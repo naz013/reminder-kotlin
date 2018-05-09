@@ -16,7 +16,7 @@
             type="com.elementary.tasks.core.interfaces.ClickListener" />
     </data>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -91,5 +91,5 @@
                 app:loadCheck='@{taskItem}' />
 
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </layout>

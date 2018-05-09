@@ -1,13 +1,14 @@
 package com.elementary.tasks.core.views;
 
 import android.animation.ObjectAnimator;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.elementary.tasks.core.utils.MeasureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public final class ReturnScrollListener extends RecyclerView.OnScrollListener {
 

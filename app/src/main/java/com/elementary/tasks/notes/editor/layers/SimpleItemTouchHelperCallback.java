@@ -1,9 +1,10 @@
 package com.elementary.tasks.notes.editor.layers;
 
 import android.graphics.Canvas;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -20,7 +21,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     public static final float ALPHA_FULL = 1.0f;

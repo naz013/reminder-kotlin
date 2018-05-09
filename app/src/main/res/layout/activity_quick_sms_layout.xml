@@ -35,7 +35,7 @@
             android:textSize="@dimen/follow_text_size_primary"
             app:font_style="roboto_medium" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messagesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

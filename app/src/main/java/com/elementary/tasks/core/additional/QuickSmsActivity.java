@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.view.WindowManager;
 
@@ -25,6 +23,9 @@ import com.elementary.tasks.databinding.ActivityQuickSmsLayoutBinding;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich

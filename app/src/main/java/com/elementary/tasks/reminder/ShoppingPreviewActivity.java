@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +28,8 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.elementary.tasks.reminder.models.ShopItem;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -44,7 +45,6 @@ import com.elementary.tasks.reminder.models.ShopItem;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ShoppingPreviewActivity extends ThemedActivity {
 
     private ActivityShoppingPreviewBinding binding;

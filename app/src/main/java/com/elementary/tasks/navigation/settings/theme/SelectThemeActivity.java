@@ -1,8 +1,6 @@
 package com.elementary.tasks.navigation.settings.theme;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.elementary.tasks.R;
@@ -12,6 +10,9 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ColorPickerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * Copyright 2016 Nazar Suhovich

@@ -2,13 +2,10 @@ package com.elementary.tasks.core.contacts;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,6 +19,10 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.databinding.FragmentContactsBinding;
 
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -212,7 +213,9 @@ public class ContactsFragment extends Fragment implements LoadListener {
     public void onPause() {
         super.onPause();
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(binding.searchField.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(binding.searchField.getWindowToken(), 0);
+        }
     }
 
     @Override

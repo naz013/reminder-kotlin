@@ -3,7 +3,6 @@ package com.elementary.tasks.creators.fragments;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +24,8 @@ import com.elementary.tasks.reminder.models.ShopItem;
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -40,7 +41,6 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ShopFragment extends TypeFragment {
 
     private static final String TAG = "ShopFragment";

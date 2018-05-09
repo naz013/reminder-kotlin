@@ -3,7 +3,6 @@ package com.elementary.tasks.birthdays;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -23,6 +22,8 @@ import com.elementary.tasks.reminder.models.Reminder;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -38,7 +39,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<EventsItem> mDataList = new ArrayList<>();

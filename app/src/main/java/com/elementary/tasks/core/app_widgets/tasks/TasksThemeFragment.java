@@ -2,7 +2,6 @@ package com.elementary.tasks.core.app_widgets.tasks;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import com.elementary.tasks.databinding.FragmentTasksWidgetPreviewBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,11 +28,10 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class TasksThemeFragment extends Fragment {
 
-    static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
-    static final String ARGUMENT_DATA = "arg_data";
+    private static final String ARGUMENT_PAGE_NUMBER = "arg_page_number";
+    private static final String ARGUMENT_DATA = "arg_data";
     private int mPageNumber;
     private List<TasksTheme> mList;
 

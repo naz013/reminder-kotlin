@@ -1,12 +1,13 @@
 package com.elementary.tasks.navigation;
 
 import android.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.elementary.tasks.core.views.FilterView;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich

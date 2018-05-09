@@ -14,10 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -54,9 +51,12 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -74,7 +74,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ReminderDialogActivity extends BaseNotificationActivity {
 
     private static final String TAG = "ReminderDialogActivity";

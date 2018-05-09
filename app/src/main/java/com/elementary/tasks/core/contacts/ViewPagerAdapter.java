@@ -1,11 +1,12 @@
 package com.elementary.tasks.core.contacts;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v13.app.FragmentPagerAdapter;
 
 import com.elementary.tasks.R;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +27,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
 
-    public ViewPagerAdapter(Context context, FragmentManager fm) {
+    ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.mContext = context;
     }

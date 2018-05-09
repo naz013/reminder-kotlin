@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +14,10 @@ import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.databinding.TasksWidgetConfigLayoutBinding;
 
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,7 +34,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class TasksWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;

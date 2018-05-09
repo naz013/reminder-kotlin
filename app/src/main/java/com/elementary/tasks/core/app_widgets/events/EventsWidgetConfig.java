@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +19,10 @@ import com.elementary.tasks.databinding.CurrentWidgetConfigLayoutBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -38,7 +39,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class EventsWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;

@@ -14,11 +14,6 @@ import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,11 +57,15 @@ import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
 import com.elementary.tasks.notes.QuickNoteCoordinator;
+import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.view.GravityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener,
         FragmentCallback, RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
@@ -76,7 +75,6 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private static final String CURRENT_SCREEN = "current_screen";
 
     private ActivityMainBinding binding;
-    private Toolbar toolbar;
     private ImageView mMainImageView;
     private RoboTextView mSaleBadge;
     private RoboTextView mUpdateBadge;
@@ -139,14 +137,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void initActionBar() {
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        toolbar.setNavigationOnClickListener(v -> onDrawerClick());
+        binding.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        binding.toolbar.setNavigationOnClickListener(v -> onDrawerClick());
     }
 
     private void onDrawerClick() {
@@ -164,7 +161,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(title);
         ft.commit();
-        toolbar.setTitle(title);
+        binding.toolbar.setTitle(title);
     }
 
     @Override
@@ -278,16 +275,16 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void onTitleChange(String title) {
-        toolbar.setTitle(title);
+        binding.toolbar.setTitle(title);
     }
 
     @Override
     public void onFragmentSelect(Fragment fragment) {
         this.fragment = fragment;
         if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+            binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+            binding.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
     }
 
@@ -318,7 +315,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         if (accent == 0) {
             accent = getThemeUtil().getColor(getThemeUtil().colorAccent());
         }
-        toolbar.setBackgroundColor(primary);
+        binding.toolbar.setBackgroundColor(primary);
         if (Module.isLollipop()) {
             getWindow().setStatusBarColor(primaryDark);
         }
@@ -443,9 +440,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = binding.drawerLayout;
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else if (isFiltersVisible()) {
             addFilters(null, true);
         } else if (mNoteView.isNoteVisible()) {
@@ -515,8 +511,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        DrawerLayout drawer = binding.drawerLayout;
-        drawer.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(() -> {
             if (prevItem == item.getItemId() && (item.getItemId() != R.id.nav_feedback ||
                     item.getItemId() != R.id.nav_help && item.getItemId() != R.id.nav_pro)) {

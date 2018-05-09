@@ -39,7 +39,7 @@ public class ContactsActivity extends ThemedActivity implements NumberCallback {
     }
 
     private void initTabNavigation() {
-        ViewPagerAdapter mSectionsPagerAdapter = new ViewPagerAdapter(this, getFragmentManager());
+        ViewPagerAdapter mSectionsPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
         binding.viewPager.setAdapter(mSectionsPagerAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewPager);
     }

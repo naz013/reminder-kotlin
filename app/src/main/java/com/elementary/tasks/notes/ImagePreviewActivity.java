@@ -3,7 +3,6 @@ package com.elementary.tasks.notes;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.elementary.tasks.R;
@@ -89,11 +88,10 @@ public class ImagePreviewActivity extends ThemedActivity {
     }
 
     private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle("");
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        binding.toolbar.setTitle("");
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.elementary.tasks.core.apps;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import com.elementary.tasks.databinding.ApplicationListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,7 +31,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapter.ApplicationViewHolder> {
 
     private RecyclerClickListener mListener;

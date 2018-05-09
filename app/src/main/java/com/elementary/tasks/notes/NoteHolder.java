@@ -1,11 +1,12 @@
 package com.elementary.tasks.notes;
 
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.databinding.NoteListItemBinding;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2017 Nazar Suhovich

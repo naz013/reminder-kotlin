@@ -43,7 +43,7 @@
                     android:textSize="@dimen/create_text_size_normal"
                     app:edit_font_style="roboto_medium" />
 
-                <Spinner
+                <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/before_type_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

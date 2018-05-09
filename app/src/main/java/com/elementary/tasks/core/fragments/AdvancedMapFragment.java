@@ -8,9 +8,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +25,6 @@ import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.AddressAutoCompleteView;
@@ -46,8 +42,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -64,7 +61,6 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class AdvancedMapFragment extends BaseMapFragment implements View.OnClickListener {
 
     private static final String TAG = "AdvancedMapFragment";
@@ -382,25 +378,6 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
             return;
         }
         if (!getPrefs().isShowcase(SHOWCASE) && isBack) {
-            ShowcaseConfig config = new ShowcaseConfig();
-            config.setDelay(350);
-            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
-            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getContext());
-            sequence.setConfig(config);
-            sequence.addSequenceItem(zoomOut,
-                    SuperUtil.getString(AdvancedMapFragment.this, R.string.click_to_expand_collapse_map),
-                    SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
-            sequence.addSequenceItem(backButton,
-                    SuperUtil.getString(AdvancedMapFragment.this, R.string.click_when_add_place),
-                    SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
-            if (Module.isPro()) {
-                sequence.addSequenceItem(markers,
-                        SuperUtil.getString(AdvancedMapFragment.this, R.string.select_style_for_marker),
-                        SuperUtil.getString(AdvancedMapFragment.this, R.string.got_it));
-            }
-            sequence.start();
             getPrefs().setShowcase(SHOWCASE, true);
         }
     }

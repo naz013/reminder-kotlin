@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -20,6 +18,8 @@ import com.elementary.tasks.databinding.ActivityApplicationListBinding;
 import com.elementary.tasks.reminder.filters.FilterCallback;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -83,16 +83,13 @@ public class ApplicationActivity extends ThemedActivity implements LoadListener,
     }
 
     private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-        if (toolbar != null) {
-            toolbar.setTitle(getString(R.string.choose_application));
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        }
+        binding.toolbar.setTitle(getString(R.string.choose_application));
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     @Override

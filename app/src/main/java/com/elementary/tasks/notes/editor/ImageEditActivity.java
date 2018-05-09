@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +17,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -35,7 +34,6 @@ import com.elementary.tasks.databinding.ActivityImageEditBinding;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ImageEditActivity extends ThemedActivity {
 
     private static final String TAG = "ImageEditActivity";
@@ -146,11 +144,10 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle(getString(R.string.edit));
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        binding.toolbar.setTitle(getString(R.string.edit));
     }
 
     @Override
