@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/micLayout"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -43,9 +43,9 @@
                     app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
 
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/conversationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

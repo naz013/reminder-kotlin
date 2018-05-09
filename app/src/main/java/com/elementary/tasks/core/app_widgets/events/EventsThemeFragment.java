@@ -2,7 +2,6 @@ package com.elementary.tasks.core.app_widgets.events;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,8 @@ import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Copyright 2015 Nazar Suhovich

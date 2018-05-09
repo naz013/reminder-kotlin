@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.settings.additional;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,8 @@ import com.elementary.tasks.databinding.ListItemMessageBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,7 +33,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder> {
 
     private Context mContext;

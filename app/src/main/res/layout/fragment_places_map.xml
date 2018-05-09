@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/zoomCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -41,9 +41,9 @@
                         app:tb_icon="@drawable/ic_arrow_upward_black_24dp"
                         app:tb_icon_light="@drawable/ic_arrow_upward_white_24dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/backCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,9 +57,9 @@
                         app:tb_icon="@drawable/ic_keyboard_arrow_left_black_24dp"
                         app:tb_icon_light="@drawable/ic_keyboard_arrow_left_white_24dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/layersCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,9 +73,9 @@
                         app:tb_icon="@drawable/ic_layers_black_24dp"
                         app:tb_icon_light="@drawable/ic_layers_white_24dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/markersCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,9 +89,9 @@
                         app:tb_icon="@drawable/ic_palette_black_24dp"
                         app:tb_icon_light="@drawable/ic_palette_white_24dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/placesCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,11 +105,11 @@
                         app:tb_icon="@drawable/ic_directions_black_24dp"
                         app:tb_icon_light="@drawable/ic_directions_white_24dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
         </ScrollView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/searchCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,9 +151,9 @@
                     app:tb_icon_light="@drawable/ic_search_white_24dp" />
 
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/layersContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -220,9 +220,9 @@
 
                 </LinearLayout>
             </ScrollView>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/styleCard"
             android:layout_width="match_parent"
             android:layout_height="175dp"
@@ -257,16 +257,16 @@
                     android:orientation="horizontal" />
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/placesListCard"
             android:layout_width="match_parent"
             android:layout_height="175dp"
             android:layout_alignParentBottom="true"
             android:visibility="visible">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/placesList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -300,6 +300,6 @@
                     android:textSize="25sp" />
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
 </layout>

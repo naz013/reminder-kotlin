@@ -2,7 +2,6 @@ package com.elementary.tasks.places;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import com.elementary.tasks.databinding.SimpleTextItemAdvancedBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,7 +39,7 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
     private boolean isDark;
 
     public GooglePlacesAdapter(final Context context, List<GooglePlaceItem> array) {
-        this.array = array;
+        this.array.addAll(array);
         isDark = ThemeUtil.getInstance(context).isDark();
     }
 

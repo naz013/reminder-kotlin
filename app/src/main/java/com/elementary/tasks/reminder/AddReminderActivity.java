@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +29,7 @@ import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.ActivityAddReminderBinding;
 import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.models.Reminder;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -47,7 +46,6 @@ import com.elementary.tasks.reminder.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class AddReminderActivity extends ThemedActivity {
 
     private static final String TAG = "AddReminderActivity";
@@ -122,10 +120,9 @@ public class AddReminderActivity extends ThemedActivity {
     }
 
     private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     private boolean isExportToCalendar() {

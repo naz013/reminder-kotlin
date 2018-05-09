@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +26,8 @@ import com.elementary.tasks.reminder.models.Reminder;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import timber.log.Timber;
 
 /**
@@ -45,7 +45,6 @@ import timber.log.Timber;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class EventsListFragment extends BaseFragment implements RecyclerListener,
         DayViewProvider.Callback, DayViewProvider.InitCallback {
 

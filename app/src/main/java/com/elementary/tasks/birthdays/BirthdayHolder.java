@@ -1,7 +1,6 @@
 package com.elementary.tasks.birthdays;
 
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.elementary.tasks.R;
@@ -10,6 +9,8 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
 import com.elementary.tasks.reminder.RecyclerListener;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2017 Nazar Suhovich

@@ -2,9 +2,6 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.support.annotation.Px;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -12,6 +9,10 @@ import android.view.WindowManager;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,11 +39,15 @@ public final class MeasureUtils {
     @Px
     public static int dp2px(Context context, int dp) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
+        Display display = null;
+        if (wm != null) {
+            display = wm.getDefaultDisplay();
+        }
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
-        display.getMetrics(displaymetrics);
-
+        if (display != null) {
+            display.getMetrics(displaymetrics);
+        }
         return (int) (dp * displaymetrics.density + 0.5f);
     }
 

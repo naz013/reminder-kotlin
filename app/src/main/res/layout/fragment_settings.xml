@@ -92,7 +92,5 @@
                 app:prefs_type="none" />
 
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
-
 </layout>

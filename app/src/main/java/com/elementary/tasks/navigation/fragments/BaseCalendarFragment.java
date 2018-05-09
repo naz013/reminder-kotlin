@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +18,8 @@ import com.elementary.tasks.databinding.DialogActionPickerBinding;
 import com.elementary.tasks.reminder.AddReminderActivity;
 
 import java.util.Calendar;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * Copyright 2016 Nazar Suhovich

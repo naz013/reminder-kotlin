@@ -2,7 +2,6 @@ package com.elementary.tasks.core.additional;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,7 +39,7 @@ class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplate
     private ThemeUtil themeUtil;
 
     SelectableTemplatesAdapter(List<TemplateItem> mDataList, Context context) {
-        this.mDataList = mDataList;
+        this.mDataList.addAll(mDataList);
         this.mContext = context;
         themeUtil = ThemeUtil.getInstance(context);
     }

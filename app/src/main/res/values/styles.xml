@@ -1,36 +1,8 @@
 <resources>
-
-    <style name="CustomActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:windowActionBarOverlay">true</item>
-
-        <!-- Support library compatibility -->
-        <item name="windowActionBarOverlay">true</item>
+    <style name="SplashTheme" parent="HomeDark">
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimaryDark">@color/material_grey</item>
-        <item name="android:windowBackground">@drawable/splash</item>
-    </style>
-
-    <style name="HomeWhiteActionbar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
-    <style name="HomeDarkActionbar" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
-
-    <style name="HomeWhite" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="HomeWhite" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
         <item name="windowActionBar">false</item>
     </style>
@@ -131,7 +103,7 @@
         <item name="colorAccent">@color/pinkAccent</item>
     </style>
 
-    <style name="HomeDark" parent="Theme.AppCompat.NoActionBar">
+    <style name="HomeDark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
         <item name="colorPrimary">@color/bluePrimary</item>
         <item name="colorAccent">@color/yellowAccent</item>
@@ -234,7 +206,7 @@
         <item name="colorAccent">@color/pinkAccent</item>
     </style>
 
-    <style name="HomeBlack" parent="Theme.AppCompat.NoActionBar">
+    <style name="HomeBlack" parent="HomeDark">
         <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
         <item name="colorPrimary">@color/bluePrimary</item>
         <item name="colorAccent">@color/yellowAccent</item>
@@ -338,30 +310,12 @@
         <item name="colorAccent">@color/pinkAccent</item>
     </style>
 
-    <style name="MyTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
-    </style>
-
-    <style name="MyTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/whitePrimary</item>
-    </style>
-
-    <style name="HomeWhiteDialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="HomeWhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorAccent">@color/bluePrimary</item>
     </style>
 
-    <style name="HomeDarkDialog" parent="Theme.AppCompat.Dialog">
+    <style name="HomeDarkDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorAccent">@color/bluePrimary</item>
-    </style>
-
-    <style name="HomeWhiteFullscreen" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="windowActionBar">false</item>
-    </style>
-
-    <style name="HomeDarkFullscreen" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimary</item>
-        <item name="windowActionBar">false</item>
     </style>
 
     <style name="HomeDarkDialog.Blue" parent="HomeDarkDialog">
@@ -492,7 +446,7 @@
         <item name="colorAccent">@color/indigoPrimary</item>
     </style>
 
-    <style name="HomeBlackDialog" parent="Theme.AppCompat.Dialog">
+    <style name="HomeBlackDialog" parent="HomeDarkDialog">
         <item name="colorAccent">@color/bluePrimary</item>
         <item name="android:background">@color/blackPrimary</item>
         <item name="android:popupBackground">@color/blackPrimary</item>
@@ -564,49 +518,4 @@
     <style name="HomeBlackDialog.Indigo" parent="HomeBlackDialog">
         <item name="colorAccent">@color/indigoPrimary</item>
     </style>
-
-    <style name="HomeWhiteTranslucent" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="HomeDarkTranslucent" parent="Theme.AppCompat.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
-    <style name="CustomCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox" />
-
-    <style name="Transparent" parent="@android:style/Theme.NoTitleBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
-    <!-- Backward-compatible version of ?android:attr/buttonBarStyle -->
-    <style name="ButtonBar">
-        <item name="android:paddingLeft">2dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingRight">2dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:background">@android:drawable/bottom_bar</item>
-    </style>
-
-    <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
-    <style name="ButtonBarButton" />
-
-    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">@style/ButtonBar</item>
-        <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
-    </style>
-
-    <style name="HomeWhite.Blue.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="HomeWhite.Blue.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

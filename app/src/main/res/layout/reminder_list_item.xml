@@ -37,7 +37,7 @@
             android:visibility="gone"
             app:font_style="roboto_light" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/itemCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -196,6 +196,6 @@
                     app:tb_icon_light="@drawable/ic_more_vert_white_24dp" />
 
             </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </layout>

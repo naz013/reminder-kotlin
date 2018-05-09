@@ -3,8 +3,6 @@ package com.elementary.tasks.navigation.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,8 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentGroupsBinding;
 import com.elementary.tasks.groups.CreateGroupActivity;
 import com.elementary.tasks.groups.GroupsRecyclerAdapter;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,7 +34,6 @@ import com.elementary.tasks.groups.GroupsRecyclerAdapter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class GroupsFragment extends BaseNavigationFragment {
 
     private FragmentGroupsBinding binding;
@@ -101,9 +100,8 @@ public class GroupsFragment extends BaseNavigationFragment {
     }
 
     private void initGroupsList() {
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setHasFixedSize(false);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         refreshView();
     }
 

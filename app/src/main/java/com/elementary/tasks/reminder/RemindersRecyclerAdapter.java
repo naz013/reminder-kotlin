@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.databinding.BindingAdapter;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -53,7 +54,6 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;

@@ -3,7 +3,6 @@ package com.elementary.tasks.core.file_explorer;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,7 +46,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     private RecyclerClickListener mListener;
     private FilterCallback mCallback;
 
-    public FileRecyclerAdapter(Context context, List<FileDataItem> dataItemList, RecyclerClickListener listener, FilterCallback callback) {
+    FileRecyclerAdapter(Context context, List<FileDataItem> dataItemList, RecyclerClickListener listener, FilterCallback callback) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(dataItemList);
         this.mListener = listener;
@@ -69,10 +70,10 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         return mDataList != null ? mDataList.size() : 0;
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
+    class ContactViewHolder extends RecyclerView.ViewHolder {
         ListItemFileLayoutBinding binding;
 
-        public ContactViewHolder(View itemView) {
+        ContactViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
             binding.setClick(view -> {

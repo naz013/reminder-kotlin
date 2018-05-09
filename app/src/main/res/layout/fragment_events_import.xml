@@ -25,7 +25,7 @@
                     android:text="@string/calendar"
                     android:textColor="?attr/colorAccent" />
 
-                <Spinner
+                <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/eventCalendar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

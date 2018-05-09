@@ -9,12 +9,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -73,6 +71,7 @@ import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.UpdateFilesAsync;
 import com.elementary.tasks.reminder.models.Reminder;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,8 +81,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class CreateReminderActivity extends ThemedActivity implements ReminderInterface, View.OnLongClickListener {
 
@@ -108,7 +105,6 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private static final String SHOWCASE = "reminder_showcase";
 
     private ActivityCreateReminderBinding binding;
-    private Toolbar toolbar;
     private Spinner spinner;
 
     @Nullable
@@ -403,15 +399,14 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void initActionBar() {
-        toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         binding.voiceButton.setOnClickListener(v -> openRecognizer());
         binding.customButton.setOnClickListener(v -> openCustomizationDialog());
         binding.groupButton.setOnClickListener(v -> changeGroup());
@@ -813,26 +808,26 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     public void showShowcase() {
         if (!getPrefs().isShowcase(SHOWCASE)) {
             getPrefs().setShowcase(SHOWCASE, true);
-            ShowcaseConfig config = new ShowcaseConfig();
-            config.setDelay(350);
-            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
-            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
-            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
-            sequence.setConfig(config);
-            sequence.addSequenceItem(binding.navSpinner,
-                    getString(R.string.click_to_select_reminder_type),
-                    getString(R.string.got_it));
-            sequence.addSequenceItem(binding.voiceButton,
-                    getString(R.string.to_insert_task_by_voice),
-                    getString(R.string.got_it));
-            sequence.addSequenceItem(binding.customButton,
-                    getString(R.string.click_to_customize),
-                    getString(R.string.got_it));
-            sequence.addSequenceItem(binding.groupButton,
-                    getString(R.string.click_to_change_reminder_group),
-                    getString(R.string.got_it));
-            sequence.start();
+//            ShowcaseConfig config = new ShowcaseConfig();
+//            config.setDelay(350);
+//            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
+//            config.setContentTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+//            config.setDismissTextColor(getThemeUtil().getColor(R.color.whitePrimary));
+//            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+//            sequence.setConfig(config);
+//            sequence.addSequenceItem(binding.navSpinner,
+//                    getString(R.string.click_to_select_reminder_type),
+//                    getString(R.string.got_it));
+//            sequence.addSequenceItem(binding.voiceButton,
+//                    getString(R.string.to_insert_task_by_voice),
+//                    getString(R.string.got_it));
+//            sequence.addSequenceItem(binding.customButton,
+//                    getString(R.string.click_to_customize),
+//                    getString(R.string.got_it));
+//            sequence.addSequenceItem(binding.groupButton,
+//                    getString(R.string.click_to_change_reminder_group),
+//                    getString(R.string.got_it));
+//            sequence.start();
         }
     }
 
@@ -970,9 +965,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     @Override
     public void setFullScreenMode(boolean b) {
         if (b) {
-            ViewUtils.collapse(toolbar);
+            ViewUtils.collapse(binding.toolbar);
         } else {
-            ViewUtils.expand(toolbar);
+            ViewUtils.expand(binding.toolbar);
         }
     }
 

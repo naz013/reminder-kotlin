@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -224,16 +223,13 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     private void initActionBar() {
-        Toolbar toolbar = binding.toolbar;
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-        if (toolbar != null) {
-            toolbar.setTitle(R.string.create_task);
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        }
+        binding.toolbar.setTitle(R.string.create_task);
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 
     private SpinnerAdapter getAdapter() {

@@ -52,7 +52,7 @@
                 android:layout_alignParentRight="true"
                 android:text="40px" />
 
-            <android.support.v7.widget.AppCompatSeekBar
+            <androidx.appcompat.widget.AppCompatSeekBar
                 android:id="@+id/widthSeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                 android:layout_alignParentRight="true"
                 android:text="100%" />
 
-            <android.support.v7.widget.AppCompatSeekBar
+            <androidx.appcompat.widget.AppCompatSeekBar
                 android:id="@+id/opacitySeek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

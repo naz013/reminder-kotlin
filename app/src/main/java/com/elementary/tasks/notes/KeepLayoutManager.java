@@ -1,8 +1,9 @@
 package com.elementary.tasks.notes;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -19,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class KeepLayoutManager extends GridLayoutManager {
 
     private RecyclerView.Adapter mAdapter;

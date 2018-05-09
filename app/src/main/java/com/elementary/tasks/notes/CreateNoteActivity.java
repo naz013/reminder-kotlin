@@ -19,8 +19,6 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,8 +65,7 @@ import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.reminder.models.Reminder;
-import com.tapadoo.alerter.Alert;
-import com.tapadoo.alerter.Alerter;
+import com.google.android.material.appbar.AppBarLayout;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -81,6 +78,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+
+import androidx.recyclerview.widget.DefaultItemAnimator;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -133,8 +132,6 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
 
     @Nullable
     private SpeechRecognizer speech = null;
-    @Nullable
-    private Alert mAlerter;
     @Nullable
     private PhotoSelectionUtil photoSelectionUtil;
 
@@ -305,15 +302,15 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             return;
         }
         getPrefs().setNoteHintShowed(true);
-        mAlerter = Alerter.create(this)
-                .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
-                .setText(R.string.click_to_hide)
-                .enableInfiniteDuration(true)
-                .setBackgroundColorRes(getThemeUtil().colorPrimaryDark(mColor))
-                .setOnClickListener(v -> {
-                    if (mAlerter != null) mAlerter.hide();
-                })
-                .show();
+//        mAlerter = Alerter.create(this)
+//                .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
+//                .setText(R.string.click_to_hide)
+//                .enableInfiniteDuration(true)
+//                .setBackgroundColorRes(getThemeUtil().colorPrimaryDark(mColor))
+//                .setOnClickListener(v -> {
+//                    if (mAlerter != null) mAlerter.hide();
+//                })
+//                .show();
     }
 
     private void initBgContainer() {

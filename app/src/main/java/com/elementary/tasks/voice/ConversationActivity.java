@@ -13,7 +13,6 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 
@@ -44,6 +43,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * Copyright 2017 Nazar Suhovich

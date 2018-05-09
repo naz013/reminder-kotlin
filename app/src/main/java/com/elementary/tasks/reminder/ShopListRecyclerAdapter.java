@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,8 @@ import com.elementary.tasks.reminder.models.ShopItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,7 +33,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder> {
 
     private Context mContext;
@@ -42,7 +42,7 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
 
     public ShopListRecyclerAdapter(Context context, List<ShopItem> list, ActionListener listener) {
         this.mContext = context;
-        this.mDataList = new ArrayList<>(list);
+        this.mDataList.addAll(list);
         this.listener = listener;
         Collections.sort(mDataList, (item, t1) -> t1.getCreateTime().compareTo(item.getCreateTime()));
         sort(mDataList);
