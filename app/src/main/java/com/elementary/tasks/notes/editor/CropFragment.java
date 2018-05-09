@@ -31,10 +31,7 @@ import java.io.ByteArrayOutputStream;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class CropFragment extends BitmapFragment {
-
-    private static final String TAG = "CropFragment";
 
     private CropFragmentBinding binding;
 
@@ -71,7 +68,7 @@ public class CropFragment extends BitmapFragment {
     private void loadImage() {
         NoteImage item = ImageSingleton.getInstance().getItem();
         if (item != null) {
-            Glide.with(this)
+            Glide.with(getContext())
                     .asBitmap()
                     .load(item.getImage())
                     .into(new SimpleTarget<Bitmap>() {

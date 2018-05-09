@@ -44,7 +44,7 @@
             app:layout_constraintLeft_toRightOf="@+id/skip_button"
             app:layout_constraintRight_toLeftOf="@+id/next_button" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="0dp"
             android:layout_height="0dp"

@@ -1,11 +1,11 @@
 package com.elementary.tasks.google_tasks;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v13.app.FragmentStatePagerAdapter;
-
 import java.util.List;
 import java.util.Map;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -22,8 +22,7 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class TaskPagerAdapter extends FragmentStatePagerAdapter {
+public class TaskPagerAdapter extends FragmentPagerAdapter {
 
     private List<TaskListWrapperItem> mData;
     private Map<String, Integer> colors;

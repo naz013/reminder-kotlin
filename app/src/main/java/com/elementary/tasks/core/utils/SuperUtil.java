@@ -3,7 +3,6 @@ package com.elementary.tasks.core.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -34,6 +33,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Copyright 2016 Nazar Suhovich

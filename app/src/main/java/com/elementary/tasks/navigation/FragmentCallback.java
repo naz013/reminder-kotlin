@@ -1,12 +1,12 @@
 package com.elementary.tasks.navigation;
 
-import android.app.Fragment;
 import android.view.View;
 
 import com.elementary.tasks.core.views.FilterView;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public interface FragmentCallback {
     void replaceFragment(Fragment fragment, String title);
 

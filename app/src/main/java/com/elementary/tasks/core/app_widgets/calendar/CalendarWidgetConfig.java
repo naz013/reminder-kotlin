@@ -1,7 +1,5 @@
 package com.elementary.tasks.core.app_widgets.calendar;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +17,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+
 /**
  * Copyright 2015 Nazar Suhovich
  * <p/>
@@ -34,7 +36,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class CalendarWidgetConfig extends ThemedActivity {
 
     private int widgetID = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -83,7 +84,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
 
     private void loadThemes() {
         mThemes = CalendarTheme.getThemes(this);
-        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getFragmentManager(), mThemes);
+        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), mThemes);
         binding.themePager.setAdapter(adapter);
     }
 
@@ -126,7 +127,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
         finish();
     }
 
-    private class MyFragmentPagerAdapter extends android.support.v13.app.FragmentPagerAdapter {
+    private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private List<CalendarTheme> arrayList;
 

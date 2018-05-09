@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.calendar;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.view.LayoutInflater;
@@ -13,6 +12,7 @@ import com.elementary.tasks.databinding.DateGridFragmentBinding;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.fragment.app.Fragment;
 import hirondelle.date4j.DateTime;
 
 /**
@@ -30,7 +30,6 @@ import hirondelle.date4j.DateTime;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class DateGridFragment extends Fragment {
 
     private MonthView monthView;

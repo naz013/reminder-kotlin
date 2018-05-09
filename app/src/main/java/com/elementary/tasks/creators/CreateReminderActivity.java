@@ -2,7 +2,6 @@ package com.elementary.tasks.creators;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,6 +78,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 public class CreateReminderActivity extends ThemedActivity implements ReminderInterface, View.OnLongClickListener {
@@ -497,7 +496,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     public void replaceFragment(TypeFragment fragment) {
         this.fragment = fragment;
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         try {

@@ -1,9 +1,10 @@
 package com.elementary.tasks.core.calendar;
 
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,7 +21,6 @@ import android.view.ViewGroup;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class InfinitePagerAdapter extends PagerAdapter {
     private PagerAdapter adapter;
 

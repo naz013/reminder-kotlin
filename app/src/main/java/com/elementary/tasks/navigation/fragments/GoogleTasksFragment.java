@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +40,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.viewpager.widget.ViewPager;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -56,7 +57,6 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class GoogleTasksFragment extends BaseNavigationFragment {
 
     public static final int MENU_ITEM_EDIT = 12;

@@ -3,7 +3,6 @@ package com.elementary.tasks.navigation.fragments;
 import android.app.AlarmManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,8 @@ import com.elementary.tasks.databinding.FragmentDayViewBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Copyright 2016 Nazar Suhovich

@@ -1,8 +1,6 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +8,9 @@ import android.support.annotation.Nullable;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.navigation.FragmentCallback;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,7 +27,6 @@ import com.elementary.tasks.navigation.FragmentCallback;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public abstract class BaseFragment extends Fragment {
 
     private Context mContext;

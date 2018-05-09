@@ -71,7 +71,6 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ReminderPreviewActivity extends ThemedActivity {
 
     private static final String TAG = "ReminderPreviewActivity";
@@ -404,7 +403,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, getPrefs().getMarkerStyle(), getThemeUtil().isDark());
         mGoogleMap.setCallback(mMapReadyCallback);
         mGoogleMap.setOnMarkerClick(mOnMarkerClick);
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(binding.mapContainer.getId(), mGoogleMap)
                 .addToBackStack(null)
                 .commit();

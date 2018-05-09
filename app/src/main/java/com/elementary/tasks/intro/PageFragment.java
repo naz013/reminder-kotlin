@@ -1,6 +1,5 @@
 package com.elementary.tasks.intro;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -8,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.databinding.FragmentIntroPageBinding;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -24,7 +25,6 @@ import com.elementary.tasks.databinding.FragmentIntroPageBinding;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class PageFragment extends Fragment {
 
     private static final String ARG_POSITION = "arg_position";
@@ -40,7 +40,6 @@ public class PageFragment extends Fragment {
     }
 
     public PageFragment() {
-
     }
 
     @Override
