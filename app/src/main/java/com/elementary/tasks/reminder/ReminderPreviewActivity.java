@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;

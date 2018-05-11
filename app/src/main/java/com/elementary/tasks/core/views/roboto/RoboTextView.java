@@ -3,11 +3,12 @@ package com.elementary.tasks.core.views.roboto;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,7 +25,6 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class RoboTextView extends AppCompatTextView {
 
     private Typeface mTypeface;

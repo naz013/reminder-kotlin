@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.SendListener;
+import com.elementary.tasks.core.utils.BlurTransformation;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -55,8 +56,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 /**
  * Copyright 2016 Nazar Suhovich

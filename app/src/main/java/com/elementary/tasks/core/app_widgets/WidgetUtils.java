@@ -8,11 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Module;
+
+import androidx.appcompat.widget.AppCompatDrawableManager;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -29,7 +30,6 @@ import com.elementary.tasks.core.utils.Module;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public final class WidgetUtils {
 
     private WidgetUtils() {

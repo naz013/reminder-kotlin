@@ -25,7 +25,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <android.support.text.emoji.widget.EmojiAppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/noteText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

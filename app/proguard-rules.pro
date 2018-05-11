@@ -2,8 +2,6 @@
 -keepattributes SourceFile,LineNumberTable
 -keepattributes InnerClasses,EnclosingMethod
 
--printmapping /proguard/mapping.txt
-
 -keep @io.realm.annotations.RealmModule class *
 -keep class io.realm.** { *; }
 -dontwarn javax.**

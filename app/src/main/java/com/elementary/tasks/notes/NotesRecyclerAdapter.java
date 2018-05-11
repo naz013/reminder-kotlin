@@ -2,7 +2,7 @@ package com.elementary.tasks.notes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.BindingAdapter;
+import androidx.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;

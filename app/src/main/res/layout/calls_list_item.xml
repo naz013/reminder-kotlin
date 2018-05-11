@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{click::onClick}">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/itemImage"
                 android:layout_width="40dp"
                 android:layout_height="40dp"

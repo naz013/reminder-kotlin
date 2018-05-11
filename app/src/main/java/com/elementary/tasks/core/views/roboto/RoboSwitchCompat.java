@@ -3,11 +3,12 @@ package com.elementary.tasks.core.views.roboto;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,7 +25,6 @@ import com.elementary.tasks.core.utils.AssetsUtil;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class RoboSwitchCompat extends SwitchCompat {
 
     private Typeface mTypeface;

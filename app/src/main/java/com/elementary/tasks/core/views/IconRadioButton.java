@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
+
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
 

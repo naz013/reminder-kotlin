@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -135,10 +133,10 @@ public class InfoAdapter {
         File dir = MemoryUtil.getImagesDir();
         File image = new File(dir, FILE_NAME);
         if (image.exists()) {
-            Picasso.with(mContext).load(image).transform(new CropCircleTransformation()).into(userPhoto);
+            Picasso.with(mContext).load(image).into(userPhoto);
             userPhoto.setVisibility(View.VISIBLE);
         } else {
-            Picasso.with(mContext).load(photoLink).transform(new CropCircleTransformation()).into(userPhoto);
+            Picasso.with(mContext).load(photoLink).into(userPhoto);
             userPhoto.setVisibility(View.VISIBLE);
             saveImageFile(photoLink);
         }
