@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
+
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,7 +29,6 @@ import com.elementary.tasks.core.utils.Module;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class RoboRadioButton extends AppCompatRadioButton {
 
     private Typeface mTypeface;

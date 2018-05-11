@@ -2,13 +2,14 @@ package com.elementary.tasks.core.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
+
+import androidx.appcompat.widget.AppCompatImageButton;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -25,7 +26,6 @@ import com.elementary.tasks.core.utils.ThemeUtil;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ThemedImageButton extends AppCompatImageButton {
 
     private static final String TAG = "ThemedImageButton";

@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
-import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
@@ -31,11 +30,11 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.RealmDb
 import com.elementary.tasks.creators.CreateReminderActivity
-import com.elementary.tasks.databinding.ActivityLoginBinding
 import com.elementary.tasks.google_tasks.GetTaskListAsync
 import com.elementary.tasks.google_tasks.TasksCallback
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.CreateNoteActivity
+import kotlinx.android.synthetic.main.activity_login.*
 import timber.log.Timber
 import java.util.*
 
@@ -49,13 +48,12 @@ class LoginActivity : ThemedActivity() {
         private const val TERMS_URL = "termsopen.com"
     }
 
-    private lateinit var binding: ActivityLoginBinding
     private lateinit var googleLogin: GoogleLogin
     private lateinit var dropboxLogin: DropboxLogin
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        setContentView(R.layout.activity_login)
         googleLogin = GoogleLogin(this, object : GoogleLogin.LoginCallback {
             override fun onSuccess() {
                 Timber.d("onSuccess: ")
@@ -86,8 +84,8 @@ class LoginActivity : ThemedActivity() {
                 .load("https://unsplash.it/1080/1920?image=596&blur")
                 .apply(myOptions)
                 .into(object : SimpleTarget<Drawable>() {
-                    override fun onResourceReady(resource: Drawable?, transition: Transition<in Drawable>?) {
-                        binding.imageView2.setImageDrawable(resource)
+                    override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                        imageView2.setImageDrawable(resource)
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
@@ -105,7 +103,7 @@ class LoginActivity : ThemedActivity() {
         Glide.with(this)
                 .load(R.drawable.photo)
                 .apply(myOptions)
-                .into(binding.imageView2)
+                .into(imageView2)
     }
 
     override fun onResume() {
@@ -125,10 +123,10 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        binding.googleButton.setOnClickListener({ googleLoginClick() })
-        binding.localButton.setOnClickListener({ restoreLocalData() })
-        binding.dropboxButton.setOnClickListener({ loginToDropbox() })
-        binding.skipButton.setOnClickListener({ askForBirthdays() })
+        google_button.setOnClickListener({ googleLoginClick() })
+        local_button.setOnClickListener({ restoreLocalData() })
+        dropbox_button.setOnClickListener({ loginToDropbox() })
+        skip_button.setOnClickListener({ askForBirthdays() })
     }
 
     private fun askForBirthdays() {
@@ -244,16 +242,16 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initCheckbox() {
-        setViewHTML(binding.termsCheckBox, getString(R.string.i_accept))
-        binding.termsCheckBox.setOnCheckedChangeListener { _, p1 -> setEnabling(p1) }
-        binding.termsCheckBox.isChecked = true
+        setViewHTML(terms_check_box, getString(R.string.i_accept))
+        terms_check_box.setOnCheckedChangeListener { _, p1 -> setEnabling(p1) }
+        terms_check_box.isChecked = true
     }
 
     private fun setEnabling(b: Boolean) {
-        binding.dropboxButton.isEnabled = b
-        binding.googleButton.isEnabled = b
-        binding.localButton.isEnabled = b
-        binding.skipButton.isEnabled = b
+        dropbox_button.isEnabled = b
+        google_button.isEnabled = b
+        local_button.isEnabled = b
+        skip_button.isEnabled = b
     }
 
     private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {

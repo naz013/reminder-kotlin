@@ -1,13 +1,13 @@
 package com.elementary.tasks.navigation.settings.images;
 
-import android.databinding.Bindable;
-import android.databinding.Observable;
+import androidx.databinding.Bindable;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import androidx.databinding.Observable;
 import io.realm.RealmModel;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
@@ -50,7 +50,7 @@ public class ImageItem implements RealmModel, Observable {
     private String postUrl;
 
     @Ignore
-    private List<OnPropertyChangedCallback> mCallbacks = new LinkedList<>();
+    private List<Observable.OnPropertyChangedCallback> mCallbacks = new LinkedList<>();
 
     public ImageItem() {}
 

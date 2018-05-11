@@ -3,11 +3,12 @@ package com.elementary.tasks.core.views.roboto;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
+
+import androidx.appcompat.widget.AppCompatButton;
 
 /**
  * Copyright 2016 Nazar Suhovich

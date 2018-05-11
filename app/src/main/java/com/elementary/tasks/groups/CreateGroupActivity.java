@@ -2,7 +2,7 @@ package com.elementary.tasks.groups;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;

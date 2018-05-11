@@ -2,12 +2,6 @@ package com.elementary.tasks;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
-import android.support.v4.provider.FontRequest;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
@@ -17,6 +11,8 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.evernote.android.job.JobManager;
 
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 import io.fabric.sdk.android.Fabric;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -41,7 +37,6 @@ import timber.log.Timber;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ReminderApp extends MultiDexApplication {
 
     private static final String TAG = "ReminderApp";
@@ -61,25 +56,6 @@ public class ReminderApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
-        final FontRequest fontRequest = new FontRequest(
-                "com.google.android.gms.fonts",
-                "com.google.android.gms",
-                "Noto Color Emoji Compat",
-                R.array.com_google_android_gms_fonts_certs);
-        EmojiCompat.Config config = new FontRequestEmojiCompatConfig(getApplicationContext(), fontRequest)
-                .setReplaceAll(true)
-                .registerInitCallback(new EmojiCompat.InitCallback() {
-                    @Override
-                    public void onInitialized() {
-                        LogUtil.i(TAG, "EmojiCompat initialized");
-                    }
-
-                    @Override
-                    public void onFailed(@Nullable Throwable throwable) {
-                        LogUtil.d(TAG, "EmojiCompat initialization failed" + throwable);
-                    }
-                });
-        EmojiCompat.init(config);
         Notifier.createChannels(this);
         Fabric.with(this, new Crashlytics(), new Answers());
         Prefs.getInstance(this);

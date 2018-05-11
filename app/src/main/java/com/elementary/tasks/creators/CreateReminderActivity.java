@@ -6,7 +6,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -499,9 +499,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_container, fragment, null);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        try {
-            ft.commitAllowingStateLoss();
-        } catch (IllegalStateException ignored) {}
+        ft.commit();
     }
 
     @Override

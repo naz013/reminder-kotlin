@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -24,6 +23,8 @@ import com.elementary.tasks.core.utils.LogUtil;
 
 import java.util.List;
 
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -39,7 +40,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class AddressAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     private static final String TAG = "AddressAutoCompleteView";

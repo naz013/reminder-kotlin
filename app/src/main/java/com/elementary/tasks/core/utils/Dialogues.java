@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
@@ -14,6 +13,8 @@ import com.elementary.tasks.core.interfaces.LCAMListener;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
 
@@ -32,7 +33,6 @@ import static com.elementary.tasks.core.utils.ThemeUtil.THEME_AMOLED;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class Dialogues {
 
     private static final int MAX_RADIUS = 100000;

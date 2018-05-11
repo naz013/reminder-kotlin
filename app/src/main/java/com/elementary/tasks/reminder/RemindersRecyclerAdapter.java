@@ -4,7 +4,7 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.databinding.BindingAdapter;
+import androidx.databinding.BindingAdapter;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;

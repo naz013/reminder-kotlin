@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;

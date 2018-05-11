@@ -5,8 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,6 +17,9 @@ import com.elementary.tasks.core.utils.Module;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.SwitchCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,7 +36,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class PrefsView extends RelativeLayout {
 
     private static final int CHECK = 0;

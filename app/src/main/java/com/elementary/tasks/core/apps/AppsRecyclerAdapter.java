@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.apps;
 
-import android.databinding.BindingAdapter;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -27,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -42,7 +43,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class EmailAutoCompleteView extends AppCompatAutoCompleteTextView {
 
     private static final String TAG = "EmailAutoCompleteView";

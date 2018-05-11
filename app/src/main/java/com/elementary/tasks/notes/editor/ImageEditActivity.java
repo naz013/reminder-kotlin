@@ -2,7 +2,7 @@ package com.elementary.tasks.notes.editor;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;

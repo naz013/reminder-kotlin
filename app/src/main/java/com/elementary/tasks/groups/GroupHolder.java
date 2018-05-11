@@ -1,6 +1,6 @@
 package com.elementary.tasks.groups;
 
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.view.View;
 
 import com.elementary.tasks.core.interfaces.SimpleListener;
