@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ContactListItemBinding;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,10 +176,10 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
             imageView.setImageResource(isDark ? R.drawable.ic_perm_identity_white_24dp : R.drawable.ic_perm_identity_black_24dp);
             return;
         }
-        Picasso.with(imageView.getContext())
+        Glide.with(imageView)
                 .load(Uri.parse(v))
-                .resize(100, 100)
-                .centerCrop()
+                .apply(RequestOptions.centerCropTransform())
+                .apply(RequestOptions.overrideOf(100, 100))
                 .into(imageView);
     }
 }

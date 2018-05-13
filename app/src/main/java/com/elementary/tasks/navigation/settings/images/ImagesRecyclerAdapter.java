@@ -1,17 +1,14 @@
 package com.elementary.tasks.navigation.settings.images;
 
 import android.content.Context;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.core.network.RetrofitBuilder;
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MeasureUtils;
-import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.PhotoListItemBinding;
@@ -19,6 +16,8 @@ import com.elementary.tasks.databinding.PhotoListItemBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -139,23 +138,10 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        LogUtil.d(TAG, "finalize: " + getItemCount());
-        PicassoTool.getInstance(mContext).clearCache();
-        for (ImageItem item : mDataList) {
-            PicassoTool.getInstance(mContext).invalidateCache(RetrofitBuilder.getImageLink(item.getId(), 800, 480));
-        }
-        super.finalize();
-    }
-
     @BindingAdapter("loadPhoto")
     public static void loadPhoto(ImageView imageView, long id) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         String url = RetrofitBuilder.getImageLink(id, 800, 480);
-        PicassoTool.getInstance(imageView.getContext())
-                .getPicasso()
-                .load(url)
-                .into(imageView);
+        Glide.with(imageView).load(url).into(imageView);
     }
 }

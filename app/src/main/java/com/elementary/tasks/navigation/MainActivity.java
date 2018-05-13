@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.async.BackupSettingTask;
@@ -56,13 +56,13 @@ import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
 import com.elementary.tasks.notes.QuickNoteCoordinator;
 import com.google.android.material.navigation.NavigationView;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -246,14 +246,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
             File file = new File(MemoryUtil.getImageCacheDir(), fileName + ".jpg");
             boolean readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL);
             if (readPerm && file.exists()) {
-                Picasso.with(this)
-                        .load(file)
-                        .into(mMainImageView);
+                Glide.with(this).load(file).into(mMainImageView);
                 mMainImageView.setVisibility(View.VISIBLE);
             } else {
-                Picasso.with(this)
-                        .load(path)
-                        .into(mMainImageView);
+                Glide.with(this).load(path).into(mMainImageView);
                 mMainImageView.setVisibility(View.VISIBLE);
                 if (readPerm) {
                     new SaveAsync(this).execute(path);
@@ -479,13 +475,13 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     private void showFab() {
         if (binding.fab.getVisibility() != View.VISIBLE) {
-            binding.fab.setVisibility(View.VISIBLE);
+            binding.fab.show();
         }
     }
 
     private void hideFab() {
         if (binding.fab.getVisibility() != View.GONE) {
-            binding.fab.setVisibility(View.GONE);
+            binding.fab.hide();
         }
     }
 

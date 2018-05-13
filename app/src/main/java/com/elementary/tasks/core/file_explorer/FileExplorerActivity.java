@@ -3,7 +3,6 @@ package com.elementary.tasks.core.file_explorer;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Constants;
@@ -28,7 +28,6 @@ import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityFileExplorerBinding;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -37,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,10 +55,8 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class FileExplorerActivity extends ThemedActivity {
 
-    private static final String TAG = "FileExplorerActivity";
     private static final int SD_CARD = 444;
     public static final String TYPE_MUSIC = "music";
     public static final String TYPE_PHOTO = "photo";
@@ -133,7 +131,7 @@ public class FileExplorerActivity extends ThemedActivity {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, MeasureUtils.dp2px(this, 256));
         imageView.setLayoutParams(layoutParams);
-        Picasso.with(this)
+        Glide.with(this)
                 .load(new File(mFilePath))
                 .into(imageView);
         builder.setView(imageView);

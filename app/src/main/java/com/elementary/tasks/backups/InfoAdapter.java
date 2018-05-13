@@ -9,17 +9,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.chart.PieSlice;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.BackupItemLayoutBinding;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -132,12 +133,9 @@ public class InfoAdapter {
     private void loadImage(final String photoLink, ImageView userPhoto) {
         File dir = MemoryUtil.getImagesDir();
         File image = new File(dir, FILE_NAME);
-        if (image.exists()) {
-            Picasso.with(mContext).load(image).into(userPhoto);
-            userPhoto.setVisibility(View.VISIBLE);
-        } else {
-            Picasso.with(mContext).load(photoLink).into(userPhoto);
-            userPhoto.setVisibility(View.VISIBLE);
+        Glide.with(userPhoto).load(image).into(userPhoto);
+        userPhoto.setVisibility(View.VISIBLE);
+        if (!image.exists()) {
             saveImageFile(photoLink);
         }
     }
@@ -145,21 +143,18 @@ public class InfoAdapter {
     private void saveImageFile(String photoLink) {
         new Thread(() -> {
             try {
-                Bitmap bitmap = Picasso.with(mContext)
+                Bitmap bitmap = Glide.with(mContext)
+                        .asBitmap()
                         .load(photoLink)
-                        .get();
-                try {
-                    File dir1 = MemoryUtil.getImagesDir();
-                    File image1 = new File(dir1, FILE_NAME);
-                    if (image1.createNewFile()) {
-                        FileOutputStream stream = new FileOutputStream(image1);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        stream.close();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        .submit().get();
+                File dir1 = MemoryUtil.getImagesDir();
+                File image1 = new File(dir1, FILE_NAME);
+                if (image1.createNewFile()) {
+                    FileOutputStream stream = new FileOutputStream(image1);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    stream.close();
                 }
-            } catch (IOException e) {
+            } catch (InterruptedException | ExecutionException | IOException e) {
                 e.printStackTrace();
             }
         }).start();

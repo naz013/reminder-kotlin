@@ -10,16 +10,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -77,7 +77,7 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
         Image image = null;
         File file = new File(filePath);
         try {
-            Bitmap bitmap = Picasso.with(mContext).load(RetrofitBuilder.getImageLink(id, width, height)).get();
+            Bitmap bitmap = Glide.with(mContext).asBitmap().load(RetrofitBuilder.getImageLink(id, width, height)).submit().get();
             try {
                 if (file.exists()) {
                     file.delete();
@@ -94,7 +94,9 @@ class DownloadAsync extends AsyncTask<String, Void, DownloadAsync.Image> {
                 image = new Image();
                 image.path = filePath;
             }
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
         return image;

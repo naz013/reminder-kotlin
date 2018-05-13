@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.core.utils.MemoryUtil;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,9 +51,9 @@ public class SaveAsync extends AsyncTask<String, Void, Void> {
         try {
             Bitmap bitmap;
             if (!path.contains("=")) {
-                bitmap = Picasso.with(mContext).load(path).resize(1280, 768).get();
+                bitmap = Glide.with(mContext).asBitmap().load(path).apply(RequestOptions.overrideOf(1280, 76)).submit().get();
             } else {
-                bitmap = Picasso.with(mContext).load(path).get();
+                bitmap = Glide.with(mContext).asBitmap().load(path).submit().get();
             }
             try {
                 if (file.createNewFile()) {
@@ -63,7 +64,9 @@ public class SaveAsync extends AsyncTask<String, Void, Void> {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
         return null;

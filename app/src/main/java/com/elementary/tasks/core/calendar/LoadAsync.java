@@ -7,11 +7,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,8 +48,10 @@ public class LoadAsync extends AsyncTask<Void, Void, Void> {
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (!ImageCheck.getInstance().isImage(month, id) && mWifi.isConnected()) {
             try {
-                Bitmap bitmap = Picasso.with(context)
+                Bitmap bitmap = Glide.with(context)
+                        .asBitmap()
                         .load(ImageCheck.getInstance().getImageUrl(month, id))
+                        .submit()
                         .get();
                 File sdPath = Environment.getExternalStorageDirectory();
                 File sdPathDr = new File(sdPath.toString() + "/JustReminder/" + "image_cache");
@@ -56,16 +59,16 @@ public class LoadAsync extends AsyncTask<Void, Void, Void> {
                     sdPathDr.mkdirs();
                 }
                 File image = new File(sdPathDr, ImageCheck.getInstance().getImageName(month, id));
-                try {
-                    if (image.createNewFile()) {
-                        FileOutputStream stream = new FileOutputStream(image);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        stream.close();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (image.createNewFile()) {
+                    FileOutputStream stream = new FileOutputStream(image);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    stream.close();
                 }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
                 e.printStackTrace();
             }
         }
