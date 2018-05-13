@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.EventsDataProvider;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -17,7 +18,6 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.views.MonthView;
 import com.elementary.tasks.databinding.FragmentFlextCalBinding;
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -195,7 +195,9 @@ public class FlextCalendarFragment extends BaseNavigationFragment implements Eve
         if (binding.imageView != null && enableImage) {
             ImageCheck check = ImageCheck.getInstance();
             if (check.isImage(month - 1, photosList[month - 1])) {
-                Picasso.with(getActivity()).load(new File(check.getImage(month - 1, photosList[month - 1]))).into(binding.imageView);
+                Glide.with(binding.imageView)
+                        .load(new File(check.getImage(month - 1, photosList[month - 1])))
+                        .into(binding.imageView);
             } else {
                 new LoadAsync(getActivity(), month - 1, photosList[month - 1]).execute();
             }

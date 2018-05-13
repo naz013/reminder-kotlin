@@ -25,6 +25,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.backdoor.shared.SharedConst;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.SendListener;
 import com.elementary.tasks.core.utils.BlurTransformation;
@@ -50,7 +52,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -278,17 +279,15 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         int height = (int) (metrics.heightPixels * 0.75);
         if (imagePrefs == null || imagePrefs.matches(Constants.DEFAULT)) {
             if (blur && Module.isPro()) {
-                Picasso.with(this)
+                Glide.with(this)
                         .load(R.drawable.photo)
-                        .resize(width, height)
-                        .centerCrop()
-                        .transform(new BlurTransformation(this, 15, 2))
+                        .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
+                        .apply(RequestOptions.overrideOf(width, height))
                         .into(imageView);
             } else {
-                Picasso.with(this)
+                Glide.with(this)
                         .load(R.drawable.photo)
-                        .resize(width, height)
-                        .centerCrop()
+                        .apply(RequestOptions.overrideOf(width, height))
                         .into(imageView);
             }
             imageView.setVisibility(View.VISIBLE);
@@ -296,17 +295,15 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             imageView.setVisibility(View.GONE);
         } else {
             if (blur && Module.isPro()) {
-                Picasso.with(this)
+                Glide.with(this)
                         .load(Uri.parse(imagePrefs))
-                        .resize(width, height)
-                        .centerCrop()
-                        .transform(new BlurTransformation(this, 15, 2))
+                        .apply(RequestOptions.bitmapTransform(new BlurTransformation(15, 2)))
+                        .apply(RequestOptions.overrideOf(width, height))
                         .into(imageView);
             } else {
-                Picasso.with(this)
+                Glide.with(this)
                         .load(Uri.parse(imagePrefs))
-                        .resize(width, height)
-                        .centerCrop()
+                        .apply(RequestOptions.overrideOf(width, height))
                         .into(imageView);
             }
             imageView.setVisibility(View.VISIBLE);
@@ -327,7 +324,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
         if (isWake) {
             PowerManager.WakeLock screenLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
-                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG");
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "reminder:ReminderAPPTAG");
             screenLock.acquire();
             screenLock.release();
         }

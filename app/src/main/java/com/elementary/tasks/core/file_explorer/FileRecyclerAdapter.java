@@ -1,23 +1,24 @@
 package com.elementary.tasks.core.file_explorer;
 
 import android.content.Context;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemFileLayoutBinding;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -35,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapter.ContactViewHolder> {
 
     private static final String TAG = "FileRecyclerAdapter";
@@ -172,10 +172,10 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
     public static void loadImage(ImageView imageView, FileDataItem item) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         if (item.getFilePath() != null && isPicture(item.getFilePath())) {
-            Picasso.with(imageView.getContext())
+            Glide.with(imageView.getContext())
                     .load(new File(item.getFilePath()))
-                    .resize(100, 100)
-                    .centerCrop()
+                    .apply(RequestOptions.centerCropTransform())
+                    .apply(RequestOptions.overrideOf(100, 100))
                     .into(imageView);
         } else {
             imageView.setImageResource(getFileIcon(item.getFileName(), isDark));

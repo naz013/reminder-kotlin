@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.contacts;
 
 import android.content.Context;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.provider.CallLog;
 import android.view.LayoutInflater;
@@ -10,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
@@ -18,11 +18,12 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.CallsListItemBinding;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -40,7 +41,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdapter.ContactViewHolder> {
 
     private Context mContext;
@@ -198,10 +198,10 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
             imageView.setImageResource(isDark ? R.drawable.ic_perm_identity_white_24dp : R.drawable.ic_perm_identity_black_24dp);
             return;
         }
-        Picasso.with(imageView.getContext())
+        Glide.with(imageView)
                 .load(Uri.parse(v))
-                .resize(100, 100)
-                .centerCrop()
+                .apply(RequestOptions.centerCropTransform())
+                .apply(RequestOptions.overrideOf(100, 100))
                 .into(imageView);
     }
 }

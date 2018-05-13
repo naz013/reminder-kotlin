@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.images;
 
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.network.Api;
@@ -21,19 +21,17 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.PicassoTool;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -273,11 +271,8 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         mSelectedItem = mPhotoList.get(position);
         if (mSelectedItem != null) {
             binding.photoInfoView.setText(getString(R.string.number) + mSelectedItem.getId() + " " + mSelectedItem.getAuthor());
-            PicassoTool.getInstance(this)
-                    .getPicasso()
+            Glide.with(binding.fullImageView)
                     .load(RetrofitBuilder.getImageLink(mSelectedItem.getId()))
-                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE)
                     .into(binding.fullImageView);
             ViewUtils.showReveal(binding.fullContainer);
             ViewUtils.show(this, binding.imageContainer, mAnimationCallback);
