@@ -14,8 +14,8 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 16
-        targetSdkVersion 27
+        minSdkVersion 'P'
+        targetSdkVersion 'P'
         versionCode 199
         versionName '6.3.8'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -98,9 +98,7 @@ android {
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha1'
     implementation('com.google.apis:google-api-services-calendar:v3-rev287-1.23.0') {
         exclude module: 'httpclient'
     }
@@ -124,11 +122,10 @@ dependencies {
     }
     implementation project(':voiceengine')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     implementation 'com.google.android.material:material:1.0.0-alpha1'
-    implementation('com.google.android.gms:play-services-auth:15.0.1') {
-        exclude group: 'com.android.support', module: 'support-compat'
-    }
-    implementation 'com.google.android.gms:play-services-drive:15.0.1'
+
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-wearable:15.0.1'
@@ -147,7 +144,7 @@ dependencies {
     implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.7'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
