@@ -140,13 +140,7 @@ public class GoogleLogin {
             rtIntent = e.getIntent();
             Timber.d("getAccessToken: re-try");
             return RT_CODE;
-        } catch (ActivityNotFoundException e) {
-            Timber.d("getAccessToken: null");
-            return null;
-        } catch (GoogleAuthException e) {
-            Timber.d("getAccessToken: null");
-            return null;
-        } catch (IOException e) {
+        } catch (ActivityNotFoundException | GoogleAuthException | IOException e) {
             Timber.d("getAccessToken: null");
             return null;
         }
