@@ -1,6 +1,6 @@
 package com.elementary.tasks.intro;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 /**
  * Copyright 2017 Nazar Suhovich

@@ -30,7 +30,7 @@
         app:cardCornerRadius="3dp"
         app:cardUseCompatPadding="true">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:focusable="false">
@@ -107,6 +107,6 @@
                 app:layout_constraintLeft_toRightOf="@+id/eventText"
                 app:layout_constraintRight_toRightOf="parent" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </layout>

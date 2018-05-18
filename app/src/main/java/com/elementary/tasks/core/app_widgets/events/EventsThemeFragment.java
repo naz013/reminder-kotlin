@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.app_widgets.events;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;

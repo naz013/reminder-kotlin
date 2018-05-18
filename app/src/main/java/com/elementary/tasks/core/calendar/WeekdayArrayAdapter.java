@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.calendar;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;

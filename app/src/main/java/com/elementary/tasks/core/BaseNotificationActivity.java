@@ -13,10 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -24,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.backdoor.shared.SharedConst;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.elementary.tasks.R;
@@ -42,21 +37,17 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.TextDrawable;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -78,8 +69,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
     private static final String TAG = "BNActivity";
     private static final int MY_DATA_CHECK_CODE = 111;
 
-    @Nullable
-    protected GoogleApiClient mGoogleApiClient;
     @Nullable
     private TextToSpeech tts;
     @Nullable
@@ -124,49 +113,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             showSendingError();
         }
     };
-    @NonNull
-    protected GoogleApiClient.ConnectionCallbacks mGoogleCallback = new GoogleApiClient.ConnectionCallbacks() {
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            Wearable.DataApi.addListener(mGoogleApiClient, mDataListener);
-            sendDataToWear();
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-
-        }
-    };
-
-    @NonNull
-    protected DataApi.DataListener mDataListener = dataEventBuffer -> {
-        LogUtil.d(TAG, "Data received");
-        for (DataEvent event : dataEventBuffer) {
-            if (event.getType() == DataEvent.TYPE_CHANGED) {
-                processDataEvent(event.getDataItem());
-            }
-        }
-    };
-
-    private void processDataEvent(DataItem item) {
-        if (item.getUri().getPath().compareTo(SharedConst.PHONE_REMINDER) == 0) {
-            DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-            int keyCode = dataMap.getInt(SharedConst.REQUEST_KEY);
-            if (keyCode == SharedConst.KEYCODE_OK) {
-                ok();
-            } else if (keyCode == SharedConst.KEYCODE_FAVOURITE) {
-                favourite();
-            } else if (keyCode == SharedConst.KEYCODE_CANCEL) {
-                cancel();
-            } else if (keyCode == SharedConst.KEYCODE_SNOOZE) {
-                delay();
-            } else {
-                call();
-            }
-        }
-    }
-
-    protected abstract void sendDataToWear();
 
     protected abstract void call();
 
@@ -213,12 +159,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         SoundStackHolder.getInstance().init(this);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-        if (getPrefs().isWearEnabled()) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addApi(Wearable.API)
-                    .addConnectionCallbacks(mGoogleCallback)
-                    .build();
-        }
+
         setUpScreenOptions();
     }
 
@@ -339,13 +280,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         if (tts != null) {
             tts.stop();
             tts.shutdown();
-        }
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_STOP);
-            DataMap map = putDataMapReq.getDataMap();
-            map.putBoolean(SharedConst.KEY_STOP, true);
-            PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-            Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
         }
     }
 

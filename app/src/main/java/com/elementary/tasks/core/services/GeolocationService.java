@@ -4,7 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;

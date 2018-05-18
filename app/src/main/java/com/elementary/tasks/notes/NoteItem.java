@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;

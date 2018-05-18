@@ -1,6 +1,6 @@
 package com.elementary.tasks.notes.editor;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 import com.elementary.tasks.notes.NoteImage;

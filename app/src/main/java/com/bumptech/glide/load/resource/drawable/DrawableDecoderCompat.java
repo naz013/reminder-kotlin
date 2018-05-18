@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.view.ContextThemeWrapper;

@@ -4,7 +4,7 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.calendar.FlextHelper;

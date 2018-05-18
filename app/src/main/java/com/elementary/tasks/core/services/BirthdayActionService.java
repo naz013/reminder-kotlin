@@ -3,7 +3,7 @@ package com.elementary.tasks.core.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.Actions;
 import com.elementary.tasks.birthdays.BirthdayItem;

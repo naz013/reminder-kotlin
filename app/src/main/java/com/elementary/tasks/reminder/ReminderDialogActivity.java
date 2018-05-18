@@ -9,19 +9,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.BuildConfig;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
@@ -47,14 +42,14 @@ import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
 import com.elementary.tasks.reminder.models.Reminder;
 import com.elementary.tasks.reminder.models.ShopItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -80,8 +75,6 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private static final int CALL_PERM = 612;
     private static final int SMS_PERM = 613;
     private ActivityReminderDialogBinding binding;
-    private FloatingActionButton buttonDelay;
-    private FloatingActionButton buttonCancel;
     private RecyclerView todoList;
 
     private ShopListRecyclerAdapter shoppingAdapter;
@@ -121,9 +114,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         binding.container.setVisibility(View.GONE);
         binding.subjectContainer.setVisibility(View.GONE);
         loadImage(binding.bgImage);
-        buttonCancel = findViewById(R.id.buttonCancel);
+        FloatingActionButton buttonCancel = findViewById(R.id.buttonCancel);
         FloatingActionButton buttonCall = findViewById(R.id.buttonCall);
-        buttonDelay = findViewById(R.id.buttonDelay);
+        FloatingActionButton buttonDelay = findViewById(R.id.buttonDelay);
         FloatingActionButton buttonDelayFor = findViewById(R.id.buttonDelayFor);
         FloatingActionButton buttonNotification = findViewById(R.id.buttonNotification);
         colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
@@ -133,7 +126,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
         binding.buttonEdit.setImageResource(R.drawable.ic_create_black_24dp);
         buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
-        binding.buttonRefresh.setVisibility(View.GONE);
+        binding.buttonRefresh.hide();
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
         buttonNotification.setImageResource(R.drawable.ic_favorite_black_24dp);
         if (mReminder.getAttachmentFile() != null) showAttachmentButton();
@@ -208,17 +201,17 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
                 binding.messageView.setContentDescription(getSummary());
             }
             if (!getPrefs().isAutoSmsEnabled()) {
-                buttonCall.setVisibility(View.VISIBLE);
+                buttonCall.show();
                 buttonCall.setImageResource(R.drawable.ic_send_black_24dp);
                 buttonCall.setContentDescription(getString(R.string.acc_button_send_message));
             } else {
-                buttonCall.setVisibility(View.GONE);
-                buttonDelay.setVisibility(View.GONE);
-                buttonDelayFor.setVisibility(View.GONE);
+                buttonCall.hide();
+                buttonDelay.hide();
+                buttonDelayFor.hide();
             }
             binding.container.setVisibility(View.VISIBLE);
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_EMAIL)) {
-            buttonCall.setVisibility(View.VISIBLE);
+            buttonCall.show();
             buttonCall.setImageResource(R.drawable.ic_send_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_send_message));
             binding.remText.setText(R.string.e_mail);
@@ -252,43 +245,43 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             String label = getSummary() + "\n\n" + nameA + "\n" + mReminder.getTarget();
             binding.remText.setText(label);
             binding.remText.setContentDescription(label);
-            buttonCall.setVisibility(View.VISIBLE);
+            buttonCall.show();
             buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_open_application));
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK)) {
             String label = getSummary() + "\n\n" + mReminder.getTarget();
             binding.remText.setText(label);
             binding.remText.setContentDescription(label);
-            buttonCall.setVisibility(View.VISIBLE);
+            buttonCall.show();
             buttonCall.setImageResource(R.drawable.ic_open_in_browser_black_24dp);
             buttonCall.setContentDescription(getString(R.string.acc_button_open_link_in_browser));
         } else if (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_SHOP)) {
             binding.remText.setText(getSummary());
             binding.remText.setContentDescription(getSummary());
-            buttonCall.setVisibility(View.GONE);
+            buttonCall.hide();
             loadData();
         } else {
             binding.remText.setText(getSummary());
             binding.remText.setContentDescription(getSummary());
-            buttonCall.setVisibility(View.GONE);
+            buttonCall.hide();
         }
 
         if (Reminder.isBase(mReminder.getType(), Reminder.BY_TIME)) {
-            binding.buttonRefresh.setVisibility(View.VISIBLE);
+            binding.buttonRefresh.show();
             binding.buttonRefresh.setOnClickListener(v -> startAgain());
         } else {
-            binding.buttonRefresh.setVisibility(View.GONE);
+            binding.buttonRefresh.hide();
         }
 
         if (Reminder.isGpsType(mReminder.getType())) {
-            buttonDelay.setVisibility(View.GONE);
-            buttonDelayFor.setVisibility(View.GONE);
+            buttonDelay.hide();
+            buttonDelayFor.hide();
         }
 
         if (!mControl.canSkip()) {
-            buttonCancel.setVisibility(View.GONE);
+            buttonCancel.hide();
         } else {
-            buttonCancel.setVisibility(View.VISIBLE);
+            buttonCancel.show();
         }
 
         buttonCancel.setOnClickListener(v -> cancel());
@@ -331,7 +324,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
 
     private void showAttachmentButton() {
         if (binding.buttonAttachment != null) {
-            binding.buttonAttachment.setVisibility(View.VISIBLE);
+            binding.buttonAttachment.show();
             binding.buttonAttachment.setOnClickListener(view -> showFile());
         }
     }
@@ -381,23 +374,6 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private boolean isAppType() {
         return mReminder != null && (Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_LINK) ||
                 Reminder.isSame(mReminder.getType(), Reminder.BY_DATE_APP));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
-            mGoogleApiClient.disconnect();
-        }
     }
 
     @Override
@@ -593,25 +569,6 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     }
 
     @Override
-    protected void sendDataToWear() {
-        if (mReminder == null) return;
-        boolean silentSMS = getPrefs().isAutoSmsEnabled();
-        if (Reminder.isKind(mReminder.getType(), Reminder.Kind.SMS) && silentSMS) {
-            return;
-        }
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_REMINDER);
-        DataMap map = putDataMapReq.getDataMap();
-        map.putInt(SharedConst.KEY_TYPE, mReminder.getType());
-        map.putString(SharedConst.KEY_TASK, getSummary());
-        map.putInt(SharedConst.KEY_COLOR, getThemeUtil().colorAccent());
-        map.putBoolean(SharedConst.KEY_THEME, getThemeUtil().isDark());
-        map.putBoolean(SharedConst.KEY_REPEAT, buttonCancel.getVisibility() == View.VISIBLE);
-        map.putBoolean(SharedConst.KEY_TIMED, buttonDelay.getVisibility() == View.VISIBLE);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-    }
-
-    @Override
     protected void call() {
         if (mReminder == null || mControl == null) return;
         mControl.next();
@@ -714,7 +671,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
         binding.buttonCall.setImageResource(R.drawable.ic_refresh);
         binding.buttonCall.setContentDescription(getString(R.string.acc_button_retry_to_send_message));
         if (binding.buttonCall.getVisibility() == View.GONE) {
-            binding.buttonCall.setVisibility(View.VISIBLE);
+            binding.buttonCall.show();
         }
     }
 

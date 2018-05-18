@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -12,18 +11,17 @@
             android:layout_height="match_parent"
             android:orientation="vertical" />
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/sheetLayout"
             android:layout_width="match_parent"
             android:layout_height="192dp"
-            android:clipToPadding="true"
-            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+            android:clipToPadding="true">
 
             <include
                 android:id="@+id/bottomSheet"
                 layout="@layout/bottom_sheet_layout" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

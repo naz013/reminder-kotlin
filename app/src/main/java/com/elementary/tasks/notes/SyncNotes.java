@@ -2,8 +2,8 @@ package com.elementary.tasks.notes;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;

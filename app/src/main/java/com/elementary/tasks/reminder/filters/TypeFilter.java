@@ -1,6 +1,6 @@
 package com.elementary.tasks.reminder.filters;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.reminder.models.Reminder;
 

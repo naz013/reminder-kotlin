@@ -2,7 +2,7 @@ package com.elementary.tasks.core.drawing;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 /**
  * Copyright 2017 Nazar Suhovich

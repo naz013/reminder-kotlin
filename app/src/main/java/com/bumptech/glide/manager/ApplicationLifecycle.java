@@ -1,6 +1,6 @@
 package com.bumptech.glide.manager;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * A {@link Lifecycle} implementation for tracking and notifying

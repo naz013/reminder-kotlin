@@ -12,7 +12,7 @@ import android.graphics.PathEffect;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;

@@ -2,7 +2,7 @@ package com.elementary.tasks.google_tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;

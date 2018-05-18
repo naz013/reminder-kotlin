@@ -2,7 +2,7 @@ package com.elementary.tasks.creators.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.reminder.models.Reminder;

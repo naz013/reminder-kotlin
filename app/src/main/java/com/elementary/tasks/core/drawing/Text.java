@@ -3,7 +3,7 @@ package com.elementary.tasks.core.drawing;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 /**
  * Copyright 2017 Nazar Suhovich

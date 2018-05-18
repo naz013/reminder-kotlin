@@ -2,8 +2,8 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.elementary.tasks.BuildConfig;
 

@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.content.Context;
-import android.support.annotation.Px;
+import androidx.annotation.Px;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;

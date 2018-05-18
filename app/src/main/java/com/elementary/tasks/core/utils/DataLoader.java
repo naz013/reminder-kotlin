@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils;
 
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.interfaces.RealmCallback;
 import com.elementary.tasks.reminder.models.Reminder;

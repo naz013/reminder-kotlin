@@ -2,7 +2,7 @@ package com.elementary.tasks.birthdays;
 
 import android.content.Context;
 import androidx.databinding.BindingAdapter;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

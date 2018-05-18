@@ -3,7 +3,7 @@ package com.elementary.tasks.core.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;

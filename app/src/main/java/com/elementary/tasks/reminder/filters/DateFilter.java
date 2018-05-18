@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.filters;
 
 import android.app.AlarmManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.reminder.models.Reminder;
