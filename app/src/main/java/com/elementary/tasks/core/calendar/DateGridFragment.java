@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.calendar;
 
 import android.os.Bundle;
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

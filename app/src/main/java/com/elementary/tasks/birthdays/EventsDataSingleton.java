@@ -1,6 +1,6 @@
 package com.elementary.tasks.birthdays;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2018 Nazar Suhovich

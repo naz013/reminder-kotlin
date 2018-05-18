@@ -1,6 +1,6 @@
 package com.elementary.tasks.navigation.settings.additional;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 

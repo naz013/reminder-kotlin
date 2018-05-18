@@ -1,7 +1,7 @@
 package com.elementary.tasks.intro;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import com.elementary.tasks.R;
 

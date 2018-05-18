@@ -26,7 +26,7 @@
 package com.evernote.android.job.util.support;
 
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.evernote.android.job.util.JobCat;
 

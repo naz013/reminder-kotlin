@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.controller;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.reminder.models.Reminder;

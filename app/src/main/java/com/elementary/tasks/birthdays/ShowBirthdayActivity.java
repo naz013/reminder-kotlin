@@ -3,18 +3,12 @@ package com.elementary.tasks.birthdays;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
-import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
 import com.elementary.tasks.core.async.BackupTask;
@@ -34,14 +28,15 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 
 import java.util.Calendar;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.databinding.DataBindingUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -127,8 +122,8 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         userYears.setContentDescription(years);
         wearMessage = mBirthdayItem.getName() + "\n" + years;
         if (TextUtils.isEmpty(mBirthdayItem.getNumber())) {
-            binding.buttonCall.setVisibility(View.GONE);
-            binding.buttonSend.setVisibility(View.GONE);
+            binding.buttonCall.hide();
+            binding.buttonSend.hide();
             userNumber.setVisibility(View.GONE);
         } else {
             userNumber.setText(mBirthdayItem.getNumber());
@@ -199,23 +194,6 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         removeFlags();
@@ -234,15 +212,6 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         } else {
             Toast.makeText(ShowBirthdayActivity.this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    protected void sendDataToWear() {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_STOP);
-        DataMap map = putDataMapReq.getDataMap();
-        map.putBoolean(SharedConst.KEY_STOP_B, true);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
     }
 
     @Override
@@ -310,7 +279,7 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         binding.buttonCall.setImageResource(R.drawable.ic_refresh);
         binding.buttonCall.setContentDescription(getString(R.string.acc_button_retry_to_send_message));
         if (binding.buttonCall.getVisibility() == View.GONE) {
-            binding.buttonCall.setVisibility(View.VISIBLE);
+            binding.buttonCall.show();
         }
     }
 

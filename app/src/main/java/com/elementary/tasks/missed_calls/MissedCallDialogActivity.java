@@ -2,16 +2,13 @@ package com.elementary.tasks.missed_calls;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.backdoor.shared.SharedConst;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
 import com.elementary.tasks.core.services.EventJobService;
@@ -26,14 +23,12 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.PutDataMapRequest;
-import com.google.android.gms.wearable.PutDataRequest;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Date;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -85,10 +80,10 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         FloatingActionButton buttonNotification = findViewById(R.id.buttonNotification);
         colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
                 buttonNotification, binding.buttonEdit);
-        buttonDelay.setVisibility(View.GONE);
-        buttonDelayFor.setVisibility(View.GONE);
-        buttonNotification.setVisibility(View.GONE);
-        binding.buttonEdit.setVisibility(View.GONE);
+        buttonDelay.hide();
+        buttonDelayFor.hide();
+        buttonNotification.hide();
+        binding.buttonEdit.hide();
 
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
         buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
@@ -131,23 +126,6 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (getPrefs().isWearEnabled() && mGoogleApiClient != null) {
-            Wearable.DataApi.removeListener(mGoogleApiClient, mDataListener);
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         removeFlags();
@@ -164,16 +142,6 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         }
     }
 
-    @Override
-    protected void sendDataToWear() {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create(SharedConst.WEAR_BIRTHDAY);
-        DataMap map = putDataMapReq.getDataMap();
-        map.putString(SharedConst.KEY_TASK, wearMessage);
-        map.putInt(SharedConst.KEY_COLOR, getThemeUtil().colorAccent());
-        map.putBoolean(SharedConst.KEY_THEME, getThemeUtil().isDark());
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-    }
 
     @Override
     protected void call() {
@@ -240,7 +208,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
         binding.remText.setText(getString(R.string.error_sending));
         binding.buttonCall.setImageResource(R.drawable.ic_refresh);
         if (binding.buttonCall.getVisibility() == View.GONE) {
-            binding.buttonCall.setVisibility(View.VISIBLE);
+            binding.buttonCall.show();
         }
     }
 

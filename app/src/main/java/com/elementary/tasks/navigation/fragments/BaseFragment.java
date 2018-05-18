@@ -3,7 +3,7 @@ package com.elementary.tasks.navigation.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Prefs;

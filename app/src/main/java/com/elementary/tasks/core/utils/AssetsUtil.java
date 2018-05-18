@@ -2,7 +2,7 @@ package com.elementary.tasks.core.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Copyright 2016 Nazar Suhovich

@@ -1,7 +1,7 @@
 package com.bumptech.glide.load.model;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * An interface for creating a {@link ModelLoader} for a given model type. Will be retained

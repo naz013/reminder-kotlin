@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.event_tree;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 

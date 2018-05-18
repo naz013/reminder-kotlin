@@ -2,7 +2,7 @@ package com.elementary.tasks.core.calendar;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.ColorRes;
+import androidx.annotation.ColorRes;
 
 import java.util.Calendar;
 import java.util.Date;
