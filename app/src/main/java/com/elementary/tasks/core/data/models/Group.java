@@ -1,10 +1,13 @@
-package com.elementary.tasks.groups;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,33 +24,27 @@ import java.util.UUID;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class GroupItem {
+@Entity
+public class Group {
 
     @SerializedName("title")
     private String title;
     @SerializedName("uuId")
+    @PrimaryKey
     private String uuId;
     @SerializedName("color")
     private int color;
     @SerializedName("dateTime")
     private String dateTime;
 
-    public GroupItem(RealmGroup item) {
-        this.color = item.getColor();
-        this.dateTime = item.getDateTime();
-        this.uuId = item.getUuId();
-        this.title = item.getTitle();
-    }
-
-    public GroupItem(String title, int color) {
+    public Group(String title, int color) {
         this.title = title;
         this.uuId = UUID.randomUUID().toString();
         this.color = color;
         this.dateTime = TimeUtil.getGmtDateTime();
     }
 
-    public GroupItem(String title, String uuId, int color, String dateTime) {
+    public Group(String title, String uuId, int color, String dateTime) {
         this.title = title;
         this.uuId = uuId;
         this.color = color;
@@ -88,6 +85,6 @@ public class GroupItem {
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, GroupItem.class);
+        return SuperUtil.getObjectPrint(this, Group.class);
     }
 }

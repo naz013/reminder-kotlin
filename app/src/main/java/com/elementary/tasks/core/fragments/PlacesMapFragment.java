@@ -35,7 +35,7 @@ import com.elementary.tasks.places.GooglePlaceItem;
 import com.elementary.tasks.places.GooglePlacesAdapter;
 import com.elementary.tasks.places.PlaceParser;
 import com.elementary.tasks.places.RequestBuilder;
-import com.elementary.tasks.reminder.models.Place;
+import com.elementary.tasks.core.data.models.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,7 +49,6 @@ import java.util.List;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -34,12 +34,6 @@ public class CallItem {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
-    public CallItem(RealmCallItem item) {
-        this.number = item.getNumber();
-        this.dateTime = item.getDateTime();
-        this.uniqueId = item.getUniqueId();
-    }
-
     public CallItem(String number, long dateTime) {
         this.number = number;
         this.dateTime = dateTime;

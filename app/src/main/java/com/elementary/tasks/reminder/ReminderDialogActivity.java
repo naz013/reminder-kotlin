@@ -40,8 +40,8 @@ import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
-import com.elementary.tasks.reminder.models.Reminder;
-import com.elementary.tasks.reminder.models.ShopItem;
+import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.ShopItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;

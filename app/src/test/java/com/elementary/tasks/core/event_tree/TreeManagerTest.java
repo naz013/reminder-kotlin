@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.event_tree;
 
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;

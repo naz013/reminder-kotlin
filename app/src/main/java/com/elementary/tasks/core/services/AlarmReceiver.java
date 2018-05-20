@@ -21,8 +21,8 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
@@ -258,7 +258,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                             }
                         }
                         String summary = item.getTitle();
-                        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+                        Group def = RealmDb.getInstance().getDefaultGroup();
                         String categoryId = "";
                         if (def != null) {
                             categoryId = def.getUuId();

@@ -26,7 +26,7 @@ import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 import java.util.List;

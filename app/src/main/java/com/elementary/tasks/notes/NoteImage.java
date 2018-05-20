@@ -1,11 +1,11 @@
 package com.elementary.tasks.notes;
 
-import androidx.annotation.Nullable;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Arrays;
+
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,14 +30,6 @@ public class NoteImage implements Serializable {
     private byte[] image;
 
     public NoteImage() {
-    }
-
-    public NoteImage(RealmImage image) {
-        this.image = image.getImage();
-    }
-
-    public NoteImage(EditableRealmImage image) {
-        this.image = image.getImage();
     }
 
     public NoteImage(byte[] image) {

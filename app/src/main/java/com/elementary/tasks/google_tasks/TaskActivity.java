@@ -32,8 +32,8 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -402,7 +402,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private String saveReminder(String task) {
-        GroupItem group = RealmDb.getInstance().getDefaultGroup();
+        Group group = RealmDb.getInstance().getDefaultGroup();
         if (group == null) return null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());

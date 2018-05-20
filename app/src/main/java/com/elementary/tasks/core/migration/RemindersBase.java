@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.elementary.tasks.core.migration.parser.JParser;
 import com.elementary.tasks.core.migration.parser.JsonModel;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;

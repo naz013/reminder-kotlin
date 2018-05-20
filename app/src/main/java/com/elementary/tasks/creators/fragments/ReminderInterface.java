@@ -2,7 +2,7 @@ package com.elementary.tasks.creators.fragments;
 
 import android.view.View;
 
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich

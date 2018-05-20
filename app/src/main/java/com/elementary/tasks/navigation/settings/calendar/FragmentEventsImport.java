@@ -34,7 +34,7 @@ import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.databinding.FragmentEventsImportBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;

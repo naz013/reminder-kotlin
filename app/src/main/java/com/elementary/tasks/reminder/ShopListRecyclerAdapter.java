@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.ListItemTaskItemCardBinding;
-import com.elementary.tasks.reminder.models.ShopItem;
+import com.elementary.tasks.core.data.models.ShopItem;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -5,8 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,17 +18,16 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.async.SyncTask;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
-import com.elementary.tasks.core.interfaces.RealmCallback;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.DataLoader;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.view_models.ActiveRemindersViewModel;
 import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentRemindersBinding;
-import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
@@ -39,7 +36,6 @@ import com.elementary.tasks.reminder.ShoppingPreviewActivity;
 import com.elementary.tasks.reminder.UpdateFilesAsync;
 import com.elementary.tasks.reminder.filters.FilterCallback;
 import com.elementary.tasks.reminder.filters.ReminderFilterController;
-import com.elementary.tasks.reminder.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,11 +45,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import timber.log.Timber;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -74,12 +70,13 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         FilterCallback<Reminder> {
 
     private FragmentRemindersBinding binding;
-    private RecyclerView mRecyclerView;
+    private ActiveRemindersViewModel viewModel;
 
-    private RemindersRecyclerAdapter mAdapter;
+    private RemindersRecyclerAdapter mAdapter = new RemindersRecyclerAdapter();
 
     @NonNull
     private ArrayList<String> mGroupsIds = new ArrayList<>();
+    private List<FilterView.Filter> filters = new ArrayList<>();
     @NonNull
     private ReminderFilterController filterController = new ReminderFilterController(this);
 
@@ -131,7 +128,6 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         public void onItemLongClicked(int position, View view) {
         }
     };
-    private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -199,12 +195,31 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel.class);
+        viewModel.events.observe(this, reminders -> {
+            if (reminders != null) {
+                showData(reminders);
+            }
+        });
+    }
+
     private void showData(List<Reminder> result) {
         filterController.setOriginal(result);
         reloadView();
+        refreshFilters();
     }
 
     private void refreshFilters() {
+        filters.clear();
+        addDateFilter(filters);
+        if (viewModel.groups.getValue() != null) {
+            addGroupFilter(viewModel.groups.getValue());
+        }
+        addTypeFilter(filters);
+        addStatusFilter(filters);
         if (getCallback().isFiltersVisible()) {
             showRemindersFilter();
         }
@@ -225,7 +240,7 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
                     editReminder(item1.getUuId());
                     break;
                 case 2:
-                    changeGroup(item1.getGroupUuId(), item1.getUuId());
+                    changeGroup(item1);
                     break;
                 case 3:
                     moveToTrash(item1, position);
@@ -255,17 +270,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             Toast.makeText(getContext(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
         }
         new UpdateFilesAsync(getContext()).execute(reminder);
-        loadData();
     }
 
     private void initList() {
-        mRecyclerView = binding.recyclerView;
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RemindersRecyclerAdapter(getContext());
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter.setEventListener(mEventListener);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
+        binding.recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -278,12 +288,11 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
             getCallback().setClick(view -> startActivity(new Intent(getContext(), CreateReminderActivity.class)));
             getCallback().onScrollChanged(binding.recyclerView);
         }
-        loadData();
     }
 
     @Subscribe
     public void onEvent(ReminderUpdateEvent e) {
-        loadData();
+
     }
 
     private void previewReminder(final View view, final String id, final int type) {
@@ -296,27 +305,18 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         }
     }
 
-    private void loadData() {
-        DataLoader.loadActiveReminder(mLoadCallback);
-    }
-
     private void reloadView() {
         if (mAdapter.getItemCount() > 0) {
-            if (mRecyclerView.getVisibility() == View.GONE)
-                mRecyclerView.setVisibility(View.VISIBLE);
+            if (binding.recyclerView.getVisibility() == View.GONE)
+                binding.recyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {
-            mRecyclerView.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
         }
     }
 
     private void showRemindersFilter() {
-        List<FilterView.Filter> filters = new ArrayList<>();
-        addDateFilter(filters);
-        addGroupFilter(filters);
-        addTypeFilter(filters);
-        addStatusFilter(filters);
         getCallback().addFilters(filters, true);
     }
 
@@ -400,8 +400,8 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         }
     }
 
-    private void addGroupFilter(List<FilterView.Filter> filters) {
-        mGroupsIds.clear();
+    private void addGroupFilter(List<Group> groups) {
+        mGroupsIds = new ArrayList<>();
         FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
             @Override
             public void onClick(View view, int id) {
@@ -414,37 +414,27 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
             @Override
             public void onMultipleSelected(View view, List<Integer> ids) {
-                Timber.d("onMultipleSelected: %s", ids);
                 List<String> groups = new ArrayList<>();
-                for (Integer i : ids) {
-                    if (i == 0) {
-                        filterController.setGroupValue(null);
-                        break;
-                    } else {
-                        groups.add(mGroupsIds.get(i - 1));
-                    }
-                }
+                for (Integer i : ids) groups.add(mGroupsIds.get(i - 1));
                 filterController.setGroupValues(groups);
             }
         });
-        filter.setChoiceMode(FilterView.ChoiceMode.MULTI);
-        filter.add(getFilterAllElement());
-        List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
+        filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true));
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (int i = 0; i < groups.size(); i++) {
-            GroupItem item = groups.get(i);
+            Group item = groups.get(i);
             filter.add(new FilterView.FilterElement(util.getCategoryIndicator(item.getColor()), item.getTitle(), i + 1));
             mGroupsIds.add(item.getUuId());
         }
         filters.add(filter);
     }
 
-    private void changeGroup(final String oldUuId, final String id) {
+    private void changeGroup(Reminder reminder) {
         mGroupsIds.clear();
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 getContext(), android.R.layout.select_dialog_item);
-        List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
-        for (GroupItem item : groups) {
+        List<Group> groups = viewModel.groups.getValue();
+        for (Group item : groups) {
             arrayAdapter.add(item.getTitle());
             mGroupsIds.add(item.getUuId());
         }
@@ -453,12 +443,11 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
         builder.setAdapter(arrayAdapter, (dialog, which) -> {
             dialog.dismiss();
             String catId = mGroupsIds.get(which);
-            if (oldUuId.matches(catId)) {
+            if (reminder.getGroupUuId().matches(catId)) {
                 Toast.makeText(getContext(), getString(R.string.same_group), Toast.LENGTH_SHORT).show();
                 return;
             }
-            RealmDb.getInstance().changeReminderGroup(id, catId);
-            loadData();
+            viewModel.changeGroup(reminder, catId);
         });
         AlertDialog alert = builder.create();
         alert.show();
@@ -472,13 +461,12 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     @Override
     public void endExecution(boolean b) {
-        if (b) loadData();
     }
 
     @Override
     public void onChanged(@NonNull List<Reminder> result) {
         mAdapter.setData(result);
-        mRecyclerView.smoothScrollToPosition(0);
+        binding.recyclerView.smoothScrollToPosition(0);
         reloadView();
     }
 }

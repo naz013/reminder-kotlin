@@ -1,12 +1,21 @@
-package com.elementary.tasks.reminder.models;
+package com.elementary.tasks.core.data.models;
 
+import com.elementary.tasks.core.interfaces.RecyclerInterface;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.creators.fragments.ReminderInterface;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.Relation;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,8 +32,41 @@ import io.realm.annotations.PrimaryKey;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Entity
+public class Reminder implements RecyclerInterface {
 
-public class RealmReminder extends RealmObject {
+    public static final int REMINDER = 0;
+    public static final int SHOPPING = 1;
+
+    public static final int BY_DATE = 10;
+    public static final int BY_DATE_CALL = 11;
+    public static final int BY_DATE_SMS = 12;
+    public static final int BY_DATE_APP = 13;
+    public static final int BY_DATE_LINK = 14;
+    public static final int BY_DATE_SHOP = 15;
+    public static final int BY_DATE_EMAIL = 16;
+    public static final int BY_TIME = 20;
+    public static final int BY_WEEK = 30;
+    public static final int BY_WEEK_CALL = 31;
+    public static final int BY_WEEK_SMS = 32;
+    public static final int BY_LOCATION = 40;
+    public static final int BY_LOCATION_CALL = 41;
+    public static final int BY_LOCATION_SMS = 42;
+    public static final int BY_SKYPE = 50;
+    public static final int BY_SKYPE_CALL = 51;
+    public static final int BY_SKYPE_VIDEO = 52;
+    public static final int BY_MONTH = 60;
+    public static final int BY_MONTH_CALL = 61;
+    public static final int BY_MONTH_SMS = 62;
+    public static final int BY_OUT = 70;
+    public static final int BY_OUT_CALL = 71;
+    public static final int BY_OUT_SMS = 72;
+    public static final int BY_PLACES = 80;
+    public static final int BY_PLACES_CALL = 81;
+    public static final int BY_PLACES_SMS = 82;
+    public static final int BY_DAY_OF_YEAR = 90;
+    public static final int BY_DAY_OF_YEAR_CALL = 91;
+    public static final int BY_DAY_OF_YEAR_SMS = 92;
 
     @SerializedName("summary")
     private String summary;
@@ -35,7 +77,6 @@ public class RealmReminder extends RealmObject {
     @SerializedName("groupUuId")
     private String groupUuId;
     @SerializedName("uuId")
-    @PrimaryKey
     private String uuId;
     @SerializedName("eventTime")
     private String eventTime;
@@ -45,8 +86,8 @@ public class RealmReminder extends RealmObject {
     private long eventCount;
     @SerializedName("color")
     private int color;
-    @SerializedName("status")
-    private int status;
+    @SerializedName("delay")
+    private int delay;
     @SerializedName("vibrate")
     private boolean vibrate;
     @SerializedName("repeatNotification")
@@ -68,7 +109,7 @@ public class RealmReminder extends RealmObject {
     @SerializedName("to")
     private String to;
     @SerializedName("hours")
-    private RealmList<RealmInteger> hours = new RealmList<>();
+    private List<Integer> hours = new ArrayList<>();
     @SerializedName("fileName")
     private String fileName;
     @SerializedName("melodyPath")
@@ -86,7 +127,7 @@ public class RealmReminder extends RealmObject {
     @SerializedName("after")
     private long after;
     @SerializedName("weekdays")
-    private RealmList<RealmInteger> weekdays = new RealmList<>();
+    private List<Integer> weekdays = new ArrayList<>();
     @SerializedName("type")
     private int type;
     @SerializedName("target")
@@ -96,14 +137,15 @@ public class RealmReminder extends RealmObject {
     @SerializedName("attachmentFile")
     private String attachmentFile;
     @SerializedName("attachmentFiles")
-    private RealmList<RealmString> attachmentFiles = new RealmList<>();
+    private List<String> attachmentFiles = new ArrayList<>();
     @SerializedName("auto")
     private boolean auto;
     @SerializedName("places")
-    private RealmList<RealmPlace2> places = new RealmList<>();
+    private List<Place> places = new ArrayList<>();
     @SerializedName("shoppings")
-    private RealmList<RealmShopItem> shoppings = new RealmList<>();
+    private List<ShopItem> shoppings = new ArrayList<>();
     @SerializedName("uniqueId")
+    @PrimaryKey(autoGenerate = true)
     private int uniqueId;
     @SerializedName("isActive")
     private boolean isActive;
@@ -119,21 +161,42 @@ public class RealmReminder extends RealmObject {
     private long remindBefore;
     @SerializedName("windowType")
     private int windowType = 0;
+    @Relation(entity = Group.class, parentColumn = "groupUuId", entityColumn = "uuId")
+    @Nullable
+    private Group group;
 
-    public RealmReminder() {
+    public static boolean isBase(int type, int base) {
+        int res = type - base;
+        return res >= 0 && res < 10;
     }
 
-    public RealmReminder(Reminder item) {
+    public static boolean isKind(int type, int kind) {
+        return type % BY_DATE == kind;
+    }
+
+    public static boolean isSame(int type, int base) {
+        return type == base;
+    }
+
+    public static boolean isGpsType(int type) {
+        return isBase(type, BY_LOCATION) || isBase(type, BY_OUT) || isBase(type, BY_PLACES);
+    }
+
+    public Reminder() {
+        this.uuId = UUID.randomUUID().toString();
+        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
+        this.isActive = true;
+        this.isRemoved = false;
+        this.useGlobal = true;
+    }
+
+    public Reminder(Reminder item, boolean fullCopy) {
         this.summary = item.getSummary();
-        this.noteId = item.getNoteId();
         this.reminderType = item.getReminderType();
         this.groupUuId = item.getGroupUuId();
-        this.uuId = item.getUuId();
-        this.eventTime = item.getEventTime();
-        this.startTime = item.getStartTime();
-        this.eventCount = item.getEventCount();
+        this.eventCount = 0;
         this.color = item.getColor();
-        this.status = item.getDelay();
+        this.delay = 0;
         this.vibrate = item.isVibrate();
         this.repeatNotification = item.isRepeatNotification();
         this.notifyByVoice = item.isNotifyByVoice();
@@ -144,7 +207,7 @@ public class RealmReminder extends RealmObject {
         this.useGlobal = item.isUseGlobal();
         this.from = item.getFrom();
         this.to = item.getTo();
-        this.hours = wrapIntegerArray(item.getHours());
+        this.hours = item.getHours();
         this.fileName = item.getFileName();
         this.melodyPath = item.getMelodyPath();
         this.volume = item.getVolume();
@@ -152,50 +215,44 @@ public class RealmReminder extends RealmObject {
         this.repeatInterval = item.getRepeatInterval();
         this.repeatLimit = item.getRepeatLimit();
         this.after = item.getAfter();
-        this.weekdays = wrapIntegerArray(item.getWeekdays());
+        this.weekdays = item.getWeekdays();
         this.type = item.getType();
         this.target = item.getTarget();
         this.subject = item.getSubject();
         this.attachmentFile = item.getAttachmentFile();
-        this.attachmentFiles = wrapStringArray(item.getAttachmentFiles());
+        this.attachmentFiles = item.getAttachmentFiles();
         this.auto = item.isAuto();
-        this.uniqueId = item.getUniqueId();
         this.isActive = item.isActive();
         this.isRemoved = item.isRemoved();
         this.isNotificationShown = item.isNotificationShown();
         this.isLocked = item.isLocked();
+        this.places = item.getPlaces();
+        this.shoppings = item.getShoppings();
         this.duration = item.getDuration();
         this.monthOfYear = item.getMonthOfYear();
         this.remindBefore = item.getRemindBefore();
         this.windowType = item.getWindowType();
-        this.places = new RealmList<>();
-        for (Place place : item.getPlaces()) {
-            places.add(new RealmPlace2(place));
-        }
-        this.shoppings = new RealmList<>();
-        for (ShopItem shopItem : item.getShoppings()) {
-            shoppings.add(new RealmShopItem(shopItem));
+        if (fullCopy) {
+            this.uuId = item.getUuId();
+            this.uniqueId = item.getUniqueId();
         }
     }
 
-    private RealmList<RealmInteger> wrapIntegerArray(List<Integer> list) {
-        RealmList<RealmInteger> strings = new RealmList<>();
-        if (list != null) {
-            for (Integer integer : list) {
-                strings.add(new RealmInteger(integer));
-            }
-        }
-        return strings;
+    public Reminder copy() {
+        Reminder reminder = new Reminder(this, false);
+        reminder.setUuId(UUID.randomUUID().toString());
+        reminder.setUniqueId(new Random().nextInt(Integer.MAX_VALUE));
+        reminder.setActive(true);
+        reminder.setRemoved(false);
+        return reminder;
     }
 
-    private RealmList<RealmString> wrapStringArray(List<String> list) {
-        RealmList<RealmString> strings = new RealmList<>();
-        if (list != null) {
-            for (String string : list) {
-                strings.add(new RealmString(string));
-            }
-        }
-        return strings;
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public int getWindowType() {
@@ -234,16 +291,18 @@ public class RealmReminder extends RealmObject {
         return isNotificationShown;
     }
 
-    public void setNotificationShown(boolean notificationShown) {
+    public Reminder setNotificationShown(boolean notificationShown) {
         isNotificationShown = notificationShown;
+        return this;
     }
 
     public boolean isLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean locked) {
+    public Reminder setLocked(boolean locked) {
         isLocked = locked;
+        return this;
     }
 
     public boolean isActive() {
@@ -254,327 +313,422 @@ public class RealmReminder extends RealmObject {
         return isRemoved;
     }
 
-    public void setActive(boolean active) {
+    public Reminder setActive(boolean active) {
         isActive = active;
+        this.isNotificationShown = false;
+        this.isLocked = false;
+        return this;
     }
 
-    public void setRemoved(boolean removed) {
+    public Reminder setRemoved(boolean removed) {
         isRemoved = removed;
+        return this;
     }
 
     public int getUniqueId() {
         return uniqueId;
     }
 
-    public void setHours(RealmList<RealmInteger> hours) {
-        this.hours = hours;
-    }
-
-    public void setUniqueId(int uniqueId) {
+    public Reminder setUniqueId(int uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    public void setAttachmentFiles(RealmList<RealmString> attachmentFiles) {
-        this.attachmentFiles = attachmentFiles;
-    }
-
-    public void setWeekdays(RealmList<RealmInteger> weekdays) {
-        this.weekdays = weekdays;
+        return this;
     }
 
     public String getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(String noteId) {
+    public Reminder setNoteId(String noteId) {
         this.noteId = noteId;
+        return this;
     }
 
     public boolean isUseGlobal() {
         return useGlobal;
     }
 
-    public void setUseGlobal(boolean useGlobal) {
+    public Reminder setUseGlobal(boolean useGlobal) {
         this.useGlobal = useGlobal;
+        return this;
     }
 
     public String getSummary() {
         return summary;
     }
 
-    public void setSummary(String summary) {
+    public Reminder setSummary(String summary) {
         this.summary = summary;
+        return this;
     }
 
     public int getReminderType() {
         return reminderType;
     }
 
-    public void setReminderType(int reminderType) {
+    public Reminder setReminderType(int reminderType) {
         this.reminderType = reminderType;
+        return this;
     }
 
     public String getGroupUuId() {
         return groupUuId;
     }
 
-    public void setGroupUuId(String groupUuId) {
+    public Reminder setGroupUuId(String groupUuId) {
         this.groupUuId = groupUuId;
+        return this;
     }
 
     public String getUuId() {
         return uuId;
     }
 
-    public void setUuId(String uuId) {
+    public Reminder setUuId(String uuId) {
         this.uuId = uuId;
+        return this;
     }
 
     public String getEventTime() {
         return eventTime;
     }
 
-    public void setEventTime(String eventTime) {
+    public Reminder setEventTime(String eventTime) {
         this.eventTime = eventTime;
+        return this;
     }
 
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public Reminder setStartTime(String startTime) {
         this.startTime = startTime;
+        return this;
     }
 
     public long getEventCount() {
         return eventCount;
     }
 
-    public void setEventCount(long eventCount) {
+    public Reminder setEventCount(long eventCount) {
         this.eventCount = eventCount;
+        return this;
     }
 
     public int getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public Reminder setColor(int color) {
         this.color = color;
+        return this;
     }
 
-    public int getStatus() {
-        return status;
+    public int getDelay() {
+        return delay;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public Reminder setDelay(int delay) {
+        this.delay = delay;
+        return this;
     }
 
     public boolean isVibrate() {
         return vibrate;
     }
 
-    public void setVibrate(boolean vibrate) {
+    public Reminder setVibrate(boolean vibrate) {
         this.vibrate = vibrate;
+        return this;
     }
 
     public boolean isRepeatNotification() {
         return repeatNotification;
     }
 
-    public void setRepeatNotification(boolean repeatNotification) {
+    public Reminder setRepeatNotification(boolean repeatNotification) {
         this.repeatNotification = repeatNotification;
+        return this;
     }
 
     public boolean isNotifyByVoice() {
         return notifyByVoice;
     }
 
-    public void setNotifyByVoice(boolean notifyByVoice) {
+    public Reminder setNotifyByVoice(boolean notifyByVoice) {
         this.notifyByVoice = notifyByVoice;
+        return this;
     }
 
     public boolean isAwake() {
         return awake;
     }
 
-    public void setAwake(boolean awake) {
+    public Reminder setAwake(boolean awake) {
         this.awake = awake;
+        return this;
     }
 
     public boolean isUnlock() {
         return unlock;
     }
 
-    public void setUnlock(boolean unlock) {
+    public Reminder setUnlock(boolean unlock) {
         this.unlock = unlock;
+        return this;
     }
 
     public boolean isExportToTasks() {
         return exportToTasks;
     }
 
-    public void setExportToTasks(boolean exportToTasks) {
+    public Reminder setExportToTasks(boolean exportToTasks) {
         this.exportToTasks = exportToTasks;
+        return this;
     }
 
     public boolean isExportToCalendar() {
         return exportToCalendar;
     }
 
-    public void setExportToCalendar(boolean exportToCalendar) {
+    public Reminder setExportToCalendar(boolean exportToCalendar) {
         this.exportToCalendar = exportToCalendar;
+        return this;
     }
 
     public String getFrom() {
         return from;
     }
 
-    public void setFrom(String from) {
+    public Reminder setFrom(String from) {
         this.from = from;
+        return this;
     }
 
     public String getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public Reminder setTo(String to) {
         this.to = to;
+        return this;
     }
 
-    public List<RealmInteger> getHours() {
+    public List<Integer> getHours() {
         return hours;
     }
 
-    public void setHours(List<Integer> hours) {
-        this.hours = wrapIntegerArray(hours);
+    public Reminder setHours(List<Integer> hours) {
+        this.hours = hours;
+        return this;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    public Reminder setFileName(String fileName) {
         this.fileName = fileName;
+        return this;
     }
 
     public String getMelodyPath() {
         return melodyPath;
     }
 
-    public void setMelodyPath(String melodyPath) {
+    public Reminder setMelodyPath(String melodyPath) {
         this.melodyPath = melodyPath;
+        return this;
     }
 
     public int getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
+    public Reminder setVolume(int volume) {
         this.volume = volume;
+        return this;
     }
 
     public int getDayOfMonth() {
         return dayOfMonth;
     }
 
-    public void setDayOfMonth(int dayOfMonth) {
+    public Reminder setDayOfMonth(int dayOfMonth) {
         this.dayOfMonth = dayOfMonth;
+        return this;
     }
 
     public long getRepeatInterval() {
         return repeatInterval;
     }
 
-    public void setRepeatInterval(long repeatInterval) {
+    public Reminder setRepeatInterval(long repeatInterval) {
         this.repeatInterval = repeatInterval;
+        return this;
     }
 
     public int getRepeatLimit() {
         return repeatLimit;
     }
 
-    public void setRepeatLimit(int repeatLimit) {
+    public Reminder setRepeatLimit(int repeatLimit) {
         this.repeatLimit = repeatLimit;
+        return this;
     }
 
     public long getAfter() {
         return after;
     }
 
-    public void setAfter(long after) {
+    public Reminder setAfter(long after) {
         this.after = after;
+        return this;
     }
 
-    public List<RealmInteger> getWeekdays() {
+    public List<Integer> getWeekdays() {
         return weekdays;
     }
 
-    public void setWeekdays(List<Integer> weekdays) {
-        this.weekdays = wrapIntegerArray(weekdays);
+    public Reminder setWeekdays(List<Integer> weekdays) {
+        this.weekdays = weekdays;
+        return this;
     }
 
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public Reminder setType(int type) {
         this.type = type;
+        return this;
     }
 
     public String getTarget() {
         return target;
     }
 
-    public void setTarget(String target) {
+    public Reminder setTarget(String target) {
         this.target = target;
+        return this;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public void setSubject(String subject) {
+    public Reminder setSubject(String subject) {
         this.subject = subject;
+        return this;
     }
 
     public String getAttachmentFile() {
         return attachmentFile;
     }
 
-    public void setAttachmentFile(String attachmentFile) {
+    public Reminder setAttachmentFile(String attachmentFile) {
         this.attachmentFile = attachmentFile;
+        return this;
     }
 
-    public List<RealmString> getAttachmentFiles() {
+    public List<String> getAttachmentFiles() {
         return attachmentFiles;
     }
 
-    public void setAttachmentFiles(List<String> attachmentFiles) {
-        this.attachmentFiles = wrapStringArray(attachmentFiles);
+    public Reminder setAttachmentFiles(List<String> attachmentFiles) {
+        this.attachmentFiles = attachmentFiles;
+        return this;
     }
 
     public boolean isAuto() {
         return auto;
     }
 
-    public void setAuto(boolean auto) {
+    public Reminder setAuto(boolean auto) {
         this.auto = auto;
+        return this;
     }
 
-    public List<RealmPlace2> getPlaces() {
+    public List<Place> getPlaces() {
         return places;
     }
 
-    public void setPlaces(RealmList<RealmPlace2> places) {
+    public Reminder setPlaces(List<Place> places) {
         this.places = places;
+        return this;
     }
 
-    public List<RealmShopItem> getShoppings() {
+    public List<ShopItem> getShoppings() {
         return shoppings;
     }
 
-    public void setShoppings(RealmList<RealmShopItem> shoppings) {
+    public Reminder setShoppings(List<ShopItem> shoppings) {
         this.shoppings = shoppings;
+        return this;
+    }
+
+    public void setClear(ReminderInterface mInterface) {
+        setSummary(mInterface.getSummary());
+        setGroupUuId(mInterface.getGroup());
+        setRepeatLimit(mInterface.getRepeatLimit());
+        setColor(mInterface.getLedColor());
+        setMelodyPath(mInterface.getMelodyPath());
+        setVolume(mInterface.getVolume());
+        setAuto(mInterface.getAuto());
+        setAttachmentFile(mInterface.getAttachment());
+        setActive(true);
+        setRemoved(false);
+        setDelay(0);
+        setEventCount(0);
+        setVibrate(mInterface.getVibration());
+        setNotifyByVoice(mInterface.getVoice());
+        setRepeatNotification(mInterface.getNotificationRepeat());
+        setUseGlobal(mInterface.getUseGlobal());
+        setUnlock(mInterface.getUnlock());
+        setAwake(mInterface.getWake());
+        setWindowType(mInterface.getWindowType());
+    }
+
+    public long getDateTime() {
+        return TimeUtil.getDateTimeFromGmt(eventTime);
+    }
+
+    public long getStartDateTime() {
+        return TimeUtil.getDateTimeFromGmt(startTime);
+    }
+
+    @Override
+    public int getViewType() {
+        if (isSame(type, BY_DATE_SHOP)) {
+            return SHOPPING;
+        } else {
+            return REMINDER;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return SuperUtil.getObjectPrint(this, Reminder.class);
+    }
+
+    @Override
+    public int hashCode() {
+        return UUID.fromString(uuId).hashCode();
+    }
+
+    public int[] getKeys() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(eventTime));
+        int y = calendar.get(Calendar.YEAR);
+        int m = calendar.get(Calendar.MONTH);
+        int d = calendar.get(Calendar.DAY_OF_MONTH);
+        int h = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
+        return new int[]{y, m, d, h, min};
+    }
+
+    public static class Kind {
+        public static final int SMS = 2;
+        public static final int CALL = 1;
     }
 }

@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.databinding.LocationListItemBinding;
-import com.elementary.tasks.reminder.models.Place;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.ContextHolder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.io.IOException;
 import java.util.List;
@@ -77,7 +77,7 @@ public class RestoreLocalTask extends AsyncTask<Void, String, Integer> {
             BackupTool.getInstance().importGroups();
         } catch (IOException ignored) { }
 
-        List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+        List<Group> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
             List<Reminder> items = RealmDb.getInstance().getAllReminders();

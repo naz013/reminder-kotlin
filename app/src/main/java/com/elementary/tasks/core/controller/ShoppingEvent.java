@@ -3,9 +3,8 @@ package com.elementary.tasks.core.controller;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.utils.TimeCount;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich

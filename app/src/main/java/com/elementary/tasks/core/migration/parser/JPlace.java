@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.migration.parser;
 
-import com.elementary.tasks.reminder.models.Place;
+import com.elementary.tasks.core.data.models.Place;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

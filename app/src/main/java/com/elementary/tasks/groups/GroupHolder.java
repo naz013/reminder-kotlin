@@ -3,6 +3,7 @@ package com.elementary.tasks.groups;
 import androidx.databinding.DataBindingUtil;
 import android.view.View;
 
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.databinding.GroupListItemBinding;
 
@@ -46,7 +47,7 @@ public class GroupHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setData(GroupItem item) {
+    public void setData(Group item) {
         binding.setItem(item);
     }
 }

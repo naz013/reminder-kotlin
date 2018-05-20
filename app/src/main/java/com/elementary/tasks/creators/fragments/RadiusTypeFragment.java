@@ -4,7 +4,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Locale;
 

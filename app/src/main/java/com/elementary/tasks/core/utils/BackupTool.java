@@ -14,11 +14,11 @@ import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.places.PlaceItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -253,12 +253,12 @@ public final class BackupTool {
     }
 
     public void exportGroups() {
-        for (GroupItem item : RealmDb.getInstance().getAllGroups()) {
+        for (Group item : RealmDb.getInstance().getAllGroups()) {
             exportGroup(item);
         }
     }
 
-    public void exportGroup(@NonNull GroupItem item) {
+    public void exportGroup(@NonNull Group item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getGroupsDir();
         if (dir != null) {
@@ -282,14 +282,14 @@ public final class BackupTool {
             File[] files = dir.listFiles();
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
-                List<GroupItem> groupItems = realmDb.getAllGroups();
+                List<Group> groups = realmDb.getAllGroups();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
-                        GroupItem item = getGroup(file.toString(), null);
+                        Group item = getGroup(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getUuId())) continue;
-                        if (!TextUtils.isEmpty(item.getTitle()) && !hasGroup(groupItems, item.getTitle())) {
+                        if (!TextUtils.isEmpty(item.getTitle()) && !hasGroup(groups, item.getTitle())) {
                             realmDb.saveObject(item);
-                            groupItems.add(item);
+                            groups.add(item);
                         }
                     }
                 }
@@ -297,9 +297,9 @@ public final class BackupTool {
         }
     }
 
-    private boolean hasGroup(@NonNull List<GroupItem> list, @Nullable String comparable) {
+    private boolean hasGroup(@NonNull List<Group> list, @Nullable String comparable) {
         if (comparable == null) return true;
-        for (GroupItem item : list) {
+        for (Group item : list) {
             if (comparable.equals(item.getTitle())) {
                 return true;
             }
@@ -308,18 +308,18 @@ public final class BackupTool {
     }
 
     @Nullable
-    public GroupItem getGroup(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
-        WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), GroupItem.class));
+    public Group getGroup(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
+        WeakReference<Group> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Group.class));
         return item.get();
     }
 
     @Nullable
-    public GroupItem getGroup(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
+    public Group getGroup(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
-            WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), GroupItem.class));
+            WeakReference<Group> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Group.class));
             return item.get();
         } else if (json != null) {
-            WeakReference<GroupItem> item = new WeakReference<>(new Gson().fromJson(json, GroupItem.class));
+            WeakReference<Group> item = new WeakReference<>(new Gson().fromJson(json, Group.class));
             return item.get();
         } else {
             return null;
@@ -338,7 +338,7 @@ public final class BackupTool {
             File[] files = dir.listFiles();
             if (files != null) {
                 RealmDb realmDb = RealmDb.getInstance();
-                GroupItem defaultGroup = realmDb.getDefaultGroup();
+                Group defaultGroup = realmDb.getDefaultGroup();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);

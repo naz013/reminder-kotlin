@@ -51,20 +51,6 @@ public class BirthdayItem implements RecyclerInterface {
     @SerializedName("dayMonth")
     private String dayMonth;
 
-    public BirthdayItem(RealmBirthdayItem item) {
-        this.name = item.getName();
-        this.date = item.getDate();
-        this.number = item.getNumber();
-        this.key = item.getKey();
-        this.showedYear = item.getShowedYear();
-        this.contactId = item.getContactId();
-        this.dayMonth = item.getDayMonth();
-        this.uuId = item.getUuId();
-        this.day = item.getDay();
-        this.month = item.getMonth();
-        this.uniqueId = item.getUniqueId();
-    }
-
     public BirthdayItem(String name, String date, String number, int showedYear, int contactId, int day, int month) {
         this.name = name;
         this.date = date;

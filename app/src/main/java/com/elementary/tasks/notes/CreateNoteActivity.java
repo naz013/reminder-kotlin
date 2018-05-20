@@ -61,10 +61,10 @@ import com.elementary.tasks.core.views.ColorPickerView;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.material.appbar.AppBarLayout;
 
 import org.apache.commons.lang3.StringUtils;
@@ -526,7 +526,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         mReminder.setRemoved(false);
         if (mItem != null) mReminder.setSummary(mItem.getSummary());
         else mReminder.setSummary("");
-        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        Group def = RealmDb.getInstance().getDefaultGroup();
         if (def != null) {
             mReminder.setGroupUuId(def.getUuId());
         }

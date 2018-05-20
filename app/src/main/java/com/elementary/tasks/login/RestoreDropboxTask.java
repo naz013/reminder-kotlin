@@ -11,8 +11,8 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.utils.ContextHolder;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class RestoreDropboxTask extends AsyncTask<Void, String, Void> {
         Dropbox drive = new Dropbox(mContext.getContext());
         publishProgress(mContext.getContext().getString(R.string.syncing_groups));
         drive.downloadGroups(false);
-        List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+        List<Group> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
             List<Reminder> items = RealmDb.getInstance().getAllReminders();

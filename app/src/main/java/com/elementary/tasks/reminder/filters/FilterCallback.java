@@ -2,8 +2,6 @@ package com.elementary.tasks.reminder.filters;
 
 import androidx.annotation.NonNull;
 
-import com.elementary.tasks.reminder.models.Reminder;
-
 import java.util.List;
 
 /**

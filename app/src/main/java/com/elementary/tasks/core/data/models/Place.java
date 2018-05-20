@@ -1,12 +1,11 @@
-package com.elementary.tasks.reminder.models;
+package com.elementary.tasks.core.data.models;
 
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.RealmList;
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import java.util.UUID;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,8 +22,7 @@ import io.realm.annotations.PrimaryKey;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class RealmPlace2 extends RealmObject {
+public class Place {
 
     @SerializedName("radius")
     private int radius;
@@ -37,42 +35,29 @@ public class RealmPlace2 extends RealmObject {
     @SerializedName("name")
     private String name;
     @SerializedName("id")
-    @PrimaryKey
     private String id;
     @SerializedName("address")
     private String address;
     @SerializedName("tags")
-    private RealmList<RealmString> tags = new RealmList<>();
+    private List<String> tags = new ArrayList<>();
 
-    public RealmPlace2() {}
-
-    public RealmPlace2(Place item) {
-        this.radius = item.getRadius();
-        this.marker = item.getMarker();
-        this.latitude = item.getLatitude();
-        this.longitude = item.getLongitude();
-        this.name = item.getName();
-        this.id = item.getId();
-        this.address = item.getAddress();
-        this.tags = wrapStringArray(item.getTags());
+    public Place(int radius, int marker, double latitude, double longitude, String name, String address, List<String> tags) {
+        this.radius = radius;
+        this.marker = marker;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.name = name;
+        this.id = UUID.randomUUID().toString();
+        this.address = address;
+        this.tags = tags;
     }
 
-    private RealmList<RealmString> wrapStringArray(List<String> list) {
-        RealmList<RealmString> strings = new RealmList<>();
-        if (list != null) {
-            for (String string : list) {
-                strings.add(new RealmString(string));
-            }
-        }
-        return strings;
+    public List<String> getTags() {
+        return tags;
     }
 
     public void setTags(List<String> tags) {
-        this.tags = wrapStringArray(tags);
-    }
-
-    public RealmList<RealmString> getTags() {
-        return tags;
+        this.tags = tags;
     }
 
     public int getRadius() {
@@ -129,5 +114,10 @@ public class RealmPlace2 extends RealmObject {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public String toString(){
+        return SuperUtil.getObjectPrint(this, Place.class);
     }
 }

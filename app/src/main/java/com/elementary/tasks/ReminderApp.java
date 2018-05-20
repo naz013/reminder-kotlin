@@ -1,12 +1,14 @@
 package com.elementary.tasks;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
+import com.elementary.tasks.core.di.AppComponent;
+import com.elementary.tasks.core.di.AppModule;
+import com.elementary.tasks.core.di.DaggerAppComponent;
+import com.elementary.tasks.core.di.DbModule;
 import com.elementary.tasks.core.services.EventJobService;
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.evernote.android.job.JobManager;
@@ -14,12 +16,6 @@ import com.evernote.android.job.JobManager;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 import io.fabric.sdk.android.Fabric;
-import io.realm.DynamicRealm;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmObjectSchema;
-import io.realm.RealmSchema;
 import timber.log.Timber;
 
 /**
@@ -39,12 +35,7 @@ import timber.log.Timber;
  */
 public class ReminderApp extends MultiDexApplication {
 
-    private static final String TAG = "ReminderApp";
-
-    private static final String NAME_DB = "reminder_db";
-    private static final String NAME_DB_PRO = "reminder_db_pro";
-
-    private static final long DB_VERSION = 5;
+    private static AppComponent appComponent;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -55,52 +46,19 @@ public class ReminderApp extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .dbModule(new DbModule())
+                .build();
+
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
         Notifier.createChannels(this);
         Fabric.with(this, new Crashlytics(), new Answers());
         Prefs.getInstance(this);
-        Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .schemaVersion(DB_VERSION)
-                .name(BuildConfig.IS_PRO ? NAME_DB_PRO : NAME_DB)
-                .migration(new Migration())
-                .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
         JobManager.create(this).addJobCreator(tag -> new EventJobService());
     }
 
-    private static class Migration implements RealmMigration {
-        @Override
-        public void migrate(@NonNull DynamicRealm realm, long oldVersion, long newVersion) {
-            LogUtil.d(TAG, "migrate: " + oldVersion + ", " + newVersion + ", " + realm.getSchema());
-            RealmSchema schema = realm.getSchema();
-            if (oldVersion == 1) {
-                RealmObjectSchema model = schema.get("RealmReminder");
-                if (model != null) {
-                    model.addField("duration", long.class).transform(obj -> obj.setLong("duration", 0));
-                    model.addField("monthOfYear", int.class).transform(obj -> obj.setLong("monthOfYear", 0));
-                    model.addField("remindBefore", long.class).transform(obj -> obj.setLong("remindBefore", 0));
-                    model.addField("windowType", int.class).transform(obj -> obj.setInt("windowType", 0));
-                }
-            } else if (oldVersion == 2) {
-                RealmObjectSchema model = schema.get("RealmReminder");
-                if (model != null) {
-                    model.addField("monthOfYear", int.class).transform(obj -> obj.setLong("monthOfYear", 0));
-                    model.addField("remindBefore", long.class).transform(obj -> obj.setLong("remindBefore", 0));
-                    model.addField("windowType", int.class).transform(obj -> obj.setInt("windowType", 0));
-                }
-            } else if (oldVersion == 3) {
-                RealmObjectSchema model = schema.get("RealmReminder");
-                if (model != null) {
-                    model.addField("remindBefore", long.class).transform(obj -> obj.setLong("remindBefore", 0));
-                    model.addField("windowType", int.class).transform(obj -> obj.setInt("windowType", 0));
-                }
-            } else if (oldVersion == 4) {
-                RealmObjectSchema model = schema.get("RealmReminder");
-                if (model != null) {
-                    model.addField("windowType", int.class).transform(obj -> obj.setInt("windowType", 0));
-                }
-            }
-        }
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
 }

@@ -1,11 +1,14 @@
-package com.elementary.tasks.reminder.models;
+package com.elementary.tasks.core.di;
 
-import com.google.gson.annotations.SerializedName;
+import android.app.Application;
 
-import io.realm.RealmObject;
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +22,18 @@ import io.realm.RealmObject;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Module
+public class AppModule {
 
-public class RealmString extends RealmObject {
+    Application mApplication;
 
-    @SerializedName("string")
-    private String string;
-
-    public RealmString() {}
-
-    public RealmString(String string) {
-        this.string = string;
+    public AppModule(Application application) {
+        mApplication = application;
     }
 
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
+    @Provides
+    @Singleton
+    Application providesApplication() {
+        return mApplication;
     }
 }

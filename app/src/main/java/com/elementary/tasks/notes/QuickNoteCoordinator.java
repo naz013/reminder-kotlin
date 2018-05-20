@@ -24,9 +24,9 @@ import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.databinding.NoteInputCardBinding;
 import com.elementary.tasks.databinding.NoteReminderCardBinding;
 import com.elementary.tasks.databinding.NoteStatusCardBinding;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -169,7 +169,7 @@ public class QuickNoteCoordinator {
         reminder.setActive(true);
         reminder.setRemoved(false);
         reminder.setSummary(item.getSummary());
-        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        Group def = RealmDb.getInstance().getDefaultGroup();
         if (def != null) {
             reminder.setGroupUuId(def.getUuId());
         }

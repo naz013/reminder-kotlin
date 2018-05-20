@@ -44,18 +44,6 @@ public class TaskListItem {
     public TaskListItem() {
     }
 
-    public TaskListItem(RealmTaskList item) {
-        setColor(item.getColor());
-        setTitle(item.getTitle());
-        setListId(item.getListId());
-        seteTag(item.geteTag());
-        setKind(item.getKind());
-        setSelfLink(item.getSelfLink());
-        setUpdated(item.getUpdated());
-        setDef(item.getDef());
-        setSystemDefault(item.getSystemDefault());
-    }
-
     public void update(TaskList taskList) {
         setTitle(taskList.getTitle());
         setListId(taskList.getId());

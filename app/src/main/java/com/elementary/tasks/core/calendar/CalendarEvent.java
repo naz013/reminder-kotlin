@@ -27,13 +27,6 @@ public class CalendarEvent {
     private String event;
     private long eventId;
 
-    public CalendarEvent(RealmCalendarEvent item) {
-        this.uuId = item.getUuId();
-        this.reminderId = item.getReminderId();
-        this.event = item.getEvent();
-        this.eventId = item.getEventId();
-    }
-
     public CalendarEvent(String reminderId, String event, long eventId) {
         this.uuId = UUID.randomUUID().toString();
         this.reminderId = reminderId;

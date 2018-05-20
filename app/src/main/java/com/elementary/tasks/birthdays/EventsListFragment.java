@@ -21,7 +21,7 @@ import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.ShoppingPreviewActivity;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;

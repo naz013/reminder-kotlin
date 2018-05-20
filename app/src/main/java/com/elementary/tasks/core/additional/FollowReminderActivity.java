@@ -33,8 +33,8 @@ import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityFollowLayoutBinding;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -309,7 +309,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         setUpTimes();
         long due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0);
         Reminder reminder = new Reminder();
-        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        Group def = RealmDb.getInstance().getDefaultGroup();
         if (def != null) {
             reminder.setGroupUuId(def.getUuId());
         }

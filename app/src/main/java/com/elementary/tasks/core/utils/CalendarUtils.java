@@ -16,7 +16,7 @@ import android.text.TextUtils;
 import com.backdoor.engine.ObjectUtil;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.calendar.CalendarEvent;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;

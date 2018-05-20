@@ -1,11 +1,16 @@
-package com.elementary.tasks.reminder.models;
+package com.elementary.tasks.core.di;
 
-import com.google.gson.annotations.SerializedName;
+import android.app.Application;
 
-import io.realm.RealmObject;
+import com.elementary.tasks.core.utils.ThemeUtil;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +24,12 @@ import io.realm.RealmObject;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Module
+public class ThemeModule {
 
-public class RealmInteger extends RealmObject {
-
-    @SerializedName("integer")
-    private int integer;
-
-    public RealmInteger() {}
-
-    public RealmInteger(int integer) {
-        this.integer = integer;
-    }
-
-    public int getInteger() {
-        return integer;
-    }
-
-    public void setInteger(int integer) {
-        this.integer = integer;
+    @Provides
+    @Singleton
+    ThemeUtil providesThemeUtil(Application application) {
+        return ThemeUtil.getInstance(application);
     }
 }

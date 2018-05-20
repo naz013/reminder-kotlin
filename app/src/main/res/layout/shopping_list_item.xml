@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.reminder.models.Reminder" />
+            type="com.elementary.tasks.core.data.models.Reminder" />
 
         <variable
             name="click"
@@ -48,8 +48,7 @@
             android:onClick="@{click::onClick}"
             app:cardCornerRadius="3dp"
             app:cardUseCompatPadding="true"
-            app:contentPadding="1dp"
-            data:loadCard='@{item.groupUuId}'>
+            app:contentPadding="1dp">
 
             <LinearLayout
                 android:id="@+id/subBackground"
@@ -120,8 +119,7 @@
                     android:orientation="vertical"
                     android:overScrollMode="never"
                     android:scrollbars="none"
-                    android:visibility="visible"
-                    data:loadItems='@{item.shoppings}' />
+                    android:visibility="visible" />
 
                 <com.elementary.tasks.core.views.roboto.RoboTextView
                     android:id="@+id/shoppingTime"
@@ -130,8 +128,7 @@
                     android:layout_marginTop="5dp"
                     android:drawablePadding="@dimen/reminder_preview_margin_top"
                     android:textSize="18sp"
-                    app:font_style="roboto_medium"
-                    data:loadShoppingDate='@{item.eventTime}' />
+                    app:font_style="roboto_medium" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

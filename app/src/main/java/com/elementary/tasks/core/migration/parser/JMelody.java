@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.migration.parser;
 
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -20,13 +20,13 @@ import com.elementary.tasks.databinding.ShoppingListItemBinding;
 import com.elementary.tasks.databinding.ShowReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.groups.GroupHolder;
-import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.notes.NoteHolder;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.ReminderHolder;
 import com.elementary.tasks.reminder.ShoppingHolder;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,7 +115,7 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else if (holder instanceof NoteHolder) {
             ((NoteHolder) holder).setData((NoteItem) mData.get(position).getObject());
         } else if (holder instanceof GroupHolder) {
-            ((GroupHolder) holder).setData((GroupItem) mData.get(position).getObject());
+            ((GroupHolder) holder).setData((Group) mData.get(position).getObject());
         } else if (holder instanceof BirthdayHolder) {
             ((BirthdayHolder) holder).setData((BirthdayItem) mData.get(position).getObject());
             ((BirthdayHolder) holder).setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()));
@@ -219,11 +219,11 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void addMoreItemsToList(int position) {
         Reply reply = mData.get(position);
         Container container = (Container) reply.getObject();
-        if (container.getType() instanceof GroupItem) {
+        if (container.getType() instanceof Group) {
             mData.remove(position);
             notifyItemRemoved(position);
             //noinspection unchecked
-            for (GroupItem item : ((Container<GroupItem>) container).getList()) {
+            for (Group item : ((Container<Group>) container).getList()) {
                 mData.add(0, new Reply(Reply.GROUP, item));
                 notifyItemInserted(0);
             }
