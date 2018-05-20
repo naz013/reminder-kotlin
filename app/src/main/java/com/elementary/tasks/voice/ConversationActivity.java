@@ -34,10 +34,10 @@ import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -335,7 +335,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showGroups() {
-        Container<GroupItem> items = new Container<>(DataProvider.getGroups());
+        Container<Group> items = new Container<>(DataProvider.getGroups());
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_groups_found));
         } else {
@@ -394,7 +394,7 @@ public class ConversationActivity extends ThemedActivity {
         stopView();
         if (recognize == null) return;
         addResponse(getLocalized(R.string.group_created));
-        GroupItem item = recognize.createGroup(model);
+        Group item = recognize.createGroup(model);
         addObjectResponse(new Reply(Reply.GROUP, item));
         new Handler().postDelayed(() -> askGroupAction(item), 1000);
     }
@@ -424,13 +424,13 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void askGroupAction(@NonNull GroupItem groupItem) {
+    private void askGroupAction(@NonNull Group group) {
         addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 if (recognize == null) return;
-                recognize.saveGroup(groupItem, false);
+                recognize.saveGroup(group, false);
                 addResponse(getLocalized(R.string.group_saved));
                 mAskAction = null;
             }

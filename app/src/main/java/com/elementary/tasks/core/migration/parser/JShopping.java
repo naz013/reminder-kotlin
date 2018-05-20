@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.migration.parser;
 
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.reminder.models.ShopItem;
+import com.elementary.tasks.core.data.models.ShopItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;

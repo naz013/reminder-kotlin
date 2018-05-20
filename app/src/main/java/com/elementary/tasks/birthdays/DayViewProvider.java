@@ -12,8 +12,8 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -177,9 +177,9 @@ public class DayViewProvider {
     }
 
     private void loadReminders() {
-        List<GroupItem> allGroups = RealmDb.getInstance().getAllGroups();
+        List<Group> allGroups = RealmDb.getInstance().getAllGroups();
         Map<String, Integer> map = new HashMap<>();
-        for (GroupItem item : allGroups) {
+        for (Group item : allGroups) {
             map.put(item.getUuId(), item.getColor());
         }
         List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();

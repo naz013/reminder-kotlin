@@ -37,15 +37,6 @@ public class PlaceItem {
     public PlaceItem() {
     }
 
-    public PlaceItem(RealmPlace item) {
-        this.icon = item.getIcon();
-        this.key = item.getKey();
-        this.lat = item.getLat();
-        this.lng = item.getLng();
-        this.radius = item.getRadius();
-        this.title = item.getTitle();
-    }
-
     public PlaceItem(String title, String key, double lat, double lng, int icon, int radius) {
         this.title = title;
         this.key = key;

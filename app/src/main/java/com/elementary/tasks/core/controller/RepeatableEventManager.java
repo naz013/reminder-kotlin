@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.google_tasks.TaskAsync;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich

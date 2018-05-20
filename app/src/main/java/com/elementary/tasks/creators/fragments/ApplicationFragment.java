@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.databinding.FragmentReminderApplicationBinding;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich

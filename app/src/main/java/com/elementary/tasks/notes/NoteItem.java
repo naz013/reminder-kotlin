@@ -1,7 +1,5 @@
 package com.elementary.tasks.notes;
 
-import androidx.annotation.NonNull;
-
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import androidx.annotation.NonNull;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,19 +41,6 @@ public class NoteItem {
     private List<NoteImage> images = new ArrayList<>();
     @SerializedName("uniqueId")
     private int uniqueId;
-
-    public NoteItem(RealmNote item) {
-        setColor(item.getColor());
-        setDate(item.getDate());
-        this.images = new ArrayList<>();
-        for (RealmImage image : item.getImages()) {
-            images.add(new NoteImage(image));
-        }
-        setKey(item.getKey());
-        setStyle(item.getStyle());
-        setSummary(item.getSummary());
-        setUniqueId(item.getUniqueId());
-    }
 
     public NoteItem() {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);

@@ -19,8 +19,8 @@ import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.FragmentReminderShopBinding;
 import com.elementary.tasks.reminder.ShopListRecyclerAdapter;
-import com.elementary.tasks.reminder.models.Reminder;
-import com.elementary.tasks.reminder.models.ShopItem;
+import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.ShopItem;
 
 import java.util.ArrayList;
 

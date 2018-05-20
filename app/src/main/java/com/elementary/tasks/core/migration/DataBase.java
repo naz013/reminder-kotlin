@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 
 import java.util.ArrayList;
@@ -202,9 +202,9 @@ class DataBase {
         return db.delete(MESSAGES_TABLE_NAME, Constants.COLUMN_ID + "=" + rowId, null) > 0;
     }
 
-    List<GroupItem> getAllGroups() throws SQLException {
+    List<Group> getAllGroups() throws SQLException {
         openGuard();
-        List<GroupItem> list = new ArrayList<>();
+        List<Group> list = new ArrayList<>();
         Cursor c = db.query(CATEGORIES_TABLE_NAME, null, null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
@@ -215,12 +215,12 @@ class DataBase {
         return list;
     }
 
-    private GroupItem groupFromCursor(Cursor c) {
+    private Group groupFromCursor(Cursor c) {
         String text = c.getString(c.getColumnIndex(Constants.COLUMN_TEXT));
         int color = c.getInt(c.getColumnIndex(Constants.COLUMN_COLOR));
         long id = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
         deleteGroup(id);
-        return new GroupItem(text, color);
+        return new Group(text, color);
     }
 
     private boolean deleteGroup(long rowId) {

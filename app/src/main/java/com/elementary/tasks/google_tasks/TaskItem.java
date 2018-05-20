@@ -59,25 +59,6 @@ public class TaskItem {
     public TaskItem() {
     }
 
-    public TaskItem(RealmTask item) {
-        this.listId = item.getListId();
-        this.selfLink = item.getSelfLink();
-        this.kind = item.getKind();
-        this.eTag = item.geteTag();
-        this.title = item.getTitle();
-        this.taskId = item.getTaskId();
-        this.completeDate = item.getCompleteDate();
-        this.del = item.getDel();
-        this.hidden = item.getHidden();
-        this.dueDate = item.getDueDate();
-        this.notes = item.getNotes();
-        this.parent = item.getParent();
-        this.position = item.getPosition();
-        this.updateDate = item.getUpdateDate();
-        this.status = item.getStatus();
-        this.uuId = item.getUuId();
-    }
-
     public TaskItem(TaskItem item) {
         this.listId = item.getListId();
         this.selfLink = item.getSelfLink();

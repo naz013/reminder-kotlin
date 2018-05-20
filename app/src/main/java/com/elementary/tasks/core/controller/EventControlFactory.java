@@ -4,7 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich

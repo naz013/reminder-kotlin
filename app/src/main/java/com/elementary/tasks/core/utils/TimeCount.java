@@ -8,7 +8,7 @@ import androidx.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 import java.util.Date;

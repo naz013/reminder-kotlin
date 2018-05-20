@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -33,18 +34,18 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupHolder> {
 
-    private List<GroupItem> mDataList;
+    private List<Group> mDataList;
     private SimpleListener mEventListener;
     private Context mContext;
 
-    public GroupsRecyclerAdapter(Context context, List<GroupItem> list, SimpleListener listener) {
+    public GroupsRecyclerAdapter(Context context, List<Group> list, SimpleListener listener) {
         this.mDataList = new ArrayList<>(list);
         this.mContext = context;
         this.mEventListener = listener;
     }
 
     public void deleteItem(int position) {
-        GroupItem item = mDataList.remove(position);
+        Group item = mDataList.remove(position);
         RealmDb.getInstance().deleteGroup(item);
         new DeleteGroupFilesAsync(mContext).execute(item.getUuId());
         notifyItemRemoved(position);
@@ -58,11 +59,11 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupHolder> {
 
     @Override
     public void onBindViewHolder(final GroupHolder holder, final int position) {
-        GroupItem item = mDataList.get(position);
+        Group item = mDataList.get(position);
         holder.setData(item);
     }
 
-    public GroupItem getItem(int position) {
+    public Group getItem(int position) {
         return mDataList.get(position);
     }
 

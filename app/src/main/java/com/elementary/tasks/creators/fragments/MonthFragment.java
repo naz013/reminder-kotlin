@@ -30,7 +30,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.FragmentReminderMonthBinding;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 import java.util.Date;

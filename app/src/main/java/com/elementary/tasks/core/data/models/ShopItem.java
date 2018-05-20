@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.models;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -39,14 +39,6 @@ public class ShopItem {
         this.summary = summary;
         this.createTime = TimeUtil.getGmtDateTime();
         this.uuId = UUID.randomUUID().toString();
-    }
-
-    public ShopItem(RealmShopItem item) {
-        this.summary = item.getSummary();
-        this.isDeleted = item.isVisibility();
-        this.checked = item.isChecked();
-        this.uuId = item.getUuId();
-        this.createTime = item.getCreateTime();
     }
 
     public ShopItem(String summary, boolean isDeleted, boolean checked, String uuId, String createTime) {

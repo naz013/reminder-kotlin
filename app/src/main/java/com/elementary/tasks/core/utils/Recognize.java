@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -21,18 +19,22 @@ import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
-import com.elementary.tasks.groups.GroupItem;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.reminder.AddReminderActivity;
-import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -140,12 +142,12 @@ public class Recognize {
     }
 
     @NonNull
-    public GroupItem createGroup(@NonNull Model model) {
-        return new GroupItem(model.getSummary(), new Random().nextInt(16));
+    public Group createGroup(@NonNull Model model) {
+        return new Group(model.getSummary(), new Random().nextInt(16));
     }
 
 
-    public void saveGroup(@NonNull GroupItem model, boolean showToast) {
+    public void saveGroup(@NonNull Group model, boolean showToast) {
         RealmDb.getInstance().saveObject(model);
         if (showToast) {
             Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
@@ -162,25 +164,20 @@ public class Recognize {
         }
     }
 
-    private void deleteReminder(@NonNull Reminder reminder) {
-        EventControl control = EventControlFactory.getController(mContext, reminder);
-        control.stop();
-        RealmDb.getInstance().deleteReminder(reminder.getUuId());
-        CalendarUtils.deleteEvents(mContext, reminder.getUuId());
-    }
-
     public void emptyTrash(boolean showToast, @Nullable ThreadCallback callback) {
-        DataLoader.loadArchivedReminder(result -> {
-            for (Reminder reminder : result) {
-                deleteReminder(reminder);
-            }
-            if (showToast) {
-                Toast.makeText(mContext, R.string.trash_cleared, Toast.LENGTH_SHORT).show();
-            }
-            if (callback != null) {
-                callback.onDone();
-            }
-        });
+        AppDb appDb = AppDb.getAppDatabase(mContext);
+        List<Reminder> archived = appDb.reminderDao().getAll(false, false);
+        for (Reminder reminder : archived) {
+            EventControlFactory.getController(mContext, reminder).stop();
+            appDb.reminderDao().delete(reminder);
+            CalendarUtils.deleteEvents(mContext, reminder.getUuId());
+        }
+        if (showToast) {
+            Toast.makeText(mContext, R.string.trash_cleared, Toast.LENGTH_SHORT).show();
+        }
+        if (callback != null) {
+            callback.onDone();
+        }
     }
 
     private void saveReminder(@NonNull Model model, boolean widget) {
@@ -221,7 +218,7 @@ public class Recognize {
         } else if (action == Action.MAIL) {
             typeT = Reminder.BY_DATE_EMAIL;
         }
-        GroupItem item = RealmDb.getInstance().getDefaultGroup();
+        Group item = RealmDb.getInstance().getDefaultGroup();
         String categoryId = "";
         if (item != null) {
             categoryId = item.getUuId();
@@ -275,7 +272,7 @@ public class Recognize {
         mReminder.setUseGlobal(true);
         mReminder.setNoteId(key);
         mReminder.setSummary(summary);
-        GroupItem def = RealmDb.getInstance().getDefaultGroup();
+        Group def = RealmDb.getInstance().getDefaultGroup();
         if (def != null) {
             mReminder.setGroupUuId(def.getUuId());
         }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -45,7 +46,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
 
     private ActivityCreateGroupBinding binding;
     private int color = 0;
-    private GroupItem mItem;
+    private Group mItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,7 @@ public class CreateGroupActivity extends ThemedActivity implements ColorPickerVi
             return;
         }
         if (mItem == null) {
-            mItem = new GroupItem(text, UUID.randomUUID().toString(), color, TimeUtil.getGmtDateTime());
+            mItem = new Group(text, UUID.randomUUID().toString(), color, TimeUtil.getGmtDateTime());
         } else {
             mItem.setColor(color);
             mItem.setDateTime(TimeUtil.getGmtDateTime());

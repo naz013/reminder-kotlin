@@ -64,11 +64,11 @@ import com.elementary.tasks.creators.fragments.YearFragment;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
 import com.elementary.tasks.databinding.DialogSelectExtraBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.groups.Position;
 import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.UpdateFilesAsync;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.commons.lang3.StringUtils;
@@ -411,15 +411,15 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         binding.groupButton.setOnClickListener(v -> changeGroup());
         binding.melodyButton.setOnClickListener(view -> showCurrentMelody());
         binding.attachmentButton.setOnClickListener(view -> showAttachmentSnack());
-        GroupItem groupItem = RealmDb.getInstance().getDefaultGroup();
-        if (groupItem != null) {
-            binding.groupButton.setText(groupItem.getTitle());
-            groupId = groupItem.getUuId();
+        Group group = RealmDb.getInstance().getDefaultGroup();
+        if (group != null) {
+            binding.groupButton.setText(group.getTitle());
+            groupId = group.getUuId();
         }
     }
 
     private void changeGroup() {
-        List<GroupItem> list = new ArrayList<>();
+        List<Group> list = new ArrayList<>();
         Position position = new Position();
         final List<String> categories = RealmDb.getInstance().getAllGroupsNames(list, groupId, position);
         AlertDialog.Builder builder = Dialogues.getDialog(this);
@@ -433,7 +433,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         alert.show();
     }
 
-    private void showGroup(GroupItem item) {
+    private void showGroup(Group item) {
         if (item == null) return;
         binding.groupButton.setText(item.getTitle());
         groupId = item.getUuId();

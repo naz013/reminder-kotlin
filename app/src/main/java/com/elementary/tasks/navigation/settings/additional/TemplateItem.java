@@ -1,10 +1,10 @@
 package com.elementary.tasks.navigation.settings.additional;
 
-import androidx.annotation.Nullable;
-
 import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.util.UUID;
+
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,13 +28,6 @@ public class TemplateItem {
     private String key;
     private String date;
     private boolean selected;
-
-    public TemplateItem(RealmTemplate item) {
-        this.title = item.getTitle();
-        this.date = item.getDate();
-        this.key = item.getKey();
-        this.selected = item.isSelected();
-    }
 
     public TemplateItem(@Nullable String title, String date) {
         this.title = title;

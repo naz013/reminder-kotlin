@@ -27,8 +27,8 @@ import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.ActivityAddReminderBinding;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
@@ -163,7 +163,7 @@ public class AddReminderActivity extends ThemedActivity {
         reminder.setExportToCalendar(binding.exportToCalendar.isChecked());
         reminder.setExportToTasks(binding.exportToTasks.isChecked());
         reminder.setSummary(summary);
-        GroupItem item = RealmDb.getInstance().getDefaultGroup();
+        Group item = RealmDb.getInstance().getDefaultGroup();
         if (item != null) {
             reminder.setGroupUuId(item.getUuId());
         }

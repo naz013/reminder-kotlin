@@ -25,7 +25,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.core.views.DateTimeView;
 import com.elementary.tasks.databinding.FragmentReminderYearBinding;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 

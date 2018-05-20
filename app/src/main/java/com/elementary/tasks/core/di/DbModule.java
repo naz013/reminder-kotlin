@@ -1,11 +1,16 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.core.di;
 
-import com.google.gson.annotations.SerializedName;
+import android.app.Application;
 
-import io.realm.RealmObject;
+import com.elementary.tasks.core.data.AppDb;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +24,12 @@ import io.realm.RealmObject;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Module
+public class DbModule {
 
-public class RealmImage extends RealmObject {
-
-    @SerializedName("image")
-    private byte[] image;
-
-    public RealmImage() {}
-
-    public RealmImage(NoteImage image) {
-        this.image = image.getImage();
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = new byte[image.length];
-        System.arraycopy(image, 0, this.image, 0, this.image.length);
+    @Provides
+    @Singleton
+    AppDb providesAppDb(Application application) {
+        return AppDb.getAppDatabase(application);
     }
 }

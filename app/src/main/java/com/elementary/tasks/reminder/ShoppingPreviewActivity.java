@@ -24,9 +24,9 @@ import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityShoppingPreviewBinding;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
-import com.elementary.tasks.reminder.models.ShopItem;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.ShopItem;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -90,7 +90,7 @@ public class ShoppingPreviewActivity extends ThemedActivity {
             binding.type.setText(ReminderUtils.getTypeString(this, mReminder.getType()));
             binding.itemPhoto.setImageResource(getThemeUtil().getReminderIllustration(mReminder.getType()));
             int catColor = 0;
-            GroupItem group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
+            Group group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
             if (group != null) {
                 catColor = group.getColor();
             }

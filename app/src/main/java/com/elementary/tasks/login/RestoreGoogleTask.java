@@ -12,8 +12,8 @@ import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.ContextHolder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.io.IOException;
 import java.util.List;
@@ -81,7 +81,7 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
-            List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+            List<Group> list = RealmDb.getInstance().getAllGroups();
             if (list.size() == 0) {
                 String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
                 List<Reminder> items = RealmDb.getInstance().getAllReminders();

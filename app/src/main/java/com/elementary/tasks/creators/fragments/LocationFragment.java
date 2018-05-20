@@ -29,8 +29,8 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.ActionView;
 import com.elementary.tasks.databinding.FragmentReminderLocationBinding;
-import com.elementary.tasks.reminder.models.Place;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;

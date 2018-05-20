@@ -11,7 +11,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 

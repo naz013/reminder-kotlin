@@ -4,45 +4,39 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.interfaces.RealmCallback;
-import com.elementary.tasks.core.utils.CalendarUtils;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.DataLoader;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.view_models.ArchiveRemindersViewModel;
 import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentTrashBinding;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.DeleteFilesAsync;
 import com.elementary.tasks.reminder.RecyclerListener;
 import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
 import com.elementary.tasks.reminder.filters.FilterCallback;
 import com.elementary.tasks.reminder.filters.ReminderFilterController;
-import com.elementary.tasks.reminder.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -62,11 +56,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ArchiveFragment extends BaseNavigationFragment implements FilterCallback<Reminder> {
 
     private FragmentTrashBinding binding;
-    private RecyclerView mRecyclerView;
+    private ArchiveRemindersViewModel viewModel;
 
-    private RemindersRecyclerAdapter mAdapter;
+    private RemindersRecyclerAdapter mAdapter = new RemindersRecyclerAdapter();
 
     private List<String> mGroupsIds = new ArrayList<>();
+    private List<FilterView.Filter> filters = new ArrayList<>();
     @NonNull
     private ReminderFilterController filterController = new ReminderFilterController(this);
 
@@ -116,7 +111,6 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
         public void onItemLongClicked(int position, View view) {
         }
     };
-    private RealmCallback<List<Reminder>> mLoadCallback = this::showData;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -153,7 +147,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete_all:
-                deleteAll();
+                viewModel.deleteAll(mAdapter.getData());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -168,6 +162,17 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(ArchiveRemindersViewModel.class);
+        viewModel.events.observe(this, reminders -> {
+            if (reminders != null) {
+                showData(reminders);
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (getCallback() != null) {
@@ -175,23 +180,16 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
             getCallback().onFragmentSelect(this);
             getCallback().setClick(null);
         }
-        loadData();
     }
 
     private void editReminder(String uuId) {
         startActivity(new Intent(getContext(), CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
     }
 
-    private void deleteAll() {
-        List<String> uids = RealmDb.getInstance().clearReminderTrash();
-        new DeleteFilesAsync(getContext()).execute(uids.toArray(new String[uids.size()]));
-        loadData();
-        Toast.makeText(getContext(), getString(R.string.trash_cleared), Toast.LENGTH_SHORT).show();
-        reloadView();
-    }
-
     private void showData(List<Reminder> result) {
         filterController.setOriginal(result);
+        reloadView();
+        refreshFilters();
     }
 
     private void showActionDialog(int position, View view) {
@@ -203,47 +201,31 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
                 editReminder(item1.getUuId());
             }
             if (item == 1) {
-                deleteReminder(item1);
-                new DeleteFilesAsync(getContext()).execute(item1.getUuId());
-                mAdapter.removeItem(position);
-                Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
-                reloadView();
+                viewModel.deleteReminder(item1);
             }
         }, items);
     }
 
-    private void deleteReminder(Reminder reminder) {
-        RealmDb.getInstance().deleteReminder(reminder.getUuId());
-        CalendarUtils.deleteEvents(getContext(), reminder.getUuId());
-        filterController.remove(reminder);
-        refreshFilters();
-    }
-
     private void refreshFilters() {
+        filters.clear();
+        if (viewModel.groups.getValue() != null) {
+            addGroupFilter(viewModel.groups.getValue());
+            addTypeFilter(filters);
+        }
         if (getCallback().isFiltersVisible()) {
             showRemindersFilter();
         }
     }
 
     private void initList() {
-        mRecyclerView = binding.recyclerView;
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RemindersRecyclerAdapter(getContext());
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new RemindersRecyclerAdapter();
         mAdapter.setEventListener(mEventListener);
         mAdapter.setEditable(false);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-    private void loadData() {
-        DataLoader.loadArchivedReminder(mLoadCallback);
+        binding.recyclerView.setAdapter(mAdapter);
     }
 
     private void showRemindersFilter() {
-        List<FilterView.Filter> filters = new ArrayList<>();
-        addGroupFilter(filters);
-        addTypeFilter(filters);
         getCallback().addFilters(filters, true);
     }
 
@@ -277,7 +259,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
         }
     }
 
-    private void addGroupFilter(List<FilterView.Filter> filters) {
+    private void addGroupFilter(List<Group> groups) {
         mGroupsIds = new ArrayList<>();
         FilterView.Filter filter = new FilterView.Filter(new FilterView.FilterElementClick() {
             @Override
@@ -297,10 +279,9 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
             }
         });
         filter.add(new FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true));
-        List<GroupItem> groups = RealmDb.getInstance().getAllGroups();
         ThemeUtil util = ThemeUtil.getInstance(getContext());
         for (int i = 0; i < groups.size(); i++) {
-            GroupItem item = groups.get(i);
+            Group item = groups.get(i);
             filter.add(new FilterView.FilterElement(util.getCategoryIndicator(item.getColor()), item.getTitle(), i + 1));
             mGroupsIds.add(item.getUuId());
         }
@@ -309,10 +290,10 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
 
     private void reloadView() {
         if (mAdapter != null && mAdapter.getItemCount() > 0) {
-            mRecyclerView.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {
-            mRecyclerView.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.GONE);
             binding.emptyItem.setVisibility(View.VISIBLE);
         }
     }
@@ -320,7 +301,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
     @Override
     public void onChanged(@NonNull List<Reminder> result) {
         mAdapter.setData(result);
-        mRecyclerView.smoothScrollToPosition(0);
+        binding.recyclerView.smoothScrollToPosition(0);
         reloadView();
     }
 }

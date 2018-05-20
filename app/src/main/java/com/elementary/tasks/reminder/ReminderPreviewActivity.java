@@ -41,11 +41,11 @@ import com.elementary.tasks.databinding.NoteListItemBinding;
 import com.elementary.tasks.google_tasks.TaskActivity;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
-import com.elementary.tasks.reminder.models.Place;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -226,7 +226,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
             binding.melody.setText(melodyStr);
 
             int catColor = 0;
-            GroupItem group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
+            Group group = RealmDb.getInstance().getGroup(mReminder.getGroupUuId());
             if (group != null) {
                 binding.group.setText(group.getTitle());
                 catColor = group.getColor();

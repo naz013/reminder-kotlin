@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 
 repositories {
@@ -97,67 +96,76 @@ android {
 dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha1'
 
-    implementation('com.google.apis:google-api-services-calendar:v3-rev318-1.23.0') {
+    api('com.google.apis:google-api-services-calendar:v3-rev318-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+    api('com.google.api-client:google-api-client-android:1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.apis:google-api-services-drive:v3-rev117-1.23.0') {
+    api('com.google.apis:google-api-services-drive:v3-rev117-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.apis:google-api-services-tasks:v1-rev52-1.23.0') {
+    api('com.google.apis:google-api-services-tasks:v1-rev52-1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.google.http-client:google-http-client-gson:1.23.0') {
+    api('com.google.http-client:google-http-client-gson:1.23.0') {
         exclude module: 'httpclient'
     }
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    api('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true
     }
-    implementation('com.crashlytics.sdk.android:answers:1.4.1@aar') {
+    api('com.crashlytics.sdk.android:answers:1.4.1@aar') {
         transitive = true
     }
-    implementation project(':voiceengine')
+    api project(':voiceengine')
 
-    implementation 'com.google.android.material:material:1.0.0-alpha1'
+    api 'com.google.dagger:dagger-android:2.11'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 
-    implementation 'androidx.core:core:1.0.0-alpha1'
-    implementation 'androidx.collection:collection:1.0.0-alpha1'
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    implementation 'androidx.legacy:legacy-support-core-utils:1.0.0-alpha1'
-    implementation 'androidx.exifinterface:exifinterface:1.0.0-alpha1'
-    implementation 'androidx.annotation:annotation:1.0.0-alpha1'
+    api 'com.google.android.material:material:1.0.0-alpha1'
 
-    implementation 'androidx.multidex:multidex:2.0.0'
-    implementation 'androidx.multidex:multidex-instrumentation:2.0.0'
+    api 'androidx.core:core:1.0.0-alpha1'
+    api 'androidx.collection:collection:1.0.0-alpha1'
+    api 'androidx.appcompat:appcompat:1.0.0-alpha1'
+    api 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
+    api 'androidx.legacy:legacy-support-core-utils:1.0.0-alpha1'
+    api 'androidx.exifinterface:exifinterface:1.0.0-alpha1'
+    api 'androidx.annotation:annotation:1.0.0-alpha1'
 
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.0'
+    api 'androidx.multidex:multidex:2.0.0'
+    api 'androidx.multidex:multidex-instrumentation:2.0.0'
 
-    implementation 'com.google.android.gms:play-services-auth-base:15.0.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
-    implementation 'com.google.firebase:firebase-core:15.0.2'
-    implementation('com.google.firebase:firebase-config:15.0.0') {
+    api 'androidx.constraintlayout:constraintlayout:1.1.0'
+
+    api 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
+    api 'androidx.room:room-runtime:2.0.0-alpha1'
+    api 'androidx.lifecycle:lifecycle-common-java8:2.0.0-alpha1'
+    annotationProcessor 'androidx.room:room-compiler:2.0.0-alpha1'
+
+    api 'com.google.android.gms:play-services-auth-base:15.0.1'
+    api 'com.google.android.gms:play-services-location:15.0.1'
+    api 'com.google.android.gms:play-services-maps:15.0.1'
+    api 'com.google.android.gms:play-services-gcm:15.0.1'
+    api 'com.google.firebase:firebase-core:15.0.2'
+    api('com.google.firebase:firebase-config:15.0.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.darwinsys:hirondelle-date4j:1.5.1'
-    implementation 'com.flaviofaria:kenburnsview:1.0.7'
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-    implementation 'com.dropbox.core:dropbox-core-sdk:3.0.7'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
-    implementation 'com.jakewharton.timber:timber:4.7.0'
-    implementation 'org.dmfs:lib-recur:0.10.1'
-    implementation 'org.apache.commons:commons-lang3:3.7'
+    api 'de.hdodenhof:circleimageview:2.2.0'
+    api 'com.squareup.retrofit2:retrofit:2.4.0'
+    api 'com.squareup.retrofit2:converter-gson:2.4.0'
+    api 'org.greenrobot:eventbus:3.1.1'
+    api 'com.google.code.gson:gson:2.8.2'
+    api 'com.darwinsys:hirondelle-date4j:1.5.1'
+    api 'com.flaviofaria:kenburnsview:1.0.7'
+    api 'com.google.code.findbugs:jsr305:3.0.2'
+    api 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    api 'com.dropbox.core:dropbox-core-sdk:3.0.7'
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    api 'io.reactivex.rxjava2:rxjava:2.1.13'
+    api 'com.jakewharton.timber:timber:4.7.0'
+    api 'org.dmfs:lib-recur:0.10.1'
+    api 'org.apache.commons:commons-lang3:3.7'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.16.0'
     androidTestImplementation 'org.testng:testng:6.9.6'

@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.DialogExclusionPickerBinding;
 import com.elementary.tasks.databinding.FragmentTimerBinding;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;

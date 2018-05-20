@@ -3,7 +3,7 @@ package com.elementary.tasks.reminder.filters;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Collections;

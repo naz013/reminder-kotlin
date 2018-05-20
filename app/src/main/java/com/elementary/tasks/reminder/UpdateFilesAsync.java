@@ -7,7 +7,7 @@ import com.elementary.tasks.core.cloud.Dropbox;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2017 Nazar Suhovich

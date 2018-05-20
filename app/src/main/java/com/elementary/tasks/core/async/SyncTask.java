@@ -11,8 +11,8 @@ import com.elementary.tasks.core.utils.IoHelper;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.List;
 
@@ -79,7 +79,7 @@ public class SyncTask extends AsyncTask<Void, String, Boolean> {
         IoHelper ioHelper = new IoHelper(mContext);
         publishProgress(mContext.getString(R.string.syncing_groups));
         ioHelper.restoreGroup(true);
-        List<GroupItem> list = RealmDb.getInstance().getAllGroups();
+        List<Group> list = RealmDb.getInstance().getAllGroups();
         if (list.size() == 0) {
             String defUiID = RealmDb.getInstance().setDefaultGroups(mContext);
             List<Reminder> items = RealmDb.getInstance().getAllReminders();

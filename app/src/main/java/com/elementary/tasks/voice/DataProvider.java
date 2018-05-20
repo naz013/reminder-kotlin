@@ -2,9 +2,9 @@ package com.elementary.tasks.voice;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.groups.GroupItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +30,7 @@ final class DataProvider {
     private DataProvider() {
     }
 
-    static List<GroupItem> getGroups() {
+    static List<Group> getGroups() {
         return RealmDb.getInstance().getAllGroups();
     }
 

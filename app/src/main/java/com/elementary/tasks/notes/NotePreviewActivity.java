@@ -32,7 +32,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.creators.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
-import com.elementary.tasks.reminder.models.Reminder;
+import com.elementary.tasks.core.data.models.Reminder;
 
 import java.io.File;
 import java.util.List;
