@@ -1,9 +1,11 @@
 package com.elementary.tasks.core.data.models;
 
+import com.elementary.tasks.core.data.converters.PlacesTypeConverter;
+import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter;
 import com.elementary.tasks.core.interfaces.RecyclerInterface;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.reminder.create_edit.fragments.ReminderInterface;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.Relation;
+import androidx.room.TypeConverters;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,6 +36,7 @@ import androidx.room.Relation;
  * limitations under the License.
  */
 @Entity
+@TypeConverters({PlacesTypeConverter.class, ShopItemsTypeConverter.class})
 public class Reminder implements RecyclerInterface {
 
     public static final int REMINDER = 0;

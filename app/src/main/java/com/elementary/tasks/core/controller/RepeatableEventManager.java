@@ -1,9 +1,8 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
-
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
@@ -13,7 +12,6 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.google_tasks.TaskAsync;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
-import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,8 +31,8 @@ import com.elementary.tasks.core.data.models.Reminder;
 
 abstract class RepeatableEventManager extends EventManager {
 
-    RepeatableEventManager(Reminder reminder, Context context) {
-        super(reminder, context);
+    RepeatableEventManager(Reminder reminder) {
+        super(reminder);
     }
 
     protected void enableReminder() {

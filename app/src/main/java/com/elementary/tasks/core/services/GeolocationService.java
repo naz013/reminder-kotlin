@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
-import com.elementary.tasks.reminder.ReminderDialogActivity;
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
 

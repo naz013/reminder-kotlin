@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 
 /**
  * Copyright 2015 Nazar Suhovich

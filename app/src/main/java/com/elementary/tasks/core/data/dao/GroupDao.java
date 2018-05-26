@@ -33,6 +33,9 @@ public interface GroupDao {
     @Query("SELECT * FROM `Group`")
     LiveData<List<Group>> loadAll();
 
+    @Query("SELECT * FROM `Group` LIMIT 1")
+    LiveData<Group> loadDefault();
+
     @Query("SELECT * FROM `Group`")
     List<Group> getAll();
 
@@ -44,4 +47,7 @@ public interface GroupDao {
 
     @Delete
     void delete(Group group);
+
+    @Query("SELECT * FROM `Group` WHERE uuId=:id")
+    LiveData<Group> loadById(String id);
 }

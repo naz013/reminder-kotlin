@@ -1,9 +1,8 @@
 package com.elementary.tasks.core.di;
 
-import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.core.view_models.ActiveRemindersViewModel;
-import com.elementary.tasks.core.view_models.ArchiveRemindersViewModel;
-import com.elementary.tasks.reminder.RemindersRecyclerAdapter;
+import com.elementary.tasks.core.controller.EventManager;
+import com.elementary.tasks.core.view_models.BaseDbViewModel;
+import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter;
 
 import javax.inject.Singleton;
 
@@ -27,9 +26,9 @@ import dagger.Component;
 @Singleton
 @Component(modules = {AppModule.class, DbModule.class, ThemeModule.class})
 public interface AppComponent {
-    void inject(ActiveRemindersViewModel viewModel);
-
-    void inject(ArchiveRemindersViewModel viewModel);
+    void inject(BaseDbViewModel viewModel);
 
     void inject(RemindersRecyclerAdapter adapter);
+
+    void inject(EventManager eventManager);
 }

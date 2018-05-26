@@ -1,15 +1,14 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
 import android.text.TextUtils;
 
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.GeolocationService;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.List;
 
@@ -31,8 +30,8 @@ import java.util.List;
 
 class LocationEvent extends EventManager {
 
-    LocationEvent(Reminder reminder, Context context) {
-        super(reminder, context);
+    LocationEvent(Reminder reminder) {
+        super(reminder);
     }
 
     @Override

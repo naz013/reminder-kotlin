@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
-
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,8 +25,8 @@ class TimerEvent extends RepeatableEventManager {
 
     private static final String TAG = "TimerEvent";
 
-    TimerEvent(Reminder reminder, Context context) {
-        super(reminder, context);
+    TimerEvent(Reminder reminder) {
+        super(reminder);
     }
 
     @Override

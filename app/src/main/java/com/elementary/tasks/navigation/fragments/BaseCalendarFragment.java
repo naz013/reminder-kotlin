@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.DialogActionPickerBinding;
-import com.elementary.tasks.reminder.AddReminderActivity;
+import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 
 import java.util.Calendar;
 

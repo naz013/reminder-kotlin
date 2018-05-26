@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.utils.TimeCount;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,11 +20,10 @@ import com.elementary.tasks.core.data.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ShoppingEvent extends RepeatableEventManager {
 
-    ShoppingEvent(Reminder reminder, Context context) {
-        super(reminder, context);
+    ShoppingEvent(Reminder reminder) {
+        super(reminder);
     }
 
     @Override

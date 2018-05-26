@@ -1,11 +1,8 @@
 package com.elementary.tasks.core;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.RingtoneManager;
@@ -40,7 +37,6 @@ import com.elementary.tasks.core.views.TextDrawable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -159,13 +155,10 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         SoundStackHolder.getInstance().init(this);
         int current = instanceCount.incrementAndGet();
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true));
-
-        setUpScreenOptions();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    protected void init() {
+        setUpScreenOptions();
         SoundStackHolder.getInstance().setMaxVolume(getMaxVolume());
     }
 
@@ -373,155 +366,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         }
     }
 
-    protected void showFavouriteNotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
-        builder.setContentTitle(getSummary());
-        String appName;
-        if (Module.isPro()) {
-            appName = getString(R.string.app_name_pro);
-        } else {
-            appName = getString(R.string.app_name);
-        }
-        builder.setContentText(appName);
-        if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
-            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
-        }
-        boolean isWear = getPrefs().isWearEnabled();
-        if (isWear && Module.isJellyMR2()) {
-            builder.setOnlyAlertOnce(true);
-            builder.setGroup("GROUP");
-            builder.setGroupSummary(true);
-        }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.notify(getId(), builder.build());
-        if (isWear) {
-            showWearNotification(appName);
-        }
-    }
-
-    protected void showReminderNotification(Activity activity) {
-        LogUtil.d(TAG, "showReminderNotification: ");
-        Intent notificationIntent = new Intent(this, activity.getClass());
-        notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
-        builder.setContentTitle(getSummary());
-        builder.setContentIntent(intent);
-        builder.setAutoCancel(false);
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        if (getPrefs().isManualRemoveEnabled()) {
-            builder.setOngoing(false);
-        } else {
-            builder.setOngoing(true);
-        }
-        String appName;
-        if (Module.isPro()) {
-            appName = getString(R.string.app_name_pro);
-            if (getPrefs().isLedEnabled()) {
-                builder.setLights(getLedColor(), 500, 1000);
-            }
-        } else {
-            appName = getString(R.string.app_name);
-        }
-        builder.setContentText(appName);
-        if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
-            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
-        }
-        if (getSound() != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
-                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
-            Uri soundUri = getSoundUri();
-            LogUtil.d(TAG, "showReminderNotification: " + soundUri);
-            getSound().playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-        }
-        if (isVibrate()) {
-            long[] pattern;
-            if (getPrefs().isInfiniteVibrateEnabled()) {
-                pattern = new long[]{150, 86400000};
-            } else {
-                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
-            }
-            builder.setVibrate(pattern);
-        }
-        boolean isWear = getPrefs().isWearEnabled();
-        if (isWear && Module.isJellyMR2()) {
-            builder.setOnlyAlertOnce(true);
-            builder.setGroup("GROUP");
-            builder.setGroupSummary(true);
-        }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.notify(getId(), builder.build());
-        if (isWear) {
-            showWearNotification(appName);
-        }
-    }
-
-    protected void showTTSNotification(Activity activityClass) {
-        LogUtil.d(TAG, "showTTSNotification: ");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
-        builder.setContentTitle(getSummary());
-        Intent notificationIntent = new Intent(this, activityClass.getClass());
-        notificationIntent.putExtra(Constants.INTENT_ID, getUuId());
-        notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-        PendingIntent intent = PendingIntent.getActivity(this, getId(), notificationIntent, 0);
-        builder.setContentIntent(intent);
-        builder.setAutoCancel(false);
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        if (getPrefs().isManualRemoveEnabled()) {
-            builder.setOngoing(false);
-        } else {
-            builder.setOngoing(true);
-        }
-        String appName;
-        if (Module.isPro()) {
-            appName = getString(R.string.app_name_pro);
-            if (getPrefs().isLedEnabled()) {
-                builder.setLights(getLedColor(), 500, 1000);
-            }
-        } else {
-            appName = getString(R.string.app_name);
-        }
-        builder.setContentText(appName);
-        if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_notifications_white_24dp);
-            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
-        } else {
-            builder.setSmallIcon(R.drawable.ic_notification_nv_white);
-        }
-        if (!isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
-                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
-            playDefaultMelody();
-        }
-        if (isVibrate()) {
-            long[] pattern;
-            if (getPrefs().isInfiniteVibrateEnabled()) {
-                pattern = new long[]{150, 86400000};
-            } else {
-                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
-            }
-            builder.setVibrate(pattern);
-        }
-        boolean isWear = getPrefs().isWearEnabled();
-        if (isWear && Module.isJellyMR2()) {
-            builder.setOnlyAlertOnce(true);
-            builder.setGroup("GROUP");
-            builder.setGroupSummary(true);
-        }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.notify(getId(), builder.build());
-        if (isWear) {
-            showWearNotification(appName);
-        }
-    }
-
     protected final void showProgressDialog(String message) {
         hideProgressDialog();
         mSendDialog = ProgressDialog.show(this, null, message, true, false);
@@ -579,18 +423,6 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
             wearableNotificationBuilder.setGroupSummary(false);
             NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
             mNotifyMgr.notify(getId(), wearableNotificationBuilder.build());
-        }
-    }
-
-    private void playDefaultMelody() {
-        if (getSound() == null) return;
-        LogUtil.d(TAG, "playDefaultMelody: ");
-        try {
-            AssetFileDescriptor afd = getAssets().openFd("sounds/beep.mp3");
-            getSound().playAlarm(afd);
-        } catch (IOException e) {
-            e.printStackTrace();
-            getSound().playAlarm(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), false);
         }
     }
 }

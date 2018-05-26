@@ -38,18 +38,18 @@ import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.core.views.ReturnScrollListener;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
-import com.elementary.tasks.navigation.fragments.ArchiveFragment;
+import com.elementary.tasks.reminder.lists.ArchiveFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.navigation.fragments.FeedbackFragment;
 import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
-import com.elementary.tasks.navigation.fragments.GroupsFragment;
+import com.elementary.tasks.groups.list.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.HelpFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
 import com.elementary.tasks.navigation.fragments.NotesFragment;
 import com.elementary.tasks.navigation.fragments.PlacesFragment;
-import com.elementary.tasks.navigation.fragments.RemindersFragment;
+import com.elementary.tasks.reminder.lists.RemindersFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
@@ -61,6 +61,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -79,6 +80,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private RoboTextView mSaleBadge;
     private RoboTextView mUpdateBadge;
     private NavigationView mNavigationView;
+    @Nullable
     private Fragment fragment;
     private QuickNoteCoordinator mNoteView;
     private ReturnScrollListener returnScrollListener;
@@ -147,7 +149,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     }
 
     private void onDrawerClick() {
-        if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
+        if (this.fragment instanceof BaseSettingsFragment) {
             onBackPressed();
         } else {
             binding.drawerLayout.openDrawer(GravityCompat.START);
@@ -277,7 +279,7 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     @Override
     public void onFragmentSelect(Fragment fragment) {
         this.fragment = fragment;
-        if (this.fragment != null && this.fragment instanceof BaseSettingsFragment) {
+        if (this.fragment instanceof BaseSettingsFragment) {
             binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         } else {
             binding.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);

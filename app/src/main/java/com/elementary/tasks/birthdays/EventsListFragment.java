@@ -14,13 +14,13 @@ import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
 import com.elementary.tasks.navigation.fragments.BaseFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
-import com.elementary.tasks.reminder.RecyclerListener;
-import com.elementary.tasks.reminder.ReminderPreviewActivity;
-import com.elementary.tasks.reminder.ShoppingPreviewActivity;
+import com.elementary.tasks.reminder.lists.RecyclerListener;
+import com.elementary.tasks.reminder.preview.ReminderPreviewActivity;
+import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;

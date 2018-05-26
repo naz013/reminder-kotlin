@@ -27,7 +27,7 @@ import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.AddReminderActivity;
+import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 
 import java.util.ArrayList;
 import java.util.List;

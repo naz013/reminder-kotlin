@@ -23,7 +23,7 @@ import com.elementary.tasks.places.CreatePlaceActivity;
 import com.elementary.tasks.places.PlaceFilterController;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.places.PlacesRecyclerAdapter;
-import com.elementary.tasks.reminder.filters.FilterCallback;
+import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.util.List;
 

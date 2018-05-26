@@ -13,7 +13,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
-import com.elementary.tasks.reminder.ReminderDialogActivity;
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
 import com.elementary.tasks.core.data.models.Reminder;
 
