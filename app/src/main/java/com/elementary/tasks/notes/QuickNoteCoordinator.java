@@ -1,16 +1,14 @@
 package com.elementary.tasks.notes;
 
-import android.content.Context;
 import android.os.Handler;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
@@ -20,17 +18,18 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.databinding.NoteInputCardBinding;
 import com.elementary.tasks.databinding.NoteReminderCardBinding;
 import com.elementary.tasks.databinding.NoteStatusCardBinding;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.reminder.ReminderUpdateEvent;
-import com.elementary.tasks.core.data.models.Reminder;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -50,16 +49,20 @@ import java.util.Random;
 
 public class QuickNoteCoordinator {
 
-    private Context mContext;
+    private FragmentActivity mContext;
     private ActivityMainBinding binding;
     private Callback mCallback;
     private ThemeUtil themeUtil;
+    private ReminderViewModel reminderViewModel;
 
-    public QuickNoteCoordinator(Context context, ActivityMainBinding binding, Callback callback) {
+    @Nullable
+    private NoteItem mNoteItem;
+
+    public QuickNoteCoordinator(FragmentActivity activity, ActivityMainBinding binding, Callback callback) {
         this.binding = binding;
-        this.mContext = context;
+        this.mContext = activity;
         this.mCallback = callback;
-        this.themeUtil = ThemeUtil.getInstance(context);
+        this.themeUtil = ThemeUtil.getInstance(activity);
         this.binding.quickNoteContainer.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 if (isNoteVisible()) {
@@ -70,6 +73,21 @@ public class QuickNoteCoordinator {
             return false;
         });
         this.binding.quickNoteContainer.setVisibility(View.GONE);
+
+        initReminderViewModel();
+    }
+
+    private void initReminderViewModel() {
+        reminderViewModel = ViewModelProviders.of(mContext).get(ReminderViewModel.class);
+        reminderViewModel.result.observe(mContext, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                        if (mNoteItem != null) addNotificationCard(mNoteItem);
+                        break;
+                }
+            }
+        });
     }
 
     public void switchQuickNote() {
@@ -169,7 +187,7 @@ public class QuickNoteCoordinator {
         reminder.setActive(true);
         reminder.setRemoved(false);
         reminder.setSummary(item.getSummary());
-        Group def = RealmDb.getInstance().getDefaultGroup();
+        Group def = reminderViewModel.defaultGroup.getValue();
         if (def != null) {
             reminder.setGroupUuId(def.getUuId());
         }
@@ -177,10 +195,7 @@ public class QuickNoteCoordinator {
         long startTime = System.currentTimeMillis() + prefsTime;
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(startTime));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(startTime));
-        EventControl control = EventControlFactory.getController(mContext, reminder);
-        control.start();
-        EventBus.getDefault().post(new ReminderUpdateEvent());
-        addNotificationCard(item);
+        reminderViewModel.saveAndStartReminder(reminder);
     }
 
     private void addNotificationCard(@NonNull NoteItem item) {

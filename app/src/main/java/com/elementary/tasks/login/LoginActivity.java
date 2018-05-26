@@ -29,7 +29,7 @@ import com.elementary.tasks.core.cloud.GoogleLogin;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityLoginBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;

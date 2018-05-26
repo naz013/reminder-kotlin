@@ -3,10 +3,10 @@ package com.elementary.tasks.navigation.settings.additional;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.elementary.tasks.reminder.filters.AbstractFilter;
-import com.elementary.tasks.reminder.filters.FilterCallback;
-import com.elementary.tasks.reminder.filters.FilterValue;
-import com.elementary.tasks.reminder.filters.ObjectFilter;
+import com.elementary.tasks.reminder.lists.filters.AbstractFilter;
+import com.elementary.tasks.reminder.lists.filters.FilterCallback;
+import com.elementary.tasks.reminder.lists.filters.FilterValue;
+import com.elementary.tasks.reminder.lists.filters.ObjectFilter;
 
 import java.util.ArrayList;
 import java.util.List;

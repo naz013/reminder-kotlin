@@ -26,7 +26,7 @@ import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog;
 import com.elementary.tasks.core.contacts.ContactsActivity;
 import com.elementary.tasks.core.interfaces.LCAMListener;
 import com.elementary.tasks.core.services.GeolocationService;
-import com.elementary.tasks.creators.fragments.ReminderInterface;
+import com.elementary.tasks.reminder.create_edit.fragments.ReminderInterface;
 import com.elementary.tasks.voice.ConversationActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;

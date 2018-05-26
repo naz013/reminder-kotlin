@@ -11,7 +11,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
 import com.elementary.tasks.core.data.models.Reminder;
 

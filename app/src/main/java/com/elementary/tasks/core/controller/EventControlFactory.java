@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-
-import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.utils.LogUtil;
+
+import androidx.annotation.NonNull;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,28 +29,28 @@ public final class EventControlFactory {
     }
 
     @NonNull
-    public static EventControl getController(@NonNull Context context, @NonNull Reminder reminder) {
+    public static EventControl getController(@NonNull Reminder reminder) {
         EventControl control;
         if (Reminder.isSame(reminder.getType(), Reminder.BY_DATE_SHOP)) {
-            control = new ShoppingEvent(reminder, context);
+            control = new ShoppingEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_DATE)) {
-            control = new DateEvent(reminder, context);
+            control = new DateEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_LOCATION)) {
-            control = new LocationEvent(reminder, context);
+            control = new LocationEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_MONTH)) {
-            control = new MonthlyEvent(reminder, context);
+            control = new MonthlyEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
-            control = new WeeklyEvent(reminder, context);
+            control = new WeeklyEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_OUT)) {
-            control = new LocationEvent(reminder, context);
+            control = new LocationEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_PLACES)) {
-            control = new LocationEvent(reminder, context);
+            control = new LocationEvent(reminder);
         } else if (Reminder.isSame(reminder.getType(), Reminder.BY_TIME)) {
-            control = new TimerEvent(reminder, context);
+            control = new TimerEvent(reminder);
         } else if (Reminder.isBase(reminder.getType(), Reminder.BY_DAY_OF_YEAR)) {
-            control = new YearlyEvent(reminder, context);
+            control = new YearlyEvent(reminder);
         } else {
-            control = new DateEvent(reminder, context);
+            control = new DateEvent(reminder);
         }
         LogUtil.d(TAG, "getController: " + control);
         return control;

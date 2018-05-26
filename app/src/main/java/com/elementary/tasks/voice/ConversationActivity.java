@@ -36,7 +36,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.AddReminderActivity;
+import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import org.apache.commons.lang3.StringUtils;

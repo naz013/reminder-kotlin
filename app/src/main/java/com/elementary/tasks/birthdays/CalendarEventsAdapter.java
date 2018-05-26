@@ -14,9 +14,9 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
 import com.elementary.tasks.databinding.ShoppingListItemBinding;
-import com.elementary.tasks.reminder.RecyclerListener;
-import com.elementary.tasks.reminder.ReminderHolder;
-import com.elementary.tasks.reminder.ShoppingHolder;
+import com.elementary.tasks.reminder.lists.RecyclerListener;
+import com.elementary.tasks.reminder.lists.ReminderHolder;
+import com.elementary.tasks.reminder.lists.ShoppingHolder;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;

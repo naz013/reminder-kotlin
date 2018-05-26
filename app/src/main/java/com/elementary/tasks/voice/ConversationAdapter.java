@@ -21,11 +21,11 @@ import com.elementary.tasks.databinding.ShowReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.groups.GroupHolder;
+import com.elementary.tasks.groups.list.GroupHolder;
 import com.elementary.tasks.notes.NoteHolder;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.reminder.ReminderHolder;
-import com.elementary.tasks.reminder.ShoppingHolder;
+import com.elementary.tasks.reminder.lists.ReminderHolder;
+import com.elementary.tasks.reminder.lists.ShoppingHolder;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;

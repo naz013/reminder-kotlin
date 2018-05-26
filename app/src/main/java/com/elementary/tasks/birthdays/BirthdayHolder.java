@@ -8,7 +8,7 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
-import com.elementary.tasks.reminder.RecyclerListener;
+import com.elementary.tasks.reminder.lists.RecyclerListener;
 
 import androidx.recyclerview.widget.RecyclerView;
 

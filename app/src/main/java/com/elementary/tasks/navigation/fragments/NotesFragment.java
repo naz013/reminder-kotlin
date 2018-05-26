@@ -35,7 +35,7 @@ import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.notes.NotePreviewActivity;
 import com.elementary.tasks.notes.NotesRecyclerAdapter;
 import com.elementary.tasks.notes.SyncNotes;
-import com.elementary.tasks.reminder.filters.FilterCallback;
+import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.io.File;
 import java.util.ArrayList;

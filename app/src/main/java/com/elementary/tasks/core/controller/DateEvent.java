@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.controller;
 
-import android.content.Context;
-
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Reminder;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,8 +22,8 @@ import com.elementary.tasks.core.data.models.Reminder;
 
 class DateEvent extends RepeatableEventManager {
 
-    DateEvent(Reminder reminder, Context context) {
-        super(reminder, context);
+    DateEvent(Reminder reminder) {
+        super(reminder);
     }
 
     @Override

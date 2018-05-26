@@ -17,7 +17,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.databinding.FragmentTemplatesListBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
-import com.elementary.tasks.reminder.filters.FilterCallback;
+import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.util.List;
 

@@ -29,7 +29,7 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
 import com.elementary.tasks.core.data.models.Reminder;

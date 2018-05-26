@@ -30,6 +30,9 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface ReminderDao {
 
+    @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
+    LiveData<Reminder> loadById(int id);
+
     @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed")
     LiveData<List<Reminder>> loadType(boolean active, boolean removed);
 
@@ -37,7 +40,7 @@ public interface ReminderDao {
     List<Reminder> getAll(boolean active, boolean removed);
 
     @Insert(onConflict = REPLACE)
-    void insert(Reminder reminder);
+    int insert(Reminder reminder);
 
     @Insert(onConflict = REPLACE)
     void insertAll(Reminder... reminder);

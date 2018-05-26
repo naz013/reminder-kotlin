@@ -59,7 +59,7 @@
         tools:replace="android:label">
         <activity android:name=".navigation.MainActivity" />
         <activity
-            android:name=".creators.CreateReminderActivity"
+            android:name=".reminder.create_edit.CreateReminderActivity"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -204,10 +204,10 @@
             android:name=".google_tasks.TaskActivity"
             android:configChanges="keyboardHidden" />
         <activity android:name=".core.contacts.ContactsActivity" />
-        <activity android:name=".reminder.ReminderDialogActivity" />
+        <activity android:name=".reminder.preview.ReminderDialogActivity" />
         <activity android:name=".core.apps.ApplicationActivity" />
-        <activity android:name=".reminder.ReminderPreviewActivity" />
-        <activity android:name=".reminder.ShoppingPreviewActivity" />
+        <activity android:name=".reminder.preview.ReminderPreviewActivity" />
+        <activity android:name=".reminder.preview.ShoppingPreviewActivity" />
         <activity android:name=".missed_calls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
         <activity
@@ -243,7 +243,7 @@
                 <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity android:name=".reminder.AddReminderActivity" />
+        <activity android:name=".reminder.create_edit.AddReminderActivity" />
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity

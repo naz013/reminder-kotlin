@@ -22,7 +22,7 @@ import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
-import com.elementary.tasks.creators.CreateReminderActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.notes.CreateNoteActivity;
 import com.elementary.tasks.notes.NoteImage;
 import com.elementary.tasks.notes.NoteItem;
