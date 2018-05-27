@@ -1,8 +1,11 @@
-package com.elementary.tasks.core.calendar;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.util.UUID;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,14 +23,16 @@ import java.util.UUID;
  * limitations under the License.
  */
 
+@Entity
 public class CalendarEvent {
 
+    @PrimaryKey
     private String uuId;
-    private String reminderId;
+    private int reminderId;
     private String event;
     private long eventId;
 
-    public CalendarEvent(String reminderId, String event, long eventId) {
+    public CalendarEvent(int reminderId, String event, long eventId) {
         this.uuId = UUID.randomUUID().toString();
         this.reminderId = reminderId;
         this.event = event;
@@ -42,11 +47,11 @@ public class CalendarEvent {
         this.uuId = uuId;
     }
 
-    public String getReminderId() {
+    public int getReminderId() {
         return reminderId;
     }
 
-    public void setReminderId(String reminderId) {
+    public void setReminderId(int reminderId) {
         this.reminderId = reminderId;
     }
 

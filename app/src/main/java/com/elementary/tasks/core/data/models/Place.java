@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -22,6 +25,7 @@ import java.util.UUID;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Entity
 public class Place {
 
     @SerializedName("radius")
@@ -35,11 +39,15 @@ public class Place {
     @SerializedName("name")
     private String name;
     @SerializedName("id")
+    @PrimaryKey
     private String id;
     @SerializedName("address")
     private String address;
     @SerializedName("tags")
     private List<String> tags = new ArrayList<>();
+
+    public Place() {
+    }
 
     public Place(int radius, int marker, double latitude, double longitude, String name, String address, List<String> tags) {
         this.radius = radius;

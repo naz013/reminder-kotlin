@@ -1,4 +1,4 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.google;
 
 import android.view.LayoutInflater;
 import android.view.View;

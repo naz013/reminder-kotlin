@@ -7,7 +7,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.interfaces.MapCallback;
 import com.elementary.tasks.core.interfaces.MapListener;
-import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.places.PlacesViewModel;
 import com.elementary.tasks.core.views.AddressAutoCompleteView;
 import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.databinding.FragmentMapBinding;
-import com.elementary.tasks.places.PlaceItem;
-import com.elementary.tasks.places.PlacesRecyclerAdapter;
+import com.elementary.tasks.places.list.PlacesRecyclerAdapter;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,9 +40,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -73,14 +72,11 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
     private CardView placesListCard;
     private AddressAutoCompleteView cardSearch;
     private ThemedImageButton zoomOut;
-    private ThemedImageButton backButton;
-    private ThemedImageButton markers;
     private LinearLayout groupOne, groupTwo, groupThree;
-    private RecyclerView placesList;
     private LinearLayout emptyItem;
     private FragmentMapBinding binding;
 
-    private PlacesRecyclerAdapter placeRecyclerAdapter;
+    private PlacesRecyclerAdapter placeRecyclerAdapter = new PlacesRecyclerAdapter();
 
     private boolean isTouch = true;
     private boolean isZoom = true;
@@ -431,8 +427,22 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
                 mListener.placeChanged(pos, getFormattedAddress(sel));
             }
         });
-        if (isPlaces) loadPlaces();
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initPlacesViewModel();
+    }
+
+    private void initPlacesViewModel() {
+        PlacesViewModel viewModel = ViewModelProviders.of(this).get(PlacesViewModel.class);
+        viewModel.places.observe(this, places -> {
+            if (places != null && isPlaces) {
+                showPlaces(places);
+            }
+        });
     }
 
     public void setOnMarkerClick(GoogleMap.OnMarkerClickListener onMarkerClickListener) {
@@ -457,8 +467,9 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         groupTwo = binding.groupTwo;
         groupThree = binding.groupThree;
         emptyItem = binding.emptyItem;
-        placesList = binding.placesList;
-        placesList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        binding.placesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.placesList.setAdapter(placeRecyclerAdapter);
 
         CardView zoomCard = binding.zoomCard;
         CardView searchCard = binding.searchCard;
@@ -514,8 +525,8 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         zoomOut = binding.mapZoom;
         ImageButton layers = binding.layers;
         ImageButton myLocation = binding.myLocation;
-        markers = binding.markers;
-        backButton = binding.backButton;
+        ThemedImageButton markers = binding.markers;
+        ThemedImageButton backButton = binding.backButton;
 
         cardClear.setOnClickListener(this);
         zoomOut.setOnClickListener(this);
@@ -582,54 +593,37 @@ public class AdvancedMapFragment extends BaseMapFragment implements View.OnClick
         }
     }
 
-    private void loadPlaces() {
-        if (placeRecyclerAdapter == null) {
-            List<PlaceItem> list = RealmDb.getInstance().getAllPlaces();
-            if (list.isEmpty()) {
-                binding.placesCard.setVisibility(View.GONE);
-                placesList.setVisibility(View.GONE);
-                emptyItem.setVisibility(View.VISIBLE);
-            } else {
-                emptyItem.setVisibility(View.GONE);
-                binding.placesCard.setVisibility(View.VISIBLE);
-                placesList.setVisibility(View.VISIBLE);
-                placeRecyclerAdapter = new PlacesRecyclerAdapter(getContext(), new SimpleListener() {
-                    @Override
-                    public void onItemClicked(int position, View view) {
-                        hideLayers();
-                        hidePlaces();
-                        PlaceItem item = placeRecyclerAdapter.getItem(position);
-                        if (item != null) {
-                            addMarker(new LatLng(item.getLat(), item.getLng()), markerTitle, true, true, markerRadius);
-                        }
+    private void showPlaces(List<Place> places) {
+        placeRecyclerAdapter.setActionsListener((view, position, place, actions) -> {
+            switch (actions) {
+                case OPEN:
+                case MORE:
+                    hideLayers();
+                    hidePlaces();
+                    if (place != null) {
+                        addMarker(new LatLng(place.getLatitude(), place.getLongitude()), markerTitle, true, true, markerRadius);
                     }
-
-                    @Override
-                    public void onItemLongClicked(int position, View view) {
-
-                    }
-                });
-                placeRecyclerAdapter.setData(list);
-                placesList.setAdapter(placeRecyclerAdapter);
+                    break;
             }
+        });
+        placeRecyclerAdapter.setData(places);
+        if (places.isEmpty()) {
+            binding.placesCard.setVisibility(View.GONE);
+            binding.placesList.setVisibility(View.GONE);
+            emptyItem.setVisibility(View.VISIBLE);
         } else {
-            if (placeRecyclerAdapter.getItemCount() > 0) {
-                emptyItem.setVisibility(View.GONE);
-                placesList.setVisibility(View.VISIBLE);
-                placesList.setAdapter(placeRecyclerAdapter);
-                addMarkers(placeRecyclerAdapter.getData());
-            } else {
-                placesList.setVisibility(View.GONE);
-                emptyItem.setVisibility(View.VISIBLE);
-            }
+            emptyItem.setVisibility(View.GONE);
+            binding.placesCard.setVisibility(View.VISIBLE);
+            binding.placesList.setVisibility(View.VISIBLE);
+            addMarkers(places);
         }
     }
 
-    private void addMarkers(List<PlaceItem> list) {
+    private void addMarkers(List<Place> list) {
         if (list != null && list.size() > 0) {
-            for (PlaceItem model : list) {
-                addMarker(new LatLng(model.getLat(), model.getLng()), model.getTitle(), false,
-                        model.getIcon(), false, model.getRadius());
+            for (Place model : list) {
+                addMarker(new LatLng(model.getLatitude(), model.getLongitude()), model.getName(), false,
+                        model.getMarker(), false, model.getRadius());
             }
         }
     }

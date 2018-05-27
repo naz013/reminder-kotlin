@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.places.PlaceItem" />
+            type="com.elementary.tasks.core.data.models.Place" />
 
     </data>
 
@@ -37,7 +37,7 @@
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintRight_toRightOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent"
-                card_view:loadMarker="@{item.icon}" />
+                card_view:loadMarker="@{item.marker}" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/textView"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:text="@{item.title}"
+                android:text="@{item.name}"
                 android:textSize="21sp"
                 card_view:font_style="roboto_light"
                 card_view:layout_constraintBottom_toBottomOf="parent"

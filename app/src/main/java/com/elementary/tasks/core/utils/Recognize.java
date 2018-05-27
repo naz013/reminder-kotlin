@@ -156,7 +156,7 @@ public class Recognize {
 
     public void disableAllReminders(boolean showToast) {
         for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlFactory.getController(mContext, reminder);
+            EventControl control = EventControlFactory.getController(reminder);
             control.stop();
         }
         if (showToast) {
@@ -168,9 +168,9 @@ public class Recognize {
         AppDb appDb = AppDb.getAppDatabase(mContext);
         List<Reminder> archived = appDb.reminderDao().getAll(false, false);
         for (Reminder reminder : archived) {
-            EventControlFactory.getController(mContext, reminder).stop();
+            EventControlFactory.getController(reminder).stop();
             appDb.reminderDao().delete(reminder);
-            CalendarUtils.deleteEvents(mContext, reminder.getUuId());
+            CalendarUtils.deleteEvents(mContext, reminder.getUniqueId());
         }
         if (showToast) {
             Toast.makeText(mContext, R.string.trash_cleared, Toast.LENGTH_SHORT).show();

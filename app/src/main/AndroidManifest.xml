@@ -144,7 +144,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".places.CreatePlaceActivity"
+            android:name=".places.create.CreatePlaceActivity"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

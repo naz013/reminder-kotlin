@@ -1,8 +1,6 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.list;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.reminder.lists.filters.AbstractFilter;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 import com.elementary.tasks.reminder.lists.filters.FilterValue;
@@ -10,6 +8,9 @@ import com.elementary.tasks.reminder.lists.filters.ObjectFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -32,29 +33,29 @@ public class PlaceFilterController {
     private FilterValue<String> searchValue = new FilterValue<>();
 
     @NonNull
-    private List<PlaceItem> original = new ArrayList<>();
+    private List<Place> original = new ArrayList<>();
     @Nullable
-    private FilterCallback<PlaceItem> mCallback;
+    private FilterCallback<Place> mCallback;
     @Nullable
-    private ObjectFilter<PlaceItem> mFilter;
+    private ObjectFilter<Place> mFilter;
 
-    public PlaceFilterController(@Nullable FilterCallback<PlaceItem> callback) {
+    public PlaceFilterController(@Nullable FilterCallback<Place> callback) {
         this.mCallback = callback;
         initFilters();
     }
 
     private void initFilters() {
-        AbstractFilter<String, PlaceItem> filter = new AbstractFilter<String, PlaceItem>(null) {
+        AbstractFilter<String, Place> filter = new AbstractFilter<String, Place>(null) {
             @Nullable
             private String query = null;
 
             @Override
-            public boolean filter(PlaceItem item) {
-                return (query == null || query.length() == 0 || item.getTitle().toLowerCase().contains(query.toLowerCase()));
+            public boolean filter(Place item) {
+                return (query == null || query.length() == 0 || item.getName().toLowerCase().contains(query.toLowerCase()));
             }
 
             @Override
-            public void accept(String s) throws Exception {
+            public void accept(String s) {
                 this.query = s;
             }
         };
@@ -72,18 +73,18 @@ public class PlaceFilterController {
     }
 
     @NonNull
-    public List<PlaceItem> getOriginal() {
+    public List<Place> getOriginal() {
         return original;
     }
 
-    public void setOriginal(@NonNull List<PlaceItem> original) {
+    public void setOriginal(@NonNull List<Place> original) {
         this.original = original;
         onChanged();
     }
 
     private void onChanged() {
-        List<PlaceItem> list = new ArrayList<>();
-        for (PlaceItem item : original) {
+        List<Place> list = new ArrayList<>();
+        for (Place item : original) {
             if (mFilter != null) {
                 if (mFilter.filter(item)) list.add(item);
             } else list.add(item);

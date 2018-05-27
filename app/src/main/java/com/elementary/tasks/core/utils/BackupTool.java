@@ -15,9 +15,9 @@ import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.google.gson.Gson;
 
@@ -131,7 +131,7 @@ public final class BackupTool {
     }
 
     public void exportPlaces() {
-        for (PlaceItem item : RealmDb.getInstance().getAllPlaces()) {
+        for (Place item : RealmDb.getInstance().getAllPlaces()) {
             exportPlace(item);
         }
     }
@@ -144,9 +144,9 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) {
-                        PlaceItem item = getPlace(file.toString(), null);
-                        if (item == null || TextUtils.isEmpty(item.getTitle()) ||
-                                TextUtils.isEmpty(item.getKey())) {
+                        Place item = getPlace(file.toString(), null);
+                        if (item == null || TextUtils.isEmpty(item.getName()) ||
+                                TextUtils.isEmpty(item.getId())) {
                             continue;
                         }
                         realmDb.saveObject(item);
@@ -156,11 +156,11 @@ public final class BackupTool {
         }
     }
 
-    public void exportPlace(@NonNull PlaceItem item) {
+    public void exportPlace(@NonNull Place item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getPlacesDir();
         if (dir != null) {
-            String exportFileName = item.getKey() + FileConfig.FILE_NAME_PLACE;
+            String exportFileName = item.getId() + FileConfig.FILE_NAME_PLACE;
             try {
                 writeFile(new File(dir, exportFileName), jsonData.get());
                 jsonData.clear();
@@ -173,18 +173,18 @@ public final class BackupTool {
     }
 
     @Nullable
-    public PlaceItem getPlace(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
-        WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), PlaceItem.class));
+    public Place getPlace(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
+        WeakReference<Place> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Place.class));
         return item.get();
     }
 
     @Nullable
-    public PlaceItem getPlace(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
+    public Place getPlace(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
-            WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), PlaceItem.class));
+            WeakReference<Place> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Place.class));
             return item.get();
         } else if (json != null) {
-            WeakReference<PlaceItem> item = new WeakReference<>(new Gson().fromJson(json, PlaceItem.class));
+            WeakReference<Place> item = new WeakReference<>(new Gson().fromJson(json, Place.class));
             return item.get();
         } else {
             return null;

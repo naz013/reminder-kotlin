@@ -9,7 +9,7 @@ import androidx.legacy.content.WakefulBroadcastReceiver;
 
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.async.BackupTask;
-import com.elementary.tasks.core.calendar.CalendarEvent;
+import com.elementary.tasks.core.data.models.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.utils.CalendarUtils;

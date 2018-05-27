@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.calendar.CalendarEvent;
+import com.elementary.tasks.core.data.models.CalendarEvent;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.services.AlarmReceiver;
