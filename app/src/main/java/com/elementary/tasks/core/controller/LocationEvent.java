@@ -6,7 +6,6 @@ import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.GeolocationService;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 
@@ -38,7 +37,7 @@ class LocationEvent extends EventManager {
     public boolean start() {
         getReminder().setActive(true);
         super.save();
-        if (EventJobService.enablePositionDelay(getReminder().getUuId())) {
+        if (EventJobService.enablePositionDelay(getContext(), getReminder().getUniqueId())) {
             return true;
         } else {
             SuperUtil.startGpsTracking(getContext());
@@ -48,7 +47,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean stop() {
-        EventJobService.cancelReminder(getReminder().getUuId());
+        EventJobService.cancelReminder(String.valueOf(getReminder().getUniqueId()));
         getReminder().setActive(false);
         super.save();
         Notifier.hideNotification(getContext(), getReminder().getUniqueId());
@@ -57,7 +56,7 @@ class LocationEvent extends EventManager {
     }
 
     private void stopTracking(boolean isPaused) {
-        List<Reminder> list = RealmDb.getInstance().getGpsReminders();
+        List<Reminder> list = getDb().reminderDao().getAllGps(true, false, Reminder.gpsTypes());
         if (list.size() == 0) {
             SuperUtil.stopService(getContext(), GeolocationService.class);
         }
@@ -92,7 +91,7 @@ class LocationEvent extends EventManager {
 
     @Override
     public boolean pause() {
-        EventJobService.cancelReminder(getReminder().getUuId());
+        EventJobService.cancelReminder(String.valueOf(getReminder().getUniqueId()));
         stopTracking(true);
         return true;
     }
@@ -105,7 +104,7 @@ class LocationEvent extends EventManager {
     @Override
     public boolean resume() {
         if (getReminder().isActive()) {
-            boolean b = EventJobService.enablePositionDelay(getReminder().getUuId());
+            boolean b = EventJobService.enablePositionDelay(getContext(), getReminder().getUniqueId());
             if (!b) SuperUtil.startGpsTracking(getContext());
         }
         return true;

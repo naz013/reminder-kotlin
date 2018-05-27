@@ -54,8 +54,8 @@ public class RealmDb {
 //            saveGroup((Group) o);
 //        } else if (o instanceof CalendarEvent) {
 //            saveCalendarEvent((CalendarEvent) o);
-//        } else if (o instanceof CallItem) {
-//            saveMissedCall((CallItem) o);
+//        } else if (o instanceof MissedCall) {
+//            saveMissedCall((MissedCall) o);
 //        } else if (o instanceof BirthdayItem) {
 //            saveBirthday((BirthdayItem) o);
 //        }
@@ -178,14 +178,14 @@ public class RealmDb {
 //        return items;
 //    }
 //
-//    private void saveMissedCall(@NonNull CallItem item) {
+//    private void saveMissedCall(@NonNull MissedCall item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmCallItem(item));
 //        realm.commitTransaction();
 //    }
 //
-//    public void deleteMissedCall(@NonNull CallItem item) {
+//    public void deleteMissedCall(@NonNull MissedCall item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        RealmCallItem callItem = realm.where(RealmCallItem.class).equalTo("number", item.getNumber()).findFirst();
@@ -196,11 +196,11 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public CallItem getMissedCall(String number) {
+//    public MissedCall getMissedCall(String number) {
 //        Realm realm = getRealm();
 //        RealmCallItem template = realm.where(RealmCallItem.class).equalTo("number", number).findFirst();
 //        if (template != null) {
-//            return new CallItem(template);
+//            return new MissedCall(template);
 //        } else {
 //            return null;
 //        }

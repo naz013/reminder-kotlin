@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.di;
 
 import com.elementary.tasks.core.controller.EventManager;
+import com.elementary.tasks.core.services.CallReceiver;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter;
 
@@ -31,4 +32,6 @@ public interface AppComponent {
     void inject(RemindersRecyclerAdapter adapter);
 
     void inject(EventManager eventManager);
+
+    void inject(CallReceiver callReceiver);
 }

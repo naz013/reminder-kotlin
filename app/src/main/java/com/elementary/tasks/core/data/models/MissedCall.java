@@ -1,9 +1,12 @@
-package com.elementary.tasks.missed_calls;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Random;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,21 +23,22 @@ import java.util.Random;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class CallItem {
+@Entity
+public class MissedCall {
 
     @SerializedName("number")
+    @PrimaryKey
     private String number;
     @SerializedName("dateTime")
     private long dateTime;
     @SerializedName("uniqueId")
     private int uniqueId;
 
-    public CallItem() {
+    public MissedCall() {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
-    public CallItem(String number, long dateTime) {
+    public MissedCall(String number, long dateTime) {
         this.number = number;
         this.dateTime = dateTime;
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
@@ -66,6 +70,6 @@ public class CallItem {
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, CallItem.class);
+        return SuperUtil.getObjectPrint(this, MissedCall.class);
     }
 }

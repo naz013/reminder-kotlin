@@ -169,6 +169,10 @@ public class Reminder implements RecyclerInterface {
     @Nullable
     private Group group;
 
+    public static int[] gpsTypes() {
+        return new int[] {BY_LOCATION, BY_LOCATION_CALL, BY_LOCATION_SMS, BY_OUT, BY_OUT_CALL, BY_OUT_SMS, BY_PLACES, BY_PLACES_CALL, BY_PLACES_SMS};
+    }
+
     public static boolean isBase(int type, int base) {
         int res = type - base;
         return res >= 0 && res < 10;

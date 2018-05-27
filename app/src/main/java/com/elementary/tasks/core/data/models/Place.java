@@ -49,7 +49,7 @@ public class Place {
         this.name = name;
         this.id = UUID.randomUUID().toString();
         this.address = address;
-        this.tags = tags;
+        this.tags.addAll(tags);
     }
 
     public List<String> getTags() {

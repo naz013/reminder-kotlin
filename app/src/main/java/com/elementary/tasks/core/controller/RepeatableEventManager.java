@@ -72,7 +72,7 @@ abstract class RepeatableEventManager extends EventManager {
     @Override
     public boolean pause() {
         Notifier.hideNotification(getContext(), getReminder().getUniqueId());
-        EventJobService.cancelReminder(getReminder().getUuId());
+        EventJobService.cancelReminder(String.valueOf(getReminder().getUniqueId()));
         new RepeatNotificationReceiver().cancelAlarm(getContext(), getReminder().getUniqueId());
         return true;
     }
@@ -86,6 +86,6 @@ abstract class RepeatableEventManager extends EventManager {
 
     @Override
     public void setDelay(int delay) {
-        EventJobService.enableDelay(delay, getReminder().getUuId());
+        EventJobService.enableDelay(delay, getReminder().getUniqueId());
     }
 }
