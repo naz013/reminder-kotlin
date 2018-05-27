@@ -1,10 +1,12 @@
-package com.elementary.tasks.navigation.settings.additional;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.util.UUID;
 
 import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -21,21 +23,22 @@ import androidx.annotation.Nullable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class TemplateItem {
+@Entity
+public class SmsTemplate {
     @Nullable
     private String title;
+    @PrimaryKey
     private String key;
     private String date;
     private boolean selected;
 
-    public TemplateItem(@Nullable String title, String date) {
+    public SmsTemplate(@Nullable String title, String date) {
         this.title = title;
         this.date = date;
         this.key = UUID.randomUUID().toString();
     }
 
-    public TemplateItem(@Nullable String title) {
+    public SmsTemplate(@Nullable String title) {
         this.title = title;
         this.date = TimeUtil.getGmtDateTime();
         this.key = UUID.randomUUID().toString();

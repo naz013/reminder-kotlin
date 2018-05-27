@@ -3,29 +3,27 @@ package com.elementary.tasks.core.additional;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.telephony.SmsManager;
 import android.view.WindowManager;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.views.roboto.RoboButton;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel;
 import com.elementary.tasks.databinding.ActivityQuickSmsLayoutBinding;
-import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,8 +45,8 @@ public class QuickSmsActivity extends ThemedActivity {
 
     private static final int REQ_SMS = 425;
 
-    private RecyclerView messagesList;
     private SelectableTemplatesAdapter mAdapter;
+
     private String number;
 
     @Override
@@ -56,22 +54,36 @@ public class QuickSmsActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         initData();
         ActivityQuickSmsLayoutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms_layout);
-        messagesList = binding.messagesList;
-        messagesList.setLayoutManager(new LinearLayoutManager(this));
-        RoboButton buttonSend = binding.buttonSend;
-        buttonSend.setOnClickListener(v -> startSending());
+
+        binding.messagesList.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new SelectableTemplatesAdapter(this);
+        binding.messagesList.setAdapter(mAdapter);
+
+        binding.buttonSend.setOnClickListener(v -> startSending());
         String name = Contacts.getNameFromNumber(number, this);
-        RoboTextView contactInfo = binding.contactInfo;
-        contactInfo.setText(SuperUtil.appendString(name, "\n", number));
-        loadTemplates();
+        binding.contactInfo.setText(SuperUtil.appendString(name, "\n", number));
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        SmsTemplatesViewModel viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel.class);
+        viewModel.smsTemplates.observe(this, smsTemplates -> {
+            if (smsTemplates != null) {
+                updateList(smsTemplates);
+            }
+        });
+    }
+
+    private void updateList(List<SmsTemplate> smsTemplates) {
+        mAdapter.setData(smsTemplates);
         if (mAdapter.getItemCount() > 0) {
             mAdapter.selectItem(0);
         }
     }
 
     private void initData() {
-        Intent i = getIntent();
-        number = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
+        number = getIntent().getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
     }
 
     private void startSending() {
@@ -80,18 +92,12 @@ public class QuickSmsActivity extends ThemedActivity {
             return;
         }
         int position = mAdapter.getSelectedPosition();
-        TemplateItem item = mAdapter.getItem(position);
+        SmsTemplate item = mAdapter.getItem(position);
         if (item != null) {
             LogUtil.d("TAG", "startSending: " + item.getTitle());
             sendSMS(number, item.getTitle());
         }
         removeFlags();
-    }
-
-    private void loadTemplates() {
-        List<TemplateItem> list = RealmDb.getInstance().getAllTemplates();
-        mAdapter = new SelectableTemplatesAdapter(list, this);
-        messagesList.setAdapter(mAdapter);
     }
 
     public void removeFlags() {

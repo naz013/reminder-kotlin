@@ -15,7 +15,7 @@ import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.places.PlaceItem;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -70,7 +70,7 @@ public final class BackupTool {
     }
 
     public void exportTemplates() {
-        for (TemplateItem item : RealmDb.getInstance().getAllTemplates()) {
+        for (SmsTemplate item : RealmDb.getInstance().getAllTemplates()) {
             exportTemplate(item);
         }
     }
@@ -83,7 +83,7 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                        TemplateItem item = getTemplate(file.toString(), null);
+                        SmsTemplate item = getTemplate(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getTitle())
                                 || TextUtils.isEmpty(item.getKey())) {
                             continue;
@@ -95,7 +95,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportTemplate(@NonNull TemplateItem item) {
+    public void exportTemplate(@NonNull SmsTemplate item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getTemplatesDir();
         if (dir != null) {
@@ -112,18 +112,18 @@ public final class BackupTool {
     }
 
     @Nullable
-    public TemplateItem getTemplate(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
-        WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), TemplateItem.class));
+    public SmsTemplate getTemplate(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
+        WeakReference<SmsTemplate> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), SmsTemplate.class));
         return item.get();
     }
 
     @Nullable
-    public TemplateItem getTemplate(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
+    public SmsTemplate getTemplate(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
-            WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), TemplateItem.class));
+            WeakReference<SmsTemplate> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), SmsTemplate.class));
             return item.get();
         } else if (json != null) {
-            WeakReference<TemplateItem> item = new WeakReference<>(new Gson().fromJson(json, TemplateItem.class));
+            WeakReference<SmsTemplate> item = new WeakReference<>(new Gson().fromJson(json, SmsTemplate.class));
             return item.get();
         } else {
             return null;

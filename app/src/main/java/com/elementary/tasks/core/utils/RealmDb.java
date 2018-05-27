@@ -40,8 +40,8 @@ public class RealmDb {
 //    public void saveObject(@Nullable Object o) {
 //        if (o == null) return;
 //        LogUtil.d(TAG, "saveObject: " + o);
-//        if (o instanceof TemplateItem) {
-//            saveTemplate((TemplateItem) o);
+//        if (o instanceof SmsTemplate) {
+//            saveTemplate((SmsTemplate) o);
 //        } else if (o instanceof NoteItem) {
 //            saveNote((NoteItem) o);
 //        } else if (o instanceof PlaceItem) {
@@ -247,14 +247,14 @@ public class RealmDb {
 //        return items;
 //    }
 //
-//    private void saveTemplate(@NonNull TemplateItem item) {
+//    private void saveTemplate(@NonNull SmsTemplate item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmTemplate(item));
 //        realm.commitTransaction();
 //    }
 //
-//    public void deleteTemplates(@NonNull TemplateItem item) {
+//    public void deleteTemplates(@NonNull SmsTemplate item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        RealmTemplate template = realm.where(RealmTemplate.class).equalTo("key", item.getKey()).findFirst();
@@ -265,23 +265,23 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public TemplateItem getTemplate(@NonNull String id) {
+//    public SmsTemplate getTemplate(@NonNull String id) {
 //        Realm realm = getRealm();
 //        RealmTemplate template = realm.where(RealmTemplate.class).equalTo("key", id).findFirst();
 //        if (template != null) {
-//            return new TemplateItem(template);
+//            return new SmsTemplate(template);
 //        } else {
 //            return null;
 //        }
 //    }
 //
 //    @NonNull
-//    public List<TemplateItem> getAllTemplates() {
+//    public List<SmsTemplate> getAllTemplates() {
 //        Realm realm = getRealm();
 //        List<RealmTemplate> list = realm.where(RealmTemplate.class).findAll();
-//        List<TemplateItem> items = new ArrayList<>();
+//        List<SmsTemplate> items = new ArrayList<>();
 //        for (RealmTemplate template : list) {
-//            WeakReference<TemplateItem> reference = new WeakReference<>(new TemplateItem(template));
+//            WeakReference<SmsTemplate> reference = new WeakReference<>(new SmsTemplate(template));
 //            items.add(reference.get());
 //        }
 //        return items;

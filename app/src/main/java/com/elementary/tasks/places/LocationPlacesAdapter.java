@@ -1,19 +1,20 @@
 package com.elementary.tasks.places;
 
-import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.core.interfaces.SimpleListener;
-import com.elementary.tasks.databinding.LocationListItemBinding;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.interfaces.ActionsListener;
+import com.elementary.tasks.core.utils.ListActions;
+import com.elementary.tasks.databinding.LocationListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -34,13 +35,22 @@ import androidx.recyclerview.widget.RecyclerView;
 public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAdapter.ViewHolder> {
 
     private List<Reminder> mDataList = new ArrayList<>();
-    private SimpleListener mEventListener;
-    private Context mContext;
+    @Nullable
+    private ActionsListener<Reminder> actionsListener;
 
-    public LocationPlacesAdapter(Context context, List<Reminder> list, SimpleListener listener) {
+    public void setActionsListener(@Nullable ActionsListener<Reminder> actionsListener) {
+        this.actionsListener = actionsListener;
+    }
+
+    @Nullable
+    public ActionsListener<Reminder> getActionsListener() {
+        return actionsListener;
+    }
+
+    public void setData(List<Reminder> list) {
+        this.mDataList.clear();
         this.mDataList.addAll(list);
-        this.mContext = context;
-        this.mEventListener = listener;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,13 +60,13 @@ public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAd
             super(v);
             binding = DataBindingUtil.bind(v);
             v.setOnClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemClicked(getAdapterPosition(), view);
+                if (getActionsListener() != null) {
+                    getActionsListener().onAction(view, getAdapterPosition(), getItem(getAdapterPosition()), ListActions.OPEN);
                 }
             });
             v.setOnLongClickListener(view -> {
-                if (mEventListener != null) {
-                    mEventListener.onItemLongClicked(getAdapterPosition(), view);
+                if (getActionsListener() != null) {
+                    getActionsListener().onAction(view, getAdapterPosition(), getItem(getAdapterPosition()), ListActions.MORE);
                 }
                 return true;
             });
@@ -65,7 +75,7 @@ public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LocationListItemBinding binding = LocationListItemBinding.inflate(LayoutInflater.from(mContext), parent, false);
+        LocationListItemBinding binding = LocationListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new ViewHolder(binding.getRoot());
     }
 

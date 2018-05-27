@@ -6,7 +6,7 @@ import android.database.SQLException;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.core.data.models.Reminder;
 
@@ -35,7 +35,7 @@ public class MigrationTool {
         for (Group item : db.getAllGroups()) {
             realmDb.saveObject(item);
         }
-        for (TemplateItem item : db.getAllTemplates()) {
+        for (SmsTemplate item : db.getAllTemplates()) {
             realmDb.saveObject(item);
         }
         for (BirthdayItem item : db.getBirthdays()) {

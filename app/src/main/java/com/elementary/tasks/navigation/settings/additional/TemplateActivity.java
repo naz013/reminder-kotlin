@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.additional;
 
 import android.content.ContentResolver;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,13 +12,18 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel;
 import com.elementary.tasks.databinding.ActivityTemplateLayoutBinding;
 
 import java.io.IOException;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,30 +40,31 @@ import java.io.IOException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class TemplateActivity extends ThemedActivity {
 
     private static final int MENU_ITEM_DELETE = 12;
 
     private ActivityTemplateLayoutBinding binding;
-    private TemplateItem mItem;
+    private SmsTemplateViewModel viewModel;
+
+    @Nullable
+    private SmsTemplate mItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadTemplate();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_template_layout);
         initActionBar();
         initMessageField();
-        showTemplate();
+
+        loadTemplate();
     }
 
     private void loadTemplate() {
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
-        if (id != null) {
-            mItem = RealmDb.getInstance().getTemplate(id);
-        } else if (intent.getData() != null) {
+        initViewModel(id);
+        if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();
                 String scheme = name.getScheme();
@@ -73,6 +78,25 @@ public class TemplateActivity extends ThemedActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initViewModel(String id) {
+        viewModel = ViewModelProviders.of(this, new SmsTemplateViewModel.Factory(getApplication(), id)).get(SmsTemplateViewModel.class);
+        viewModel.smsTemplate.observe(this, smsTemplate -> {
+            if (smsTemplate != null) {
+                showTemplate(smsTemplate);
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                    case DELETED:
+                        finish();
+                        break;
+                }
+            }
+        });
     }
 
     private void initMessageField() {
@@ -97,10 +121,11 @@ public class TemplateActivity extends ThemedActivity {
         binding.leftCharacters.setText(String.format(getString(R.string.left_characters_x), (120 - count) + ""));
     }
 
-    private void showTemplate() {
-        if (mItem != null) {
-            binding.messageInput.setText(mItem.getTitle());
-            String title = mItem.getTitle();
+    private void showTemplate(SmsTemplate smsTemplate) {
+        this.mItem = smsTemplate;
+        if (smsTemplate != null) {
+            binding.messageInput.setText(smsTemplate.getTitle());
+            String title = smsTemplate.getTitle();
             if (title != null) {
                 updateLeftView(title.length());
             }
@@ -136,10 +161,8 @@ public class TemplateActivity extends ThemedActivity {
 
     private void deleteItem() {
         if (mItem != null) {
-            RealmDb.getInstance().deleteTemplates(mItem);
-            new DeleteTemplateFilesAsync(this).execute(mItem.getKey());
+            viewModel.deleteSmsTemplate(mItem);
         }
-        finish();
     }
 
     private void saveTemplate() {
@@ -153,10 +176,9 @@ public class TemplateActivity extends ThemedActivity {
             mItem.setDate(date);
             mItem.setTitle(text);
         } else {
-            mItem = new TemplateItem(text, date);
+            mItem = new SmsTemplate(text, date);
         }
-        RealmDb.getInstance().saveObject(mItem);
-        finish();
+        viewModel.saveTemplate(mItem);
     }
 
     @Override

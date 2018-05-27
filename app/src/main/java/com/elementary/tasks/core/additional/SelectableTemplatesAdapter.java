@@ -1,18 +1,18 @@
 package com.elementary.tasks.core.additional;
 
 import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemMessageBinding;
-import com.elementary.tasks.navigation.settings.additional.TemplateItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -33,25 +33,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder> {
 
-    private List<TemplateItem> mDataList = new ArrayList<>();
-    private Context mContext;
+    private List<SmsTemplate> mDataList = new ArrayList<>();
     private int selectedPosition = -1;
     private ThemeUtil themeUtil;
 
-    SelectableTemplatesAdapter(List<TemplateItem> mDataList, Context context) {
-        this.mDataList.addAll(mDataList);
-        this.mContext = context;
+    SelectableTemplatesAdapter(Context context) {
         themeUtil = ThemeUtil.getInstance(context);
+    }
+
+    public void setData(List<SmsTemplate> list) {
+        this.mDataList.clear();
+        this.mDataList.addAll(list);
+        notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(mContext), parent, false).getRoot());
+        return new ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final TemplateItem item = mDataList.get(position);
+        final SmsTemplate item = mDataList.get(position);
         holder.binding.setItem(item);
         if (item.isSelected()) {
             holder.binding.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()));
@@ -80,7 +83,7 @@ class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplate
         return selectedPosition;
     }
 
-    public TemplateItem getItem(int position) {
+    public SmsTemplate getItem(int position) {
         return mDataList.get(position);
     }
 

@@ -1,33 +1,32 @@
 package com.elementary.tasks.navigation.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
 import com.elementary.tasks.core.interfaces.MapCallback;
-import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.MeasureUtils;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel;
 import com.elementary.tasks.databinding.BottomSheetLayoutBinding;
 import com.elementary.tasks.databinding.FragmentEventsMapBinding;
 import com.elementary.tasks.places.LocationPlacesAdapter;
-import com.elementary.tasks.core.data.models.Place;
-import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,12 +48,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MapFragment extends BaseNavigationFragment {
 
     private FragmentEventsMapBinding binding;
+    private ActiveGpsRemindersViewModel viewModel;
+    private LocationPlacesAdapter mAdapter = new LocationPlacesAdapter();
 
     private AdvancedMapFragment mGoogleMap;
     private RecyclerView mEventsList;
     private LinearLayout mEmptyItem;
 
-    private List<Reminder> mData = new ArrayList<>();
     private int clickedPosition;
     private int pointer;
     private boolean isDataShowed;
@@ -84,20 +84,8 @@ public class MapFragment extends BaseNavigationFragment {
             return false;
         }
     };
-    private SimpleListener mClickListener = new SimpleListener() {
-        @Override
-        public void onItemClicked(int position, View view) {
-            showClickedPlace(position);
-        }
 
-        @Override
-        public void onItemLongClicked(int position, View view) {
-
-        }
-    };
-
-    private void showClickedPlace(int position) {
-        Reminder reminder = mData.get(position);
+    private void showClickedPlace(int position, Reminder reminder) {
         int maxPointer = reminder.getPlaces().size() - 1;
         if (position != clickedPosition) {
             pointer = 0;
@@ -122,6 +110,21 @@ public class MapFragment extends BaseNavigationFragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel.class);
+        viewModel.events.observe(this, reminders -> {
+            if (reminders != null && mGoogleMap != null) {
+                showData();
+            }
+        });
+    }
+
     private void initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, false, false,
                 ThemeUtil.getInstance(getContext()).isDark());
@@ -137,6 +140,16 @@ public class MapFragment extends BaseNavigationFragment {
         BottomSheetLayoutBinding bottomSheet = binding.bottomSheet;
         mEventsList = bottomSheet.recyclerView;
         mEventsList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mAdapter.setActionsListener((view, position, reminder, actions) -> {
+            switch (actions) {
+                case OPEN:
+                    showClickedPlace(position, reminder);
+                    break;
+            }
+        });
+        mEventsList.setAdapter(mAdapter);
+
         mEmptyItem = bottomSheet.emptyItem;
         binding.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(getContext()).getCardStyle());
         BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(binding.sheetLayout);
@@ -150,25 +163,16 @@ public class MapFragment extends BaseNavigationFragment {
             getCallback().onTitleChange(getString(R.string.map));
             getCallback().onFragmentSelect(this);
         }
-        loadData();
-        if (mGoogleMap != null) {
-            showData();
-        }
-    }
-
-    private void loadData() {
-        mData = RealmDb.getInstance().getGpsReminders();
-        isDataShowed = false;
     }
 
     private void showData() {
-        if (isDataShowed) {
+        List<Reminder> data = viewModel.events.getValue();
+        if (isDataShowed || data == null) {
             return;
         }
-        LocationPlacesAdapter mAdapter = new LocationPlacesAdapter(getContext(), mData, mClickListener);
-        mEventsList.setAdapter(mAdapter);
+        mAdapter.setData(data);
         boolean mapReady = false;
-        for (Reminder reminder : mData) {
+        for (Reminder reminder : data) {
             for (Place place : reminder.getPlaces()) {
                 mapReady = mGoogleMap.addMarker(new LatLng(place.getLatitude(), place.getLongitude()),
                         place.getName(), false, place.getMarker(), false, place.getRadius());

@@ -4,8 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,14 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.data.models.SmsTemplate;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel;
 import com.elementary.tasks.databinding.FragmentTemplatesListBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
@@ -39,10 +43,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class TemplatesFragment extends BaseSettingsFragment implements FilterCallback<TemplateItem> {
+public class TemplatesFragment extends BaseSettingsFragment implements FilterCallback<SmsTemplate> {
 
     private FragmentTemplatesListBinding binding;
-    private TemplatesAdapter adapter;
+    @NonNull
+    private TemplatesAdapter adapter = new TemplatesAdapter();
+    private SmsTemplatesViewModel viewModel;
 
     private SearchView mSearchView = null;
     private MenuItem mSearchMenu = null;
@@ -68,7 +74,7 @@ public class TemplatesFragment extends BaseSettingsFragment implements FilterCal
     };
 
     private SearchView.OnCloseListener mCloseListener = () -> {
-        showTemplates();
+        filterController.setSearchValue("");
         return true;
     };
 
@@ -109,6 +115,21 @@ public class TemplatesFragment extends BaseSettingsFragment implements FilterCal
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel.class);
+        viewModel.smsTemplates.observe(this, smsTemplates -> {
+            if (smsTemplates != null) {
+                showTemplates(smsTemplates);
+            }
+        });
+    }
+
     private void openCreateScreen() {
         startActivity(new Intent(getContext(), TemplateActivity.class));
     }
@@ -116,9 +137,41 @@ public class TemplatesFragment extends BaseSettingsFragment implements FilterCal
     private void initTemplateList() {
         binding.templatesList.setHasFixedSize(false);
         binding.templatesList.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new TemplatesAdapter(getContext());
+        adapter.setActionsListener((view, position, smsTemplate, actions) -> {
+            switch (actions) {
+                case MORE:
+                    showMenu(position, smsTemplate);
+                    break;
+                case OPEN:
+                    openTemplate(smsTemplate);
+                    break;
+            }
+        });
         binding.templatesList.setAdapter(adapter);
         refreshView();
+    }
+
+    private void showMenu(int position, SmsTemplate smsTemplate) {
+        String[] items = new String[]{getString(R.string.edit), getString(R.string.delete)};
+        SuperUtil.showLCAM(getContext(), item -> {
+            switch (item) {
+                case 0:
+                    openTemplate(smsTemplate);
+                    break;
+                case 1:
+                    deleteTemplate(smsTemplate);
+                    break;
+            }
+        }, items);
+    }
+
+    private void openTemplate(SmsTemplate smsTemplate) {
+        startActivity(new Intent(getContext(), TemplateActivity.class)
+                .putExtra(Constants.INTENT_ID, smsTemplate.getKey()));
+    }
+
+    private void deleteTemplate(SmsTemplate smsTemplate) {
+        viewModel.deleteSmsTemplate(smsTemplate);
     }
 
     @Override
@@ -130,11 +183,10 @@ public class TemplatesFragment extends BaseSettingsFragment implements FilterCal
             getCallback().setClick(view -> openCreateScreen());
             getCallback().onScrollChanged(binding.templatesList);
         }
-        showTemplates();
     }
 
-    private void showTemplates() {
-        filterController.setOriginal(RealmDb.getInstance().getAllTemplates());
+    private void showTemplates(List<SmsTemplate> smsTemplates) {
+        filterController.setOriginal(smsTemplates);
     }
 
     private void refreshView() {
@@ -148,7 +200,7 @@ public class TemplatesFragment extends BaseSettingsFragment implements FilterCal
     }
 
     @Override
-    public void onChanged(@NonNull List<TemplateItem> result) {
+    public void onChanged(@NonNull List<SmsTemplate> result) {
         adapter.setData(result);
         binding.templatesList.smoothScrollToPosition(0);
         refreshView();

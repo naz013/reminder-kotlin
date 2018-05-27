@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.navigation.settings.additional.TemplateItem;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,16 +181,16 @@ class DataBase {
         return new BirthdayItem(name, date, number, year, conId, day, month);
     }
 
-    List<TemplateItem> getAllTemplates() throws SQLException {
+    List<SmsTemplate> getAllTemplates() throws SQLException {
         openGuard();
-        List<TemplateItem> list = new ArrayList<>();
+        List<SmsTemplate> list = new ArrayList<>();
         Cursor c = db.query(MESSAGES_TABLE_NAME, null, null, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             do {
                 String title = c.getString(c.getColumnIndex(Constants.COLUMN_TEXT));
                 long id = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
                 deleteTemplate(id);
-                list.add(new TemplateItem(title));
+                list.add(new SmsTemplate(title));
             } while (c.moveToNext());
         }
         if (c != null) c.close();

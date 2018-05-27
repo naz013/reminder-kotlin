@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.navigation.settings.additional.TemplateItem" />
+            type="com.elementary.tasks.core.data.models.SmsTemplate" />
 
     </data>
 
