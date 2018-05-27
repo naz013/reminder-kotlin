@@ -1,4 +1,4 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.google;
 
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.network.places.PlacesResponse;

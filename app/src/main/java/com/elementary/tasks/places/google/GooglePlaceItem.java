@@ -1,4 +1,4 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.google;
 
 import com.google.android.gms.maps.model.LatLng;
 

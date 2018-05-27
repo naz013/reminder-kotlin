@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.places.GooglePlaceItem" />
+            type="com.elementary.tasks.places.google.GooglePlaceItem" />
 
     </data>
 

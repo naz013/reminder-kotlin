@@ -170,7 +170,7 @@ public abstract class BaseRemindersViewModel extends BaseDbViewModel {
                 result.postValue(Commands.DELETED);
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show();
             });
-            CalendarUtils.deleteEvents(getApplication(), reminder.getUuId());
+            CalendarUtils.deleteEvents(getApplication(), reminder.getUniqueId());
             new DeleteFilesAsync(getApplication()).execute(reminder.getUuId());
         });
     }

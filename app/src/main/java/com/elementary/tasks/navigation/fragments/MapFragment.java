@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel;
 import com.elementary.tasks.databinding.BottomSheetLayoutBinding;
 import com.elementary.tasks.databinding.FragmentEventsMapBinding;
-import com.elementary.tasks.places.LocationPlacesAdapter;
+import com.elementary.tasks.places.google.LocationPlacesAdapter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;

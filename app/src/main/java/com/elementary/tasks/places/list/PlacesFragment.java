@@ -1,11 +1,9 @@
-package com.elementary.tasks.navigation.fragments;
+package com.elementary.tasks.places.list;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,20 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.interfaces.SimpleListener;
+import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.view_models.places.PlacesViewModel;
 import com.elementary.tasks.databinding.FragmentPlacesBinding;
-import com.elementary.tasks.places.CreatePlaceActivity;
-import com.elementary.tasks.places.PlaceFilterController;
-import com.elementary.tasks.places.PlaceItem;
-import com.elementary.tasks.places.PlacesRecyclerAdapter;
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
+import com.elementary.tasks.places.create.CreatePlaceActivity;
+import com.elementary.tasks.places.list.PlaceFilterController;
+import com.elementary.tasks.places.list.PlacesRecyclerAdapter;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
@@ -45,11 +46,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class PlacesFragment extends BaseNavigationFragment implements FilterCallback<PlaceItem> {
+public class PlacesFragment extends BaseNavigationFragment implements FilterCallback<Place> {
 
     private FragmentPlacesBinding binding;
-    private PlacesRecyclerAdapter mAdapter;
+    private PlacesViewModel viewModel;
 
+    @NonNull
+    private PlacesRecyclerAdapter mAdapter = new PlacesRecyclerAdapter();
     @Nullable
     private SearchView mSearchView = null;
     @Nullable
@@ -75,26 +78,6 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
         }
     };
     private SearchView.OnCloseListener mSearchCloseListener = () -> false;
-    private SimpleListener mEventListener = new SimpleListener() {
-        @Override
-        public void onItemClicked(int position, View view) {
-            startActivity(new Intent(getContext(), CreatePlaceActivity.class)
-                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
-        }
-
-        @Override
-        public void onItemLongClicked(int position, View view) {
-            final String[] items = {getString(R.string.edit), getString(R.string.delete)};
-            Dialogues.showLCAM(getContext(), item -> {
-                if (item == 0) {
-                    editPlace(position);
-                } else if (item == 1) {
-                    mAdapter.deleteItem(position);
-                    refreshView();
-                }
-            }, items);
-        }
-    };
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -130,6 +113,29 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(PlacesViewModel.class);
+        viewModel.places.observe(this, places -> {
+            if (places != null) {
+                filterController.setOriginal(places);
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case DELETED:
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (getCallback() != null) {
@@ -138,23 +144,39 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
             getCallback().setClick(view -> startActivity(new Intent(getContext(), CreatePlaceActivity.class)));
             getCallback().onScrollChanged(binding.recyclerView);
         }
-        showData();
-    }
-
-    private void editPlace(int position) {
-        getContext().startActivity(new Intent(getContext(), CreatePlaceActivity.class).putExtra(Constants.INTENT_ID, mAdapter.getItem(position).getKey()));
     }
 
     private void initList() {
         binding.recyclerView.setHasFixedSize(false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new PlacesRecyclerAdapter(getContext(), mEventListener);
+        mAdapter.setActionsListener((view, position, place, actions) -> {
+            switch (actions) {
+                case OPEN:
+                    openPlace(place);
+                    break;
+                case MORE:
+                    showMore(place);
+                    break;
+            }
+        });
         binding.recyclerView.setAdapter(mAdapter);
         refreshView();
     }
 
-    private void showData() {
-        filterController.setOriginal(RealmDb.getInstance().getAllPlaces());
+    private void showMore(Place place) {
+        final String[] items = {getString(R.string.edit), getString(R.string.delete)};
+        Dialogues.showLCAM(getContext(), item -> {
+            if (item == 0) {
+                openPlace(place);
+            } else if (item == 1) {
+                viewModel.deletePlace(place);
+            }
+        }, items);
+    }
+
+    private void openPlace(Place place) {
+        startActivity(new Intent(getContext(), CreatePlaceActivity.class)
+                .putExtra(Constants.INTENT_ID, place.getId()));
     }
 
     private void refreshView() {
@@ -168,7 +190,7 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
     }
 
     @Override
-    public void onChanged(@NonNull List<PlaceItem> result) {
+    public void onChanged(@NonNull List<Place> result) {
         mAdapter.setData(result);
         binding.recyclerView.smoothScrollToPosition(0);
         refreshView();

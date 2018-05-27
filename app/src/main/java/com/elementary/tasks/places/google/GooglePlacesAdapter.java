@@ -1,4 +1,4 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.google;
 
 import android.content.Context;
 import androidx.databinding.DataBindingUtil;

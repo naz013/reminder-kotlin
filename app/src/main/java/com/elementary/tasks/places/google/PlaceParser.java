@@ -1,4 +1,4 @@
-package com.elementary.tasks.places;
+package com.elementary.tasks.places.google;
 
 import com.elementary.tasks.core.network.places.Location;
 import com.elementary.tasks.core.network.places.Place;
