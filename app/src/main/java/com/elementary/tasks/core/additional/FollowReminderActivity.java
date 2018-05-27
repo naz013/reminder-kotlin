@@ -3,7 +3,6 @@ package com.elementary.tasks.core.additional;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,32 +12,29 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.Google;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.views.roboto.RoboCheckBox;
-import com.elementary.tasks.core.views.roboto.RoboEditText;
-import com.elementary.tasks.core.views.roboto.RoboRadioButton;
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityFollowLayoutBinding;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -59,18 +55,7 @@ import java.util.List;
 public class FollowReminderActivity extends ThemedActivity implements CompoundButton.OnCheckedChangeListener {
 
     private ActivityFollowLayoutBinding binding;
-    private RoboEditText mMessageField;
-    private RoboTextView mCustomDateView;
-    private RoboTextView mCustomTimeView;
-    private RoboRadioButton mMessageRadio;
-    private RoboRadioButton mCallRadio;
-    private RoboRadioButton mTomorrowRadio;
-    private RoboRadioButton mNextWorkingRadio;
-    private RoboRadioButton mAfterRadio;
-    private RoboRadioButton mCustomRadio;
-    private Spinner mAfterSpinner;
-    private RoboCheckBox mTasksCheck;
-    private RoboCheckBox mCalendarCheck;
+    private ReminderViewModel viewModel;
 
     private int mHour = 0;
     private int mCustomHour = 0;
@@ -110,8 +95,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         } else c.setTimeInMillis(System.currentTimeMillis());
         mCurrentTime = c.getTimeInMillis();
 
-        mMessageField = binding.textField;
-        mMessageField.setHint(getString(R.string.message));
+        binding.textField.setHint(getString(R.string.message));
 
         RoboTextView contactInfo = binding.contactInfo;
         if (name != null && !name.matches("")) {
@@ -126,25 +110,30 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         initCustomTime();
         initTomorrowTime();
         initNextBusinessTime();
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new ReminderViewModel.Factory(getApplication(), 0)).get(ReminderViewModel.class);
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                        closeWindow();
+                        break;
+                }
+            }
+        });
     }
 
     private void initViews() {
-        mCustomTimeView = binding.customTime;
-        mCustomDateView = binding.customDate;
-
-        mMessageRadio = binding.typeMessage;
-        mCallRadio = binding.typeCall;
-        mCallRadio.setChecked(true);
-
-        mTomorrowRadio = binding.timeTomorrow;
-        mTomorrowRadio.setOnCheckedChangeListener(this);
-        mAfterRadio = binding.timeAfter;
-        mAfterRadio.setOnCheckedChangeListener(this);
-        mCustomRadio = binding.timeCustom;
-        mCustomRadio.setOnCheckedChangeListener(this);
-        mNextWorkingRadio = binding.timeNextWorking;
-        mNextWorkingRadio.setOnCheckedChangeListener(this);
-        mTomorrowRadio.setChecked(true);
+        binding.typeCall.setChecked(true);
+        binding.timeTomorrow.setOnCheckedChangeListener(this);
+        binding.timeAfter.setOnCheckedChangeListener(this);
+        binding.timeCustom.setOnCheckedChangeListener(this);
+        binding.timeNextWorking.setOnCheckedChangeListener(this);
+        binding.timeTomorrow.setChecked(true);
     }
 
     private void initNextBusinessTime() {
@@ -172,43 +161,39 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
-        RoboTextView tomorrowTime = binding.tomorrowTime;
-        tomorrowTime.setText(TimeUtil.getDateTime(c.getTime(), mIs24Hour));
+        binding.tomorrowTime.setText(TimeUtil.getDateTime(c.getTime(), mIs24Hour));
     }
 
     private void initSpinner() {
-        mAfterSpinner = binding.afterTime;
-        mAfterSpinner.setAdapter(getAdapter());
+        binding.afterTime.setAdapter(getAdapter());
     }
 
     private void initCustomTime() {
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(mCurrentTime);
-        mCustomDateView.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
-        mCustomTimeView.setText(TimeUtil.getTime(c.getTime(), mIs24Hour));
+        binding.customDate.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
+        binding.customTime.setText(TimeUtil.getTime(c.getTime(), mIs24Hour));
         mCustomHour = c.get(Calendar.HOUR_OF_DAY);
         mCustomMinute = c.get(Calendar.MINUTE);
         mCustomYear = c.get(Calendar.YEAR);
         mCustomMonth = c.get(Calendar.MONTH);
         mCustomDay = c.get(Calendar.DAY_OF_MONTH);
-        mCustomDateView.setOnClickListener(v -> {
-            mCustomRadio.setChecked(true);
+        binding.customDate.setOnClickListener(v -> {
+            binding.timeCustom.setChecked(true);
             dateDialog();
         });
-        mCustomTimeView.setOnClickListener(v -> {
-            mCustomRadio.setChecked(true);
+        binding.customTime.setOnClickListener(v -> {
+            binding.timeCustom.setChecked(true);
             timeDialog();
         });
     }
 
     private void initExportChecks() {
-        mCalendarCheck = binding.exportCheck;
-        mTasksCheck = binding.taskExport;
         if (mCalendar || mStock) {
-            mCalendarCheck.setVisibility(View.VISIBLE);
+            binding.exportCheck.setVisibility(View.VISIBLE);
         }
         if (mTasks) {
-            mTasksCheck.setVisibility(View.VISIBLE);
+            binding.taskExport.setVisibility(View.VISIBLE);
         }
         if (!mCalendar && !mStock && !mTasks) {
             binding.card5.setVisibility(View.GONE);
@@ -278,7 +263,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
             c.set(Calendar.MONTH, monthOfYear);
             c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            mCustomDateView.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
+            binding.customDate.setText(TimeUtil.DATE_FORMAT.format(c.getTime()));
         }
     };
 
@@ -295,21 +280,21 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
 
-            mCustomTimeView.setText(TimeUtil.getTime(c.getTime(), mIs24Hour));
+            binding.customTime.setText(TimeUtil.getTime(c.getTime(), mIs24Hour));
         }
     };
 
     private void saveDateTask() {
-        String text = mMessageField.getText().toString().trim();
-        if (text.matches("") && mMessageRadio.isChecked()) {
-            mMessageField.setError(getString(R.string.must_be_not_empty));
+        String text = binding.textField.getText().toString().trim();
+        if (text.matches("") && binding.typeMessage.isChecked()) {
+            binding.textField.setError(getString(R.string.must_be_not_empty));
             return;
         }
         int type = getType();
         setUpTimes();
         long due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0);
         Reminder reminder = new Reminder();
-        Group def = RealmDb.getInstance().getDefaultGroup();
+        Group def = viewModel.defaultGroup.getValue();
         if (def != null) {
             reminder.setGroupUuId(def.getUuId());
         }
@@ -318,24 +303,26 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         reminder.setType(type);
         reminder.setSummary(text);
         reminder.setTarget(mNumber);
-        if (mTasksCheck.getVisibility() == View.VISIBLE) {
-            reminder.setExportToTasks(mTasksCheck.isChecked());
+        if (binding.taskExport.getVisibility() == View.VISIBLE) {
+            reminder.setExportToTasks(binding.taskExport.isChecked());
         }
-        if (mCalendarCheck.getVisibility() == View.VISIBLE) {
-            reminder.setExportToCalendar(mCalendarCheck.isChecked());
+        if (binding.exportCheck.getVisibility() == View.VISIBLE) {
+            reminder.setExportToCalendar(binding.exportCheck.isChecked());
         }
-        EventControl control = EventControlFactory.getController(this, reminder);
-        control.start();
+        viewModel.saveAndStartReminder(reminder);
+    }
+
+    private void closeWindow() {
         removeFlags();
         finish();
     }
 
     private void setUpTimes() {
-        if (mNextWorkingRadio.isChecked()) {
+        if (binding.timeNextWorking.isChecked()) {
             setUpNextBusiness();
-        } else if (mTomorrowRadio.isChecked()) {
+        } else if (binding.timeTomorrow.isChecked()) {
             setUpTomorrow();
-        } else if (mCustomRadio.isChecked()) {
+        } else if (binding.timeCustom.isChecked()) {
             mDay = mCustomDay;
             mHour = mCustomHour;
             mMinute = mCustomMinute;
@@ -343,7 +330,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
             mYear = mCustomYear;
         } else {
             Calendar c = Calendar.getInstance();
-            c.setTimeInMillis(mCurrentTime + (1000 * 60 * getAfterMins(mAfterSpinner.getSelectedItemPosition())));
+            c.setTimeInMillis(mCurrentTime + (1000 * 60 * getAfterMins(binding.afterTime.getSelectedItemPosition())));
             mHour = c.get(Calendar.HOUR_OF_DAY);
             mMinute = c.get(Calendar.MINUTE);
             mYear = c.get(Calendar.YEAR);
@@ -353,7 +340,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     }
 
     private int getType() {
-        if (mCallRadio.isChecked()) return Reminder.BY_DATE_CALL;
+        if (binding.typeCall.isChecked()) return Reminder.BY_DATE_CALL;
         else return Reminder.BY_DATE_SMS;
     }
 
@@ -368,33 +355,33 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.timeTomorrow:
-                if (mTomorrowRadio.isChecked()) {
-                    mNextWorkingRadio.setChecked(false);
-                    mAfterRadio.setChecked(false);
-                    mCustomRadio.setChecked(false);
+                if (binding.timeTomorrow.isChecked()) {
+                    binding.timeNextWorking.setChecked(false);
+                    binding.timeAfter.setChecked(false);
+                    binding.timeCustom.setChecked(false);
                 }
                 setUpTomorrow();
                 break;
             case R.id.timeNextWorking:
-                if (mNextWorkingRadio.isChecked()) {
-                    mTomorrowRadio.setChecked(false);
-                    mAfterRadio.setChecked(false);
-                    mCustomRadio.setChecked(false);
+                if (binding.timeNextWorking.isChecked()) {
+                    binding.timeTomorrow.setChecked(false);
+                    binding.timeAfter.setChecked(false);
+                    binding.timeCustom.setChecked(false);
                 }
                 setUpNextBusiness();
                 break;
             case R.id.timeAfter:
-                if (mAfterRadio.isChecked()) {
-                    mTomorrowRadio.setChecked(false);
-                    mNextWorkingRadio.setChecked(false);
-                    mCustomRadio.setChecked(false);
+                if (binding.timeAfter.isChecked()) {
+                    binding.timeTomorrow.setChecked(false);
+                    binding.timeNextWorking.setChecked(false);
+                    binding.timeCustom.setChecked(false);
                 }
                 break;
             case R.id.timeCustom:
-                if (mCustomRadio.isChecked()) {
-                    mTomorrowRadio.setChecked(false);
-                    mNextWorkingRadio.setChecked(false);
-                    mAfterRadio.setChecked(false);
+                if (binding.timeCustom.isChecked()) {
+                    binding.timeTomorrow.setChecked(false);
+                    binding.timeNextWorking.setChecked(false);
+                    binding.timeAfter.setChecked(false);
                 }
                 break;
         }
@@ -434,7 +421,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
                 saveDateTask();
                 return true;
             case android.R.id.home:
-                finish();
+                closeWindow();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

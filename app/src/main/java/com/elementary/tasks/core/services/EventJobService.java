@@ -2,11 +2,11 @@ package com.elementary.tasks.core.services;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
@@ -16,7 +16,6 @@ import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.missed_calls.MissedCallDialogActivity;
-import com.elementary.tasks.core.data.models.Reminder;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
@@ -25,6 +24,8 @@ import com.evernote.android.job.util.support.PersistableBundleCompat;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -71,7 +72,10 @@ public class EventJobService extends Job {
                 } else if (bundle.getBoolean(ARG_LOCATION, false)) {
                     SuperUtil.startGpsTracking(getContext());
                 } else {
-                    start(getContext(), params.getTag());
+                    try {
+                        start(getContext(), Integer.parseInt(params.getTag()));
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
             break;
@@ -124,7 +128,7 @@ public class EventJobService extends Job {
         getContext().startActivity(resultIntent);
     }
 
-    private void start(Context context, String id) {
+    private void start(Context context, int id) {
         Intent intent = new Intent(context, ReminderActionService.class);
         intent.setAction(ReminderActionService.ACTION_RUN);
         intent.putExtra(Constants.INTENT_ID, id);
@@ -154,14 +158,14 @@ public class EventJobService extends Job {
         cancelReminder(number);
     }
 
-    public static void enableDelay(int time, String uuId) {
+    public static void enableDelay(int time, int id) {
         long min = TimeCount.MINUTE;
         long due = System.currentTimeMillis() + (min * time);
         long mills = due - System.currentTimeMillis();
         if (due == 0 || mills <= 0) {
             return;
         }
-        new JobRequest.Builder(uuId)
+        new JobRequest.Builder(String.valueOf(id))
                 .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
@@ -172,8 +176,8 @@ public class EventJobService extends Job {
                 .schedule();
     }
 
-    public static boolean enablePositionDelay(String id) {
-        Reminder item = RealmDb.getInstance().getReminder(id);
+    public static boolean enablePositionDelay(Context context, int id) {
+        Reminder item = AppDb.getAppDatabase(context).reminderDao().getById(id);
         if (item == null) {
             return false;
         }
@@ -184,7 +188,7 @@ public class EventJobService extends Job {
         }
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putBoolean(ARG_LOCATION, true);
-        new JobRequest.Builder(item.getUuId())
+        new JobRequest.Builder(String.valueOf(item.getUniqueId()))
                 .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
@@ -220,7 +224,7 @@ public class EventJobService extends Job {
         if (mills <= 0) {
             return;
         }
-        new JobRequest.Builder(reminder.getUuId())
+        new JobRequest.Builder(String.valueOf(reminder.getUniqueId()))
                 .setExact(mills)
                 .setRequiresCharging(false)
                 .setRequiresDeviceIdle(false)
@@ -231,8 +235,8 @@ public class EventJobService extends Job {
                 .schedule();
     }
 
-    public static boolean isEnabledReminder(String tag) {
-        return !JobManager.instance().getAllJobsForTag(tag).isEmpty();
+    public static boolean isEnabledReminder(int id) {
+        return !JobManager.instance().getAllJobsForTag(String.valueOf(id)).isEmpty();
     }
 
     public static void cancelReminder(String tag) {

@@ -29,7 +29,6 @@ import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SoundStackHolder;
-import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
@@ -311,60 +310,7 @@ public abstract class BaseNotificationActivity extends ThemedActivity {
         return true;
     }
 
-    protected void showMissedReminder(String name) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
-        builder.setContentTitle(name);
-        builder.setAutoCancel(false);
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
-        if (getPrefs().isManualRemoveEnabled()) {
-            builder.setOngoing(false);
-        } else {
-            builder.setOngoing(true);
-        }
-        String appName;
-        if (Module.isPro()) {
-            appName = getString(R.string.app_name_pro);
-            if (getPrefs().isLedEnabled()) {
-                builder.setLights(getLedColor(), 500, 1000);
-            }
-        } else {
-            appName = getString(R.string.app_name);
-        }
-        builder.setContentText(appName);
-        if (Module.isLollipop()) {
-            builder.setSmallIcon(R.drawable.ic_call_white_24dp);
-        } else {
-            builder.setSmallIcon(R.drawable.ic_call_nv_white);
-        }
-        if (Module.isLollipop()) {
-            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
-        }
-        if (getSound() != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
-                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
-            Uri soundUri = getSoundUri();
-            getSound().playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
-        }
-        if (isVibrate()) {
-            long[] pattern;
-            if (getPrefs().isInfiniteVibrateEnabled()) {
-                pattern = new long[]{150, 86400000};
-            } else {
-                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
-            }
-            builder.setVibrate(pattern);
-        }
-        boolean isWear = getPrefs().isWearEnabled();
-        if (isWear && Module.isJellyMR2()) {
-            builder.setOnlyAlertOnce(true);
-            builder.setGroup("GROUP");
-            builder.setGroupSummary(true);
-        }
-        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
-        mNotifyMgr.notify(getId(), builder.build());
-        if (isWear) {
-            showWearNotification(appName);
-        }
-    }
+
 
     protected final void showProgressDialog(String message) {
         hideProgressDialog();

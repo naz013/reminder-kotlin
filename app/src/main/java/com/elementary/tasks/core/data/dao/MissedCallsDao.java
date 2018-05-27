@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.dao;
 
-import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.MissedCall;
 
 import java.util.List;
 
@@ -28,32 +28,26 @@ import static androidx.room.OnConflictStrategy.REPLACE;
  * limitations under the License.
  */
 @Dao
-public interface ReminderDao {
+public interface MissedCallsDao {
 
-    @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
-    LiveData<Reminder> loadById(int id);
+    @Query("SELECT * FROM MissedCall")
+    LiveData<List<MissedCall>> loadAll();
 
-    @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
-    Reminder getById(int id);
-
-    @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed")
-    LiveData<List<Reminder>> loadType(boolean active, boolean removed);
-
-    @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed")
-    List<Reminder> getAll(boolean active, boolean removed);
-
-    @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed AND type IN (:types)")
-    List<Reminder> getAllGps(boolean active, boolean removed, int[] types);
+    @Query("SELECT * FROM MissedCall")
+    List<MissedCall> getAll();
 
     @Insert(onConflict = REPLACE)
-    int insert(Reminder reminder);
+    void insert(MissedCall missedCall);
 
     @Insert(onConflict = REPLACE)
-    void insertAll(Reminder... reminder);
+    void insertAll(MissedCall... missedCalls);
 
     @Delete
-    void delete(Reminder reminder);
+    void delete(MissedCall missedCall);
 
-    @Delete
-    void deleteAll(Reminder... reminder);
+    @Query("SELECT * FROM MissedCall WHERE number=:number")
+    LiveData<MissedCall> loadByNumber(String number);
+
+    @Query("SELECT * FROM MissedCall WHERE number=:number")
+    MissedCall getByNumber(String number);
 }

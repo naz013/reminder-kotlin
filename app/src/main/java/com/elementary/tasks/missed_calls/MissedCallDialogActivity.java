@@ -4,32 +4,35 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.BaseNotificationActivity;
-import com.elementary.tasks.core.services.EventJobService;
+import com.elementary.tasks.core.data.models.MissedCall;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel;
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.sql.Date;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.databinding.DataBindingUtil;
-import de.hdodenhof.circleimageview.CircleImageView;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -53,76 +56,96 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     private static final int CALL_PERM = 612;
 
     private ActivityReminderDialogBinding binding;
+    private MissedCallViewModel viewModel;
 
-    private CallItem mCallItem;
+    @Nullable
+    private MissedCall mMissedCall;
     private boolean mIsResumed;
-    private String wearMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
-        mCallItem = RealmDb.getInstance().getMissedCall(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
-        if (mCallItem == null || TextUtils.isEmpty(mCallItem.getNumber())) {
-            finish();
-            return;
-        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog);
+
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) binding.card.setCardElevation(Configs.CARD_ELEVATION);
         binding.container.setVisibility(View.GONE);
         binding.subjectContainer.setVisibility(View.GONE);
         loadImage(binding.bgImage);
-        FloatingActionButton buttonCancel = findViewById(R.id.buttonCancel);
-        FloatingActionButton buttonCall = findViewById(R.id.buttonCall);
-        FloatingActionButton buttonDelay = findViewById(R.id.buttonDelay);
-        FloatingActionButton buttonDelayFor = findViewById(R.id.buttonDelayFor);
-        FloatingActionButton buttonNotification = findViewById(R.id.buttonNotification);
-        colorify(binding.buttonOk, buttonCall, buttonCancel, buttonDelay, buttonDelayFor,
-                buttonNotification, binding.buttonEdit);
-        buttonDelay.hide();
-        buttonDelayFor.hide();
-        buttonNotification.hide();
+        colorify(binding.buttonOk, binding.buttonCancel, binding.buttonCall, binding.buttonDelay,
+                binding.buttonDelayFor, binding.buttonNotification, binding.buttonEdit);
+        binding.buttonDelay.hide();
+        binding.buttonDelayFor.hide();
+        binding.buttonNotification.hide();
         binding.buttonEdit.hide();
 
         binding.buttonOk.setImageResource(R.drawable.ic_done_black_24dp);
-        buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
-        buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
+        binding.buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp);
+        binding.buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
 
-        CircleImageView contactPhoto = binding.contactPhoto;
-        contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
-        contactPhoto.setVisibility(View.GONE);
+        binding.contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
+        binding.contactPhoto.setVisibility(View.GONE);
 
-        TextView remText = findViewById(R.id.remText);
-        String formattedTime = "";
-        if (mCallItem != null) {
-            try {
-                formattedTime = TimeUtil.getTime(new Date(mCallItem.getDateTime()), getPrefs().is24HourFormatEnabled());
-            } catch (NullPointerException e) {
-                LogUtil.d(TAG, "onCreate: " + e.getLocalizedMessage());
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new MissedCallViewModel.Factory(getApplication(),
+                getIntent().getStringExtra(Constants.INTENT_ID))).get(MissedCallViewModel.class);
+        viewModel.missedCall.observe(this, missedCall -> {
+            if (missedCall != null) {
+                showInfo(missedCall);
+            } else {
+                closeWindow();
             }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case DELETED:
+                        closeWindow();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showInfo(@NonNull MissedCall missedCall) {
+        this.mMissedCall = missedCall;
+        String formattedTime = "";
+        try {
+            formattedTime = TimeUtil.getTime(new Date(missedCall.getDateTime()), getPrefs().is24HourFormatEnabled());
+        } catch (NullPointerException e) {
+            LogUtil.d(TAG, "onCreate: " + e.getLocalizedMessage());
         }
-        String name = Contacts.getNameFromNumber(mCallItem.getNumber(), this);
-        wearMessage = (name != null ? name : "") + "\n" + mCallItem.getNumber();
-        if (mCallItem.getNumber() != null) {
-            long conID = Contacts.getIdFromNumber(mCallItem.getNumber(), this);
+        String name = Contacts.getNameFromNumber(missedCall.getNumber(), this);
+        String wearMessage = (name != null ? name : "") + "\n" + missedCall.getNumber();
+        if (missedCall.getNumber() != null) {
+            long conID = Contacts.getIdFromNumber(missedCall.getNumber(), this);
             Uri photo = Contacts.getPhoto(conID);
             if (photo != null) {
-                contactPhoto.setImageURI(photo);
+                binding.contactPhoto.setImageURI(photo);
             } else {
-                contactPhoto.setVisibility(View.GONE);
+                binding.contactPhoto.setVisibility(View.GONE);
             }
-            remText.setText(R.string.missed_call);
+            binding.remText.setText(R.string.missed_call);
             binding.contactInfo.setText(wearMessage);
             binding.actionDirect.setText(R.string.from);
             binding.someView.setText(R.string.last_called);
             binding.messageView.setText(formattedTime);
             binding.container.setVisibility(View.VISIBLE);
         }
-        buttonCancel.setOnClickListener(v -> sendSMS());
+        binding.buttonCancel.setOnClickListener(v -> sendSMS());
         binding.buttonOk.setOnClickListener(v -> ok());
-        buttonCall.setOnClickListener(v -> call());
-        showMissedReminder(name == null || name.matches("") ? mCallItem.getNumber() : name);
+        binding.buttonCall.setOnClickListener(v -> call());
+        showMissedReminder(name == null || name.matches("") ? missedCall.getNumber() : name);
+        init();
+    }
+
+    private void closeWindow() {
+        removeFlags();
+        finish();
     }
 
     @Override
@@ -135,25 +158,21 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
     public void onBackPressed() {
         discardMedia();
         if (getPrefs().isFoldingEnabled()) {
-            removeFlags();
-            finish();
+            closeWindow();
         } else {
             Toast.makeText(MissedCallDialogActivity.this, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show();
         }
     }
 
-
     @Override
     protected void call() {
-        removeMissed();
         makeCall();
     }
 
     private void makeCall() {
         if (Permissions.checkPermission(this, Permissions.CALL_PHONE)) {
-            TelephonyUtil.makeCall(mCallItem.getNumber(), MissedCallDialogActivity.this);
-            removeFlags();
-            finish();
+            TelephonyUtil.makeCall(mMissedCall.getNumber(), MissedCallDialogActivity.this);
+            removeMissed();
         } else {
             Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE);
         }
@@ -161,46 +180,36 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected void delay() {
-        removeFlags();
-        finish();
+        closeWindow();
     }
 
     @Override
     protected void cancel() {
         sendSMS();
-        removeFlags();
-        finish();
     }
 
     private void sendSMS() {
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.setType("vnd.android-dir/mms-sms");
-        sendIntent.putExtra("address", mCallItem.getNumber());
+        sendIntent.putExtra("address", mMissedCall.getNumber());
         startActivity(Intent.createChooser(sendIntent, "SMS:"));
         removeMissed();
-        removeFlags();
-        finish();
     }
 
     @Override
     protected void favourite() {
-        removeFlags();
-        finish();
+        closeWindow();
     }
 
     @Override
     protected void ok() {
         removeMissed();
-        removeFlags();
-        finish();
     }
 
     private void removeMissed() {
-        if (mCallItem != null) {
-            EventJobService.cancelMissedCall(mCallItem.getNumber());
+        if (mMissedCall != null) {
+            viewModel.deleteMissedCall(mMissedCall);
         }
-        discardNotification(getId());
-        RealmDb.getInstance().deleteMissedCall(mCallItem);
     }
 
     @Override
@@ -229,7 +238,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected String getSummary() {
-        return mCallItem.getNumber();
+        return mMissedCall.getNumber();
     }
 
     @Override
@@ -239,7 +248,7 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
 
     @Override
     protected int getId() {
-        return mCallItem.getUniqueId();
+        return mMissedCall.getUniqueId();
     }
 
     @Override
@@ -276,6 +285,61 @@ public class MissedCallDialogActivity extends BaseNotificationActivity {
                     makeCall();
                 }
                 break;
+        }
+    }
+
+    private void showMissedReminder(String name) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER);
+        builder.setContentTitle(name);
+        builder.setAutoCancel(false);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        if (getPrefs().isManualRemoveEnabled()) {
+            builder.setOngoing(false);
+        } else {
+            builder.setOngoing(true);
+        }
+        String appName;
+        if (Module.isPro()) {
+            appName = getString(R.string.app_name_pro);
+            if (getPrefs().isLedEnabled()) {
+                builder.setLights(getLedColor(), 500, 1000);
+            }
+        } else {
+            appName = getString(R.string.app_name);
+        }
+        builder.setContentText(appName);
+        if (Module.isLollipop()) {
+            builder.setSmallIcon(R.drawable.ic_call_white_24dp);
+        } else {
+            builder.setSmallIcon(R.drawable.ic_call_nv_white);
+        }
+        if (Module.isLollipop()) {
+            builder.setColor(ViewUtils.getColor(this, R.color.bluePrimary));
+        }
+        if (getSound() != null && !isScreenResumed() && (!SuperUtil.isDoNotDisturbEnabled(this) ||
+                (SuperUtil.checkNotificationPermission(this) && getPrefs().isSoundInSilentModeEnabled()))) {
+            Uri soundUri = getSoundUri();
+            getSound().playAlarm(soundUri, getPrefs().isInfiniteSoundEnabled());
+        }
+        if (isVibrate()) {
+            long[] pattern;
+            if (getPrefs().isInfiniteVibrateEnabled()) {
+                pattern = new long[]{150, 86400000};
+            } else {
+                pattern = new long[]{150, 400, 100, 450, 200, 500, 300, 500};
+            }
+            builder.setVibrate(pattern);
+        }
+        boolean isWear = getPrefs().isWearEnabled();
+        if (isWear && Module.isJellyMR2()) {
+            builder.setOnlyAlertOnce(true);
+            builder.setGroup("GROUP");
+            builder.setGroupSummary(true);
+        }
+        NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(this);
+        mNotifyMgr.notify(getId(), builder.build());
+        if (isWear) {
+            showWearNotification(appName);
         }
     }
 }

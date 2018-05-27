@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.additional.FollowReminderActivity;
 import com.elementary.tasks.core.additional.QuickSmsActivity;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.missed_calls.CallItem;
+import com.elementary.tasks.core.data.models.MissedCall;
+
+import javax.inject.Inject;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,6 +42,13 @@ public class CallReceiver extends BroadcastReceiver {
     private String mIncomingNumber;
     private int prevState;
     private long startCallTime;
+
+    @Inject
+    private AppDb appDb;
+
+    public CallReceiver() {
+        ReminderApp.getAppComponent().inject(this);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -89,16 +100,16 @@ public class CallReceiver extends BroadcastReceiver {
                             LogUtil.d(TAG, "onCallStateChanged: is missed " + mIncomingNumber);
                             if (prefs.isMissedReminderEnabled() && mIncomingNumber != null) {
                                 String number = mIncomingNumber;
-                                CallItem callItem = RealmDb.getInstance().getMissedCall(number);
-                                if (callItem != null) {
-                                    EventJobService.cancelMissedCall(callItem.getNumber());
+                                MissedCall missedCall = appDb.missedCallsDao().getByNumber(number);
+                                if (missedCall != null) {
+                                    EventJobService.cancelMissedCall(missedCall.getNumber());
                                 } else {
-                                    callItem = new CallItem();
+                                    missedCall = new MissedCall();
                                 }
-                                callItem.setDateTime(currTime);
-                                callItem.setNumber(number);
-                                RealmDb.getInstance().saveObject(callItem);
-                                EventJobService.enableMissedCall(mContext, callItem.getNumber());
+                                missedCall.setDateTime(currTime);
+                                missedCall.setNumber(number);
+                                appDb.missedCallsDao().insert(missedCall);
+                                EventJobService.enableMissedCall(mContext, missedCall.getNumber());
                                 break;
                             }
                         } else {

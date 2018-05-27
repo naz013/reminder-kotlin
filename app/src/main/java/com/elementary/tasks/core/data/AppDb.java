@@ -3,6 +3,7 @@ package com.elementary.tasks.core.data;
 import android.content.Context;
 
 import com.elementary.tasks.core.data.dao.GroupDao;
+import com.elementary.tasks.core.data.dao.MissedCallsDao;
 import com.elementary.tasks.core.data.dao.ReminderDao;
 import com.elementary.tasks.core.data.models.Reminder;
 
@@ -32,6 +33,7 @@ public abstract class AppDb extends RoomDatabase {
 
     public abstract ReminderDao reminderDao();
     public abstract GroupDao groupDao();
+    public abstract MissedCallsDao missedCallsDao();
 
     public static AppDb getAppDatabase(Context context) {
         if (INSTANCE == null) {
