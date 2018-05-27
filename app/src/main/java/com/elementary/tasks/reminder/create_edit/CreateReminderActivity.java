@@ -247,9 +247,9 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private void loadReminder() {
         Intent intent = getIntent();
         int id = getIntent().getIntExtra(Constants.INTENT_ID, 0);
+        initViewModel(id);
         if (id != 0) {
             isEditing = true;
-            initViewModel(id);
         } else if (intent.getData() != null) {
             try {
                 Uri name = intent.getData();

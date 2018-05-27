@@ -1,21 +1,19 @@
 package com.elementary.tasks.navigation.settings.additional;
 
-import android.content.Context;
-import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.data.models.SmsTemplate;
+import com.elementary.tasks.core.interfaces.ActionsListener;
+import com.elementary.tasks.core.utils.ListActions;
 import com.elementary.tasks.databinding.ListItemMessageBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -35,19 +33,28 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<TemplateItem> mData = new ArrayList<>();
+    private List<SmsTemplate> mData = new ArrayList<>();
+    @Nullable
+    private ActionsListener<SmsTemplate> actionsListener;
 
-    TemplatesAdapter(Context mContext) {
-        this.mContext = mContext;
+    TemplatesAdapter() {
     }
 
-    public void setData(List<TemplateItem> list) {
+    void setActionsListener(@Nullable ActionsListener<SmsTemplate> actionsListener) {
+        this.actionsListener = actionsListener;
+    }
+
+    @Nullable
+    private ActionsListener<SmsTemplate> getActionsListener() {
+        return actionsListener;
+    }
+
+    public void setData(List<SmsTemplate> list) {
         this.mData = list;
         notifyDataSetChanged();
     }
 
-    public List<TemplateItem> getData() {
+    public List<SmsTemplate> getData() {
         return mData;
     }
 
@@ -56,21 +63,13 @@ class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder>
         return mData.size();
     }
 
-    public TemplateItem getItem(int position) {
+    public SmsTemplate getItem(int position) {
         return mData.get(position);
-    }
-
-    public void removeItem(int position) {
-        if (position < mData.size()) {
-            mData.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(0, mData.size());
-        }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(mContext), parent, false).getRoot());
+        return new ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
@@ -85,36 +84,19 @@ class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.ViewHolder>
         ViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
-            binding.getRoot().setOnClickListener(view -> openTemplate(getAdapterPosition()));
+            binding.getRoot().setOnClickListener(view -> openTemplate(view, getAdapterPosition()));
             binding.getRoot().setOnLongClickListener(view -> {
-                showMenu(getAdapterPosition());
+                if (getActionsListener() != null) {
+                    getActionsListener().onAction(view, getAdapterPosition(), getItem(getAdapterPosition()), ListActions.MORE);
+                }
                 return true;
             });
         }
     }
 
-    private void showMenu(int position) {
-        String[] items = new String[]{mContext.getString(R.string.edit), mContext.getString(R.string.delete)};
-        SuperUtil.showLCAM(mContext, item -> {
-            switch (item) {
-                case 0:
-                    openTemplate(position);
-                    break;
-                case 1:
-                    deleteTemplate(position);
-                    break;
-            }
-        }, items);
-    }
-
-    private void deleteTemplate(int position) {
-        TemplateItem item = getItem(position);
-        RealmDb.getInstance().deleteTemplates(item);
-        new DeleteTemplateFilesAsync(mContext).execute(item.getKey());
-        removeItem(position);
-    }
-
-    private void openTemplate(int position) {
-        mContext.startActivity(new Intent(mContext, TemplateActivity.class).putExtra(Constants.INTENT_ID, getItem(position).getKey()));
+    private void openTemplate(View view, int position) {
+        if (getActionsListener() != null) {
+            getActionsListener().onAction(view, position, getItem(position), ListActions.OPEN);
+        }
     }
 }

@@ -10,11 +10,10 @@ import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.additional.FollowReminderActivity;
 import com.elementary.tasks.core.additional.QuickSmsActivity;
 import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.MissedCall;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.data.models.MissedCall;
 
 import javax.inject.Inject;
 
@@ -116,8 +115,7 @@ public class CallReceiver extends BroadcastReceiver {
                             LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber);
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled()) {
                                 String number = mIncomingNumber;
-                                int size = RealmDb.getInstance().getAllTemplates().size();
-                                if (size > 0) {
+                                if (appDb.smsTemplatesDao().getAll().size() > 0) {
                                     mContext.startActivity(new Intent(mContext, QuickSmsActivity.class)
                                             .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
                                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

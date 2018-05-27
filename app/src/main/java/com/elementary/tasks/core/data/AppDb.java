@@ -5,6 +5,7 @@ import android.content.Context;
 import com.elementary.tasks.core.data.dao.GroupDao;
 import com.elementary.tasks.core.data.dao.MissedCallsDao;
 import com.elementary.tasks.core.data.dao.ReminderDao;
+import com.elementary.tasks.core.data.dao.SmsTemplatesDao;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import androidx.room.Database;
@@ -34,6 +35,7 @@ public abstract class AppDb extends RoomDatabase {
     public abstract ReminderDao reminderDao();
     public abstract GroupDao groupDao();
     public abstract MissedCallsDao missedCallsDao();
+    public abstract SmsTemplatesDao smsTemplatesDao();
 
     public static AppDb getAppDatabase(Context context) {
         if (INSTANCE == null) {

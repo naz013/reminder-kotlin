@@ -3,6 +3,7 @@ package com.elementary.tasks.navigation.settings.additional;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.reminder.lists.filters.AbstractFilter;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 import com.elementary.tasks.reminder.lists.filters.FilterValue;
@@ -32,24 +33,24 @@ public class TemplateFilterController {
     private FilterValue<String> searchValue = new FilterValue<>();
 
     @NonNull
-    private List<TemplateItem> original = new ArrayList<>();
+    private List<SmsTemplate> original = new ArrayList<>();
     @Nullable
-    private FilterCallback<TemplateItem> mCallback;
+    private FilterCallback<SmsTemplate> mCallback;
     @Nullable
-    private ObjectFilter<TemplateItem> mFilter;
+    private ObjectFilter<SmsTemplate> mFilter;
 
-    public TemplateFilterController(@Nullable FilterCallback<TemplateItem> callback) {
+    public TemplateFilterController(@Nullable FilterCallback<SmsTemplate> callback) {
         this.mCallback = callback;
         initFilters();
     }
 
     private void initFilters() {
-        AbstractFilter<String, TemplateItem> filter = new AbstractFilter<String, TemplateItem>(null) {
+        AbstractFilter<String, SmsTemplate> filter = new AbstractFilter<String, SmsTemplate>(null) {
             @Nullable
             private String query = null;
 
             @Override
-            public boolean filter(TemplateItem item) {
+            public boolean filter(SmsTemplate item) {
                 String title = item.getTitle();
                 return (query == null || query.length() == 0 || (title != null && title.toLowerCase().contains(query.toLowerCase())));
             }
@@ -73,18 +74,18 @@ public class TemplateFilterController {
     }
 
     @NonNull
-    public List<TemplateItem> getOriginal() {
+    public List<SmsTemplate> getOriginal() {
         return original;
     }
 
-    public void setOriginal(@NonNull List<TemplateItem> original) {
+    public void setOriginal(@NonNull List<SmsTemplate> original) {
         this.original = original;
         onChanged();
     }
 
     private void onChanged() {
-        List<TemplateItem> list = new ArrayList<>();
-        for (TemplateItem item : original) {
+        List<SmsTemplate> list = new ArrayList<>();
+        for (SmsTemplate item : original) {
             if (mFilter != null) {
                 if (mFilter.filter(item)) list.add(item);
             } else list.add(item);

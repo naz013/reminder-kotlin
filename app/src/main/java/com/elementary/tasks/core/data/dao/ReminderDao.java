@@ -45,6 +45,9 @@ public interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed AND type IN (:types)")
     List<Reminder> getAllGps(boolean active, boolean removed, int[] types);
 
+    @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed AND type IN (:types)")
+    LiveData<List<Reminder>> loadAllGps(boolean active, boolean removed, int[] types);
+
     @Insert(onConflict = REPLACE)
     int insert(Reminder reminder);
 
