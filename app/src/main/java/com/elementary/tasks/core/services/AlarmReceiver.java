@@ -5,24 +5,22 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import androidx.legacy.content.WakefulBroadcastReceiver;
 
 import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.async.BackupTask;
-import com.elementary.tasks.core.data.models.CalendarEvent;
-import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.CalendarEvent;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
@@ -30,6 +28,8 @@ import org.dmfs.rfc5545.recur.RecurrenceRule;
 
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.legacy.content.WakefulBroadcastReceiver;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -232,7 +232,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             int calID = Prefs.getInstance(mContext).getEventsCalendar();
             List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, calID);
             if (eventItems.size() > 0) {
-                List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
+                List<Long> list = AppDb.getAppDatabase(mContext).calendarEventsDao().getEventIds();
                 for (CalendarUtils.EventItem item : eventItems) {
                     long itemId = item.getId();
                     if (!list.contains(itemId)) {
@@ -258,7 +258,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                             }
                         }
                         String summary = item.getTitle();
-                        Group def = RealmDb.getInstance().getDefaultGroup();
+                        Group def = AppDb.getAppDatabase(mContext).groupDao().getDefault();
                         String categoryId = "";
                         if (def != null) {
                             categoryId = def.getUuId();
@@ -291,12 +291,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
             reminder.setSummary(summary);
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
-            RealmDb.getInstance().saveReminder(reminder, () -> {
-                EventControl control = EventControlFactory.getController(mContext, reminder);
-                control.start();
-            });
-            CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
-            RealmDb.getInstance().saveObject(event);
+            AppDb appDb = AppDb.getAppDatabase(mContext);
+            appDb.reminderDao().insert(reminder);
+            EventControlFactory.getController(reminder).start();
+            appDb.calendarEventsDao().insert(new CalendarEvent(reminder.getUniqueId(), summary, itemId));
         }
     }
 }
