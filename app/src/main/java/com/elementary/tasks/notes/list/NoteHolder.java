@@ -1,11 +1,14 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.list;
 
-import androidx.databinding.DataBindingUtil;
 import android.view.View;
 
-import com.elementary.tasks.core.interfaces.SimpleListener;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.interfaces.ActionsListener;
+import com.elementary.tasks.core.utils.ListActions;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -26,26 +29,24 @@ import androidx.recyclerview.widget.RecyclerView;
 public class NoteHolder extends RecyclerView.ViewHolder {
 
     private NoteListItemBinding binding;
-    private SimpleListener mEventListener;
 
-    public NoteHolder(View v, SimpleListener listener) {
+    public NoteHolder(View v, @Nullable ActionsListener<Note> listener) {
         super(v);
-        this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
         binding.noteClick.setOnClickListener(v12 -> {
-            if (mEventListener != null) {
-                mEventListener.onItemClicked(getAdapterPosition(), v12);
+            if (listener != null) {
+                listener.onAction(v12, getAdapterPosition(), null, ListActions.OPEN);
             }
         });
         binding.noteClick.setOnLongClickListener(view -> {
-            if (mEventListener != null) {
-                mEventListener.onItemLongClicked(getAdapterPosition(), view);
+            if (listener != null) {
+                listener.onAction(view, getAdapterPosition(), null, ListActions.MORE);
             }
             return true;
         });
     }
 
-    public void setData(NoteItem item) {
+    public void setData(Note item) {
         binding.setNoteItem(item);
     }
 }

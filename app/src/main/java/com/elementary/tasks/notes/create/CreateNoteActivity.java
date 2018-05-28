@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.create;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -63,6 +63,10 @@ import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
+import com.elementary.tasks.notes.work.DeleteNoteFilesAsync;
+import com.elementary.tasks.notes.list.ImagesGridAdapter;
+import com.elementary.tasks.notes.KeepLayoutManager;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.google.android.material.appbar.AppBarLayout;
@@ -124,7 +128,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     private ProgressDialog mProgress;
 
     @Nullable
-    private NoteItem mItem;
+    private Note mItem;
     @Nullable
     private Reminder mReminder;
     private AppBarLayout toolbar;
@@ -487,7 +491,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             return false;
         }
         if (mItem == null) {
-            mItem = new NoteItem();
+            mItem = new Note();
         }
         mItem.setSummary(note);
         mItem.setDate(TimeUtil.getGmtDateTime());

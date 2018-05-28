@@ -1,6 +1,8 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.core.data.models;
 
+import com.elementary.tasks.core.data.converters.NoteImagesTypeConverter;
 import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.notes.create.NoteImage;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -9,6 +11,9 @@ import java.util.Random;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,11 +30,14 @@ import androidx.annotation.NonNull;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Entity
+@TypeConverters({NoteImagesTypeConverter.class})
+public class Note {
 
-public class NoteItem {
     @SerializedName("summary")
     private String summary;
     @SerializedName("key")
+    @PrimaryKey
     private String key;
     @SerializedName("date")
     private String date;
@@ -42,7 +50,7 @@ public class NoteItem {
     @SerializedName("uniqueId")
     private int uniqueId;
 
-    public NoteItem() {
+    public Note() {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
         setKey(UUID.randomUUID().toString());
     }
@@ -106,6 +114,6 @@ public class NoteItem {
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, NoteItem.class);
+        return SuperUtil.getObjectPrint(this, Note.class);
     }
 }

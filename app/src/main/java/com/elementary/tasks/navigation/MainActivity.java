@@ -47,7 +47,7 @@ import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
 import com.elementary.tasks.groups.list.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.HelpFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
-import com.elementary.tasks.navigation.fragments.NotesFragment;
+import com.elementary.tasks.notes.list.NotesFragment;
 import com.elementary.tasks.places.list.PlacesFragment;
 import com.elementary.tasks.reminder.lists.RemindersFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;

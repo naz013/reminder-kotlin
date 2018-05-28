@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.list;
 
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteImageListItemBinding;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.notes.preview.ImagePreviewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +131,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     }
 
     private void performClick(View view, int position) {
-        NoteItem item = new NoteItem();
+        Note item = new Note();
         item.setImages(mDataList);
         RealmDb.getInstance().saveObject(item);
         view.getContext().startActivity(new Intent(view.getContext(), ImagePreviewActivity.class)

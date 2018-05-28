@@ -26,7 +26,7 @@ import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.navigation.MainActivity;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 
 import java.util.ArrayList;
@@ -240,16 +240,16 @@ public class Recognize {
     }
 
     @NonNull
-    public NoteItem createNote(@Nullable String note) {
+    public Note createNote(@Nullable String note) {
         int color = new Random().nextInt(15);
-        NoteItem item = new NoteItem();
+        Note item = new Note();
         item.setColor(color);
         item.setSummary(note);
         item.setDate(TimeUtil.getGmtDateTime());
         return item;
     }
 
-    public void saveNote(@NonNull NoteItem note, boolean showToast, boolean addQuickNote) {
+    public void saveNote(@NonNull Note note, boolean showToast, boolean addQuickNote) {
         Prefs prefs = Prefs.getInstance(mContext);
         if (addQuickNote && prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)) {
             saveQuickReminder(note.getKey(), note.getSummary());

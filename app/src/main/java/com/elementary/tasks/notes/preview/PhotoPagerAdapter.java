@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.preview;
 
 import android.content.Context;
 import androidx.viewpager.widget.PagerAdapter;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.elementary.tasks.databinding.FragmentImageBinding;
+import com.elementary.tasks.notes.create.NoteImage;
 
 import java.util.List;
 

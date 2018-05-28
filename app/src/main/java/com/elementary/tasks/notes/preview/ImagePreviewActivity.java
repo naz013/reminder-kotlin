@@ -1,18 +1,22 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.preview;
 
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.viewpager.widget.ViewPager;
 import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.view_models.notes.NoteViewModel;
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,15 +37,26 @@ import java.util.Locale;
 public class ImagePreviewActivity extends ThemedActivity {
 
     private ActivityImagePreviewBinding binding;
-    private NoteItem mItem;
+    private NoteViewModel viewModel;
+    @Nullable
+    private Note mNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_preview);
         initActionBar();
-        initViewPager();
-        setPhotoPosition();
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new NoteViewModel.Factory(getApplication(), getIntent().getStringExtra(Constants.INTENT_ID))).get(NoteViewModel.class);
+        viewModel.note.observe(this, note -> {
+            if (note != null) {
+                initViewPager(note);
+            }
+        });
     }
 
     private void setPhotoPosition() {
@@ -50,17 +65,17 @@ public class ImagePreviewActivity extends ThemedActivity {
             binding.photoPager.setCurrentItem(position);
     }
 
-    private PhotoPagerAdapter getAdapter() {
-        mItem = RealmDb.getInstance().getNote(getIntent().getStringExtra(Constants.INTENT_ID));
-        if (mItem == null) {
+    private PhotoPagerAdapter getAdapter(Note note) {
+        if (note == null) {
             return new PhotoPagerAdapter(this, new ArrayList<>());
         } else {
-            return new PhotoPagerAdapter(this, mItem.getImages());
+            return new PhotoPagerAdapter(this, note.getImages());
         }
     }
 
-    private void initViewPager() {
-        binding.photoPager.setAdapter(getAdapter());
+    private void initViewPager(Note note) {
+        this.mNote = note;
+        binding.photoPager.setAdapter(getAdapter(note));
         binding.photoPager.setPageMargin(5);
         binding.photoPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -78,13 +93,14 @@ public class ImagePreviewActivity extends ThemedActivity {
 
             }
         });
-        if (mItem != null) {
+        if (note != null) {
             setToolbarTitle(binding.photoPager.getCurrentItem());
         }
+        setPhotoPosition();
     }
 
     private void setToolbarTitle(int position) {
-        binding.toolbar.setTitle(String.format(Locale.getDefault(), getString(R.string.x_out_of_x), position + 1, mItem.getImages().size()));
+        binding.toolbar.setTitle(String.format(Locale.getDefault(), getString(R.string.x_out_of_x), position + 1, mNote.getImages().size()));
     }
 
     private void initActionBar() {
@@ -103,13 +119,5 @@ public class ImagePreviewActivity extends ThemedActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mItem != null && getIntent().getBooleanExtra(Constants.INTENT_DELETE, true)) {
-            RealmDb.getInstance().deleteNote(mItem);
-        }
-        super.onDestroy();
     }
 }

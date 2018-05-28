@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.SQLException;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.SmsTemplate;
-import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.core.data.models.Reminder;
 
 /**
@@ -44,7 +44,7 @@ public class MigrationTool {
         db.close();
         NotesBase notesBase = new NotesBase(context);
         notesBase.open();
-        for (NoteItem item : notesBase.getNotes()) {
+        for (Note item : notesBase.getNotes()) {
             realmDb.saveObject(item);
         }
         notesBase.close();

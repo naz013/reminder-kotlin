@@ -40,7 +40,7 @@ import com.elementary.tasks.databinding.ImagePrefsBinding;
 import com.elementary.tasks.databinding.LayersPrefsBinding;
 import com.elementary.tasks.databinding.StandardPrefsBinding;
 import com.elementary.tasks.databinding.TextPrefsBinding;
-import com.elementary.tasks.notes.NoteImage;
+import com.elementary.tasks.notes.create.NoteImage;
 import com.elementary.tasks.notes.editor.layers.LayersRecyclerAdapter;
 import com.elementary.tasks.notes.editor.layers.SimpleItemTouchHelperCallback;
 

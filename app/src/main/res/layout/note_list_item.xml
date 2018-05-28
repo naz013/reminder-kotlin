@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="noteItem"
-            type="com.elementary.tasks.notes.NoteItem" />
+            name="note"
+            type="com.elementary.tasks.core.data.models.Note" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,7 +18,7 @@
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="3dp"
         app:cardUseCompatPadding="true"
-        app:loadNoteCard='@{noteItem.color}'>
+        app:loadNoteCard='@{note.color}'>
 
         <LinearLayout
             android:id="@+id/noteClick"
@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:loadImage='@{noteItem}'>
+                app:loadImage='@{note}'>
 
                 <ImageView
                     android:id="@+id/noteImage"
@@ -60,7 +60,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:textColor="@color/blackPrimary"
-                app:loadNote="@{noteItem}" />
+                app:loadNote="@{note}" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

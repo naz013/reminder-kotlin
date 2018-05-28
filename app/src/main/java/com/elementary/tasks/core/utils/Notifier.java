@@ -23,9 +23,9 @@ import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
-import com.elementary.tasks.notes.CreateNoteActivity;
-import com.elementary.tasks.notes.NoteImage;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
@@ -102,7 +102,7 @@ public class Notifier {
                 .setAction(action));
     }
 
-    public void showNoteNotification(@NonNull NoteItem item) {
+    public void showNoteNotification(@NonNull Note item) {
         Prefs sPrefs = Prefs.getInstance(mContext);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER);
         builder.setContentText(mContext.getString(R.string.note));

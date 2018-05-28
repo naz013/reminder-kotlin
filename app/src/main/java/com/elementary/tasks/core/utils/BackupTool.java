@@ -15,9 +15,9 @@ import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.SmsTemplate;
-import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.google.gson.Gson;
 
@@ -416,9 +416,9 @@ public final class BackupTool {
     }
 
     @Nullable
-    public NoteItem getNote(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
+    public Note getNote(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
         try {
-            WeakReference<NoteItem> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), NoteItem.class));
+            WeakReference<Note> note = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Note.class));
             return note.get();
         } catch (Exception e) {
             return null;
@@ -426,12 +426,12 @@ public final class BackupTool {
     }
 
     @Nullable
-    public NoteItem getNote(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
+    public Note getNote(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
-            WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), NoteItem.class));
+            WeakReference<Note> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Note.class));
             return item.get();
         } else if (json != null) {
-            WeakReference<NoteItem> item = new WeakReference<>(new Gson().fromJson(json, NoteItem.class));
+            WeakReference<Note> item = new WeakReference<>(new Gson().fromJson(json, Note.class));
             return item.get();
         } else {
             return null;
@@ -439,7 +439,7 @@ public final class BackupTool {
     }
 
     public void exportNotes() {
-        for (NoteItem item : RealmDb.getInstance().getAllNotes(null)) {
+        for (Note item : RealmDb.getInstance().getAllNotes(null)) {
             exportNote(item);
         }
     }
@@ -452,7 +452,7 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
-                        NoteItem item = getNote(file.toString(), null);
+                        Note item = getNote(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getKey())) {
                             continue;
                         }
@@ -463,7 +463,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportNote(@NonNull NoteItem item) {
+    public void exportNote(@NonNull Note item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getNotesDir();
         if (dir != null) {
@@ -479,7 +479,7 @@ public final class BackupTool {
         }
     }
 
-    public void createNote(@Nullable NoteItem item, @Nullable CreateCallback callback) {
+    public void createNote(@Nullable Note item, @Nullable CreateCallback callback) {
         if (item == null) return;
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File file = null;

@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
@@ -56,7 +57,7 @@ public class QuickNoteCoordinator {
     private ReminderViewModel reminderViewModel;
 
     @Nullable
-    private NoteItem mNoteItem;
+    private Note mNote;
 
     public QuickNoteCoordinator(FragmentActivity activity, ActivityMainBinding binding, Callback callback) {
         this.binding = binding;
@@ -83,7 +84,7 @@ public class QuickNoteCoordinator {
             if (commands != null) {
                 switch (commands) {
                     case SAVED:
-                        if (mNoteItem != null) addNotificationCard(mNoteItem);
+                        if (mNote != null) addNotificationCard(mNote);
                         break;
                 }
             }
@@ -139,7 +140,7 @@ public class QuickNoteCoordinator {
         }
         binding.quickNote.setEnabled(false);
         binding.buttonSave.setEnabled(false);
-        NoteItem item = new NoteItem();
+        Note item = new Note();
         item.setSummary(text);
         item.setDate(TimeUtil.getGmtDateTime());
         if (Prefs.getInstance(mContext).isNoteColorRememberingEnabled()) {
@@ -155,7 +156,7 @@ public class QuickNoteCoordinator {
         }
     }
 
-    private void addReminderCard(NoteItem item) {
+    private void addReminderCard(Note item) {
         NoteReminderCardBinding cardBinding = NoteReminderCardBinding.inflate(LayoutInflater.from(mContext), this.binding.quickNoteView, false);
         if (Module.isLollipop()) {
             cardBinding.noteReminderCard.setElevation(Configs.CARD_ELEVATION);
@@ -177,7 +178,7 @@ public class QuickNoteCoordinator {
         new Handler().postDelayed(() -> ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard), 250);
     }
 
-    private void addReminderToNote(NoteItem item) {
+    private void addReminderToNote(Note item) {
         Reminder reminder = new Reminder();
         reminder.setType(Reminder.BY_DATE);
         reminder.setDelay(0);
@@ -198,7 +199,7 @@ public class QuickNoteCoordinator {
         reminderViewModel.saveAndStartReminder(reminder);
     }
 
-    private void addNotificationCard(@NonNull NoteItem item) {
+    private void addNotificationCard(@NonNull Note item) {
         NoteStatusCardBinding cardBinding = NoteStatusCardBinding.inflate(LayoutInflater.from(mContext), binding.quickNoteView, false);
         if (Module.isLollipop()) {
             cardBinding.noteStatusCard.setElevation(Configs.CARD_ELEVATION);
@@ -216,7 +217,7 @@ public class QuickNoteCoordinator {
         new Handler().postDelayed(() -> ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard), 250);
     }
 
-    private void showInStatusBar(@NonNull NoteItem item) {
+    private void showInStatusBar(@NonNull Note item) {
         new Notifier(mContext).showNoteNotification(item);
         hideNoteView();
     }

@@ -34,7 +34,7 @@ import com.elementary.tasks.databinding.ActivityLoginBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;
 import com.elementary.tasks.navigation.MainActivity;
-import com.elementary.tasks.notes.CreateNoteActivity;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
 
 import java.util.Arrays;
 

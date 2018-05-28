@@ -42,8 +42,8 @@ public class RealmDb {
 //        LogUtil.d(TAG, "saveObject: " + o);
 //        if (o instanceof SmsTemplate) {
 //            saveTemplate((SmsTemplate) o);
-//        } else if (o instanceof NoteItem) {
-//            saveNote((NoteItem) o);
+//        } else if (o instanceof Note) {
+//            saveNote((Note) o);
 //        } else if (o instanceof PlaceItem) {
 //            savePlace((PlaceItem) o);
 //        } else if (o instanceof TaskItem) {
@@ -427,14 +427,14 @@ public class RealmDb {
 //        return items;
 //    }
 //
-//    private void saveNote(@NonNull NoteItem item) {
+//    private void saveNote(@NonNull Note item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmNote(item));
 //        realm.commitTransaction();
 //    }
 //
-//    public void deleteNote(@NonNull NoteItem item) {
+//    public void deleteNote(@NonNull Note item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        RealmNote object = realm.where(RealmNote.class).equalTo("key", item.getKey()).findFirst();
@@ -445,11 +445,11 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public NoteItem getNote(@NonNull String id) {
+//    public Note getNote(@NonNull String id) {
 //        Realm realm = getRealm();
 //        RealmNote object = realm.where(RealmNote.class).equalTo("key", id).findFirst();
 //        if (object != null) {
-//            return new NoteItem(object);
+//            return new Note(object);
 //        } else {
 //            return null;
 //        }
@@ -466,7 +466,7 @@ public class RealmDb {
 //    }
 //
 //    @NonNull
-//    public List<NoteItem> getAllNotes(@Nullable String orderPrefs) {
+//    public List<Note> getAllNotes(@Nullable String orderPrefs) {
 //        Realm realm = getRealm();
 //        String field = "date";
 //        Sort order = Sort.DESCENDING;
@@ -486,9 +486,9 @@ public class RealmDb {
 //            }
 //        }
 //        List<RealmNote> list = realm.where(RealmNote.class).sort(field, order).findAll();
-//        List<NoteItem> items = new ArrayList<>();
+//        List<Note> items = new ArrayList<>();
 //        for (RealmNote object : list) {
-//            WeakReference<NoteItem> reference = new WeakReference<>(new NoteItem(object));
+//            WeakReference<Note> reference = new WeakReference<>(new Note(object));
 //            items.add(reference.get());
 //        }
 //        return items;
