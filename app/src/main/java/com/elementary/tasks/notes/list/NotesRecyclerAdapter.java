@@ -1,11 +1,9 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.list;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,22 +13,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.interfaces.SimpleListener;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.NoteListItemBinding;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.notes.preview.ImagePreviewActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -50,24 +53,33 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
 
-    private SimpleListener mEventListener;
-    private List<NoteItem> mData = new ArrayList<>();
+    private List<Note> mData = new ArrayList<>();
+    @Nullable
+    private ActionsListener<Note> actionsListener;
+    private ActionsListener<Note> mActionListener = (view, position, note, actions) -> {
+        if (getActionsListener() != null) {
+            getActionsListener().onAction(view, position, getItem(position), actions);
+        }
+    };
 
-    public NotesRecyclerAdapter() {
+    void setActionsListener(ActionsListener<Note> actionsListener) {
+        this.actionsListener = actionsListener;
     }
 
-    public void notifyChanged(int position, String id) {
-        NoteItem newItem = RealmDb.getInstance().getNote(id);
-        mData.set(position, newItem);
-        notifyItemChanged(position);
+    private ActionsListener<Note> getActionsListener() {
+        return actionsListener;
     }
 
-    public void setData(List<NoteItem> list) {
-        this.mData = list;
+    NotesRecyclerAdapter() {
+    }
+
+    public void setData(List<Note> list) {
+        this.mData.clear();
+        this.mData.addAll(list);
         notifyDataSetChanged();
     }
 
-    public List<NoteItem> getData() {
+    public List<Note> getData() {
         return mData;
     }
 
@@ -76,23 +88,14 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
         return mData.size();
     }
 
-    public NoteItem getItem(int position) {
+    public Note getItem(int position) {
         return mData.get(position);
-    }
-
-    public void removeItem(int position) {
-        if (position < mData.size()) {
-            mData.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(0, mData.size());
-        }
     }
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new NoteHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
+        return new NoteHolder(NoteListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot(), mActionListener);
     }
 
     @Override
@@ -101,7 +104,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     }
 
     @BindingAdapter({"loadNote"})
-    public static void loadNote(TextView textView, NoteItem note) {
+    public static void loadNote(TextView textView, Note note) {
         String title = note.getSummary();
         if (TextUtils.isEmpty(title)) {
             textView.setVisibility(View.GONE);
@@ -143,7 +146,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     }
 
     @BindingAdapter({"loadImage"})
-    public static void loadImage(LinearLayout container, NoteItem item) {
+    public static void loadImage(LinearLayout container, Note item) {
         List<NoteImage> images = item.getImages();
         ImageView imageView = container.findViewById(R.id.noteImage);
         if (!images.isEmpty()) {
@@ -169,9 +172,5 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
             imageView.setImageDrawable(null);
             imageView.setVisibility(View.GONE);
         }
-    }
-
-    public void setEventListener(SimpleListener eventListener) {
-        mEventListener = eventListener;
     }
 }

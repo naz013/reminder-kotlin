@@ -1,12 +1,15 @@
-package com.elementary.tasks.notes.editor;
+package com.elementary.tasks.core.data.converters;
 
-import androidx.annotation.Nullable;
-
-import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 import com.elementary.tasks.notes.create.NoteImage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
+import androidx.room.TypeConverter;
 
 /**
- * Copyright 2017 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +23,15 @@ import com.elementary.tasks.notes.create.NoteImage;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public abstract class BitmapFragment extends BaseNavigationFragment {
-    @Nullable
-    public abstract NoteImage getImage();
+public class NoteImagesTypeConverter {
 
-    @Nullable
-    public abstract NoteImage getOriginalImage();
+    @TypeConverter
+    public String toJson(List<NoteImage> list) {
+        return new Gson().toJson(list);
+    }
 
-    public abstract boolean onBackPressed();
+    @TypeConverter
+    public List<NoteImage> toList(String json) {
+        return new Gson().fromJson(json, new TypeToken<List<NoteImage>>(){}.getType());
+    }
 }

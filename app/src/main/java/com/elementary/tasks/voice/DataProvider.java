@@ -1,9 +1,9 @@
 package com.elementary.tasks.voice;
 
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.notes.NoteItem;
 import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.LinkedList;
@@ -34,7 +34,7 @@ final class DataProvider {
         return RealmDb.getInstance().getAllGroups();
     }
 
-    static List<NoteItem> getNotes() {
+    static List<Note> getNotes() {
         return RealmDb.getInstance().getAllNotes(null);
     }
 

@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.preview;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -19,6 +19,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -29,6 +30,10 @@ import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.notes.list.ImagesGridAdapter;
+import com.elementary.tasks.notes.KeepLayoutManager;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
@@ -57,7 +62,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 
 public class NotePreviewActivity extends ThemedActivity {
 
-    private NoteItem mItem;
+    @Nullable
+    private Note mItem;
     @Nullable
     private Reminder mReminder;
     private String mId;

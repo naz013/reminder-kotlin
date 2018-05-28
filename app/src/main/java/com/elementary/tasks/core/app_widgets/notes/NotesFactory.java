@@ -11,11 +11,11 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.notes.NoteImage;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.create.NoteImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @NonNull
-    private List<NoteItem> notes = new ArrayList<>();
+    private List<Note> notes = new ArrayList<>();
     private Context mContext;
     private ThemeUtil themeUtil;
 
@@ -69,7 +69,7 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     @Nullable
-    private NoteItem getItem(int position) {
+    private Note getItem(int position) {
         try {
             return notes.get(position);
         } catch (IndexOutOfBoundsException e) {
@@ -80,7 +80,7 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int i) {
         RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_note_widget);
-        NoteItem note = getItem(i);
+        Note note = getItem(i);
         if (note == null) {
             rView.setTextViewText(R.id.note, mContext.getString(R.string.failed_to_load));
             return rView;

@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.create;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;

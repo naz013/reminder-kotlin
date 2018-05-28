@@ -170,7 +170,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".notes.CreateNoteActivity"
+            android:name=".notes.create.CreateNoteActivity"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -195,8 +195,8 @@
                 <data android:pathPattern=".*\\.no2" />
             </intent-filter>
         </activity>
-        <activity android:name=".notes.ImagePreviewActivity" />
-        <activity android:name=".notes.NotePreviewActivity" />
+        <activity android:name=".notes.preview.ImagePreviewActivity" />
+        <activity android:name=".notes.preview.NotePreviewActivity" />
         <activity
             android:name=".google_tasks.TaskListActivity"
             android:configChanges="keyboardHidden" />

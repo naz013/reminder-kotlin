@@ -16,6 +16,7 @@ import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.fragments.AdvancedMapFragment;
@@ -38,8 +39,7 @@ import com.elementary.tasks.databinding.NoteListItemBinding;
 import com.elementary.tasks.google_tasks.TaskActivity;
 import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
-import com.elementary.tasks.notes.NoteItem;
-import com.elementary.tasks.notes.NotePreviewActivity;
+import com.elementary.tasks.notes.preview.NotePreviewActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -81,7 +81,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @NonNull
     private List<Long> list = new ArrayList<>();
     @Nullable
-    private NoteItem mNoteItem;
+    private Note mNote;
     @Nullable
     private TaskItem mTaskItem;
     @NonNull
@@ -92,8 +92,8 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @NonNull
     private ReadyListener mReadyCallback = object -> {
         if (object == null) return;
-        if (object instanceof NoteItem) {
-            this.mNoteItem = (NoteItem) object;
+        if (object instanceof Note) {
+            this.mNote = (Note) object;
             showNote();
         } else if (object instanceof TaskItem) {
             this.mTaskItem = (TaskItem) object;
@@ -159,12 +159,12 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void showNote() {
-        if (mNoteItem != null) {
+        if (mNote != null) {
             NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
-            binding.setNoteItem(mNoteItem);
+            binding.setNoteItem(mNote);
             binding.noteClick.setOnClickListener(v ->
                     startActivity(new Intent(ReminderPreviewActivity.this, NotePreviewActivity.class)
-                    .putExtra(Constants.INTENT_ID, mNoteItem.getKey())));
+                    .putExtra(Constants.INTENT_ID, mNote.getKey())));
             this.binding.dataContainer.addView(binding.getRoot());
         }
     }
@@ -416,7 +416,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
         @Override
         public void run() {
-            NoteItem item = RealmDb.getInstance().getNote(uuId);
+            Note item = RealmDb.getInstance().getNote(uuId);
             runOnUiThread(() -> {
                 if (listener != null && item != null) listener.onReady(item);
             });

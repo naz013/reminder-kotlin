@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.work;
 
 import android.content.Context;
 import android.os.AsyncTask;

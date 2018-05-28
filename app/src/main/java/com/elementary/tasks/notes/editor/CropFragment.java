@@ -12,7 +12,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.CropFragmentBinding;
-import com.elementary.tasks.notes.NoteImage;
+import com.elementary.tasks.notes.create.NoteImage;
 
 import java.io.ByteArrayOutputStream;
 

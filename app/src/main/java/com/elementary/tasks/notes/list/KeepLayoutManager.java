@@ -1,4 +1,4 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.list;
 
 import android.content.Context;
 

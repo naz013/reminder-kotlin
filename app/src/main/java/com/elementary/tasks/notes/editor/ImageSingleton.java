@@ -2,7 +2,7 @@ package com.elementary.tasks.notes.editor;
 
 import androidx.annotation.Nullable;
 
-import com.elementary.tasks.notes.NoteImage;
+import com.elementary.tasks.notes.create.NoteImage;
 
 /**
  * Copyright 2017 Nazar Suhovich

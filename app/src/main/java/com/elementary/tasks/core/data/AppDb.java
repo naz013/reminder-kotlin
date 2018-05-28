@@ -5,6 +5,7 @@ import android.content.Context;
 import com.elementary.tasks.core.data.dao.CalendarEventsDao;
 import com.elementary.tasks.core.data.dao.GroupDao;
 import com.elementary.tasks.core.data.dao.MissedCallsDao;
+import com.elementary.tasks.core.data.dao.NotesDao;
 import com.elementary.tasks.core.data.dao.PlacesDao;
 import com.elementary.tasks.core.data.dao.ReminderDao;
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao;
@@ -45,6 +46,8 @@ public abstract class AppDb extends RoomDatabase {
     public abstract PlacesDao placesDao();
 
     public abstract CalendarEventsDao calendarEventsDao();
+
+    public abstract NotesDao notesDao();
 
     public static AppDb getAppDatabase(Context context) {
         if (INSTANCE == null) {

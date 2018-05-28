@@ -11,7 +11,7 @@ import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
-import com.elementary.tasks.notes.CreateNoteActivity;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
 
 /**
  * Copyright 2015 Nazar Suhovich

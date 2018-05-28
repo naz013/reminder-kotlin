@@ -7,10 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.notes.NoteImage;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.create.NoteImage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,10 +89,10 @@ class NotesBase {
         if (dbHelper != null) dbHelper.close();
     }
 
-    List<NoteItem> getNotes() throws SQLException {
+    List<Note> getNotes() throws SQLException {
         openGuard();
         Cursor c = db.query(NOTE_TABLE_NAME, null, null, null, null, null, null);
-        List<NoteItem> list = new ArrayList<>();
+        List<Note> list = new ArrayList<>();
         if (c != null && c.moveToFirst()) {
             do {
                 list.add(noteFromCursor(c));
@@ -102,13 +102,13 @@ class NotesBase {
         return list;
     }
 
-    private NoteItem noteFromCursor(Cursor c) {
+    private Note noteFromCursor(Cursor c) {
         String note = c.getString(c.getColumnIndex(Constants.COLUMN_NOTE));
         int color = c.getInt(c.getColumnIndex(Constants.COLUMN_COLOR));
         int style = c.getInt(c.getColumnIndex(Constants.COLUMN_FONT_STYLE));
         byte[] image = c.getBlob(c.getColumnIndex(Constants.COLUMN_IMAGE));
         long id = c.getLong(c.getColumnIndex(Constants.COLUMN_ID));
-        NoteItem item = new NoteItem();
+        Note item = new Note();
         item.setColor(color);
         item.setStyle(style);
         item.setDate(TimeUtil.getGmtDateTime());

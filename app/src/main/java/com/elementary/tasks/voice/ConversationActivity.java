@@ -35,7 +35,7 @@ import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
 import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 import com.elementary.tasks.core.data.models.Reminder;
 
@@ -351,7 +351,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showNotes() {
-        Container<NoteItem> items = new Container<>(DataProvider.getNotes());
+        Container<Note> items = new Container<>(DataProvider.getNotes());
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_notes_found));
         } else {
@@ -403,7 +403,7 @@ public class ConversationActivity extends ThemedActivity {
         stopView();
         if (recognize == null) return;
         addResponse(getLocalized(R.string.note_created));
-        NoteItem item = recognize.createNote(model.getSummary());
+        Note item = recognize.createNote(model.getSummary());
         addObjectResponse(new Reply(Reply.NOTE, item));
         new Handler().postDelayed(() -> askNoteAction(item), 1000);
     }
@@ -466,16 +466,16 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askNoteAction(@NonNull NoteItem noteItem) {
+    private void askNoteAction(@NonNull Note note) {
         addResponse(getLocalized(R.string.would_you_like_to_save_it));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 if (recognize == null) return;
-                recognize.saveNote(noteItem, false, false);
+                recognize.saveNote(note, false, false);
                 addResponse(getLocalized(R.string.note_saved));
                 if (getPrefs().isNoteReminderEnabled()) {
-                    new Handler().postDelayed(() -> askQuickReminder(noteItem), 1500);
+                    new Handler().postDelayed(() -> askQuickReminder(note), 1500);
                 } else {
                     mAskAction = null;
                 }
@@ -491,13 +491,13 @@ public class ConversationActivity extends ThemedActivity {
         new Handler().postDelayed(this::micClick, 1500);
     }
 
-    private void askQuickReminder(@NonNull NoteItem noteItem) {
+    private void askQuickReminder(@NonNull Note note) {
         addResponse(getLocalized(R.string.would_you_like_to_add_reminder));
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
                 if (recognize == null) return;
-                Model model = recognize.findSuggestion(noteItem.getSummary());
+                Model model = recognize.findSuggestion(note.getSummary());
                 addResponse(getLocalized(R.string.reminder_saved));
                 if (model != null && model.getType() == ActionType.REMINDER) {
                     Reminder reminder = recognize.createReminder(model);
@@ -505,7 +505,7 @@ public class ConversationActivity extends ThemedActivity {
                     control.start();
                     addObjectResponse(new Reply(Reply.REMINDER, reminder));
                 } else {
-                    Reminder reminder = recognize.saveQuickReminder(noteItem.getKey(), noteItem.getSummary());
+                    Reminder reminder = recognize.saveQuickReminder(note.getKey(), note.getSummary());
                     addObjectResponse(new Reply(Reply.REMINDER, reminder));
                 }
                 mAskAction = null;

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.BirthdayHolder;
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.AskListItemBinding;
@@ -22,8 +23,7 @@ import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.groups.list.GroupHolder;
-import com.elementary.tasks.notes.NoteHolder;
-import com.elementary.tasks.notes.NoteItem;
+import com.elementary.tasks.notes.list.NoteHolder;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.ShoppingHolder;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -113,7 +113,7 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else if (holder instanceof ReminderHolder) {
             ((ReminderHolder) holder).setData((Reminder) mData.get(position).getObject());
         } else if (holder instanceof NoteHolder) {
-            ((NoteHolder) holder).setData((NoteItem) mData.get(position).getObject());
+            ((NoteHolder) holder).setData((Note) mData.get(position).getObject());
         } else if (holder instanceof GroupHolder) {
             ((GroupHolder) holder).setData((Group) mData.get(position).getObject());
         } else if (holder instanceof BirthdayHolder) {
@@ -229,11 +229,11 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
             notifyItemRangeChanged(0, mData.size());
             if (mCallback != null) mCallback.onItemAdded();
-        } else if (container.getType() instanceof NoteItem) {
+        } else if (container.getType() instanceof Note) {
             mData.remove(position);
             notifyItemRemoved(position);
             //noinspection unchecked
-            for (NoteItem item : ((Container<NoteItem>) container).getList()) {
+            for (Note item : ((Container<Note>) container).getList()) {
                 mData.add(0, new Reply(Reply.NOTE, item));
                 notifyItemInserted(0);
             }

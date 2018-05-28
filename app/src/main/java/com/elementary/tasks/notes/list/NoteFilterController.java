@@ -1,8 +1,9 @@
-package com.elementary.tasks.notes;
+package com.elementary.tasks.notes.list;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.reminder.lists.filters.AbstractFilter;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 import com.elementary.tasks.reminder.lists.filters.FilterValue;
@@ -32,24 +33,24 @@ public class NoteFilterController {
     private FilterValue<String> searchValue = new FilterValue<>();
 
     @NonNull
-    private List<NoteItem> original = new ArrayList<>();
+    private List<Note> original = new ArrayList<>();
     @Nullable
-    private FilterCallback<NoteItem> mCallback;
+    private FilterCallback<Note> mCallback;
     @Nullable
-    private ObjectFilter<NoteItem> mFilter;
+    private ObjectFilter<Note> mFilter;
 
-    public NoteFilterController(@Nullable FilterCallback<NoteItem> callback) {
+    public NoteFilterController(@Nullable FilterCallback<Note> callback) {
         this.mCallback = callback;
         initFilters();
     }
 
     private void initFilters() {
-        AbstractFilter<String, NoteItem> filter = new AbstractFilter<String, NoteItem>(null) {
+        AbstractFilter<String, Note> filter = new AbstractFilter<String, Note>(null) {
             @Nullable
             private String query = null;
 
             @Override
-            public boolean filter(NoteItem item) {
+            public boolean filter(Note item) {
                 return (query == null || query.length() == 0 || item.getSummary().toLowerCase().contains(query.toLowerCase()));
             }
 
@@ -72,18 +73,18 @@ public class NoteFilterController {
     }
 
     @NonNull
-    public List<NoteItem> getOriginal() {
+    public List<Note> getOriginal() {
         return original;
     }
 
-    public void setOriginal(@NonNull List<NoteItem> original) {
+    public void setOriginal(@NonNull List<Note> original) {
         this.original = original;
         onChanged();
     }
 
     private void onChanged() {
-        List<NoteItem> list = new ArrayList<>();
-        for (NoteItem item : original) {
+        List<Note> list = new ArrayList<>();
+        for (Note item : original) {
             if (mFilter != null) {
                 if (mFilter.filter(item)) list.add(item);
             } else list.add(item);
