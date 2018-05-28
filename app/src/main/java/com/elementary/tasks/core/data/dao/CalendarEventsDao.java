@@ -38,6 +38,9 @@ public interface CalendarEventsDao {
     @Query("SELECT * FROM CalendarEvent")
     List<CalendarEvent> getAll();
 
+    @Query("SELECT eventId FROM CalendarEvent")
+    List<Long> getEventIds();
+
     @Insert(onConflict = REPLACE)
     void insert(CalendarEvent calendarEvent);
 

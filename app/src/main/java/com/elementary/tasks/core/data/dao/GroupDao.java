@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.models.Group;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -35,6 +36,10 @@ public interface GroupDao {
 
     @Query("SELECT * FROM `Group` LIMIT 1")
     LiveData<Group> loadDefault();
+
+    @Nullable
+    @Query("SELECT * FROM `Group` LIMIT 1")
+    Group getDefault();
 
     @Query("SELECT * FROM `Group`")
     List<Group> getAll();
