@@ -33,7 +33,6 @@ import androidx.viewpager.widget.ViewPager;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ImagePreviewActivity extends ThemedActivity {
 
     private ActivityImagePreviewBinding binding;
@@ -77,7 +76,7 @@ public class ImagePreviewActivity extends ThemedActivity {
         this.mNote = note;
         binding.photoPager.setAdapter(getAdapter(note));
         binding.photoPager.setPageMargin(5);
-        binding.photoPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.photoPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -119,5 +118,11 @@ public class ImagePreviewActivity extends ThemedActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mNote != null) viewModel.deleteNote(mNote);
     }
 }

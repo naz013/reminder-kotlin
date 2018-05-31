@@ -2,10 +2,14 @@ package com.elementary.tasks.core.view_models.notes;
 
 import android.app.Application;
 
+import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.core.view_models.Commands;
 import com.elementary.tasks.notes.work.DeleteNoteFilesAsync;
+import com.elementary.tasks.reminder.work.DeleteFilesAsync;
 
 import androidx.annotation.NonNull;
 
@@ -50,6 +54,20 @@ abstract class BaseNotesViewModel extends BaseDbViewModel {
                 isInProgress.postValue(false);
                 result.postValue(Commands.SAVED);
             });
+        });
+    }
+
+    public void deleteReminder(@NonNull Reminder reminder) {
+        isInProgress.postValue(true);
+        run(() -> {
+            EventControlFactory.getController(reminder).stop();
+            getAppDb().reminderDao().delete(reminder);
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.UPDATED);
+            });
+            CalendarUtils.deleteEvents(getApplication(), reminder.getUniqueId());
+            new DeleteFilesAsync(getApplication()).execute(reminder.getUuId());
         });
     }
 }

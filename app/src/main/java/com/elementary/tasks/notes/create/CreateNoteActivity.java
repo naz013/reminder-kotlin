@@ -9,7 +9,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -17,8 +16,6 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,19 +26,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.BitmapUtils;
@@ -51,25 +44,21 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.PhotoSelectionUtil;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.notes.NoteViewModel;
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.core.views.ColorPickerView;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding;
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding;
-import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
-import com.elementary.tasks.notes.work.DeleteNoteFilesAsync;
-import com.elementary.tasks.notes.list.ImagesGridAdapter;
-import com.elementary.tasks.notes.KeepLayoutManager;
-import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.notes.editor.ImageEditActivity;
-import com.elementary.tasks.core.data.models.Reminder;
-import com.google.android.material.appbar.AppBarLayout;
+import com.elementary.tasks.notes.list.ImagesGridAdapter;
+import com.elementary.tasks.notes.list.KeepLayoutManager;
+import com.elementary.tasks.notes.preview.ImagePreviewActivity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -80,10 +69,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
+
+import static com.elementary.tasks.notes.preview.NotePreviewActivity.PREVIEW_IMAGES;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -117,13 +112,11 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     private int mEditPosition = -1;
     private float mLastX = -1;
 
-    private RelativeLayout layoutContainer;
-    private LinearLayout remindContainer;
-    private RoboTextView remindDate, remindTime;
-
     private ActivityCreateNoteBinding binding;
+    private NoteViewModel viewModel;
+    private ReminderViewModel reminderViewModel;
     @Nullable
-    private ImagesGridAdapter mAdapter;
+    private final ImagesGridAdapter mAdapter = new ImagesGridAdapter();
     @Nullable
     private ProgressDialog mProgress;
 
@@ -131,8 +124,6 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     private Note mItem;
     @Nullable
     private Reminder mReminder;
-    private AppBarLayout toolbar;
-    private EditText taskField;
 
     @Nullable
     private SpeechRecognizer speech = null;
@@ -219,12 +210,9 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         binding.recordingView.setVisibility(View.GONE);
     }
 
-    private DecodeImagesAsync.DecodeListener mDecodeCallback = new DecodeImagesAsync.DecodeListener() {
-        @Override
-        public void onDecode(List<NoteImage> result) {
-            if (mAdapter != null && !result.isEmpty()) {
-                mAdapter.addNextImages(result);
-            }
+    private DecodeImagesAsync.DecodeListener mDecodeCallback = result -> {
+        if (!result.isEmpty()) {
+            mAdapter.addNextImages(result);
         }
     };
 
@@ -238,28 +226,15 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         initActionBar();
         initMenu();
         initBgContainer();
-        remindContainer = binding.remindContainer;
-        ViewUtils.fadeInAnimation(layoutContainer);
-        remindDate = binding.remindDate;
-        remindDate.setOnClickListener(v -> dateDialog());
-        remindTime = binding.remindTime;
-        remindTime.setOnClickListener(v -> timeDialog());
+        ViewUtils.fadeInAnimation(binding.layoutContainer);
+        binding.remindDate.setOnClickListener(v -> dateDialog());
+        binding.remindTime.setOnClickListener(v -> timeDialog());
         binding.micButton.setOnClickListener(v -> micClick());
-        binding.discardReminder.setOnClickListener(v -> ViewUtils.collapse(remindContainer));
+        binding.discardReminder.setOnClickListener(v -> ViewUtils.collapse(binding.remindContainer));
         initImagesList();
+
         loadNote();
-        if (mItem != null) {
-            mColor = mItem.getColor();
-            mFontStyle = mItem.getStyle();
-            setText(mItem.getSummary());
-            if (mAdapter != null) mAdapter.setImages(mItem.getImages());
-            showReminder();
-        } else {
-            mColor = new Random().nextInt(16);
-            if (getPrefs().isNoteColorRememberingEnabled()) {
-                mColor = getPrefs().getLastNoteColor();
-            }
-        }
+
         updateBackground();
         updateTextStyle();
         showSaturationAlert();
@@ -306,6 +281,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             return;
         }
         getPrefs().setNoteHintShowed(true);
+        // TODO: 31.05.2018 Add banner about note color opacity
 //        mAlerter = Alerter.create(this)
 //                .setTitle(R.string.swipe_left_or_right_to_adjust_saturation)
 //                .setText(R.string.click_to_hide)
@@ -318,7 +294,6 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     }
 
     private void initBgContainer() {
-        layoutContainer = binding.layoutContainer;
         binding.touchView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 return true;
@@ -358,29 +333,48 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     private void switchReminder() {
         if (!isReminderAttached()) {
             setDateTime(null);
-            ViewUtils.expand(remindContainer);
+            ViewUtils.expand(binding.remindContainer);
         } else {
-            ViewUtils.collapse(remindContainer);
+            ViewUtils.collapse(binding.remindContainer);
         }
     }
 
     private void loadNote() {
         Intent intent = getIntent();
         String id = intent.getStringExtra(Constants.INTENT_ID);
-        if (id != null) {
-            mItem = RealmDb.getInstance().getNote(id);
-        } else if (intent.getData() != null) {
+        initViewModel(id);
+        if (intent.getData() != null) {
             String filePath = intent.getStringExtra(Constants.FILE_PICKED);
             Uri name = intent.getData();
             loadNoteFromFile(filePath, name);
         }
     }
 
+    private void initViewModel(String id) {
+        viewModel = ViewModelProviders.of(this, new NoteViewModel.Factory(getApplication(), id)).get(NoteViewModel.class);
+        viewModel.note.observe(this, this::showNote);
+        viewModel.editedPicture.observe(this, note -> {
+            if (note != null && !note.getImages().isEmpty()) {
+                mAdapter.setImage(note.getImages().get(0), mEditPosition);
+            }
+        });
+        viewModel.reminder.observe(this, this::showReminder);
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case DELETED:
+                        finish();
+                        break;
+                }
+            }
+        });
+
+        reminderViewModel = ViewModelProviders.of(this, new ReminderViewModel.Factory(getApplication(), 0)).get(ReminderViewModel.class);
+    }
+
     private void initActionBar() {
-        toolbar = binding.appBar;
         setSupportActionBar(binding.toolbar);
-        taskField = binding.taskMessage;
-        taskField.setTextSize(getPrefs().getNoteTextSize() + 12);
+        binding.taskMessage.setTextSize(getPrefs().getNoteTextSize() + 12);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -388,7 +382,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setElevation(0f);
         }
-        toolbar.setVisibility(View.VISIBLE);
+        binding.appBar.setVisibility(View.VISIBLE);
     }
 
     private void loadNoteFromFile(String filePath, Uri name) {
@@ -404,36 +398,68 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             } else {
                 mItem = BackupTool.getInstance().getNote(filePath, null);
             }
+            showNote(mItem);
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
-    private void initImagesList() {
-        mAdapter = new ImagesGridAdapter();
-        binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
-        binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
-        binding.imagesList.setItemAnimator(new DefaultItemAnimator());
-        mAdapter.setEditable(true, this::editImage);
-        binding.imagesList.setAdapter(mAdapter);
-    }
-
-    private void editImage(int position) {
-        if (mAdapter != null) {
-            NoteImage image = mAdapter.getItem(position);
-            RealmDb.getInstance().saveImage(image);
-            startActivityForResult(new Intent(this, ImageEditActivity.class), EDIT_CODE);
-            this.mEditPosition = position;
+    private void showNote(Note note) {
+        this.mItem = note;
+        if (note != null) {
+            mColor = note.getColor();
+            mFontStyle = note.getStyle();
+            setText(note.getSummary());
+            mAdapter.setImages(note.getImages());
+        } else {
+            mColor = new Random().nextInt(16);
+            if (getPrefs().isNoteColorRememberingEnabled()) {
+                mColor = getPrefs().getLastNoteColor();
+            }
         }
     }
 
-    private void showReminder() {
-        if (mItem != null) {
-            mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
-            if (mReminder != null) {
-                setDateTime(mReminder.getEventTime());
-                ViewUtils.expand(remindContainer);
+    private void initImagesList() {
+        mAdapter.setEditable(true);
+        mAdapter.setActionsListener((view, position, noteImage, actions) -> {
+            switch (actions) {
+                case EDIT:
+                    editImage(position);
+                    break;
+                case OPEN:
+                    openImagePreview(position);
+                    break;
             }
+        });
+        binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
+        binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
+        binding.imagesList.setAdapter(mAdapter);
+    }
+
+    private void openImagePreview(int position) {
+        Note note = new Note();
+        note.setKey(PREVIEW_IMAGES);
+        note.setImages(mAdapter.getData());
+        viewModel.saveNote(note);
+        startActivity(new Intent(this, ImagePreviewActivity.class)
+                .putExtra(Constants.INTENT_ID, note.getKey())
+                .putExtra(Constants.INTENT_POSITION, position));
+    }
+
+    private void editImage(int position) {
+        Note note = new Note();
+        note.setKey(PREVIEW_IMAGES);
+        note.setImages(Collections.singletonList(mAdapter.getItem(position)));
+        viewModel.saveNote(note);
+        this.mEditPosition = position;
+        startActivityForResult(new Intent(this, ImageEditActivity.class), EDIT_CODE);
+    }
+
+    private void showReminder(Reminder reminder) {
+        mReminder = reminder;
+        if (reminder != null) {
+            setDateTime(reminder.getEventTime());
+            ViewUtils.expand(binding.remindContainer);
         }
     }
 
@@ -474,20 +500,19 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         mYear = calendar.get(Calendar.YEAR);
         mHour = calendar.get(Calendar.HOUR_OF_DAY);
         mMinute = calendar.get(Calendar.MINUTE);
-        remindDate.setText(TimeUtil.getDate(calendar.getTimeInMillis()));
-        remindTime.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
+        binding.remindDate.setText(TimeUtil.getDate(calendar.getTimeInMillis()));
+        binding.remindTime.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
     }
 
     private boolean isReminderAttached() {
-        return remindContainer.getVisibility() == View.VISIBLE;
+        return binding.remindContainer.getVisibility() == View.VISIBLE;
     }
 
     private boolean createObject() {
-        String note = taskField.getText().toString().trim();
-        List<NoteImage> images = new ArrayList<>();
-        if (mAdapter != null) images = mAdapter.getImages();
+        String note = binding.taskMessage.getText().toString().trim();
+        List<NoteImage> images = mAdapter.getData();
         if (TextUtils.isEmpty(note) && images.isEmpty()) {
-            taskField.setError(getString(R.string.must_be_not_empty));
+            binding.taskMessage.setError(getString(R.string.must_be_not_empty));
             return false;
         }
         if (mItem == null) {
@@ -506,8 +531,8 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             return;
         }
         boolean hasReminder = isReminderAttached();
-        if (!hasReminder && mItem != null) removeNoteFromReminder(mItem.getKey());
-        RealmDb.getInstance().saveObject(mItem);
+        if (!hasReminder && mItem != null) removeNoteFromReminder();
+        viewModel.saveNote(mItem);
         if (hasReminder) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(mYear, mMonth, mDay, mHour, mMinute);
@@ -530,7 +555,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         mReminder.setRemoved(false);
         if (mItem != null) mReminder.setSummary(mItem.getSummary());
         else mReminder.setSummary("");
-        Group def = RealmDb.getInstance().getDefaultGroup();
+        Group def = reminderViewModel.defaultGroup.getValue();
         if (def != null) {
             mReminder.setGroupUuId(def.getUuId());
         }
@@ -541,18 +566,12 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
             return;
         }
-        EventControl control = EventControlFactory.getController(this, mReminder);
-        if (!control.start()) {
-            Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show();
-        }
+        reminderViewModel.saveAndStartReminder(mReminder);
     }
 
-    private void removeNoteFromReminder(String key) {
-        mReminder = RealmDb.getInstance().getReminderByNote(key);
+    private void removeNoteFromReminder() {
         if (mReminder != null) {
-            EventControl control = EventControlFactory.getController(this, mReminder);
-            control.stop();
-            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+            reminderViewModel.deleteReminder(mReminder, false);
         }
     }
 
@@ -617,10 +636,8 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
 
     private void deleteNote() {
         if (mItem != null) {
-            RealmDb.getInstance().deleteNote(mItem);
-            new DeleteNoteFilesAsync(this).execute(mItem.getKey());
+            viewModel.deleteNote(mItem);
         }
-        finish();
     }
 
     @Override
@@ -647,10 +664,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     }
 
     private void updateImage() {
-        if (mAdapter != null) {
-            NoteImage image = RealmDb.getInstance().getImage();
-            mAdapter.setImage(image, mEditPosition);
-        }
+        viewModel.loadEditedPicture();
     }
 
     private void addImageFromUri(Uri uri) {
@@ -661,7 +675,7 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (bitmapImage != null && mAdapter != null) {
+        if (bitmapImage != null) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             mAdapter.addImage(new NoteImage(outputStream.toByteArray()));
@@ -669,12 +683,12 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
     }
 
     private void updateTextStyle() {
-        taskField.setTypeface(AssetsUtil.getTypeface(this, mFontStyle));
+        binding.taskMessage.setTypeface(AssetsUtil.getTypeface(this, mFontStyle));
     }
 
     private void updateBackground() {
-        layoutContainer.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
-        toolbar.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
+        binding.layoutContainer.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
+        binding.appBar.setBackgroundColor(getThemeUtil().getNoteLightColor(mColor));
         if (Module.isLollipop()) {
             getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(mColor));
         }
@@ -729,48 +743,43 @@ public class CreateNoteActivity extends ThemedActivity implements PhotoSelection
         TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay);
     }
 
-    DatePickerDialog.OnDateSetListener myDateCallBack = new DatePickerDialog.OnDateSetListener() {
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            mYear = year;
-            mMonth = monthOfYear;
-            mDay = dayOfMonth;
-            String dayStr;
-            String monthStr;
-            if (mDay < 10) {
-                dayStr = "0" + mDay;
-            } else {
-                dayStr = String.valueOf(mDay);
-            }
-            if (mMonth < 9) {
-                monthStr = "0" + (mMonth + 1);
-            } else {
-                monthStr = String.valueOf(mMonth + 1);
-            }
-            remindDate.setText(SuperUtil.appendString(dayStr, "/", monthStr, "/", String.valueOf(mYear)));
+    DatePickerDialog.OnDateSetListener myDateCallBack = (view, year, monthOfYear, dayOfMonth) -> {
+        mYear = year;
+        mMonth = monthOfYear;
+        mDay = dayOfMonth;
+        String dayStr;
+        String monthStr;
+        if (mDay < 10) {
+            dayStr = "0" + mDay;
+        } else {
+            dayStr = String.valueOf(mDay);
         }
+        if (mMonth < 9) {
+            monthStr = "0" + (mMonth + 1);
+        } else {
+            monthStr = String.valueOf(mMonth + 1);
+        }
+        binding.remindDate.setText(SuperUtil.appendString(dayStr, "/", monthStr, "/", String.valueOf(mYear)));
     };
 
     protected void timeDialog() {
         TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute);
     }
 
-    TimePickerDialog.OnTimeSetListener myCallBack = new TimePickerDialog.OnTimeSetListener() {
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            mHour = hourOfDay;
-            mMinute = minute;
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.HOUR_OF_DAY, hourOfDay);
-            c.set(Calendar.MINUTE, minute);
-            remindTime.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
-        }
+    TimePickerDialog.OnTimeSetListener myCallBack = (view, hourOfDay, minute) -> {
+        mHour = hourOfDay;
+        mMinute = minute;
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minute);
+        binding.remindTime.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
     };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(taskField.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(binding.taskMessage.getWindowToken(), 0);
         releaseSpeech();
     }
 

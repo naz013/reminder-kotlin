@@ -33,6 +33,9 @@ public interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
     LiveData<Reminder> loadById(int id);
 
+    @Query("SELECT * FROM Reminder WHERE noteId=:key")
+    LiveData<Reminder> loadByNoteKey(String key);
+
     @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
     Reminder getById(int id);
 
