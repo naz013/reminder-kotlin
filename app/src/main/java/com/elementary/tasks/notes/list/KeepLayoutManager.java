@@ -20,11 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class KeepLayoutManager extends GridLayoutManager {
+public class KeepLayoutManager extends GridLayoutManager {
 
     private RecyclerView.Adapter mAdapter;
 
-    KeepLayoutManager(Context context, int spanCount, RecyclerView.Adapter adapter) {
+    public KeepLayoutManager(Context context, int spanCount, RecyclerView.Adapter adapter) {
         super(context, spanCount);
         this.mAdapter = adapter;
         init();

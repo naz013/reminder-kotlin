@@ -567,7 +567,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     private void deleteReminder() {
         if (mReminder != null) {
             if (mReminder.isRemoved()) {
-                viewModel.deleteReminder(mReminder);
+                viewModel.deleteReminder(mReminder, true);
             } else {
                 viewModel.moveToTrash(mReminder);
             }

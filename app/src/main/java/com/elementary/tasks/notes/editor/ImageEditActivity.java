@@ -2,23 +2,29 @@ package com.elementary.tasks.notes.editor;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.view_models.notes.NoteViewModel;
 import com.elementary.tasks.databinding.ActivityImageEditBinding;
+import com.elementary.tasks.notes.preview.NotePreviewActivity;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Collections;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -41,13 +47,45 @@ public class ImageEditActivity extends ThemedActivity {
 
     private ActivityImageEditBinding binding;
     private BitmapFragment fragment;
+    private NoteViewModel viewModel;
+    @Nullable
+    private Note mNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImageSingleton.getInstance().setItem(RealmDb.getInstance().getImage());
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_edit);
         initActionBar();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new NoteViewModel.Factory(getApplication(), NotePreviewActivity.PREVIEW_IMAGES)).get(NoteViewModel.class);
+        viewModel.note.observe(this, note -> {
+            if (note != null) {
+                showImage(note);
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                        closeOk();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void closeOk() {
+        ImageSingleton.getInstance().setItem(null);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    private void showImage(Note note) {
+        mNote = note;
+        ImageSingleton.getInstance().setItem(note.getImages().get(0));
         initTabControl();
     }
 
@@ -204,11 +242,9 @@ public class ImageEditActivity extends ThemedActivity {
     }
 
     private void saveImage() {
-        if (fragment.getImage() != null) {
-            RealmDb.getInstance().saveImage(fragment.getImage());
+        if (fragment.getImage() != null && mNote != null) {
+            mNote.setImages(Collections.singletonList(fragment.getImage()));
+            viewModel.saveNote(mNote);
         }
-        ImageSingleton.getInstance().setItem(null);
-        setResult(RESULT_OK);
-        finish();
     }
 }

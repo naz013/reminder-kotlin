@@ -14,11 +14,11 @@ import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.notes.NoteViewModel;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.databinding.ActivityMainBinding;
 import com.elementary.tasks.databinding.NoteInputCardBinding;
@@ -55,6 +55,7 @@ public class QuickNoteCoordinator {
     private Callback mCallback;
     private ThemeUtil themeUtil;
     private ReminderViewModel reminderViewModel;
+    private NoteViewModel noteViewModel;
 
     @Nullable
     private Note mNote;
@@ -76,6 +77,24 @@ public class QuickNoteCoordinator {
         this.binding.quickNoteContainer.setVisibility(View.GONE);
 
         initReminderViewModel();
+        initNoteViewModel();
+    }
+
+    private void initNoteViewModel() {
+        noteViewModel = ViewModelProviders.of(mContext).get(NoteViewModel.class);
+        noteViewModel.result.observe(mContext, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                        if (Prefs.getInstance(mContext).isNoteReminderEnabled()) {
+                            if (mNote != null) addReminderCard(mNote);
+                        } else {
+                            if (mNote != null) addNotificationCard(mNote);
+                        }
+                        break;
+                }
+            }
+        });
     }
 
     private void initReminderViewModel() {
@@ -148,12 +167,8 @@ public class QuickNoteCoordinator {
         } else {
             item.setColor(new Random().nextInt(16));
         }
-        RealmDb.getInstance().saveObject(item);
-        if (Prefs.getInstance(mContext).isNoteReminderEnabled()) {
-            addReminderCard(item);
-        } else {
-            addNotificationCard(item);
-        }
+        mNote = item;
+        noteViewModel.saveNote(item);
     }
 
     private void addReminderCard(Note item) {

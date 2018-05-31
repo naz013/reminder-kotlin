@@ -200,7 +200,7 @@ public class ArchiveFragment extends BaseNavigationFragment implements FilterCal
                 editReminder(item1.getUniqueId());
             }
             if (item == 1) {
-                viewModel.deleteReminder(item1);
+                viewModel.deleteReminder(item1, true);
             }
         }, items);
     }

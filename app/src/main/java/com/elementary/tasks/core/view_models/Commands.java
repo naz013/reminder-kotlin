@@ -19,5 +19,6 @@ public enum Commands {
     SAVED,
     ENABLED,
     STOPPED,
+    UPDATED,
     DELETED
 }

@@ -18,5 +18,6 @@ package com.elementary.tasks.core.utils;
 public enum ListActions {
     OPEN,
     MORE,
+    EDIT,
     SWITCH
 }

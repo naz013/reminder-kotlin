@@ -160,7 +160,7 @@ public abstract class BaseRemindersViewModel extends BaseDbViewModel {
         });
     }
 
-    public void deleteReminder(@NonNull Reminder reminder) {
+    public void deleteReminder(@NonNull Reminder reminder, boolean showMessage) {
         isInProgress.postValue(true);
         run(() -> {
             EventControlFactory.getController(reminder).stop();
@@ -168,7 +168,7 @@ public abstract class BaseRemindersViewModel extends BaseDbViewModel {
             end(() -> {
                 isInProgress.postValue(false);
                 result.postValue(Commands.DELETED);
-                Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show();
+                if (showMessage) Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show();
             });
             CalendarUtils.deleteEvents(getApplication(), reminder.getUniqueId());
             new DeleteFilesAsync(getApplication()).execute(reminder.getUuId());

@@ -3,12 +3,13 @@ package com.elementary.tasks.core.view_models.notes;
 import android.app.Application;
 
 import com.elementary.tasks.core.data.models.Note;
-import com.elementary.tasks.core.view_models.Commands;
+import com.elementary.tasks.core.data.models.Reminder;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+
+import static com.elementary.tasks.notes.preview.NotePreviewActivity.PREVIEW_IMAGES;
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -28,10 +29,17 @@ import androidx.lifecycle.ViewModelProvider;
 public class NoteViewModel extends BaseNotesViewModel {
 
     public LiveData<Note> note;
+    public LiveData<Note> editedPicture;
+    public LiveData<Reminder> reminder;
 
     private NoteViewModel(Application application, String key) {
         super(application);
         note = getAppDb().notesDao().loadById(key);
+        reminder = getAppDb().reminderDao().loadByNoteKey(key);
+    }
+
+    public void loadEditedPicture() {
+        editedPicture = getAppDb().notesDao().loadById(PREVIEW_IMAGES);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

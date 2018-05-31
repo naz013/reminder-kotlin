@@ -3,11 +3,9 @@ package com.elementary.tasks.notes.preview;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,9 +15,8 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
@@ -27,22 +24,23 @@ import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.notes.list.ImagesGridAdapter;
-import com.elementary.tasks.notes.KeepLayoutManager;
-import com.elementary.tasks.notes.create.NoteImage;
-import com.elementary.tasks.notes.create.CreateNoteActivity;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
+import com.elementary.tasks.core.view_models.notes.NoteViewModel;
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding;
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration;
-import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.notes.list.ImagesGridAdapter;
+import com.elementary.tasks.notes.list.KeepLayoutManager;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 
 import java.io.File;
 import java.util.List;
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -62,14 +60,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 
 public class NotePreviewActivity extends ThemedActivity {
 
+    public static final String PREVIEW_IMAGES = "preview_image_key";
+
     @Nullable
-    private Note mItem;
+    private Note mNote;
     @Nullable
     private Reminder mReminder;
     private String mId;
 
-    private ImagesGridAdapter mAdapter;
+    private final ImagesGridAdapter mAdapter = new ImagesGridAdapter();
     private ActivityNotePreviewBinding binding;
+    private NoteViewModel viewModel;
 
     private ProgressDialog mProgress;
 
@@ -84,6 +85,31 @@ public class NotePreviewActivity extends ThemedActivity {
         initImagesList();
         initScrollView();
         initReminderCard();
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new NoteViewModel.Factory(getApplication(), mId)).get(NoteViewModel.class);
+        viewModel.note.observe(this, note -> {
+            if (note != null) {
+                showNote(note);
+            }
+        });
+        viewModel.reminder.observe(this, reminder -> {
+            if (reminder != null) {
+                showReminder(reminder);
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case DELETED:
+                        closeWindow();
+                        break;
+                }
+            }
+        });
     }
 
     private void initReminderCard() {
@@ -100,12 +126,26 @@ public class NotePreviewActivity extends ThemedActivity {
     }
 
     private void initImagesList() {
-        mAdapter = new ImagesGridAdapter();
+        mAdapter.setActionsListener((view, position, noteImage, actions) -> {
+            switch (actions) {
+                case OPEN:
+                    openImagePreview(position);
+                    break;
+            }
+        });
         binding.imagesList.setLayoutManager(new KeepLayoutManager(this, 6, mAdapter));
         binding.imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
-        binding.imagesList.setHasFixedSize(true);
-        binding.imagesList.setItemAnimator(new DefaultItemAnimator());
         binding.imagesList.setAdapter(mAdapter);
+    }
+
+    private void openImagePreview(int position) {
+        Note note = new Note();
+        note.setKey(PREVIEW_IMAGES);
+        note.setImages(mAdapter.getData());
+        viewModel.saveNote(note);
+        startActivity(new Intent(this, ImagePreviewActivity.class)
+                .putExtra(Constants.INTENT_ID, note.getKey())
+                .putExtra(Constants.INTENT_POSITION, position));
     }
 
     private void initScrollView() {
@@ -113,7 +153,7 @@ public class NotePreviewActivity extends ThemedActivity {
             @Override
             public void onScrollChanged() {
                 int scrollY = binding.scrollContent.getScrollY();
-                if (!mItem.getImages().isEmpty()) {
+                if (!mNote.getImages().isEmpty()) {
                     binding.appBar.getBackground().setAlpha(getAlphaForActionBar(scrollY));
                 } else {
                     binding.appBar.getBackground().setAlpha(255);
@@ -144,19 +184,13 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void editNote() {
         startActivity(new Intent(NotePreviewActivity.this, CreateNoteActivity.class)
-                .putExtra(Constants.INTENT_ID, mItem.getKey()));
+                .putExtra(Constants.INTENT_ID, mNote.getKey()));
     }
 
     private void moveToStatus() {
-        if (mItem != null) {
-            new Notifier(this).showNoteNotification(mItem);
+        if (mNote != null) {
+            new Notifier(this).showNoteNotification(mNote);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadData();
     }
 
     @Override
@@ -164,46 +198,35 @@ public class NotePreviewActivity extends ThemedActivity {
         closeWindow();
     }
 
-    private void loadData() {
-        mItem = RealmDb.getInstance().getNote(mId);
-        if (mItem != null) {
-            showNote();
-            showImage();
-            showReminder();
-        } else {
-            finish();
+    private void showNote(Note note) {
+        this.mNote = note;
+        if (note != null) {
+            binding.noteText.setText(note.getSummary());
+            binding.noteText.setTypeface(AssetsUtil.getTypeface(this, note.getStyle()));
+            if (Module.isLollipop()) {
+                getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(note.getColor()));
+            }
+            binding.scrollContent.setBackgroundColor(getThemeUtil().getNoteLightColor(note.getColor()));
+            showImages(note.getImages());
         }
     }
 
-    private void showNote() {
-        String note = mItem.getSummary();
-        binding.noteText.setText(note);
-        int color = mItem.getColor();
-        int style = mItem.getStyle();
-        binding.noteText.setTypeface(AssetsUtil.getTypeface(this, style));
-        if (Module.isLollipop()) {
-            getWindow().setStatusBarColor(getThemeUtil().getNoteDarkColor(color));
-        }
-        binding.scrollContent.setBackgroundColor(getThemeUtil().getNoteLightColor(color));
-    }
-
-    private void showReminder() {
-        mReminder = RealmDb.getInstance().getReminderByNote(mItem.getKey());
-        if (mReminder != null) {
-            String dateTime = TimeUtil.getDateTimeFromGmt(mReminder.getEventTime(), getPrefs().is24HourFormatEnabled());
+    private void showReminder(Reminder reminder) {
+        mReminder = reminder;
+        if (reminder != null) {
+            String dateTime = TimeUtil.getDateTimeFromGmt(reminder.getEventTime(), getPrefs().is24HourFormatEnabled());
             binding.reminderTime.setText(dateTime);
             binding.reminderContainer.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showImage() {
-        List<NoteImage> list = mItem.getImages();
-        if (!list.isEmpty()) {
-            mAdapter.setImages(list);
-            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mItem.getColor()));
+    private void showImages(List<NoteImage> images) {
+        if (!images.isEmpty()) {
+            mAdapter.setImages(images);
+            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mNote.getColor()));
             binding.appBar.getBackground().setAlpha(0);
         } else {
-            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mItem.getColor()));
+            binding.appBar.setBackgroundColor(getThemeUtil().getNoteColor(mNote.getColor()));
             binding.appBar.getBackground().setAlpha(255);
         }
     }
@@ -221,7 +244,7 @@ public class NotePreviewActivity extends ThemedActivity {
     private void shareNote() {
         showProgress();
         BackupTool.CreateCallback callback = this::sendNote;
-        new Thread(() -> BackupTool.getInstance().createNote(mItem, callback)).start();
+        new Thread(() -> BackupTool.getInstance().createNote(mNote, callback)).start();
     }
 
     private void sendNote(File file) {
@@ -230,7 +253,7 @@ public class NotePreviewActivity extends ThemedActivity {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show();
             return;
         }
-        TelephonyUtil.sendNote(file, this, mItem.getSummary());
+        TelephonyUtil.sendNote(file, this, mNote.getSummary());
         closeWindow();
     }
 
@@ -277,8 +300,7 @@ public class NotePreviewActivity extends ThemedActivity {
         builder.setMessage(getString(R.string.delete_this_note));
         builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
             dialog.dismiss();
-            deleteNote();
-            closeWindow();
+            if (mNote != null) viewModel.deleteNote(mNote);
         });
         builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
@@ -299,14 +321,8 @@ public class NotePreviewActivity extends ThemedActivity {
 
     private void deleteReminder() {
         if (mReminder != null) {
-            EventControl control = EventControlFactory.getController(this, mReminder);
-            control.stop();
-            RealmDb.getInstance().deleteReminder(mReminder.getUuId());
+            viewModel.deleteReminder(mReminder);
             binding.reminderContainer.setVisibility(View.GONE);
         }
-    }
-
-    private void deleteNote() {
-        RealmDb.getInstance().deleteNote(mItem);
     }
 }
