@@ -43,7 +43,7 @@ public abstract class BaseRemindersViewModel extends BaseDbViewModel {
     public LiveData<Group> defaultGroup;
     public LiveData<List<Group>> allGroups;
 
-    BaseRemindersViewModel(Application application) {
+    public BaseRemindersViewModel(Application application) {
         super(application);
 
         defaultGroup = getAppDb().groupDao().loadDefault();
@@ -94,6 +94,14 @@ public abstract class BaseRemindersViewModel extends BaseDbViewModel {
             getAppDb().reminderDao().insert(newItem);
             EventControlFactory.getController(newItem).start();
             end(() -> Toast.makeText(getApplication(), R.string.reminder_created, Toast.LENGTH_SHORT).show());
+        });
+    }
+
+    public void stopReminder(@NonNull Reminder reminder) {
+        isInProgress.postValue(true);
+        run(() -> {
+            EventControlFactory.getController(reminder).stop();
+            end(() -> isInProgress.postValue(false));
         });
     }
 

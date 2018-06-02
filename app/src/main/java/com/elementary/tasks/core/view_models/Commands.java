@@ -20,5 +20,6 @@ public enum Commands {
     ENABLED,
     STOPPED,
     UPDATED,
+    TRASH_CLEARED,
     DELETED
 }

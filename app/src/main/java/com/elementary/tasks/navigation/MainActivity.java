@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,43 +27,46 @@ import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.RemotePrefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel;
 import com.elementary.tasks.core.views.FilterView;
 import com.elementary.tasks.core.views.ReturnScrollListener;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ActivityMainBinding;
-import com.elementary.tasks.reminder.lists.ArchiveFragment;
+import com.elementary.tasks.groups.list.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.navigation.fragments.FeedbackFragment;
 import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
-import com.elementary.tasks.groups.list.GroupsFragment;
 import com.elementary.tasks.navigation.fragments.HelpFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
-import com.elementary.tasks.notes.list.NotesFragment;
-import com.elementary.tasks.places.list.PlacesFragment;
-import com.elementary.tasks.reminder.lists.RemindersFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 import com.elementary.tasks.navigation.settings.SettingsFragment;
 import com.elementary.tasks.navigation.settings.images.MainImageActivity;
 import com.elementary.tasks.navigation.settings.images.SaveAsync;
 import com.elementary.tasks.notes.QuickNoteCoordinator;
+import com.elementary.tasks.notes.list.NotesFragment;
+import com.elementary.tasks.places.list.PlacesFragment;
+import com.elementary.tasks.reminder.lists.ArchiveFragment;
+import com.elementary.tasks.reminder.lists.RemindersFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends ThemedActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -86,6 +87,8 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
     private ReturnScrollListener returnScrollListener;
     private RecyclerView.OnScrollListener listener;
     private RecyclerView mPrevList;
+
+    private ConversationViewModel viewModel;
 
     private int prevItem;
     private int beforeSettings;
@@ -124,6 +127,12 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
         } else {
             initStartFragment();
         }
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ConversationViewModel.class);
     }
 
     @Override
@@ -489,10 +498,10 @@ public class MainActivity extends ThemedActivity implements NavigationView.OnNav
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            new Recognize(this).parseResults(matches, false);
-            super.onActivityResult(requestCode, resultCode, data);
+            viewModel.parseResults(matches, false);
         }
         if (fragment != null) {
             fragment.onActivityResult(requestCode, resultCode, data);

@@ -1,17 +1,19 @@
 package com.elementary.tasks.core.app_widgets.voice_control;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.Notifier;
-import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -28,9 +30,11 @@ import java.util.ArrayList;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class VoiceWidgetDialog extends Activity {
+public class VoiceWidgetDialog extends FragmentActivity {
 
     public static final int VOICE_RECOGNITION_REQUEST_CODE = 109;
+
+    private ConversationViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,8 @@ public class VoiceWidgetDialog extends Activity {
         ThemeUtil cs = ThemeUtil.getInstance(this);
         setTheme(cs.getDialogStyle());
         startVoiceRecognitionActivity();
+
+        viewModel = ViewModelProviders.of(this).get(ConversationViewModel.class);
     }
 
     public void startVoiceRecognitionActivity() {
@@ -46,10 +52,10 @@ public class VoiceWidgetDialog extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            new Recognize(VoiceWidgetDialog.this).parseResults(matches, true);
-            super.onActivityResult(requestCode, resultCode, data);
+            viewModel.parseResults(matches, true);
         }
         Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW);
         finish();

@@ -49,7 +49,7 @@ abstract class SharedPrefs extends PrefsConstants {
         prefs.edit().putInt(stringToSave, value).apply();
     }
 
-    int getInt(String stringToLoad) {
+    public int getInt(String stringToLoad) {
         int x;
         try {
             x = prefs.getInt(stringToLoad, 0);
@@ -103,7 +103,7 @@ abstract class SharedPrefs extends PrefsConstants {
         prefs.edit().putBoolean(stringToSave, value).apply();
     }
 
-    boolean getBoolean(String stringToLoad) {
+    public boolean getBoolean(String stringToLoad) {
         boolean res;
         try {
             res = prefs.getBoolean(stringToLoad, false);

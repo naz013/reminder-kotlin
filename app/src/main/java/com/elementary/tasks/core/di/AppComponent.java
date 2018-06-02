@@ -4,6 +4,7 @@ import com.elementary.tasks.core.controller.EventManager;
 import com.elementary.tasks.core.services.CallReceiver;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter;
+import com.elementary.tasks.voice.ConversationAdapter;
 
 import javax.inject.Singleton;
 
@@ -34,4 +35,6 @@ public interface AppComponent {
     void inject(EventManager eventManager);
 
     void inject(CallReceiver callReceiver);
+
+    void inject(ConversationAdapter conversationAdapter);
 }

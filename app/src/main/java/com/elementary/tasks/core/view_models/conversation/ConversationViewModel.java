@@ -1,6 +1,6 @@
-package com.elementary.tasks.core.utils;
+package com.elementary.tasks.core.view_models.conversation;
 
-import android.content.Context;
+import android.app.Application;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract;
@@ -17,16 +17,23 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
-import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog;
 import com.elementary.tasks.core.dialogs.VoiceResultDialog;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
+import com.elementary.tasks.core.utils.CalendarUtils;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Language;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.core.utils.Permissions;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.TimeCount;
+import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.view_models.Commands;
+import com.elementary.tasks.core.view_models.reminders.BaseRemindersViewModel;
 import com.elementary.tasks.navigation.MainActivity;
-import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 
 import java.util.ArrayList;
@@ -37,7 +44,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,17 +58,16 @@ import androidx.annotation.Nullable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class ConversationViewModel extends BaseRemindersViewModel {
 
-public class Recognize {
+    private static final String TAG = "ConversationViewModel";
 
-    private static final String TAG = "Recognize";
-
-    private Context mContext;
     private Recognizer recognizer;
 
-    public Recognize(@NonNull Context context) {
-        this.mContext = context;
-        Prefs prefs = Prefs.getInstance(mContext);
+    public ConversationViewModel(Application application) {
+        super(application);
+
+        Prefs prefs = Prefs.getInstance(application);
         String language = Language.getLanguage(prefs.getVoiceLocale());
         String morning = prefs.getMorningTime();
         String day = prefs.getNoonTime();
@@ -105,29 +111,29 @@ public class Recognize {
                 if (types == ActionType.ACTION && isWidget) {
                     Action action = model.getAction();
                     if (action == Action.APP) {
-                        mContext.startActivity(new Intent(mContext, SplashScreen.class));
+                        getApplication().startActivity(new Intent(getApplication(), SplashScreen.class));
                     } else if (action == Action.HELP) {
-                        mContext.startActivity(new Intent(mContext, VoiceHelpDialog.class)
+                        getApplication().startActivity(new Intent(getApplication(), VoiceHelpDialog.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
                     } else if (action == Action.BIRTHDAY) {
-                        mContext.startActivity(new Intent(mContext, AddBirthdayActivity.class));
+                        getApplication().startActivity(new Intent(getApplication(), AddBirthdayActivity.class));
                     } else if (action == Action.REMINDER) {
-                        mContext.startActivity(new Intent(mContext, AddReminderActivity.class));
+                        getApplication().startActivity(new Intent(getApplication(), AddReminderActivity.class));
                     } else if (action == Action.VOLUME) {
-                        mContext.startActivity(new Intent(mContext, VolumeDialog.class)
+                        getApplication().startActivity(new Intent(getApplication(), VolumeDialog.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT));
                     } else if (action == Action.TRASH) {
-                        emptyTrash(true, null);
+                        emptyTrash(true);
                     } else if (action == Action.DISABLE) {
                         disableAllReminders(true);
                     } else if (action == Action.SETTINGS) {
-                        Intent startActivityIntent = new Intent(mContext, MainActivity.class);
+                        Intent startActivityIntent = new Intent(getApplication(), MainActivity.class);
                         startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings);
-                        mContext.startActivity(startActivityIntent);
+                        getApplication().startActivity(startActivityIntent);
                     } else if (action == Action.REPORT) {
-                        Intent startActivityIntent = new Intent(mContext, MainActivity.class);
+                        Intent startActivityIntent = new Intent(getApplication(), MainActivity.class);
                         startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback);
-                        mContext.startActivity(startActivityIntent);
+                        getApplication().startActivity(startActivityIntent);
                     }
                 } else if (types == ActionType.NOTE) {
                     saveNote(createNote(model.getSummary()), true, true);
@@ -141,56 +147,50 @@ public class Recognize {
         }
     }
 
-    @NonNull
-    public Group createGroup(@NonNull Model model) {
-        return new Group(model.getSummary(), new Random().nextInt(16));
-    }
-
-
-    public void saveGroup(@NonNull Group model, boolean showToast) {
-        RealmDb.getInstance().saveObject(model);
-        if (showToast) {
-            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+    private void saveReminder(@NonNull Model model, boolean widget) {
+        Reminder reminder = createReminder(model);
+        saveAndStartReminder(reminder);
+        if (widget) {
+            getApplication().startActivity(new Intent(getApplication(), VoiceResultDialog.class)
+                    .putExtra(Constants.INTENT_ID, reminder.getUuId())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        } else {
+            Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void disableAllReminders(boolean showToast) {
-        for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlFactory.getController(reminder);
-            control.stop();
-        }
-        if (showToast) {
-            Toast.makeText(mContext, R.string.all_reminders_were_disabled, Toast.LENGTH_SHORT).show();
-        }
+        isInProgress.postValue(true);
+        run(() -> {
+            for (Reminder reminder : getAppDb().reminderDao().getAll(true, false)) {
+                stopReminder(reminder);
+            }
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.DELETED);
+                if (showToast) {
+                    Toast.makeText(getApplication(), R.string.all_reminders_were_disabled, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
-    public void emptyTrash(boolean showToast, @Nullable ThreadCallback callback) {
-        AppDb appDb = AppDb.getAppDatabase(mContext);
-        List<Reminder> archived = appDb.reminderDao().getAll(false, false);
-        for (Reminder reminder : archived) {
-            EventControlFactory.getController(reminder).stop();
-            appDb.reminderDao().delete(reminder);
-            CalendarUtils.deleteEvents(mContext, reminder.getUniqueId());
-        }
-        if (showToast) {
-            Toast.makeText(mContext, R.string.trash_cleared, Toast.LENGTH_SHORT).show();
-        }
-        if (callback != null) {
-            callback.onDone();
-        }
-    }
-
-    private void saveReminder(@NonNull Model model, boolean widget) {
-        Reminder reminder = createReminder(model);
-        EventControl control = EventControlFactory.getController(mContext, reminder);
-        control.start();
-        if (widget) {
-            mContext.startActivity(new Intent(mContext, VoiceResultDialog.class)
-                    .putExtra(Constants.INTENT_ID, reminder.getUuId())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
-        } else {
-            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
-        }
+    public void emptyTrash(boolean showToast) {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Reminder> archived = getAppDb().reminderDao().getAll(false, true);
+            for (Reminder reminder : archived) {
+                deleteReminder(reminder, false);
+                CalendarUtils.deleteEvents(getApplication(), reminder.getUniqueId());
+            }
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.TRASH_CLEARED);
+                if (showToast) {
+                    Toast.makeText(getApplication(), R.string.trash_cleared, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     @NonNull
@@ -206,7 +206,7 @@ public class Recognize {
         int typeT = Reminder.BY_DATE;
         if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
             typeT = Reminder.BY_WEEK;
-            eventTime = TimeCount.getInstance(mContext).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0);
+            eventTime = TimeCount.getInstance(getApplication()).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0);
             if (!TextUtils.isEmpty(number)) {
                 if (action == Action.WEEK_CALL) typeT = Reminder.BY_WEEK_CALL;
                 else typeT = Reminder.BY_WEEK_SMS;
@@ -218,12 +218,12 @@ public class Recognize {
         } else if (action == Action.MAIL) {
             typeT = Reminder.BY_DATE_EMAIL;
         }
-        Group item = RealmDb.getInstance().getDefaultGroup();
+        Group item = defaultGroup.getValue();
         String categoryId = "";
         if (item != null) {
             categoryId = item.getUuId();
         }
-        Prefs prefs = Prefs.getInstance(mContext);
+        Prefs prefs = Prefs.getInstance(getApplication());
         boolean isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR);
         boolean isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK);
         Reminder reminder = new Reminder();
@@ -250,20 +250,20 @@ public class Recognize {
     }
 
     public void saveNote(@NonNull Note note, boolean showToast, boolean addQuickNote) {
-        Prefs prefs = Prefs.getInstance(mContext);
+        Prefs prefs = Prefs.getInstance(getApplication());
         if (addQuickNote && prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)) {
             saveQuickReminder(note.getKey(), note.getSummary());
         }
-        RealmDb.getInstance().saveObject(note);
-        UpdatesHelper.getInstance(mContext).updateNotesWidget();
+        getAppDb().notesDao().insert(note);
+        UpdatesHelper.getInstance(getApplication()).updateNotesWidget();
         if (showToast) {
-            Toast.makeText(mContext, mContext.getString(R.string.saved), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show();
         }
     }
 
     @NonNull
     public Reminder saveQuickReminder(@Nullable String key, @Nullable String summary) {
-        long after = Prefs.getInstance(mContext).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
+        long after = Prefs.getInstance(getApplication()).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60;
         long due = System.currentTimeMillis() + after;
         Reminder mReminder = new Reminder();
         mReminder.setType(Reminder.BY_DATE);
@@ -272,24 +272,33 @@ public class Recognize {
         mReminder.setUseGlobal(true);
         mReminder.setNoteId(key);
         mReminder.setSummary(summary);
-        Group def = RealmDb.getInstance().getDefaultGroup();
+        Group def = defaultGroup.getValue();
         if (def != null) {
             mReminder.setGroupUuId(def.getUuId());
         }
         mReminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         mReminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
-        RealmDb.getInstance().saveReminder(mReminder, () -> {
-            EventControl control = EventControlFactory.getController(mContext, mReminder);
-            control.start();
-        });
+        saveAndStartReminder(mReminder);
         return mReminder;
+    }
+
+    @NonNull
+    public Group createGroup(@NonNull Model model) {
+        return new Group(model.getSummary(), new Random().nextInt(16));
+    }
+
+    public void saveGroup(@NonNull Group model, boolean showToast) {
+        getAppDb().groupDao().insert(model);
+        if (showToast) {
+            Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class ContactHelper implements ContactsInterface {
 
         @Override
         public ContactOutput findEmail(String input) {
-            if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(getApplication(), Permissions.READ_CONTACTS)) {
                 return null;
             }
             String number = null;
@@ -298,7 +307,7 @@ public class Recognize {
                 while (part.length() > 1) {
                     String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'";
                     String[] projection = new String[]{ContactsContract.CommonDataKinds.Email.DATA};
-                    Cursor c = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    Cursor c = getApplication().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null);
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0);
@@ -318,7 +327,7 @@ public class Recognize {
 
         @Override
         public ContactOutput findNumber(String input) {
-            if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
+            if (!Permissions.checkPermission(getApplication(), Permissions.READ_CONTACTS)) {
                 return null;
             }
             String number = null;
@@ -327,7 +336,7 @@ public class Recognize {
                 while (part.length() > 1) {
                     String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'";
                     String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-                    Cursor c = mContext.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    Cursor c = getApplication().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             projection, selection, null, null);
                     if (c != null && c.moveToFirst()) {
                         number = c.getString(0);
@@ -345,9 +354,5 @@ public class Recognize {
             }
             return new ContactOutput(input.trim(), number);
         }
-    }
-
-    public interface ThreadCallback {
-        void onDone();
     }
 }

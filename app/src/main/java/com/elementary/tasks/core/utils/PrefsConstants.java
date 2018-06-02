@@ -41,7 +41,7 @@ class PrefsConstants {
     static final String DAYS_TO_BIRTHDAY = "days_to";
     static final String DELAY_TIME = "delay_time";
     static final String EVENT_DURATION = "event_duration";
-    static final String EXPORT_TO_CALENDAR = "export_to_calendar";
+    public static final String EXPORT_TO_CALENDAR = "export_to_calendar";
     static final String CALENDAR_ID = "cal_id";
     static final String AUTO_CHECK_BIRTHDAYS = "birthdays_auto_scan";
     static final String LED_STATUS = "led_status";
@@ -63,14 +63,14 @@ class PrefsConstants {
     static final String TRACK_TIME = "tracking_time";
     static final String TRACK_DISTANCE = "tracking_distance";
     static final String NOTE_TEXT_SIZE = "text_size";
-    static final String QUICK_NOTE_REMINDER = "quick_note_reminder";
-    static final String QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time";
+    public static final String QUICK_NOTE_REMINDER = "quick_note_reminder";
+    public static final String QUICK_NOTE_REMINDER_TIME = "quick_note_reminder_time";
     static final String VOICE_LOCALE = "voice_locale";
     static final String TIME_MORNING = "time_morning";
     static final String TIME_DAY = "time_day";
     static final String TIME_EVENING = "time_evening";
     static final String TIME_NIGHT = "time_night";
-    static final String EXPORT_TO_STOCK = "export_to_stock";
+    public static final String EXPORT_TO_STOCK = "export_to_stock";
     static final String APPLICATION_AUTO_LAUNCH = "application_auto_launch";
     static final String REMINDERS_IN_CALENDAR = "reminders_in_calendar";
     static final String REMINDER_COLOR = "reminder_color";

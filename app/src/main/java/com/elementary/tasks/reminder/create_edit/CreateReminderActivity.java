@@ -36,9 +36,9 @@ import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.core.views.TextViewWithIcon;
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding;
@@ -99,6 +99,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
 
     private ActivityCreateReminderBinding binding;
     private ReminderViewModel viewModel;
+    private ConversationViewModel conversationViewModel;
 
     @Nullable
     private TypeFragment fragment;
@@ -210,6 +211,8 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
     }
 
     private void initViewModel(int id) {
+        conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel.class);
+
         ReminderViewModel.Factory factory = new ReminderViewModel.Factory(getApplication(), id);
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel.class);
         viewModel.reminder.observe(this, reminder -> {
@@ -687,7 +690,7 @@ public class CreateReminderActivity extends ThemedActivity implements ReminderIn
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             ArrayList matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if (matches != null) {
-                Reminder model = new Recognize(this).findResults(matches);
+                Reminder model = conversationViewModel.findResults(matches);
                 if (model != null) {
                     processModel(model);
                 } else {

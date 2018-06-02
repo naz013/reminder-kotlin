@@ -4,15 +4,12 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 
@@ -23,27 +20,29 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.dialogs.VolumeDialog;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.Recognize;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.view_models.conversation.ConversationViewModel;
 import com.elementary.tasks.databinding.ActivityConversationBinding;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
@@ -71,10 +70,9 @@ public class ConversationActivity extends ThemedActivity {
     private SpeechRecognizer speech = null;
     private ActivityConversationBinding binding;
 
-    @Nullable
-    private ConversationAdapter mAdapter;
-    @Nullable
-    private Recognize recognize;
+    @NonNull
+    private ConversationAdapter mAdapter = new ConversationAdapter();
+    private ConversationViewModel viewModel;
     @Nullable
     private TextToSpeech tts;
     private boolean isTtsReady;
@@ -178,7 +176,6 @@ public class ConversationActivity extends ThemedActivity {
 
     private void parseResults(@Nullable List<String> list) {
         LogUtil.d(TAG, "parseResults: " + list);
-        if (recognize == null) return;
         if (list == null || list.isEmpty()) {
             showSilentMessage();
             return;
@@ -187,7 +184,7 @@ public class ConversationActivity extends ThemedActivity {
         String suggestion = null;
         for (String s : list) {
             suggestion = s;
-            model = recognize.findSuggestion(s);
+            model = viewModel.findSuggestion(s);
             if (model != null) {
                 break;
             }
@@ -196,14 +193,14 @@ public class ConversationActivity extends ThemedActivity {
             performResult(model, suggestion);
         } else {
             stopView();
-            if (mAdapter != null) mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
+            mAdapter.addReply(new Reply(Reply.REPLY, list.get(0)));
             addResponse(getLocalized(R.string.can_not_recognize_your_command));
         }
     }
 
     private void performAnswer(@NonNull Model answer) {
         stopView();
-        if (mAskAction != null && mAdapter != null) {
+        if (mAskAction != null) {
             mAdapter.removeAsk();
             if (answer.getAction() == Action.YES) {
                 mAskAction.onYes();
@@ -220,14 +217,14 @@ public class ConversationActivity extends ThemedActivity {
 
     private void addObjectResponse(@NonNull Reply reply) {
         stopView();
-        if (mAdapter != null) mAdapter.addReply(reply);
+        mAdapter.addReply(reply);
     }
 
     private void performResult(@NonNull Model model, @NonNull String s) {
         if (mAskAction != null) {
-            if (mAdapter != null) mAdapter.removeAsk();
+            mAdapter.removeAsk();
         }
-        if (mAdapter != null) mAdapter.addReply(new Reply(Reply.REPLY, s.toLowerCase()));
+        mAdapter.addReply(new Reply(Reply.REPLY, s.toLowerCase()));
         LogUtil.d(TAG, "performResult: " + model);
         ActionType actionType = model.getType();
         if (actionType == ActionType.REMINDER) {
@@ -392,31 +389,28 @@ public class ConversationActivity extends ThemedActivity {
 
     private void groupAction(@NonNull Model model) {
         stopView();
-        if (recognize == null) return;
         addResponse(getLocalized(R.string.group_created));
-        Group item = recognize.createGroup(model);
+        Group item = viewModel.createGroup(model);
         addObjectResponse(new Reply(Reply.GROUP, item));
         new Handler().postDelayed(() -> askGroupAction(item), 1000);
     }
 
     private void noteAction(@NonNull Model model) {
         stopView();
-        if (recognize == null) return;
         addResponse(getLocalized(R.string.note_created));
-        Note item = recognize.createNote(model.getSummary());
+        Note item = viewModel.createNote(model.getSummary());
         addObjectResponse(new Reply(Reply.NOTE, item));
         new Handler().postDelayed(() -> askNoteAction(item), 1000);
     }
 
     private void reminderAction(@NonNull Model model) {
         stopView();
-        if (recognize == null) return;
-        Reminder reminder = recognize.createReminder(model);
+        Reminder reminder = viewModel.createReminder(model);
         addObjectResponse(new Reply(Reply.REMINDER, reminder));
         if (getPrefs().isTellAboutEvent()) {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
                     TimeUtil.getVoiceDateTime(reminder.getEventTime(), getPrefs().is24HourFormatEnabled(), getPrefs().getVoiceLocale()) +
-            ". " + getLocalized(R.string.would_you_like_to_save_it));
+                    ". " + getLocalized(R.string.would_you_like_to_save_it));
             new Handler().postDelayed(() -> askReminderAction(reminder, false), 8000);
         } else {
             addResponse(getLocalized(R.string.reminder_created));
@@ -429,8 +423,7 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                if (recognize == null) return;
-                recognize.saveGroup(group, false);
+                viewModel.saveGroup(group, false);
                 addResponse(getLocalized(R.string.group_saved));
                 mAskAction = null;
             }
@@ -450,8 +443,7 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
-                control.start();
+                viewModel.saveAndStartReminder(reminder);
                 addResponse(getLocalized(R.string.reminder_saved));
                 mAskAction = null;
             }
@@ -471,8 +463,7 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                if (recognize == null) return;
-                recognize.saveNote(note, false, false);
+                viewModel.saveNote(note, false, false);
                 addResponse(getLocalized(R.string.note_saved));
                 if (getPrefs().isNoteReminderEnabled()) {
                     new Handler().postDelayed(() -> askQuickReminder(note), 1500);
@@ -496,16 +487,14 @@ public class ConversationActivity extends ThemedActivity {
         mAskAction = new AskAction() {
             @Override
             public void onYes() {
-                if (recognize == null) return;
-                Model model = recognize.findSuggestion(note.getSummary());
+                Model model = viewModel.findSuggestion(note.getSummary());
                 addResponse(getLocalized(R.string.reminder_saved));
                 if (model != null && model.getType() == ActionType.REMINDER) {
-                    Reminder reminder = recognize.createReminder(model);
-                    EventControl control = EventControlFactory.getController(ConversationActivity.this, reminder);
-                    control.start();
+                    Reminder reminder = viewModel.createReminder(model);
+                    viewModel.saveAndStartReminder(reminder);
                     addObjectResponse(new Reply(Reply.REMINDER, reminder));
                 } else {
-                    Reminder reminder = recognize.saveQuickReminder(note.getKey(), note.getSummary());
+                    Reminder reminder = viewModel.saveQuickReminder(note.getKey(), note.getSummary());
                     addObjectResponse(new Reply(Reply.REMINDER, reminder));
                 }
                 mAskAction = null;
@@ -522,7 +511,8 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void addAskReply() {
-        if (mAdapter != null && mAskAction != null) mAdapter.addReply(new Reply(Reply.ASK, createAsk(mAskAction)));
+        if (mAdapter != null && mAskAction != null)
+            mAdapter.addReply(new Reply(Reply.ASK, createAsk(mAskAction)));
     }
 
     private void addResponse(@NonNull String message) {
@@ -531,30 +521,44 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void disableReminders() {
-        if (recognize == null) return;
-        recognize.disableAllReminders(false);
-        stopView();
-        addResponse(getLocalized(R.string.all_reminders_were_disabled));
+        viewModel.disableAllReminders(false);
     }
 
     private void clearTrash() {
-        if (recognize == null) return;
-        recognize.emptyTrash(false, () -> {
-            stopView();
-            addResponse(getLocalized(R.string.trash_was_cleared));
-        });
+        viewModel.emptyTrash(false);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation);
-        recognize = new Recognize(this);
-        initList();
+
         binding.recordingView.setOnClickListener(view -> micClick());
         binding.settingsButton.setOnClickListener(v -> showSettingsPopup());
         binding.backButton.setOnClickListener(view -> onBackPressed());
+
+        initList();
+
         checkTts();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ConversationViewModel.class);
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case TRASH_CLEARED:
+                        stopView();
+                        addResponse(getLocalized(R.string.trash_was_cleared));
+                        break;
+                    case DELETED:
+                        stopView();
+                        addResponse(getLocalized(R.string.all_reminders_were_disabled));
+                        break;
+                }
+            }
+        });
     }
 
     private void showSettingsPopup() {
@@ -619,7 +623,6 @@ public class ConversationActivity extends ThemedActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setReverseLayout(true);
         binding.conversationList.setLayoutManager(layoutManager);
-        mAdapter = new ConversationAdapter(this);
         mAdapter.setInsertListener(mInsertCallback);
         binding.conversationList.setAdapter(mAdapter);
     }
