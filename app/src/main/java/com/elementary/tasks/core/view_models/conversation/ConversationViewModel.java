@@ -37,11 +37,13 @@ import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -62,6 +64,11 @@ public class ConversationViewModel extends BaseRemindersViewModel {
 
     private static final String TAG = "ConversationViewModel";
 
+    public MutableLiveData<List<Reminder>> shoppingLists;
+    public MutableLiveData<List<Reminder>> enabledReminders;
+    public MutableLiveData<List<Reminder>> activeReminders;
+    public MutableLiveData<List<Note>> notes;
+
     private Recognizer recognizer;
 
     public ConversationViewModel(Application application) {
@@ -79,6 +86,57 @@ public class ConversationViewModel extends BaseRemindersViewModel {
                 .setTimes(times)
                 .setContactsInterface(new ContactHelper())
                 .build();
+    }
+
+    public void getNotes() {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Note> list = new LinkedList<>(getAppDb().notesDao().getAll());
+            end(() -> {
+                isInProgress.postValue(false);
+                notes.postValue(list);
+            });
+        });
+    }
+
+    public void getShoppingReminders() {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Reminder> list = new LinkedList<>(getAppDb().reminderDao().getAllTypes(true, false, new int[]{Reminder.BY_DATE_SHOP}));
+            end(() -> {
+                isInProgress.postValue(false);
+                shoppingLists.postValue(list);
+            });
+        });
+    }
+
+    public void getEnabledReminders(long dateTime) {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Reminder> list = new LinkedList<>(getAppDb().reminderDao().getAllTypesInRange(
+                    true,
+                    false,
+                    TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+                    TimeUtil.getGmtFromDateTime(dateTime)));
+            end(() -> {
+                isInProgress.postValue(false);
+                enabledReminders.postValue(list);
+            });
+        });
+    }
+
+    public void getReminders(long dateTime) {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Reminder> list = new LinkedList<>(getAppDb().reminderDao().getActiveInRange(
+                    false,
+                    TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
+                    TimeUtil.getGmtFromDateTime(dateTime)));
+            end(() -> {
+                isInProgress.postValue(false);
+                activeReminders.postValue(list);
+            });
+        });
     }
 
     @Nullable

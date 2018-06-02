@@ -259,17 +259,17 @@ public class ConversationActivity extends ThemedActivity {
             LogUtil.d(TAG, "performResult: " + TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.getDateTime()), true, true));
             Action action = model.getAction();
             if (action == Action.REMINDERS) {
-                showActiveReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
+                viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.NOTES) {
-                showNotes();
+                viewModel.getNotes();
             } else if (action == Action.GROUPS) {
                 showGroups();
             } else if (action == Action.ACTIVE_REMINDERS) {
-                showEnabledReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
+                viewModel.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.BIRTHDAYS) {
                 showBirthdays(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.SHOP_LISTS) {
-                showShoppingLists();
+                viewModel.getShoppingReminders();
             } else {
                 showUnsupportedMessage();
             }
@@ -283,8 +283,8 @@ public class ConversationActivity extends ThemedActivity {
         addResponse(getLocalized(R.string.this_command_not_supported_on_that_screen));
     }
 
-    private void showShoppingLists() {
-        Container<Reminder> items = new Container<>(DataProvider.getShoppingReminders());
+    private void showShoppingLists(List<Reminder> reminders) {
+        Container<Reminder> items = new Container<>(reminders);
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_shopping_lists_found));
         } else {
@@ -315,8 +315,8 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void showEnabledReminders(long dateTime) {
-        Container<Reminder> items = new Container<>(DataProvider.getActiveReminders(dateTime));
+    private void showEnabledReminders(List<Reminder> list) {
+        Container<Reminder> items = new Container<>(list);
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_reminders_found));
         } else {
@@ -332,7 +332,7 @@ public class ConversationActivity extends ThemedActivity {
     }
 
     private void showGroups() {
-        Container<Group> items = new Container<>(DataProvider.getGroups());
+        Container<Group> items = new Container<>(viewModel.allGroups.getValue());
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_groups_found));
         } else {
@@ -347,8 +347,8 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void showNotes() {
-        Container<Note> items = new Container<>(DataProvider.getNotes());
+    private void showNotes(List<Note> notes) {
+        Container<Note> items = new Container<>(notes);
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_notes_found));
         } else {
@@ -363,8 +363,8 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void showActiveReminders(long dateTime) {
-        Container<Reminder> items = new Container<>(DataProvider.getReminders(dateTime));
+    private void showActiveReminders(List<Reminder> list) {
+        Container<Reminder> items = new Container<>(list);
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_reminders_found));
         } else {
@@ -558,6 +558,18 @@ public class ConversationActivity extends ThemedActivity {
                         break;
                 }
             }
+        });
+        viewModel.shoppingLists.observe(this, reminders -> {
+            if (reminders != null) showShoppingLists(reminders);
+        });
+        viewModel.notes.observe(this, list -> {
+            if (list != null) showNotes(list);
+        });
+        viewModel.activeReminders.observe(this, list -> {
+            if (list != null) showActiveReminders(list);
+        });
+        viewModel.enabledReminders.observe(this, list -> {
+            if (list != null) showEnabledReminders(list);
         });
     }
 

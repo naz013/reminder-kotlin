@@ -56,7 +56,7 @@ class LocationEvent extends EventManager {
     }
 
     private void stopTracking(boolean isPaused) {
-        List<Reminder> list = getDb().reminderDao().getAllGps(true, false, Reminder.gpsTypes());
+        List<Reminder> list = getDb().reminderDao().getAllTypes(true, false, Reminder.gpsTypes());
         if (list.size() == 0) {
             SuperUtil.stopService(getContext(), GeolocationService.class);
         }

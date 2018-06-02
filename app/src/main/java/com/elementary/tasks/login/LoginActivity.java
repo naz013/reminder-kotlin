@@ -26,6 +26,7 @@ import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.GoogleLogin;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -177,7 +178,7 @@ public class LoginActivity extends ThemedActivity {
     }
 
     private void initGroups() {
-        if (RealmDb.getInstance().getAllGroups().size() == 0) {
+        if (AppDb.getAppDatabase(this).groupDao().getAll().size() == 0) {
             RealmDb.getInstance().setDefaultGroups(this);
         }
     }
