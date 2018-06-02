@@ -783,7 +783,7 @@ public class RealmDb {
 //        }
 //    }
 //
-//    void getActiveReminders(@NonNull RealmCallback<List<Reminder>> callback) {
+//    void getEnabledReminders(@NonNull RealmCallback<List<Reminder>> callback) {
 //        new Thread(() -> {
 //            Realm realm = getRealm();
 //            String[] fields = new String[]{"isActive", "eventTime"};
@@ -834,7 +834,7 @@ public class RealmDb {
 //    }
 //
 //    @NonNull
-//    public List<Reminder> getActiveReminders() {
+//    public List<Reminder> getEnabledReminders() {
 //        Realm realm = getRealm();
 //        List<RealmReminder> list = realm.where(RealmReminder.class).equalTo("isRemoved", false).findAll();
 //        List<Reminder> items = new ArrayList<>();

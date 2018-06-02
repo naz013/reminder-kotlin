@@ -29,6 +29,6 @@ public class ActiveGpsRemindersViewModel extends BaseRemindersViewModel {
 
     public ActiveGpsRemindersViewModel(Application application) {
         super(application);
-        events = getAppDb().reminderDao().loadAllGps(true, false, Reminder.gpsTypes());
+        events = getAppDb().reminderDao().loadAllTypes(true, false, Reminder.gpsTypes());
     }
 }

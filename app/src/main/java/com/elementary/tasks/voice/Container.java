@@ -25,7 +25,11 @@ class Container<V> {
     private V type;
 
     Container(List<V> list) {
-        this.list = list;
+        if (list == null) {
+            return;
+        }
+        this.list.clear();
+        this.list.addAll(list);
         if (!list.isEmpty()) {
             this.type = list.get(0);
         }
