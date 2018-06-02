@@ -1,15 +1,16 @@
 package com.elementary.tasks.voice;
 
-import android.content.Context;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.birthdays.BirthdayHolder;
 import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.AskListItemBinding;
@@ -21,18 +22,18 @@ import com.elementary.tasks.databinding.ShoppingListItemBinding;
 import com.elementary.tasks.databinding.ShowReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
 import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
-import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.groups.list.GroupHolder;
 import com.elementary.tasks.notes.list.NoteHolder;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.ShoppingHolder;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -50,18 +51,15 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<Reply> mData;
-    private Context mContext;
-    private ThemeUtil themeUtil;
+    private List<Reply> mData = new ArrayList<>();
     private InsertCallback mCallback;
+    @Inject
+    public ThemeUtil themeUtil;
 
-    ConversationAdapter(Context context) {
-        this.mContext = context;
-        mData = new LinkedList<>();
-        themeUtil = ThemeUtil.getInstance(context);
+    public ConversationAdapter() {
+        ReminderApp.getAppComponent().inject(this);
     }
 
     void setInsertListener(InsertCallback callback) {
@@ -81,7 +79,7 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reply.REPLY) {
             return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.RESPONSE) {
@@ -170,8 +168,8 @@ class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             });
             binding.replyNo.setBackgroundResource(themeUtil.getRectangle());
             binding.replyYes.setBackgroundResource(themeUtil.getRectangle());
-            binding.replyNo.setText(Language.getLocalized(mContext, R.string.no));
-            binding.replyYes.setText(Language.getLocalized(mContext, R.string.yes));
+            binding.replyNo.setText(Language.getLocalized(itemView.getContext(), R.string.no));
+            binding.replyYes.setText(Language.getLocalized(itemView.getContext(), R.string.yes));
         }
 
         void setAskAction(AskAction askAction) {
