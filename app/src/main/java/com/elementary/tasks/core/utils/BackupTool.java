@@ -10,7 +10,7 @@ import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Base64OutputStream;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
@@ -192,7 +192,7 @@ public final class BackupTool {
     }
 
     public void exportBirthdays() {
-        for (BirthdayItem item : RealmDb.getInstance().getAllBirthdays()) {
+        for (Birthday item : RealmDb.getInstance().getAllBirthdays()) {
             exportBirthday(item);
         }
     }
@@ -205,7 +205,7 @@ public final class BackupTool {
                 RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                        BirthdayItem item = getBirthday(file.toString(), null);
+                        Birthday item = getBirthday(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getName())
                                 || TextUtils.isEmpty(item.getUuId())) {
                             continue;
@@ -217,7 +217,7 @@ public final class BackupTool {
         }
     }
 
-    public void exportBirthday(@NonNull BirthdayItem item) {
+    public void exportBirthday(@NonNull Birthday item) {
         WeakReference<String> jsonData = new WeakReference<>(new Gson().toJson(item));
         File dir = MemoryUtil.getBirthdaysDir();
         if (dir != null) {
@@ -234,18 +234,18 @@ public final class BackupTool {
     }
 
     @Nullable
-    public BirthdayItem getBirthday(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
-        WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), BirthdayItem.class));
+    public Birthday getBirthday(@NonNull ContentResolver cr, @NonNull Uri name) throws IOException, IllegalStateException {
+        WeakReference<Birthday> item = new WeakReference<>(new Gson().fromJson(readFileToJson(cr, name), Birthday.class));
         return item.get();
     }
 
     @Nullable
-    public BirthdayItem getBirthday(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
+    public Birthday getBirthday(@Nullable String filePath, @Nullable String json) throws IOException, IllegalStateException {
         if (filePath != null && MemoryUtil.isSdPresent()) {
-            WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), BirthdayItem.class));
+            WeakReference<Birthday> item = new WeakReference<>(new Gson().fromJson(readFileToJson(filePath), Birthday.class));
             return item.get();
         } else if (json != null) {
-            WeakReference<BirthdayItem> item = new WeakReference<>(new Gson().fromJson(json, BirthdayItem.class));
+            WeakReference<Birthday> item = new WeakReference<>(new Gson().fromJson(json, Birthday.class));
             return item.get();
         } else {
             return null;

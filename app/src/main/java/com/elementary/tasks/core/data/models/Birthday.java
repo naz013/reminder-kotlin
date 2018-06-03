@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays;
+package com.elementary.tasks.core.data.models;
 
 import android.text.TextUtils;
 
@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.UUID;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,8 +28,8 @@ import java.util.UUID;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class BirthdayItem implements RecyclerInterface {
+@Entity
+public class Birthday implements RecyclerInterface {
 
     @SerializedName("name")
     private String name;
@@ -36,8 +39,6 @@ public class BirthdayItem implements RecyclerInterface {
     private String number;
     @SerializedName("key")
     private String key;
-    @SerializedName("uuId")
-    private String uuId;
     @SerializedName("showedYear")
     private int showedYear;
     @SerializedName("contactId")
@@ -47,11 +48,17 @@ public class BirthdayItem implements RecyclerInterface {
     @SerializedName("month")
     private int month;
     @SerializedName("uniqueId")
+    @PrimaryKey(autoGenerate = true)
     private int uniqueId;
     @SerializedName("dayMonth")
     private String dayMonth;
+    @SerializedName("uuId")
+    private String uuId;
 
-    public BirthdayItem(String name, String date, String number, int showedYear, int contactId, int day, int month) {
+    public Birthday() {
+    }
+
+    public Birthday(String name, String date, String number, int showedYear, int contactId, int day, int month) {
         this.name = name;
         this.date = date;
         this.number = number;
@@ -63,7 +70,6 @@ public class BirthdayItem implements RecyclerInterface {
         this.month = month;
         this.dayMonth = day + "|" + month;
         this.uuId = UUID.randomUUID().toString();
-        this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
     public final int getUniqueId() {
@@ -163,12 +169,12 @@ public class BirthdayItem implements RecyclerInterface {
 
     @Override
     public boolean equals(Object obj) {
-        return this.key.equals(((BirthdayItem) obj).getKey());
+        return this.key.equals(((Birthday) obj).getKey());
     }
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, BirthdayItem.class);
+        return SuperUtil.getObjectPrint(this, Birthday.class);
     }
 
     @Override

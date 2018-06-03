@@ -4,6 +4,7 @@ import androidx.databinding.DataBindingUtil;
 import android.view.View;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -62,7 +63,7 @@ public class BirthdayHolder extends RecyclerView.ViewHolder {
         binding.setColor(color);
     }
 
-    public void setData(BirthdayItem item) {
+    public void setData(Birthday item) {
         binding.setItem(item);
     }
 }

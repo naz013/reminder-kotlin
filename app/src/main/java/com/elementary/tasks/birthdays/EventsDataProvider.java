@@ -6,8 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.calendar.FlextHelper;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -179,9 +181,9 @@ public class EventsDataProvider {
                 }
             }
         }
-        List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
+        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
         LogUtil.d(TAG, "Count BD" + list.size());
-        for (BirthdayItem item : list) {
+        for (Birthday item : list) {
             Date date = null;
             try {
                 date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.getDate());

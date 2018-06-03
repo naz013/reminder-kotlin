@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.work.BackupBirthdaysTask;
 import com.elementary.tasks.core.BaseNotificationActivity;
 import com.elementary.tasks.core.async.BackupTask;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
@@ -20,13 +22,12 @@ import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel;
 import com.elementary.tasks.databinding.ActivityShowBirthdayBinding;
 
 import java.util.Calendar;
@@ -37,7 +38,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.databinding.DataBindingUtil;
-import de.hdodenhof.circleimageview.CircleImageView;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,25 +62,25 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     private static final int SMS_PERM = 613;
 
     private ActivityShowBirthdayBinding binding;
+    private BirthdayViewModel viewModel;
     @Nullable
-    private BirthdayItem mBirthdayItem;
+    private Birthday mBirthday;
     private boolean mIsResumed;
     @Nullable
     private String wearMessage;
 
-    public static Intent getLaunchIntent(Context context, String uuId) {
+    public static Intent getLaunchIntent(Context context, int id) {
         Intent resultIntent = new Intent(context, ShowBirthdayActivity.class);
-        resultIntent.putExtra(Constants.INTENT_ID, uuId);
+        resultIntent.putExtra(Constants.INTENT_ID, id);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         return resultIntent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
-        mBirthdayItem = RealmDb.getInstance().getBirthday(getIntent().getStringExtra(Constants.INTENT_ID));
         super.onCreate(savedInstanceState);
-        if (mBirthdayItem == null) finish();
+        mIsResumed = getIntent().getBooleanExtra(Constants.INTENT_NOTIFICATION, false);
+        int key = getIntent().getIntExtra(Constants.INTENT_ID, 0);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_show_birthday);
         binding.card.setCardBackgroundColor(getThemeUtil().getCardStyle());
         if (Module.isLollipop()) {
@@ -96,40 +97,60 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
         binding.buttonCall.setImageResource(R.drawable.ic_call_black_24dp);
         binding.buttonSend.setImageResource(R.drawable.ic_send_black_24dp);
 
-        CircleImageView contactPhoto = binding.contactPhoto;
-        contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
-        contactPhoto.setVisibility(View.GONE);
+        binding.contactPhoto.setBorderColor(getThemeUtil().getColor(getThemeUtil().colorPrimary()));
+        binding.contactPhoto.setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
-            mBirthdayItem.setNumber(Contacts.getNumber(mBirthdayItem.getName(), this));
+        initViewModel(key);
+    }
+
+    private void initViewModel(int id) {
+        viewModel = ViewModelProviders.of(this, new BirthdayViewModel.Factory(getApplication(), id)).get(BirthdayViewModel.class);
+        viewModel.birthday.observe(this, birthday -> {
+            if (birthday != null) {
+                showBirthday(birthday);
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                        close();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showBirthday(Birthday birthday) {
+        this.mBirthday = birthday;
+
+        if (!TextUtils.isEmpty(birthday.getNumber()) && checkContactPermission()) {
+            birthday.setNumber(Contacts.getNumber(birthday.getName(), this));
         }
-        if (mBirthdayItem.getContactId() == 0 && !TextUtils.isEmpty(mBirthdayItem.getNumber()) && checkContactPermission()) {
-            mBirthdayItem.setContactId(Contacts.getIdFromNumber(mBirthdayItem.getNumber(), this));
+        if (birthday.getContactId() == 0 && !TextUtils.isEmpty(birthday.getNumber()) && checkContactPermission()) {
+            birthday.setContactId(Contacts.getIdFromNumber(birthday.getNumber(), this));
         }
-        Uri photo = Contacts.getPhoto(mBirthdayItem.getContactId());
+        Uri photo = Contacts.getPhoto(birthday.getContactId());
         if (photo != null) {
-            contactPhoto.setImageURI(photo);
+            binding.contactPhoto.setImageURI(photo);
         } else {
-            contactPhoto.setVisibility(View.GONE);
+            binding.contactPhoto.setVisibility(View.GONE);
         }
-        String years = TimeUtil.getAgeFormatted(this, mBirthdayItem.getDate());
-        RoboTextView userName = binding.userName;
-        userName.setText(mBirthdayItem.getName());
-        userName.setContentDescription(mBirthdayItem.getName());
-        RoboTextView userNumber = findViewById(R.id.userNumber);
-        RoboTextView userYears = findViewById(R.id.userYears);
-        userYears.setText(years);
-        userYears.setContentDescription(years);
-        wearMessage = mBirthdayItem.getName() + "\n" + years;
-        if (TextUtils.isEmpty(mBirthdayItem.getNumber())) {
+        String years = TimeUtil.getAgeFormatted(this, birthday.getDate());
+        binding.userName.setText(birthday.getName());
+        binding.userName.setContentDescription(birthday.getName());
+        binding.userYears.setText(years);
+        binding.userYears.setContentDescription(years);
+        wearMessage = birthday.getName() + "\n" + years;
+        if (TextUtils.isEmpty(birthday.getNumber())) {
             binding.buttonCall.hide();
             binding.buttonSend.hide();
-            userNumber.setVisibility(View.GONE);
+            binding.userNumber.setVisibility(View.GONE);
         } else {
-            userNumber.setText(mBirthdayItem.getNumber());
-            userNumber.setContentDescription(mBirthdayItem.getNumber());
+            binding.userNumber.setText(birthday.getNumber());
+            binding.userNumber.setContentDescription(birthday.getNumber());
         }
-        showNotification(TimeUtil.getAge(mBirthdayItem.getDate()), mBirthdayItem.getName());
+        showNotification(TimeUtil.getAge(birthday.getDate()), birthday.getName());
         if (isTtsEnabled()) {
             startTts();
         }
@@ -220,9 +241,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     private void makeCall() {
-        if (Permissions.checkPermission(this, Permissions.CALL_PHONE) && mBirthdayItem != null) {
-            TelephonyUtil.makeCall(mBirthdayItem.getNumber(), this);
-            updateBirthday(mBirthdayItem);
+        if (Permissions.checkPermission(this, Permissions.CALL_PHONE) && mBirthday != null) {
+            TelephonyUtil.makeCall(mBirthday.getNumber(), this);
+            updateBirthday(mBirthday);
         } else {
             Permissions.requestPermission(this, CALL_PERM, Permissions.CALL_PHONE);
         }
@@ -239,9 +260,9 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
     }
 
     private void sendSMS() {
-        if (Permissions.checkPermission(ShowBirthdayActivity.this, Permissions.SEND_SMS) && mBirthdayItem != null) {
-            TelephonyUtil.sendSms(mBirthdayItem.getNumber(), ShowBirthdayActivity.this);
-            updateBirthday(mBirthdayItem);
+        if (Permissions.checkPermission(ShowBirthdayActivity.this, Permissions.SEND_SMS) && mBirthday != null) {
+            TelephonyUtil.sendSms(mBirthday.getNumber(), ShowBirthdayActivity.this);
+            updateBirthday(mBirthday);
         } else {
             Permissions.requestPermission(ShowBirthdayActivity.this, SMS_PERM, Permissions.SEND_SMS);
         }
@@ -254,18 +275,17 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected void ok() {
-        updateBirthday(mBirthdayItem);
+        updateBirthday(mBirthday);
     }
 
-    private void updateBirthday(@Nullable BirthdayItem birthdayItem) {
-        if (birthdayItem != null) {
+    private void updateBirthday(@Nullable Birthday birthday) {
+        if (birthday != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             int year = calendar.get(Calendar.YEAR);
-            birthdayItem.setShowedYear(year);
-            RealmDb.getInstance().saveObject(birthdayItem);
+            birthday.setShowedYear(year);
+            viewModel.saveBirthday(birthday);
         }
-        close();
     }
 
     private void close() {
@@ -340,15 +360,15 @@ public class ShowBirthdayActivity extends BaseNotificationActivity {
 
     @Override
     protected String getUuId() {
-        if (mBirthdayItem != null) {
-            return mBirthdayItem.getUuId();
+        if (mBirthday != null) {
+            return mBirthday.getUuId();
         } else return "";
     }
 
     @Override
     protected int getId() {
-        if (mBirthdayItem != null) {
-            return mBirthdayItem.getUniqueId();
+        if (mBirthday != null) {
+            return mBirthday.getUniqueId();
         } else return 0;
     }
 

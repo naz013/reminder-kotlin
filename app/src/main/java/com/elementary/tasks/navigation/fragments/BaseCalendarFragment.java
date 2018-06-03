@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.CalendarEventsAdapter;
 import com.elementary.tasks.birthdays.DayViewProvider;
 import com.elementary.tasks.birthdays.EventsDataSingleton;

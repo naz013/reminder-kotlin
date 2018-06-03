@@ -3,9 +3,9 @@ package com.elementary.tasks.core.services;
 import android.content.Context;
 import android.content.Intent;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -87,18 +87,18 @@ public class EventJobService extends Job {
         cancelBirthdayAlarm();
         enableBirthdayAlarm(context);
         new Thread(() -> {
-            List<BirthdayItem> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
+            List<Birthday> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
             if (list.size() > 0) {
-                for (BirthdayItem item : list) {
+                for (Birthday item : list) {
                     showBirthday(context, item);
                 }
             }
         }).start();
     }
 
-    private void showBirthday(Context context, BirthdayItem item) {
+    private void showBirthday(Context context, Birthday item) {
         if (Prefs.getInstance(context).getReminderType() == 0) {
-            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUuId()));
+            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUniqueId()));
         } else {
             ReminderUtils.showSimpleBirthday(context, item.getUuId());
         }

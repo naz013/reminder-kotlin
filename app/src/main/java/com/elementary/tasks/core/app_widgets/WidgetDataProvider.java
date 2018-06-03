@@ -3,7 +3,7 @@ package com.elementary.tasks.core.app_widgets;
 import android.app.AlarmManager;
 import android.content.Context;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -183,8 +183,8 @@ public class WidgetDataProvider {
     }
 
     public void loadBirthdays() {
-        List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
-        for (BirthdayItem item : list) {
+        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
+        for (Birthday item : list) {
             Date date = null;
             try {
                 date = format.parse(item.getDate());

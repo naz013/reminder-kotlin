@@ -22,7 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.GoogleLogin;

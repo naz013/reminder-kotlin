@@ -219,7 +219,7 @@
         <activity
             android:name=".core.dialogs.VolumeDialog"
             android:theme="@style/HomeWhiteDialog" />
-        <activity android:name=".birthdays.AddBirthdayActivity">
+        <activity android:name=".birthdays.create_edit.AddBirthdayActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

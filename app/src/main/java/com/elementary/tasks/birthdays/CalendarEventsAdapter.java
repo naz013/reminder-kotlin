@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -69,7 +70,7 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public final void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof BirthdayHolder) {
-            BirthdayItem item = (BirthdayItem) mDataList.get(position).getObject();
+            Birthday item = (Birthday) mDataList.get(position).getObject();
             BirthdayHolder birthdayHolder = (BirthdayHolder) holder;
             birthdayHolder.setData(item);
             birthdayHolder.setColor(mDataList.get(position).getColor());

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.migration;
 import android.content.Context;
 import android.database.SQLException;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.data.models.Group;
@@ -38,7 +38,7 @@ public class MigrationTool {
         for (SmsTemplate item : db.getAllTemplates()) {
             realmDb.saveObject(item);
         }
-        for (BirthdayItem item : db.getBirthdays()) {
+        for (Birthday item : db.getBirthdays()) {
             realmDb.saveObject(item);
         }
         db.close();

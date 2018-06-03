@@ -14,9 +14,10 @@ import com.backdoor.engine.ContactsInterface;
 import com.backdoor.engine.Model;
 import com.backdoor.engine.Recognizer;
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -64,10 +65,11 @@ public class ConversationViewModel extends BaseRemindersViewModel {
 
     private static final String TAG = "ConversationViewModel";
 
-    public MutableLiveData<List<Reminder>> shoppingLists;
-    public MutableLiveData<List<Reminder>> enabledReminders;
-    public MutableLiveData<List<Reminder>> activeReminders;
-    public MutableLiveData<List<Note>> notes;
+    public MutableLiveData<List<Reminder>> shoppingLists = new MutableLiveData<>();
+    public MutableLiveData<List<Reminder>> enabledReminders = new MutableLiveData<>();
+    public MutableLiveData<List<Reminder>> activeReminders = new MutableLiveData<>();
+    public MutableLiveData<List<Note>> notes = new MutableLiveData<>();
+    public MutableLiveData<List<Birthday>> birthdays = new MutableLiveData<>();
 
     private Recognizer recognizer;
 
@@ -135,6 +137,23 @@ public class ConversationViewModel extends BaseRemindersViewModel {
             end(() -> {
                 isInProgress.postValue(false);
                 activeReminders.postValue(list);
+            });
+        });
+    }
+
+    public void getBirthdays(long dateTime, long time) {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Birthday> list = new LinkedList<>(getAppDb().birthdaysDao().getAll());
+            for (int i = list.size() - 1; i >= 0; i--) {
+                long itemTime = list.get(i).getDateTime(time);
+                if (itemTime < System.currentTimeMillis() || itemTime > dateTime) {
+                    list.remove(i);
+                }
+            }
+            end(() -> {
+                isInProgress.postValue(false);
+                birthdays.postValue(list);
             });
         });
     }

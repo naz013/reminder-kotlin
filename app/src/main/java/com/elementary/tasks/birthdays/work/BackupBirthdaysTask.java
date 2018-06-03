@@ -1,7 +1,12 @@
-package com.elementary.tasks.core.event_tree;
+package com.elementary.tasks.birthdays.work;
+
+import android.content.Context;
+import android.os.AsyncTask;
+
+import com.elementary.tasks.core.utils.IoHelper;
 
 /**
- * Copyright 2017 Nazar Suhovich
+ * Copyright 2016 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +21,17 @@ package com.elementary.tasks.core.event_tree;
  * limitations under the License.
  */
 
-public class TreeManager {
+class BackupBirthdaysTask extends AsyncTask<Void, Void, Void> {
 
-    private EventLoadMap root;
+    private Context mContext;
 
-    public TreeManager() {
-        root = new EventLoadMap();
-        addEvents();
+    BackupBirthdaysTask(Context context) {
+        this.mContext = context;
     }
 
-    private void addEvents() {
-
+    @Override
+    protected Void doInBackground(Void... voids) {
+        new IoHelper(mContext).backupBirthday();
+        return null;
     }
 }

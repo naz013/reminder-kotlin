@@ -15,9 +15,9 @@ import android.widget.SeekBar;
 import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.BirthdayItem;
-import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
-import com.elementary.tasks.birthdays.DeleteBirthdayFilesAsync;
+import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.EventJobService;
@@ -232,10 +232,10 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private void cleanBirthdays(){
         new Thread(() -> {
             Looper.prepare();
-            List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
+            List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
             List<String> ids = new ArrayList<>();
             for (int i = list.size() - 1; i >= 0; i--) {
-                BirthdayItem item = list.remove(i);
+                Birthday item = list.remove(i);
                 RealmDb.getInstance().deleteBirthday(item);
                 ids.add(item.getUuId());
             }

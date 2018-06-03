@@ -1,12 +1,15 @@
-package com.elementary.tasks.birthdays;
+package com.elementary.tasks.core.view_models.birthdays;
 
-import android.content.Context;
-import android.os.AsyncTask;
+import android.app.Application;
 
-import com.elementary.tasks.core.utils.IoHelper;
+import com.elementary.tasks.core.data.models.Birthday;
+
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +23,12 @@ import com.elementary.tasks.core.utils.IoHelper;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+public class BirthdaysViewModel extends BaseBirthdaysViewModel {
 
-class BackupBirthdaysTask extends AsyncTask<Void, Void, Void> {
+    public LiveData<List<Birthday>> birthdays;
 
-    private Context mContext;
-
-    BackupBirthdaysTask(Context context) {
-        this.mContext = context;
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
-        new IoHelper(mContext).backupBirthday();
-        return null;
+    public BirthdaysViewModel(Application application) {
+        super(application);
+        birthdays = getAppDb().birthdaysDao().loadAll();
     }
 }

@@ -3,7 +3,7 @@ package com.elementary.tasks.core.app_widgets.events;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;

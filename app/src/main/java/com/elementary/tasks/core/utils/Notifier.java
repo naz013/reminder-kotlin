@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
@@ -158,7 +158,7 @@ public class Notifier {
         calendar.setTimeInMillis(System.currentTimeMillis());
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH);
-        List<BirthdayItem> list = RealmDb.getInstance().getBirthdays(day, month);
+        List<Birthday> list = RealmDb.getInstance().getBirthdays(day, month);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
@@ -170,14 +170,14 @@ public class Notifier {
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setContentTitle(context.getString(R.string.events));
         if (list.size() > 0) {
-            BirthdayItem item = list.get(0);
+            Birthday item = list.get(0);
             builder.setContentText(item.getDate() + " | " + item.getName() + " | " + TimeUtil.getAgeFormatted(context, item.getDate()));
             if (list.size() > 1) {
                 StringBuilder stringBuilder = new StringBuilder();
-                for (BirthdayItem birthdayItem : list) {
-                    stringBuilder.append(birthdayItem.getDate()).append(" | ").
-                            append(birthdayItem.getName()).append(" | ")
-                            .append(TimeUtil.getAgeFormatted(context, birthdayItem.getDate()));
+                for (Birthday birthday : list) {
+                    stringBuilder.append(birthday.getDate()).append(" | ").
+                            append(birthday.getName()).append(" | ")
+                            .append(TimeUtil.getAgeFormatted(context, birthday.getDate()));
                     stringBuilder.append("\n");
                 }
                 builder.setStyle(new NotificationCompat.BigTextStyle().bigText(stringBuilder.toString()));
