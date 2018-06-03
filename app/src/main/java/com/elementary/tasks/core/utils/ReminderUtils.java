@@ -10,7 +10,7 @@ import androidx.core.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.services.BirthdayActionService;
 import com.elementary.tasks.core.services.ReminderActionService;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -56,21 +56,21 @@ public final class ReminderUtils {
     }
 
     public static void showSimpleBirthday(Context context, String id) {
-        BirthdayItem birthdayItem = RealmDb.getInstance().getBirthday(id);
-        if (birthdayItem == null) return;
+        Birthday birthday = RealmDb.getInstance().getBirthday(id);
+        if (birthday == null) return;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
         } else {
             builder.setSmallIcon(R.drawable.ic_cake_nv_white);
         }
-        PendingIntent intent = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
+        PendingIntent intent = PendingIntent.getBroadcast(context, birthday.getUniqueId(),
                 BirthdayActionService.show(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
         builder.setContentIntent(intent);
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        builder.setContentTitle(birthdayItem.getName());
+        builder.setContentTitle(birthday.getName());
         if (!SuperUtil.isDoNotDisturbEnabled(context) ||
                 (SuperUtil.checkNotificationPermission(context) &&
                         Prefs.getInstance(context).isSoundInSilentModeEnabled())) {
@@ -110,7 +110,7 @@ public final class ReminderUtils {
         }
         builder.setContentText(context.getString(R.string.birthday));
 
-        PendingIntent piDismiss = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
+        PendingIntent piDismiss = PendingIntent.getBroadcast(context, birthday.getUniqueId(),
                 BirthdayActionService.hide(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
         if (Module.isLollipop()) {
             builder.addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.ok), piDismiss);
@@ -118,8 +118,8 @@ public final class ReminderUtils {
             builder.addAction(R.drawable.ic_done_nv_white, context.getString(R.string.ok), piDismiss);
         }
 
-        if (!TextUtils.isEmpty(birthdayItem.getNumber())) {
-            PendingIntent piCall = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
+        if (!TextUtils.isEmpty(birthday.getNumber())) {
+            PendingIntent piCall = PendingIntent.getBroadcast(context, birthday.getUniqueId(),
                     BirthdayActionService.call(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
             if (Module.isLollipop()) {
                 builder.addAction(R.drawable.ic_call_white_24dp, context.getString(R.string.make_call), piCall);
@@ -127,7 +127,7 @@ public final class ReminderUtils {
                 builder.addAction(R.drawable.ic_call_nv_white, context.getString(R.string.make_call), piCall);
             }
 
-            PendingIntent piSms = PendingIntent.getBroadcast(context, birthdayItem.getUniqueId(),
+            PendingIntent piSms = PendingIntent.getBroadcast(context, birthday.getUniqueId(),
                     BirthdayActionService.sms(context, id), PendingIntent.FLAG_CANCEL_CURRENT);
             if (Module.isLollipop()) {
                 builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.send_sms), piSms);
@@ -137,7 +137,7 @@ public final class ReminderUtils {
         }
 
         NotificationManagerCompat mNotifyMgr = NotificationManagerCompat.from(context);
-        mNotifyMgr.notify(birthdayItem.getUniqueId(), builder.build());
+        mNotifyMgr.notify(birthday.getUniqueId(), builder.build());
     }
 
     private static boolean isGlobal(Context context) {

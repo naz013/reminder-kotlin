@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.birthdays.BirthdayItem" />
+            type="com.elementary.tasks.core.data.models.Birthday" />
 
         <variable
             name="click"

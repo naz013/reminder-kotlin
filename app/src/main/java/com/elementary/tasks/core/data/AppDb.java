@@ -2,6 +2,7 @@ package com.elementary.tasks.core.data;
 
 import android.content.Context;
 
+import com.elementary.tasks.core.data.dao.BirthdaysDao;
 import com.elementary.tasks.core.data.dao.CalendarEventsDao;
 import com.elementary.tasks.core.data.dao.GroupDao;
 import com.elementary.tasks.core.data.dao.MissedCallsDao;
@@ -9,7 +10,13 @@ import com.elementary.tasks.core.data.dao.NotesDao;
 import com.elementary.tasks.core.data.dao.PlacesDao;
 import com.elementary.tasks.core.data.dao.ReminderDao;
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao;
+import com.elementary.tasks.core.data.models.CalendarEvent;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.MissedCall;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -30,7 +37,15 @@ import androidx.room.RoomDatabase;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Database(entities = {Reminder.class}, version = 1, exportSchema = false)
+@Database(entities = {
+        Reminder.class,
+        CalendarEvent.class,
+        Group.class,
+        MissedCall.class,
+        Note.class,
+        Place.class,
+        SmsTemplate.class
+}, version = 1, exportSchema = false)
 public abstract class AppDb extends RoomDatabase {
 
     private static AppDb INSTANCE;
@@ -48,6 +63,8 @@ public abstract class AppDb extends RoomDatabase {
     public abstract CalendarEventsDao calendarEventsDao();
 
     public abstract NotesDao notesDao();
+
+    public abstract BirthdaysDao birthdaysDao();
 
     public static AppDb getAppDatabase(Context context) {
         if (INSTANCE == null) {

@@ -56,8 +56,8 @@ public class RealmDb {
 //            saveCalendarEvent((CalendarEvent) o);
 //        } else if (o instanceof MissedCall) {
 //            saveMissedCall((MissedCall) o);
-//        } else if (o instanceof BirthdayItem) {
-//            saveBirthday((BirthdayItem) o);
+//        } else if (o instanceof Birthday) {
+//            saveBirthday((Birthday) o);
 //        }
 //    }
 
@@ -91,7 +91,7 @@ public class RealmDb {
 //        }
 //    }
 //
-//    private void saveBirthday(@NonNull BirthdayItem item) {
+//    private void saveBirthday(@NonNull Birthday item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmBirthdayItem(item));
@@ -99,7 +99,7 @@ public class RealmDb {
 //        EventsDataSingleton.getInstance().setChanged();
 //    }
 //
-//    public void deleteBirthday(@NonNull BirthdayItem item) {
+//    public void deleteBirthday(@NonNull Birthday item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        RealmBirthdayItem birthdayItem = realm.where(RealmBirthdayItem.class).equalTo("uuId", item.getUuId()).findFirst();
@@ -110,18 +110,18 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public BirthdayItem getBirthday(@NonNull String key) {
+//    public Birthday getBirthday(@NonNull String key) {
 //        Realm realm = getRealm();
 //        RealmBirthdayItem item = realm.where(RealmBirthdayItem.class).equalTo("uuId", key).findFirst();
 //        if (item != null) {
-//            return new BirthdayItem(item);
+//            return new Birthday(item);
 //        } else {
 //            return null;
 //        }
 //    }
 //
 //    @NonNull
-//    public List<BirthdayItem> getAllBirthdays() {
+//    public List<Birthday> getAllBirthdays() {
 //        Realm realm = getRealm();
 //        List<RealmBirthdayItem> list = new ArrayList<>(realm.where(RealmBirthdayItem.class).findAll());
 //        Collections.sort(list, (realmBirthdayItem, t1) -> {
@@ -131,22 +131,22 @@ public class RealmDb {
 //            }
 //            return res;
 //        });
-//        List<BirthdayItem> items = new ArrayList<>();
+//        List<Birthday> items = new ArrayList<>();
 //        for (RealmBirthdayItem item : list) {
-//            WeakReference<BirthdayItem> reference = new WeakReference<>(new BirthdayItem(item));
+//            WeakReference<Birthday> reference = new WeakReference<>(new Birthday(item));
 //            items.add(reference.get());
 //        }
 //        return items;
 //    }
 //
 //    @NonNull
-//    public List<BirthdayItem> getTodayBirthdays(int daysBefore) {
+//    public List<Birthday> getTodayBirthdays(int daysBefore) {
 //        Calendar cal = Calendar.getInstance();
 //        cal.setTimeInMillis(System.currentTimeMillis());
 //        int mYear = cal.get(Calendar.YEAR);
 //        String mDate = birthFormat.format(cal.getTime());
-//        List<BirthdayItem> list = new ArrayList<>();
-//        for (BirthdayItem item : getAllBirthdays()) {
+//        List<Birthday> list = new ArrayList<>();
+//        for (Birthday item : getAllBirthdays()) {
 //            int year = item.getShowedYear();
 //            String birthValue = getBirthdayValue(item.getMonth(), item.getDay(), daysBefore);
 //            if (birthValue.equals(mDate) && year != mYear) {
@@ -167,12 +167,12 @@ public class RealmDb {
 //    }
 //
 //    @NonNull
-//    public List<BirthdayItem> getBirthdays(int day, int month) {
+//    public List<Birthday> getBirthdays(int day, int month) {
 //        Realm realm = getRealm();
 //        List<RealmBirthdayItem> list = realm.where(RealmBirthdayItem.class).equalTo("dayMonth", day + "|" + month).findAll();
-//        List<BirthdayItem> items = new ArrayList<>();
+//        List<Birthday> items = new ArrayList<>();
 //        for (RealmBirthdayItem item : list) {
-//            WeakReference<BirthdayItem> reference = new WeakReference<>(new BirthdayItem(item));
+//            WeakReference<Birthday> reference = new WeakReference<>(new Birthday(item));
 //            items.add(reference.get());
 //        }
 //        return items;

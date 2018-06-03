@@ -1,4 +1,4 @@
-package com.elementary.tasks.birthdays;
+package com.elementary.tasks.birthdays.work;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -9,9 +9,11 @@ import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.dao.BirthdaysDao;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -112,7 +114,8 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
                     " and " + ContactsContract.CommonDataKinds.Event.MIMETYPE + " = '" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE +
                     "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId;
             String sortOrder = ContactsContract.Contacts.DISPLAY_NAME;
-            List<BirthdayItem> contacts = RealmDb.getInstance().getAllBirthdays();
+            BirthdaysDao dao = AppDb.getAppDatabase(mContext).birthdaysDao();
+            List<Birthday> contacts = dao.getAll();
             Cursor birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder);
             if (birthdayCur != null && birthdayCur.getCount() > 0) {
                 while (birthdayCur.moveToNext()) {
@@ -132,11 +135,11 @@ public class CheckBirthdaysAsync extends AsyncTask<Void, Void, Integer> {
                             calendar.setTime(date);
                             int day = calendar.get(Calendar.DAY_OF_MONTH);
                             int month = calendar.get(Calendar.MONTH);
-                            BirthdayItem birthdayItem = new BirthdayItem(name, DATE_FORMAT.format(calendar.getTime()), number, 0, id, day, month);
+                            Birthday birthdayItem = new Birthday(name, DATE_FORMAT.format(calendar.getTime()), number, 0, id, day, month);
                             if (!contacts.contains(birthdayItem)) {
                                 i = i + 1;
                             }
-                            RealmDb.getInstance().saveObject(birthdayItem);
+                            dao.insert(birthdayItem);
                             break;
                         }
                     }

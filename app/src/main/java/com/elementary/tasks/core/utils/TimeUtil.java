@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 
 import java.text.DateFormat;
 import java.text.ParseException;

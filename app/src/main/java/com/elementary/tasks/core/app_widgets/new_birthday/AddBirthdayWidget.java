@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 
 /**

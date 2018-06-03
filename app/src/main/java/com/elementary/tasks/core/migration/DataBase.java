@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.SmsTemplate;
@@ -150,10 +150,10 @@ class DataBase {
         return db.delete(CONTACTS_TABLE_NAME, Constants.Contacts.COLUMN_ID + "=" + rowId, null) > 0;
     }
 
-    List<BirthdayItem> getBirthdays() throws SQLException {
+    List<Birthday> getBirthdays() throws SQLException {
         openGuard();
         Cursor c = db.query(CONTACTS_TABLE_NAME, null, null, null, null, null, null);
-        List<BirthdayItem> list = new ArrayList<>();
+        List<Birthday> list = new ArrayList<>();
         if (c != null && c.moveToFirst()) {
             do {
                 list.add(birthdayFromCursor(c));
@@ -163,7 +163,7 @@ class DataBase {
         return list;
     }
 
-    private BirthdayItem birthdayFromCursor(Cursor c) {
+    private Birthday birthdayFromCursor(Cursor c) {
         String name = c.getString(c.getColumnIndex(Constants.Contacts.COLUMN_NAME));
         String date = c.getString(c.getColumnIndex(Constants.Contacts.COLUMN_BIRTHDATE));
         String number = c.getString(c.getColumnIndex(Constants.Contacts.COLUMN_NUMBER));
@@ -178,7 +178,7 @@ class DataBase {
             year = Integer.parseInt(shownYear);
         } catch (NumberFormatException ignored) {
         }
-        return new BirthdayItem(name, date, number, year, conId, day, month);
+        return new Birthday(name, date, number, year, conId, day, month);
     }
 
     List<SmsTemplate> getAllTemplates() throws SQLException {

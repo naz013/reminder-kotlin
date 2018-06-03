@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
+import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.RealmDb;
@@ -128,16 +131,16 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         }
     }
 
-    private void showBirthdayLcam(BirthdayItem birthdayItem) {
+    private void showBirthdayLcam(Birthday birthday) {
         String[] items = {getString(R.string.edit), getString(R.string.delete)};
         Dialogues.showLCAM(getContext(), item -> {
             switch (item) {
                 case 0:
-                    editBirthday(birthdayItem);
+                    editBirthday(birthday);
                     break;
                 case 1:
-                    RealmDb.getInstance().deleteBirthday(birthdayItem);
-                    new DeleteBirthdayFilesAsync(getContext()).execute(birthdayItem.getUuId());
+                    RealmDb.getInstance().deleteBirthday(birthday);
+                    new DeleteBirthdayFilesAsync(getContext()).execute(birthday.getUuId());
                     reopenFragment();
                     break;
             }
@@ -148,7 +151,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
         getCallback().replaceFragment(new DayViewFragment(), getString(R.string.events));
     }
 
-    private void editBirthday(BirthdayItem item) {
+    private void editBirthday(Birthday item) {
         startActivity(new Intent(getContext(), AddBirthdayActivity.class)
                 .putExtra(Constants.INTENT_ID, item.getKey()));
     }
@@ -156,8 +159,8 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     @Override
     public void onItemClicked(int position, View view) {
         Object object = mDataList.get(position).getObject();
-        if (object instanceof BirthdayItem) {
-            editBirthday((BirthdayItem) object);
+        if (object instanceof Birthday) {
+            editBirthday((Birthday) object);
         } else if (object instanceof Reminder) {
             if (view.getId() == R.id.button_more) {
                 showActionDialog((Reminder) object, view);
@@ -193,7 +196,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     editReminder(reminder.getUuId());
                     break;
                 case 3:
-                    EventControl control = EventControlFactory.getController(getContext(), reminder.setRemoved(true));
+                    EventControl control = EventControlFactory.getController(reminder.setRemoved(true));
                     control.stop();
                     reopenFragment();
                     break;
@@ -204,8 +207,8 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     @Override
     public void onItemLongClicked(int position, View view) {
         Object object = mDataList.get(position).getObject();
-        if (object instanceof BirthdayItem) {
-            showBirthdayLcam((BirthdayItem) object);
+        if (object instanceof Birthday) {
+            showBirthdayLcam((Birthday) object);
         }
     }
 

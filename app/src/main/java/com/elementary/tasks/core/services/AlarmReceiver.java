@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import com.elementary.tasks.birthdays.CheckBirthdaysAsync;
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 import com.elementary.tasks.core.async.BackupTask;
 import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.AppDb;

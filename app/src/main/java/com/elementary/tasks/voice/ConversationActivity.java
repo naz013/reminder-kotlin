@@ -17,9 +17,9 @@ import com.backdoor.engine.Action;
 import com.backdoor.engine.ActionType;
 import com.backdoor.engine.Model;
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.AddBirthdayActivity;
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -42,6 +42,7 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -267,7 +268,9 @@ public class ConversationActivity extends ThemedActivity {
             } else if (action == Action.ACTIVE_REMINDERS) {
                 viewModel.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
             } else if (action == Action.BIRTHDAYS) {
-                showBirthdays(TimeUtil.getDateTimeFromGmt(model.getDateTime()));
+                viewModel.getBirthdays(
+                        TimeUtil.getDateTimeFromGmt(model.getDateTime()),
+                        TimeUtil.getBirthdayTime(getPrefs().getBirthdayTime()));
             } else if (action == Action.SHOP_LISTS) {
                 viewModel.getShoppingReminders();
             } else {
@@ -298,9 +301,8 @@ public class ConversationActivity extends ThemedActivity {
         }
     }
 
-    private void showBirthdays(long dateTime) {
-        long time = TimeUtil.getBirthdayTime(getPrefs().getBirthdayTime());
-        Container<BirthdayItem> items = new Container<>(DataProvider.getBirthdays(dateTime, time));
+    private void showBirthdays(List<Birthday> birthdays) {
+        Container<Birthday> items = new Container<>(birthdays);
         if (items.isEmpty()) {
             addResponse(getLocalized(R.string.no_birthdays_found));
         } else {
@@ -570,6 +572,12 @@ public class ConversationActivity extends ThemedActivity {
         });
         viewModel.enabledReminders.observe(this, list -> {
             if (list != null) showEnabledReminders(list);
+        });
+        viewModel.birthdays.observe(this, new Observer<List<Birthday>>() {
+            @Override
+            public void onChanged(List<Birthday> birthdays) {
+                if (birthdays != null) showBirthdays(birthdays);
+            }
         });
     }
 

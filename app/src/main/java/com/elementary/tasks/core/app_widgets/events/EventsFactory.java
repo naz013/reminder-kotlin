@@ -12,7 +12,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Prefs;
@@ -130,8 +130,8 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
             do {
                 mDay = calendar.get(Calendar.DAY_OF_MONTH);
                 mMonth = calendar.get(Calendar.MONTH);
-                List<BirthdayItem> list = RealmDb.getInstance().getBirthdays(mDay, mMonth);
-                for (BirthdayItem item : list) {
+                List<Birthday> list = RealmDb.getInstance().getBirthdays(mDay, mMonth);
+                for (Birthday item : list) {
                     String birthday = item.getDate();
                     String name = item.getName();
                     long eventTime = 0;
@@ -158,8 +158,8 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
         }
         Collections.sort(data, (eventsItem, o2) -> {
             long time1 = 0, time2 = 0;
-            if (eventsItem.getItem() instanceof BirthdayItem) {
-                BirthdayItem item = (BirthdayItem) eventsItem.getItem();
+            if (eventsItem.getItem() instanceof Birthday) {
+                Birthday item = (Birthday) eventsItem.getItem();
                 TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
                 if (dateItem != null) {
                     Calendar calendar = dateItem.getCalendar();
@@ -169,8 +169,8 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reminder reminder = (Reminder) eventsItem.getItem();
                 time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
             }
-            if (o2.getItem() instanceof BirthdayItem) {
-                BirthdayItem item = (BirthdayItem) o2.getItem();
+            if (o2.getItem() instanceof Birthday) {
+                Birthday item = (Birthday) o2.getItem();
                 TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
                 if (dateItem != null) {
                     Calendar calendar = dateItem.getCalendar();

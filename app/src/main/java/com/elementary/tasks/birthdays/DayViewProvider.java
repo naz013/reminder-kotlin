@@ -7,6 +7,8 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
@@ -150,10 +152,10 @@ public class DayViewProvider {
     }
 
     private void loadBirthdays() {
-        List<BirthdayItem> list = RealmDb.getInstance().getAllBirthdays();
+        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
         ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int color = cs.getColor(cs.colorBirthdayCalendar());
-        for (BirthdayItem item : list) {
+        for (Birthday item : list) {
             Date date = null;
             try {
                 date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.getDate());
@@ -356,8 +358,8 @@ public class DayViewProvider {
             if (isCanceled) return;
             Collections.sort(res, (eventsItem, t1) -> {
                 long time1 = 0, time2 = 0;
-                if (eventsItem.getObject() instanceof BirthdayItem) {
-                    BirthdayItem item = (BirthdayItem) eventsItem.getObject();
+                if (eventsItem.getObject() instanceof Birthday) {
+                    Birthday item = (Birthday) eventsItem.getObject();
                     TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
                     if (dateItem != null) {
                         Calendar calendar = dateItem.getCalendar();
@@ -367,8 +369,8 @@ public class DayViewProvider {
                     Reminder reminder = (Reminder) eventsItem.getObject();
                     time1 = TimeUtil.getDateTimeFromGmt(reminder.getEventTime());
                 }
-                if (t1.getObject() instanceof BirthdayItem) {
-                    BirthdayItem item = (BirthdayItem) t1.getObject();
+                if (t1.getObject() instanceof Birthday) {
+                    Birthday item = (Birthday) t1.getObject();
                     TimeUtil.DateItem dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.getDate());
                     if (dateItem != null) {
                         Calendar calendar = dateItem.getCalendar();

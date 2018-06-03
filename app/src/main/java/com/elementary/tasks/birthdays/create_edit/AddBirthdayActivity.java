@@ -1,13 +1,11 @@
-package com.elementary.tasks.birthdays;
+package com.elementary.tasks.birthdays.create_edit;
 
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,21 +14,28 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Contacts;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel;
 import com.elementary.tasks.databinding.ActivityAddBirthdayBinding;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -54,18 +59,19 @@ public class AddBirthdayActivity extends ThemedActivity {
     private static final int CONTACT_PERM = 102;
 
     private ActivityAddBirthdayBinding binding;
+    private BirthdayViewModel viewModel;
 
     private int myYear = 0;
     private int myMonth = 0;
     private int myDay = 0;
     private String number;
-    private BirthdayItem mItem;
+    @Nullable
+    private Birthday mBirthday;
     private long date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadBirthday();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_birthday);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -77,27 +83,30 @@ public class AddBirthdayActivity extends ThemedActivity {
         });
         binding.birthDate.setOnClickListener(view -> dateDialog());
         binding.pickContact.setOnClickListener(view -> pickContact());
-        showBirthday();
+
+        loadBirthday();
     }
 
-    private void showBirthday() {
+    private void showBirthday(@Nullable Birthday birthday) {
+        this.mBirthday = birthday;
+
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         binding.toolbar.setTitle(R.string.add_birthday);
-        if (mItem != null) {
-            binding.birthName.setText(mItem.getName());
+        if (birthday != null) {
+            binding.birthName.setText(birthday.getName());
             try {
-                Date dt = CheckBirthdaysAsync.DATE_FORMAT.parse(mItem.getDate());
+                Date dt = CheckBirthdaysAsync.DATE_FORMAT.parse(birthday.getDate());
                 if (dt != null) calendar.setTime(dt);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if (!TextUtils.isEmpty(mItem.getNumber())) {
-                binding.phone.setText(mItem.getNumber());
+            if (!TextUtils.isEmpty(birthday.getNumber())) {
+                binding.phone.setText(birthday.getNumber());
                 binding.contactCheck.setChecked(true);
             }
             binding.toolbar.setTitle(R.string.edit_birthday);
-            this.number = mItem.getNumber();
+            this.number = birthday.getNumber();
         } else if (date != 0) {
             calendar.setTimeInMillis(date);
         }
@@ -108,25 +117,39 @@ public class AddBirthdayActivity extends ThemedActivity {
     }
 
     private void loadBirthday() {
-        Intent intent = getIntent();
-        date = intent.getLongExtra(Constants.INTENT_DATE, 0);
-        String id = intent.getStringExtra(Constants.INTENT_ID);
-        if (id != null) {
-            mItem = RealmDb.getInstance().getBirthday(id);
-        } else if (intent.getData() != null) {
+        date = getIntent().getLongExtra(Constants.INTENT_DATE, 0);
+        int id = getIntent().getIntExtra(Constants.INTENT_ID, 0);
+        initViewModel(id);
+        if (getIntent().getData() != null) {
             try {
-                Uri name = intent.getData();
+                Uri name = getIntent().getData();
                 String scheme = name.getScheme();
                 if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
                     ContentResolver cr = getContentResolver();
-                    mItem = BackupTool.getInstance().getBirthday(cr, name);
+                    mBirthday = BackupTool.getInstance().getBirthday(cr, name);
                 } else {
-                    mItem = BackupTool.getInstance().getBirthday(name.getPath(), null);
+                    mBirthday = BackupTool.getInstance().getBirthday(name.getPath(), null);
                 }
+                showBirthday(mBirthday);
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initViewModel(int id) {
+        viewModel = ViewModelProviders.of(this, new BirthdayViewModel.Factory(getApplication(), id)).get(BirthdayViewModel.class);
+        viewModel.birthday.observe(this, this::showBirthday);
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                    case DELETED:
+                        closeScreen();
+                        break;
+                }
+            }
+        });
     }
 
     private boolean checkContactPermission(int code) {
@@ -148,7 +171,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_group_edit, menu);
-        if (mItem != null) {
+        if (mBirthday != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete));
         }
         return true;
@@ -179,7 +202,7 @@ public class AddBirthdayActivity extends ThemedActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mItem != null && getPrefs().isAutoSaveEnabled()) {
+        if (mBirthday != null && getPrefs().isAutoSaveEnabled()) {
             saveBirthday();
         }
     }
@@ -202,32 +225,30 @@ public class AddBirthdayActivity extends ThemedActivity {
             }
             contactId = Contacts.getIdFromNumber(number, this);
         }
-        if (mItem != null) {
-            mItem.setName(contact);
-            mItem.setContactId(contactId);
-            mItem.setDate(binding.birthDate.getText().toString());
-            mItem.setNumber(number);
-            mItem.setDay(myDay);
-            mItem.setMonth(myMonth);
+        if (mBirthday != null) {
+            mBirthday.setName(contact);
+            mBirthday.setContactId(contactId);
+            mBirthday.setDate(binding.birthDate.getText().toString());
+            mBirthday.setNumber(number);
+            mBirthday.setDay(myDay);
+            mBirthday.setMonth(myMonth);
         } else {
-            mItem = new BirthdayItem(contact, binding.birthDate.getText().toString().trim(), number, 0, contactId, myDay, myMonth);
+            mBirthday = new Birthday(contact, binding.birthDate.getText().toString().trim(), number, 0, contactId, myDay, myMonth);
         }
-        RealmDb.getInstance().saveObject(mItem);
-        closeScreen();
+        viewModel.saveBirthday(mBirthday);
     }
 
     private void closeScreen() {
         setResult(RESULT_OK);
         finish();
-        sendBroadcast(new Intent(this, PermanentBirthdayReceiver.class).setAction(PermanentBirthdayReceiver.ACTION_SHOW));
+        sendBroadcast(new Intent(this, PermanentBirthdayReceiver.class)
+                .setAction(PermanentBirthdayReceiver.ACTION_SHOW));
     }
 
     private void deleteItem() {
-        if (mItem != null) {
-            RealmDb.getInstance().deleteBirthday(mItem);
-            new DeleteBirthdayFilesAsync(this).execute(mItem.getUuId());
+        if (mBirthday != null) {
+            viewModel.deleteBirthday(mBirthday);
         }
-        closeScreen();
     }
 
     private void dateDialog() {

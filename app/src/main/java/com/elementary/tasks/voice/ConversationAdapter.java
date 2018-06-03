@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.R;
 import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.birthdays.BirthdayHolder;
-import com.elementary.tasks.birthdays.BirthdayItem;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -115,7 +115,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (holder instanceof GroupHolder) {
             ((GroupHolder) holder).setData((Group) mData.get(position).getObject());
         } else if (holder instanceof BirthdayHolder) {
-            ((BirthdayHolder) holder).setData((BirthdayItem) mData.get(position).getObject());
+            ((BirthdayHolder) holder).setData((Birthday) mData.get(position).getObject());
             ((BirthdayHolder) holder).setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()));
         } else if (holder instanceof ShoppingHolder) {
             ((ShoppingHolder) holder).setData((Reminder) mData.get(position).getObject());
@@ -243,13 +243,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             addRemindersToList(container);
             notifyItemRangeChanged(0, mData.size());
             if (mCallback != null) mCallback.onItemAdded();
-        } else if (container.getType() instanceof BirthdayItem) {
+        } else if (container.getType() instanceof Birthday) {
             mData.remove(position);
             notifyItemRemoved(position);
             //noinspection unchecked
-            List<BirthdayItem> reversed = new ArrayList<>(((Container<BirthdayItem>) container).getList());
+            List<Birthday> reversed = new ArrayList<>(((Container<Birthday>) container).getList());
             Collections.reverse(reversed);
-            for (BirthdayItem item : reversed) {
+            for (Birthday item : reversed) {
                 mData.add(0, new Reply(Reply.BIRTHDAY, item));
                 notifyItemInserted(0);
             }
