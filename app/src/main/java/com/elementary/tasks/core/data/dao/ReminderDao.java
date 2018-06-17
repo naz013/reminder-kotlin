@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -36,6 +37,7 @@ public interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE noteId=:key")
     LiveData<Reminder> loadByNoteKey(String key);
 
+    @Nullable
     @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
     Reminder getById(int id);
 

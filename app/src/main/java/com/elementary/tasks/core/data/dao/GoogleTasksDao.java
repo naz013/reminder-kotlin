@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.dao;
 
-import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.GoogleTask;
 
 import java.util.List;
 
@@ -29,30 +29,33 @@ import static androidx.room.OnConflictStrategy.REPLACE;
  * limitations under the License.
  */
 @Dao
-public interface BirthdaysDao {
+public interface GoogleTasksDao {
 
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    LiveData<Birthday> loadById(int id);
+    @Query("SELECT * FROM GoogleTask")
+    LiveData<List<GoogleTask>> loadAll();
+
+    @Query("SELECT * FROM GoogleTask WHERE listId=:listId")
+    LiveData<List<GoogleTask>> loadAllByList(String listId);
+
+    @Query("SELECT * FROM GoogleTask WHERE listId=:listId AND status=:status")
+    List<GoogleTask> getAllByList(String listId, String status);
+
+    @Insert(onConflict = REPLACE)
+    void insert(GoogleTask googleTask);
+
+    @Insert(onConflict = REPLACE)
+    void insertAll(List<GoogleTask> googleTasks);
+
+    @Delete
+    void delete(GoogleTask googleTask);
+
+    @Query("SELECT * FROM GoogleTask WHERE taskId=:id")
+    LiveData<GoogleTask> loadById(String id);
 
     @Nullable
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    Birthday getById(int id);
-
-    @Query("SELECT * FROM Birthday")
-    LiveData<List<Birthday>> loadAll();
-
-    @Query("SELECT * FROM Birthday")
-    List<Birthday> getAll();
-
-    @Insert(onConflict = REPLACE)
-    int insert(Birthday birthday);
-
-    @Insert(onConflict = REPLACE)
-    void insertAll(Birthday... birthdays);
+    @Query("SELECT * FROM GoogleTask WHERE taskId=:id")
+    GoogleTask getById(String id);
 
     @Delete
-    void delete(Birthday birthday);
-
-    @Delete
-    void deleteAll(Birthday... birthdays);
+    void deleteAll(List<GoogleTask> googleTasks);
 }

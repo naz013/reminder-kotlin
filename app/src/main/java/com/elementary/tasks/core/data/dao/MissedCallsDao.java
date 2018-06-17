@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.models.MissedCall;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -48,6 +49,7 @@ public interface MissedCallsDao {
     @Query("SELECT * FROM MissedCall WHERE number=:number")
     LiveData<MissedCall> loadByNumber(String number);
 
+    @Nullable
     @Query("SELECT * FROM MissedCall WHERE number=:number")
     MissedCall getByNumber(String number);
 }

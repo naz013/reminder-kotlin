@@ -9,8 +9,8 @@ import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.google_tasks.TaskAsync;
-import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
 
 /**
@@ -42,7 +42,7 @@ abstract class RepeatableEventManager extends EventManager {
     protected void export() {
         if (getReminder().isExportToTasks()) {
             long due = TimeUtil.getDateTimeFromGmt(getReminder().getEventTime());
-            TaskItem mItem = new TaskItem();
+            GoogleTask mItem = new GoogleTask();
             mItem.setListId(null);
             mItem.setStatus(Google.TASKS_NEED_ACTION);
             mItem.setTitle(getReminder().getSummary());

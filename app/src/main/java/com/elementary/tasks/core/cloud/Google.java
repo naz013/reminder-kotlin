@@ -1,21 +1,19 @@
 package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.google_tasks.TaskItem;
-import com.elementary.tasks.google_tasks.TaskListItem;
-import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.FileContent;
@@ -42,6 +40,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -123,7 +124,7 @@ public class Google {
     }
 
     public class GTasks {
-        public boolean insertTask(@NonNull TaskItem item) throws IOException {
+        public boolean insertTask(@NonNull GoogleTask item) throws IOException {
             if (TextUtils.isEmpty(item.getTitle()) || tasksService == null) {
                 return false;
             }
@@ -141,10 +142,10 @@ public class Google {
                 if (!TextUtils.isEmpty(listId)) {
                     result = tasksService.tasks().insert(listId, task).execute();
                 } else {
-                    TaskListItem taskListItem = RealmDb.getInstance().getDefaultTaskList();
-                    if (taskListItem != null) {
-                        item.setListId(taskListItem.getListId());
-                        result = tasksService.tasks().insert(taskListItem.getListId(), task).execute();
+                    GoogleTaskList googleTaskList = RealmDb.getInstance().getDefaultTaskList();
+                    if (googleTaskList != null) {
+                        item.setListId(googleTaskList.getListId());
+                        result = tasksService.tasks().insert(googleTaskList.getListId(), task).execute();
                     } else {
                         result = tasksService.tasks().insert("@default", task).execute();
                         TaskList list = tasksService.tasklists().get("@default").execute();
@@ -175,12 +176,12 @@ public class Google {
             tasksService.tasks().update(listId, task.getId(), task).execute();
         }
 
-        public void deleteTask(@NonNull TaskItem item) throws IOException {
+        public void deleteTask(@NonNull GoogleTask item) throws IOException {
             if (item.getListId() == null || tasksService == null) return;
             tasksService.tasks().delete(item.getListId(), item.getTaskId()).execute();
         }
 
-        public void updateTask(@NonNull TaskItem item) throws IOException {
+        public void updateTask(@NonNull GoogleTask item) throws IOException {
             if (tasksService == null) return;
             Task task = tasksService.tasks().get(item.getListId(), item.getTaskId()).execute();
             task.setStatus(TASKS_NEED_ACTION);
@@ -217,7 +218,7 @@ public class Google {
             taskList.setTitle(listTitle);
             try {
                 TaskList result = tasksService.tasklists().insert(taskList).execute();
-                TaskListItem item = new TaskListItem(result, color);
+                GoogleTaskList item = new GoogleTaskList(result, color);
                 RealmDb.getInstance().saveObject(item);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -231,7 +232,7 @@ public class Google {
             TaskList taskList = tasksService.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
             tasksService.tasklists().update(listId, taskList).execute();
-            TaskListItem item = RealmDb.getInstance().getTaskList(listId);
+            GoogleTaskList item = RealmDb.getInstance().getTaskList(listId);
             if (item != null) {
                 item.update(taskList);
                 RealmDb.getInstance().saveObject(item);
@@ -260,14 +261,14 @@ public class Google {
             }
         }
 
-        public boolean moveTask(@NonNull TaskItem item, String oldList) {
+        public boolean moveTask(@NonNull GoogleTask item, String oldList) {
             if (tasksService == null) {
                 return false;
             }
             try {
                 Task task = tasksService.tasks().get(oldList, item.getTaskId()).execute();
                 if (task != null) {
-                    TaskItem clone = new TaskItem(item);
+                    GoogleTask clone = new GoogleTask(item);
                     clone.setListId(oldList);
                     deleteTask(clone);
                     return insertTask(item);
@@ -1004,6 +1005,14 @@ public class Google {
                 return meta;
             }
         }
+    }
+
+    public interface GoogleTaksFunc{
+        void apply(@Nullable GoogleTask googleTask);
+    }
+
+    public interface GoogleTaksListFunc{
+        void apply(@Nullable GoogleTaskList googleTaskList);
     }
 
     private interface Action {

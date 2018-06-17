@@ -1,25 +1,23 @@
 package com.elementary.tasks.google_tasks;
 
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel;
 import com.elementary.tasks.databinding.FragmentGoogleListBinding;
 import com.elementary.tasks.navigation.fragments.BaseFragment;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
-import java.util.Map;
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,64 +37,91 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TaskListFragment extends BaseFragment {
 
-    private RecyclerView currentList;
-    private LinearLayout emptyItem;
-    private List<TaskItem> data;
-    private Map<String, Integer> colors;
-    private TasksCallback mTasksCallback = new TasksCallback() {
-        @Override
-        public void onFailed() {
-            loaderAdapter();
-        }
+    private static final String ARG_ID = "arg_id";
 
-        @Override
-        public void onComplete() {
-            EventBus.getDefault().post(new UpdateEvent());
-            loaderAdapter();
-        }
-    };
+    private FragmentGoogleListBinding binding;
+    @NonNull
+    private TasksRecyclerAdapter adapter = new TasksRecyclerAdapter();
+    private GoogleTaskListViewModel viewModel;
+    @Nullable
+    private String mId;
 
-    public void setData(List<TaskItem> data, Map<String, Integer> colors) {
-        this.data = data;
-        this.colors = colors;
-    }
-
-    public static TaskListFragment newInstance() {
-        return new TaskListFragment();
+    public static TaskListFragment newInstance(@Nullable String id) {
+        TaskListFragment fragment = new TaskListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_ID, id);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentGoogleListBinding binding = FragmentGoogleListBinding.inflate(inflater, container, false);
-        emptyItem = binding.emptyItem;
-        emptyItem.setVisibility(View.VISIBLE);
-        RoboTextView emptyText = binding.emptyText;
-        emptyText.setText(R.string.no_google_tasks);
-        emptyItem.setVisibility(View.VISIBLE);
-        currentList = binding.recyclerView;
-        loaderAdapter();
-        return binding.getRoot();
-    }
-
-    public void loaderAdapter() {
-        TasksRecyclerAdapter customAdapter = new TasksRecyclerAdapter(getActivity(), data, colors);
-        customAdapter.setListener(mTasksCallback);
-        currentList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        currentList.setAdapter(customAdapter);
-        currentList.setItemAnimator(new DefaultItemAnimator());
-        reloadView();
-        if (getCallback() != null) {
-            getCallback().onScrollChanged(currentList);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mId = getArguments().getString(ARG_ID);
         }
     }
 
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentGoogleListBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initEmpty();
+        initList();
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this, new GoogleTaskListViewModel.Factory(getActivity().getApplication(), mId)).get(GoogleTaskListViewModel.class);
+        viewModel.googleTasks.observe(this, googleTasks -> {
+            if (googleTasks != null) {
+                showTasks(googleTasks);
+            }
+        });
+    }
+
+    private void showTasks(List<GoogleTask> googleTasks) {
+        adapter.setGoogleTasks(googleTasks);
+        reloadView();
+    }
+
+    private void initList() {
+        adapter.setActionsListener((view, position, googleTask, actions) -> {
+            switch (actions) {
+                case EDIT:
+                    if (googleTask != null) editTask(googleTask);
+                    break;
+                case SWITCH:
+                    if (googleTask != null) viewModel.toggleTask(googleTask);
+                    break;
+            }
+        });
+    }
+
+    private void editTask(GoogleTask googleTask) {
+        startActivity(new Intent(getActivity(), TaskActivity.class)
+                .putExtra(Constants.INTENT_ID, googleTask.getTaskId())
+                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT));
+    }
+
+    private void initEmpty() {
+        binding.emptyItem.setVisibility(View.VISIBLE);
+        binding.emptyText.setText(R.string.no_google_tasks);
+        reloadView();
+    }
+
     private void reloadView() {
-        if (data != null && data.size() > 0) {
-            currentList.setVisibility(View.VISIBLE);
-            emptyItem.setVisibility(View.GONE);
+        if (adapter.getItemCount() > 0) {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.emptyItem.setVisibility(View.GONE);
         } else {
-            currentList.setVisibility(View.GONE);
-            emptyItem.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.GONE);
+            binding.emptyItem.setVisibility(View.VISIBLE);
         }
     }
 }

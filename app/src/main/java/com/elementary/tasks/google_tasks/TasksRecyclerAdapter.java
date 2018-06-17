@@ -1,32 +1,31 @@
 package com.elementary.tasks.google_tasks;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.Configs;
-import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.ListActions;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemTaskBinding;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -47,20 +46,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdapter.ViewHolder> {
 
-    private List<TaskItem> mDataset;
-    private Context mContext;
-    private static TasksCallback listener;
-    private static Map<String, Integer> colors;
-    private static ProgressDialog mDialog;
+    private List<GoogleTask> googleTasks = new ArrayList<>();
+    @Nullable
+    private ActionsListener<GoogleTask> actionsListener;
 
-    TasksRecyclerAdapter(Context context, List<TaskItem> myDataset, Map<String, Integer> colors) {
-        this.mDataset = myDataset;
-        this.mContext = context;
-        TasksRecyclerAdapter.colors = colors;
+    TasksRecyclerAdapter() {
     }
 
-    public void setListener(TasksCallback listener) {
-        TasksRecyclerAdapter.listener = listener;
+    public void setGoogleTasks(List<GoogleTask> googleTasks) {
+        this.googleTasks = googleTasks;
+        notifyDataSetChanged();
+    }
+
+    public void setActionsListener(@Nullable ActionsListener<GoogleTask> actionsListener) {
+        this.actionsListener = actionsListener;
+    }
+
+    @Nullable
+    public ActionsListener<GoogleTask> getActionsListener() {
+        return actionsListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,69 +75,44 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
             super(v);
             binding = DataBindingUtil.bind(v);
             binding.setClick(v1 -> onItemClick(getAdapterPosition()));
+            binding.checkDone.setOnClickListener(view -> switchTask(getAdapterPosition()));
         }
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(ListItemTaskBinding.inflate(inflater, parent, false).getRoot());
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(ListItemTaskBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        TaskItem item = mDataset.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        GoogleTask item = googleTasks.get(position);
         holder.binding.setTaskItem(item);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return googleTasks.size();
     }
 
     private void onItemClick(int position) {
-        mContext.startActivity(new Intent(mContext, TaskActivity.class)
-                .putExtra(Constants.INTENT_ID, mDataset.get(position).getTaskId())
-                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT));
-    }
-
-    private static void switchTask(Context context, boolean isDone, String listId, String taskId) {
-        showProgressDialog(context);
-        RealmDb.getInstance().setStatus(taskId, isDone);
-        new SwitchTaskAsync(context, listId, taskId, isDone, new TasksCallback() {
-            @Override
-            public void onFailed() {
-                hideProgress();
-                if (listener != null) {
-                    listener.onFailed();
-                }
-            }
-
-            @Override
-            public void onComplete() {
-                hideProgress();
-                if (listener != null) {
-                    listener.onComplete();
-                }
-            }
-        }).execute();
-    }
-
-    private static void hideProgress() {
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
+        if (getActionsListener() != null) {
+            getActionsListener().onAction(null, position, googleTasks.get(position), ListActions.EDIT);
         }
     }
 
-    private static void showProgressDialog(Context context) {
-        mDialog = ProgressDialog.show(context, null, context.getString(R.string.please_wait));
+    private void switchTask(int position) {
+        if (getActionsListener() != null) {
+            getActionsListener().onAction(null, position, googleTasks.get(position), ListActions.SWITCH);
+        }
     }
 
     @BindingAdapter({"loadMarker"})
     public static void loadMarker(View view, String listId) {
-        if (listId != null && colors != null && colors.containsKey(listId)) {
-            view.setBackgroundColor(ThemeUtil.getInstance(view.getContext()).getNoteColor(colors.get(listId)));
-        }
+//        if (listId != null && colors != null && colors.containsKey(listId)) {
+//            view.setBackgroundColor(ThemeUtil.getInstance(view.getContext()).getNoteColor(colors.get(listId)));
+//        }
     }
 
     @BindingAdapter({"loadTaskCard"})
@@ -145,14 +124,12 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
     }
 
     @BindingAdapter({"loadCheck"})
-    public static void loadCheck(RoboCheckBox checkBox, TaskItem item) {
+    public static void loadCheck(RoboCheckBox checkBox, GoogleTask item) {
         if (item.getStatus().matches(Google.TASKS_COMPLETE)) {
             checkBox.setChecked(true);
         } else {
             checkBox.setChecked(false);
         }
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> switchTask(checkBox.getContext(),
-                isChecked, item.getListId(), item.getTaskId()));
     }
 
     @BindingAdapter({"loadDue"})

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
@@ -43,7 +44,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
     private RoboCheckBox defaultCheck;
 
     private RoboEditText editField;
-    private TaskListItem mItem;
+    private GoogleTaskList mItem;
     private int color;
 
     private ProgressDialog mDialog;
@@ -105,7 +106,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         }
         boolean isNew = false;
         if (mItem == null) {
-            mItem = new TaskListItem();
+            mItem = new GoogleTaskList();
             isNew = true;
         }
         mItem.setTitle(listName);
@@ -113,7 +114,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         mItem.setUpdated(System.currentTimeMillis());
         if (defaultCheck.isChecked()) {
             mItem.setDef(1);
-            TaskListItem defList = RealmDb.getInstance().getDefaultTaskList();
+            GoogleTaskList defList = RealmDb.getInstance().getDefaultTaskList();
             if (defList != null) {
                 defList.setDef(0);
                 RealmDb.getInstance().saveObject(defList);
@@ -186,7 +187,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
                     RealmDb.getInstance().deleteTaskList(mItem.getListId());
                     RealmDb.getInstance().deleteTasks(listId);
                     if (def == 1) {
-                        TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
+                        GoogleTaskList listItem = RealmDb.getInstance().getTaskLists().get(0);
                         RealmDb.getInstance().setDefault(listItem.getListId());
                     }
                     hideDialog();

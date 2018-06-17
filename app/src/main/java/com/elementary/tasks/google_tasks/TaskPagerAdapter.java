@@ -1,7 +1,9 @@
 package com.elementary.tasks.google_tasks;
 
+import com.elementary.tasks.core.data.models.GoogleTaskList;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,24 +26,20 @@ import androidx.fragment.app.FragmentPagerAdapter;
  */
 public class TaskPagerAdapter extends FragmentPagerAdapter {
 
-    private List<TaskListWrapperItem> mData;
-    private Map<String, Integer> colors;
+    private List<GoogleTaskList> data = new ArrayList<>();
 
-    public TaskPagerAdapter(final FragmentManager fm, final List<TaskListWrapperItem> data, Map<String, Integer> colors) {
+    public TaskPagerAdapter(final FragmentManager fm, List<GoogleTaskList> data) {
         super(fm);
-        this.mData = data;
-        this.colors = colors;
+        if (data != null) this.data.addAll(data);
     }
 
     @Override
     public Fragment getItem(final int position) {
-        TaskListFragment fragment = new TaskListFragment();
-        fragment.setData(mData.get(position).getmData(), colors);
-        return fragment;
+        return TaskListFragment.newInstance(data.get(position).getListId());
     }
 
     @Override
     public int getCount() {
-        return mData.size();
+        return data.size();
     }
 }

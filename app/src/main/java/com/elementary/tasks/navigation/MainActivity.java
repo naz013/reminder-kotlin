@@ -41,7 +41,7 @@ import com.elementary.tasks.navigation.fragments.BackupsFragment;
 import com.elementary.tasks.navigation.fragments.CalendarFragment;
 import com.elementary.tasks.navigation.fragments.DayViewFragment;
 import com.elementary.tasks.navigation.fragments.FeedbackFragment;
-import com.elementary.tasks.navigation.fragments.GoogleTasksFragment;
+import com.elementary.tasks.google_tasks.GoogleTasksFragment;
 import com.elementary.tasks.navigation.fragments.HelpFragment;
 import com.elementary.tasks.navigation.fragments.MapFragment;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;

@@ -33,6 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,8 +78,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reply.REPLY) {
             return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
@@ -96,14 +98,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.SHOPPING) {
             return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), null);
-        } else if (viewType == Reply.ASK) {
+        } else {
             return new AskHolder(AskListItemBinding.inflate(inflater, parent, false).getRoot());
         }
-        return null;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VoiceHolder) {
             ((VoiceHolder) holder).binding.replyText.setText((String) mData.get(position).getObject());
         } else if (holder instanceof VoiceResponseHolder) {
