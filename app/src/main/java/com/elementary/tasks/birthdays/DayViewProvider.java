@@ -4,28 +4,27 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Configs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -73,7 +72,7 @@ public class DayViewProvider {
     }
 
     public void removeObserver(@NonNull InitCallback callback) {
-        if (observers.contains(callback)) observers.remove(callback);
+        observers.remove(callback);
     }
 
     private void notifyInitFinish() {
@@ -152,7 +151,7 @@ public class DayViewProvider {
     }
 
     private void loadBirthdays() {
-        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
+        List<Birthday> list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll();
         ThemeUtil cs = ThemeUtil.getInstance(mContext);
         int color = cs.getColor(cs.colorBirthdayCalendar());
         for (Birthday item : list) {
@@ -179,12 +178,12 @@ public class DayViewProvider {
     }
 
     private void loadReminders() {
-        List<Group> allGroups = RealmDb.getInstance().getAllGroups();
+        List<Group> allGroups = AppDb.getAppDatabase(mContext).groupDao().getAll();
         Map<String, Integer> map = new HashMap<>();
         for (Group item : allGroups) {
             map.put(item.getUuId(), item.getColor());
         }
-        List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
+        List<Reminder> reminders = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false);
         for (Reminder item : reminders) {
             int mType = item.getType();
             long eventTime = item.getDateTime();
@@ -356,7 +355,7 @@ public class DayViewProvider {
                 return;
             }
             if (isCanceled) return;
-            Collections.sort(res, (eventsItem, t1) -> {
+            res.sort((eventsItem, t1) -> {
                 long time1 = 0, time2 = 0;
                 if (eventsItem.getObject() instanceof Birthday) {
                     Birthday item = (Birthday) eventsItem.getObject();

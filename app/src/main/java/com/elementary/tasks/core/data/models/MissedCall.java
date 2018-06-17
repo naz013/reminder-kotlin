@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Random;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -38,6 +39,7 @@ public class MissedCall {
         this.uniqueId = new Random().nextInt(Integer.MAX_VALUE);
     }
 
+    @Ignore
     public MissedCall(String number, long dateTime) {
         this.number = number;
         this.dateTime = dateTime;

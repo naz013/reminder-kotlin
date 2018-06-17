@@ -1,15 +1,12 @@
 package com.elementary.tasks.birthdays;
 
-import android.content.Context;
-import androidx.databinding.BindingAdapter;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.SuperUtil;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
@@ -18,11 +15,13 @@ import com.elementary.tasks.databinding.ShoppingListItemBinding;
 import com.elementary.tasks.reminder.lists.RecyclerListener;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.ShoppingHolder;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -42,16 +41,19 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<EventsItem> mDataList = new ArrayList<>();
-    private ThemeUtil cs;
+    private List<EventsItem> data = new ArrayList<>();
+    @Nullable
     private RecyclerListener mEventListener;
 
-    public CalendarEventsAdapter(final Context context, @NonNull List<EventsItem> list) {
-        mDataList.addAll(list);
-        cs = ThemeUtil.getInstance(context);
+    public CalendarEventsAdapter() {
     }
 
-    public final void setEventListener(final RecyclerListener listener) {
+    public void setData(List<EventsItem> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public final void setEventListener(@Nullable final RecyclerListener listener) {
         this.mEventListener = listener;
     }
 
@@ -59,27 +61,27 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public final RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == 0) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, cs, false);
+            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, false);
         } else if (viewType == 1) {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, cs);
+            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         } else {
-            return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), mEventListener, cs);
+            return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         }
     }
 
     @Override
     public final void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof BirthdayHolder) {
-            Birthday item = (Birthday) mDataList.get(position).getObject();
+            Birthday item = (Birthday) data.get(position).getObject();
             BirthdayHolder birthdayHolder = (BirthdayHolder) holder;
             birthdayHolder.setData(item);
-            birthdayHolder.setColor(mDataList.get(position).getColor());
+            birthdayHolder.setColor(data.get(position).getColor());
         } else if (holder instanceof ReminderHolder) {
-            Reminder item = (Reminder) mDataList.get(position).getObject();
+            Reminder item = (Reminder) data.get(position).getObject();
             ReminderHolder reminderHolder = (ReminderHolder) holder;
             reminderHolder.setData(item);
         } else if (holder instanceof ShoppingHolder) {
-            Reminder item = (Reminder) mDataList.get(position).getObject();
+            Reminder item = (Reminder) data.get(position).getObject();
             ShoppingHolder shoppingHolder = (ShoppingHolder) holder;
             shoppingHolder.setData(item);
         }
@@ -92,12 +94,12 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public final int getItemCount() {
-        return mDataList.size();
+        return data.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mDataList.get(position).getViewType();
+        return data.get(position).getViewType();
     }
 
     @BindingAdapter({"loadBirthday"})
@@ -108,5 +110,9 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             textView.setText(SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.getCalendar().getTimeInMillis(), is24, false),
                     "\n", TimeUtil.getAgeFormatted(textView.getContext(), dateItem.getYear())));
         }
+    }
+
+    public AdapterItem getItem(int position) {
+        return data.get(position);
     }
 }

@@ -4,19 +4,18 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
 
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
 import com.elementary.tasks.core.calendar.Events;
 import com.elementary.tasks.core.calendar.FlextHelper;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import hirondelle.date4j.DateTime;
 
 /**
@@ -108,7 +108,7 @@ public class EventsDataProvider {
         TimeCount timeCount = TimeCount.getInstance(context);
         if (isReminder) {
             int rColor = cs.getColor(cs.colorReminderCalendar());
-            List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
+            List<Reminder> reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false);
             for (Reminder item : reminders) {
                 int mType = item.getType();
                 String summary = item.getSummary();
@@ -181,7 +181,7 @@ public class EventsDataProvider {
                 }
             }
         }
-        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
+        List<Birthday> list = AppDb.getAppDatabase(context).birthdaysDao().getAll();
         LogUtil.d(TAG, "Count BD" + list.size());
         for (Birthday item : list) {
             Date date = null;

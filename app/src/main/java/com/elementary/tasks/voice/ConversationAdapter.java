@@ -85,7 +85,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType == Reply.RESPONSE) {
             return new VoiceResponseHolder(SimpleResponseLayoutBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.REMINDER) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil, false);
+            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), null, false);
         } else if (viewType == Reply.NOTE) {
             return new NoteHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.GROUP) {
@@ -93,9 +93,9 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType == Reply.SHOW_MORE) {
             return new ShowMoreHolder(ShowReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.BIRTHDAY) {
-            return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil);
+            return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.SHOPPING) {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), null, themeUtil);
+            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.ASK) {
             return new AskHolder(AskListItemBinding.inflate(inflater, parent, false).getRoot());
         }

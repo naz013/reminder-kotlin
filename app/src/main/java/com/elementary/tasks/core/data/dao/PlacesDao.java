@@ -35,7 +35,7 @@ public interface PlacesDao {
     LiveData<List<Place>> loadAll();
 
     @Query("SELECT * FROM Place")
-    List<SmsTemplate> getAll();
+    List<Place> getAll();
 
     @Insert(onConflict = REPLACE)
     void insert(Place place);

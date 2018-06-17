@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -49,6 +50,7 @@ public class Place {
     public Place() {
     }
 
+    @Ignore
     public Place(int radius, int marker, double latitude, double longitude, String name, String address, List<String> tags) {
         this.radius = radius;
         this.marker = marker;

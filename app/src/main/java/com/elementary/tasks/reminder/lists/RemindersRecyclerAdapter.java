@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.data.models.Reminder;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
@@ -17,8 +15,6 @@ import com.elementary.tasks.databinding.ShoppingListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,13 +38,10 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Nullable
     private RecyclerListener mEventListener;
-    @Inject
-    private ThemeUtil themeUtil;
     private boolean isEditable = true;
     private List<Reminder> mData = new ArrayList<>();
 
     public RemindersRecyclerAdapter() {
-        ReminderApp.getAppComponent().inject(this);
     }
 
     public void setData(List<Reminder> list) {
@@ -122,9 +115,9 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reminder.REMINDER) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, themeUtil, isEditable);
+            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, isEditable);
         } else {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, themeUtil);
+            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         }
     }
 
