@@ -23,6 +23,8 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
@@ -54,7 +56,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class TaskActivity extends ThemedActivity {
 
     private static final String TAG = "TaskActivity";
@@ -76,7 +77,7 @@ public class TaskActivity extends ThemedActivity {
     private boolean isDate = false;
 
     @Nullable
-    private TaskItem mItem;
+    private GoogleTask mItem;
     @Nullable
     private ProgressDialog mDialog;
 
@@ -154,7 +155,7 @@ public class TaskActivity extends ThemedActivity {
                 isDate = true;
                 dateField.setText(TimeUtil.getDate(calendar.getTime()));
             }
-            TaskListItem listItem = RealmDb.getInstance().getTaskList(mItem.getListId());
+            GoogleTaskList listItem = RealmDb.getInstance().getTaskList(mItem.getListId());
             if (listItem != null) {
                 listText.setText(listItem.getTitle());
                 setColor(listItem.getColor());
@@ -178,14 +179,14 @@ public class TaskActivity extends ThemedActivity {
     private void initNewTask(String id) {
         binding.toolbar.setTitle(R.string.new_task);
         if (id == null) {
-            TaskListItem listItem = RealmDb.getInstance().getDefaultTaskList();
+            GoogleTaskList listItem = RealmDb.getInstance().getDefaultTaskList();
             if (listItem != null) {
                 listId = listItem.getListId();
                 listText.setText(listItem.getTitle());
                 setColor(listItem.getColor());
             }
         } else {
-            TaskListItem listItem = RealmDb.getInstance().getTaskList(id);
+            GoogleTaskList listItem = RealmDb.getInstance().getTaskList(id);
             if (listItem != null) {
                 listId = listItem.getListId();
                 listText.setText(listItem.getTitle());
@@ -301,11 +302,11 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void selectList(final boolean move) {
-        List<TaskListItem> list = RealmDb.getInstance().getTaskLists();
+        List<GoogleTaskList> list = RealmDb.getInstance().getTaskLists();
         List<String> names = new ArrayList<>();
         int position = 0;
         for (int i = 0; i < list.size(); i++) {
-            TaskListItem item = list.get(i);
+            GoogleTaskList item = list.get(i);
             names.add(item.getTitle());
             if (listId != null && item.getListId() != null && item.getListId().matches(listId)) {
                 position = i;
@@ -328,7 +329,7 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void reloadColor(String listId) {
-        TaskListItem item = RealmDb.getInstance().getTaskList(listId);
+        GoogleTaskList item = RealmDb.getInstance().getTaskList(listId);
         if (item != null) {
             setColor(item.getColor());
         }
@@ -389,7 +390,7 @@ public class TaskActivity extends ThemedActivity {
                 new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, mSimpleCallback).execute();
             }
         } else {
-            mItem = new TaskItem();
+            mItem = new GoogleTask();
             mItem.setListId(listId);
             mItem.setStatus(Google.TASKS_NEED_ACTION);
             mItem.setTitle(taskName);

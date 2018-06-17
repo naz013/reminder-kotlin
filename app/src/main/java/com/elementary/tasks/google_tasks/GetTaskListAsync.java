@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
@@ -59,29 +61,29 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
             if (lists != null && lists.size() > 0 && lists.getItems() != null) {
                 for (TaskList item : lists.getItems()) {
                     String listId = item.getId();
-                    TaskListItem taskList = RealmDb.getInstance().getTaskList(listId);
+                    GoogleTaskList taskList = RealmDb.getInstance().getTaskList(listId);
                     if (taskList != null) {
                         taskList.update(item);
                     } else {
                         Random r = new Random();
                         int color = r.nextInt(15);
-                        taskList = new TaskListItem(item, color);
+                        taskList = new GoogleTaskList(item, color);
                     }
                     RealmDb.getInstance().saveObject(taskList);
-                    TaskListItem listItem = RealmDb.getInstance().getTaskLists().get(0);
+                    GoogleTaskList listItem = RealmDb.getInstance().getTaskLists().get(0);
                     RealmDb.getInstance().setDefault(listItem.getListId());
                     RealmDb.getInstance().setSystemDefault(listItem.getListId());
                     List<Task> tasks = mGoogle.getTasks().getTasks(listId);
                     if (tasks.isEmpty()) return false;
                     for (Task task : tasks) {
-                        TaskItem taskItem = RealmDb.getInstance().getTask(task.getId());
-                        if (taskItem != null) {
-                            taskItem.update(task);
-                            taskItem.setListId(task.getId());
+                        GoogleTask googleTask = RealmDb.getInstance().getTask(task.getId());
+                        if (googleTask != null) {
+                            googleTask.update(task);
+                            googleTask.setListId(task.getId());
                         } else {
-                            taskItem = new TaskItem(task, listId);
+                            googleTask = new GoogleTask(task, listId);
                         }
-                        RealmDb.getInstance().saveObject(taskItem);
+                        RealmDb.getInstance().saveObject(googleTask);
                     }
                 }
             }

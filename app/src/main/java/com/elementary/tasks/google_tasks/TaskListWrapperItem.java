@@ -1,5 +1,8 @@
 package com.elementary.tasks.google_tasks;
 
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +23,11 @@ import java.util.List;
  */
 public class TaskListWrapperItem {
 
-    private TaskListItem taskList;
-    private List<TaskItem> mData;
+    private GoogleTaskList taskList;
+    private List<GoogleTask> mData;
     private int position;
 
-    public TaskListWrapperItem(TaskListItem taskList, List<TaskItem> mData,
+    public TaskListWrapperItem(GoogleTaskList taskList, List<GoogleTask> mData,
                                int position) {
         this.taskList = taskList;
         this.mData = new ArrayList<>(mData);
@@ -39,11 +42,11 @@ public class TaskListWrapperItem {
         this.position = position;
     }
 
-    public List<TaskItem> getmData() {
+    public List<GoogleTask> getmData() {
         return mData;
     }
 
-    public TaskListItem getTaskList() {
+    public GoogleTaskList getTaskList() {
         return taskList;
     }
 }

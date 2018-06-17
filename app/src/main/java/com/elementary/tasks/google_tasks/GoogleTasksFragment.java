@@ -1,0 +1,261 @@
+package com.elementary.tasks.google_tasks;
+
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Dialogues;
+import com.elementary.tasks.core.utils.Module;
+import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel;
+import com.elementary.tasks.databinding.FragmentGoogleTasksBinding;
+import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
+
+/**
+ * Copyright 2016 Nazar Suhovich
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+public class GoogleTasksFragment extends BaseNavigationFragment {
+
+    public static final int MENU_ITEM_EDIT = 12;
+    public static final int MENU_ITEM_DELETE = 13;
+    public static final int MENU_ITEM_CLEAR = 14;
+
+    private FragmentGoogleTasksBinding binding;
+    private GoogleTaskListsViewModel viewModel;
+    private List<GoogleTaskList> googleTaskLists = new ArrayList<>();
+    private int currentPos;
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.tasks_menu, menu);
+        if (currentPos != 0) {
+            menu.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list);
+            GoogleTaskList listItem = googleTaskLists.get(currentPos);
+            if (listItem != null) {
+                if (listItem.getDef() != 1) {
+                    menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getStr(R.string.delete_list));
+                }
+            }
+            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sync:
+                viewModel.sync();
+                return true;
+            case R.id.action_add_list:
+                startActivity(new Intent(getContext(), TaskListActivity.class));
+                return true;
+            case MENU_ITEM_EDIT:
+                if (currentPos != 0) {
+                    startActivity(new Intent(getContext(), TaskListActivity.class)
+                            .putExtra(Constants.INTENT_ID, googleTaskLists.get(currentPos).getListId()));
+                }
+                return true;
+            case MENU_ITEM_DELETE:
+                deleteDialog();
+                return true;
+            case MENU_ITEM_CLEAR:
+                clearList();
+                return true;
+            case R.id.action_order:
+                showDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentGoogleTasksBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(GoogleTaskListsViewModel.class);
+        viewModel.googleTaskLists.observe(this, googleTaskLists -> {
+            if (googleTaskLists != null) {
+                showPages(googleTaskLists);
+            }
+        });
+    }
+
+    private void showPages(List<GoogleTaskList> googleTaskLists) {
+        GoogleTaskList zeroItem = new GoogleTaskList();
+        zeroItem.setTitle(getStr(R.string.all));
+        zeroItem.setColor(25);
+        googleTaskLists.add(0, zeroItem);
+        int pos = getPrefs().getLastGoogleList();
+
+        this.googleTaskLists.clear();
+        this.googleTaskLists.addAll(googleTaskLists);
+
+        TaskPagerAdapter pagerAdapter;
+        if (Module.isJellyMR1()) {
+            pagerAdapter = new TaskPagerAdapter(getChildFragmentManager(), googleTaskLists);
+        } else {
+            pagerAdapter = new TaskPagerAdapter(getFragmentManager(), googleTaskLists);
+        }
+        binding.pager.setAdapter(pagerAdapter);
+        binding.pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                updateScreen(i);
+                getPrefs().setLastGoogleList(i);
+                currentPos = i;
+                getActivity().invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+        binding.pager.setCurrentItem(pos < googleTaskLists.size() ? pos : 0);
+        updateScreen(pos < googleTaskLists.size() ? pos : 0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getCallback() != null) {
+            getCallback().onTitleChange(getStr(R.string.google_tasks));
+            getCallback().onFragmentSelect(this);
+            getCallback().setClick(view -> addNewTask());
+        }
+    }
+
+    private void addNewTask() {
+        startActivity(new Intent(getContext(), TaskActivity.class)
+                .putExtra(Constants.INTENT_ID, googleTaskLists.get(currentPos).getListId())
+                .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.CREATE));
+    }
+
+    private void showDialog() {
+        final String[] items = {getStr(R.string.default_string),
+                getStr(R.string.by_date_az),
+                getStr(R.string.by_date_za),
+                getStr(R.string.active_first),
+                getStr(R.string.completed_first)};
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
+        builder.setTitle(getStr(R.string.order));
+        builder.setItems(items, (dialog, which) -> {
+            if (which == 0) {
+                getPrefs().setTasksOrder(Constants.ORDER_DEFAULT);
+            } else if (which == 1) {
+                getPrefs().setTasksOrder(Constants.ORDER_DATE_A_Z);
+            } else if (which == 2) {
+                getPrefs().setTasksOrder(Constants.ORDER_DATE_Z_A);
+            } else if (which == 3) {
+                getPrefs().setTasksOrder(Constants.ORDER_COMPLETED_Z_A);
+            } else if (which == 4) {
+                getPrefs().setTasksOrder(Constants.ORDER_COMPLETED_A_Z);
+            }
+            dialog.dismiss();
+            viewModel.reload();
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void deleteDialog() {
+        AlertDialog.Builder builder = Dialogues.getDialog(getContext());
+        builder.setCancelable(true);
+        builder.setMessage(getStr(R.string.delete_this_list));
+        builder.setNegativeButton(getStr(R.string.no), (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton(getStr(R.string.yes), (dialog, which) -> {
+            deleteList();
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteList() {
+        viewModel.deleteGoogleTaskList(googleTaskLists.get(currentPos));
+    }
+
+    private void updateScreen(int pos) {
+        if (getCallback() != null) {
+            ThemeUtil mColor = ThemeUtil.getInstance(getContext());
+            if (pos == 0) {
+                getCallback().onTitleChange(getStr(R.string.all));
+                getCallback().onThemeChange(mColor.getColor(mColor.colorPrimary()),
+                        mColor.getColor(mColor.colorPrimaryDark()),
+                        mColor.getColor(mColor.colorAccent()));
+            } else {
+                GoogleTaskList taskList = googleTaskLists.get(pos);
+                getCallback().onTitleChange(taskList.getTitle());
+                int tmp = taskList.getColor();
+                getCallback().onThemeChange(mColor.getColor(mColor.colorPrimary(tmp)),
+                        mColor.getColor(mColor.colorPrimaryDark(tmp)),
+                        mColor.getColor(mColor.colorAccent(tmp)));
+            }
+        }
+    }
+
+
+    public String getStr(@StringRes int id) {
+        if (isAdded()) {
+            return getString(id);
+        } else {
+            return "";
+        }
+    }
+
+    private void clearList() {
+        viewModel.clearList(googleTaskLists.get(currentPos));
+    }
+}

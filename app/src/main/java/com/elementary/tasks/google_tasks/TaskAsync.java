@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.utils.SuperUtil;
 
 import java.io.IOException;
@@ -29,10 +30,10 @@ public class TaskAsync extends AsyncTask<Void, Void, Boolean> {
 
     private Context mContext;
     private String taskType, oldList;
-    private TaskItem mItem;
+    private GoogleTask mItem;
     private TasksCallback mCallback;
 
-    public TaskAsync(Context context, String taskType, String oldList, TaskItem item, TasksCallback callback) {
+    public TaskAsync(Context context, String taskType, String oldList, GoogleTask item, TasksCallback callback) {
         this.mContext = context;
         this.mItem = item;
         this.taskType = taskType;

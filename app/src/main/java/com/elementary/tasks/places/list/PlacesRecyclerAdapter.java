@@ -14,6 +14,7 @@ import com.elementary.tasks.databinding.PlaceListItemBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
@@ -40,10 +41,11 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
     @Nullable
     private ActionsListener<Place> actionsListener;
 
-    public void setActionsListener(ActionsListener<Place> actionsListener) {
+    public void setActionsListener(@Nullable ActionsListener<Place> actionsListener) {
         this.actionsListener = actionsListener;
     }
 
+    @Nullable
     public ActionsListener<Place> getActionsListener() {
         return actionsListener;
     }
@@ -88,12 +90,13 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(PlaceListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.binding.setItem(getItem(position));
     }
 

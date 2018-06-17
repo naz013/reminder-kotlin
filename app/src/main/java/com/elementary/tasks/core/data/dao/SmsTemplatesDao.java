@@ -4,6 +4,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -48,6 +49,7 @@ public interface SmsTemplatesDao {
     @Query("SELECT * FROM SmsTemplate WHERE `key`=:key")
     LiveData<SmsTemplate> loadByKey(String key);
 
+    @Nullable
     @Query("SELECT * FROM SmsTemplate WHERE `key`=:key")
     SmsTemplate getByKey(String key);
 }

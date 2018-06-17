@@ -1,9 +1,13 @@
-package com.elementary.tasks.google_tasks;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.tasks.model.Task;
 import com.google.gson.annotations.SerializedName;
+
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -20,12 +24,13 @@ import com.google.gson.annotations.SerializedName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class TaskItem {
+@Entity
+public class GoogleTask {
 
     @SerializedName("title")
     private String title;
     @SerializedName("taskId")
+    @PrimaryKey
     private String taskId;
     @SerializedName("completeDate")
     private long completeDate;
@@ -56,10 +61,11 @@ public class TaskItem {
     @SerializedName("hidden")
     private int hidden;
 
-    public TaskItem() {
+    public GoogleTask() {
     }
 
-    public TaskItem(TaskItem item) {
+    @Ignore
+    public GoogleTask(GoogleTask item) {
         this.listId = item.getListId();
         this.selfLink = item.getSelfLink();
         this.kind = item.getKind();
@@ -78,7 +84,8 @@ public class TaskItem {
         this.uuId = item.getUuId();
     }
 
-    public TaskItem(Task task, String listId) {
+    @Ignore
+    public GoogleTask(Task task, String listId) {
         this.listId = listId;
         DateTime dueDate = task.getDue();
         long due = dueDate != null ? dueDate.getValue() : 0;
@@ -90,12 +97,12 @@ public class TaskItem {
         boolean isDeleted = false;
         try {
             isDeleted = task.getDeleted();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         boolean isHidden = false;
         try {
             isHidden = task.getHidden();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         this.selfLink = task.getSelfLink();
         this.kind = task.getKind();
@@ -131,12 +138,12 @@ public class TaskItem {
         boolean isDeleted = false;
         try {
             isDeleted = task.getDeleted();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         boolean isHidden = false;
         try {
             isHidden = task.getHidden();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         this.selfLink = task.getSelfLink();
         this.kind = task.getKind();
@@ -254,7 +261,7 @@ public class TaskItem {
         return listId;
     }
 
-    public TaskItem setListId(String listId) {
+    public GoogleTask setListId(String listId) {
         this.listId = listId;
         return this;
     }
@@ -277,6 +284,6 @@ public class TaskItem {
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, TaskItem.class);
+        return SuperUtil.getObjectPrint(this, GoogleTask.class);
     }
 }

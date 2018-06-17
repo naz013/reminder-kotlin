@@ -1,8 +1,12 @@
-package com.elementary.tasks.google_tasks;
+package com.elementary.tasks.core.data.models;
 
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.gson.annotations.SerializedName;
+
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -19,12 +23,13 @@ import com.google.gson.annotations.SerializedName;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-public class TaskListItem {
+@Entity
+public class GoogleTaskList {
 
     @SerializedName("title")
     private String title;
     @SerializedName("listId")
+    @PrimaryKey
     private String listId;
     @SerializedName("def")
     private int def;
@@ -41,10 +46,12 @@ public class TaskListItem {
     @SerializedName("systemDefault")
     private int systemDefault;
 
-    public TaskListItem() {
+    public GoogleTaskList() {
     }
 
-    public void update(TaskList taskList) {
+    @Ignore
+    public GoogleTaskList(TaskList taskList, int color) {
+        setColor(color);
         setTitle(taskList.getTitle());
         setListId(taskList.getId());
         seteTag(taskList.getEtag());
@@ -53,8 +60,7 @@ public class TaskListItem {
         setUpdated(taskList.getUpdated() != null ? taskList.getUpdated().getValue() : 0);
     }
 
-    public TaskListItem(TaskList taskList, int color) {
-        setColor(color);
+    public void update(TaskList taskList) {
         setTitle(taskList.getTitle());
         setListId(taskList.getId());
         seteTag(taskList.getEtag());
@@ -137,6 +143,6 @@ public class TaskListItem {
 
     @Override
     public String toString() {
-        return SuperUtil.getObjectPrint(this, TaskListItem.class);
+        return SuperUtil.getObjectPrint(this, GoogleTaskList.class);
     }
 }

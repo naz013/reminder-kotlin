@@ -21,5 +21,6 @@ public enum Commands {
     STOPPED,
     UPDATED,
     TRASH_CLEARED,
+    FAILED,
     DELETED
 }

@@ -6,6 +6,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -53,6 +54,7 @@ public interface CalendarEventsDao {
     @Query("SELECT * FROM CalendarEvent WHERE uuId=:id")
     LiveData<CalendarEvent> loadByKey(String id);
 
+    @Nullable
     @Query("SELECT * FROM CalendarEvent WHERE uuId=:id")
     CalendarEvent getByKey(String id);
 

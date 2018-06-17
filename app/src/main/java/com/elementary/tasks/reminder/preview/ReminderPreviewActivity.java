@@ -32,12 +32,12 @@ import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
+import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding;
 import com.elementary.tasks.databinding.ListItemTaskBinding;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 import com.elementary.tasks.google_tasks.TaskActivity;
-import com.elementary.tasks.google_tasks.TaskItem;
 import com.elementary.tasks.google_tasks.TasksConstants;
 import com.elementary.tasks.notes.preview.NotePreviewActivity;
 import com.google.android.gms.maps.GoogleMap;
@@ -83,7 +83,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     @Nullable
     private Note mNote;
     @Nullable
-    private TaskItem mTaskItem;
+    private GoogleTask mGoogleTask;
     @NonNull
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     @Nullable
@@ -95,8 +95,8 @@ public class ReminderPreviewActivity extends ThemedActivity {
         if (object instanceof Note) {
             this.mNote = (Note) object;
             showNote();
-        } else if (object instanceof TaskItem) {
-            this.mTaskItem = (TaskItem) object;
+        } else if (object instanceof GoogleTask) {
+            this.mGoogleTask = (GoogleTask) object;
             showTask();
         }
     };
@@ -148,11 +148,11 @@ public class ReminderPreviewActivity extends ThemedActivity {
     }
 
     private void showTask() {
-        if (mTaskItem != null) {
+        if (mGoogleTask != null) {
             ListItemTaskBinding binding = ListItemTaskBinding.inflate(LayoutInflater.from(this));
-            binding.setTaskItem(mTaskItem);
+            binding.setTaskItem(mGoogleTask);
             binding.setClick(v -> startActivity(new Intent(ReminderPreviewActivity.this, TaskActivity.class)
-                    .putExtra(Constants.INTENT_ID, mTaskItem.getTaskId())
+                    .putExtra(Constants.INTENT_ID, mGoogleTask.getTaskId())
                     .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)));
             this.binding.dataContainer.addView(binding.getRoot());
         }
@@ -435,7 +435,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
         @Override
         public void run() {
-            TaskItem item = RealmDb.getInstance().getTaskByReminder(uuId);
+            GoogleTask item = RealmDb.getInstance().getTaskByReminder(uuId);
             runOnUiThread(() -> {
                 if (listener != null && item != null) listener.onReady(item);
             });

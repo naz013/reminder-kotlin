@@ -46,10 +46,10 @@ public class RealmDb {
 //            saveNote((Note) o);
 //        } else if (o instanceof PlaceItem) {
 //            savePlace((PlaceItem) o);
-//        } else if (o instanceof TaskItem) {
-//            saveTask((TaskItem) o);
-//        } else if (o instanceof TaskListItem) {
-//            saveTaskList((TaskListItem) o);
+//        } else if (o instanceof GoogleTask) {
+//            saveTask((GoogleTask) o);
+//        } else if (o instanceof GoogleTaskList) {
+//            saveTaskList((GoogleTaskList) o);
 //        } else if (o instanceof Group) {
 //            saveGroup((Group) o);
 //        } else if (o instanceof CalendarEvent) {
@@ -494,14 +494,14 @@ public class RealmDb {
 //        return items;
 //    }
 //
-//    private void saveTask(@NonNull TaskItem item) {
+//    private void saveTask(@NonNull GoogleTask item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmTask(item));
 //        realm.commitTransaction();
 //    }
 //
-//    public void deleteTask(@NonNull TaskItem item) {
+//    public void deleteTask(@NonNull GoogleTask item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        RealmTask object = realm.where(RealmTask.class).equalTo("taskId", item.getTaskId()).findFirst();
@@ -512,23 +512,23 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public TaskItem getTaskByReminder(@NonNull String id) {
+//    public GoogleTask getTaskByReminder(@NonNull String id) {
 //        Realm realm = getRealm();
 //        RealmTask object = realm.where(RealmTask.class).equalTo("uuId", id).findFirst();
 //        if (object == null) return null;
-//        else return new TaskItem(object);
+//        else return new GoogleTask(object);
 //    }
 //
 //    @Nullable
-//    public TaskItem getTask(@NonNull String id) {
+//    public GoogleTask getTask(@NonNull String id) {
 //        Realm realm = getRealm();
 //        RealmTask object = realm.where(RealmTask.class).equalTo("taskId", id).findFirst();
 //        if (object == null) return null;
-//        else return new TaskItem(object);
+//        else return new GoogleTask(object);
 //    }
 //
 //    @NonNull
-//    public List<TaskItem> getTasks(@Nullable String orderPrefs) {
+//    public List<GoogleTask> getTasks(@Nullable String orderPrefs) {
 //        Realm realm = getRealm();
 //        String field = "position";
 //        Sort order = Sort.ASCENDING;
@@ -551,16 +551,16 @@ public class RealmDb {
 //            }
 //        }
 //        List<RealmTask> list = realm.where(RealmTask.class).sort(field, order).findAll();
-//        List<TaskItem> items = new ArrayList<>();
+//        List<GoogleTask> items = new ArrayList<>();
 //        for (RealmTask object : list) {
-//            WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
+//            WeakReference<GoogleTask> reference = new WeakReference<>(new GoogleTask(object));
 //            items.add(reference.get());
 //        }
 //        return items;
 //    }
 //
 //    @NonNull
-//    public List<TaskItem> getTasks(@NonNull String listId, @Nullable String orderPrefs) {
+//    public List<GoogleTask> getTasks(@NonNull String listId, @Nullable String orderPrefs) {
 //        Realm realm = getRealm();
 //        String field = "position";
 //        Sort order = Sort.ASCENDING;
@@ -583,9 +583,9 @@ public class RealmDb {
 //            }
 //        }
 //        List<RealmTask> list = realm.where(RealmTask.class).equalTo("listId", listId).sort(field, order).findAll();
-//        List<TaskItem> items = new ArrayList<>();
+//        List<GoogleTask> items = new ArrayList<>();
 //        for (RealmTask object : list) {
-//            WeakReference<TaskItem> reference = new WeakReference<>(new TaskItem(object));
+//            WeakReference<GoogleTask> reference = new WeakReference<>(new GoogleTask(object));
 //            items.add(reference.get());
 //        }
 //        return items;
@@ -616,28 +616,28 @@ public class RealmDb {
 //    }
 //
 //    @Nullable
-//    public TaskListItem getTaskList(@NonNull String listId) {
+//    public GoogleTaskList getTaskList(@NonNull String listId) {
 //        Realm realm = getRealm();
 //        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("listId", listId).findFirst();
 //        if (object == null) return null;
-//        else return new TaskListItem(object);
+//        else return new GoogleTaskList(object);
 //    }
 //
 //    @Nullable
-//    public TaskListItem getDefaultTaskList() {
+//    public GoogleTaskList getDefaultTaskList() {
 //        Realm realm = getRealm();
 //        RealmTaskList object = realm.where(RealmTaskList.class).equalTo("def", 1).findFirst();
 //        if (object == null) return null;
-//        else return new TaskListItem(object);
+//        else return new GoogleTaskList(object);
 //    }
 //
 //    @NonNull
-//    public List<TaskListItem> getTaskLists() {
+//    public List<GoogleTaskList> getTaskLists() {
 //        Realm realm = getRealm();
 //        List<RealmTaskList> list = realm.where(RealmTaskList.class).findAll();
-//        List<TaskListItem> items = new ArrayList<>();
+//        List<GoogleTaskList> items = new ArrayList<>();
 //        for (RealmTaskList object : list) {
-//            WeakReference<TaskListItem> reference = new WeakReference<>(new TaskListItem(object));
+//            WeakReference<GoogleTaskList> reference = new WeakReference<>(new GoogleTaskList(object));
 //            items.add(reference.get());
 //        }
 //        return items;
@@ -662,7 +662,7 @@ public class RealmDb {
 //        return true;
 //    }
 //
-//    private void saveTaskList(@NonNull TaskListItem item) {
+//    private void saveTaskList(@NonNull GoogleTaskList item) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(new RealmTaskList(item));

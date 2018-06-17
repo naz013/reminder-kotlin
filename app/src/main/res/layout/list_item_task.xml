@@ -8,8 +8,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="taskItem"
-            type="com.elementary.tasks.google_tasks.TaskItem" />
+            name="googleTask"
+            type="com.elementary.tasks.core.data.models.GoogleTask" />
 
         <variable
             name="click"
@@ -24,7 +24,7 @@
         android:onClick="@{click::onClick}"
         app:cardCornerRadius="0dp"
         app:cardUseCompatPadding="true"
-        app:loadTaskCard='@{taskItem.hidden}'>
+        app:loadTaskCard='@{googleTask.hidden}'>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
                 android:background="@color/bluePrimary"
-                app:loadMarker='@{taskItem.listId}' />
+                app:loadMarker='@{googleTask.listId}' />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -51,7 +51,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="@{taskItem.title}"
+                    android:text="@{googleTask.title}"
                     android:textSize="17sp"
                     tools:text="Task"
                     app:font_style="roboto_light" />
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:maxLines="1"
-                    android:text="@{taskItem.notes}"
+                    android:text="@{googleTask.notes}"
                     android:textSize="15sp"
                     tools:text="Note"
                     app:font_style="roboto_light" />
@@ -80,7 +80,7 @@
                 android:textSize="14sp"
                 tools:text="14/04"
                 app:font_style="roboto_medium"
-                app:loadDue='@{taskItem.dueDate}' />
+                app:loadDue='@{googleTask.dueDate}' />
 
             <com.elementary.tasks.core.views.roboto.RoboCheckBox
                 android:id="@+id/checkDone"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
-                app:loadCheck='@{taskItem}' />
+                app:loadCheck='@{googleTask}' />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

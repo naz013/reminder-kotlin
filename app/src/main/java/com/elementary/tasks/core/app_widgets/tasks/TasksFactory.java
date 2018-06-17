@@ -13,8 +13,8 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.google_tasks.TaskItem;
-import com.elementary.tasks.google_tasks.TaskListItem;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.google_tasks.TasksConstants;
 
 import java.text.SimpleDateFormat;
@@ -45,7 +45,7 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
     private int widgetID;
     private ThemeUtil cs;
     @NonNull
-    private List<TaskItem> mData = new ArrayList<>();
+    private List<GoogleTask> mData = new ArrayList<>();
     @NonNull
     private Map<String, Integer> map = new HashMap<>();
 
@@ -66,8 +66,8 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         map.clear();
-        List<TaskListItem> list = RealmDb.getInstance().getTaskLists();
-        for (TaskListItem item : list) {
+        List<GoogleTaskList> list = RealmDb.getInstance().getTaskLists();
+        for (GoogleTaskList item : list) {
             map.put(item.getListId(), item.getColor());
         }
         mData.clear();
