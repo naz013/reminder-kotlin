@@ -6,12 +6,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 'android-P'
+    compileSdkVersion 28
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 'P'
-        targetSdkVersion 'P'
+        minSdkVersion 28
+        targetSdkVersion 28
         versionCode 199
         versionName '6.3.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -123,20 +123,20 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
 
-    api 'com.google.android.material:material:1.0.0-alpha1'
+    api 'com.google.android.material:material:1.0.0-alpha3'
 
-    api 'androidx.core:core:1.0.0-alpha1'
-    api 'androidx.collection:collection:1.0.0-alpha1'
-    api 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    api 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    api 'androidx.legacy:legacy-support-core-utils:1.0.0-alpha1'
-    api 'androidx.exifinterface:exifinterface:1.0.0-alpha1'
-    api 'androidx.annotation:annotation:1.0.0-alpha1'
+    api 'androidx.core:core:1.0.0-alpha3'
+    api 'androidx.collection:collection:1.0.0-alpha3'
+    api 'androidx.appcompat:appcompat:1.0.0-alpha3'
+    api 'androidx.legacy:legacy-support-v4:1.0.0-alpha3'
+    api 'androidx.legacy:legacy-support-core-utils:1.0.0-alpha3'
+    api 'androidx.exifinterface:exifinterface:1.0.0-alpha3'
+    api 'androidx.annotation:annotation:1.0.0-alpha3'
 
     api 'androidx.multidex:multidex:2.0.0'
     api 'androidx.multidex:multidex-instrumentation:2.0.0'
 
-    api 'androidx.constraintlayout:constraintlayout:1.1.0'
+    api 'androidx.constraintlayout:constraintlayout:1.1.2'
 
     api 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
     api 'androidx.room:room-runtime:2.0.0-alpha1'
@@ -147,7 +147,7 @@ dependencies {
     api 'com.google.android.gms:play-services-location:15.0.1'
     api 'com.google.android.gms:play-services-maps:15.0.1'
     api 'com.google.android.gms:play-services-gcm:15.0.1'
-    api 'com.google.firebase:firebase-core:15.0.2'
+    api 'com.google.firebase:firebase-core:16.0.1'
     api('com.google.firebase:firebase-config:15.0.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
