@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -58,6 +59,7 @@ public class Birthday implements RecyclerInterface {
     public Birthday() {
     }
 
+    @Ignore
     public Birthday(String name, String date, String number, int showedYear, int contactId, int day, int month) {
         this.name = name;
         this.date = date;

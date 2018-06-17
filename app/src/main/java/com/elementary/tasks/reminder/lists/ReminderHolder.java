@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.view.View;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -19,6 +20,8 @@ import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
 
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -45,15 +48,15 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
     private RoboTextView listHeader;
     private ReminderListItemBinding binding;
     private RecyclerListener mEventListener;
+    @Inject
     private ThemeUtil themeUtil;
 
-    public ReminderHolder(View v, RecyclerListener listener, ThemeUtil themeUtil, boolean editable) {
+    public ReminderHolder(View v, RecyclerListener listener, boolean editable) {
         super(v);
-        this.themeUtil = themeUtil;
+        ReminderApp.getAppComponent().inject(this);
         this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
         listHeader = binding.listHeader;
-        binding.reminderContainer.setBackgroundColor(themeUtil.getCardStyle());
         if (editable) {
             binding.itemCheck.setVisibility(View.VISIBLE);
         } else {

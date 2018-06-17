@@ -3,17 +3,16 @@ package com.elementary.tasks.core.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.Actions;
-import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.birthdays.ShowBirthdayActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TelephonyUtil;
 
 import java.util.Calendar;
@@ -41,61 +40,61 @@ public class BirthdayActionService extends BroadcastReceiver {
 
     private static final String TAG = "BirthdayActionService";
 
-    public static Intent hide(Context context, String id) {
+    public static Intent hide(Context context, int id) {
         return intent(context, id, PermanentBirthdayReceiver.ACTION_HIDE);
     }
 
-    public static Intent call(Context context, String id) {
+    public static Intent call(Context context, int id) {
         return intent(context, id, ACTION_CALL);
     }
 
-    public static Intent show(Context context, String id) {
+    public static Intent show(Context context, int id) {
         return intent(context, id, ACTION_SHOW);
     }
 
-    public static Intent sms(Context context, String id) {
+    public static Intent sms(Context context, int id) {
         return intent(context, id, ACTION_SMS);
     }
 
-    private static Intent intent(Context context, String id, String action) {
+    private static Intent intent(Context context, int id, String action) {
         Intent intent = new Intent(context, BirthdayActionService.class);
         intent.setAction(action);
         intent.putExtra(Constants.INTENT_ID, id);
         return intent;
     }
 
-    private void updateBirthday(Birthday item) {
+    private void updateBirthday(Context context, Birthday item) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         int year = calendar.get(Calendar.YEAR);
         item.setShowedYear(year);
-        RealmDb.getInstance().saveObject(item);
+        AppDb.getAppDatabase(context).birthdaysDao().insert(item);
     }
 
     private void sendSms(Context context, Intent intent) {
-        Birthday item = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
+        Birthday item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0));
         if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
             TelephonyUtil.sendSms(item.getNumber(), context);
-            updateBirthday(item);
+            updateBirthday(context, item);
             finish(context, item.getUniqueId());
         } else {
-            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
+            hidePermanent(context,intent.getIntExtra(Constants.INTENT_ID, 0));
         }
     }
 
     private void makeCall(Context context, Intent intent) {
-        Birthday item = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
+        Birthday item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0));
         if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(item.getNumber(), context);
-            updateBirthday(item);
+            updateBirthday(context, item);
             finish(context, item.getUniqueId());
         } else {
-            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
+            hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0));
         }
     }
 
     private void showReminder(Context context, Intent intent) {
-        Birthday reminder = RealmDb.getInstance().getBirthday(intent.getStringExtra(Constants.INTENT_ID));
+        Birthday reminder = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0));
         if (reminder != null) {
             Intent notificationIntent = ShowBirthdayActivity.getLaunchIntent(context,
                     intent.getIntExtra(Constants.INTENT_ID, 0));
@@ -105,11 +104,11 @@ public class BirthdayActionService extends BroadcastReceiver {
         }
     }
 
-    private void hidePermanent(Context context, @Nullable String id) {
-        if (id == null) return;
-        Birthday item = RealmDb.getInstance().getBirthday(id);
+    private void hidePermanent(Context context, int id) {
+        if (id == 0) return;
+        Birthday item = AppDb.getAppDatabase(context).birthdaysDao().getById(id);
         if (item != null) {
-            updateBirthday(item);
+            updateBirthday(context, item);
             finish(context, item.getUniqueId());
         }
     }
@@ -131,7 +130,7 @@ public class BirthdayActionService extends BroadcastReceiver {
                 } else if (action.matches(ACTION_SMS)) {
                     sendSms(context, intent);
                 } else if (action.matches(PermanentBirthdayReceiver.ACTION_HIDE)) {
-                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
+                    hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0));
                 } else {
                     showReminder(context, intent);
                 }

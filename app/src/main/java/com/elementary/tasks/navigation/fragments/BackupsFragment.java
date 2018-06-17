@@ -98,7 +98,7 @@ public class BackupsFragment extends BaseNavigationFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentBackupsBinding binding = FragmentBackupsBinding.inflate(inflater, container, false);
         mAdapter = new InfoAdapter(binding.itemsContainer, getContext(), mActionCallback);
         return binding.getRoot();

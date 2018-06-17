@@ -2,6 +2,8 @@ package com.elementary.tasks.navigation.fragments;
 
 import android.app.AlarmManager;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -96,7 +98,7 @@ public class DayViewFragment extends BaseCalendarFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDayViewBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }

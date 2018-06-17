@@ -1,16 +1,16 @@
 package com.elementary.tasks.birthdays;
 
-import androidx.databinding.DataBindingUtil;
 import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.utils.Configs;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
 import com.elementary.tasks.reminder.lists.RecyclerListener;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -32,13 +32,13 @@ import androidx.recyclerview.widget.RecyclerView;
 public class BirthdayHolder extends RecyclerView.ViewHolder {
 
     private ListItemEventsBinding binding;
+    @Nullable
     private RecyclerListener mEventListener;
 
-    public BirthdayHolder(final View v, RecyclerListener listener, ThemeUtil themeUtil) {
+    public BirthdayHolder(final View v, @Nullable RecyclerListener listener) {
         super(v);
         this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
-        binding.itemCard.setCardBackgroundColor(themeUtil.getCardStyle());
         if (Module.isLollipop()) {
             binding.itemCard.setCardElevation(Configs.CARD_ELEVATION);
         }

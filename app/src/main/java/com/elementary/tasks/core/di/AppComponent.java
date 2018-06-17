@@ -3,7 +3,9 @@ package com.elementary.tasks.core.di;
 import com.elementary.tasks.core.controller.EventManager;
 import com.elementary.tasks.core.services.CallReceiver;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
+import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter;
+import com.elementary.tasks.reminder.lists.ShoppingHolder;
 import com.elementary.tasks.voice.ConversationAdapter;
 
 import javax.inject.Singleton;
@@ -37,4 +39,8 @@ public interface AppComponent {
     void inject(CallReceiver callReceiver);
 
     void inject(ConversationAdapter conversationAdapter);
+
+    void inject(ReminderHolder reminderHolder);
+
+    void inject(ShoppingHolder shoppingHolder);
 }

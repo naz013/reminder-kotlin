@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.data.models.ShopItem;
@@ -17,6 +18,8 @@ import com.elementary.tasks.databinding.ListItemTaskItemWidgetBinding;
 import com.elementary.tasks.databinding.ShoppingListItemBinding;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -43,15 +46,15 @@ public class ShoppingHolder extends RecyclerView.ViewHolder {
     private RoboTextView listHeader;
     private ShoppingListItemBinding binding;
     private RecyclerListener mEventListener;
+    @Inject
     private ThemeUtil themeUtil;
 
-    public ShoppingHolder(View v, RecyclerListener listener, ThemeUtil themeUtil) {
+    public ShoppingHolder(View v, RecyclerListener listener) {
         super(v);
-        this.themeUtil = themeUtil;
+        ReminderApp.getAppComponent().inject(this);
         this.mEventListener = listener;
         binding = DataBindingUtil.bind(v);
         listHeader = binding.listHeader;
-        binding.subBackground.setBackgroundColor(themeUtil.getCardStyle());
         if (mEventListener != null) {
             binding.setClick(v1 -> {
                 switch (v1.getId()) {

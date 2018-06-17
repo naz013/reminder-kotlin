@@ -2,36 +2,28 @@ package com.elementary.tasks.birthdays;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
-import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
+import com.elementary.tasks.core.view_models.day_view.DayViewViewModel;
 import com.elementary.tasks.databinding.FragmentEventsListBinding;
 import com.elementary.tasks.navigation.fragments.BaseFragment;
-import com.elementary.tasks.navigation.fragments.DayViewFragment;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.reminder.lists.RecyclerListener;
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity;
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity;
-import com.elementary.tasks.core.data.models.Reminder;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import timber.log.Timber;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,13 +40,14 @@ import timber.log.Timber;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class EventsListFragment extends BaseFragment implements RecyclerListener,
-        DayViewProvider.Callback, DayViewProvider.InitCallback {
+public class EventsListFragment extends BaseFragment implements RecyclerListener {
 
     private static final String ARGUMENT_PAGE_NUMBER = "arg_page";
 
     private FragmentEventsListBinding binding;
-    private List<EventsItem> mDataList = new ArrayList<>();
+    @NonNull
+    private CalendarEventsAdapter mAdapter = new CalendarEventsAdapter();
+    private DayViewViewModel viewModel;
     @Nullable
     private EventsPagerItem mItem;
 
@@ -75,54 +68,40 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentEventsListBinding.inflate(inflater, container, false);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
-        if (getCallback() != null) {
-            getCallback().onScrollChanged(binding.recyclerView);
-        }
-        reloadView();
-        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
-        if (provider != null) {
-            provider.addObserver(this);
-        }
+
         return binding.getRoot();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
-        if (provider != null) {
-            provider.removeObserver(this);
-            provider.removeCallback(this);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadAdapter();
-    }
-
-    private void loadData() {
-        DayViewProvider provider = EventsDataSingleton.getInstance().getProvider();
-        if (provider != null && mItem != null) {
-            provider.findMatches(mItem.getDay(), mItem.getMonth(), mItem.getYear(), true, this);
-        }
-    }
-
-    public void loadAdapter() {
-        CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), mDataList);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mAdapter.setEventListener(this);
+
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(mAdapter);
+        if (getCallback() != null) {
+            getCallback().onScrollChanged(binding.recyclerView);
+        }
+
         reloadView();
+        initBirthdayViewModel();
+    }
+
+    private void initBirthdayViewModel() {
+        viewModel = ViewModelProviders.of(this).get(DayViewViewModel.class);
+        viewModel.setItem(mItem);
+        viewModel.events.observe(this, eventsItems -> {
+            if (eventsItems != null) {
+                mAdapter.setData(eventsItems);
+                reloadView();
+            }
+        });
     }
 
     private void reloadView() {
-        int size = mDataList != null ? mDataList.size() : 0;
-        if (size > 0) {
+        if (mAdapter.getItemCount() > 0) {
             binding.recyclerView.setVisibility(View.VISIBLE);
             binding.emptyItem.setVisibility(View.GONE);
         } else {
@@ -139,26 +118,20 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     editBirthday(birthday);
                     break;
                 case 1:
-                    RealmDb.getInstance().deleteBirthday(birthday);
-                    new DeleteBirthdayFilesAsync(getContext()).execute(birthday.getUuId());
-                    reopenFragment();
+                    viewModel.deleteBirthday(birthday);
                     break;
             }
         }, items);
     }
 
-    private void reopenFragment() {
-        getCallback().replaceFragment(new DayViewFragment(), getString(R.string.events));
-    }
-
     private void editBirthday(Birthday item) {
         startActivity(new Intent(getContext(), AddBirthdayActivity.class)
-                .putExtra(Constants.INTENT_ID, item.getKey()));
+                .putExtra(Constants.INTENT_ID, item.getUniqueId()));
     }
 
     @Override
     public void onItemClicked(int position, View view) {
-        Object object = mDataList.get(position).getObject();
+        Object object = mAdapter.getItem(position).getObject();
         if (object instanceof Birthday) {
             editBirthday((Birthday) object);
         } else if (object instanceof Reminder) {
@@ -172,11 +145,11 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
 
     private void showReminder(Reminder object) {
         if (Reminder.isSame(object.getType(), Reminder.BY_DATE_SHOP)) {
-            getContext().startActivity(new Intent(getContext(), ShoppingPreviewActivity.class)
-                    .putExtra(Constants.INTENT_ID, object.getUuId()));
+            startActivity(new Intent(getContext(), ShoppingPreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, object.getUniqueId()));
         } else {
-            getContext().startActivity(new Intent(getContext(), ReminderPreviewActivity.class)
-                    .putExtra(Constants.INTENT_ID, object.getUuId()));
+            startActivity(new Intent(getContext(), ReminderPreviewActivity.class)
+                    .putExtra(Constants.INTENT_ID, object.getUniqueId()));
         }
     }
 
@@ -196,9 +169,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
                     editReminder(reminder.getUuId());
                     break;
                 case 3:
-                    EventControl control = EventControlFactory.getController(reminder.setRemoved(true));
-                    control.stop();
-                    reopenFragment();
+                    viewModel.moveToTrash(reminder);
                     break;
             }
         }, items);
@@ -206,7 +177,7 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
 
     @Override
     public void onItemLongClicked(int position, View view) {
-        Object object = mDataList.get(position).getObject();
+        Object object = mAdapter.getItem(position).getObject();
         if (object instanceof Birthday) {
             showBirthdayLcam((Birthday) object);
         }
@@ -215,18 +186,5 @@ public class EventsListFragment extends BaseFragment implements RecyclerListener
     @Override
     public void onItemSwitched(int position, View view) {
 
-    }
-
-    @Override
-    public void apply(@NonNull List<EventsItem> list) {
-        Timber.d("apply: %d, %s", list.size(), mItem);
-        this.mDataList.clear();
-        this.mDataList.addAll(list);
-        if (isResumed()) loadAdapter();
-    }
-
-    @Override
-    public void onFinish() {
-        loadData();
     }
 }
