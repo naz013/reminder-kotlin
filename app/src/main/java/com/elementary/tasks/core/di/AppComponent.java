@@ -1,7 +1,9 @@
 package com.elementary.tasks.core.di;
 
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.controller.EventManager;
 import com.elementary.tasks.core.services.CallReceiver;
+import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter;
@@ -43,4 +45,8 @@ public interface AppComponent {
     void inject(ReminderHolder reminderHolder);
 
     void inject(ShoppingHolder shoppingHolder);
+
+    void inject(Google google);
+
+    void inject(BackupTool backupTool);
 }

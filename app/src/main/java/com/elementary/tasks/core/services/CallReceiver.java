@@ -43,7 +43,7 @@ public class CallReceiver extends BroadcastReceiver {
     private long startCallTime;
 
     @Inject
-    private AppDb appDb;
+    public AppDb appDb;
 
     public CallReceiver() {
         ReminderApp.getAppComponent().inject(this);

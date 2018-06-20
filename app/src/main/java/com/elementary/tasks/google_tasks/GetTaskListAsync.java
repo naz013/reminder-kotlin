@@ -2,13 +2,12 @@ package com.elementary.tasks.google_tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.GoogleTaskList;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
@@ -17,6 +16,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
+
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,9 +43,11 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
     private Google mGoogle;
     @Nullable
     private WeakReference<UpdatesHelper> mHelper;
+    private AppDb appDb;
 
     public GetTaskListAsync(Context context, @Nullable TasksCallback listener) {
         this.mGoogle = Google.getInstance(context);
+        this.appDb = AppDb.getAppDatabase(context);
         this.mHelper = new WeakReference<>(UpdatesHelper.getInstance(context));
         this.mListener = listener;
     }
@@ -61,7 +64,7 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
             if (lists != null && lists.size() > 0 && lists.getItems() != null) {
                 for (TaskList item : lists.getItems()) {
                     String listId = item.getId();
-                    GoogleTaskList taskList = RealmDb.getInstance().getTaskList(listId);
+                    GoogleTaskList taskList = appDb.googleTaskListsDao().getById(listId);
                     if (taskList != null) {
                         taskList.update(item);
                     } else {
@@ -69,21 +72,22 @@ public class GetTaskListAsync extends AsyncTask<Void, Void, Boolean> {
                         int color = r.nextInt(15);
                         taskList = new GoogleTaskList(item, color);
                     }
-                    RealmDb.getInstance().saveObject(taskList);
-                    GoogleTaskList listItem = RealmDb.getInstance().getTaskLists().get(0);
-                    RealmDb.getInstance().setDefault(listItem.getListId());
-                    RealmDb.getInstance().setSystemDefault(listItem.getListId());
+                    appDb.googleTaskListsDao().insert(taskList);
+                    GoogleTaskList listItem = appDb.googleTaskListsDao().getAll().get(0);
+                    listItem.setDef(1);
+                    listItem.setSystemDefault(1);
+                    appDb.googleTaskListsDao().insert(listItem);
                     List<Task> tasks = mGoogle.getTasks().getTasks(listId);
                     if (tasks.isEmpty()) return false;
                     for (Task task : tasks) {
-                        GoogleTask googleTask = RealmDb.getInstance().getTask(task.getId());
+                        GoogleTask googleTask = appDb.googleTasksDao().getById(task.getId());
                         if (googleTask != null) {
                             googleTask.update(task);
                             googleTask.setListId(task.getId());
                         } else {
                             googleTask = new GoogleTask(task, listId);
                         }
-                        RealmDb.getInstance().saveObject(googleTask);
+                        appDb.googleTasksDao().insert(googleTask);
                     }
                 }
             }

@@ -35,7 +35,7 @@ public class BaseDbViewModel extends AndroidViewModel implements LifecycleObserv
     public MutableLiveData<Boolean> isInProgress = new MutableLiveData<>();
 
     @Inject
-    private AppDb appDb;
+    public AppDb appDb;
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public BaseDbViewModel(Application application) {

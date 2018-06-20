@@ -3,20 +3,23 @@ package com.elementary.tasks.login;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
-import com.elementary.tasks.core.utils.ContextHolder;
-import com.elementary.tasks.core.utils.LogUtil;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.dao.ReminderDao;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.utils.ContextHolder;
+import com.elementary.tasks.core.utils.LogUtil;
+import com.elementary.tasks.groups.GroupsUtil;
 
 import java.io.IOException;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -74,20 +77,21 @@ public class RestoreGoogleTask extends AsyncTask<Void, String, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         Google drive = Google.getInstance(mContext.getContext());
-        if (drive != null) {
+        if (drive != null && drive.getDrive() != null) {
             publishProgress(mContext.getContext().getString(R.string.syncing_groups));
             try {
                 drive.getDrive().downloadGroups(false);
             } catch (IOException | IllegalStateException e) {
                 e.printStackTrace();
             }
-            List<Group> list = RealmDb.getInstance().getAllGroups();
+            List<Group> list = AppDb.getAppDatabase(mContext.getContext()).groupDao().getAll();
             if (list.size() == 0) {
-                String defUiID = RealmDb.getInstance().setDefaultGroups(mContext.getContext());
-                List<Reminder> items = RealmDb.getInstance().getAllReminders();
+                String defUiID = GroupsUtil.initDefault(mContext.getContext());
+                List<Reminder> items = AppDb.getAppDatabase(mContext.getContext()).reminderDao().getAll();
+                ReminderDao dao = AppDb.getAppDatabase(mContext.getContext()).reminderDao();
                 for (Reminder item : items) {
                     item.setGroupUuId(defUiID);
-                    RealmDb.getInstance().saveReminder(item, null);
+                    dao.insert(item);
                 }
             }
 

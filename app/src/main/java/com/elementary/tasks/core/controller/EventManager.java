@@ -31,9 +31,9 @@ public abstract class EventManager implements EventControl {
 
     private Reminder mReminder;
     @Inject
-    private Context mContext;
+    public Context mContext;
     @Inject
-    private AppDb mDb;
+    public AppDb mDb;
 
     public Context getContext() {
         return mContext;

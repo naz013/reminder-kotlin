@@ -3,17 +3,18 @@ package com.elementary.tasks.core.cloud;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.backups.UserItem;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.GoogleTask;
+import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.data.models.GoogleTask;
-import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.FileContent;
@@ -40,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,9 +80,15 @@ public class Google {
     private GTasks mTasks;
     @Nullable
     private Drives mDrives;
+    @Inject
+    public Context mContext;
 
     @Nullable
     private static Google instance = null;
+
+    {
+        ReminderApp.getAppComponent().inject(this);
+    }
 
     private Google(@NonNull Context context) throws IllegalStateException {
         String user = Prefs.getInstance(context).getDriveUser();
@@ -142,7 +151,7 @@ public class Google {
                 if (!TextUtils.isEmpty(listId)) {
                     result = tasksService.tasks().insert(listId, task).execute();
                 } else {
-                    GoogleTaskList googleTaskList = RealmDb.getInstance().getDefaultTaskList();
+                    GoogleTaskList googleTaskList = AppDb.getAppDatabase(mContext).googleTaskListsDao().getDefault();
                     if (googleTaskList != null) {
                         item.setListId(googleTaskList.getListId());
                         result = tasksService.tasks().insert(googleTaskList.getListId(), task).execute();
@@ -156,7 +165,7 @@ public class Google {
                 }
                 if (result != null) {
                     item.update(result);
-                    RealmDb.getInstance().saveObject(item);
+                    AppDb.getAppDatabase(mContext).googleTasksDao().insert(item);
                     return true;
                 }
             } catch (IllegalArgumentException e) {
@@ -219,7 +228,7 @@ public class Google {
             try {
                 TaskList result = tasksService.tasklists().insert(taskList).execute();
                 GoogleTaskList item = new GoogleTaskList(result, color);
-                RealmDb.getInstance().saveObject(item);
+                AppDb.getAppDatabase(mContext).googleTaskListsDao().insert(item);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -232,10 +241,10 @@ public class Google {
             TaskList taskList = tasksService.tasklists().get(listId).execute();
             taskList.setTitle(listTitle);
             tasksService.tasklists().update(listId, taskList).execute();
-            GoogleTaskList item = RealmDb.getInstance().getTaskList(listId);
+            GoogleTaskList item = AppDb.getAppDatabase(mContext).googleTaskListsDao().getById(listId);
             if (item != null) {
                 item.update(taskList);
-                RealmDb.getInstance().saveObject(item);
+                AppDb.getAppDatabase(mContext).googleTaskListsDao().insert(item);
             }
         }
 
@@ -331,7 +340,7 @@ public class Google {
                     }
                 }
                 request.setPageToken(files.getNextPageToken());
-            } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+            } while (request.getPageToken() != null);
             return count;
         }
 
@@ -375,7 +384,7 @@ public class Google {
                     driveService.files().delete(f.getId()).execute();
                 }
                 request.setPageToken(files.getNextPageToken());
-            } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+            } while (request.getPageToken() != null);
         }
 
         public void downloadSettings(@NonNull Context context, boolean deleteFile) throws IOException {
@@ -407,7 +416,7 @@ public class Google {
                     }
                 }
                 request.setPageToken(files.getNextPageToken());
-            } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+            } while (request.getPageToken() != null);
         }
 
         /**
@@ -589,7 +598,7 @@ public class Google {
                     }
                 }
                 request.setPageToken(files.getNextPageToken());
-            } while (request.getPageToken() != null && request.getPageToken().length() >= 0);
+            } while (request.getPageToken() != null);
         }
 
         /**
@@ -598,11 +607,10 @@ public class Google {
          * @throws IOException
          */
         public void downloadTemplates(boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.getGoogleRemindersDir(), null, file -> {
                 try {
-                    realmDb.saveObject(backupTool.getTemplate(file.toString(), null));
+                    AppDb.getAppDatabase(mContext).smsTemplatesDao().insert(backupTool.getTemplate(file.toString(), null));
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadTemplates: " + e.getLocalizedMessage());
                 }
@@ -615,20 +623,18 @@ public class Google {
          * @throws IOException
          */
         public void downloadReminders(Context context, boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.getGoogleRemindersDir(), null, file -> {
                 try {
                     Reminder reminder = backupTool.getReminder(file.toString(), null);
                     if (reminder == null || reminder.isRemoved() || !reminder.isActive()) return;
-                    realmDb.saveReminder(reminder, () -> {
-                        EventControl control = EventControlFactory.getController(context, reminder);
-                        if (control.canSkip()) {
-                            control.next();
-                        } else {
-                            control.start();
-                        }
-                    });
+                    AppDb.getAppDatabase(mContext).reminderDao().insert(reminder);
+                    EventControl control = EventControlFactory.getController(reminder);
+                    if (control.canSkip()) {
+                        control.next();
+                    } else {
+                        control.start();
+                    }
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadReminders: " + e.getLocalizedMessage());
                 }
@@ -641,11 +647,10 @@ public class Google {
          * @throws IOException
          */
         public void downloadPlaces(boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.getGooglePlacesDir(), null, file -> {
                 try {
-                    realmDb.saveObject(backupTool.getPlace(file.toString(), null));
+                    AppDb.getAppDatabase(mContext).placesDao().insert(backupTool.getPlace(file.toString(), null));
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadPlaces: " + e.getLocalizedMessage());
                 }
@@ -658,11 +663,10 @@ public class Google {
          * @throws IOException
          */
         public void downloadNotes(boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.getGoogleNotesDir(), null, file -> {
                 try {
-                    realmDb.saveObject(backupTool.getNote(file.toString(), null));
+                    AppDb.getAppDatabase(mContext).notesDao().insert(backupTool.getNote(file.toString(), null));
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadNotes: " + e.getLocalizedMessage());
                 }
@@ -675,11 +679,10 @@ public class Google {
          * @throws IOException
          */
         public void downloadGroups(boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.getGoogleGroupsDir(), null, file -> {
                 try {
-                    realmDb.saveObject(backupTool.getGroup(file.toString(), null));
+                    AppDb.getAppDatabase(mContext).groupDao().insert(backupTool.getGroup(file.toString(), null));
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadGroups: " + e.getLocalizedMessage());
                 }
@@ -692,11 +695,10 @@ public class Google {
          * @throws IOException
          */
         public void downloadBirthdays(boolean deleteBackup) throws IOException {
-            RealmDb realmDb = RealmDb.getInstance();
             BackupTool backupTool = BackupTool.getInstance();
             download(deleteBackup, new Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.getGoogleBirthdaysDir(), null, file -> {
                 try {
-                    realmDb.saveObject(backupTool.getBirthday(file.toString(), null));
+                    AppDb.getAppDatabase(mContext).birthdaysDao().insert(backupTool.getBirthday(file.toString(), null));
                 } catch (IOException | IllegalStateException e) {
                     LogUtil.d(TAG, "downloadBirthdays: " + e.getLocalizedMessage());
                 }

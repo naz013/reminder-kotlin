@@ -87,8 +87,7 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        GoogleTask item = googleTasks.get(position);
-        holder.binding.setTaskItem(item);
+        holder.binding.setGoogleTask(googleTasks.get(position));
     }
 
     @Override

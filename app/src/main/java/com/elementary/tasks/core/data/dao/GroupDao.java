@@ -55,4 +55,8 @@ public interface GroupDao {
 
     @Query("SELECT * FROM `Group` WHERE uuId=:id")
     LiveData<Group> loadById(String id);
+
+    @Nullable
+    @Query("SELECT * FROM `Group` WHERE uuId=:id")
+    Group getById(String id);
 }

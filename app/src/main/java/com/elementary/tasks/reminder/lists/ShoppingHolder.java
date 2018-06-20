@@ -47,7 +47,7 @@ public class ShoppingHolder extends RecyclerView.ViewHolder {
     private ShoppingListItemBinding binding;
     private RecyclerListener mEventListener;
     @Inject
-    private ThemeUtil themeUtil;
+    public ThemeUtil themeUtil;
 
     public ShoppingHolder(View v, RecyclerListener listener) {
         super(v);
