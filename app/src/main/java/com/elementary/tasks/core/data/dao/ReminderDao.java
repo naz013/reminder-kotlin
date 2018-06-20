@@ -59,6 +59,9 @@ public interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed AND eventTime!=0 AND eventTime>=:fromTime AND eventTime<:toTime")
     List<Reminder> getAllTypesInRange(boolean active, boolean removed, String fromTime, String toTime);
 
+    @Query("SELECT * FROM Reminder")
+    List<Reminder> getAll();
+
     @Insert(onConflict = REPLACE)
     int insert(Reminder reminder);
 

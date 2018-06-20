@@ -2,12 +2,15 @@ package com.elementary.tasks.core.view_models.google_tasks;
 
 import android.app.Application;
 
+import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.core.view_models.Commands;
+
+import java.io.IOException;
 
 import androidx.annotation.NonNull;
 
@@ -55,6 +58,34 @@ abstract class BaseTaskListsViewModel extends BaseDbViewModel {
     }
 
     public void toggleTask(@NonNull GoogleTask googleTask) {
-
+        Google mGoogle = Google.getInstance(getApplication());
+        if (mGoogle == null || mGoogle.getTasks() == null) {
+            return;
+        }
+        boolean isConnected = SuperUtil.isConnected(getApplication());
+        if (!isConnected) {
+            result.postValue(Commands.FAILED);
+        } else {
+            isInProgress.postValue(true);
+            run(() -> {
+                try {
+                    if (googleTask.getStatus().equals(Google.TASKS_NEED_ACTION)) {
+                        mGoogle.getTasks().updateTaskStatus(Google.TASKS_COMPLETE, googleTask.getListId(), googleTask.getTaskId());
+                    } else {
+                        mGoogle.getTasks().updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.getListId(), googleTask.getTaskId());
+                    }
+                    end(() -> {
+                        isInProgress.postValue(false);
+                        result.postValue(Commands.UPDATED);
+                        UpdatesHelper.getInstance(getApplication()).updateTasksWidget();
+                    });
+                } catch (IOException e) {
+                    end(() -> {
+                        isInProgress.postValue(false);
+                        result.postValue(Commands.FAILED);
+                    });
+                }
+            });
+        }
     }
 }

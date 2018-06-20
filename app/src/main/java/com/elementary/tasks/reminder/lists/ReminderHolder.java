@@ -49,7 +49,7 @@ public class ReminderHolder extends RecyclerView.ViewHolder {
     private ReminderListItemBinding binding;
     private RecyclerListener mEventListener;
     @Inject
-    private ThemeUtil themeUtil;
+    public ThemeUtil themeUtil;
 
     public ReminderHolder(View v, RecyclerListener listener, boolean editable) {
         super(v);

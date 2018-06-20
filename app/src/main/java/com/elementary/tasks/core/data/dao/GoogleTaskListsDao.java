@@ -34,8 +34,15 @@ public interface GoogleTaskListsDao {
     @Query("SELECT * FROM GoogleTaskList")
     LiveData<List<GoogleTaskList>> loadAll();
 
+    @Query("SELECT * FROM GoogleTaskList")
+    List<GoogleTaskList> getAll();
+
     @Query("SELECT * FROM GoogleTaskList WHERE def=1")
     LiveData<GoogleTaskList> loadDefault();
+
+    @Nullable
+    @Query("SELECT * FROM GoogleTaskList WHERE def=1")
+    GoogleTaskList getDefault();
 
     @Insert(onConflict = REPLACE)
     void insert(GoogleTaskList googleTaskList);

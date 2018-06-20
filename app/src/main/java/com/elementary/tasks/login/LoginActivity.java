@@ -29,13 +29,13 @@ import com.elementary.tasks.core.cloud.GoogleLogin;
 import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityLoginBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;
+import com.elementary.tasks.groups.GroupsUtil;
 import com.elementary.tasks.navigation.MainActivity;
 import com.elementary.tasks.notes.create.CreateNoteActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 
 import java.util.Arrays;
 
@@ -179,7 +179,7 @@ public class LoginActivity extends ThemedActivity {
 
     private void initGroups() {
         if (AppDb.getAppDatabase(this).groupDao().getAll().size() == 0) {
-            RealmDb.getInstance().setDefaultGroups(this);
+            GroupsUtil.initDefault(this);
         }
     }
 

@@ -3,22 +3,22 @@ package com.elementary.tasks.core.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Base64OutputStream;
 
-import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.ReminderApp;
 import com.elementary.tasks.core.cloud.FileConfig;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Place;
-import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -33,6 +33,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -54,6 +59,12 @@ public final class BackupTool {
 
     private static final String TAG = "BackupTool";
     private static BackupTool instance;
+    @Inject
+    public Context mContext;
+
+    {
+        ReminderApp.getAppComponent().inject(this);
+    }
 
     private BackupTool() {
     }
@@ -70,7 +81,7 @@ public final class BackupTool {
     }
 
     public void exportTemplates() {
-        for (SmsTemplate item : RealmDb.getInstance().getAllTemplates()) {
+        for (SmsTemplate item : AppDb.getAppDatabase(mContext).smsTemplatesDao().getAll()) {
             exportTemplate(item);
         }
     }
@@ -80,7 +91,6 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
                         SmsTemplate item = getTemplate(file.toString(), null);
@@ -88,7 +98,7 @@ public final class BackupTool {
                                 || TextUtils.isEmpty(item.getKey())) {
                             continue;
                         }
-                        realmDb.saveObject(item);
+                        AppDb.getAppDatabase(mContext).smsTemplatesDao().insert(item);
                     }
                 }
             }
@@ -131,7 +141,7 @@ public final class BackupTool {
     }
 
     public void exportPlaces() {
-        for (Place item : RealmDb.getInstance().getAllPlaces()) {
+        for (Place item : AppDb.getAppDatabase(mContext).placesDao().getAll()) {
             exportPlace(item);
         }
     }
@@ -141,7 +151,6 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) {
                         Place item = getPlace(file.toString(), null);
@@ -149,7 +158,7 @@ public final class BackupTool {
                                 TextUtils.isEmpty(item.getId())) {
                             continue;
                         }
-                        realmDb.saveObject(item);
+                        AppDb.getAppDatabase(mContext).placesDao().insert(item);
                     }
                 }
             }
@@ -192,7 +201,7 @@ public final class BackupTool {
     }
 
     public void exportBirthdays() {
-        for (Birthday item : RealmDb.getInstance().getAllBirthdays()) {
+        for (Birthday item : AppDb.getAppDatabase(mContext).birthdaysDao().getAll()) {
             exportBirthday(item);
         }
     }
@@ -202,7 +211,6 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
                         Birthday item = getBirthday(file.toString(), null);
@@ -210,7 +218,7 @@ public final class BackupTool {
                                 || TextUtils.isEmpty(item.getUuId())) {
                             continue;
                         }
-                        realmDb.saveObject(item);
+                        AppDb.getAppDatabase(mContext).birthdaysDao().insert(item);
                     }
                 }
             }
@@ -253,7 +261,7 @@ public final class BackupTool {
     }
 
     public void exportGroups() {
-        for (Group item : RealmDb.getInstance().getAllGroups()) {
+        for (Group item : AppDb.getAppDatabase(mContext).groupDao().getAll()) {
             exportGroup(item);
         }
     }
@@ -281,14 +289,13 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
-                List<Group> groups = realmDb.getAllGroups();
+                List<Group> groups = AppDb.getAppDatabase(mContext).groupDao().getAll();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         Group item = getGroup(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getUuId())) continue;
                         if (!TextUtils.isEmpty(item.getTitle()) && !hasGroup(groups, item.getTitle())) {
-                            realmDb.saveObject(item);
+                            AppDb.getAppDatabase(mContext).groupDao().insert(item);
                             groups.add(item);
                         }
                     }
@@ -327,7 +334,7 @@ public final class BackupTool {
     }
 
     public void exportReminders() {
-        for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
+        for (Reminder reminder : AppDb.getAppDatabase(mContext).reminderDao().getAll()) {
             exportReminder(reminder);
         }
     }
@@ -337,8 +344,7 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
-                Group defaultGroup = realmDb.getDefaultGroup();
+                Group defaultGroup = AppDb.getAppDatabase(mContext).groupDao().getDefault();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         Reminder reminder = getReminder(file.toString(), null);
@@ -353,17 +359,16 @@ public final class BackupTool {
                                 TextUtils.isEmpty(reminder.getUuId())) {
                             continue;
                         }
-                        if (realmDb.getGroup(reminder.getGroupUuId()) == null && defaultGroup != null) {
+                        if (AppDb.getAppDatabase(mContext).groupDao().getById(reminder.getGroupUuId()) == null && defaultGroup != null) {
                             reminder.setGroupUuId(defaultGroup.getUuId());
                         }
-                        realmDb.saveReminder(reminder, () -> {
-                            EventControl control = EventControlFactory.getController(mContext, reminder);
-                            if (control.canSkip()) {
-                                control.next();
-                            } else {
-                                control.start();
-                            }
-                        });
+                        AppDb.getAppDatabase(mContext).reminderDao().insert(reminder);
+                        EventControl control = EventControlFactory.getController(reminder);
+                        if (control.canSkip()) {
+                            control.next();
+                        } else {
+                            control.start();
+                        }
                     }
                 }
             }
@@ -372,6 +377,7 @@ public final class BackupTool {
 
     /**
      * Export reminder object to file.
+     *
      * @param item reminder object
      * @return Path to file
      */
@@ -439,7 +445,7 @@ public final class BackupTool {
     }
 
     public void exportNotes() {
-        for (Note item : RealmDb.getInstance().getAllNotes(null)) {
+        for (Note item : AppDb.getAppDatabase(mContext).notesDao().getAll()) {
             exportNote(item);
         }
     }
@@ -449,14 +455,13 @@ public final class BackupTool {
         if (dir != null && dir.exists()) {
             File[] files = dir.listFiles();
             if (files != null) {
-                RealmDb realmDb = RealmDb.getInstance();
                 for (File file : files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
                         Note item = getNote(file.toString(), null);
                         if (item == null || TextUtils.isEmpty(item.getKey())) {
                             continue;
                         }
-                        realmDb.saveObject(item);
+                        AppDb.getAppDatabase(mContext).notesDao().insert(item);
                     }
                 }
             }
@@ -522,7 +527,8 @@ public final class BackupTool {
         output64.close();
         inputStream.close();
         String res = total.toString();
-        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]"))) return res;
+        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]")))
+            return res;
         else {
             throw new IOException("Bad JSON");
         }
@@ -541,7 +547,8 @@ public final class BackupTool {
         output64.close();
         inputStream.close();
         String res = total.toString();
-        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]"))) return res;
+        if ((res.startsWith("{") && res.endsWith("}")) || (res.startsWith("[") && res.endsWith("]")))
+            return res;
         else {
             throw new IOException("Bad JSON");
         }
@@ -549,6 +556,7 @@ public final class BackupTool {
 
     /**
      * Write data to file.
+     *
      * @param file target file.
      * @param data object data.
      * @return Path to file
