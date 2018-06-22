@@ -3,6 +3,7 @@ package com.elementary.tasks.core.dialogs;
 import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.elementary.tasks.core.utils.ThemeUtil;
 
@@ -22,7 +23,7 @@ import com.elementary.tasks.core.utils.ThemeUtil;
  * limitations under the License.
  */
 
-public abstract class BaseDialog extends Activity {
+public abstract class BaseDialog extends FragmentActivity {
 
     private ThemeUtil themeUtil;
 

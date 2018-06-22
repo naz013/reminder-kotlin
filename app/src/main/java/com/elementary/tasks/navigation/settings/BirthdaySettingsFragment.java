@@ -5,9 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,23 +12,25 @@ import android.widget.SeekBar;
 import android.widget.TimePicker;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync;
-import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
+import com.elementary.tasks.core.view_models.Commands;
+import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -55,11 +54,18 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     private static final int BIRTHDAYS_CODE = 303;
 
     private FragmentBirthdaysSettingsBinding binding;
+    private BirthdaysViewModel viewModel;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentBirthdaysSettingsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initBirthdayReminderPrefs();
         initBirthdaysWidgetPrefs();
         initPermanentPrefs();
@@ -69,7 +75,23 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
         initContactsAutoPrefs();
         initScanPrefs();
         initNotificationPrefs();
-        return binding.getRoot();
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(BirthdaysViewModel.class);
+        viewModel.result.observe(this, new Observer<Commands>() {
+            @Override
+            public void onChanged(@Nullable Commands commands) {
+                if (commands != null) {
+                    switch (commands) {
+                        case DELETED:
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     private void initNotificationPrefs() {
@@ -186,6 +208,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void changeBirthdayPermanentPrefs() {
+        if (getContext() == null) return;
         boolean isChecked = binding.birthdayPermanentPrefs.isChecked();
         binding.birthdayPermanentPrefs.setChecked(!isChecked);
         getPrefs().setBirthdayPermanentEnabled(!isChecked);
@@ -230,17 +253,7 @@ public class BirthdaySettingsFragment extends BaseSettingsFragment implements Ti
     }
 
     private void cleanBirthdays(){
-        new Thread(() -> {
-            Looper.prepare();
-            List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
-            List<String> ids = new ArrayList<>();
-            for (int i = list.size() - 1; i >= 0; i--) {
-                Birthday item = list.remove(i);
-                RealmDb.getInstance().deleteBirthday(item);
-                ids.add(item.getUuId());
-            }
-            new DeleteBirthdayFilesAsync(getContext()).execute(ids.toArray(new String[ids.size()]));
-        }).start();
+        viewModel.deleteAllBirthdays();
     }
 
     @Override
