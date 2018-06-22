@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
+import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.databinding.ReminderListItemBinding;
-import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
+
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -39,10 +41,21 @@ public class VoiceResultDialog extends BaseDialog {
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        int id = getIntent().getIntExtra(Constants.INTENT_ID, 0);
+
+        ReminderViewModel viewModel = ViewModelProviders.of(this, new ReminderViewModel.Factory(getApplication(), id)).get(ReminderViewModel.class);
+        viewModel.reminder.observe(this, reminder -> {
+            if (reminder != null) {
+                showReminder(reminder);
+            }
+        });
+    }
+
+    private void showReminder(Reminder reminder) {
         AlertDialog.Builder alert = Dialogues.getDialog(this);
         alert.setTitle(getString(R.string.saved));
-        String uuId = getIntent().getStringExtra(Constants.INTENT_ID);
-        Reminder reminder = RealmDb.getInstance().getReminder(uuId);
+
         ReminderListItemBinding binding = ReminderListItemBinding.inflate(LayoutInflater.from(this), null, false);
         binding.setItem(reminder);
         binding.itemCheck.setVisibility(View.GONE);
@@ -51,7 +64,7 @@ public class VoiceResultDialog extends BaseDialog {
         alert.setCancelable(true);
         alert.setNegativeButton(R.string.edit, (dialogInterface, i) -> {
             dialogInterface.dismiss();
-            startActivity(new Intent(VoiceResultDialog.this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, uuId));
+            startActivity(new Intent(VoiceResultDialog.this, CreateReminderActivity.class).putExtra(Constants.INTENT_ID, reminder.getUniqueId()));
             finish();
         });
         alert.setPositiveButton(R.string.ok, (dialog, id) -> {

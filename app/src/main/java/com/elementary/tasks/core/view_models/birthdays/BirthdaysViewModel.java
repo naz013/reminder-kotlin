@@ -2,8 +2,11 @@ package com.elementary.tasks.core.view_models.birthdays;
 
 import android.app.Application;
 
+import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.view_models.Commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -30,5 +33,22 @@ public class BirthdaysViewModel extends BaseBirthdaysViewModel {
     public BirthdaysViewModel(Application application) {
         super(application);
         birthdays = getAppDb().birthdaysDao().loadAll();
+    }
+
+    public void deleteAllBirthdays() {
+        isInProgress.postValue(true);
+        run(() -> {
+            List<Birthday> list = getAppDb().birthdaysDao().getAll();
+            List<String> ids = new ArrayList<>();
+            for (Birthday birthday : list){
+                getAppDb().birthdaysDao().delete(birthday);
+                ids.add(birthday.getUuId());
+            }
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.DELETED);
+            });
+            new DeleteBirthdayFilesAsync(getApplication()).execute(ids.toArray(new String[0]));
+        });
     }
 }

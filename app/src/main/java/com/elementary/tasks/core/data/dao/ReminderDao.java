@@ -66,7 +66,7 @@ public interface ReminderDao {
     int insert(Reminder reminder);
 
     @Insert(onConflict = REPLACE)
-    void insertAll(Reminder... reminder);
+    void insertAll(List<Reminder> reminders);
 
     @Delete
     void delete(Reminder reminder);
