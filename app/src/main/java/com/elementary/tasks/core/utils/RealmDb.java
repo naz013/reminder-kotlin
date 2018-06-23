@@ -1,8 +1,5 @@
 package com.elementary.tasks.core.utils;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 /**
  * Copyright 2016 Nazar Suhovich
  * <p/>
@@ -21,7 +18,7 @@ import java.util.Locale;
 public class RealmDb {
 
     private static final String TAG = "RealmDb";
-    private static final SimpleDateFormat birthFormat = new SimpleDateFormat("dd|MM", Locale.getDefault());
+
 
     private static RealmDb instance;
 
@@ -62,11 +59,11 @@ public class RealmDb {
 //    }
 
 //    @NonNull
-//    public List<ImageItem> getImages() {
-//        return getRealm().where(ImageItem.class).findAll();
+//    public List<MainImage> getImages() {
+//        return getRealm().where(MainImage.class).findAll();
 //    }
 //
-//    public void saveImages(List<ImageItem> imageItems) {
+//    public void saveImages(List<MainImage> imageItems) {
 //        Realm realm = getRealm();
 //        realm.beginTransaction();
 //        realm.copyToRealmOrUpdate(imageItems);

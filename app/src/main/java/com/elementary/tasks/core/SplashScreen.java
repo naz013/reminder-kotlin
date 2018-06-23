@@ -4,16 +4,17 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import com.elementary.tasks.core.async.EnableThread;
-import com.elementary.tasks.core.migration.MigrationTool;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.groups.GroupsUtil;
 import com.elementary.tasks.intro.IntroActivity;
 import com.elementary.tasks.navigation.MainActivity;
+
+import androidx.annotation.Nullable;
 
 public class SplashScreen extends ThemedActivity {
 
@@ -41,18 +42,7 @@ public class SplashScreen extends ThemedActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Prefs.getInstance(this).isMigrated()) {
-            gotoApp();
-        } else {
-            new Thread(() -> {
-                try {
-                    MigrationTool.migrate(SplashScreen.this);
-                } catch (Exception ignored) {
-                }
-                Prefs.getInstance(SplashScreen.this).setMigrated(true);
-                runOnUiThread(this::gotoApp);
-            }).start();
-        }
+        gotoApp();
     }
 
     private void gotoApp() {
@@ -71,8 +61,8 @@ public class SplashScreen extends ThemedActivity {
     }
 
     private void initGroups() {
-        if (RealmDb.getInstance().getAllGroups().size() == 0) {
-            RealmDb.getInstance().setDefaultGroups(this);
+        if (AppDb.getAppDatabase(this).groupDao().getAll().size() == 0) {
+            GroupsUtil.initDefault(this);
         }
     }
 

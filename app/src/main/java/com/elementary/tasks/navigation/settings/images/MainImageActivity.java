@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,15 +14,16 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.models.MainImage;
 import com.elementary.tasks.core.network.Api;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
+import com.elementary.tasks.core.view_models.main_image.MainImagesViewModel;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
 import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
 
@@ -31,7 +31,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,12 +70,14 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private RecyclerView imagesList;
     private ImagesRecyclerAdapter mAdapter;
 
-    private List<ImageItem> mPhotoList = new ArrayList<>();
+    private List<MainImage> mPhotoList = new ArrayList<>();
     private int mPointer;
 
     private int position = -1;
     private int mWidth, mHeight;
-    private ImageItem mSelectedItem;
+    @Nullable
+    private MainImage mSelectedItem;
+    private MainImagesViewModel viewModel;
 
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -84,20 +89,21 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
                 int endPoint = mPointer + (START_SIZE / 2);
                 boolean last = endPoint >= mPhotoList.size();
                 if (last) endPoint = mPhotoList.size() - 1;
-                List<ImageItem> nextChunk = mPhotoList.subList(mPointer, endPoint);
+                List<MainImage> nextChunk = mPhotoList.subList(mPointer, endPoint);
                 mPointer += (START_SIZE / 2);
                 if (last) mPointer = mPhotoList.size() - 1;
                 mAdapter.addItems(nextChunk);
             }
         }
     };
-    private Call<List<ImageItem>> mCall;
-    private Callback<List<ImageItem>> mPhotoCallback = new Callback<List<ImageItem>>() {
+    @Nullable
+    private Call<List<MainImage>> mCall;
+    private Callback<List<MainImage>> mPhotoCallback = new Callback<List<MainImage>>() {
         @Override
-        public void onResponse(Call<List<ImageItem>> call, Response<List<ImageItem>> response) {
+        public void onResponse(@NonNull Call<List<MainImage>> call, Response<List<MainImage>> response) {
             LogUtil.d(TAG, "onResponse: " + response.code() + ", " + response.message());
             if (response.code() == Api.OK) {
-                if (mPhotoList.isEmpty()) {
+                if (mPhotoList.isEmpty() && response.body() != null) {
                     mPhotoList = new ArrayList<>(response.body());
                     saveToDb(response.body());
                     loadDataToList();
@@ -108,13 +114,13 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         }
 
         @Override
-        public void onFailure(Call<List<ImageItem>> call, Throwable t) {
+        public void onFailure(@NonNull Call<List<MainImage>> call, Throwable t) {
             LogUtil.d(TAG, "onFailure: " + t.getLocalizedMessage());
         }
     };
 
-    private void saveToDb(List<ImageItem> body) {
-        new Thread(() -> RealmDb.getInstance().saveImages(body)).start();
+    private void saveToDb(List<MainImage> body) {
+        viewModel.saveImages(body);
     }
 
     private SelectListener mListener = new SelectListener() {
@@ -163,7 +169,21 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         binding.emptyLayout.emptyText.setText(R.string.no_images);
         initRecyclerView();
         initImageContainer();
-        mPhotoList = RealmDb.getInstance().getImages();
+
+        initViewModel();
+    }
+
+    private void initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MainImagesViewModel.class);
+        viewModel.images.observe(this, mainImages -> {
+            if (mainImages != null) {
+                mPhotoList = mainImages;
+            }
+            initData();
+        });
+    }
+
+    private void initData() {
         if (!mPhotoList.isEmpty()) {
             loadDataToList();
         }
@@ -213,7 +233,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             Permissions.requestPermission(this, REQUEST_REMINDER, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL);
             return;
         }
-        if (MemoryUtil.isSdPresent()) {
+        if (mSelectedItem != null && MemoryUtil.isSdPresent()) {
             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             if (!folder.exists()) {
                 folder.mkdirs();
@@ -241,6 +261,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             Permissions.requestPermission(this, REQUEST_DOWNLOAD, Permissions.WRITE_EXTERNAL);
             return;
         }
+        if (mSelectedItem == null) return;
         AlertDialog.Builder builder = Dialogues.getDialog(this);
         CharSequence maxSize = mSelectedItem.getHeight() + "x" + mSelectedItem.getWidth();
         builder.setItems(new CharSequence[]{maxSize, "1080x1920", "768x1280", "480x800"}, (dialogInterface, i) -> {
@@ -291,7 +312,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
             Permissions.requestPermission(this, 112, Permissions.WRITE_EXTERNAL);
             return;
         }
-        if (MemoryUtil.isSdPresent()) {
+        if (mSelectedItem != null && MemoryUtil.isSdPresent()) {
             File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             if (!folder.exists()) {
                 folder.mkdirs();
@@ -306,6 +327,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     }
 
     private void setImageForMonth(int month) {
+        if (mSelectedItem == null) return;
         MonthImage monthImage = getPrefs().getCalendarImages();
         monthImage.setPhoto(month, mSelectedItem.getId());
         getPrefs().setCalendarImages(monthImage);
@@ -332,7 +354,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
         imagesList.addItemDecoration(new GridMarginDecoration(getResources().getDimensionPixelSize(R.dimen.grid_item_spacing)));
         imagesList.setHasFixedSize(true);
         imagesList.setItemAnimator(new DefaultItemAnimator());
-        imagesList.setOnScrollListener(mOnScrollListener);
+        imagesList.addOnScrollListener(mOnScrollListener);
         imagesList.setVisibility(View.GONE);
     }
 

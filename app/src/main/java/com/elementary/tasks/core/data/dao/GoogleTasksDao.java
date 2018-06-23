@@ -34,6 +34,9 @@ public interface GoogleTasksDao {
     @Query("SELECT * FROM GoogleTask")
     LiveData<List<GoogleTask>> loadAll();
 
+    @Query("SELECT * FROM GoogleTask")
+    List<GoogleTask> getAll();
+
     @Query("SELECT * FROM GoogleTask WHERE listId=:listId")
     LiveData<List<GoogleTask>> loadAllByList(String listId);
 
@@ -56,6 +59,13 @@ public interface GoogleTasksDao {
     @Query("SELECT * FROM GoogleTask WHERE taskId=:id")
     GoogleTask getById(String id);
 
+    @Nullable
+    @Query("SELECT * FROM GoogleTask WHERE uuId=:id")
+    GoogleTask getByReminderId(String id);
+
     @Delete
     void deleteAll(List<GoogleTask> googleTasks);
+
+    @Query("DELETE FROM GoogleTask")
+    void deleteAll();
 }

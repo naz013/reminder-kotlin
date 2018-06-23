@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.network;
 
-import com.elementary.tasks.navigation.settings.images.ImageItem;
+import com.elementary.tasks.core.data.models.MainImage;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ public interface UnsplashApi {
     String BASE_URL = "https://unsplash.it";
 
     @GET("list")
-    Call<List<ImageItem>> getAllImages();
+    Call<List<MainImage>> getAllImages();
 }

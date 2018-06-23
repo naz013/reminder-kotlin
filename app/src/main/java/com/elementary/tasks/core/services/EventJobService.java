@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.services;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -10,7 +11,6 @@ import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeCount;
@@ -22,11 +22,12 @@ import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
 import java.util.Calendar;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
+
+import static com.elementary.tasks.core.utils.TimeUtil.birthFormat;
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -87,20 +88,36 @@ public class EventJobService extends Job {
         cancelBirthdayAlarm();
         enableBirthdayAlarm(context);
         new Thread(() -> {
-            List<Birthday> list = RealmDb.getInstance().getTodayBirthdays(Prefs.getInstance(context).getDaysToBirthday());
-            if (list.size() > 0) {
-                for (Birthday item : list) {
+            int daysBefore = Prefs.getInstance(context).getDaysToBirthday();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(System.currentTimeMillis());
+            int mYear = cal.get(Calendar.YEAR);
+            String mDate = birthFormat.format(cal.getTime());
+            for (Birthday item : AppDb.getAppDatabase(context).birthdaysDao().getAll()) {
+                int year = item.getShowedYear();
+                String birthValue = getBirthdayValue(item.getMonth(), item.getDay(), daysBefore);
+                if (birthValue.equals(mDate) && year != mYear) {
                     showBirthday(context, item);
                 }
             }
         }).start();
     }
 
+    @NonNull
+    private String getBirthdayValue(int month, int day, int daysBefore) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.setTimeInMillis(calendar.getTimeInMillis() - (AlarmManager.INTERVAL_DAY * daysBefore));
+        return birthFormat.format(calendar.getTime());
+    }
+
     private void showBirthday(Context context, Birthday item) {
         if (Prefs.getInstance(context).getReminderType() == 0) {
             context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.getUniqueId()));
         } else {
-            ReminderUtils.showSimpleBirthday(context, item.getUuId());
+            ReminderUtils.showSimpleBirthday(context, item.getUniqueId());
         }
     }
 

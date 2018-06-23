@@ -3,22 +3,21 @@ package com.elementary.tasks.core.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.elementary.tasks.Actions;
-import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
 import com.elementary.tasks.reminder.ReminderUpdateEvent;
-import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
+import androidx.core.app.NotificationManagerCompat;
 import timber.log.Timber;
 
 /**
@@ -44,8 +43,8 @@ public class ReminderActionService extends BroadcastReceiver {
 
     private static final String TAG = "ReminderActionService";
 
-    private void showReminder(Context context, String id) {
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
+    private void showReminder(Context context, int id) {
+        Reminder reminder = AppDb.getAppDatabase(context).reminderDao().getById(id);
         if (reminder == null) return;
         Intent notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id);
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true);
@@ -53,11 +52,10 @@ public class ReminderActionService extends BroadcastReceiver {
         endService(context, reminder.getUniqueId());
     }
 
-    private void hidePermanent(Context context, String id) {
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
+    private void hidePermanent(Context context, int id) {
+        Reminder reminder = AppDb.getAppDatabase(context).reminderDao().getById(id);
         if (reminder == null) return;
-        EventControl control = EventControlFactory.getController(context, reminder);
-        control.next();
+        EventControlFactory.getController(reminder).next();
         EventBus.getDefault().post(new ReminderUpdateEvent());
         endService(context, reminder.getUniqueId());
     }
@@ -74,12 +72,12 @@ public class ReminderActionService extends BroadcastReceiver {
             LogUtil.d(TAG, "onStartCommand: " + action);
             if (action != null) {
                 if (action.matches(ACTION_HIDE)) {
-                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID));
+                    hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0));
                 } else if (action.matches(ACTION_RUN)) {
-                    String id = intent.getStringExtra(Constants.INTENT_ID);
+                    int id = intent.getIntExtra(Constants.INTENT_ID, 0);
                     int windowType = Prefs.getInstance(context).getReminderType();
                     boolean ignore = Prefs.getInstance(context).isIgnoreWindowType();
-                    Reminder reminder = RealmDb.getInstance().getReminder(id);
+                    Reminder reminder = AppDb.getAppDatabase(context).reminderDao().getById(id);
                     if (!ignore) {
                         if (reminder != null) {
                             windowType = reminder.getWindowType();
@@ -92,7 +90,7 @@ public class ReminderActionService extends BroadcastReceiver {
                         ReminderUtils.showSimpleReminder(context, id);
                     }
                 } else {
-                    showReminder(context, intent.getStringExtra(Constants.INTENT_ID));
+                    showReminder(context, intent.getIntExtra(Constants.INTENT_ID, 0));
                 }
             }
         }

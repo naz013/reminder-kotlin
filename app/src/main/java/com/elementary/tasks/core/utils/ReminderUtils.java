@@ -5,18 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.BirthdayActionService;
 import com.elementary.tasks.core.services.ReminderActionService;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,7 +37,7 @@ import java.util.List;
  */
 public final class ReminderUtils {
 
-    public static final int DAY_CHECKED = 1;
+    static final int DAY_CHECKED = 1;
     private static final String TAG = "ReminderUtils";
 
     private ReminderUtils() {
@@ -55,8 +57,8 @@ public final class ReminderUtils {
         }
     }
 
-    public static void showSimpleBirthday(Context context, String id) {
-        Birthday birthday = RealmDb.getInstance().getBirthday(id);
+    public static void showSimpleBirthday(Context context, int id) {
+        Birthday birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id);
         if (birthday == null) return;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
@@ -144,9 +146,9 @@ public final class ReminderUtils {
         return Prefs.getInstance(context).isBirthdayGlobalEnabled();
     }
 
-    public static void showSimpleReminder(Context context, String id) {
+    public static void showSimpleReminder(Context context, int id) {
         LogUtil.d(TAG, "showSimpleReminder: ");
-        Reminder reminder = RealmDb.getInstance().getReminder(id);
+        Reminder reminder = AppDb.getAppDatabase(context).reminderDao().getById(id);
         if (reminder == null) return;
         Intent dismissIntent = new Intent(context, ReminderActionService.class);
         dismissIntent.setAction(ReminderActionService.ACTION_HIDE);
@@ -254,7 +256,7 @@ public final class ReminderUtils {
         }
     }
 
-    public static boolean isAllChecked(List<Integer> repCode) {
+    private static boolean isAllChecked(List<Integer> repCode) {
         boolean is = true;
         for (int i : repCode) {
             if (i == 0) {

@@ -4,17 +4,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.ThemeUtil;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.GoogleTaskList;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.google_tasks.TasksConstants;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -66,12 +67,12 @@ class TasksFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         map.clear();
-        List<GoogleTaskList> list = RealmDb.getInstance().getTaskLists();
+        List<GoogleTaskList> list = AppDb.getAppDatabase(mContext).googleTaskListsDao().getAll();
         for (GoogleTaskList item : list) {
             map.put(item.getListId(), item.getColor());
         }
         mData.clear();
-        mData.addAll(RealmDb.getInstance().getTasks(null));
+        mData.addAll(AppDb.getAppDatabase(mContext).googleTasksDao().getAll());
     }
 
     @Override

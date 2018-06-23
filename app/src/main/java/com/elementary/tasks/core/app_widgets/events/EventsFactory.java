@@ -5,24 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Birthday;
-import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.Contacts;
-import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.utils.ReminderUtils;
-import com.elementary.tasks.core.utils.TimeCount;
-import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.data.models.ShopItem;
+import com.elementary.tasks.core.utils.Constants;
+import com.elementary.tasks.core.utils.Contacts;
+import com.elementary.tasks.core.utils.Prefs;
+import com.elementary.tasks.core.utils.ReminderUtils;
+import com.elementary.tasks.core.utils.TimeCount;
+import com.elementary.tasks.core.utils.TimeUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -79,7 +80,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
         data.clear();
         map.clear();
         boolean is24 = Prefs.getInstance(mContext).is24HourFormatEnabled();
-        List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
+        List<Reminder> reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false);
         for (Reminder item : reminderItems) {
             if (item.getViewType() == Reminder.SHOPPING) {
                 continue;
@@ -130,7 +131,7 @@ public class EventsFactory implements RemoteViewsService.RemoteViewsFactory {
             do {
                 mDay = calendar.get(Calendar.DAY_OF_MONTH);
                 mMonth = calendar.get(Calendar.MONTH);
-                List<Birthday> list = RealmDb.getInstance().getBirthdays(mDay, mMonth);
+                List<Birthday> list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll(mDay + "|" + mMonth);
                 for (Birthday item : list) {
                     String birthday = item.getDate();
                     String name = item.getName();

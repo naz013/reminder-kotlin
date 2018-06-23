@@ -4,21 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.notes.create.NoteImage;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -55,7 +56,7 @@ class NotesFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         notes.clear();
-        notes.addAll(RealmDb.getInstance().getAllNotes(null));
+        notes.addAll(AppDb.getAppDatabase(mContext).notesDao().getAll());
     }
 
     @Override

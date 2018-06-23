@@ -2,7 +2,6 @@ package com.elementary.tasks.core.cloud;
 
 import android.content.Context;
 import android.os.Environment;
-import androidx.annotation.Nullable;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -16,12 +15,23 @@ import com.dropbox.core.v2.users.FullAccount;
 import com.dropbox.core.v2.users.SpaceUsage;
 import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.dao.BirthdaysDao;
+import com.elementary.tasks.core.data.dao.GroupDao;
+import com.elementary.tasks.core.data.dao.NotesDao;
+import com.elementary.tasks.core.data.dao.PlacesDao;
+import com.elementary.tasks.core.data.dao.ReminderDao;
+import com.elementary.tasks.core.data.dao.SmsTemplatesDao;
+import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Note;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.data.models.SmsTemplate;
 import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import androidx.annotation.Nullable;
 import okhttp3.OkHttpClient;
 
 /**
@@ -462,20 +473,20 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            SmsTemplatesDao dao = AppDb.getAppDatabase(mContext).smsTemplatesDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxTemplatesFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                Reminder reminder = backupTool.getReminder(localFile.toString(), null);
-                if (reminder != null) realmDb.saveReminder(reminder, null);
+                SmsTemplate template = backupTool.getTemplate(localFile.toString(), null);
+                if (template != null) dao.insert(template);
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
                     }
-                    mDBApi.files().delete(e.getPathLower());
+                    mDBApi.files().deleteV2(e.getPathLower());
                 }
             }
         } catch (DbxException | IOException | IllegalStateException e) {
@@ -500,7 +511,7 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            ReminderDao dao = AppDb.getAppDatabase(mContext).reminderDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
@@ -511,14 +522,13 @@ public class Dropbox {
                 if (reminder == null || reminder.isRemoved() || !reminder.isActive()) {
                     continue;
                 }
-                realmDb.saveReminder(reminder, () -> {
-                    EventControl control = EventControlFactory.getController(mContext, reminder);
-                    if (control.canSkip()) {
-                        control.next();
-                    } else {
-                        control.start();
-                    }
-                });
+                dao.insert(reminder);
+                EventControl control = EventControlFactory.getController(reminder);
+                if (control.canSkip()) {
+                    control.next();
+                } else {
+                    control.start();
+                }
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
@@ -560,14 +570,17 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            NotesDao dao = AppDb.getAppDatabase(mContext).notesDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxNoteFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                realmDb.saveObject(backupTool.getNote(localFile.toString(), null));
+                Note note = backupTool.getNote(localFile.toString(), null);
+                if (note != null) {
+                    dao.insert(note);
+                }
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
@@ -598,14 +611,17 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            GroupDao dao = AppDb.getAppDatabase(mContext).groupDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxGroupFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                realmDb.saveObject(backupTool.getGroup(localFile.toString(), null));
+                Group group = backupTool.getGroup(localFile.toString(), null);
+                if (group != null) {
+                    dao.insert(group);
+                }
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
@@ -635,14 +651,17 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            BirthdaysDao dao = AppDb.getAppDatabase(mContext).birthdaysDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxBirthFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                realmDb.saveObject(backupTool.getBirthday(localFile.toString(), null));
+                Birthday birthday = backupTool.getBirthday(localFile.toString(), null);
+                if (birthday != null) {
+                    dao.insert(birthday);
+                }
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();
@@ -672,14 +691,17 @@ public class Dropbox {
             if (result == null) {
                 return;
             }
-            RealmDb realmDb = RealmDb.getInstance();
+            PlacesDao dao = AppDb.getAppDatabase(mContext).placesDao();
             BackupTool backupTool = BackupTool.getInstance();
             for (Metadata e : result.getEntries()) {
                 String fileName = e.getName();
                 File localFile = new File(dir + "/" + fileName);
                 String cloudFile = dbxPlacesFolder + fileName;
                 downloadFile(localFile, cloudFile);
-                realmDb.saveObject(backupTool.getPlace(localFile.toString(), null));
+                Place place = backupTool.getPlace(localFile.toString(), null);
+                if (place != null) {
+                    dao.insert(place);
+                }
                 if (deleteFile) {
                     if (localFile.exists()) {
                         localFile.delete();

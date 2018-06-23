@@ -7,6 +7,7 @@ import com.elementary.tasks.core.data.dao.CalendarEventsDao;
 import com.elementary.tasks.core.data.dao.GoogleTaskListsDao;
 import com.elementary.tasks.core.data.dao.GoogleTasksDao;
 import com.elementary.tasks.core.data.dao.GroupDao;
+import com.elementary.tasks.core.data.dao.MainImagesDao;
 import com.elementary.tasks.core.data.dao.MissedCallsDao;
 import com.elementary.tasks.core.data.dao.NotesDao;
 import com.elementary.tasks.core.data.dao.PlacesDao;
@@ -21,6 +22,7 @@ import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.data.models.SmsTemplate;
+import com.elementary.tasks.core.data.models.MainImage;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -50,6 +52,7 @@ import androidx.room.RoomDatabase;
         Place.class,
         GoogleTaskList.class,
         GoogleTask.class,
+        MainImage.class,
         SmsTemplate.class
 }, version = 1, exportSchema = false)
 public abstract class AppDb extends RoomDatabase {
@@ -75,6 +78,8 @@ public abstract class AppDb extends RoomDatabase {
     public abstract GoogleTaskListsDao googleTaskListsDao();
 
     public abstract GoogleTasksDao googleTasksDao();
+
+    public abstract MainImagesDao mainImagesDao();
 
     public static AppDb getAppDatabase(Context context) {
         if (INSTANCE == null) {

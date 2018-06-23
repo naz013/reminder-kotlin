@@ -54,6 +54,7 @@ public final class TimeUtil {
 
     private static final SimpleDateFormat GMT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault());
     private static final SimpleDateFormat FIRE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault());
+    public static final SimpleDateFormat birthFormat = new SimpleDateFormat("dd|MM", Locale.getDefault());
 
     private TimeUtil() {
     }

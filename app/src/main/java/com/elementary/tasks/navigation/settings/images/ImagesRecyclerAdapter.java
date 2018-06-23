@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.elementary.tasks.core.data.models.MainImage;
 import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Prefs;
@@ -42,12 +43,12 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     private static final String TAG = "ImagesRecyclerAdapter";
 
     private Context mContext;
-    private List<ImageItem> mDataList;
+    private List<MainImage> mDataList;
     private int prevSelected = -1;
     private SelectListener mListener;
     private Prefs mPrefs;
 
-    ImagesRecyclerAdapter(Context context, List<ImageItem> dataItemList, SelectListener listener) {
+    ImagesRecyclerAdapter(Context context, List<MainImage> dataItemList, SelectListener listener) {
         this.mContext = context;
         this.mDataList = new ArrayList<>(dataItemList);
         this.mListener = listener;
@@ -73,7 +74,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
 
     @Override
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
-        ImageItem item = mDataList.get(position);
+        MainImage item = mDataList.get(position);
         holder.binding.setItem(item);
         GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) holder.binding.card.getLayoutParams();
         if (position < 3) {
@@ -109,7 +110,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         }
     }
 
-    void addItems(List<ImageItem> list) {
+    void addItems(List<MainImage> list) {
         mDataList.addAll(list);
         notifyItemInserted(getItemCount() - list.size());
     }
@@ -130,7 +131,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
                 }
             }
             prevSelected = position;
-            ImageItem item = mDataList.get(position);
+            MainImage item = mDataList.get(position);
             mPrefs.setImageId(position);
             mPrefs.setImagePath(RetrofitBuilder.getImageLink(item.getId()));
             notifyItemChanged(position);

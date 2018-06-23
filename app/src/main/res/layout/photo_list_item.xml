@@ -6,7 +6,7 @@
 
         <variable
             name="item"
-            type="com.elementary.tasks.navigation.settings.images.ImageItem" />
+            type="com.elementary.tasks.core.data.models.MainImage" />
 
         <variable
             name="selected"

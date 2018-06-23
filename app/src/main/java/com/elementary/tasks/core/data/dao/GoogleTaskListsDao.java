@@ -59,4 +59,7 @@ public interface GoogleTaskListsDao {
     @Nullable
     @Query("SELECT * FROM GoogleTaskList WHERE listId=:id")
     GoogleTaskList getById(String id);
+
+    @Query("DELETE FROM GoogleTaskList")
+    void deleteAll();
 }
