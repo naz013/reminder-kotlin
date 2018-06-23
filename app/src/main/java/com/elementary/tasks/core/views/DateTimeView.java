@@ -72,7 +72,7 @@ public class DateTimeView extends LinearLayout implements
 
     private void init(Context context, AttributeSet attrs) {
         setOrientation(VERTICAL);
-        View.inflate(context, R.layout.date_time_view_layout, this);
+        View.inflate(context, R.layout.view_date_time, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);

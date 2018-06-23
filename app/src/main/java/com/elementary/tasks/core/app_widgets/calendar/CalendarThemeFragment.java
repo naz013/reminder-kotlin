@@ -179,7 +179,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.weekday_grid, null);
+                convertView = inflater.inflate(R.layout.list_item_weekday_grid, null);
             }
             TextView textView = convertView.findViewById(R.id.textView1);
             textView.setText(weekdays.get(position));
@@ -291,7 +291,7 @@ public class CalendarThemeFragment extends BaseNavigationFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.month_view_grid, null);
+                convertView = inflater.inflate(R.layout.view_month_grid, null);
             }
             int selDay = datetimeList.get(position).getDay();
             FrameLayout background = convertView.findViewById(R.id.background);

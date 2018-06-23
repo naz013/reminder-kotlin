@@ -60,7 +60,7 @@ public class EventsWidget extends AppWidgetProvider {
         dateFormat.setCalendar(cal);
         String date = dateFormat.format(cal.getTime());
 
-        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.current_tasks_widget_layout);
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_current_tasks);
         rv.setTextViewText(R.id.widgetDate, date);
         int theme = sp.getInt(EventsWidgetConfig.EVENTS_WIDGET_THEME + widgetID, 0);
         EventsTheme eventsTheme = EventsTheme.getThemes(context).get(theme);

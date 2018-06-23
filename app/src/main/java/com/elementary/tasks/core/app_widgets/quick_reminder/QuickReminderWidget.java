@@ -42,7 +42,7 @@ public class QuickReminderWidget extends AppWidgetProvider {
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
                                     SharedPreferences sp, int widgetID) {
-        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.quick_reminder_widget_layout);
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_quick_reminder);
         int widgetColor = sp.getInt(QuickReminderWidgetConfig.QUICK_REMINDER_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);
         Intent configIntent = new Intent(context, AddReminderActivity.class);

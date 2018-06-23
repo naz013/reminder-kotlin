@@ -197,7 +197,7 @@ public class Notifier {
 
     public static void showReminderPermanent(Context context) {
         LogUtil.d(TAG, "showPermanent: ");
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.view_notification);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         builder.setAutoCancel(false);
         if (Module.isLollipop()) {

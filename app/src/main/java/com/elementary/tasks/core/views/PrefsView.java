@@ -74,7 +74,7 @@ public class PrefsView extends RelativeLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        View.inflate(context, R.layout.prefs_view_layout, this);
+        View.inflate(context, R.layout.view_prefs, this);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         title = findViewById(R.id.prefsPrimaryText);
         detail = findViewById(R.id.prefsSecondaryText);

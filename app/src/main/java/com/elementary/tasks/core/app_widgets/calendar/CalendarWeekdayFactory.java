@@ -88,7 +88,7 @@ class CalendarWeekdayFactory implements RemoteViewsService.RemoteViewsFactory {
         int theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + mWidgetId, 0);
         CalendarTheme item = CalendarTheme.getThemes(mContext).get(theme);
         int itemTextColor = item.getItemTextColor();
-        RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.weekday_grid);
+        RemoteViews rView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_weekday_grid);
         rView.setTextViewText(R.id.textView1, mWeekdaysList.get(i));
         rView.setTextColor(R.id.textView1, itemTextColor);
         return rView;

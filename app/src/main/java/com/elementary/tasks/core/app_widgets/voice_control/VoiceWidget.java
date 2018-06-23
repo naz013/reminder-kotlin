@@ -41,7 +41,7 @@ public class VoiceWidget extends AppWidgetProvider {
 
     public static void updateWidget(Context context, AppWidgetManager appWidgetManager,
                                     SharedPreferences sp, int widgetID) {
-        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.voice_widget_layout);
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_voice);
         int widgetColor = sp.getInt(VoiceWidgetConfig.VOICE_WIDGET_COLOR + widgetID, 0);
         rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor);
         WidgetUtils.setIcon(context, rv, R.drawable.ic_microphone_white, R.id.imageView);
