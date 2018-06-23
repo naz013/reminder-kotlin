@@ -2,6 +2,7 @@ package com.elementary.tasks.core.controller;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.Google;
+import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.EventJobService;
 import com.elementary.tasks.core.services.RepeatNotificationReceiver;
@@ -9,9 +10,6 @@ import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.GoogleTask;
-import com.elementary.tasks.google_tasks.TaskAsync;
-import com.elementary.tasks.google_tasks.TasksConstants;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,7 +47,7 @@ abstract class RepeatableEventManager extends EventManager {
             mItem.setDueDate(due);
             mItem.setNotes(getContext().getString(R.string.from_reminder));
             mItem.setUuId(getReminder().getUuId());
-            new TaskAsync(getContext(), TasksConstants.INSERT_TASK, null, mItem, null).execute();
+            // TODO: 23.06.2018 Add export to Google Tasks work via WorkManager
         }
         if (getReminder().isExportToCalendar()) {
             if (Prefs.getInstance(getContext()).isStockCalendarEnabled()) {

@@ -2,9 +2,13 @@ package com.elementary.tasks.core.view_models.google_tasks;
 
 import android.app.Application;
 
+import com.elementary.tasks.core.cloud.Google;
 import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.GoogleTaskList;
+import com.elementary.tasks.core.utils.SuperUtil;
+import com.elementary.tasks.core.view_models.Commands;
 
+import java.io.IOException;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -31,16 +35,77 @@ import androidx.lifecycle.ViewModelProvider;
 public class GoogleTaskListViewModel extends BaseTaskListsViewModel {
 
     public LiveData<GoogleTaskList> googleTaskList;
+    public LiveData<GoogleTaskList> defaultTaskList;
     public LiveData<List<GoogleTask>> googleTasks;
 
     public GoogleTaskListViewModel(Application application, @Nullable String listId) {
         super(application);
         googleTaskList = getAppDb().googleTaskListsDao().loadById(listId);
+        defaultTaskList = getAppDb().googleTaskListsDao().loadDefault();
         if (listId == null) {
             googleTasks = getAppDb().googleTasksDao().loadAll();
         } else {
             googleTasks = getAppDb().googleTasksDao().loadAllByList(listId);
         }
+    }
+
+    public void newGoogleTaskList(@NonNull GoogleTaskList googleTaskList) {
+        Google google = Google.getInstance(getApplication());
+        if (google == null || google.getTasks() == null) {
+            return;
+        }
+        boolean isConnected = SuperUtil.isConnected(getApplication());
+        if (!isConnected) {
+            result.postValue(Commands.FAILED);
+            return;
+        }
+        isInProgress.postValue(true);
+        run(() -> {
+            google.getTasks().insertTasksList(googleTaskList.getTitle(), googleTaskList.getColor());
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.SAVED);
+            });
+        });
+    }
+
+    public void updateGoogleTaskList(@NonNull GoogleTaskList googleTaskList) {
+        Google google = Google.getInstance(getApplication());
+        if (google == null || google.getTasks() == null) {
+            return;
+        }
+        boolean isConnected = SuperUtil.isConnected(getApplication());
+        if (!isConnected) {
+            result.postValue(Commands.FAILED);
+            return;
+        }
+        isInProgress.postValue(true);
+        run(() -> {
+            getAppDb().googleTaskListsDao().insert(googleTaskList);
+            try {
+                google.getTasks().updateTasksList(googleTaskList.getTitle(), googleTaskList.getListId());
+                end(() -> {
+                    isInProgress.postValue(false);
+                    result.postValue(Commands.SAVED);
+                });
+            } catch (IOException e) {
+                end(() -> {
+                    isInProgress.postValue(false);
+                    result.postValue(Commands.FAILED);
+                });
+            }
+        });
+    }
+
+    public void saveLocalGoogleTaskList(@NonNull GoogleTaskList googleTaskList) {
+        isInProgress.postValue(true);
+        run(() -> {
+            getAppDb().googleTaskListsDao().insert(googleTaskList);
+            end(() -> {
+                isInProgress.postValue(false);
+                result.postValue(Commands.SAVED);
+            });
+        });
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

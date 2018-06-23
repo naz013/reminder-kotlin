@@ -2,8 +2,6 @@ package com.elementary.tasks.google_tasks;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +14,14 @@ import com.elementary.tasks.core.data.models.GoogleTaskList;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel;
 import com.elementary.tasks.core.views.ColorPickerView;
-import com.elementary.tasks.core.views.roboto.RoboCheckBox;
-import com.elementary.tasks.core.views.roboto.RoboEditText;
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,27 +42,33 @@ import com.elementary.tasks.databinding.ActivityCreateTaskListBinding;
 public class TaskListActivity extends ThemedActivity implements ColorPickerView.OnColorListener {
 
     private ActivityCreateTaskListBinding binding;
-    private RoboCheckBox defaultCheck;
-
-    private RoboEditText editField;
+    private GoogleTaskListViewModel viewModel;
+    @Nullable
     private GoogleTaskList mItem;
     private int color;
 
     private ProgressDialog mDialog;
 
     private static final int MENU_ITEM_DELETE = 12;
-    private TasksCallback mSaveCallback = new TasksCallback() {
-        @Override
-        public void onFailed() {
-            hideDialog();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task_list);
+
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        @Override
-        public void onComplete() {
-            hideDialog();
-            finish();
-        }
-    };
+        binding.pickerView.setListener(this);
+
+        initViewModel(getIntent().getStringExtra(Constants.INTENT_ID));
+    }
 
     private void hideDialog() {
         if (mDialog != null && mDialog.isShowing()) {
@@ -69,39 +76,47 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task_list);
-        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        editField = binding.editField;
-        defaultCheck = binding.defaultCheck;
-        ColorPickerView pickerView = binding.pickerView;
-        pickerView.setListener(this);
-        Intent intent = getIntent();
-        String id = intent.getStringExtra(Constants.INTENT_ID);
-        mItem = RealmDb.getInstance().getTaskList(id);
-        if (mItem != null) {
-            editField.setText(mItem.getTitle());
-            if (mItem.getDef() == 1) {
-                defaultCheck.setChecked(true);
-                defaultCheck.setEnabled(false);
+    private void initViewModel(String id) {
+        viewModel = ViewModelProviders.of(this, new GoogleTaskListViewModel.Factory(getApplication(), id)).get(GoogleTaskListViewModel.class);
+        viewModel.googleTaskList.observe(this, googleTaskList -> {
+            if (googleTaskList != null) {
+                editTaskList(googleTaskList);
             }
-            color = mItem.getColor();
-            pickerView.setSelectedColor(color);
-            setColor(color);
+        });
+        viewModel.isInProgress.observe(this, aBoolean -> {
+            if (aBoolean != null) {
+                if (aBoolean) showProgressDialog();
+                else hideDialog();
+            }
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case DELETED:
+                    case SAVED:
+                        finish();
+                        break;
+                }
+            }
+        });
+    }
+
+    private void editTaskList(@NonNull GoogleTaskList googleTaskList) {
+        mItem = googleTaskList;
+        binding.editField.setText(mItem.getTitle());
+        if (mItem.getDef() == 1) {
+            binding.defaultCheck.setChecked(true);
+            binding.defaultCheck.setEnabled(false);
         }
+        color = mItem.getColor();
+        binding.pickerView.setSelectedColor(color);
+        setColor(color);
     }
 
     private void saveTaskList() {
-        String listName = editField.getText().toString();
+        String listName = binding.editField.getText().toString();
         if (listName.matches("")) {
-            editField.setError(getString(R.string.must_be_not_empty));
+            binding.editField.setError(getString(R.string.must_be_not_empty));
             return;
         }
         boolean isNew = false;
@@ -112,20 +127,19 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         mItem.setTitle(listName);
         mItem.setColor(color);
         mItem.setUpdated(System.currentTimeMillis());
-        if (defaultCheck.isChecked()) {
+        if (binding.defaultCheck.isChecked()) {
             mItem.setDef(1);
-            GoogleTaskList defList = RealmDb.getInstance().getDefaultTaskList();
+            GoogleTaskList defList = viewModel.defaultTaskList.getValue();
             if (defList != null) {
                 defList.setDef(0);
-                RealmDb.getInstance().saveObject(defList);
+                viewModel.saveLocalGoogleTaskList(defList);
             }
         }
-        showProgressDialog(getString(R.string.saving));
+
         if (isNew) {
-            new TaskListAsync(TaskListActivity.this, listName, mItem.getColor(), null, TasksConstants.INSERT_TASK_LIST, mSaveCallback).execute();
+            viewModel.newGoogleTaskList(mItem);
         } else {
-            RealmDb.getInstance().saveObject(mItem);
-            new TaskListAsync(TaskListActivity.this, listName, mItem.getColor(), mItem.getListId(), TasksConstants.UPDATE_TASK_LIST, mSaveCallback).execute();
+            viewModel.updateGoogleTaskList(mItem);
         }
     }
 
@@ -137,8 +151,8 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
         }
     }
 
-    private void showProgressDialog(String title) {
-        mDialog = ProgressDialog.show(this, null, title, true, false);
+    private void showProgressDialog() {
+        mDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false);
     }
 
     @Override
@@ -173,27 +187,7 @@ public class TaskListActivity extends ThemedActivity implements ColorPickerView.
 
     private void deleteList() {
         if (mItem != null) {
-            String listId = mItem.getListId();
-            int def = mItem.getDef();
-            showProgressDialog(getString(R.string.deleting));
-            new TaskListAsync(TaskListActivity.this, null, 0, listId, TasksConstants.DELETE_TASK_LIST, new TasksCallback() {
-                @Override
-                public void onFailed() {
-                    hideDialog();
-                }
-
-                @Override
-                public void onComplete() {
-                    RealmDb.getInstance().deleteTaskList(mItem.getListId());
-                    RealmDb.getInstance().deleteTasks(listId);
-                    if (def == 1) {
-                        GoogleTaskList listItem = RealmDb.getInstance().getTaskLists().get(0);
-                        RealmDb.getInstance().setDefault(listItem.getListId());
-                    }
-                    hideDialog();
-                    finish();
-                }
-            }).execute();
+            viewModel.deleteGoogleTaskList(mItem);
         }
     }
 
