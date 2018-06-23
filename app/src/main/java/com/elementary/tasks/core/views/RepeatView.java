@@ -101,7 +101,7 @@ public class RepeatView extends LinearLayout implements TextWatcher {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        View.inflate(context, R.layout.repeat_view_layout, this);
+        View.inflate(context, R.layout.view_repeat, this);
         setOrientation(VERTICAL);
         mImm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         mRepeatInput = findViewById(R.id.repeatTitle);

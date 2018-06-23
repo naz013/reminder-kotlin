@@ -62,7 +62,7 @@ public class TimerPickerView extends LinearLayout implements View.OnClickListene
 
     private void init(Context context, AttributeSet attrs) {
         setOrientation(VERTICAL);
-        View.inflate(context, R.layout.timer_picker_view_layout, this);
+        View.inflate(context, R.layout.view_timer_picker, this);
         hoursView = findViewById(R.id.hoursView);
         minutesView = findViewById(R.id.minutesView);
         secondsView = findViewById(R.id.secondsView);

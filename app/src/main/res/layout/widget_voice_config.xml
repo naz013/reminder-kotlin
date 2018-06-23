@@ -43,7 +43,7 @@
 
         <include
             android:id="@+id/widgetLayout"
-            layout="@layout/voice_widget_layout"
+            layout="@layout/widget_voice"
             android:layout_width="@dimen/widget_config_widget_size"
             android:layout_height="@dimen/widget_config_widget_size"
             android:layout_gravity="center"

@@ -53,7 +53,7 @@ public class QuickReminderWidgetConfig extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readIntent();
-        binding = DataBindingUtil.setContentView(this, R.layout.quick_reminder_widget_config_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.widget_quick_reminder_config);
         initActionBar();
 
         Spinner headerBgColor = findViewById(R.id.headerBgColor);

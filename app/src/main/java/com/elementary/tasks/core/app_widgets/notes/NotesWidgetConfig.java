@@ -48,7 +48,7 @@ public class NotesWidgetConfig extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readIntent();
-        binding = DataBindingUtil.setContentView(this, R.layout.note_widget_config_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.widget_note_config);
         initActionBar();
         loadThemes();
         showCurrentTheme();
