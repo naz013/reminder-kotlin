@@ -119,9 +119,9 @@ dependencies {
     }
     api project(':voiceengine')
 
-    api 'com.google.dagger:dagger-android:2.15'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+    api 'com.google.dagger:dagger-android:2.16'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
 
     api 'com.google.android.material:material:1.0.0-alpha3'
 
@@ -142,13 +142,14 @@ dependencies {
     api 'androidx.room:room-runtime:2.0.0-alpha1'
     api 'androidx.lifecycle:lifecycle-common-java8:2.0.0-alpha1'
     annotationProcessor 'androidx.room:room-compiler:2.0.0-alpha1'
+    annotationProcessor 'androidx.databinding:compiler:3.2.0-alpha11'
 
     api 'com.google.android.gms:play-services-auth-base:15.0.1'
     api 'com.google.android.gms:play-services-location:15.0.1'
     api 'com.google.android.gms:play-services-maps:15.0.1'
     api 'com.google.android.gms:play-services-gcm:15.0.1'
     api 'com.google.firebase:firebase-core:16.0.1'
-    api('com.google.firebase:firebase-config:15.0.0') {
+    api('com.google.firebase:firebase-config:16.0.0') {
         exclude group: 'com.google.guava', module: 'guava-jdk5'
     }
     api 'de.hdodenhof:circleimageview:2.2.0'
