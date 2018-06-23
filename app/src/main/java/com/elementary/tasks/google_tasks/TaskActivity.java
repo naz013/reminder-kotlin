@@ -5,10 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,25 +18,26 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
 import com.elementary.tasks.core.cloud.Google;
-import com.elementary.tasks.core.controller.EventControl;
-import com.elementary.tasks.core.controller.EventControlFactory;
 import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.GoogleTaskList;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.views.roboto.RoboEditText;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel;
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding;
-import com.elementary.tasks.core.data.models.Group;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,16 +59,14 @@ public class TaskActivity extends ThemedActivity {
     private static final String TAG = "TaskActivity";
 
     private ActivityCreateGoogleTaskBinding binding;
-    private RoboEditText editField, noteField;
-    private RoboTextView dateField;
-    private RoboTextView timeField;
-    private RoboTextView listText;
+    private GoogleTaskViewModel viewModel;
 
     private int mHour = 0;
     private int mMinute = 0;
     private int mYear = 0;
     private int mMonth = 0;
     private int mDay = 1;
+    @Nullable
     private String listId = null;
     private String action;
     private boolean isReminder = false;
@@ -124,86 +120,118 @@ public class TaskActivity extends ThemedActivity {
         String tmp = intent.getStringExtra(Constants.INTENT_ID);
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION);
         if (action == null) action = TasksConstants.CREATE;
+
         if (action.matches(TasksConstants.CREATE)) {
-            initNewTask(tmp);
+            initViewModel(null, tmp);
         } else {
-            initTaskEdit(tmp);
+            initViewModel(tmp, null);
         }
         switchDate();
     }
 
-    private void initTaskEdit(String id) {
-        binding.toolbar.setTitle(R.string.edit_task);
-        mItem = RealmDb.getInstance().getTask(id);
-        if (mItem != null) {
-            editField.setText(mItem.getTitle());
-            listId = mItem.getListId();
-            String note = mItem.getNotes();
-            if (note != null) {
-                noteField.setText(note);
-                noteField.setSelection(noteField.getText().length());
+    private void initViewModel(String taskId, String listId) {
+        this.listId = listId;
+        viewModel = ViewModelProviders.of(this, new GoogleTaskViewModel.Factory(getApplication(), taskId)).get(GoogleTaskViewModel.class);
+        viewModel.isInProgress.observe(this, aBoolean -> {
+            if (aBoolean != null) {
+                if (aBoolean) showProgressDialog();
+                else hideDialog();
             }
-            long time = mItem.getDueDate();
-            if (time != 0) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(time);
-                mHour = calendar.get(Calendar.HOUR_OF_DAY);
-                mMinute = calendar.get(Calendar.MINUTE);
-                mYear = calendar.get(Calendar.YEAR);
-                mMonth = calendar.get(Calendar.MONTH);
-                mDay = calendar.get(Calendar.DAY_OF_MONTH);
-                isDate = true;
-                dateField.setText(TimeUtil.getDate(calendar.getTime()));
+        });
+        viewModel.result.observe(this, commands -> {
+            if (commands != null) {
+                switch (commands) {
+                    case SAVED:
+                    case DELETED:
+                        finish();
+                        break;
+                }
             }
-            GoogleTaskList listItem = RealmDb.getInstance().getTaskList(mItem.getListId());
-            if (listItem != null) {
-                listText.setText(listItem.getTitle());
-                setColor(listItem.getColor());
+        });
+        viewModel.googleTask.observe(this, googleTask -> {
+            if (googleTask != null) {
+                editTask(googleTask);
             }
-            showReminder();
-        }
+        });
+        viewModel.googleTaskLists.observe(this, googleTaskLists -> {
+            if (googleTaskLists != null && listId != null) {
+                selectCurrent(googleTaskLists);
+            }
+        });
+        viewModel.defaultTaskList.observe(this, googleTaskList -> {
+            if (googleTaskList != null && listId == null) {
+                showTaskList(googleTaskList);
+            }
+        });
+        viewModel.reminder.observe(this, reminder -> {
+            if (reminder != null) {
+                showReminder(reminder);
+            }
+        });
     }
 
-    private void showReminder() {
-        if (mItem != null) {
-            Reminder item = RealmDb.getInstance().getReminder(mItem.getUuId());
-            if (item != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(item.getEventTime()));
-                timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
-                isReminder = true;
-            }
-        }
+    private void showReminder(@NonNull Reminder reminder) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(TimeUtil.getDateTimeFromGmt(reminder.getEventTime()));
+        binding.timeField.setText(TimeUtil.getTime(calendar.getTime(), getPrefs().is24HourFormatEnabled()));
+        isReminder = true;
     }
 
-    private void initNewTask(String id) {
+    private void showTaskList(GoogleTaskList googleTaskList) {
+        this.listId = googleTaskList.getListId();
         binding.toolbar.setTitle(R.string.new_task);
-        if (id == null) {
-            GoogleTaskList listItem = RealmDb.getInstance().getDefaultTaskList();
-            if (listItem != null) {
-                listId = listItem.getListId();
-                listText.setText(listItem.getTitle());
-                setColor(listItem.getColor());
-            }
-        } else {
-            GoogleTaskList listItem = RealmDb.getInstance().getTaskList(id);
-            if (listItem != null) {
-                listId = listItem.getListId();
-                listText.setText(listItem.getTitle());
-                setColor(listItem.getColor());
+        binding.listText.setText(googleTaskList.getTitle());
+        setColor(googleTaskList.getColor());
+    }
+
+    private void selectCurrent(List<GoogleTaskList> googleTaskLists) {
+        binding.toolbar.setTitle(R.string.new_task);
+        for (GoogleTaskList googleTaskList : googleTaskLists) {
+            if (googleTaskList.getListId().equals(listId)) {
+                showTaskList(googleTaskList);
+                break;
             }
         }
+    }
+
+    private void editTask(@NonNull GoogleTask googleTask) {
+        this.mItem = googleTask;
+        this.listId = googleTask.getListId();
+        binding.toolbar.setTitle(R.string.edit_task);
+        binding.editField.setText(googleTask.getTitle());
+
+        String note = googleTask.getNotes();
+        if (note != null) {
+            binding.noteField.setText(note);
+            binding.noteField.setSelection(binding.noteField.getText().toString().trim().length());
+        }
+        long time = mItem.getDueDate();
+        if (time != 0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(time);
+            mHour = calendar.get(Calendar.HOUR_OF_DAY);
+            mMinute = calendar.get(Calendar.MINUTE);
+            mYear = calendar.get(Calendar.YEAR);
+            mMonth = calendar.get(Calendar.MONTH);
+            mDay = calendar.get(Calendar.DAY_OF_MONTH);
+            isDate = true;
+            binding.dateField.setText(TimeUtil.getDate(calendar.getTime()));
+        }
+        if (viewModel.googleTaskLists.getValue() != null) {
+            for (GoogleTaskList googleTaskList : viewModel.googleTaskLists.getValue()) {
+                if (googleTaskList.getListId().equals(googleTask.getListId())) {
+                    showTaskList(googleTaskList);
+                    break;
+                }
+            }
+        }
+        viewModel.loadReminder(googleTask.getUuId());
     }
 
     private void initFields() {
-        editField = binding.editField;
-        noteField = binding.noteField;
-        listText = binding.listText;
-        listText.setOnClickListener(v -> selectList(false));
-        dateField = binding.dateField;
-        dateField.setOnClickListener(v -> selectDateAction(1));
-        timeField = binding.timeField;
-        timeField.setOnClickListener(v -> selectDateAction(2));
+        binding.listText.setOnClickListener(v -> selectList(false));
+        binding.dateField.setOnClickListener(v -> selectDateAction(1));
+        binding.timeField.setOnClickListener(v -> selectDateAction(2));
     }
 
     private void initToolbar() {
@@ -228,11 +256,9 @@ public class TaskActivity extends ThemedActivity {
         int selection = 0;
         if (type == 1) {
             if (isDate) selection = 1;
-            else selection = 0;
         }
         if (type == 2) {
             if (isReminder) selection = 1;
-            else selection = 0;
         }
         builder.setSingleChoiceItems(adapter, selection, (dialog, which) -> {
             if (which != -1) {
@@ -268,8 +294,8 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void switchDate() {
-        if (!isDate) dateField.setText(getString(R.string.no_date));
-        if (!isReminder) timeField.setText(getString(R.string.no_reminder));
+        if (!isDate) binding.dateField.setText(getString(R.string.no_date));
+        if (!isReminder) binding.timeField.setText(getString(R.string.no_reminder));
     }
 
     private void moveTask(String listId) {
@@ -277,32 +303,20 @@ public class TaskActivity extends ThemedActivity {
             String initListId = mItem.getListId();
             if (!listId.matches(initListId)) {
                 mItem.setListId(listId);
-                showProgressDialog(getString(R.string.moving_task));
-                new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, new TasksCallback() {
-                    @Override
-                    public void onFailed() {
-                        hideDialog();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        RealmDb.getInstance().saveObject(mItem);
-                        hideDialog();
-                        finish();
-                    }
-                }).execute();
+                viewModel.moveGoogleTask(mItem, initListId);
             } else {
                 Toast.makeText(this, getString(R.string.this_is_same_list), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void showProgressDialog(String title) {
-        mDialog = ProgressDialog.show(this, null, title, true, false);
+    private void showProgressDialog() {
+        mDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), true, false);
     }
 
     private void selectList(final boolean move) {
-        List<GoogleTaskList> list = RealmDb.getInstance().getTaskLists();
+        List<GoogleTaskList> list = viewModel.googleTaskLists.getValue();
+        if (list == null) list = new ArrayList<>();
         List<String> names = new ArrayList<>();
         int position = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -314,25 +328,15 @@ public class TaskActivity extends ThemedActivity {
         }
         AlertDialog.Builder builder = Dialogues.getDialog(this);
         builder.setTitle(R.string.choose_list);
+        List<GoogleTaskList> finalList = list;
         builder.setSingleChoiceItems(new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, names),
                 position, (dialog, which) -> {
                     dialog.dismiss();
-                    if (move) moveTask(list.get(which).getListId());
-                    else {
-                        listId = list.get(which).getListId();
-                        listText.setText(list.get(which).getTitle());
-                        reloadColor(list.get(which).getListId());
-                    }
+                    if (move) moveTask(finalList.get(which).getListId());
+                    else showTaskList(finalList.get(which));
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    private void reloadColor(String listId) {
-        GoogleTaskList item = RealmDb.getInstance().getTaskList(listId);
-        if (item != null) {
-            setColor(item.getColor());
-        }
     }
 
     @Override
@@ -344,50 +348,34 @@ public class TaskActivity extends ThemedActivity {
     }
 
     private void saveTask() {
-        String taskName = editField.getText().toString().trim();
+        String taskName = binding.editField.getText().toString().trim();
         if (taskName.matches("")) {
-            editField.setError(getString(R.string.must_be_not_empty));
+            binding.editField.setError(getString(R.string.must_be_not_empty));
             return;
         }
-        String note = noteField.getText().toString().trim();
+        String note = binding.noteField.getText().toString().trim();
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(mYear, mMonth, mDay, 12, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         long due = 0;
         if (isDate) due = calendar.getTimeInMillis();
-        String uuId = null;
-        if (isReminder) uuId = saveReminder(taskName);
+        Reminder reminder = null;
+        if (isReminder) reminder = createReminder(taskName);
         if (action.matches(TasksConstants.EDIT) && mItem != null) {
             String initListId = mItem.getListId();
             mItem.setListId(listId);
             mItem.setStatus(Google.TASKS_NEED_ACTION);
             mItem.setTitle(taskName);
             mItem.setNotes(note);
-            mItem.setUuId(uuId);
+            if (reminder != null) {
+                mItem.setUuId(reminder.getUuId());
+            }
             mItem.setDueDate(due);
             if (listId != null) {
-                showProgressDialog(getString(R.string.saving));
-                RealmDb.getInstance().saveObject(mItem);
-                new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, new TasksCallback() {
-                    @Override
-                    public void onFailed() {
-                        hideDialog();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if (!listId.matches(initListId)) {
-                            new TaskAsync(TaskActivity.this, TasksConstants.MOVE_TASK, initListId, mItem, mSimpleCallback).execute();
-                        } else {
-                            hideDialog();
-                        }
-                    }
-                }).execute();
+                viewModel.updateAndMoveGoogleTask(mItem, initListId, reminder);
             } else {
-                showProgressDialog(getString(R.string.saving));
-                RealmDb.getInstance().saveObject(mItem);
-                new TaskAsync(TaskActivity.this, TasksConstants.UPDATE_TASK, null, mItem, mSimpleCallback).execute();
+                viewModel.updateGoogleTask(mItem, reminder);
             }
         } else {
             mItem = new GoogleTask();
@@ -396,14 +384,16 @@ public class TaskActivity extends ThemedActivity {
             mItem.setTitle(taskName);
             mItem.setNotes(note);
             mItem.setDueDate(due);
-            mItem.setUuId(uuId);
-            showProgressDialog(getString(R.string.saving));
-            new TaskAsync(TaskActivity.this, TasksConstants.INSERT_TASK, null, mItem, mSimpleCallback).execute();
+            if (reminder != null) {
+                mItem.setUuId(reminder.getUuId());
+            }
+            viewModel.newGoogleTask(mItem, reminder);
         }
     }
 
-    private String saveReminder(String task) {
-        Group group = RealmDb.getInstance().getDefaultGroup();
+    @Nullable
+    private Reminder createReminder(String task) {
+        Group group = viewModel.defaultGroup.getValue();
         if (group == null) return null;
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -415,11 +405,7 @@ public class TaskActivity extends ThemedActivity {
         reminder.setGroupUuId(group.getUuId());
         reminder.setStartTime(TimeUtil.getGmtFromDateTime(due));
         reminder.setEventTime(TimeUtil.getGmtFromDateTime(due));
-        RealmDb.getInstance().saveReminder(reminder, () -> {
-            EventControl control = EventControlFactory.getController(TaskActivity.this, reminder);
-            control.start();
-        });
-        return reminder.getUuId();
+        return reminder;
     }
 
     private void deleteDialog() {
@@ -436,20 +422,7 @@ public class TaskActivity extends ThemedActivity {
 
     private void deleteTask() {
         if (mItem != null) {
-            showProgressDialog(getString(R.string.deleting_task));
-            new TaskAsync(TaskActivity.this, TasksConstants.DELETE_TASK, null, mItem, new TasksCallback() {
-                @Override
-                public void onFailed() {
-                    hideDialog();
-                }
-
-                @Override
-                public void onComplete() {
-                    RealmDb.getInstance().deleteTask(mItem);
-                    hideDialog();
-                    finish();
-                }
-            }).execute();
+            viewModel.deleteGoogleTask(mItem);
         }
     }
 
@@ -503,7 +476,7 @@ public class TaskActivity extends ThemedActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(year, monthOfYear, dayOfMonth);
-            dateField.setText(TimeUtil.getDate(calendar.getTime()));
+            binding.dateField.setText(TimeUtil.getDate(calendar.getTime()));
         }
     };
 
@@ -518,7 +491,7 @@ public class TaskActivity extends ThemedActivity {
             Calendar c = Calendar.getInstance();
             c.set(Calendar.HOUR_OF_DAY, hourOfDay);
             c.set(Calendar.MINUTE, minute);
-            timeField.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
+            binding.timeField.setText(TimeUtil.getTime(c.getTime(), getPrefs().is24HourFormatEnabled()));
         }
     };
 

@@ -68,4 +68,7 @@ public interface GoogleTasksDao {
 
     @Query("DELETE FROM GoogleTask")
     void deleteAll();
+
+    @Query("DELETE FROM GoogleTask WHERE listId=:listId")
+    void deleteAll(String listId);
 }

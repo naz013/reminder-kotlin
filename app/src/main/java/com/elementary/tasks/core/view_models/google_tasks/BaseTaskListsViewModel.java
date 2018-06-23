@@ -11,6 +11,7 @@ import com.elementary.tasks.core.view_models.BaseDbViewModel;
 import com.elementary.tasks.core.view_models.Commands;
 
 import java.io.IOException;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
@@ -31,7 +32,6 @@ import androidx.annotation.NonNull;
  */
 abstract class BaseTaskListsViewModel extends BaseDbViewModel {
 
-
     BaseTaskListsViewModel(Application application) {
         super(application);
     }
@@ -48,8 +48,18 @@ abstract class BaseTaskListsViewModel extends BaseDbViewModel {
         }
         isInProgress.postValue(true);
         run(() -> {
-            getAppDb().googleTaskListsDao().delete(googleTaskList);
+            int def = googleTaskList.getDef();
             google.getTasks().deleteTaskList(googleTaskList.getListId());
+            getAppDb().googleTaskListsDao().delete(googleTaskList);
+            getAppDb().googleTasksDao().deleteAll(googleTaskList.getListId());
+            if (def == 1) {
+                List<GoogleTaskList> lists = getAppDb().googleTaskListsDao().getAll();
+                if (!lists.isEmpty()) {
+                    GoogleTaskList taskList = lists.get(0);
+                    taskList.setDef(1);
+                    getAppDb().googleTaskListsDao().insert(taskList);
+                }
+            }
             end(() -> {
                 isInProgress.postValue(false);
                 result.postValue(Commands.DELETED);
