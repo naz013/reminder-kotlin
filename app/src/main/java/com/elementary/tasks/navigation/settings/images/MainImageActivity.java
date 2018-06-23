@@ -162,7 +162,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_image_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_image);
         initActionBar();
         initRadios();
         binding.emptyLayout.emptyItem.setVisibility(View.VISIBLE);

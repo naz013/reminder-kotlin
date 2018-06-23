@@ -87,7 +87,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
         long receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0);
         mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER);
         String name = Contacts.getNameFromNumber(mNumber, FollowReminderActivity.this);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_follow_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_follow);
         initActionBar();
         Calendar c = Calendar.getInstance();
         if (receivedDate != 0) {

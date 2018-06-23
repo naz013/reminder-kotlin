@@ -82,7 +82,7 @@ public class CalendarWidget extends AppWidgetProvider {
         int theme = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_THEME + widgetID, 0);
         CalendarTheme item = CalendarTheme.getThemes(context).get(theme);
 
-        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.calendar_widget_layout);
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_calendar);
         rv.setTextViewText(R.id.currentDate, date);
         rv.setTextColor(R.id.currentDate, item.getTitleColor());
 
@@ -158,7 +158,7 @@ public class CalendarWidget extends AppWidgetProvider {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onAppWidgetOptionsChanged(Context ctxt, AppWidgetManager mgr, int appWidgetId, Bundle newOptions) {
-        RemoteViews updateViews = new RemoteViews(ctxt.getPackageName(), R.layout.calendar_widget_layout);
+        RemoteViews updateViews = new RemoteViews(ctxt.getPackageName(), R.layout.widget_calendar);
         mgr.updateAppWidget(appWidgetId, updateViews);
     }
 }
