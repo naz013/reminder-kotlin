@@ -6,25 +6,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.legacy.content.WakefulBroadcastReceiver;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.LED;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.util.Calendar;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.legacy.content.WakefulBroadcastReceiver;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,18 +50,18 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String id = intent.getStringExtra(Constants.INTENT_ID);
-        Reminder item = RealmDb.getInstance().getReminder(id);
+        int id = intent.getIntExtra(Constants.INTENT_ID, 0);
+        Reminder item = AppDb.getAppDatabase(context).reminderDao().getById(id);
         if (item != null) {
             showNotification(context, item);
         }
     }
 
-    public void setAlarm(Context context, String uuId, int id) {
+    public void setAlarm(Context context, int id) {
         int repeat = Prefs.getInstance(context).getNotificationRepeatTime();
         int minutes = repeat * 1000 * 60;
         Intent intent = new Intent(context, RepeatNotificationReceiver.class);
-        intent.putExtra(Constants.INTENT_ID, uuId);
+        intent.putExtra(Constants.INTENT_ID, id);
         alarmIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
@@ -101,7 +102,7 @@ public class RepeatNotificationReceiver extends WakefulBroadcastReceiver {
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
         if (Prefs.getInstance(context).isFoldingEnabled() && !Reminder.isBase(reminder.getType(), Reminder.BY_WEEK)) {
             PendingIntent intent = PendingIntent.getActivity(context, reminder.getUniqueId(),
-                    ReminderDialogActivity.getLaunchIntent(context, reminder.getUuId()), PendingIntent.FLAG_CANCEL_CURRENT);
+                    ReminderDialogActivity.getLaunchIntent(context, reminder.getUniqueId()), PendingIntent.FLAG_CANCEL_CURRENT);
             builder.setContentIntent(intent);
         }
         if (Module.isPro()) {

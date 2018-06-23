@@ -4,20 +4,21 @@ import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.elementary.tasks.R;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Place;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.location.LocationTracker;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity;
-import com.elementary.tasks.core.data.models.Place;
-import com.elementary.tasks.core.data.models.Reminder;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -75,7 +76,7 @@ public class GeolocationService extends Service {
     }
 
     private void checkReminders(Location locationA) {
-        for (Reminder reminder : RealmDb.getInstance().getEnabledReminders()) {
+        for (Reminder reminder : AppDb.getAppDatabase(getApplicationContext()).reminderDao().getAll(true, false)) {
             if (Reminder.isGpsType(reminder.getType())) {
                 checkDistance(locationA, reminder);
             }
@@ -153,15 +154,15 @@ public class GeolocationService extends Service {
             }
         } else {
             if (roundedDistance < getRadius(place.getRadius())) {
-                RealmDb.getInstance().saveReminder(reminder.setLocked(true), null);
+                AppDb.getAppDatabase(getApplicationContext()).reminderDao().insert(reminder.setLocked(true));
             }
         }
     }
 
     private void showReminder(Reminder reminder) {
         if (reminder.isNotificationShown()) return;
-        RealmDb.getInstance().saveReminder(reminder.setNotificationShown(true), null);
-        getApplication().startActivity(ReminderDialogActivity.getLaunchIntent(getApplicationContext(), reminder.getUuId()));
+        AppDb.getAppDatabase(getApplicationContext()).reminderDao().insert(reminder.setNotificationShown(true));
+        getApplication().startActivity(ReminderDialogActivity.getLaunchIntent(getApplicationContext(), reminder.getUniqueId()));
     }
 
     private void showNotification(int roundedDistance, Reminder reminder) {

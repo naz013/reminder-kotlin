@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,23 +16,23 @@ import android.widget.Toast;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.app_widgets.UpdatesHelper;
-import com.elementary.tasks.core.data.models.CalendarEvent;
-import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.CalendarEvent;
+import com.elementary.tasks.core.data.models.Group;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.services.AlarmReceiver;
 import com.elementary.tasks.core.services.PermanentReminderReceiver;
 import com.elementary.tasks.core.utils.CalendarUtils;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Notifier;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.core.views.roboto.RoboCheckBox;
 import com.elementary.tasks.databinding.FragmentEventsImportBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
@@ -44,6 +42,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -306,8 +307,8 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             HashMap<String, Integer> map = params[0];
             if (map.containsKey(EVENT_KEY)) {
                 List<CalendarUtils.EventItem> eventItems = CalendarUtils.getEvents(mContext, map.get(EVENT_KEY));
-                if (eventItems != null && eventItems.size() > 0) {
-                    List<Long> list = RealmDb.getInstance().getCalendarEventsIds();
+                if (!eventItems.isEmpty()) {
+                    List<Long> list = AppDb.getAppDatabase(mContext).calendarEventsDao().getEventIds();
                     for (CalendarUtils.EventItem item : eventItems) {
                         long itemId = item.getId();
                         if (!list.contains(itemId)) {
@@ -330,7 +331,11 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
                                 }
                             }
                             String summary = item.getTitle();
-                            String categoryId = RealmDb.getInstance().getDefaultGroup().getUuId();
+                            Group group = AppDb.getAppDatabase(mContext).groupDao().getDefault();
+                            String categoryId = "";
+                            if (group != null) {
+                                categoryId = group.getUuId();
+                            }
                             Calendar calendar = Calendar.getInstance();
                             long dtStart = item.getDtStart();
                             calendar.setTimeInMillis(dtStart);
@@ -362,12 +367,10 @@ public class FragmentEventsImport extends BaseSettingsFragment implements View.O
             reminder.setSummary(summary);
             reminder.setEventTime(TimeUtil.getGmtFromDateTime(dtStart));
             reminder.setStartTime(TimeUtil.getGmtFromDateTime(dtStart));
-            RealmDb.getInstance().saveReminder(reminder, () -> {
-                EventControl control = EventControlFactory.getController(mContext, reminder);
-                control.start();
-            });
-            CalendarEvent event = new CalendarEvent(reminder.getUuId(), summary, itemId);
-            RealmDb.getInstance().saveObject(event);
+            AppDb.getAppDatabase(mContext).reminderDao().insert(reminder);
+            EventControlFactory.getController(reminder).start();
+            CalendarEvent event = new CalendarEvent(reminder.getUniqueId(), summary, itemId);
+            AppDb.getAppDatabase(mContext).calendarEventsDao().insert(event);
         }
 
         @Override

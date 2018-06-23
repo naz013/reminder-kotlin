@@ -97,9 +97,9 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
     private EventControl mControl;
     private boolean mIsResumed;
 
-    public static Intent getLaunchIntent(Context context, String uuId) {
+    public static Intent getLaunchIntent(Context context, int id) {
         Intent resultIntent = new Intent(context, ReminderDialogActivity.class);
-        resultIntent.putExtra(Constants.INTENT_ID, uuId);
+        resultIntent.putExtra(Constants.INTENT_ID, id);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         return resultIntent;
     }
@@ -331,7 +331,7 @@ public class ReminderDialogActivity extends BaseNotificationActivity {
             showReminder();
         }
         if (isRepeatEnabled()) {
-            repeater.setAlarm(this, getUuId(), getId());
+            repeater.setAlarm(this, getId());
         }
         if (isTtsEnabled()) {
             startTts();

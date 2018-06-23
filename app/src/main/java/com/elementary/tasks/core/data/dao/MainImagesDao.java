@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.data.dao;
 
-import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.MainImage;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -29,33 +28,17 @@ import static androidx.room.OnConflictStrategy.REPLACE;
  * limitations under the License.
  */
 @Dao
-public interface BirthdaysDao {
+public interface MainImagesDao {
 
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    LiveData<Birthday> loadById(int id);
-
-    @Nullable
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    Birthday getById(int id);
-
-    @Query("SELECT * FROM Birthday")
-    LiveData<List<Birthday>> loadAll();
-
-    @Query("SELECT * FROM Birthday")
-    List<Birthday> getAll();
-
-    @Query("SELECT * FROM Birthday WHERE dayMonth=:dayMonth")
-    List<Birthday> getAll(String dayMonth);
+    @Query("SELECT * FROM MainImage")
+    LiveData<List<MainImage>> loadAll();
 
     @Insert(onConflict = REPLACE)
-    int insert(Birthday birthday);
+    void insert(MainImage mainImage);
 
     @Insert(onConflict = REPLACE)
-    void insertAll(Birthday... birthdays);
+    void insertAll(List<MainImage> mainImages);
 
     @Delete
-    void delete(Birthday birthday);
-
-    @Delete
-    void deleteAll(Birthday... birthdays);
+    void delete(MainImage mainImage);
 }

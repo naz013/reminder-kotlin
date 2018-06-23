@@ -10,26 +10,28 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.SplashScreen;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
-import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
-import com.elementary.tasks.core.services.PermanentReminderReceiver;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
-import com.elementary.tasks.notes.create.CreateNoteActivity;
-import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.Birthday;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
+import com.elementary.tasks.core.services.PermanentBirthdayReceiver;
+import com.elementary.tasks.core.services.PermanentReminderReceiver;
+import com.elementary.tasks.notes.create.CreateNoteActivity;
+import com.elementary.tasks.notes.create.NoteImage;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -158,7 +160,7 @@ public class Notifier {
         calendar.setTimeInMillis(System.currentTimeMillis());
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH);
-        List<Birthday> list = RealmDb.getInstance().getBirthdays(day, month);
+        List<Birthday> list = AppDb.getAppDatabase(context).birthdaysDao().getAll(day + "|" + month);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER);
         if (Module.isLollipop()) {
             builder.setSmallIcon(R.drawable.ic_cake_white_24dp);
@@ -229,7 +231,7 @@ public class Notifier {
         PendingIntent resultPendingInt = stackInt.getPendingIntent(0, 0);
         remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt);
         remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt);
-        List<Reminder> reminders = RealmDb.getInstance().getEnabledReminders();
+        List<Reminder> reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false);
         int count = reminders.size();
         for (int i = reminders.size() - 1; i >= 0; i--) {
             Reminder item = reminders.get(i);

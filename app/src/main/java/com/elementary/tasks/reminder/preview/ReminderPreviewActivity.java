@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
+import com.elementary.tasks.core.data.AppDb;
+import com.elementary.tasks.core.data.models.GoogleTask;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
@@ -27,19 +29,17 @@ import com.elementary.tasks.core.utils.IntervalUtil;
 import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.ReminderUtils;
 import com.elementary.tasks.core.utils.Sound;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
-import com.elementary.tasks.core.data.models.GoogleTask;
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding;
 import com.elementary.tasks.databinding.ListItemTaskBinding;
 import com.elementary.tasks.databinding.NoteListItemBinding;
 import com.elementary.tasks.google_tasks.TaskActivity;
 import com.elementary.tasks.google_tasks.TasksConstants;
 import com.elementary.tasks.notes.preview.NotePreviewActivity;
+import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -150,7 +150,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void showTask() {
         if (mGoogleTask != null) {
             ListItemTaskBinding binding = ListItemTaskBinding.inflate(LayoutInflater.from(this));
-            binding.setTaskItem(mGoogleTask);
+            binding.setGoogleTask(mGoogleTask);
             binding.setClick(v -> startActivity(new Intent(ReminderPreviewActivity.this, TaskActivity.class)
                     .putExtra(Constants.INTENT_ID, mGoogleTask.getTaskId())
                     .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT)));
@@ -161,7 +161,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
     private void showNote() {
         if (mNote != null) {
             NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
-            binding.setNoteItem(mNote);
+            binding.setNote(mNote);
             binding.noteClick.setOnClickListener(v ->
                     startActivity(new Intent(ReminderPreviewActivity.this, NotePreviewActivity.class)
                     .putExtra(Constants.INTENT_ID, mNote.getKey())));
@@ -416,7 +416,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
         @Override
         public void run() {
-            Note item = RealmDb.getInstance().getNote(uuId);
+            Note item = AppDb.getAppDatabase(ReminderPreviewActivity.this).notesDao().getById(uuId);
             runOnUiThread(() -> {
                 if (listener != null && item != null) listener.onReady(item);
             });
@@ -435,7 +435,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
         @Override
         public void run() {
-            GoogleTask item = RealmDb.getInstance().getTaskByReminder(uuId);
+            GoogleTask item = AppDb.getAppDatabase(ReminderPreviewActivity.this).googleTasksDao().getByReminderId(uuId);
             runOnUiThread(() -> {
                 if (listener != null && item != null) listener.onReady(item);
             });

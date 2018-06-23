@@ -5,8 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +15,18 @@ import android.widget.Toast;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.cloud.DropboxLogin;
 import com.elementary.tasks.core.cloud.GoogleLogin;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.Permissions;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.views.roboto.RoboButton;
 import com.elementary.tasks.databinding.FragmentCloudDrivesBinding;
 import com.elementary.tasks.google_tasks.GetTaskListAsync;
 import com.elementary.tasks.google_tasks.TasksCallback;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,6 +53,7 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
     private RoboButton mDropboxButton, mGoogleDriveButton;
 
     private ProgressDialog mDialog;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private GoogleLogin.LoginCallback mLoginCallback = new GoogleLogin.LoginCallback() {
         @Override
         public void onSuccess() {
@@ -81,14 +85,19 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCloudDrivesBinding.inflate(inflater, container, false);
         mDropbox = new DropboxLogin(getActivity(), mDropboxCallback);
         mGoogleLogin = new GoogleLogin(getActivity(), mLoginCallback);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initDropboxButton();
         initGoogleDriveButton();
         checkGoogleStatus();
-        return binding.getRoot();
     }
 
     private void initGoogleDriveButton() {
@@ -127,9 +136,11 @@ public class FragmentCloudDrives extends BaseSettingsFragment {
 
     private void disconnectFromGoogleServices() {
         mGoogleLogin.logOut();
-        RealmDb.getInstance().deleteTasks();
-        RealmDb.getInstance().deleteTaskLists();
-        finishSync();
+        new Thread(() -> {
+            AppDb.getAppDatabase(getContext()).googleTasksDao().deleteAll();
+            AppDb.getAppDatabase(getContext()).googleTaskListsDao().deleteAll();
+            mHandler.post(this::finishSync);
+        }).start();
     }
 
     @Override

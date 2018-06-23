@@ -3,12 +3,12 @@ package com.elementary.tasks.core.app_widgets;
 import android.app.AlarmManager;
 import android.content.Context;
 
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Birthday;
+import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Configs;
-import com.elementary.tasks.core.utils.RealmDb;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.data.models.Reminder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -105,7 +105,7 @@ public class WidgetDataProvider {
     }
 
     public void loadReminders() {
-        List<Reminder> reminderItems = RealmDb.getInstance().getEnabledReminders();
+        List<Reminder> reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false);
         for (Reminder item : reminderItems) {
             int mType = item.getType();
             long eventTime = item.getDateTime();
@@ -115,9 +115,7 @@ public class WidgetDataProvider {
                 int mDay = calendar.get(Calendar.DAY_OF_MONTH);
                 int mMonth = calendar.get(Calendar.MONTH);
                 int mYear = calendar.get(Calendar.YEAR);
-                if (eventTime > 0) {
-                    data.add(new Item(mDay, mMonth, mYear, WidgetType.REMINDER));
-                }
+                data.add(new Item(mDay, mMonth, mYear, WidgetType.REMINDER));
                 long repeatTime = item.getRepeatInterval();
                 long limit = item.getRepeatLimit();
                 long count = item.getEventCount();
@@ -183,7 +181,7 @@ public class WidgetDataProvider {
     }
 
     public void loadBirthdays() {
-        List<Birthday> list = RealmDb.getInstance().getAllBirthdays();
+        List<Birthday> list = AppDb.getAppDatabase(mContext).birthdaysDao().getAll();
         for (Birthday item : list) {
             Date date = null;
             try {

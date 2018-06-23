@@ -2,9 +2,8 @@ package com.elementary.tasks.core.async;
 
 import android.content.Context;
 
-import com.elementary.tasks.core.controller.EventControl;
 import com.elementary.tasks.core.controller.EventControlFactory;
-import com.elementary.tasks.core.utils.RealmDb;
+import com.elementary.tasks.core.data.AppDb;
 import com.elementary.tasks.core.data.models.Reminder;
 
 /**
@@ -22,7 +21,6 @@ import com.elementary.tasks.core.data.models.Reminder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class EnableThread extends Thread {
 
     private Context context;
@@ -33,9 +31,8 @@ public class EnableThread extends Thread {
 
     @Override
     public void run() {
-        for (Reminder item : RealmDb.getInstance().getEnabledReminders()) {
-            EventControl control = EventControlFactory.getController(context, item);
-            control.start();
+        for (Reminder item : AppDb.getAppDatabase(context).reminderDao().getAll(true, false)) {
+            EventControlFactory.getController(item).start();
         }
     }
 }
