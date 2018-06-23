@@ -53,7 +53,7 @@ public class TemplateActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_template_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_template);
         initActionBar();
         initMessageField();
 

@@ -54,7 +54,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
         readIntent();
         SharedPreferences sp = getSharedPreferences(CALENDAR_WIDGET_PREF, MODE_PRIVATE);
         int theme = sp.getInt(CALENDAR_WIDGET_THEME + widgetID, 0);
-        binding = DataBindingUtil.setContentView(this, R.layout.calendar_widget_config_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.widget_calendar_config);
         initActionBar();
         loadThemes();
         binding.themePager.setCurrentItem(theme, true);

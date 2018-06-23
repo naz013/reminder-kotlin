@@ -53,7 +53,7 @@ public class AddBirthdayWidgetConfig extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readIntent();
-        binding = DataBindingUtil.setContentView(this, R.layout.add_birthday_widget_config_layout);
+        binding = DataBindingUtil.setContentView(this, R.layout.widget_add_birthday_config);
         initActionBar();
 
         Spinner headerBgColor = findViewById(R.id.headerBgColor);

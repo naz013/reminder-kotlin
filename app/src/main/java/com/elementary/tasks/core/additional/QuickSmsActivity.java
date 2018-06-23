@@ -53,7 +53,7 @@ public class QuickSmsActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
-        ActivityQuickSmsLayoutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms_layout);
+        ActivityQuickSmsLayoutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms);
 
         binding.messagesList.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SelectableTemplatesAdapter(this);

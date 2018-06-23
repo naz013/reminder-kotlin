@@ -38,7 +38,7 @@ public class SelectThemeActivity extends ThemedActivity implements ColorPickerVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_theme_layout);
+        setContentView(R.layout.activity_select_theme);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
