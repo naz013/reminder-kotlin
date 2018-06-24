@@ -1,9 +1,6 @@
 package com.elementary.tasks.core.views;
 
 import android.content.Context;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.MeasureUtils;
-import com.elementary.tasks.databinding.ChipViewBinding;
+import com.elementary.tasks.databinding.ViewChipBinding;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -21,6 +18,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -111,7 +112,7 @@ public class FilterView extends LinearLayout {
     }
 
     private View createChip(FilterElement element, Filter filter) {
-        ChipViewBinding binding = ChipViewBinding.inflate(LayoutInflater.from(mContext));
+        ViewChipBinding binding = ViewChipBinding.inflate(LayoutInflater.from(mContext));
         binding.chipTitle.setText(element.getTitle());
         if (element.getIconId() == 0) {
             binding.iconView.setVisibility(GONE);
@@ -125,7 +126,7 @@ public class FilterView extends LinearLayout {
         return binding.getRoot();
     }
 
-    private void setStatus(ChipViewBinding binding, boolean checked) {
+    private void setStatus(ViewChipBinding binding, boolean checked) {
         if (checked) binding.rootView.setBackgroundResource(R.drawable.chip_selected_bg);
         else binding.rootView.setBackgroundResource(R.drawable.chip_bg);
     }
@@ -139,7 +140,7 @@ public class FilterView extends LinearLayout {
         return null;
     }
 
-    private void updateFilter(ChipViewBinding v, int id, String filterId) {
+    private void updateFilter(ViewChipBinding v, int id, String filterId) {
         Filter filter = getCurrent(filterId);
         Log.d(TAG, "updateFilter: before " + filter);
         if (filter != null) {
@@ -260,7 +261,7 @@ public class FilterView extends LinearLayout {
         private String title;
         private int id;
         private boolean isChecked;
-        private ChipViewBinding binding;
+        private ViewChipBinding binding;
 
         public FilterElement(@DrawableRes int iconId, String title, int id) {
             this.iconId = iconId;
@@ -275,11 +276,11 @@ public class FilterView extends LinearLayout {
             this.isChecked = isChecked;
         }
 
-        public void setBinding(ChipViewBinding binding) {
+        public void setBinding(ViewChipBinding binding) {
             this.binding = binding;
         }
 
-        public ChipViewBinding getBinding() {
+        public ViewChipBinding getBinding() {
             return binding;
         }
 

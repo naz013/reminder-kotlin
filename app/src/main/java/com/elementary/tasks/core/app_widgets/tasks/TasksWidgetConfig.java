@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.databinding.TasksWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetTasksConfigBinding;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class TasksWidgetConfig extends ThemedActivity {
     public static final String TASKS_WIDGET_THEME = "tasks_theme_";
 
     private List<TasksTheme> mThemes;
-    private TasksWidgetConfigLayoutBinding binding;
+    private WidgetTasksConfigBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

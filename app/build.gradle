@@ -10,7 +10,7 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 28
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 199
         versionName '6.3.8'
@@ -119,7 +119,7 @@ dependencies {
     }
     api project(':voiceengine')
 
-    api 'com.google.dagger:dagger-android:2.16'
+    api 'com.google.dagger:dagger:2.16'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
 
@@ -142,7 +142,7 @@ dependencies {
     api 'androidx.room:room-runtime:2.0.0-alpha1'
     api 'androidx.lifecycle:lifecycle-common-java8:2.0.0-alpha1'
     annotationProcessor 'androidx.room:room-compiler:2.0.0-alpha1'
-    annotationProcessor 'androidx.databinding:compiler:3.2.0-alpha11'
+    annotationProcessor "androidx.databinding:databinding-compiler:3.2.0-beta01"
 
     api 'com.google.android.gms:play-services-auth-base:15.0.1'
     api 'com.google.android.gms:play-services-location:15.0.1'

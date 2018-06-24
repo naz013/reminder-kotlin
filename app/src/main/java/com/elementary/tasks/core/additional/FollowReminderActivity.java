@@ -27,12 +27,13 @@ import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.ActivityFollowLayoutBinding;
+import com.elementary.tasks.databinding.ActivityFollowBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -51,10 +52,9 @@ import androidx.lifecycle.ViewModelProviders;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class FollowReminderActivity extends ThemedActivity implements CompoundButton.OnCheckedChangeListener {
 
-    private ActivityFollowLayoutBinding binding;
+    private ActivityFollowBinding binding;
     private ReminderViewModel viewModel;
 
     private int mHour = 0;
@@ -76,7 +76,7 @@ public class FollowReminderActivity extends ThemedActivity implements CompoundBu
     private boolean mStock = true;
     private boolean mTasks = true;
     private String mNumber;
-
+    @Nullable
     private Google mGoogleTasks;
 
     @Override

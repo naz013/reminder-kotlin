@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.interfaces.SimpleListener;
-import com.elementary.tasks.databinding.GroupListItemBinding;
+import com.elementary.tasks.databinding.ListItemGroupBinding;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class GroupHolder extends RecyclerView.ViewHolder {
 
-    private GroupListItemBinding binding;
+    private ListItemGroupBinding binding;
     private SimpleListener mEventListener;
 
     public GroupHolder(View v, SimpleListener listener) {

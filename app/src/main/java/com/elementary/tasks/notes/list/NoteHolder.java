@@ -5,7 +5,7 @@ import android.view.View;
 import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.ListActions;
-import com.elementary.tasks.databinding.NoteListItemBinding;
+import com.elementary.tasks.databinding.ListItemNoteBinding;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class NoteHolder extends RecyclerView.ViewHolder {
 
-    private NoteListItemBinding binding;
+    private ListItemNoteBinding binding;
 
     public NoteHolder(View v, @Nullable ActionsListener<Note> listener) {
         super(v);

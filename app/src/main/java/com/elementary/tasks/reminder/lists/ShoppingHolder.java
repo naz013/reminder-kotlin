@@ -14,8 +14,8 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
+import com.elementary.tasks.databinding.ListItemShoppingBinding;
 import com.elementary.tasks.databinding.ListItemTaskItemWidgetBinding;
-import com.elementary.tasks.databinding.ShoppingListItemBinding;
 
 import java.util.List;
 
@@ -40,11 +40,10 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class ShoppingHolder extends RecyclerView.ViewHolder {
 
     private RoboTextView listHeader;
-    private ShoppingListItemBinding binding;
+    private ListItemShoppingBinding binding;
     private RecyclerListener mEventListener;
     @Inject
     public ThemeUtil themeUtil;

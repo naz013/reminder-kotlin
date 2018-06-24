@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.databinding.CalendarWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetCalendarConfigBinding;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -45,7 +45,7 @@ public class CalendarWidgetConfig extends ThemedActivity {
     public static final String CALENDAR_WIDGET_MONTH = "calendar_month_";
     public static final String CALENDAR_WIDGET_YEAR = "calendar_year_";
 
-    private CalendarWidgetConfigLayoutBinding binding;
+    private WidgetCalendarConfigBinding binding;
     private List<CalendarTheme> mThemes;
 
     @Override

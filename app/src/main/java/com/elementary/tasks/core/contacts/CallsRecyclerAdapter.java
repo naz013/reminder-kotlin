@@ -17,11 +17,12 @@ import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.CallsListItemBinding;
+import com.elementary.tasks.databinding.ListItemCallBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,14 +57,15 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
         this.mCallback = callback;
     }
 
+    @NonNull
     @Override
-    public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new ContactViewHolder(CallsListItemBinding.inflate(inflater, parent, false).getRoot());
+        return new ContactViewHolder(ListItemCallBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         CallsItem item = mDataList.get(position);
         holder.binding.setItem(item);
     }
@@ -75,7 +77,7 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        CallsListItemBinding binding;
+        ListItemCallBinding binding;
 
         ContactViewHolder(View itemView) {
             super(itemView);

@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.contacts;
 
 import android.content.Context;
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +13,14 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.file_explorer.FilterCallback;
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.ContactListItemBinding;
+import com.elementary.tasks.databinding.ListItemContactBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -52,14 +53,15 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
         this.mCallback = callback;
     }
 
+    @NonNull
     @Override
-    public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new ContactViewHolder(ContactListItemBinding.inflate(inflater, parent, false).getRoot());
+        return new ContactViewHolder(ListItemContactBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         ContactItem item = mDataList.get(position);
         holder.binding.setItem(item);
     }
@@ -71,7 +73,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<ContactsRecycl
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        ContactListItemBinding binding;
+        ListItemContactBinding binding;
 
         ContactViewHolder(View itemView) {
             super(itemView);

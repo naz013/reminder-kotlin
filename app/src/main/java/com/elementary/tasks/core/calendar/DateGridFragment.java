@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elementary.tasks.core.views.MonthView;
-import com.elementary.tasks.databinding.DateGridFragmentBinding;
+import com.elementary.tasks.databinding.FragmentDateGridBinding;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import hirondelle.date4j.DateTime;
 
@@ -73,9 +74,9 @@ public class DateGridFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        DateGridFragmentBinding v = DateGridFragmentBinding.inflate(inflater, container, false);
+        FragmentDateGridBinding v = FragmentDateGridBinding.inflate(inflater, container, false);
         monthView = v.monthView;
         if (year != 0) {
             monthView.setDate(year, month);

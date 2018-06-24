@@ -10,8 +10,8 @@ import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
-import com.elementary.tasks.databinding.ShoppingListItemBinding;
+import com.elementary.tasks.databinding.ListItemReminderBinding;
+import com.elementary.tasks.databinding.ListItemShoppingBinding;
 import com.elementary.tasks.reminder.lists.RecyclerListener;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
 import com.elementary.tasks.reminder.lists.ShoppingHolder;
@@ -61,9 +61,9 @@ public class CalendarEventsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public final RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == 0) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, false);
+            return new ReminderHolder(ListItemReminderBinding.inflate(inflater, parent, false).getRoot(), mEventListener, false);
         } else if (viewType == 1) {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
+            return new ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         } else {
             return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         }

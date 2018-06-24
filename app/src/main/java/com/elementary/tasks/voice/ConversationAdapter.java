@@ -13,15 +13,15 @@ import com.elementary.tasks.core.data.models.Note;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Language;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.AskListItemBinding;
-import com.elementary.tasks.databinding.GroupListItemBinding;
+import com.elementary.tasks.databinding.ListItemAskBinding;
 import com.elementary.tasks.databinding.ListItemEventsBinding;
-import com.elementary.tasks.databinding.NoteListItemBinding;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
-import com.elementary.tasks.databinding.ShoppingListItemBinding;
-import com.elementary.tasks.databinding.ShowReplyLayoutBinding;
-import com.elementary.tasks.databinding.SimpleReplyLayoutBinding;
-import com.elementary.tasks.databinding.SimpleResponseLayoutBinding;
+import com.elementary.tasks.databinding.ListItemGroupBinding;
+import com.elementary.tasks.databinding.ListItemNoteBinding;
+import com.elementary.tasks.databinding.ListItemReminderBinding;
+import com.elementary.tasks.databinding.ListItemShoppingBinding;
+import com.elementary.tasks.databinding.ListItemShowReplyBinding;
+import com.elementary.tasks.databinding.ListItemSimpleReplyBinding;
+import com.elementary.tasks.databinding.ListItemSimpleResponseBinding;
 import com.elementary.tasks.groups.list.GroupHolder;
 import com.elementary.tasks.notes.list.NoteHolder;
 import com.elementary.tasks.reminder.lists.ReminderHolder;
@@ -83,23 +83,23 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reply.REPLY) {
-            return new VoiceHolder(SimpleReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
+            return new VoiceHolder(ListItemSimpleReplyBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.RESPONSE) {
-            return new VoiceResponseHolder(SimpleResponseLayoutBinding.inflate(inflater, parent, false).getRoot());
+            return new VoiceResponseHolder(ListItemSimpleResponseBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.REMINDER) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), null, false);
+            return new ReminderHolder(ListItemReminderBinding.inflate(inflater, parent, false).getRoot(), null, false);
         } else if (viewType == Reply.NOTE) {
-            return new NoteHolder(NoteListItemBinding.inflate(inflater, parent, false).getRoot(), null);
+            return new NoteHolder(ListItemNoteBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.GROUP) {
-            return new GroupHolder(GroupListItemBinding.inflate(inflater, parent, false).getRoot(), null);
+            return new GroupHolder(ListItemGroupBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.SHOW_MORE) {
-            return new ShowMoreHolder(ShowReplyLayoutBinding.inflate(inflater, parent, false).getRoot());
+            return new ShowMoreHolder(ListItemShowReplyBinding.inflate(inflater, parent, false).getRoot());
         } else if (viewType == Reply.BIRTHDAY) {
             return new BirthdayHolder(ListItemEventsBinding.inflate(inflater, parent, false).getRoot(), null);
         } else if (viewType == Reply.SHOPPING) {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), null);
+            return new ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).getRoot(), null);
         } else {
-            return new AskHolder(AskListItemBinding.inflate(inflater, parent, false).getRoot());
+            return new AskHolder(ListItemAskBinding.inflate(inflater, parent, false).getRoot());
         }
     }
 
@@ -149,7 +149,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class AskHolder extends RecyclerView.ViewHolder {
 
-        private AskListItemBinding binding;
+        private ListItemAskBinding binding;
         private AskAction askAction;
 
         AskHolder(View itemView) {
@@ -186,7 +186,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class VoiceHolder extends RecyclerView.ViewHolder {
 
-        SimpleReplyLayoutBinding binding;
+        ListItemSimpleReplyBinding binding;
 
         VoiceHolder(View itemView) {
             super(itemView);
@@ -196,7 +196,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class VoiceResponseHolder extends RecyclerView.ViewHolder {
 
-        SimpleResponseLayoutBinding binding;
+        ListItemSimpleResponseBinding binding;
 
         VoiceResponseHolder(View itemView) {
             super(itemView);
@@ -206,7 +206,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class ShowMoreHolder extends RecyclerView.ViewHolder {
 
-        private ShowReplyLayoutBinding binding;
+        private ListItemShowReplyBinding binding;
 
         ShowMoreHolder(View itemView) {
             super(itemView);

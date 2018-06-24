@@ -15,7 +15,7 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.utils.Dialogues;
-import com.elementary.tasks.databinding.CurrentWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetCurrentTasksConfigBinding;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class EventsWidgetConfig extends ThemedActivity {
 
     private int textSize;
 
-    private CurrentWidgetConfigLayoutBinding binding;
+    private WidgetCurrentTasksConfigBinding binding;
     private List<EventsTheme> mThemes;
 
     @Override

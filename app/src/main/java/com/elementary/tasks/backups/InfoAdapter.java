@@ -14,7 +14,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.chart.PieSlice;
 import com.elementary.tasks.core.utils.MemoryUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
-import com.elementary.tasks.databinding.BackupItemLayoutBinding;
+import com.elementary.tasks.databinding.ListItemBackupInfoBinding;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,7 +37,6 @@ import java.util.concurrent.ExecutionException;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class InfoAdapter {
 
     private static final String FILE_NAME = "Google_photo.jpg";
@@ -57,13 +56,13 @@ public class InfoAdapter {
         if (layout == null) return;
         layout.removeAllViewsInLayout();
         for (UserItem userItem : data) {
-            BackupItemLayoutBinding binding = getView();
+            ListItemBackupInfoBinding binding = getView();
             fillInfo(binding, userItem);
             layout.addView(binding.getRoot());
         }
     }
 
-    private void fillInfo(BackupItemLayoutBinding binding, UserItem model) {
+    private void fillInfo(ListItemBackupInfoBinding binding, UserItem model) {
         if (model != null) {
             binding.moreButton.setOnClickListener(view -> showPopup(model.getKind(), view));
             if (model.getKind() == UserInfoAsync.Info.Local) {
@@ -104,7 +103,7 @@ public class InfoAdapter {
         popupMenu.show();
     }
 
-    private void showQuota(BackupItemLayoutBinding binding, UserItem model) {
+    private void showQuota(ListItemBackupInfoBinding binding, UserItem model) {
         long quota = model.getQuota();
         if (quota != 0) {
             final long availQ = quota - (model.getUsed());
@@ -160,8 +159,8 @@ public class InfoAdapter {
         }).start();
     }
 
-    private BackupItemLayoutBinding getView() {
-        return BackupItemLayoutBinding.inflate(LayoutInflater.from(mContext));
+    private ListItemBackupInfoBinding getView() {
+        return ListItemBackupInfoBinding.inflate(LayoutInflater.from(mContext));
     }
 
     public interface ActionCallback {
