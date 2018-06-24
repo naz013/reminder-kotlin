@@ -10,12 +10,13 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
-import com.elementary.tasks.databinding.ShoppingListItemBinding;
+import com.elementary.tasks.databinding.ListItemReminderBinding;
+import com.elementary.tasks.databinding.ListItemShoppingBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -111,18 +112,19 @@ public class RemindersRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == Reminder.REMINDER) {
-            return new ReminderHolder(ReminderListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener, isEditable);
+            return new ReminderHolder(ListItemReminderBinding.inflate(inflater, parent, false).getRoot(), mEventListener, isEditable);
         } else {
-            return new ShoppingHolder(ShoppingListItemBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
+            return new ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).getRoot(), mEventListener);
         }
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         Reminder item = getItem(position);
         if (holder instanceof ReminderHolder) {
             ReminderHolder reminderHolder = (ReminderHolder) holder;

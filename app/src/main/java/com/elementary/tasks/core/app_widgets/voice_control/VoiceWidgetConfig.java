@@ -3,7 +3,6 @@ package com.elementary.tasks.core.app_widgets.voice_control;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +16,13 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.databinding.VoiceWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetVoiceConfigBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.databinding.DataBindingUtil;
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,7 +49,7 @@ public class VoiceWidgetConfig extends ThemedActivity {
     private Intent resultValue;
     private int color;
 
-    private VoiceWidgetConfigLayoutBinding binding;
+    private WidgetVoiceConfigBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.apps;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
-import com.elementary.tasks.databinding.ApplicationListItemBinding;
+import com.elementary.tasks.databinding.ListItemApplicationBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,20 +67,21 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
         }
     }
 
+    @NonNull
     @Override
-    public ApplicationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ApplicationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ApplicationViewHolder(ApplicationListItemBinding.inflate(inflater, parent, false).getRoot());
+        return new ApplicationViewHolder(ListItemApplicationBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(ApplicationViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ApplicationViewHolder holder, int position) {
         ApplicationItem item = getItem(position);
         holder.binding.setItem(item);
     }
 
     class ApplicationViewHolder extends RecyclerView.ViewHolder {
-        ApplicationListItemBinding binding;
+        ListItemApplicationBinding binding;
 
         ApplicationViewHolder(View itemView) {
             super(itemView);

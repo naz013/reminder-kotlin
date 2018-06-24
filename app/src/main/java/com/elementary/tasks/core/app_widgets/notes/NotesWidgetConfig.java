@@ -3,7 +3,6 @@ package com.elementary.tasks.core.app_widgets.notes;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,10 +10,11 @@ import android.view.MenuItem;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
-import com.elementary.tasks.databinding.NoteWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetNoteConfigBinding;
 
 import java.util.List;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -41,7 +41,7 @@ public class NotesWidgetConfig extends ThemedActivity {
     public static final String NOTES_WIDGET_PREF = "notes_pref";
     public static final String NOTES_WIDGET_THEME = "notes_theme_";
 
-    private NoteWidgetConfigLayoutBinding binding;
+    private WidgetNoteConfigBinding binding;
     private List<NotesTheme> mThemes;
 
     @Override

@@ -3,7 +3,6 @@ package com.elementary.tasks.core.app_widgets.new_birthday;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,11 +16,13 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.databinding.AddBirthdayWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetAddBirthdayConfigBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.databinding.DataBindingUtil;
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -47,7 +48,7 @@ public class AddBirthdayWidgetConfig extends ThemedActivity {
     public static final String ADD_BIRTHDAY_WIDGET_COLOR = "widget_color_";
     private int color;
 
-    private AddBirthdayWidgetConfigLayoutBinding binding;
+    private WidgetAddBirthdayConfigBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

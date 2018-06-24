@@ -17,7 +17,7 @@ import com.elementary.tasks.R;
 import com.elementary.tasks.core.ThemedActivity;
 import com.elementary.tasks.core.app_widgets.WidgetUtils;
 import com.elementary.tasks.core.utils.Module;
-import com.elementary.tasks.databinding.AddReminderWidgetConfigLayoutBinding;
+import com.elementary.tasks.databinding.WidgetAddReminderConfigBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class AddReminderWidgetConfig extends ThemedActivity {
     public static final String ADD_REMINDER_WIDGET_COLOR = "widget_color_";
     private int color;
 
-    private AddReminderWidgetConfigLayoutBinding binding;
+    private WidgetAddReminderConfigBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeCount;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
+import com.elementary.tasks.databinding.ListItemReminderBinding;
 
 import java.util.Locale;
 
@@ -46,7 +46,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ReminderHolder extends RecyclerView.ViewHolder {
 
     private RoboTextView listHeader;
-    private ReminderListItemBinding binding;
+    private ListItemReminderBinding binding;
     private RecyclerListener mEventListener;
     @Inject
     public ThemeUtil themeUtil;

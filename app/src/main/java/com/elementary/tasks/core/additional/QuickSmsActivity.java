@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.LogUtil;
 import com.elementary.tasks.core.utils.Permissions;
 import com.elementary.tasks.core.utils.SuperUtil;
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel;
-import com.elementary.tasks.databinding.ActivityQuickSmsLayoutBinding;
+import com.elementary.tasks.databinding.ActivityQuickSmsBinding;
 
 import java.util.List;
 
@@ -40,7 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class QuickSmsActivity extends ThemedActivity {
 
     private static final int REQ_SMS = 425;
@@ -53,7 +52,7 @@ public class QuickSmsActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();
-        ActivityQuickSmsLayoutBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms);
+        ActivityQuickSmsBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_quick_sms);
 
         binding.messagesList.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SelectableTemplatesAdapter(this);

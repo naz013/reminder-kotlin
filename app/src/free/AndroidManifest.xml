@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto">
 
     <uses-feature
@@ -22,7 +23,7 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="com.cray.software.justreminder.maps.permission.MAPS_RECEIVE" />
 
-    <application>
+    <application tools:ignore="GoogleAppIndexingWarning">
         <receiver
             android:name="com.elementary.tasks.core.services.PermanentReminderReceiver"
             android:exported="false">
