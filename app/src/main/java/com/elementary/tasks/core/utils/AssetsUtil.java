@@ -29,31 +29,31 @@ public final class AssetsUtil {
     public static Typeface getTypeface(@NonNull Context context, int code) {
         Typeface typeface;
         if (code == 0) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Black.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_black.ttf");
         } else if (code == 1) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-BlackItalic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_black_italic.ttf");
         } else if (code == 2) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Bold.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_bold.ttf");
         } else if (code == 3) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-BoldItalic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_bold_italic.ttf");
         } else if (code == 4) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Italic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_italic.ttf");
         } else if (code == 5) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_light.ttf");
         } else if (code == 6) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-LightItalic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_light_italic.ttf");
         } else if (code == 7) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Medium.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_medium.ttf");
         } else if (code == 8) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-MediumItalic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_medium_italic.ttf");
         } else if (code == 9) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_regular.ttf");
         } else if (code == 10) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Thin.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_thin.ttf");
         } else if (code == 11) {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_thin_italic.ttf");
         } else {
-            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Regular.ttf");
+            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/roboto_regular.ttf");
         }
         return typeface;
     }

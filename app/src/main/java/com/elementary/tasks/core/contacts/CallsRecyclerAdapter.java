@@ -16,13 +16,13 @@ import com.elementary.tasks.core.file_explorer.RecyclerClickListener;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
 import com.elementary.tasks.core.utils.TimeUtil;
-import com.elementary.tasks.core.views.roboto.RoboTextView;
 import com.elementary.tasks.databinding.ListItemCallBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -176,7 +176,7 @@ public class CallsRecyclerAdapter extends RecyclerView.Adapter<CallsRecyclerAdap
     }
 
     @BindingAdapter({"loadCallDate"})
-    public static void loadDate(RoboTextView textView, long date) {
+    public static void loadDate(AppCompatTextView textView, long date) {
         boolean is24 = Prefs.getInstance(textView.getContext()).is24HourFormatEnabled();
         textView.setText(TimeUtil.getSimpleDateTime(date, is24));
     }

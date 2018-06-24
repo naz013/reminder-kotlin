@@ -7,16 +7,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.roboto.RoboEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/searchField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:hint="@string/search"
-            app:edit_font_style="roboto_light" />
+            app:fontFamily="@font/roboto_light" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
@@ -46,7 +46,7 @@
                 android:layout_height="72dp"
                 android:layout_marginBottom="24dp" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/emptyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:gravity="center|top"
                 android:text="@string/no_calls_found"
                 android:textSize="25sp"
-                app:font_style="roboto_regular" />
+                app:fontFamily="@font/roboto_regular" />
 
         </LinearLayout>
     </LinearLayout>
