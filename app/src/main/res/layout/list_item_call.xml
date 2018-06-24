@@ -29,27 +29,27 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 app:loadCallImage='@{item.uri}' />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="72dp"
                 android:layout_marginStart="72dp"
+                android:layout_marginLeft="72dp"
                 android:orientation="vertical">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/itemName"
                     android:layout_width="220.5dp"
                     android:layout_height="24dp"
                     android:text="@{item.name ?? item.number}"
                     android:textSize="16sp"
-                    app:font_style="roboto_medium" />
+                    app:fontFamily="@font/roboto_medium" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -63,15 +63,15 @@
                         android:scaleType="fitCenter"
                         app:loadIcon='@{item.type}' />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/itemDate"
                         android:layout_width="220.5dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center|start"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
                         android:textSize="14sp"
-                        app:font_style="roboto_light"
+                        app:fontFamily="@font/roboto_light"
                         app:loadCallDate='@{item.date}' />
 
                 </LinearLayout>
