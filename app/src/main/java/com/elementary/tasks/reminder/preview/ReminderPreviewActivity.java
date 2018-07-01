@@ -35,7 +35,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding;
 import com.elementary.tasks.databinding.ListItemTaskBinding;
-import com.elementary.tasks.databinding.NoteListItemBinding;
+import com.elementary.tasks.databinding.ListItemNoteBinding;
 import com.elementary.tasks.google_tasks.TaskActivity;
 import com.elementary.tasks.google_tasks.TasksConstants;
 import com.elementary.tasks.notes.preview.NotePreviewActivity;
@@ -160,7 +160,7 @@ public class ReminderPreviewActivity extends ThemedActivity {
 
     private void showNote() {
         if (mNote != null) {
-            NoteListItemBinding binding = NoteListItemBinding.inflate(LayoutInflater.from(this));
+            ListItemNoteBinding binding = ListItemNoteBinding.inflate(LayoutInflater.from(this));
             binding.setNote(mNote);
             binding.noteClick.setOnClickListener(v ->
                     startActivity(new Intent(ReminderPreviewActivity.this, NotePreviewActivity.class)

@@ -2,6 +2,8 @@ package com.elementary.tasks.reminder.create_edit.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -107,7 +109,7 @@ public class ShopFragment extends TypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderShopBinding.inflate(inflater, container, false);
         binding.dateViewShopping.setOnLongClickListener(view -> {
             selectDateDialog();

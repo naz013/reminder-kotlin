@@ -19,8 +19,6 @@ import com.elementary.tasks.core.view_models.places.PlacesViewModel;
 import com.elementary.tasks.databinding.FragmentPlacesBinding;
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment;
 import com.elementary.tasks.places.create.CreatePlaceActivity;
-import com.elementary.tasks.places.list.PlaceFilterController;
-import com.elementary.tasks.places.list.PlacesRecyclerAdapter;
 import com.elementary.tasks.reminder.lists.filters.FilterCallback;
 
 import java.util.List;
@@ -64,7 +62,7 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            if (mAdapter != null) filterController.setSearchValue(query);
+            filterController.setSearchValue(query);
             if (mSearchMenu != null) {
                 mSearchMenu.collapseActionView();
             }
@@ -73,7 +71,7 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if (mAdapter != null) filterController.setSearchValue(newText);
+            filterController.setSearchValue(newText);
             return false;
         }
     };
@@ -106,15 +104,15 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPlacesBinding.inflate(inflater, container, false);
-        initList();
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initList();
         initViewModel();
     }
 
@@ -152,7 +150,7 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
         mAdapter.setActionsListener((view, position, place, actions) -> {
             switch (actions) {
                 case OPEN:
-                    openPlace(place);
+                    if (place != null) openPlace(place);
                     break;
                 case MORE:
                     showMore(place);
@@ -180,7 +178,7 @@ public class PlacesFragment extends BaseNavigationFragment implements FilterCall
     }
 
     private void refreshView() {
-        if (mAdapter == null || mAdapter.getItemCount() == 0) {
+        if (mAdapter.getItemCount() == 0) {
             binding.emptyItem.setVisibility(View.VISIBLE);
             binding.recyclerView.setVisibility(View.GONE);
         } else {

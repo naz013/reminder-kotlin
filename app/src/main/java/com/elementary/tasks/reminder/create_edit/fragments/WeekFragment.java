@@ -182,7 +182,7 @@ public class WeekFragment extends RepeatableTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWeekdaysBinding.inflate(inflater, container, false);
         binding.timeField.setOnClickListener(timeClick);
         binding.timeField.setText(TimeUtil.getTime(updateTime(System.currentTimeMillis()),

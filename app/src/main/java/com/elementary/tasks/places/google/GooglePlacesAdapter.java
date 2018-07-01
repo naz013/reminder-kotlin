@@ -1,6 +1,8 @@
 package com.elementary.tasks.places.google;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.SimpleTextItemAdvancedBinding;
+import com.elementary.tasks.databinding.ListItemSimpleTextAdvancedBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,6 @@ import androidx.recyclerview.widget.RecyclerView;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder> {
 
     private List<GooglePlaceItem> array = new ArrayList<>();
@@ -45,7 +46,7 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public SimpleTextItemAdvancedBinding binding;
+        public ListItemSimpleTextAdvancedBinding binding;
 
         public ViewHolder(final View v) {
             super(v);
@@ -72,13 +73,14 @@ public class GooglePlacesAdapter extends RecyclerView.Adapter<GooglePlacesAdapte
         return getItemCount() - 1;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        return new ViewHolder(SimpleTextItemAdvancedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        return new ViewHolder(ListItemSimpleTextAdvancedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         GooglePlaceItem item = array.get(position);
         holder.binding.setItem(item);
         holder.binding.placeIcon.setImageResource(getIcon(item.getTypes()));

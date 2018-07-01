@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -133,7 +135,7 @@ public class ApplicationFragment extends RepeatableTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderApplicationBinding.inflate(inflater, container, false);
         binding.pickApplication.setOnClickListener(appClick);
         binding.repeatView.enablePrediction(true);

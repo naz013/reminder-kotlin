@@ -22,7 +22,7 @@ import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.NoteListItemBinding;
+import com.elementary.tasks.databinding.ListItemNoteBinding;
 import com.elementary.tasks.notes.create.NoteImage;
 import com.elementary.tasks.notes.preview.ImagePreviewActivity;
 
@@ -95,7 +95,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NoteHolder> {
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NoteHolder(NoteListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot(), mActionListener);
+        return new NoteHolder(ListItemNoteBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot(), mActionListener);
     }
 
     @Override

@@ -25,7 +25,7 @@ import com.elementary.tasks.core.utils.UriUtil;
 import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.view_models.main_image.MainImagesViewModel;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
-import com.elementary.tasks.databinding.ActivityMainImageLayoutBinding;
+import com.elementary.tasks.databinding.ActivityMainImageBinding;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class MainImageActivity extends ThemedActivity implements CompoundButton.
     private static final int REQUEST_DOWNLOAD = 112;
     private static final int REQUEST_REMINDER = 113;
 
-    private ActivityMainImageLayoutBinding binding;
+    private ActivityMainImageBinding binding;
     private RecyclerView imagesList;
     private ImagesRecyclerAdapter mAdapter;
 

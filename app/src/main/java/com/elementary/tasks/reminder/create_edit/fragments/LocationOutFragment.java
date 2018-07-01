@@ -223,7 +223,7 @@ public class LocationOutFragment extends RadiusTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderLocationOutBinding.inflate(inflater, container, false);
         advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
                 Prefs.getInstance(getContext()).getMarkerStyle(), ThemeUtil.getInstance(getContext()).isDark());

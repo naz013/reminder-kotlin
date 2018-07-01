@@ -19,7 +19,7 @@ import android.widget.Filterable;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.AssetsUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.EmailItemLayoutBinding;
+import com.elementary.tasks.databinding.ListItemEmailBinding;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -141,7 +141,7 @@ public class EmailAutoCompleteView extends AppCompatAutoCompleteTextView {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = EmailItemLayoutBinding.inflate(LayoutInflater.from(mContext), viewGroup, false).getRoot();
+                view = ListItemEmailBinding.inflate(LayoutInflater.from(mContext), viewGroup, false).getRoot();
             }
             EmailItem item = items.get(i);
             RoboTextView nameView = view.findViewById(R.id.nameView);

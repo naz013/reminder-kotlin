@@ -7,11 +7,12 @@ import android.view.ViewGroup;
 import com.elementary.tasks.core.data.models.Group;
 import com.elementary.tasks.core.interfaces.SimpleListener;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.GroupListItemBinding;
+import com.elementary.tasks.databinding.ListItemGroupBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,13 +46,14 @@ public class GroupsRecyclerAdapter extends RecyclerView.Adapter<GroupHolder> {
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public GroupHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new GroupHolder(GroupListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot(), mEventListener);
+    public GroupHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new GroupHolder(ListItemGroupBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot(), mEventListener);
     }
 
     @Override
-    public void onBindViewHolder(final GroupHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final GroupHolder holder, final int position) {
         Group item = mDataList.get(position);
         holder.setData(item);
     }

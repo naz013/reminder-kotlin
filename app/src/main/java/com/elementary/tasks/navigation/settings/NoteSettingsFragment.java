@@ -2,6 +2,8 @@ package com.elementary.tasks.navigation.settings;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,7 @@ import android.widget.SeekBar;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding;
-import com.elementary.tasks.databinding.FragmentSettingsNotesLayoutBinding;
+import com.elementary.tasks.databinding.FragmentSettingsNotesBinding;
 
 import java.util.Locale;
 
@@ -33,7 +35,7 @@ import java.util.Locale;
 
 public class NoteSettingsFragment extends BaseSettingsFragment {
 
-    private FragmentSettingsNotesLayoutBinding binding;
+    private FragmentSettingsNotesBinding binding;
     private View.OnClickListener mNoteReminderClick = view -> changeNoteReminder();
     private View.OnClickListener mNoteColorRememberClick = view -> changeNoteColorRemembering();
     private View.OnClickListener mNoteTimeClick = view -> showTimePickerDialog();
@@ -42,8 +44,8 @@ public class NoteSettingsFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentSettingsNotesLayoutBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSettingsNotesBinding.inflate(inflater, container, false);
         initNoteReminderPrefs();
         initNoteTime();
         initTextSizePrefs();

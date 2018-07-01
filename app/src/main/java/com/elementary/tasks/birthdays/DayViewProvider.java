@@ -18,6 +18,7 @@ import com.elementary.tasks.core.utils.TimeUtil;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -355,7 +356,7 @@ public class DayViewProvider {
                 return;
             }
             if (isCanceled) return;
-            res.sort((eventsItem, t1) -> {
+            Collections.sort(res, (eventsItem, t1) -> {
                 long time1 = 0, time2 = 0;
                 if (eventsItem.getObject() instanceof Birthday) {
                     Birthday item = (Birthday) eventsItem.getObject();

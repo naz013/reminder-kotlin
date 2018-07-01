@@ -11,9 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import androidx.annotation.ColorRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +32,11 @@ import com.elementary.tasks.core.utils.ViewUtils;
 import com.elementary.tasks.core.views.IconRadioButton;
 import com.elementary.tasks.core.views.ThemedImageButton;
 import com.elementary.tasks.core.views.roboto.RoboEditText;
-import com.elementary.tasks.databinding.DrawFragmentBinding;
-import com.elementary.tasks.databinding.ImagePrefsBinding;
-import com.elementary.tasks.databinding.LayersPrefsBinding;
-import com.elementary.tasks.databinding.StandardPrefsBinding;
-import com.elementary.tasks.databinding.TextPrefsBinding;
+import com.elementary.tasks.databinding.FragmentDrawImageBinding;
+import com.elementary.tasks.databinding.ViewImagePrefsBinding;
+import com.elementary.tasks.databinding.ViewLayersPrefsBinding;
+import com.elementary.tasks.databinding.ViewStandardPrefsBinding;
+import com.elementary.tasks.databinding.ViewTextPrefsBinding;
 import com.elementary.tasks.notes.create.NoteImage;
 import com.elementary.tasks.notes.editor.layers.LayersRecyclerAdapter;
 import com.elementary.tasks.notes.editor.layers.SimpleItemTouchHelperCallback;
@@ -48,6 +45,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -71,7 +71,7 @@ public class DrawFragment extends BitmapFragment {
     private static final String TAG = "DrawFragment";
     private static final int REQUEST_SD_CARD = 1112;
 
-    private DrawFragmentBinding binding;
+    private FragmentDrawImageBinding binding;
     private DrawView mView;
     private ThemedImageButton mControlButton;
 
@@ -97,8 +97,14 @@ public class DrawFragment extends BitmapFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        binding = DrawFragmentBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentDrawImageBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setUiTheme();
         mView = binding.drawView;
         mView.setCallback(mDrawCallback);
@@ -108,7 +114,6 @@ public class DrawFragment extends BitmapFragment {
         loadImage();
         new Handler().postDelayed(this::hideToolPanel, 1000);
         new Handler().postDelayed(this::hideColorPanel, 1000);
-        return binding.getRoot();
     }
 
     private void initColorControls() {
@@ -389,11 +394,11 @@ public class DrawFragment extends BitmapFragment {
         showPrefsPanel();
     }
 
-    private LayersPrefsBinding getLayersPanel() {
+    private ViewLayersPrefsBinding getLayersPanel() {
         if (mAdapter != null) {
             mView.removeObserver(mAdapter);
         }
-        LayersPrefsBinding binding = LayersPrefsBinding.inflate(LayoutInflater.from(getContext()));
+        ViewLayersPrefsBinding binding = ViewLayersPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.layersList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mAdapter = new LayersRecyclerAdapter(getContext(), mView.getElements(),
                 viewHolder -> mItemTouchHelper.startDrag(viewHolder),
@@ -430,8 +435,8 @@ public class DrawFragment extends BitmapFragment {
         return binding;
     }
 
-    private ImagePrefsBinding getImagePanel() {
-        ImagePrefsBinding binding = ImagePrefsBinding.inflate(LayoutInflater.from(getContext()));
+    private ViewImagePrefsBinding getImagePanel() {
+        ViewImagePrefsBinding binding = ViewImagePrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -516,8 +521,8 @@ public class DrawFragment extends BitmapFragment {
         startActivityForResult(chooserIntent, Constants.ACTION_REQUEST_GALLERY);
     }
 
-    private TextPrefsBinding getTextPanel() {
-        TextPrefsBinding binding = TextPrefsBinding.inflate(LayoutInflater.from(getContext()));
+    private ViewTextPrefsBinding getTextPanel() {
+        ViewTextPrefsBinding binding = ViewTextPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -603,8 +608,8 @@ public class DrawFragment extends BitmapFragment {
         dialog.show();
     }
 
-    private StandardPrefsBinding getPenPanel() {
-        StandardPrefsBinding binding = StandardPrefsBinding.inflate(LayoutInflater.from(getContext()));
+    private ViewStandardPrefsBinding getPenPanel() {
+        ViewStandardPrefsBinding binding = ViewStandardPrefsBinding.inflate(LayoutInflater.from(getContext()));
         binding.opacitySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

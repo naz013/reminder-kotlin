@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.birthdays.CalendarEventsAdapter;
 import com.elementary.tasks.birthdays.DayViewProvider;
 import com.elementary.tasks.birthdays.EventsDataSingleton;
+import com.elementary.tasks.birthdays.create_edit.AddBirthdayActivity;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.utils.TimeUtil;
@@ -93,7 +93,8 @@ public abstract class BaseCalendarFragment extends BaseNavigationFragment {
             int mYear = calendar.get(Calendar.YEAR);
             provider.findMatches(mDay, mMonth, mYear, true, list -> {
                 if (binding != null && getContext() != null) {
-                    CalendarEventsAdapter mAdapter = new CalendarEventsAdapter(getContext(), list);
+                    CalendarEventsAdapter mAdapter = new CalendarEventsAdapter();
+                    mAdapter.setData(list);
                     binding.eventsList.setAdapter(mAdapter);
                     binding.eventsList.setVisibility(View.VISIBLE);
                     binding.loadingView.setVisibility(View.GONE);

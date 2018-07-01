@@ -2,6 +2,8 @@ package com.elementary.tasks.notes.editor;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.CropFragmentBinding;
+import com.elementary.tasks.databinding.FragmentCropImageBinding;
 import com.elementary.tasks.notes.create.NoteImage;
 
 import java.io.ByteArrayOutputStream;
@@ -33,7 +35,7 @@ import java.io.ByteArrayOutputStream;
  */
 public class CropFragment extends BitmapFragment {
 
-    private CropFragmentBinding binding;
+    private FragmentCropImageBinding binding;
 
     public static CropFragment newInstance() {
         return new CropFragment();
@@ -41,11 +43,16 @@ public class CropFragment extends BitmapFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        binding = CropFragmentBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentCropImageBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         binding.background.setBackgroundColor(ThemeUtil.getInstance(getContext()).getBackgroundStyle());
         initControls();
-        return binding.getRoot();
     }
 
     @Override

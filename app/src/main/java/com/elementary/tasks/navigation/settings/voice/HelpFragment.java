@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings.voice;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.Constants;
-import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
+import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 import java.util.Locale;
@@ -33,8 +35,8 @@ public class HelpFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsWebViewLayoutBinding binding = FragmentSettingsWebViewLayoutBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentSettingsWebViewBinding binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false);
         String localeCheck = Locale.getDefault().toString().toLowerCase();
         String url;
         if (localeCheck.startsWith("uk")) {

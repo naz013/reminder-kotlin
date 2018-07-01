@@ -12,11 +12,12 @@ import com.elementary.tasks.core.network.RetrofitBuilder;
 import com.elementary.tasks.core.utils.MeasureUtils;
 import com.elementary.tasks.core.utils.Prefs;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.PhotoListItemBinding;
+import com.elementary.tasks.databinding.ListItemPhotoBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -66,14 +67,15 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         this.prevSelected = prevSelected;
     }
 
+    @NonNull
     @Override
-    public PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        return new PhotoViewHolder(PhotoListItemBinding.inflate(inflater, parent, false).getRoot());
+    public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new PhotoViewHolder(ListItemPhotoBinding.inflate(inflater, parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(PhotoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         MainImage item = mDataList.get(position);
         holder.binding.setItem(item);
         GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) holder.binding.card.getLayoutParams();
@@ -96,7 +98,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
     }
 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
-        PhotoListItemBinding binding;
+        ListItemPhotoBinding binding;
         PhotoViewHolder(View itemView) {
             super(itemView);
             binding = DataBindingUtil.bind(itemView);
@@ -139,7 +141,7 @@ public class ImagesRecyclerAdapter extends RecyclerView.Adapter<ImagesRecyclerAd
         }
     }
 
-    @BindingAdapter("loadPhoto")
+    @BindingAdapter({"loadPhoto"})
     public static void loadPhoto(ImageView imageView, long id) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         String url = RetrofitBuilder.getImageLink(id, 800, 480);

@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings.voice;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,7 @@ import android.view.ViewGroup;
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.views.roboto.RoboTextView;
-import com.elementary.tasks.databinding.FragmentTimeOfDayLayoutBinding;
+import com.elementary.tasks.databinding.FragmentTimeOfDayBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 import java.text.ParseException;
@@ -46,8 +48,8 @@ public class TimeOfDayFragment extends BaseSettingsFragment implements View.OnCl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentTimeOfDayLayoutBinding binding = FragmentTimeOfDayLayoutBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentTimeOfDayBinding binding = FragmentTimeOfDayBinding.inflate(inflater, container, false);
         nightTime = binding.nightTime;
         nightTime.setOnClickListener(this);
         eveningTime = binding.eveningTime;

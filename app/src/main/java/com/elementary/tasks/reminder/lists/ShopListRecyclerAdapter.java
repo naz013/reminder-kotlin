@@ -1,6 +1,8 @@
 package com.elementary.tasks.reminder.lists;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
@@ -109,13 +111,14 @@ public class ShopListRecyclerAdapter extends RecyclerView.Adapter<ShopListRecycl
         }
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
         return new ViewHolder(ListItemTaskItemCardBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         onBind = true;
         final ShopItem item = mDataList.get(position);
         String title = item.getSummary();
