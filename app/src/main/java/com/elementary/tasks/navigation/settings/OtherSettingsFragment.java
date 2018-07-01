@@ -44,7 +44,6 @@ import java.util.List;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 public class OtherSettingsFragment extends BaseSettingsFragment {
 
     private List<Item> mDataList = new ArrayList<>();
@@ -59,7 +58,7 @@ public class OtherSettingsFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentSettingsOtherBinding binding = FragmentSettingsOtherBinding.inflate(inflater, container, false);
         binding.aboutPrefs.setOnClickListener(mAboutClick);
         binding.ossPrefs.setOnClickListener(mOssClick);

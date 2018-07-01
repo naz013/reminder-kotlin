@@ -17,7 +17,7 @@ import com.elementary.tasks.core.utils.BackupTool;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.TimeUtil;
 import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel;
-import com.elementary.tasks.databinding.ActivityTemplateLayoutBinding;
+import com.elementary.tasks.databinding.ActivityTemplateBinding;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ public class TemplateActivity extends ThemedActivity {
 
     private static final int MENU_ITEM_DELETE = 12;
 
-    private ActivityTemplateLayoutBinding binding;
+    private ActivityTemplateBinding binding;
     private SmsTemplateViewModel viewModel;
 
     @Nullable

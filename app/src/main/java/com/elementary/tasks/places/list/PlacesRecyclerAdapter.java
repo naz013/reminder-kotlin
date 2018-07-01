@@ -9,7 +9,7 @@ import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.ListActions;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.PlaceListItemBinding;
+import com.elementary.tasks.databinding.ListItemPlaceBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +66,7 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        PlaceListItemBinding binding;
+        ListItemPlaceBinding binding;
 
         public ViewHolder(View v) {
             super(v);
@@ -92,7 +92,7 @@ public class PlacesRecyclerAdapter extends RecyclerView.Adapter<PlacesRecyclerAd
     @Override
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(PlaceListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
+        return new ViewHolder(ListItemPlaceBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override

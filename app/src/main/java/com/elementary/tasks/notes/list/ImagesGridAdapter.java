@@ -11,7 +11,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.ListActions;
 import com.elementary.tasks.core.utils.Module;
 import com.elementary.tasks.core.utils.ThemeUtil;
-import com.elementary.tasks.databinding.NoteImageListItemBinding;
+import com.elementary.tasks.databinding.ListItemNoteImageBinding;
 import com.elementary.tasks.notes.create.NoteImage;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PhotoViewHolder(NoteImageListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
+        return new PhotoViewHolder(ListItemNoteImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ImagesGridAdapter extends RecyclerView.Adapter<ImagesGridAdapter.Ph
     }
 
     class PhotoViewHolder extends RecyclerView.ViewHolder {
-        NoteImageListItemBinding binding;
+        ListItemNoteImageBinding binding;
 
         PhotoViewHolder(View itemView) {
             super(itemView);

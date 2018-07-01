@@ -162,7 +162,7 @@ public class YearFragment extends RepeatableTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderYearBinding.inflate(inflater, container, false);
         binding.dateView.setDateFormat(TimeUtil.SIMPLE_DATE);
         binding.dateView.setEventListener(new DateTimeView.OnSelectListener() {

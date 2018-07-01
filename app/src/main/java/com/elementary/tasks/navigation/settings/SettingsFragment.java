@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +31,7 @@ public class SettingsFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentSettingsBinding binding = FragmentSettingsBinding.inflate(inflater, container, false);
         binding.generalSettings.setOnClickListener(view -> replaceFragment(new GeneralSettingsFragment(), getString(R.string.general)));
         binding.otherSettings.setOnClickListener(view -> replaceFragment(new OtherSettingsFragment(), getString(R.string.other)));

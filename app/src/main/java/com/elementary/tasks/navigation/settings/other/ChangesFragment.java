@@ -3,6 +3,8 @@ package com.elementary.tasks.navigation.settings.other;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.elementary.tasks.R;
-import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
+import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 /**
@@ -34,8 +36,8 @@ public class ChangesFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentSettingsWebViewLayoutBinding binding = FragmentSettingsWebViewLayoutBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        FragmentSettingsWebViewBinding binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false);
         String url = "file:///android_asset/files/change_log.html";
         binding.webView.loadUrl(url);
         binding.webView.setWebViewClient(new WebViewClient() {

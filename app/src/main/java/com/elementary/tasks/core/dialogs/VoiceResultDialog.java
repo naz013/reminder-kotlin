@@ -12,7 +12,7 @@ import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.utils.Constants;
 import com.elementary.tasks.core.utils.Dialogues;
 import com.elementary.tasks.core.view_models.reminders.ReminderViewModel;
-import com.elementary.tasks.databinding.ReminderListItemBinding;
+import com.elementary.tasks.databinding.ListItemReminderBinding;
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -56,7 +56,7 @@ public class VoiceResultDialog extends BaseDialog {
         AlertDialog.Builder alert = Dialogues.getDialog(this);
         alert.setTitle(getString(R.string.saved));
 
-        ReminderListItemBinding binding = ReminderListItemBinding.inflate(LayoutInflater.from(this), null, false);
+        ListItemReminderBinding binding = ListItemReminderBinding.inflate(LayoutInflater.from(this), null, false);
         binding.setItem(reminder);
         binding.itemCheck.setVisibility(View.GONE);
         binding.reminderContainer.setBackgroundColor(getThemeUtil().getCardStyle());

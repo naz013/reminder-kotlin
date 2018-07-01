@@ -8,11 +8,12 @@ import com.elementary.tasks.core.data.models.Place;
 import com.elementary.tasks.core.data.models.Reminder;
 import com.elementary.tasks.core.interfaces.ActionsListener;
 import com.elementary.tasks.core.utils.ListActions;
-import com.elementary.tasks.databinding.LocationListItemBinding;
+import com.elementary.tasks.databinding.ListItemLocationBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,7 +55,7 @@ public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        LocationListItemBinding binding;
+        ListItemLocationBinding binding;
 
         public ViewHolder(View v) {
             super(v);
@@ -73,14 +74,15 @@ public class LocationPlacesAdapter extends RecyclerView.Adapter<LocationPlacesAd
         }
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LocationListItemBinding binding = LocationListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ListItemLocationBinding binding = ListItemLocationBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new ViewHolder(binding.getRoot());
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Reminder item = mDataList.get(position);
         Place place = item.getPlaces().get(0);
         String name = place.getName();

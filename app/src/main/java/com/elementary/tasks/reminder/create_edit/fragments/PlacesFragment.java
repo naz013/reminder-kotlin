@@ -1,6 +1,8 @@
 package com.elementary.tasks.reminder.create_edit.fragments;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -133,7 +135,7 @@ public class PlacesFragment extends RadiusTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentReminderPlaceBinding binding = FragmentReminderPlaceBinding.inflate(inflater, container, false);
         Prefs prefs = Prefs.getInstance(getActivity());
         placesMap = new PlacesMapFragment();

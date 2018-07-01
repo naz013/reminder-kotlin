@@ -145,7 +145,7 @@ public class DateFragment extends RepeatableTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentDateBinding.inflate(inflater, container, false);
         binding.repeatView.enablePrediction(true);
         binding.dateView.setEventListener(binding.repeatView.getEventListener());

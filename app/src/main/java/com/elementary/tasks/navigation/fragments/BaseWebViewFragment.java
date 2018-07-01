@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-import com.elementary.tasks.databinding.FragmentSettingsWebViewLayoutBinding;
+import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 /**
@@ -30,12 +30,12 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 public abstract class BaseWebViewFragment extends BaseSettingsFragment {
 
-    private FragmentSettingsWebViewLayoutBinding binding;
+    private FragmentSettingsWebViewBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentSettingsWebViewLayoutBinding.inflate(inflater, container, false);
+        binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false);
         setExtraParams(binding.webView);
         binding.webView.loadUrl(getUrl());
         return binding.getRoot();

@@ -195,7 +195,7 @@ public class MonthFragment extends RepeatableTypeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReminderMonthBinding.inflate(inflater, container, false);
         binding.monthDayField.setOnClickListener(dateClick);
         binding.timeField.setOnClickListener(timeClick);

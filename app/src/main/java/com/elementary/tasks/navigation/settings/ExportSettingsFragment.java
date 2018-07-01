@@ -58,7 +58,7 @@ public class ExportSettingsFragment extends BaseSettingsFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsExportBinding.inflate(inflater, container, false);
         initExportToCalendarPrefs();
         initEventDurationPrefs();

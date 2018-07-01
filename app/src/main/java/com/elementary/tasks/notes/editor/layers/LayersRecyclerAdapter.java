@@ -1,6 +1,8 @@
 package com.elementary.tasks.notes.editor.layers;
 
 import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,7 @@ import com.elementary.tasks.core.drawing.Drawing;
 import com.elementary.tasks.core.drawing.Image;
 import com.elementary.tasks.core.drawing.Text;
 import com.elementary.tasks.core.interfaces.Observer;
-import com.elementary.tasks.databinding.LayerListItemBinding;
+import com.elementary.tasks.databinding.ListItemLayerBinding;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +90,7 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        LayerListItemBinding binding;
+        ListItemLayerBinding binding;
 
         public ViewHolder(View v) {
             super(v);
@@ -105,13 +107,14 @@ public class LayersRecyclerAdapter extends RecyclerView.Adapter<LayersRecyclerAd
         }
     }
 
+    @NonNull
     @Override
-    public LayersRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayerListItemBinding.inflate(LayoutInflater.from(mContext), parent, false).getRoot());
+    public LayersRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(ListItemLayerBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(final LayersRecyclerAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final LayersRecyclerAdapter.ViewHolder holder, final int position) {
         Drawing item = mDataList.get(position);
         holder.binding.layerName.setText(getName(item));
         holder.binding.layerView.setDrawing(item);

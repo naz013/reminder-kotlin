@@ -168,7 +168,7 @@ public class FileRecyclerAdapter extends RecyclerView.Adapter<FileRecyclerAdapte
         }
     }
 
-    @BindingAdapter("loadImage")
+    @BindingAdapter({"loadImage"})
     public static void loadImage(ImageView imageView, FileDataItem item) {
         boolean isDark = ThemeUtil.getInstance(imageView.getContext()).isDark();
         if (item.getFilePath() != null && isPicture(item.getFilePath())) {

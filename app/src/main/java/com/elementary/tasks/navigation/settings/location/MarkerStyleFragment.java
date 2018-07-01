@@ -1,6 +1,8 @@
 package com.elementary.tasks.navigation.settings.location;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +11,7 @@ import android.widget.RadioGroup;
 
 import com.elementary.tasks.R;
 import com.elementary.tasks.core.views.roboto.RoboRadioButton;
-import com.elementary.tasks.databinding.FragmentMarkerStyleLayoutBinding;
+import com.elementary.tasks.databinding.FragmentMarkerStyleBinding;
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 /**
@@ -30,20 +32,25 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment;
 
 public class MarkerStyleFragment extends BaseSettingsFragment {
 
-    private FragmentMarkerStyleLayoutBinding binding;
+    private FragmentMarkerStyleBinding binding;
     private RoboRadioButton red, green, blue, yellow, greenLight, blueLight, cyan, purple,
             amber, orange, pink, teal, deepPurple, deepOrange, indigo, lime;
     private RadioGroup themeGroup, themeGroup2, themeGroup3, themeGroup4;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentMarkerStyleLayoutBinding.inflate(inflater, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentMarkerStyleBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initStyleChecks();
         initGroupViews();
         initActions();
         setUpRadio();
-        return binding.getRoot();
     }
 
     private void initActions() {
@@ -83,7 +90,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
         lime = binding.limeCheck;
     }
 
-    public void setUpRadio(){
+    private void setUpRadio(){
         int loaded = getPrefs().getMarkerStyle();
         if (loaded == 0){
             red.setChecked(true);
@@ -175,7 +182,7 @@ public class MarkerStyleFragment extends BaseSettingsFragment {
         }
     }
 
-    void saveColor(int style) {
+    private void saveColor(int style) {
         getPrefs().setMarkerStyle(style);
     }
 

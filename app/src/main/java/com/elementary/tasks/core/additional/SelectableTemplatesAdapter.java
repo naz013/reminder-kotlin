@@ -12,6 +12,7 @@ import com.elementary.tasks.databinding.ListItemMessageBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,13 +48,14 @@ class SelectableTemplatesAdapter extends RecyclerView.Adapter<SelectableTemplate
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false).getRoot());
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final SmsTemplate item = mDataList.get(position);
         holder.binding.setItem(item);
         if (item.isSelected()) {

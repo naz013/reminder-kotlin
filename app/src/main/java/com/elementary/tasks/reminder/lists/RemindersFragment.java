@@ -185,14 +185,14 @@ public class RemindersFragment extends BaseNavigationFragment implements SyncTas
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentRemindersBinding.inflate(inflater, container, false);
         initList();
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel.class);
         viewModel.events.observe(this, reminders -> {
