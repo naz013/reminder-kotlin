@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 199
         versionName '6.3.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,12 +58,12 @@ android {
             versionCode 170
         }
     }
-//    packagingOptions {
-//        exclude 'META-INF/LICENSE'
-//        exclude 'META-INF/NOTICE'
-//        exclude 'META-INF/LICENSE.txt'
-//        exclude 'META-INF/NOTICE.txt'
-//    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
     buildTypes {
         release {
             minifyEnabled true
@@ -83,19 +83,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-//    testOptions {
-//        unitTests.returnDefaultValues = true
-//    }
-//    configurations.all {
-//        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-//    }
-//    sourceSets {
-//        main.java.srcDirs += 'src/main/kotlin'
-//    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha3'
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha3', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 
     implementation('com.google.apis:google-api-services-calendar:v3-rev318-1.23.0') {
         exclude module: 'httpclient'
@@ -124,7 +126,14 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
 
-    implementation 'com.google.android.material:material:1.0.0-beta01'
+    implementation "androidx.legacy:legacy-support-v4:$support_version"
+    implementation "androidx.legacy:legacy-support-v13:$support_version"
+    implementation "androidx.cardview:cardview:$support_version"
+    implementation "androidx.recyclerview:recyclerview:$support_version"
+    implementation "androidx.appcompat:appcompat:$support_version"
+    implementation "androidx.vectordrawable:vectordrawable-animated:$support_version"
+    implementation "com.google.android.material:material:$support_version"
+    implementation "androidx.emoji:emoji-appcompat:$support_version"
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
 
