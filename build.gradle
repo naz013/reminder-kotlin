@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.support_version = '1.0.0-beta01'
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
