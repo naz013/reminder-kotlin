@@ -36,8 +36,7 @@
                 android:scaleType="center"
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:loadMarker="@{item.marker}" />
+                card_view:layout_constraintTop_toTopOf="parent" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/textView"

@@ -32,8 +32,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:loadCallImage='@{item.uri}' />
+                android:layout_marginBottom="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,8 +59,7 @@
                         android:id="@+id/itemType"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:scaleType="fitCenter"
-                        app:loadIcon='@{item.type}' />
+                        android:scaleType="fitCenter" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/itemDate"
@@ -71,8 +69,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginLeft="16dp"
                         android:textSize="14sp"
-                        app:fontFamily="@font/roboto_light"
-                        app:loadCallDate='@{item.date}' />
+                        app:fontFamily="@font/roboto_light" />
 
                 </LinearLayout>
             </LinearLayout>

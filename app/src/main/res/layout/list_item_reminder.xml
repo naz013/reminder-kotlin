@@ -1,193 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:data="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:orientation="vertical">
 
-    <data>
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/listHeader"
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textColor="?attr/colorAccent"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:font_style="roboto_light" />
 
-        <variable
-            name="item"
-            type="com.elementary.tasks.core.data.models.Reminder" />
-
-        <variable
-            name="click"
-            type="com.elementary.tasks.core.interfaces.ClickListener" />
-    </data>
-
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/itemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:orientation="vertical">
+        android:clipChildren="false"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="3dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="1dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/listHeader"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            android:background="@android:color/transparent"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:textColor="?attr/colorAccent"
-            android:textSize="14sp"
-            android:visibility="gone"
-            app:font_style="roboto_light" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/itemCard"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reminderContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:clipChildren="false"
-            android:foreground="?attr/selectableItemBackground"
-            android:onClick="@{click::onClick}"
-            app:cardCornerRadius="3dp"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="1dp">
+            android:focusable="false">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/reminderContainer"
-                android:layout_width="match_parent"
+            <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
+                android:id="@+id/itemCheck"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="false">
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:switch_font_style="roboto_medium" />
 
-                <com.elementary.tasks.core.views.roboto.RoboSwitchCompat
-                    android:id="@+id/itemCheck"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:onClick="@{click::onClick}"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:switch_font_style="roboto_medium" />
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/reminder_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:maxLines="1"
+                app:font_style="roboto_light"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/reminder_type"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:maxLines="1"
-                    app:font_style="roboto_light"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/taskText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                app:font_style="roboto_medium"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toBottomOf="@+id/reminder_type" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/taskText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
-                    android:focusable="false"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="@{item.summary}"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    app:font_style="roboto_medium"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toBottomOf="@+id/reminder_type" />
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/taskDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:focusable="false"
+                android:maxLines="1"
+                android:paddingBottom="8dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toBottomOf="@+id/reminder_phone" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/taskDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
-                    android:focusable="false"
-                    android:maxLines="1"
-                    android:paddingBottom="8dp"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toBottomOf="@+id/reminder_phone" />
-
-                <LinearLayout
-                    android:id="@+id/endContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toBottomOf="@+id/taskDate">
-
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/repeatInterval"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:focusable="false"
-                        android:gravity="start"
-                        android:textSize="15sp"
-                        app:font_style="roboto_light" />
-
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/remainingTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:focusable="false"
-                        android:gravity="end"
-                        android:maxLines="1"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textStyle="italic"
-                        android:visibility="visible"
-                        app:font_style="roboto_medium" />
-
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/endContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toBottomOf="@+id/taskDate">
 
                 <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/reminder_phone"
-                    android:layout_width="0dp"
+                    android:id="@+id/repeatInterval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:focusable="false"
+                    android:gravity="start"
+                    android:textSize="15sp"
+                    app:font_style="roboto_light" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/remainingTime"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
                     android:focusable="false"
+                    android:gravity="end"
                     android:maxLines="1"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    app:font_style="roboto_light"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/itemCheck"
-                    app:layout_constraintTop_toBottomOf="@+id/taskText" />
+                    android:textStyle="italic"
+                    android:visibility="visible"
+                    app:font_style="roboto_medium" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
-                    android:id="@+id/button_more"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@null"
-                    android:onClick="@{click::onClick}"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tb_icon="@drawable/ic_more_vert_black_24dp"
-                    app:tb_icon_light="@drawable/ic_more_vert_white_24dp" />
+            </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </LinearLayout>
-</layout>
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/reminder_phone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:focusable="false"
+                android:maxLines="1"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                app:font_style="roboto_light"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/itemCheck"
+                app:layout_constraintTop_toBottomOf="@+id/taskText" />
+
+            <com.elementary.tasks.core.views.ThemedImageButton
+                android:id="@+id/button_more"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@null"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tb_icon="@drawable/ic_more_vert_black_24dp"
+                app:tb_icon_light="@drawable/ic_more_vert_white_24dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

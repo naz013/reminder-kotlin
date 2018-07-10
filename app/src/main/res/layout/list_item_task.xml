@@ -1,95 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="0dp"
+    app:cardUseCompatPadding="true">
 
-    <data>
-
-        <import type="android.view.View" />
-
-        <variable
-            name="googleTask"
-            type="com.elementary.tasks.core.data.models.GoogleTask" />
-
-        <variable
-            name="click"
-            type="com.elementary.tasks.core.interfaces.ClickListener" />
-    </data>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?attr/selectableItemBackground"
-        android:onClick="@{click::onClick}"
-        app:cardCornerRadius="0dp"
-        app:cardUseCompatPadding="true"
-        app:loadTaskCard='@{googleTask.hidden}'>
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/listColor"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="@color/bluePrimary" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <View
-                android:id="@+id/listColor"
-                android:layout_width="5dp"
-                android:layout_height="match_parent"
-                android:background="@color/bluePrimary"
-                app:loadMarker='@{googleTask.listId}' />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/task"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@{googleTask.title}"
-                    android:textSize="17sp"
-                    tools:text="Task"
-                    app:font_style="roboto_light" />
-
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:maxLines="1"
-                    android:text="@{googleTask.notes}"
-                    android:textSize="15sp"
-                    tools:text="Note"
-                    app:font_style="roboto_light" />
-
-            </LinearLayout>
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/taskDate"
-                android:layout_width="wrap_content"
+                android:id="@+id/task"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:gravity="center"
-                android:textSize="14sp"
-                tools:text="14/04"
-                app:font_style="roboto_medium"
-                app:loadDue='@{googleTask.dueDate}' />
+                android:maxLines="1"
+                android:textSize="17sp"
+                tools:text="Task"
+                app:font_style="roboto_light" />
 
-            <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                android:id="@+id/checkDone"
-                android:layout_width="wrap_content"
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/note"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                app:loadCheck='@{googleTask}' />
+                android:layout_marginTop="4dp"
+                android:maxLines="1"
+                android:textSize="15sp"
+                tools:text="Note"
+                app:font_style="roboto_light" />
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</layout>
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/taskDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            tools:text="14/04"
+            app:font_style="roboto_medium" />
+
+        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+            android:id="@+id/checkDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
