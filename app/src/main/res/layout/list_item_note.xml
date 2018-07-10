@@ -17,8 +17,7 @@
         android:clipChildren="false"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="3dp"
-        app:cardUseCompatPadding="true"
-        app:loadNoteCard='@{note.color}'>
+        app:cardUseCompatPadding="true">
 
         <LinearLayout
             android:id="@+id/noteClick"
@@ -30,8 +29,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:loadImage='@{note}'>
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/noteImage"
@@ -59,8 +57,7 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:textColor="@color/blackPrimary"
-                app:loadNote="@{note}" />
+                android:textColor="@color/blackPrimary" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

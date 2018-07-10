@@ -1,0 +1,168 @@
+package com.elementary.tasks.core.utils
+
+import android.content.Context
+import android.media.AudioManager
+import android.os.Handler
+
+import timber.log.Timber
+
+/**
+ * Copyright 2017 Nazar Suhovich
+ *
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+class SoundStackHolder private constructor() : Sound.PlaybackCallback {
+    var sound: Sound? = null
+        private set
+
+    private var mMusicVolume = -1
+    private var mAlarmVolume = -1
+    private var mNotificationVolume = -1
+
+    private var isDoNotDisturbEnabled: Boolean = false
+    private var isHeadset: Boolean = false
+    private var isSystemLoudnessEnabled: Boolean = false
+    private var isIncreasingLoudnessEnabled: Boolean = false
+    private var hasDefaultSaved: Boolean = false
+    private var hasVolumePermission: Boolean = false
+
+    private var mAudioManager: AudioManager? = null
+    private val mHandler = Handler()
+
+    private var mStreamVol: Int = 0
+    private var mVolume: Int = 0
+    private var mStream: Int = 0
+    private var mMaxVolume: Int = 0
+    private var mSystemStream: Int = 0
+
+    private val mVolumeIncrease = object : Runnable {
+        override fun run() {
+            Timber.d("mVolumeIncrease -> run: $mVolume, $mStreamVol")
+            if (mVolume < mStreamVol) {
+                mVolume++
+                mHandler.postDelayed(this, 750)
+                if (mAudioManager != null) mAudioManager!!.setStreamVolume(mStream, mVolume, 0)
+            } else
+                mHandler.removeCallbacks(this)
+        }
+    }
+
+    fun init(context: Context) {
+        isHeadset = SuperUtil.isHeadsetUsing(context)
+        hasVolumePermission = SuperUtil.hasVolumePermission(context)
+        isSystemLoudnessEnabled = Prefs.getInstance(context).isSystemLoudnessEnabled
+        isIncreasingLoudnessEnabled = Prefs.getInstance(context).isIncreasingLoudnessEnabled
+        if (isSystemLoudnessEnabled) mSystemStream = Prefs.getInstance(context).soundStream
+        if (mAudioManager != null) return
+
+        if (sound != null)
+            sound!!.stop(true)
+        else
+            sound = Sound(context)
+
+        sound!!.setCallback(this)
+        mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) mAudioManager!!.mode = AudioManager.MODE_NORMAL
+        isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
+    }
+
+    fun setMaxVolume(maxVolume: Int) {
+        this.mMaxVolume = maxVolume
+    }
+
+    @Synchronized
+    private fun saveDefaultVolume() {
+        Timber.d("saveDefaultVolume: %s", hasDefaultSaved)
+        if (!hasDefaultSaved && mAudioManager != null) {
+            mMusicVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_MUSIC)
+            mAlarmVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_ALARM)
+            mNotificationVolume = mAudioManager!!.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
+            hasDefaultSaved = true
+        }
+    }
+
+    @Synchronized
+    private fun restoreDefaultVolume() {
+        Timber.d("restoreDefaultVolume: $hasDefaultSaved, doNot: $isDoNotDisturbEnabled, am $mAudioManager")
+        if (hasDefaultSaved && !isDoNotDisturbEnabled) {
+            if (mAudioManager != null) {
+                try {
+                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_ALARM, mAlarmVolume, 0)
+                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, mMusicVolume, 0)
+                    mAudioManager!!.setStreamVolume(AudioManager.STREAM_NOTIFICATION, mNotificationVolume, 0)
+                } catch (ignored: SecurityException) {
+                }
+
+            }
+            mMusicVolume = -1
+            mNotificationVolume = -1
+            mAlarmVolume = -1
+        }
+        hasDefaultSaved = false
+    }
+
+    override fun onFinish() {
+        cancelIncreaseSound()
+        restoreDefaultVolume()
+    }
+
+    override fun onStart() {
+        saveDefaultVolume()
+        setPlayerVolume()
+    }
+
+    private fun setPlayerVolume() {
+        cancelIncreaseSound()
+        if (isHeadset) return
+        if (!hasVolumePermission) return
+        if (mAudioManager == null) return
+
+        if (isSystemLoudnessEnabled)
+            mStream = mSystemStream
+        else
+            mStream = AudioManager.STREAM_MUSIC
+
+        val volPercent = mMaxVolume.toFloat() / Configs.MAX_VOLUME
+        val maxVol = mAudioManager!!.getStreamMaxVolume(mStream)
+        mStreamVol = (maxVol * volPercent).toInt()
+        mVolume = mStreamVol
+        if (isIncreasingLoudnessEnabled) {
+            mVolume = 0
+            mHandler.postDelayed(mVolumeIncrease, 750)
+        }
+        mAudioManager!!.setStreamVolume(mStream, mVolume, 0)
+    }
+
+    fun cancelIncreaseSound() {
+        mHandler.removeCallbacks(mVolumeIncrease)
+    }
+
+    companion object {
+
+        private var instance: SoundStackHolder? = null
+
+        fun getInstance(): SoundStackHolder {
+            if (instance == null) {
+                synchronized(SoundStackHolder::class.java) {
+                    if (instance == null) {
+                        instance = SoundStackHolder()
+                    }
+                }
+            }
+            return instance
+        }
+    }
+}

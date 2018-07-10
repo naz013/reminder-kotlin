@@ -1,133 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
-
-            <com.elementary.tasks.core.views.roboto.RoboEditText
-                android:id="@+id/birthName"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/transparent"
-                android:hint="@string/name"
-                android:textColorHint="@color/whitePrimary"
-                android:textSize="@dimen/create_text_size_secondary"
-                app:edit_font_style="roboto_light" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <ScrollView
+        <com.elementary.tasks.core.views.roboto.RoboEditText
+            android:id="@+id/birthName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/name"
+            android:textColorHint="@color/whitePrimary"
+            android:textSize="@dimen/create_text_size_secondary"
+            app:edit_font_style="roboto_light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:orientation="vertical">
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/dateIcon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@null"
+                    android:scaleType="center"
+                    app:tb_icon="@drawable/ic_calendar"
+                    app:tb_icon_light="@drawable/ic_calendar_white" />
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/birthDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/dateIcon"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@null"
-                        android:scaleType="center"
-                        app:tb_icon="@drawable/ic_calendar"
-                        app:tb_icon_light="@drawable/ic_calendar_white" />
-
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/birthDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginStart="12dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:text="25/05/1985"
-                        android:textSize="@dimen/add_birthday_text_size_primary"
-                        app:font_style="roboto_medium" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/view_margin_top"
-                    android:layout_marginTop="@dimen/view_margin_top"
-                    android:background="?attr/colorAccent" />
-
-                <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                    android:id="@+id/contactCheck"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/checkbox_padding"
-                    android:paddingEnd="@dimen/checkbox_padding"
-                    android:text="@string/contact"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="25/05/1985"
                     android:textSize="@dimen/add_birthday_text_size_primary"
-                    app:check_font_style="roboto_light" />
+                    app:font_style="roboto_medium" />
 
-                <LinearLayout
-                    android:id="@+id/container"
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/view_margin_top"
+                android:layout_marginBottom="@dimen/view_margin_top"
+                android:background="?attr/colorAccent" />
+
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/contactCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/checkbox_padding"
+                android:paddingEnd="@dimen/checkbox_padding"
+                android:text="@string/contact"
+                android:textSize="@dimen/add_birthday_text_size_primary"
+                app:check_font_style="roboto_light" />
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin_top"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/pickContact"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="false"
+                    android:contentDescription="@string/acc_select_number_from_contacts"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:textSize="@dimen/add_birthday_text_size_primary"
+                    app:tb_icon="@drawable/ic_perm_identity_black_24dp"
+                    app:tb_icon_light="@drawable/ic_perm_identity_white_24dp" />
+
+                <com.elementary.tasks.core.views.roboto.RoboEditText
+                    android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/view_margin_top"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/pickContact"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@android:color/transparent"
-                        android:clickable="false"
-                        android:contentDescription="@string/acc_select_number_from_contacts"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:textSize="@dimen/add_birthday_text_size_primary"
-                        app:tb_icon="@drawable/ic_perm_identity_black_24dp"
-                        app:tb_icon_light="@drawable/ic_perm_identity_white_24dp" />
-
-                    <com.elementary.tasks.core.views.roboto.RoboEditText
-                        android:id="@+id/phone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginStart="12dp"
-                        android:ems="10"
-                        android:hint="@string/phone"
-                        android:inputType="phone"
-                        android:textSize="@dimen/add_birthday_text_size_primary"
-                        app:edit_font_style="roboto_light" />
-                </LinearLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:ems="10"
+                    android:hint="@string/phone"
+                    android:inputType="phone"
+                    android:textSize="@dimen/add_birthday_text_size_primary"
+                    app:edit_font_style="roboto_light" />
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</layout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

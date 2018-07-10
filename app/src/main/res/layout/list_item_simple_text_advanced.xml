@@ -34,7 +34,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:checked="@{item.selected}"
             android:gravity="center" />
 
         <LinearLayout
