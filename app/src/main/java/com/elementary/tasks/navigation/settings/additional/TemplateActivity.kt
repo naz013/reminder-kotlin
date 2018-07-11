@@ -1,13 +1,10 @@
 package com.elementary.tasks.navigation.settings.additional
 
 import android.content.ContentResolver
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 
 import com.elementary.tasks.R
@@ -16,7 +13,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplateViewModel
+import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 
 import java.io.IOException

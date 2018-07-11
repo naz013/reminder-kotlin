@@ -4,25 +4,15 @@ import android.app.AlarmManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.calendar.FlextHelper
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-
-import java.text.ParseException
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.HashMap
+import com.elementary.tasks.core.utils.*
 import hirondelle.date4j.DateTime
+import java.text.ParseException
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,8 +36,8 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
     @Volatile
     var isReady: Boolean = false
         private set
-    private val observers = ArrayList<Callback>()
-    private val map = HashMap<DateTime, Events>()
+    private val observers = mutableListOf<Callback>()
+    private val map = mutableMapOf<DateTime, Events>()
     private val mHandler = Handler(Looper.getMainLooper())
 
     val events: Map<DateTime, Events>
@@ -76,12 +66,16 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
         }
     }
 
-    private fun setEvent(eventTime: Long, summary: String?, color: Int, type: Events.Type) {
+    private fun setEvent(eventTime: Long, summary: String, color: Int, type: Events.Type) {
         val key = FlextHelper.convertToDateTime(eventTime)
         if (map.containsKey(key)) {
-            val events = map[key]
-            events.addEvent(summary, color, type, eventTime)
-            map[key] = events
+            var ev = map[key]
+            if (ev == null) {
+                ev = Events(summary, color, type, eventTime)
+            } else {
+                ev.addEvent(summary, color, type, eventTime)
+            }
+            map[key] = ev
         } else {
             val events = Events(summary, color, type, eventTime)
             map[key] = events
@@ -200,6 +194,6 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
 
     companion object {
 
-        private val TAG = "EventsDataProvider"
+        private const val TAG = "EventsDataProvider"
     }
 }

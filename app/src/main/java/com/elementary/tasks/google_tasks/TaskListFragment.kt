@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
+import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.databinding.FragmentGoogleListBinding
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import androidx.lifecycle.ViewModelProviders

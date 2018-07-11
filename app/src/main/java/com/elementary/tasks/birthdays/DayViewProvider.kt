@@ -4,24 +4,26 @@ import android.app.AlarmManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-
+import timber.log.Timber
 import java.text.ParseException
 import java.util.ArrayList
 import java.util.Calendar
-import java.util.Collections
 import java.util.Date
 import java.util.HashMap
-import timber.log.Timber
+import kotlin.Boolean
+import kotlin.Comparator
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
+import kotlin.apply
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -184,7 +186,7 @@ class DayViewProvider(private val mContext: Context) {
                 val isLimited = limit > 0
                 var color = 0
                 if (map.containsKey(item.groupUuId)) {
-                    color = map[item.groupUuId]
+                    color = map[item.groupUuId]!!
                 }
                 val calendar1 = Calendar.getInstance()
                 calendar1.timeInMillis = eventTime
@@ -219,7 +221,9 @@ class DayViewProvider(private val mContext: Context) {
                                 mYear = calendar1.get(Calendar.YEAR)
                                 days++
                                 data.add(EventsItem(item.viewType,
-                                        Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        Reminder(item, true).apply {
+                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                        },
                                         mDay, mMonth, mYear, color))
                             }
                         } while (days < max)
@@ -242,7 +246,9 @@ class DayViewProvider(private val mContext: Context) {
                             if (eventTime > 0) {
                                 days++
                                 data.add(EventsItem(item.viewType,
-                                        Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        Reminder(item, true).apply {
+                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                        },
                                         mDay, mMonth, mYear, color))
                             }
                         } while (days < max)
@@ -267,7 +273,9 @@ class DayViewProvider(private val mContext: Context) {
                             if (eventTime > 0) {
                                 days++
                                 data.add(EventsItem(item.viewType,
-                                        Reminder(item, true).setEventTime(TimeUtil.getGmtFromDateTime(eventTime)),
+                                        Reminder(item, true).apply {
+                                            this.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
+                                        },
                                         mDay, mMonth, mYear, color))
                             }
                         } while (days < max)
@@ -330,7 +338,7 @@ class DayViewProvider(private val mContext: Context) {
                 return
             }
             if (isCanceled) return
-            Collections.sort(res) { eventsItem, t1 ->
+            res.sortWith(Comparator { eventsItem, t1 ->
                 var time1: Long = 0
                 var time2: Long = 0
                 if (eventsItem.`object` is Birthday) {
@@ -356,7 +364,7 @@ class DayViewProvider(private val mContext: Context) {
                     time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
                 }
                 (time1 - time2).toInt()
-            }
+            })
             if (isCanceled) return
             mHandler.post { notifyEnd(callback, res) }
         }

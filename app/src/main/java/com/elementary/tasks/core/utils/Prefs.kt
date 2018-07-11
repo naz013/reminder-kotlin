@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import android.content.SharedPreferences
-
 import com.elementary.tasks.navigation.settings.images.MainImageActivity
 import com.elementary.tasks.navigation.settings.images.MonthImage
 import com.google.gson.Gson
-
 import java.io.File
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -75,19 +72,19 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.APP_THEME_COLOR)
         set(value) = putInt(PrefsConstants.APP_THEME_COLOR, value)
 
-    var nightTime: String?
+    var nightTime: String
         get() = getString(PrefsConstants.TIME_NIGHT)
         set(value) = putString(PrefsConstants.TIME_NIGHT, value)
 
-    var eveningTime: String?
+    var eveningTime: String
         get() = getString(PrefsConstants.TIME_EVENING)
         set(value) = putString(PrefsConstants.TIME_EVENING, value)
 
-    var noonTime: String?
+    var noonTime: String
         get() = getString(PrefsConstants.TIME_DAY)
         set(value) = putString(PrefsConstants.TIME_DAY, value)
 
-    var morningTime: String?
+    var morningTime: String
         get() = getString(PrefsConstants.TIME_MORNING)
         set(value) = putString(PrefsConstants.TIME_MORNING, value)
 
@@ -95,11 +92,11 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.VOICE_LOCALE)
         set(value) = putInt(PrefsConstants.VOICE_LOCALE, value)
 
-    var ttsLocale: String?
+    var ttsLocale: String
         get() = getString(PrefsConstants.TTS_LOCALE)
         set(value) = putString(PrefsConstants.TTS_LOCALE, value)
 
-    var birthdayTtsLocale: String?
+    var birthdayTtsLocale: String
         get() = getString(PrefsConstants.BIRTHDAY_TTS_LOCALE)
         set(value) = putString(PrefsConstants.BIRTHDAY_TTS_LOCALE, value)
 
@@ -147,16 +144,16 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.MAIN_IMAGE_ID)
         set(value) = putInt(PrefsConstants.MAIN_IMAGE_ID, value)
 
-    var imagePath: String?
+    var imagePath: String
         get() = getString(PrefsConstants.MAIN_IMAGE_PATH)
         set(value) = putString(PrefsConstants.MAIN_IMAGE_PATH, value)
 
     var calendarImages: MonthImage
         get() {
-            try {
-                return getObject(PrefsConstants.CALENDAR_IMAGES, MonthImage::class.java) as MonthImage
+            return try {
+                getObject(PrefsConstants.CALENDAR_IMAGES, MonthImage::class.java) as MonthImage
             } catch (e: ClassCastException) {
-                return MonthImage()
+                MonthImage()
             }
 
         }
@@ -222,7 +219,7 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER))
         set(value) = putString(PrefsConstants.DRIVE_USER, SuperUtil.encrypt(value))
 
-    var reminderImage: String?
+    var reminderImage: String
         get() = getString(PrefsConstants.REMINDER_IMAGE)
         set(value) = putString(PrefsConstants.REMINDER_IMAGE, value)
 
@@ -254,7 +251,7 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.INFINITE_SOUND)
         set(value) = putBoolean(PrefsConstants.INFINITE_SOUND, value)
 
-    var melodyFile: String?
+    var melodyFile: String
         get() = getString(PrefsConstants.CUSTOM_SOUND)
         set(value) = putString(PrefsConstants.CUSTOM_SOUND, value)
 
@@ -358,7 +355,7 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER)
         set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)
 
-    var birthdayTime: String?
+    var birthdayTime: String
         get() = getString(PrefsConstants.BIRTHDAY_REMINDER_TIME)
         set(value) = putString(PrefsConstants.BIRTHDAY_REMINDER_TIME, value)
 
@@ -418,11 +415,11 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.BIRTHDAY_LED_COLOR)
         set(value) = putInt(PrefsConstants.BIRTHDAY_LED_COLOR, value)
 
-    var birthdayMelody: String?
+    var birthdayMelody: String
         get() = getString(PrefsConstants.BIRTHDAY_SOUND_FILE)
         set(value) = putString(PrefsConstants.BIRTHDAY_SOUND_FILE, value)
 
-    var noteOrder: String?
+    var noteOrder: String
         get() = getString(PrefsConstants.NOTES_ORDER)
         set(value) = putString(PrefsConstants.NOTES_ORDER, value)
 
@@ -434,7 +431,7 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.LAST_LIST)
         set(value) = putInt(PrefsConstants.LAST_LIST, value)
 
-    var tasksOrder: String?
+    var tasksOrder: String
         get() = getString(PrefsConstants.TASKS_ORDER)
         set(value) = putString(PrefsConstants.TASKS_ORDER, value)
 
@@ -474,11 +471,11 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
         get() = getInt(PrefsConstants.REMINDER_TYPE)
         set(reminderType) = putInt(PrefsConstants.REMINDER_TYPE, reminderType)
 
-    var dropboxUid: String?
+    var dropboxUid: String
         get() = getString(PrefsConstants.DROPBOX_UID)
         set(uid) = putString(PrefsConstants.DROPBOX_UID, uid)
 
-    var dropboxToken: String?
+    var dropboxToken: String
         get() = getString(PrefsConstants.DROPBOX_TOKEN)
         set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)
 
@@ -844,13 +841,13 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
 
     companion object {
 
-        val DRIVE_USER_NONE = "none"
+        const val DRIVE_USER_NONE = "none"
 
         private var instance: Prefs? = null
 
         fun getInstance(): Prefs {
             if (instance != null) {
-                return instance
+                return instance!!
             }
             throw IllegalArgumentException("Use Prefs(Context context) constructor!")
         }
@@ -863,7 +860,7 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

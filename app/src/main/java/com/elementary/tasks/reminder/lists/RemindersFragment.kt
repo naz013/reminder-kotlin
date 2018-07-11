@@ -1,6 +1,5 @@
 package com.elementary.tasks.reminder.lists
 
-import android.app.AlertDialog
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.view_models.reminders.ActiveRemindersViewModel
+import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.databinding.FragmentRemindersBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment

@@ -1,11 +1,8 @@
 package com.elementary.tasks.places.create
 
 import android.content.ContentResolver
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
 
@@ -17,7 +14,7 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.view_models.places.PlaceViewModel
+import com.elementary.tasks.core.viewModels.places.PlaceViewModel
 import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
 

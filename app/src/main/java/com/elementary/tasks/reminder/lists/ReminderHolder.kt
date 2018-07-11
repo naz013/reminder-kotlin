@@ -5,20 +5,16 @@ import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Group
-import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.views.roboto.RoboTextView
-
-import java.util.Locale
-
-import javax.inject.Inject
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.utils.*
+import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -38,7 +34,6 @@ import kotlinx.android.synthetic.main.list_item_reminder.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?, val editable: Boolean) :
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
@@ -52,17 +47,13 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         } else {
             itemView.itemCheck.visibility = View.GONE
         }
-        if (mEventListener != null) {
-            itemView.setClick { v1 ->
-                when (v1.id) {
-                    R.id.itemCheck -> mEventListener.onItemSwitched(adapterPosition, v1)
-                    else -> mEventListener.onItemClicked(adapterPosition, v1)
-                }
-            }
-        }
+        itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        itemView.itemCheck.onClick { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
     fun setData(reminder: Reminder) {
+        itemView.taskText.text = reminder.summary
         loadCard(reminder.group)
         loadDate(reminder)
         loadCheck(reminder)
@@ -86,14 +77,11 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadRepeat(model: Reminder) {
-        if (Reminder.isBase(model.type, Reminder.BY_MONTH)) {
-            itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), 1.toString())
-        } else if (Reminder.isBase(model.type, Reminder.BY_WEEK)) {
-            itemView.repeatInterval.text = ReminderUtils.getRepeatString(itemView.repeatInterval.context, model.weekdays)
-        } else if (Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR)) {
-            itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
-        } else {
-            itemView.repeatInterval.text = IntervalUtil.getInterval(itemView.repeatInterval.context, model.repeatInterval)
+        when {
+            Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), 1.toString())
+            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = ReminderUtils.getRepeatString(itemView.repeatInterval.context, model.weekdays)
+            Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
+            else -> itemView.repeatInterval.text = IntervalUtil.getInterval(itemView.repeatInterval.context, model.repeatInterval)
         }
     }
 

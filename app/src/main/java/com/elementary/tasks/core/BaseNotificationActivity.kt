@@ -2,6 +2,7 @@ package com.elementary.tasks.core
 
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -16,30 +17,17 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
-
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
-import com.elementary.tasks.core.interfaces.SendListener
-import com.elementary.tasks.core.utils.BlurTransformation
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Sound
-import com.elementary.tasks.core.utils.SoundStackHolder
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.TextDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import java.io.File
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -64,7 +52,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     private var tts: TextToSpeech? = null
     private var mSendDialog: ProgressDialog? = null
 
-    protected var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
+    private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
         LogUtil.d(TAG, "onInit: ")
         if (status == TextToSpeech.SUCCESS && tts != null) {
             val result = tts!!.setLanguage(ttsLocale)
@@ -89,7 +77,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             LogUtil.d(TAG, "Initialization Failed!")
         }
     }
-    protected var mSendListener = { isSent ->
+    protected var mSendListener = { isSent: Boolean ->
         hideProgressDialog()
         if (isSent) {
             finish()
@@ -120,28 +108,28 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     protected abstract val maxVolume: Int
 
-    protected val sound: Sound?
+    protected open val sound: Sound?
         get() = SoundStackHolder.getInstance().sound
 
-    protected val isBirthdayInfiniteVibration: Boolean
+    protected open val isBirthdayInfiniteVibration: Boolean
         get() = true
 
-    protected val isBirthdayInfiniteSound: Boolean
+    protected open val isBirthdayInfiniteSound: Boolean
         get() = true
 
-    protected val ttsLocale: Locale?
+    protected open val ttsLocale: Locale?
         get() {
             LogUtil.d(TAG, "getTtsLocale: ")
             return Language().getLocale(this, false)
         }
 
-    protected val soundUri: Uri
+    protected open val soundUri: Uri
         get() {
             if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody)) {
                 return UriUtil.getUri(this, melody)
             } else {
                 val defMelody = prefs!!.melodyFile
-                if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody!!)) {
+                if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                     val sound = File(defMelody)
                     if (sound.exists()) {
                         return UriUtil.getUri(this, sound)
@@ -221,36 +209,38 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         windowManager.defaultDisplay.getMetrics(metrics)
         val width = metrics.widthPixels
         val height = (metrics.heightPixels * 0.75).toInt()
-        if (imagePrefs == null || imagePrefs.matches(Constants.DEFAULT.toRegex())) {
-            if (blur && Module.isPro) {
-                Glide.with(this)
-                        .load(R.drawable.photo)
-                        .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
-                        .apply(RequestOptions.overrideOf(width, height))
-                        .into(imageView)
-            } else {
-                Glide.with(this)
-                        .load(R.drawable.photo)
-                        .apply(RequestOptions.overrideOf(width, height))
-                        .into(imageView)
+        when {
+            imagePrefs.matches(Constants.DEFAULT.toRegex()) -> {
+                if (blur && Module.isPro) {
+                    Glide.with(this)
+                            .load(R.drawable.photo)
+                            .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
+                            .apply(RequestOptions.overrideOf(width, height))
+                            .into(imageView)
+                } else {
+                    Glide.with(this)
+                            .load(R.drawable.photo)
+                            .apply(RequestOptions.overrideOf(width, height))
+                            .into(imageView)
+                }
+                imageView.visibility = View.VISIBLE
             }
-            imageView.visibility = View.VISIBLE
-        } else if (imagePrefs.matches(Constants.NONE.toRegex())) {
-            imageView.visibility = View.GONE
-        } else {
-            if (blur && Module.isPro) {
-                Glide.with(this)
-                        .load(Uri.parse(imagePrefs))
-                        .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
-                        .apply(RequestOptions.overrideOf(width, height))
-                        .into(imageView)
-            } else {
-                Glide.with(this)
-                        .load(Uri.parse(imagePrefs))
-                        .apply(RequestOptions.overrideOf(width, height))
-                        .into(imageView)
+            imagePrefs.matches(Constants.NONE.toRegex()) -> imageView.visibility = View.GONE
+            else -> {
+                if (blur && Module.isPro) {
+                    Glide.with(this)
+                            .load(Uri.parse(imagePrefs))
+                            .apply(RequestOptions.bitmapTransform(BlurTransformation(15, 2)))
+                            .apply(RequestOptions.overrideOf(width, height))
+                            .into(imageView)
+                } else {
+                    Glide.with(this)
+                            .load(Uri.parse(imagePrefs))
+                            .apply(RequestOptions.overrideOf(width, height))
+                            .into(imageView)
+                }
+                imageView.visibility = View.VISIBLE
             }
-            imageView.visibility = View.VISIBLE
         }
     }
 
@@ -322,7 +312,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
         mSendDialog = ProgressDialog.show(this, null, message, true, false)
     }
 
-    protected fun hideProgressDialog() {
+    private fun hideProgressDialog() {
         if (mSendDialog != null && mSendDialog!!.isShowing) {
             mSendDialog!!.dismiss()
         }
@@ -359,8 +349,8 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     companion object {
 
-        private val TAG = "BNActivity"
-        private val MY_DATA_CHECK_CODE = 111
+        private const val TAG = "BNActivity"
+        private const val MY_DATA_CHECK_CODE = 111
 
         private val instanceCount = AtomicInteger(0)
     }

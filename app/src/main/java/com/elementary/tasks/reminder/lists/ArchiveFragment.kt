@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.view_models.reminders.ArchiveRemindersViewModel
+import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity

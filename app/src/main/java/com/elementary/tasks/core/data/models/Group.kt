@@ -31,14 +31,14 @@ import androidx.room.PrimaryKey
 class Group {
 
     @SerializedName("title")
-    var title: String? = null
+    var title: String = ""
     @SerializedName("uuId")
     @PrimaryKey
-    var uuId: String? = null
+    var uuId: String = ""
     @SerializedName("color")
     var color: Int = 0
     @SerializedName("dateTime")
-    var dateTime: String? = null
+    var dateTime: String = ""
 
     constructor(title: String, color: Int) {
         this.title = title

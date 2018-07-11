@@ -1,7 +1,11 @@
 package com.elementary.tasks.core.calendar
 
 import java.util.ArrayList
-import java.util.Collections
+import kotlin.Boolean
+import kotlin.Comparator
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,12 +51,12 @@ class Events {
 
     val next: Event?
         get() {
-            if (events != null && mPosition < events!!.size) {
+            return if (events != null && mPosition < events!!.size) {
                 val event = events!![mPosition]
                 mPosition++
-                return event
+                event
             } else
-                return null
+                null
         }
 
     val last: Event?
@@ -78,7 +82,7 @@ class Events {
             events = ArrayList()
             events!!.add(event)
         }
-        Collections.sort(events!!) { event1, t1 -> (event1.time - t1.time).toInt() }
+        events!!.sortWith(Comparator { event1, t1 -> (event1.time - t1.time).toInt() })
     }
 
     fun moveToStart() {

@@ -32,15 +32,8 @@ import java.io.ObjectOutputStream
  * limitations under the License.
  */
 
-internal abstract class SharedPrefs : PrefsConstants {
-
-    private val prefs: SharedPreferences
-
-    private constructor() {}
-
-    constructor(context: Context) {
-        prefs = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
-    }
+abstract class SharedPrefs(context: Context) {
+    private var prefs: SharedPreferences = context.getSharedPreferences(PrefsConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
     fun putString(stringToSave: String, value: String) {
         prefs.edit().putString(stringToSave, value).apply()
@@ -51,19 +44,15 @@ internal abstract class SharedPrefs : PrefsConstants {
     }
 
     fun getInt(stringToLoad: String): Int {
-        var x: Int
-        try {
-            x = prefs.getInt(stringToLoad, 0)
+        return try {
+            prefs.getInt(stringToLoad, 0)
         } catch (e: ClassCastException) {
             try {
-                x = Integer.parseInt(prefs.getString(stringToLoad, "0"))
+                Integer.parseInt(prefs.getString(stringToLoad, "0"))
             } catch (e1: ClassCastException) {
-                x = 0
+                0
             }
-
         }
-
-        return x
     }
 
     fun putLong(stringToSave: String, value: Long) {
@@ -71,19 +60,15 @@ internal abstract class SharedPrefs : PrefsConstants {
     }
 
     fun getLong(stringToLoad: String): Long {
-        var x: Long
-        try {
-            x = prefs.getLong(stringToLoad, 1000)
+        return try {
+            prefs.getLong(stringToLoad, 1000)
         } catch (e: ClassCastException) {
-            x = java.lang.Long.parseLong(prefs.getString(stringToLoad, "1000"))
+            java.lang.Long.parseLong(prefs.getString(stringToLoad, "1000"))
         }
-
-        return x
     }
 
     fun putObject(key: String, obj: Any) {
-        val gson = Gson()
-        putString(key, gson.toJson(obj))
+        putString(key, Gson().toJson(obj))
     }
 
     fun getObject(key: String, classOfT: Class<*>): Any {
@@ -91,8 +76,8 @@ internal abstract class SharedPrefs : PrefsConstants {
         return Gson().fromJson<*>(json, classOfT) ?: return Any()
     }
 
-    fun getString(stringToLoad: String): String? {
-        return prefs.getString(stringToLoad, null)
+    fun getString(stringToLoad: String): String {
+        return prefs.getString(stringToLoad, "")
     }
 
     fun hasKey(checkString: String): Boolean {
@@ -104,14 +89,11 @@ internal abstract class SharedPrefs : PrefsConstants {
     }
 
     fun getBoolean(stringToLoad: String): Boolean {
-        var res: Boolean
-        try {
-            res = prefs.getBoolean(stringToLoad, false)
+        return try {
+            prefs.getBoolean(stringToLoad, false)
         } catch (e: ClassCastException) {
-            res = java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
+            java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
         }
-
-        return res
     }
 
     fun saveVersionBoolean(stringToSave: String) {
@@ -119,20 +101,17 @@ internal abstract class SharedPrefs : PrefsConstants {
     }
 
     fun getVersion(stringToLoad: String): Boolean {
-        var res: Boolean
-        try {
-            res = prefs.getBoolean(stringToLoad, false)
+        return try {
+            prefs.getBoolean(stringToLoad, false)
         } catch (e: ClassCastException) {
-            res = java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
+            java.lang.Boolean.parseBoolean(prefs.getString(stringToLoad, "false"))
         }
-
-        return res
     }
 
     fun savePrefsBackup() {
         val dir = MemoryUtil.prefsDir
         if (dir != null) {
-            val prefsFile = File(dir + "/" + FileConfig.FILE_NAME_SETTINGS)
+            val prefsFile = File("$dir/" + FileConfig.FILE_NAME_SETTINGS)
             if (prefsFile.exists()) {
                 prefsFile.delete()
             }
@@ -155,14 +134,13 @@ internal abstract class SharedPrefs : PrefsConstants {
                 } catch (ex: IOException) {
                     ex.printStackTrace()
                 }
-
             }
         }
     }
 
     fun loadPrefsFromFile() {
         val dir = MemoryUtil.prefsDir ?: return
-        val prefsFile = File(dir + "/" + FileConfig.FILE_NAME_SETTINGS)
+        val prefsFile = File("$dir/" + FileConfig.FILE_NAME_SETTINGS)
         if (prefsFile.exists()) {
             var input: ObjectInputStream? = null
             try {
@@ -171,16 +149,12 @@ internal abstract class SharedPrefs : PrefsConstants {
                 prefEdit.clear()
                 val entries = input.readObject() as Map<String, *>
                 for ((key, v) in entries) {
-                    if (v is Boolean) {
-                        prefEdit.putBoolean(key, v)
-                    } else if (v is Float) {
-                        prefEdit.putFloat(key, v)
-                    } else if (v is Int) {
-                        prefEdit.putInt(key, v)
-                    } else if (v is Long) {
-                        prefEdit.putLong(key, v)
-                    } else if (v is String) {
-                        prefEdit.putString(key, v)
+                    when (v) {
+                        is Boolean -> prefEdit.putBoolean(key, v)
+                        is Float -> prefEdit.putFloat(key, v)
+                        is Int -> prefEdit.putInt(key, v)
+                        is Long -> prefEdit.putLong(key, v)
+                        is String -> prefEdit.putString(key, v)
                     }
                 }
                 prefEdit.apply()

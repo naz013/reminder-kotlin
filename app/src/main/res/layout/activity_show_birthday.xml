@@ -1,120 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/single_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="56dp"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/bgImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactPhoto"
+            android:layout_width="@dimen/reminder_photo_size"
+            android:layout_height="@dimen/reminder_photo_size"
+            android:layout_gravity="center"
+            android:contentDescription="@string/acc_contact_photo"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:civ_border_color="@color/material_grey_dialog"
+            app:civ_border_width="5dp" />
 
-        <LinearLayout
-            android:id="@+id/single_container"
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="56dp"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:layout_marginBottom="150dp"
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="5dp"
+            app:contentPadding="20dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/contactPhoto"
-                android:layout_width="@dimen/reminder_photo_size"
-                android:layout_height="@dimen/reminder_photo_size"
-                android:layout_gravity="center"
-                android:contentDescription="@string/acc_contact_photo"
-                android:scaleType="centerCrop"
-                android:visibility="visible"
-                app:civ_border_color="@color/material_grey_dialog"
-                app:civ_border_width="5dp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="150dp"
-                android:layout_marginTop="20dp"
-                app:cardCornerRadius="5dp"
-                app:contentPadding="20dp">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/reminder_margin_top"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:text="Contact"
+                    android:textSize="@dimen/reminder_text_size_normal"
+                    app:font_style="roboto_medium" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/userName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/reminder_margin_top"
-                        android:gravity="center"
-                        android:text="Contact"
-                        android:textSize="@dimen/reminder_text_size_normal"
-                        app:font_style="roboto_medium" />
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/userNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/reminder_margin_top"
+                    android:gravity="center"
+                    android:text="+31234567890"
+                    android:textSize="@dimen/reminder_text_size_normal"
+                    app:font_style="roboto_light" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/userNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/reminder_margin_top"
-                        android:gravity="center"
-                        android:text="+31234567890"
-                        android:textSize="@dimen/reminder_text_size_normal"
-                        app:font_style="roboto_light" />
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/userYears"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/reminder_margin_top"
+                    android:gravity="center"
+                    android:text="26 years"
+                    android:textSize="@dimen/reminder_text_size_normal"
+                    app:font_style="roboto_bold" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/userYears"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/reminder_margin_top"
-                        android:gravity="center"
-                        android:text="26 years"
-                        android:textSize="@dimen/reminder_text_size_normal"
-                        app:font_style="roboto_bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/reminder_margin_top"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/reminder_margin_top"
-            android:gravity="center"
-            android:orientation="horizontal">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buttonOk"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/reminder_margin_top"
+            android:contentDescription="@string/acc_button_ok" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/buttonOk"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top"
-                android:contentDescription="@string/acc_button_ok" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buttonCall"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/reminder_margin_top"
+            android:contentDescription="@string/acc_button_make_call" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/buttonCall"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top"
-                android:contentDescription="@string/acc_button_make_call" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buttonSend"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/reminder_margin_top"
+            android:contentDescription="@string/acc_button_send_message" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/buttonSend"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="@dimen/reminder_margin_top"
-                android:contentDescription="@string/acc_button_send_message" />
-
-        </LinearLayout>
-    </RelativeLayout>
-</layout>
+    </LinearLayout>
+</RelativeLayout>

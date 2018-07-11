@@ -7,7 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityImagePreviewBinding
 
 import java.util.ArrayList

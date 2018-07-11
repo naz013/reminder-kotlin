@@ -36,19 +36,19 @@ import java.util.*
 class Reminder : RecyclerInterface {
 
     @SerializedName("summary")
-    var summary: String? = null
+    var summary: String = ""
     @SerializedName("noteId")
-    var noteId: String? = null
+    var noteId: String = ""
     @SerializedName("reminderType")
     var reminderType: Int = 0
     @SerializedName("groupUuId")
-    var groupUuId: String? = null
+    var groupUuId: String = ""
     @SerializedName("uuId")
-    var uuId: String? = null
+    var uuId: String = ""
     @SerializedName("eventTime")
-    var eventTime: String? = null
+    var eventTime: String = ""
     @SerializedName("startTime")
-    var startTime: String? = null
+    var startTime: String = ""
     @SerializedName("eventCount")
     var eventCount: Long = 0
     @SerializedName("color")
@@ -72,15 +72,15 @@ class Reminder : RecyclerInterface {
     @SerializedName("useGlobal")
     var useGlobal: Boolean = false
     @SerializedName("from")
-    var from: String? = null
+    var from: String = ""
     @SerializedName("to")
-    var to: String? = null
+    var to: String = ""
     @SerializedName("hours")
     var hours: List<Int> = ArrayList()
     @SerializedName("fileName")
-    var fileName: String? = null
+    var fileName: String = ""
     @SerializedName("melodyPath")
-    var melodyPath: String? = null
+    var melodyPath: String = ""
     @SerializedName("volume")
     var volume: Int = 0
     @SerializedName("dayOfMonth")
@@ -98,11 +98,11 @@ class Reminder : RecyclerInterface {
     @SerializedName("type")
     var type: Int = 0
     @SerializedName("target")
-    var target: String? = null
+    var target: String = ""
     @SerializedName("subject")
-    var subject: String? = null
+    var subject: String = ""
     @SerializedName("attachmentFile")
-    var attachmentFile: String? = null
+    var attachmentFile: String = ""
     @SerializedName("attachmentFiles")
     var attachmentFiles: List<String> = ArrayList()
     @SerializedName("auto")
@@ -245,10 +245,6 @@ class Reminder : RecyclerInterface {
 
     override fun toString(): String {
         return SuperUtil.getObjectPrint(this, Reminder::class.java)
-    }
-
-    override fun hashCode(): Int {
-        return UUID.fromString(uuId).hashCode()
     }
 
     object Kind {

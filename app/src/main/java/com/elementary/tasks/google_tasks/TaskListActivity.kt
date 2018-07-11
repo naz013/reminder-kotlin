@@ -1,10 +1,8 @@
 package com.elementary.tasks.google_tasks
 
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 
 import com.elementary.tasks.R
@@ -14,7 +12,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListViewModel
+import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskListViewModel
 import com.elementary.tasks.core.views.ColorPickerView
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import androidx.databinding.DataBindingUtil

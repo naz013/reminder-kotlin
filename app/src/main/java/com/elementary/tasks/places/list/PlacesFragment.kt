@@ -15,7 +15,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.core.viewModels.places.PlacesViewModel
 import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.places.create.CreatePlaceActivity

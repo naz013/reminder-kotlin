@@ -1,16 +1,13 @@
 package com.elementary.tasks.navigation
 
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.speech.RecognizerIntent
 import android.text.TextUtils
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -31,7 +28,7 @@ import com.elementary.tasks.core.utils.RemotePrefs
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.core.views.ReturnScrollListener
 import com.elementary.tasks.core.views.roboto.RoboTextView
@@ -56,7 +53,6 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 
 import java.io.File
-import java.util.ArrayList
 
 import androidx.annotation.ColorInt
 import androidx.core.view.GravityCompat

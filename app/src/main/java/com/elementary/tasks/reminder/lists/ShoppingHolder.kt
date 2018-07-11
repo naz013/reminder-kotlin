@@ -3,23 +3,21 @@ package com.elementary.tasks.reminder.lists
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.ListItemShoppingBinding
-import com.elementary.tasks.databinding.ListItemTaskItemWidgetBinding
-
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.list_item_shopping.view.*
+import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
 import javax.inject.Inject
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -39,29 +37,20 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShoppingHolder(v: View, private val mEventListener: RecyclerListener?) : RecyclerView.ViewHolder(v) {
+class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
+        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
 
-    val listHeader: RoboTextView
-    private val binding: ListItemShoppingBinding?
     @Inject
     var themeUtil: ThemeUtil? = null
 
     init {
         ReminderApp.appComponent!!.inject(this)
-        binding = DataBindingUtil.bind(v)
-        listHeader = binding!!.listHeader
-        if (mEventListener != null) {
-            binding.setClick { v1 ->
-                when (v1.id) {
-                    R.id.itemCheck -> mEventListener.onItemSwitched(adapterPosition, v1)
-                    else -> mEventListener.onItemClicked(adapterPosition, v1)
-                }
-            }
-        }
+        itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
     }
 
     fun setData(reminder: Reminder) {
-        binding!!.item = reminder
+        itemView.shoppingTitle.text = reminder.summary
         loadShoppingDate(reminder.eventTime)
         loadCard(reminder.group)
         loadItems(reminder.shoppings)
@@ -69,12 +58,12 @@ class ShoppingHolder(v: View, private val mEventListener: RecyclerListener?) : R
 
     private fun loadItems(shoppings: List<ShopItem>) {
         val isDark = themeUtil!!.isDark
-        binding!!.todoList.isFocusableInTouchMode = false
-        binding.todoList.isFocusable = false
-        binding.todoList.removeAllViewsInLayout()
+        itemView.todoList.isFocusableInTouchMode = false
+        itemView.todoList.isFocusable = false
+        itemView.todoList.removeAllViewsInLayout()
         var count = 0
         for (list in shoppings) {
-            val bind = ListItemTaskItemWidgetBinding.inflate(LayoutInflater.from(binding.todoList.context), null, false)
+            val bind = LayoutInflater.from(itemView.todoList.context).inflate(R.layout.list_item_task_item_widget, itemView.todoList, false)
             val checkView = bind.checkView
             val textView = bind.shopText
             if (list.isChecked) {
@@ -96,32 +85,32 @@ class ShoppingHolder(v: View, private val mEventListener: RecyclerListener?) : R
             if (count == 9) {
                 checkView.visibility = View.INVISIBLE
                 textView.text = "..."
-                binding.todoList.addView(bind.root)
+                itemView.todoList.addView(bind)
                 break
             } else {
                 checkView.visibility = View.VISIBLE
                 textView.text = list.summary
-                binding.todoList.addView(bind.root)
+                itemView.todoList.addView(bind)
             }
         }
     }
 
     private fun loadShoppingDate(eventTime: String?) {
-        val is24 = Prefs.getInstance(binding!!.shoppingTime.context).is24HourFormatEnabled
+        val is24 = Prefs.getInstance(itemView.shoppingTime.context).is24HourFormatEnabled
         val due = TimeUtil.getDateTimeFromGmt(eventTime)
         if (due > 0) {
-            binding.shoppingTime.text = TimeUtil.getFullDateTime(due, is24, false)
-            binding.shoppingTime.visibility = View.VISIBLE
+            itemView.shoppingTime.text = TimeUtil.getFullDateTime(due, is24, false)
+            itemView.shoppingTime.visibility = View.VISIBLE
         } else {
-            binding.shoppingTime.visibility = View.GONE
+            itemView.shoppingTime.visibility = View.GONE
         }
     }
 
     private fun loadCard(group: Group?) {
         if (group != null) {
-            binding!!.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(group.color)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(group.color)))
         } else {
-            binding!!.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(0)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(0)))
         }
     }
 }
