@@ -16,7 +16,7 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.view_models.day_view.DayViewViewModel
+import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity

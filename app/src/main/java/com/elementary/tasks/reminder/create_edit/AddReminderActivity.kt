@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -14,7 +13,6 @@ import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.Google
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
@@ -22,7 +20,7 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.core.views.ActionView
 import com.elementary.tasks.databinding.ActivityAddReminderBinding
 import com.google.android.material.snackbar.Snackbar

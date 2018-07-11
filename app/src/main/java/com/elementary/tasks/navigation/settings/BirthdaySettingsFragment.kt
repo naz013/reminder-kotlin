@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings
 
-import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,8 +19,8 @@ import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.Commands
-import com.elementary.tasks.core.view_models.birthdays.BirthdaysViewModel
+import com.elementary.tasks.core.viewModels.Commands
+import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.databinding.FragmentBirthdaysSettingsBinding
 

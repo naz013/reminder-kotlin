@@ -12,12 +12,11 @@ import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 import com.elementary.tasks.databinding.ActivityShoppingPreviewBinding
 import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter

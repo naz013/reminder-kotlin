@@ -23,13 +23,13 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
+import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
 
 import java.io.IOException
 import java.text.ParseException
 import java.util.Calendar
 import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.core.view_models.Commands
+import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.android.synthetic.main.activity_add_birthday.*
 
 /**

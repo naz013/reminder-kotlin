@@ -1,17 +1,14 @@
 package com.elementary.tasks.reminder.create_edit
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +35,8 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.core.views.TextViewWithIcon
 import com.elementary.tasks.databinding.ActivityCreateReminderBinding
 import com.elementary.tasks.databinding.DialogSelectExtraBinding

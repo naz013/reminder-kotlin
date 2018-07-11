@@ -1,17 +1,12 @@
 package com.elementary.tasks.google_tasks
 
-import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
-import android.widget.TimePicker
 import android.widget.Toast
 
 import com.elementary.tasks.R
@@ -20,14 +15,13 @@ import com.elementary.tasks.core.app_widgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskViewModel
+import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskViewModel
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 
 import java.util.ArrayList

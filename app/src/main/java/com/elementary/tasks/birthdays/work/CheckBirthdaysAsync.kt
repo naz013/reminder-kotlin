@@ -1,25 +1,18 @@
 package com.elementary.tasks.birthdays.work
 
 import android.app.ProgressDialog
-import android.content.ContentResolver
 import android.content.Context
-import android.database.Cursor
 import android.os.AsyncTask
 import android.provider.ContactsContract
 import android.widget.Toast
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.dao.BirthdaysDao
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.Permissions
-
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,12 +35,12 @@ import java.util.Locale
 
 class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
 
-    private var mContext: Context? = null
+    private lateinit var mContext: Context
     private val birthdayFormats = arrayOf<DateFormat>(SimpleDateFormat("yyyy-MM-dd", Locale.US), SimpleDateFormat("yyyyMMdd", Locale.US), SimpleDateFormat("yyyy.MM.dd", Locale.US), SimpleDateFormat("yy.MM.dd", Locale.US), SimpleDateFormat("MMM dd, yyyy", Locale.US), SimpleDateFormat("yy/MM/dd", Locale.US))
 
     private var showDialog = false
     private var pd: ProgressDialog? = null
-    private val mCallback: TaskCallback?
+    private var mCallback: (() -> Unit)? = null
 
     constructor(context: Context) {
         this.mContext = context
@@ -63,7 +56,7 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
         }
     }
 
-    constructor(context: Context, showDialog: Boolean, callback: TaskCallback) {
+    constructor(context: Context, showDialog: Boolean, callback: (() -> Unit)?) {
         this.mContext = context
         this.showDialog = showDialog
         this.mCallback = callback
@@ -85,7 +78,7 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
         if (!Permissions.checkPermission(mContext, Permissions.READ_CONTACTS)) {
             return 0
         }
-        val cr = mContext!!.contentResolver
+        val cr = mContext.contentResolver
         var i = 0
         val projection = arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME)
         val cur = cr.query(ContactsContract.Contacts.CONTENT_URI, projection, null, null,
@@ -135,7 +128,7 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
         return i
     }
 
-    override fun onPostExecute(files: Int?) {
+    override fun onPostExecute(files: Int) {
         if (showDialog) {
             try {
                 if (pd != null && pd!!.isShowing) {
@@ -145,18 +138,14 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
             }
 
             if (files > 0) {
-                Toast.makeText(mContext, files.toString() + " " + mContext!!.getString(R.string.events_found),
+                Toast.makeText(mContext, files.toString() + " " + mContext.getString(R.string.events_found),
                         Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(mContext, R.string.found_nothing,
                         Toast.LENGTH_SHORT).show()
             }
         }
-        mCallback?.onFinish()
-    }
-
-    interface TaskCallback {
-        fun onFinish()
+        mCallback?.invoke()
     }
 
     companion object {

@@ -25,12 +25,11 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.places.PlacesViewModel
+import com.elementary.tasks.core.viewModels.places.PlacesViewModel
 import com.elementary.tasks.core.views.AddressAutoCompleteView
 import com.elementary.tasks.core.views.ThemedImageButton
 import com.elementary.tasks.databinding.FragmentMapBinding
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

@@ -1,9 +1,6 @@
 package com.elementary.tasks.notes.create
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
 import android.app.ProgressDialog
-import android.app.TimePickerDialog
 import android.content.ClipData
 import android.content.ContentResolver
 import android.content.Context
@@ -19,7 +16,6 @@ import android.speech.SpeechRecognizer
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
@@ -32,7 +28,6 @@ import android.widget.Toast
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.app_widgets.UpdatesHelper
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.AssetsUtil
@@ -49,9 +44,8 @@ import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
-import com.elementary.tasks.core.views.ColorPickerView
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityCreateNoteBinding
 import com.elementary.tasks.databinding.DialogColorPickerLayoutBinding
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration
@@ -69,7 +63,6 @@ import java.io.IOException
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.Calendar
-import java.util.Collections
 import java.util.Random
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders

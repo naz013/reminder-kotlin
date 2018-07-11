@@ -12,7 +12,7 @@ import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.view_models.groups.GroupsViewModel
+import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
 import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment

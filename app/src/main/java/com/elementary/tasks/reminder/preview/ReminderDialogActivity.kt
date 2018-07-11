@@ -1,7 +1,6 @@
 package com.elementary.tasks.reminder.preview
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
@@ -10,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.content.res.AssetFileDescriptor
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
@@ -27,7 +25,6 @@ import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.services.SendReceiver
 import com.elementary.tasks.core.utils.Configs
@@ -44,7 +41,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.work.BackupReminderTask
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
@@ -58,7 +55,6 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import de.hdodenhof.circleimageview.CircleImageView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -593,7 +589,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         showProgressDialog(getString(R.string.sending_message))
         val SENT = "SMS_SENT"
         val sentPI = PendingIntent.getBroadcast(this, 0, Intent(SENT), 0)
-        registerReceiver(sentReceiver = SendReceiver(mSendListener), IntentFilter(SENT))
+        registerReceiver(SendReceiver(mSendListener), IntentFilter(SENT))
         val sms = SmsManager.getDefault()
         sms.sendTextMessage(mReminder!!.target, null, summary, sentPI, null)
     }

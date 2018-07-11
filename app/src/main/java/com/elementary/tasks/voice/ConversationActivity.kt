@@ -29,7 +29,7 @@ import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
+import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity
 

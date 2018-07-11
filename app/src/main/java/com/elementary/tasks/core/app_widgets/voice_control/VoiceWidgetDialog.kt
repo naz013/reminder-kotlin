@@ -8,9 +8,7 @@ import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.view_models.conversation.ConversationViewModel
-
-import java.util.ArrayList
+import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders

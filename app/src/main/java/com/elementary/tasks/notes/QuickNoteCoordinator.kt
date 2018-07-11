@@ -7,7 +7,6 @@ import android.view.MotionEvent
 import android.view.View
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
@@ -18,8 +17,8 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityMainBinding
 import com.elementary.tasks.databinding.ViewNoteCardBindingImpl
 import com.elementary.tasks.databinding.ViewNoteReminderCardBinding

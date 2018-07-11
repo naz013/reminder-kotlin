@@ -2,7 +2,6 @@ package com.elementary.tasks.missed_calls
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -22,7 +21,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.missed_calls.MissedCallViewModel
+import com.elementary.tasks.core.viewModels.missed_calls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 
 import java.sql.Date

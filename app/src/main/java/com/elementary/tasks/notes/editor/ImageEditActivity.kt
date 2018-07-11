@@ -1,10 +1,8 @@
 package com.elementary.tasks.notes.editor
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 
 import com.elementary.tasks.R
@@ -13,12 +11,11 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityImageEditBinding
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.google.android.material.tabs.TabLayout
 
-import java.util.Collections
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders

@@ -1,13 +1,11 @@
 package com.elementary.tasks.notes.preview
 
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
@@ -26,7 +24,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.notes.NoteViewModel
+import com.elementary.tasks.core.viewModels.notes.NoteViewModel
 import com.elementary.tasks.databinding.ActivityNotePreviewBinding
 import com.elementary.tasks.navigation.settings.images.GridMarginDecoration
 import com.elementary.tasks.notes.create.CreateNoteActivity

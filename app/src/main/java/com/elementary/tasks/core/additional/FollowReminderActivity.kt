@@ -2,31 +2,25 @@ package com.elementary.tasks.core.additional
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
-import android.widget.DatePicker
 import android.widget.SpinnerAdapter
-import android.widget.TimePicker
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.Google
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
-import com.elementary.tasks.core.views.roboto.RoboTextView
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityFollowBinding
 
 import java.util.ArrayList

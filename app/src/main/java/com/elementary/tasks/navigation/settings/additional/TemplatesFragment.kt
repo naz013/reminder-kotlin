@@ -15,7 +15,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.FragmentTemplatesListBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.reminder.lists.filters.FilterCallback

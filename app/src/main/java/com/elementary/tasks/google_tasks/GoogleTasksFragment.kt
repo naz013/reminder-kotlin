@@ -1,6 +1,5 @@
 package com.elementary.tasks.google_tasks
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.view_models.google_tasks.GoogleTaskListsViewModel
+import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskListsViewModel
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 

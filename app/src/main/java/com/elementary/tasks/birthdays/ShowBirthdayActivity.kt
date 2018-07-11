@@ -3,39 +3,25 @@ package com.elementary.tasks.birthdays
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.BackupBirthdaysTask
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Sound
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.view_models.birthdays.BirthdayViewModel
-import com.elementary.tasks.databinding.ActivityShowBirthdayBinding
-
-import java.util.Calendar
-import java.util.Locale
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
+import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.activity_show_birthday.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -58,12 +44,11 @@ import androidx.lifecycle.ViewModelProviders
 
 class ShowBirthdayActivity : BaseNotificationActivity() {
 
-    private var binding: ActivityShowBirthdayBinding? = null
     private var viewModel: BirthdayViewModel? = null
     private var mBirthday: Birthday? = null
-    protected override var isScreenResumed: Boolean = false
+    override var isScreenResumed: Boolean = false
         private set
-    protected override var summary: String? = null
+    override var summary: String = ""
         private set
 
     private val isBirthdaySilentEnabled: Boolean
@@ -84,7 +69,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return `is`
         }
 
-    protected override val ttsLocale: Locale?
+    override val ttsLocale: Locale?
         get() {
             var locale = Language().getLocale(this, false)
             if (Module.isPro && !isGlobal) {
@@ -93,14 +78,14 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return locale
         }
 
-    protected override val melody: String?
+    override val melody: String
         get() = if (Module.isPro && !isGlobal) {
             prefs!!.birthdayMelody
         } else {
             prefs!!.melodyFile
         }
 
-    protected override val isBirthdayInfiniteVibration: Boolean
+    override val isBirthdayInfiniteVibration: Boolean
         get() {
             var vibrate = prefs!!.isInfiniteVibrateEnabled
             if (Module.isPro && !isGlobal) {
@@ -109,7 +94,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return vibrate
         }
 
-    protected override val isBirthdayInfiniteSound: Boolean
+    override val isBirthdayInfiniteSound: Boolean
         get() {
             var isLooping = prefs!!.isInfiniteSoundEnabled
             if (Module.isPro && !isGlobal) {
@@ -118,7 +103,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return isLooping
         }
 
-    protected override val isVibrate: Boolean
+    override val isVibrate: Boolean
         get() {
             var vibrate = prefs!!.isVibrateEnabled
             if (Module.isPro && !isGlobal) {
@@ -127,19 +112,19 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return vibrate
         }
 
-    protected override val uuId: String?
+    override val uuId: String
         get() = if (mBirthday != null) {
             mBirthday!!.uuId
         } else
             ""
 
-    protected override val id: Int
+    override val id: Int
         get() = if (mBirthday != null) {
             mBirthday!!.uniqueId
         } else
             0
 
-    protected override val ledColor: Int
+    override val ledColor: Int
         get() {
             var ledColor = LED.getLED(prefs!!.ledColor)
             if (Module.isPro && !isGlobal) {
@@ -148,7 +133,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return ledColor
         }
 
-    protected override val isAwakeDevice: Boolean
+    override val isAwakeDevice: Boolean
         get() {
             var isWake = prefs!!.isDeviceAwakeEnabled
             if (Module.isPro && !isGlobal) {
@@ -157,49 +142,49 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
             return isWake
         }
 
-    protected override val maxVolume: Int
+    override val maxVolume: Int
         get() = prefs!!.loudness
 
-    protected override val isGlobal: Boolean
+    override val isGlobal: Boolean
         get() = prefs!!.isBirthdayGlobalEnabled
 
-    protected override val isUnlockDevice: Boolean
+    override val isUnlockDevice: Boolean
         get() = prefs!!.isDeviceUnlockEnabled
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         val key = intent.getIntExtra(Constants.INTENT_ID, 0)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_show_birthday)
-        binding!!.card.setCardBackgroundColor(themeUtil!!.cardStyle)
+        setContentView(R.layout.activity_show_birthday)
+        card.setCardBackgroundColor(themeUtil!!.cardStyle)
         if (Module.isLollipop) {
-            binding!!.card.cardElevation = Configs.CARD_ELEVATION
+            card.cardElevation = Configs.CARD_ELEVATION
         }
-        loadImage(binding!!.bgImage)
-        colorify(binding!!.buttonOk, binding!!.buttonCall, binding!!.buttonSend)
+        loadImage(bgImage)
+        colorify(buttonOk, buttonCall, buttonSend)
 
-        binding!!.buttonOk.setOnClickListener { view -> ok() }
-        binding!!.buttonCall.setOnClickListener { view -> call() }
-        binding!!.buttonSend.setOnClickListener { view -> sendSMS() }
+        buttonOk.onClick { ok() }
+        buttonCall.onClick { call() }
+        buttonSend.onClick { sendSMS() }
 
-        binding!!.buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
-        binding!!.buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
-        binding!!.buttonSend.setImageResource(R.drawable.ic_send_black_24dp)
+        buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
+        buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
+        buttonSend.setImageResource(R.drawable.ic_send_black_24dp)
 
-        binding!!.contactPhoto.borderColor = themeUtil!!.getColor(themeUtil!!.colorPrimary())
-        binding!!.contactPhoto.visibility = View.GONE
+        contactPhoto.borderColor = themeUtil!!.getColor(themeUtil!!.colorPrimary())
+        contactPhoto.visibility = View.GONE
 
         initViewModel(key)
     }
 
     private fun initViewModel(id: Int) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
-        viewModel!!.birthday.observe(this, { birthday ->
+        viewModel!!.birthday.observe(this, Observer<Birthday>{ birthday ->
             if (birthday != null) {
-                showBirthday(birthday!!)
+                showBirthday(birthday)
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel!!.result.observe(this, Observer<Commands>{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> close()
@@ -219,23 +204,23 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         }
         val photo = Contacts.getPhoto(birthday.contactId.toLong())
         if (photo != null) {
-            binding!!.contactPhoto.setImageURI(photo)
+            contactPhoto.setImageURI(photo)
         } else {
-            binding!!.contactPhoto.visibility = View.GONE
+            contactPhoto.visibility = View.GONE
         }
         val years = TimeUtil.getAgeFormatted(this, birthday.date)
-        binding!!.userName.text = birthday.name
-        binding!!.userName.contentDescription = birthday.name
-        binding!!.userYears.text = years
-        binding!!.userYears.contentDescription = years
+        userName.text = birthday.name
+        userName.contentDescription = birthday.name
+        userYears.text = years
+        userYears.contentDescription = years
         summary = birthday.name + "\n" + years
         if (TextUtils.isEmpty(birthday.number)) {
-            binding!!.buttonCall.hide()
-            binding!!.buttonSend.hide()
-            binding!!.userNumber.visibility = View.GONE
+            buttonCall.hide()
+            buttonSend.hide()
+            userNumber.visibility = View.GONE
         } else {
-            binding!!.userNumber.text = birthday.number
-            binding!!.userNumber.contentDescription = birthday.number
+            userNumber.text = birthday.number
+            userNumber.contentDescription = birthday.number
         }
         showNotification(TimeUtil.getAge(birthday.date), birthday.name)
         if (isTtsEnabled) {
@@ -247,7 +232,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         return Permissions.checkPermission(this, Permissions.READ_CONTACTS, Permissions.READ_CALLS)
     }
 
-    fun showNotification(years: Int, name: String?) {
+    private fun showNotification(years: Int, name: String) {
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(name)
         builder.setContentText(TimeUtil.getAgeFormatted(this, years))
@@ -358,15 +343,15 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     override fun showSendingError() {
-        binding!!.buttonCall.setImageResource(R.drawable.ic_refresh)
-        binding!!.buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
-        if (binding!!.buttonCall.visibility == View.GONE) {
-            binding!!.buttonCall.show()
+        buttonCall.setImageResource(R.drawable.ic_refresh)
+        buttonCall.contentDescription = getString(R.string.acc_button_retry_to_send_message)
+        if (buttonCall.visibility == View.GONE) {
+            buttonCall.show()
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 makeCall()
@@ -379,8 +364,8 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     companion object {
 
-        private val CALL_PERM = 612
-        private val SMS_PERM = 613
+        private const val CALL_PERM = 612
+        private const val SMS_PERM = 613
 
         fun getLaunchIntent(context: Context, id: Int): Intent {
             val resultIntent = Intent(context, ShowBirthdayActivity::class.java)

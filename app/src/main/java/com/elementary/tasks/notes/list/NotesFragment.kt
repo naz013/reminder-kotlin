@@ -1,6 +1,5 @@
 package com.elementary.tasks.notes.list
 
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
@@ -23,7 +22,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.view_models.notes.NotesViewModel
+import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.databinding.FragmentNotesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity

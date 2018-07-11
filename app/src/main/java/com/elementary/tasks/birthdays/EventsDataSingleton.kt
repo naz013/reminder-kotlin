@@ -37,7 +37,7 @@ class EventsDataSingleton private constructor() {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

@@ -27,15 +27,15 @@ import com.elementary.tasks.core.interfaces.SendListener
  * limitations under the License.
  */
 
-class SendReceiver(private val listener: SendListener?) : BroadcastReceiver() {
+class SendReceiver(private val listener: ((Boolean) -> Unit)?) : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         when (resultCode) {
-            Activity.RESULT_OK -> listener?.messageSendResult(true)
-            SmsManager.RESULT_ERROR_GENERIC_FAILURE -> listener?.messageSendResult(false)
-            SmsManager.RESULT_ERROR_NO_SERVICE -> listener?.messageSendResult(false)
-            SmsManager.RESULT_ERROR_NULL_PDU -> listener?.messageSendResult(false)
-            SmsManager.RESULT_ERROR_RADIO_OFF -> listener?.messageSendResult(false)
+            Activity.RESULT_OK -> listener?.invoke(true)
+            SmsManager.RESULT_ERROR_GENERIC_FAILURE -> listener?.invoke(false)
+            SmsManager.RESULT_ERROR_NO_SERVICE -> listener?.invoke(false)
+            SmsManager.RESULT_ERROR_NULL_PDU -> listener?.invoke(false)
+            SmsManager.RESULT_ERROR_RADIO_OFF -> listener?.invoke(false)
         }
     }
 }

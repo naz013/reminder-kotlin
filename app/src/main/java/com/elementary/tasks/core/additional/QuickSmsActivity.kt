@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.view_models.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplatesViewModel
 import com.elementary.tasks.databinding.ActivityQuickSmsBinding
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders

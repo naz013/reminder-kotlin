@@ -3,7 +3,7 @@ package com.elementary.tasks.voice
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.BirthdayHolder
@@ -13,26 +13,12 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemAskBinding
-import com.elementary.tasks.databinding.ListItemEventsBinding
-import com.elementary.tasks.databinding.ListItemGroupBinding
-import com.elementary.tasks.databinding.ListItemNoteBinding
-import com.elementary.tasks.databinding.ListItemReminderBinding
-import com.elementary.tasks.databinding.ListItemShoppingBinding
-import com.elementary.tasks.databinding.ListItemShowReplyBinding
-import com.elementary.tasks.databinding.ListItemSimpleReplyBinding
-import com.elementary.tasks.databinding.ListItemSimpleResponseBinding
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.ShoppingHolder
-
-import java.util.ArrayList
-import java.util.Collections
-
+import java.util.*
 import javax.inject.Inject
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -83,12 +69,12 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return when (viewType) {
             Reply.REPLY -> VoiceHolder(ListItemSimpleReplyBinding.inflate(inflater, parent, false).root)
             Reply.RESPONSE -> VoiceResponseHolder(ListItemSimpleResponseBinding.inflate(inflater, parent, false).root)
-            Reply.REMINDER -> ReminderHolder(ListItemReminderBinding.inflate(inflater, parent, false).root, null, false)
+            Reply.REMINDER -> ReminderHolder(parent, null, false)
             Reply.NOTE -> NoteHolder(ListItemNoteBinding.inflate(inflater, parent, false).root, null)
             Reply.GROUP -> GroupHolder(ListItemGroupBinding.inflate(inflater, parent, false).root, null)
             Reply.SHOW_MORE -> ShowMoreHolder(ListItemShowReplyBinding.inflate(inflater, parent, false).root)
             Reply.BIRTHDAY -> BirthdayHolder(parent, null)
-            Reply.SHOPPING -> ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).root, null)
+            Reply.SHOPPING -> ShoppingHolder(parent, null)
             else -> AskHolder(ListItemAskBinding.inflate(inflater, parent, false).root)
         }
     }

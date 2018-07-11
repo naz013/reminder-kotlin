@@ -1,6 +1,5 @@
 package com.elementary.tasks.birthdays
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.models.Birthday
@@ -43,12 +42,13 @@ class CalendarEventsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             0 -> ReminderHolder(parent, { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }, false)
-            1 -> ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).root, mEventListener)
+            1 -> ShoppingHolder(parent) { view, i, listActions ->
+                mEventListener?.onAction(view, i, data[i], listActions)
+            }
             else -> BirthdayHolder(parent) { view, i, listActions ->
                 mEventListener?.onAction(view, i, data[i], listActions)
             }

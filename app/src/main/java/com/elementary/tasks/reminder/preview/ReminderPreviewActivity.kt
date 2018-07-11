@@ -1,10 +1,8 @@
 package com.elementary.tasks.reminder.preview
 
 import android.app.AlarmManager
-import android.app.AlertDialog
 import android.content.Intent
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,7 +17,6 @@ import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
@@ -32,7 +29,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.utils.Sound
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.view_models.reminders.ReminderViewModel
+import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.databinding.ListItemTaskBinding
 import com.elementary.tasks.databinding.ListItemNoteBinding
@@ -42,7 +39,6 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 
 import java.io.File
 import java.util.ArrayList

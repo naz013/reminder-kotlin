@@ -7,19 +7,17 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.view_models.reminders.ActiveGpsRemindersViewModel
+import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.databinding.BottomSheetLayoutBinding
 import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
