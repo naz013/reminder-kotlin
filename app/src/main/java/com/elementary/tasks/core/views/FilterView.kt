@@ -2,7 +2,6 @@ package com.elementary.tasks.core.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.HorizontalScrollView
@@ -10,13 +9,13 @@ import android.widget.LinearLayout
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.databinding.ViewChipBinding
 
 import java.util.AbstractList
 import java.util.ArrayList
 import java.util.UUID
 
 import androidx.annotation.DrawableRes
+import kotlinx.android.synthetic.main.view_chip.view.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -105,7 +104,7 @@ class FilterView : LinearLayout {
     }
 
     private fun createChip(element: FilterElement, filter: Filter): View {
-        val binding = ViewChipBinding.inflate(LayoutInflater.from(mContext))
+        val binding = LayoutInflater.from(mContext).inflate(R.layout.view_chip, null, false)
         binding.chipTitle.text = element.title
         if (element.iconId == 0) {
             binding.iconView.visibility = View.GONE
@@ -115,15 +114,15 @@ class FilterView : LinearLayout {
         }
         setStatus(binding, element.isChecked)
         element.binding = binding
-        binding.root.setOnClickListener { v -> updateFilter(binding, element.id, filter.uuId) }
-        return binding.root
+        binding.setOnClickListener { updateFilter(binding, element.id, filter.uuId) }
+        return binding
     }
 
-    private fun setStatus(binding: ViewChipBinding?, checked: Boolean) {
+    private fun setStatus(binding: View?, checked: Boolean) {
         if (checked)
-            binding!!.rootView.setBackgroundResource(R.drawable.chip_selected_bg)
+            binding!!.setBackgroundResource(R.drawable.chip_selected_bg)
         else
-            binding!!.rootView.setBackgroundResource(R.drawable.chip_bg)
+            binding!!.setBackgroundResource(R.drawable.chip_bg)
     }
 
     private fun getCurrent(id: String): Filter? {
@@ -134,9 +133,8 @@ class FilterView : LinearLayout {
         return null
     }
 
-    private fun updateFilter(v: ViewChipBinding, id: Int, filterId: String) {
+    private fun updateFilter(v: View, id: Int, filterId: String) {
         val filter = getCurrent(filterId)
-        Log.d(TAG, "updateFilter: before " + filter!!)
         if (filter != null) {
             if (filter.choiceMode == ChoiceMode.SINGLE) {
                 for (element in filter) {
@@ -150,7 +148,7 @@ class FilterView : LinearLayout {
                         break
                     }
                 }
-                filter.elementClick.onClick(v.root, id)
+                filter.elementClick.onClick(v, id)
             } else {
                 for (element in filter) {
                     if (id == 0) {
@@ -163,7 +161,6 @@ class FilterView : LinearLayout {
                         }
                     }
                 }
-                Log.d(TAG, "updateFilter: middle $filter")
                 for (element in filter) {
                     if (element.id == id) {
                         element.isChecked = !element.isChecked
@@ -171,8 +168,7 @@ class FilterView : LinearLayout {
                         break
                     }
                 }
-                Log.d(TAG, "updateFilter: $filter")
-                filter.elementClick.onMultipleSelected(v.root, getSelected(filter))
+                filter.elementClick.onMultipleSelected(v, getSelected(filter))
             }
         }
     }
@@ -189,10 +185,9 @@ class FilterView : LinearLayout {
         fun onMultipleSelected(view: View, ids: List<Int>)
     }
 
-    class Filter(internal val elementClick: FilterElementClick) : AbstractList<FilterElement>() {
+    class Filter(val elementClick: FilterElementClick) : AbstractList<FilterElement>() {
         private val elements = ArrayList<FilterElement>()
         internal var choiceMode = ChoiceMode.SINGLE
-            set
         internal val uuId = UUID.randomUUID().toString()
 
         override fun get(index: Int): FilterElement {
@@ -203,19 +198,18 @@ class FilterView : LinearLayout {
             elements.clear()
         }
 
-        override fun addAll(c: Collection<FilterElement>): Boolean {
-            return elements.addAll(c)
+        override fun addAll(elements: Collection<FilterElement>): Boolean {
+            return this.elements.addAll(elements)
         }
 
-        override fun size(): Int {
-            return elements.size
+        override val size: Int
+            get() = elements.size
+
+        override fun add(element: FilterElement): Boolean {
+            return elements.add(element)
         }
 
-        override fun add(filterElement: FilterElement): Boolean {
-            return elements.add(filterElement)
-        }
-
-        override fun iterator(): Iterator<FilterElement> {
+        override fun iterator(): MutableIterator<FilterElement> {
             return elements.iterator()
         }
     }
@@ -227,7 +221,7 @@ class FilterView : LinearLayout {
         var title: String? = null
         var id: Int = 0
         var isChecked: Boolean = false
-        var binding: ViewChipBinding? = null
+        var binding: View? = null
 
         constructor(@DrawableRes iconId: Int, title: String, id: Int) {
             this.iconId = iconId
@@ -254,10 +248,5 @@ class FilterView : LinearLayout {
     enum class ChoiceMode {
         SINGLE,
         MULTI
-    }
-
-    companion object {
-
-        private val TAG = "FilterView"
     }
 }

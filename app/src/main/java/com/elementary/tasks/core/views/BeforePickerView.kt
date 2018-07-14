@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -10,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.Spinner
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
@@ -50,16 +48,14 @@ class BeforePickerView : LinearLayout, TextWatcher {
 
     private val multiplier: Long
         get() {
-            if (mState == seconds)
-                return TimeCount.SECOND
-            else if (mState == minutes)
-                return TimeCount.MINUTE
-            else if (mState == hours)
-                return TimeCount.HOUR
-            else if (mState == days)
-                return TimeCount.DAY
-            else if (mState == weeks) return TimeCount.DAY * 7
-            return TimeCount.DAY
+            return when (mState) {
+                seconds -> TimeCount.SECOND
+                minutes -> TimeCount.MINUTE
+                hours -> TimeCount.HOUR
+                days -> TimeCount.DAY
+                weeks -> TimeCount.DAY * 7
+                else -> TimeCount.DAY
+            }
         }
 
     val beforeValue: Long
@@ -97,16 +93,16 @@ class BeforePickerView : LinearLayout, TextWatcher {
             }
         }
         mBeforeInput!!.addTextChangedListener(this)
-        mBeforeInput!!.setOnFocusChangeListener { v, hasFocus ->
-            if (mImm == null) return@mBeforeInput.setOnFocusChangeListener
+        mBeforeInput!!.setOnFocusChangeListener { _, hasFocus ->
+            if (mImm == null) return@setOnFocusChangeListener
             if (!hasFocus) {
                 mImm!!.hideSoftInputFromWindow(mBeforeInput!!.windowToken, 0)
             } else {
                 mImm!!.showSoftInput(mBeforeInput, 0)
             }
         }
-        mBeforeInput!!.setOnClickListener { v ->
-            if (mImm == null) return@mBeforeInput.setOnClickListener
+        mBeforeInput!!.setOnClickListener {
+            if (mImm == null) return@setOnClickListener
             if (!mImm!!.isActive(mBeforeInput)) {
                 mImm!!.showSoftInput(mBeforeInput, 0)
             }
@@ -139,26 +135,32 @@ class BeforePickerView : LinearLayout, TextWatcher {
             setProgress(0)
             return
         }
-        if (mills % (TimeCount.DAY * 7) == 0L) {
-            val progress = mills / (TimeCount.DAY * 7)
-            setProgress(progress.toInt())
-            setState(weeks)
-        } else if (mills % TimeCount.DAY == 0L) {
-            val progress = mills / TimeCount.DAY
-            setProgress(progress.toInt())
-            setState(days)
-        } else if (mills % TimeCount.HOUR == 0L) {
-            val progress = mills / TimeCount.HOUR
-            setProgress(progress.toInt())
-            setState(hours)
-        } else if (mills % TimeCount.MINUTE == 0L) {
-            val progress = mills / TimeCount.MINUTE
-            setProgress(progress.toInt())
-            setState(minutes)
-        } else if (mills % TimeCount.SECOND == 0L) {
-            val progress = mills / TimeCount.SECOND
-            setProgress(progress.toInt())
-            setState(seconds)
+        when {
+            mills % (TimeCount.DAY * 7) == 0L -> {
+                val progress = mills / (TimeCount.DAY * 7)
+                setProgress(progress.toInt())
+                setState(weeks)
+            }
+            mills % TimeCount.DAY == 0L -> {
+                val progress = mills / TimeCount.DAY
+                setProgress(progress.toInt())
+                setState(days)
+            }
+            mills % TimeCount.HOUR == 0L -> {
+                val progress = mills / TimeCount.HOUR
+                setProgress(progress.toInt())
+                setState(hours)
+            }
+            mills % TimeCount.MINUTE == 0L -> {
+                val progress = mills / TimeCount.MINUTE
+                setProgress(progress.toInt())
+                setState(minutes)
+            }
+            mills % TimeCount.SECOND == 0L -> {
+                val progress = mills / TimeCount.SECOND
+                setProgress(progress.toInt())
+                setState(seconds)
+            }
         }
     }
 
@@ -187,6 +189,6 @@ class BeforePickerView : LinearLayout, TextWatcher {
 
     companion object {
 
-        private val TAG = "BeforePickerView"
+        private const val TAG = "BeforePickerView"
     }
 }

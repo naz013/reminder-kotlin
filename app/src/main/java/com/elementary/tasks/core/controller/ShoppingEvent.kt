@@ -23,7 +23,7 @@ import com.elementary.tasks.core.utils.TimeCount
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
+class ShoppingEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override val isActive: Boolean
         get() = reminder.isActive

@@ -36,9 +36,9 @@ class InfiniteViewPager : ViewPager {
         this.enabled = enabled
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
     override fun setAdapter(adapter: PagerAdapter?) {
         super.setAdapter(adapter)
@@ -51,6 +51,6 @@ class InfiniteViewPager : ViewPager {
 
     companion object {
 
-        val OFFSET = 1000
+        const val OFFSET = 1000
     }
 }

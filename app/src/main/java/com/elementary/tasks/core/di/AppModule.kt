@@ -26,7 +26,7 @@ import dagger.Provides
  * limitations under the License.
  */
 @Module
-class AppModule(internal var mApplication: Application) {
+class AppModule(private var mApplication: Application) {
 
     @Provides
     @Singleton

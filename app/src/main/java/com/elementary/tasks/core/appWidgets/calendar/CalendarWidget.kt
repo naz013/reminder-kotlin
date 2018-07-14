@@ -42,12 +42,7 @@ import java.util.Locale
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarWidget : AppWidgetProvider() {
-
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-    }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(

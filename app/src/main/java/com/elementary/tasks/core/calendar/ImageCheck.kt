@@ -26,7 +26,7 @@ import java.io.File
 class ImageCheck private constructor() {
     private val photos = longArrayOf(227, 226, 11, 25, 33, 10, 16, 17, 44, 71, 95, 132)
 
-    val isSdPresent: Boolean
+    private val isSdPresent: Boolean
         get() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 
     fun getImage(month: Int, id: Long): String? {
@@ -44,7 +44,7 @@ class ImageCheck private constructor() {
     }
 
     fun isImage(month: Int, id: Long): Boolean {
-        if (isSdPresent) {
+        return if (isSdPresent) {
             var res = false
             val sdPath = Environment.getExternalStorageDirectory()
             val sdPathDr = File(sdPath.toString() + "/JustReminder/" + "image_cache")
@@ -55,14 +55,14 @@ class ImageCheck private constructor() {
             if (image.exists()) {
                 res = true
             }
-            return res
+            res
         } else {
-            return false
+            false
         }
     }
 
     fun getImageUrl(month: Int, id: Long): String {
-        return if (id != -1) {
+        return if (id != -1L) {
             BASE_URL + id
         } else {
             BASE_URL + photos[month]
@@ -70,7 +70,7 @@ class ImageCheck private constructor() {
     }
 
     fun getImageName(month: Int, id: Long): String {
-        return if (id != -1) {
+        return if (id != -1L) {
             getFileName(id)
         } else {
             getFileName(photos[month])
@@ -83,7 +83,7 @@ class ImageCheck private constructor() {
 
     companion object {
 
-        val BASE_URL = "https://unsplash.it/1920/1080?image="
+        const val BASE_URL = "https://unsplash.it/1920/1080?image="
 
         private var instance: ImageCheck? = null
 
@@ -91,7 +91,7 @@ class ImageCheck private constructor() {
             if (instance == null) {
                 instance = ImageCheck()
             }
-            return instance
+            return instance!!
         }
     }
 }

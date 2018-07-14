@@ -1,13 +1,6 @@
 package com.elementary.tasks.core.views
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
@@ -96,12 +89,10 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
         val rect = RectF(bounds)
         rect.inset((borderThickness / 2).toFloat(), (borderThickness / 2).toFloat())
 
-        if (shape is OvalShape) {
-            canvas.drawOval(rect, borderPaint)
-        } else if (shape is RoundRectShape) {
-            canvas.drawRoundRect(rect, radius, radius, borderPaint)
-        } else {
-            canvas.drawRect(rect, borderPaint)
+        when (shape) {
+            is OvalShape -> canvas.drawOval(rect, borderPaint)
+            is RoundRectShape -> canvas.drawRoundRect(rect, radius, radius, borderPaint)
+            else -> canvas.drawRect(rect, borderPaint)
         }
     }
 
@@ -125,31 +116,31 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
         return height
     }
 
-    class Builder private constructor() : IConfigBuilder, IShapeBuilder, IBuilder {
+    class Builder : IConfigBuilder, IShapeBuilder, IBuilder {
 
-        private var text: String? = null
+        var text: String? = null
 
-        private var color: Int = 0
+        var color: Int = 0
 
-        private var borderThickness: Int = 0
+        var borderThickness: Int = 0
 
-        private var width: Int = 0
+        var width: Int = 0
 
-        private var height: Int = 0
+        var height: Int = 0
 
-        private var font: Typeface? = null
+        var font: Typeface? = null
 
-        private var shape: RectShape? = null
+        var shape: RectShape? = null
 
-        private var textColor: Int = 0
+        var textColor: Int = 0
 
-        private var fontSize: Int = 0
+        var fontSize: Int = 0
 
-        private var isBold: Boolean = false
+        var isBold: Boolean = false
 
-        private var toUpperCase: Boolean = false
+        var toUpperCase: Boolean = false
 
-        private var radius: Float = 0.toFloat()
+        var radius: Float = 0.toFloat()
 
         init {
             text = ""
@@ -213,17 +204,17 @@ class TextDrawable private constructor(builder: Builder) : ShapeDrawable(builder
             return this
         }
 
-        fun rect(): IBuilder {
+        private fun rect(): IBuilder {
             this.shape = RectShape()
             return this
         }
 
-        fun round(): IBuilder {
+        private fun round(): IBuilder {
             this.shape = OvalShape()
             return this
         }
 
-        fun roundRect(radius: Int): IBuilder {
+        private fun roundRect(radius: Int): IBuilder {
             this.radius = radius.toFloat()
             val radii = floatArrayOf(radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat(), radius.toFloat())
             this.shape = RoundRectShape(radii, null, null)

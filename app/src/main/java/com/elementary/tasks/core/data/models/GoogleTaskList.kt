@@ -37,7 +37,7 @@ class GoogleTaskList {
     @SerializedName("def")
     var def: Int = 0
     @SerializedName("eTag")
-    private var eTag: String = ""
+    var eTag: String = ""
     @SerializedName("kind")
     var kind: String = ""
     @SerializedName("selfLink")

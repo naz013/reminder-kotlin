@@ -25,7 +25,7 @@ import androidx.viewpager.widget.PagerAdapter
  */
 class InfinitePagerAdapter(private val adapter: PagerAdapter) : PagerAdapter() {
 
-    val realCount: Int
+    private val realCount: Int
         get() = adapter.count
 
     override fun getCount(): Int {

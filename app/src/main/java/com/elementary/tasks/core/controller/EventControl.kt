@@ -24,6 +24,7 @@ interface EventControl {
     val isRepeatable: Boolean
 
     val isActive: Boolean
+
     fun start(): Boolean
 
     fun stop(): Boolean

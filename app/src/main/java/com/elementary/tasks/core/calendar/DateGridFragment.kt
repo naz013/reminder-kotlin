@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.elementary.tasks.core.views.MonthView
-import com.elementary.tasks.databinding.FragmentDateGridBinding
 
 import java.util.HashMap
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
 import hirondelle.date4j.DateTime
+import kotlinx.android.synthetic.main.fragment_date_grid.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,11 +34,9 @@ import hirondelle.date4j.DateTime
  */
 class DateGridFragment : Fragment() {
 
-    private var monthView: MonthView? = null
-
     private var eventsMap: Map<DateTime, Events> = HashMap()
     @IntRange(from = 1, to = 12)
-    private var month: Int = 0
+    private var month: Int = 1
     private var year: Int = 0
 
     private var onItemClickListener: MonthView.OnDateClick? = null
@@ -47,8 +46,8 @@ class DateGridFragment : Fragment() {
         this.month = dateTime.month!!
         this.year = dateTime.year!!
         if (monthView != null) {
-            monthView!!.setDate(year, month)
-            monthView!!.invalidate()
+            monthView.setDate(year, month)
+            monthView.invalidate()
         }
     }
 
@@ -56,8 +55,8 @@ class DateGridFragment : Fragment() {
         this.month = month
         this.year = year
         if (monthView != null) {
-            monthView!!.setDate(year, month)
-            monthView!!.invalidate()
+            monthView.setDate(year, month)
+            monthView.invalidate()
         }
     }
 
@@ -73,21 +72,22 @@ class DateGridFragment : Fragment() {
         this.onItemLongClickListener = onItemLongClickListener
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val v = FragmentDateGridBinding.inflate(inflater, container, false)
-        monthView = v.monthView
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_date_grid, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (year != 0) {
-            monthView!!.setDate(year, month)
+            monthView.setDate(year, month)
         }
-        monthView!!.setEventsMap(eventsMap)
+        monthView.setEventsMap(eventsMap)
         if (onItemClickListener != null) {
-            monthView!!.setDateClick(onItemClickListener)
+            monthView.setDateClick(onItemClickListener!!)
         }
         if (onItemLongClickListener != null) {
-            monthView!!.setDateLongClick(onItemLongClickListener)
+            monthView.setDateLongClick(onItemLongClickListener!!)
         }
-        monthView!!.invalidate()
-        return v.root
+        monthView.invalidate()
     }
 }

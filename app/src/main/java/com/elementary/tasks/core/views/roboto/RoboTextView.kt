@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.views.roboto
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Typeface
 import android.util.AttributeSet
-
+import androidx.appcompat.widget.AppCompatTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
-
-import androidx.appcompat.widget.AppCompatTextView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,14 +45,13 @@ open class RoboTextView : AppCompatTextView {
         if (isInEditMode) {
             return
         }
-        isDrawingCacheEnabled = true
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.RoboTextView)
             val fontCode = a.getInt(R.styleable.RoboTextView_font_style, -1)
-            if (fontCode != -1) {
-                mTypeface = AssetsUtil.getTypeface(context, fontCode)
+            mTypeface = if (fontCode != -1) {
+                AssetsUtil.getTypeface(context, fontCode)
             } else {
-                mTypeface = AssetsUtil.getDefaultTypeface(context)
+                AssetsUtil.getDefaultTypeface(context)
             }
             a.recycle()
         } else {

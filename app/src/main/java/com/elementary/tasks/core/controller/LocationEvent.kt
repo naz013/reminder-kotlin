@@ -28,7 +28,7 @@ import com.elementary.tasks.core.utils.TimeCount
  * limitations under the License.
  */
 
-internal class LocationEvent(reminder: Reminder) : EventManager(reminder) {
+class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override val isActive: Boolean
         get() = reminder.isActive
@@ -39,11 +39,11 @@ internal class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     override fun start(): Boolean {
         reminder.isActive = true
         super.save()
-        if (EventJobService.enablePositionDelay(context, reminder.uniqueId)) {
-            return true
+        return if (EventJobService.enablePositionDelay(context, reminder.uniqueId)) {
+            true
         } else {
             SuperUtil.startGpsTracking(context)
-            return true
+            true
         }
     }
 
@@ -51,15 +51,15 @@ internal class LocationEvent(reminder: Reminder) : EventManager(reminder) {
         EventJobService.cancelReminder(reminder.uniqueId.toString())
         reminder.isActive = false
         super.save()
-        Notifier.hideNotification(context!!, reminder.uniqueId)
+        Notifier.hideNotification(context, reminder.uniqueId)
         stopTracking(false)
         return true
     }
 
     private fun stopTracking(isPaused: Boolean) {
         val list = db!!.reminderDao().getAllTypes(true, false, Reminder.gpsTypes())
-        if (list.size == 0) {
-            SuperUtil.stopService(context!!, GeolocationService::class.java)
+        if (list.isEmpty()) {
+            SuperUtil.stopService(context, GeolocationService::class.java)
         }
         var hasActive = false
         for (item in list) {
@@ -86,7 +86,7 @@ internal class LocationEvent(reminder: Reminder) : EventManager(reminder) {
             }
         }
         if (!hasActive) {
-            SuperUtil.stopService(context!!, GeolocationService::class.java)
+            SuperUtil.stopService(context, GeolocationService::class.java)
         }
     }
 
@@ -113,12 +113,13 @@ internal class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun onOff(): Boolean {
-        if (isActive) {
-            return stop()
+        return if (isActive) {
+            stop()
         } else {
-            reminder.setLocked(false).isNotificationShown = false
+            reminder.isLocked = false
+            reminder.isNotificationShown = false
             super.save()
-            return start()
+            start()
         }
     }
 

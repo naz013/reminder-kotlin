@@ -33,8 +33,6 @@ class NoteImagesTypeConverter {
 
     @TypeConverter
     fun toList(json: String): List<NoteImage>? {
-        return Gson().fromJson<List<NoteImage>>(json, object : TypeToken<List<NoteImage>>() {
-
-        }.type)
+        return Gson().fromJson<List<NoteImage>>(json, object : TypeToken<List<NoteImage>>() {}.type)
     }
 }

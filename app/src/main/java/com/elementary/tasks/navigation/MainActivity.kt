@@ -10,37 +10,25 @@ import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
-
+import androidx.annotation.ColorInt
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.Google
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.RemotePrefs
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.views.FilterView
-import com.elementary.tasks.core.views.ReturnScrollListener
 import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.ActivityMainBinding
-import com.elementary.tasks.groups.list.GroupsFragment
-import com.elementary.tasks.navigation.fragments.BackupsFragment
-import com.elementary.tasks.navigation.fragments.CalendarFragment
-import com.elementary.tasks.navigation.fragments.DayViewFragment
-import com.elementary.tasks.navigation.fragments.FeedbackFragment
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
-import com.elementary.tasks.navigation.fragments.HelpFragment
-import com.elementary.tasks.navigation.fragments.MapFragment
+import com.elementary.tasks.groups.list.GroupsFragment
+import com.elementary.tasks.navigation.fragments.*
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.navigation.settings.SettingsFragment
 import com.elementary.tasks.navigation.settings.images.MainImageActivity
@@ -51,29 +39,16 @@ import com.elementary.tasks.places.list.PlacesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
 import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
-
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.list_item_message.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import java.io.File
 
-import androidx.annotation.ColorInt
-import androidx.core.view.GravityCompat
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
+class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
+        RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
 
-class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback, RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
-
-    private var binding: ActivityMainBinding? = null
-    private var mMainImageView: ImageView? = null
-    private var mSaleBadge: RoboTextView? = null
-    private var mUpdateBadge: RoboTextView? = null
-    private var mNavigationView: NavigationView? = null
     private var fragment: Fragment? = null
     private var mNoteView: QuickNoteCoordinator? = null
-    private var returnScrollListener: ReturnScrollListener? = null
-    private var listener: RecyclerView.OnScrollListener? = null
-    private var mPrevList: RecyclerView? = null
 
     private var viewModel: ConversationViewModel? = null
 
@@ -84,11 +59,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private val mQuickCallback = object : QuickNoteCoordinator.Callback {
         override fun onOpen() {
-            binding!!.fab.setImageResource(R.drawable.ic_clear_white_24dp)
+            fab.setImageResource(R.drawable.ic_clear_white_24dp)
         }
 
         override fun onClose() {
-            binding!!.fab.setImageResource(R.drawable.ic_add_white_24dp)
+            fab.setImageResource(R.drawable.ic_add_white_24dp)
         }
     }
 
@@ -100,38 +75,27 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             return count == 10
         }
 
-    private val onScrollListener: RecyclerView.OnScrollListener
-        get() = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                returnScrollListener!!.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                returnScrollListener!!.onScrolled(recyclerView, dx, dy)
-            }
-        }
-
     override val isFiltersVisible: Boolean
-        get() = binding!!.filterView.visibility == View.VISIBLE
+        get() = filterView.visibility == View.VISIBLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding!!.fab.setOnLongClickListener { view ->
+        setContentView(R.layout.activity_main)
+        fab.setOnLongClickListener {
             mNoteView!!.switchQuickNote()
             true
         }
         initActionBar()
         initNavigation()
-        mNoteView = QuickNoteCoordinator(this, binding, mQuickCallback)
-        if (savedInstanceState != null) {
-            openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
-        } else if (intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0) {
-            prevItem = intent.getIntExtra(Constants.INTENT_POSITION, 0)
-            mNavigationView!!.setCheckedItem(prevItem)
-            openScreen(prevItem)
-        } else {
-            initStartFragment()
+        mNoteView = QuickNoteCoordinator(this, view, mQuickCallback)
+        when {
+            savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
+            intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
+                prevItem = intent.getIntExtra(Constants.INTENT_POSITION, 0)
+                nav_view.setCheckedItem(prevItem)
+                openScreen(prevItem)
+            }
+            else -> initStartFragment()
         }
 
         initViewModel()
@@ -148,25 +112,25 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun initStartFragment() {
         prevItem = R.id.nav_current
-        mNavigationView!!.setCheckedItem(prevItem)
+        nav_view.setCheckedItem(prevItem)
         replaceFragment(RemindersFragment(), getString(R.string.events))
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(false)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
-        binding!!.toolbar.setNavigationOnClickListener { v -> onDrawerClick() }
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
+        toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 
     private fun onDrawerClick() {
         if (this.fragment is BaseSettingsFragment) {
             onBackPressed()
         } else {
-            binding!!.drawerLayout.openDrawer(GravityCompat.START)
+            drawer_layout.openDrawer(GravityCompat.START)
         }
     }
 
@@ -177,7 +141,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         ft.addToBackStack(title)
         ft.commit()
-        binding!!.toolbar.title = title
+        toolbar.title = title
     }
 
     override fun onResume() {
@@ -211,12 +175,12 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.rate)
         builder.setMessage(R.string.can_you_rate_this_application)
-        builder.setPositiveButton(R.string.rate) { dialogInterface, i ->
+        builder.setPositiveButton(R.string.rate) { dialogInterface, _ ->
             dialogInterface.dismiss()
             SuperUtil.launchMarket(this@MainActivity)
         }
-        builder.setNegativeButton(R.string.never) { dialogInterface, i -> dialogInterface.dismiss() }
-        builder.setNeutralButton(R.string.later) { dialogInterface, i ->
+        builder.setNegativeButton(R.string.never) { dialogInterface, _ -> dialogInterface.dismiss() }
+        builder.setNeutralButton(R.string.later) { dialogInterface, _ ->
             dialogInterface.dismiss()
             prefs!!.rateCount = 0
         }
@@ -239,13 +203,13 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val builder = Dialogues.getDialog(this)
         builder.setTitle("Beta")
         builder.setMessage("This version of application may work unstable!")
-        builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
     private fun showMainImage() {
         val path = prefs!!.imagePath
-        if (path != null && !path.isEmpty() && !path.contains("{")) {
+        if (!path.isEmpty() && !path.contains("{")) {
             var fileName: String = path
             if (path.contains("=")) {
                 val index = path.indexOf("=")
@@ -254,17 +218,17 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             val file = File(MemoryUtil.imageCacheDir, "$fileName.jpg")
             val readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             if (readPerm && file.exists()) {
-                Glide.with(this).load(file).into(mMainImageView!!)
-                mMainImageView!!.visibility = View.VISIBLE
+                Glide.with(this).load(file).into(headerImage)
+                headerImage.visibility = View.VISIBLE
             } else {
-                Glide.with(this).load(path).into(mMainImageView!!)
-                mMainImageView!!.visibility = View.VISIBLE
+                Glide.with(this).load(path).into(headerImage)
+                headerImage.visibility = View.VISIBLE
                 if (readPerm) {
                     SaveAsync(this).execute(path)
                 }
             }
         } else {
-            mMainImageView!!.visibility = View.GONE
+            headerImage.visibility = View.GONE
         }
     }
 
@@ -277,15 +241,15 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onTitleChange(title: String) {
-        binding!!.toolbar.title = title
+        toolbar.title = title
     }
 
     override fun onFragmentSelect(fragment: Fragment) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
-            binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         } else {
-            binding!!.toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
+            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
         }
     }
 
@@ -294,10 +258,10 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             hideFab()
         } else {
             showFab()
-            binding!!.fab.setOnClickListener { view ->
+            fab.setOnClickListener { view ->
                 if (mNoteView!!.isNoteVisible) {
                     mNoteView!!.hideNoteView()
-                    return@binding.fab.setOnClickListener
+                    return@setOnClickListener
                 }
                 listener.onClick(view)
             }
@@ -317,57 +281,41 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (accent == 0) {
             accent = themeUtil!!.getColor(themeUtil!!.colorAccent())
         }
-        binding!!.toolbar.setBackgroundColor(primary)
+        toolbar.setBackgroundColor(primary)
         if (Module.isLollipop) {
             window.statusBarColor = primaryDark
         }
-        binding!!.fab.backgroundTintList = ViewUtils.getFabState(accent, accent)
+        fab.backgroundTintList = ViewUtils.getFabState(accent, accent)
     }
 
     override fun refreshMenu() {
         setMenuVisible()
     }
 
-    override fun onScrollChanged(recyclerView: RecyclerView?) {
-        if (listener != null && mPrevList != null) {
-            mPrevList!!.removeOnScrollListener(listener!!)
-        }
-        if (recyclerView != null) {
-            returnScrollListener = ReturnScrollListener.Builder(ReturnScrollListener.QuickReturnViewType.FOOTER)
-                    .footer(binding!!.fab)
-                    .minFooterTranslation(MeasureUtils.dp2px(this, 88))
-                    .isSnappable(true)
-                    .build()
-            listener = onScrollListener
-            if (Module.isLollipop) {
-                recyclerView.addOnScrollListener(listener!!)
-            } else {
-                recyclerView.setOnScrollListener(listener)
-            }
-            mPrevList = recyclerView
-        }
+    override fun onScrollChanged(recyclerView: RecyclerView) {
+
     }
 
-    override fun addFilters(filters: List<FilterView.Filter>?, clear: Boolean) {
-        if (filters == null || filters.size == 0) {
+    override fun addFilters(filters: List<FilterView.Filter>, clear: Boolean) {
+        if (filters.isEmpty()) {
             hideFilters()
             if (clear) {
-                binding!!.filterView.clear()
+                filterView.clear()
             }
         } else {
             if (clear) {
-                binding!!.filterView.clear()
+                filterView.clear()
             }
             for (filter in filters) {
-                binding!!.filterView.addFilter(filter)
+                filterView.addFilter(filter)
             }
-            ViewUtils.expand(binding!!.filterView)
+            ViewUtils.expand(filterView)
         }
     }
 
     override fun hideFilters() {
         if (isFiltersVisible) {
-            ViewUtils.collapse(binding!!.filterView)
+            ViewUtils.collapse(filterView)
         }
     }
 
@@ -377,20 +325,16 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onMenuSelect(menu: Int) {
         prevItem = menu
-        mNavigationView!!.setCheckedItem(prevItem)
+        nav_view.setCheckedItem(prevItem)
     }
 
     private fun initNavigation() {
-        mNavigationView = binding!!.navView
-        mNavigationView!!.setNavigationItemSelectedListener(this)
-        val view = mNavigationView!!.getHeaderView(0)
-        mSaleBadge = view.findViewById(R.id.sale_badge)
-        mUpdateBadge = view.findViewById(R.id.update_badge)
-        mSaleBadge!!.visibility = View.INVISIBLE
-        mUpdateBadge!!.visibility = View.INVISIBLE
-        mMainImageView = view.findViewById(R.id.headerImage)
-        mMainImageView!!.setOnClickListener { view1 -> openImageScreen() }
-        view.findViewById<View>(R.id.headerItem).setOnClickListener { view12 -> openImageScreen() }
+        nav_view.setNavigationItemSelectedListener(this)
+        val view = nav_view.getHeaderView(0)
+        sale_badge.visibility = View.INVISIBLE
+        update_badge.visibility = View.INVISIBLE
+        headerImage.setOnClickListener { openImageScreen() }
+        view.findViewById<View>(R.id.headerItem).setOnClickListener { openImageScreen() }
         val nameView = view.findViewById<RoboTextView>(R.id.appNameBanner)
         var appName = getString(R.string.app_name)
         if (Module.isPro) {
@@ -405,20 +349,16 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun setMenuVisible() {
-        val menu = mNavigationView!!.menu
+        val menu = nav_view.menu
         menu.getItem(4).isVisible = Google.getInstance(this) != null
-        if (!Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")) {
-            menu.getItem(13).isVisible = true
-        } else {
-            menu.getItem(13).isVisible = false
-        }
+        menu.getItem(13).isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
     override fun onBackPressed() {
-        if (binding!!.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding!!.drawerLayout.closeDrawer(GravityCompat.START)
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
         } else if (isFiltersVisible) {
-            addFilters(null, true)
+            addFilters(listOf(), true)
         } else if (mNoteView!!.isNoteVisible) {
             mNoteView!!.hideNoteView()
         } else {
@@ -433,7 +373,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             if (fragment is SettingsFragment) {
                 if (beforeSettings != 0) {
                     prevItem = beforeSettings
-                    mNavigationView!!.setCheckedItem(beforeSettings)
+                    nav_view.setCheckedItem(beforeSettings)
                     openScreen(beforeSettings)
                 } else {
                     initStartFragment()
@@ -453,20 +393,20 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun showFab() {
-        if (binding!!.fab.visibility != View.VISIBLE) {
-            binding!!.fab.show()
+        if (fab.visibility != View.VISIBLE) {
+            fab.show()
         }
     }
 
     private fun hideFab() {
-        if (binding!!.fab.visibility != View.GONE) {
-            binding!!.fab.hide()
+        if (fab.visibility != View.GONE) {
+            fab.hide()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             viewModel!!.parseResults(matches, false)
         }
@@ -483,10 +423,10 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        binding!!.drawerLayout.closeDrawer(GravityCompat.START)
+        drawer_layout.closeDrawer(GravityCompat.START)
         Handler().postDelayed({
             if (prevItem == item.itemId && (item.itemId != R.id.nav_feedback || item.itemId != R.id.nav_help && item.itemId != R.id.nav_pro)) {
-                return@new Handler().postDelayed
+                return@postDelayed
             }
             openScreen(item.itemId)
             if (item.itemId != R.id.nav_feedback && item.itemId != R.id.nav_help && item.itemId != R.id.nav_pro) {
@@ -541,11 +481,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                         getString(R.string.styles_for_marker) + "\n" +
                         getString(R.string.option_for_image_blurring) + "\n" +
                         getString(R.string.additional_app_themes))
-                .setPositiveButton(R.string.buy) { dialog, which ->
+                .setPositiveButton(R.string.buy) { dialog, _ ->
                     dialog.dismiss()
                     openMarket()
                 }
-                .setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.dismiss() }
+                .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
                 .setCancelable(true)
                 .create().show()
     }
@@ -553,25 +493,25 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(this, expiryDate)
         if (TextUtils.isEmpty(expiry)) {
-            mSaleBadge!!.visibility = View.INVISIBLE
+            sale_badge.visibility = View.INVISIBLE
         } else {
-            mSaleBadge!!.visibility = View.VISIBLE
-            mSaleBadge!!.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+            sale_badge.visibility = View.VISIBLE
+            sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
         }
     }
 
     override fun noSale() {
-        mSaleBadge!!.visibility = View.INVISIBLE
+        sale_badge.visibility = View.INVISIBLE
     }
 
     override fun onUpdate(version: String) {
-        mUpdateBadge!!.visibility = View.VISIBLE
-        mUpdateBadge!!.text = getString(R.string.update_available) + ": " + version
-        mUpdateBadge!!.setOnClickListener { v -> SuperUtil.launchMarket(this@MainActivity) }
+        update_badge.visibility = View.VISIBLE
+        update_badge.text = getString(R.string.update_available) + ": " + version
+        update_badge.setOnClickListener { v -> SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
-        mUpdateBadge!!.visibility = View.INVISIBLE
+        update_badge.visibility = View.INVISIBLE
     }
 
     companion object {

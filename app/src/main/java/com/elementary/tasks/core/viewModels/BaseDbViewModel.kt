@@ -3,14 +3,12 @@ package com.elementary.tasks.core.viewModels
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-
-import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.data.AppDb
-
-import javax.inject.Inject
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.data.AppDb
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -36,19 +34,10 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
     var isInProgress = MutableLiveData<Boolean>()
 
     @Inject
-    protected var appDb: AppDb? = null
-        set
+    lateinit var appDb: AppDb
     protected val handler = Handler(Looper.getMainLooper())
 
     init {
-        ReminderApp.appComponent!!.inject(this)
-    }
-
-    protected fun end(runnable: Runnable) {
-        handler.post(runnable)
-    }
-
-    protected fun run(runnable: Runnable) {
-        Thread(runnable).start()
+        ReminderApp.appComponent.inject(this)
     }
 }

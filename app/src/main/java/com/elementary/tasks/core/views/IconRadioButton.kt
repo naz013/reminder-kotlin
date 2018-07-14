@@ -81,11 +81,10 @@ class IconRadioButton : AppCompatRadioButton {
     }
 
     private fun setTopIcon() {
-        val drawableTop: Drawable?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawableTop = context.getDrawable(icon)
+        val drawableTop: Drawable? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.getDrawable(icon)
         } else {
-            drawableTop = AppCompatResources.getDrawable(context, icon)
+            AppCompatResources.getDrawable(context, icon)
         }
         setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null)
     }
@@ -137,6 +136,6 @@ class IconRadioButton : AppCompatRadioButton {
 
     companion object {
 
-        private val TAG = "IconRadioButton"
+        private const val TAG = "IconRadioButton"
     }
 }

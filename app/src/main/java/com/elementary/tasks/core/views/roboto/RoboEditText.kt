@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.views.roboto
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Typeface
 import android.util.AttributeSet
-
+import androidx.appcompat.widget.AppCompatEditText
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
-
-import androidx.appcompat.widget.AppCompatEditText
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -51,10 +48,10 @@ class RoboEditText : AppCompatEditText {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.RoboEditText)
             val fontCode = a.getInt(R.styleable.RoboEditText_edit_font_style, -1)
-            if (fontCode != -1) {
-                mTypeface = AssetsUtil.getTypeface(context, fontCode)
+            mTypeface = if (fontCode != -1) {
+                AssetsUtil.getTypeface(context, fontCode)
             } else {
-                mTypeface = AssetsUtil.getDefaultTypeface(context)
+                AssetsUtil.getDefaultTypeface(context)
             }
             a.recycle()
         } else {

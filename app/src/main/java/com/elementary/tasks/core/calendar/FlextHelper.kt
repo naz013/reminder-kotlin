@@ -55,18 +55,17 @@ object FlextHelper {
         var year = calendar.get(Calendar.YEAR)
         val javaMonth = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        try {
-            return DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
+        return try {
+            DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
         } catch (e: Exception) {
             calendar.timeInMillis = System.currentTimeMillis()
             year = calendar.get(Calendar.YEAR)
             try {
-                return DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
+                DateTime(year, javaMonth + 1, day, 0, 0, 0, 0)
             } catch (e1: Exception) {
-                return DateTime(year, javaMonth + 1, day - 1, 0, 0, 0, 0)
+                DateTime(year, javaMonth + 1, day - 1, 0, 0, 0, 0)
             }
 
         }
-
     }
 }

@@ -21,33 +21,22 @@ import com.elementary.tasks.core.utils.LogUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 object EventControlFactory {
 
-    private val TAG = "EventControlFactory"
+    private const val TAG = "EventControlFactory"
 
     fun getController(reminder: Reminder): EventControl {
-        val control: EventControl
-        if (Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP)) {
-            control = ShoppingEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_DATE)) {
-            control = DateEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_LOCATION)) {
-            control = LocationEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_MONTH)) {
-            control = MonthlyEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
-            control = WeeklyEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
-            control = LocationEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_PLACES)) {
-            control = LocationEvent(reminder)
-        } else if (Reminder.isSame(reminder.type, Reminder.BY_TIME)) {
-            control = TimerEvent(reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR)) {
-            control = YearlyEvent(reminder)
-        } else {
-            control = DateEvent(reminder)
+        val control: EventControl = when {
+            Reminder.isSame(reminder.type, Reminder.BY_DATE_SHOP) -> ShoppingEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_DATE) -> DateEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_LOCATION) -> LocationEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> MonthlyEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> WeeklyEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_OUT) -> LocationEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_PLACES) -> LocationEvent(reminder)
+            Reminder.isSame(reminder.type, Reminder.BY_TIME) -> TimerEvent(reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> YearlyEvent(reminder)
+            else -> DateEvent(reminder)
         }
         LogUtil.d(TAG, "getController: $control")
         return control

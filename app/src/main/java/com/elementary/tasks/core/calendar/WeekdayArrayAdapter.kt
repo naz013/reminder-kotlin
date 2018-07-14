@@ -48,11 +48,10 @@ class WeekdayArrayAdapter(context: Context, textViewResourceId: Int,
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
             }
         }
-        val textColor: Int
-        if (isDark) {
-            textColor = context.resources.getColor(android.R.color.white)
+        val textColor: Int = if (isDark) {
+            context.resources.getColor(android.R.color.white)
         } else {
-            textColor = context.resources.getColor(android.R.color.black)
+            context.resources.getColor(android.R.color.black)
         }
         textView.setTextColor(textColor)
         textView.gravity = Gravity.CENTER

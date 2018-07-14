@@ -34,17 +34,12 @@ import hirondelle.date4j.DateTime
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-internal class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val mWeekdaysList = ArrayList<String>()
-    private val mWidgetId: Int
+    private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val SUNDAY = 1
     private val startDayOfWeek = SUNDAY
-
-    init {
-        mWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-    }
 
     override fun onCreate() {
         mWeekdaysList.clear()

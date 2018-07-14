@@ -41,7 +41,7 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
 
     private var mListener: TimerListener? = null
 
-    var timerValue: Long
+    private var timerValue: Long
         get() = SuperUtil.getAfterTime(timeString)
         set(mills) {
             timeString = TimeUtil.generateAfterString(mills)
@@ -67,12 +67,12 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
         minutesView = findViewById(R.id.minutesView)
         secondsView = findViewById(R.id.secondsView)
         deleteButton = findViewById(R.id.deleteButton)
-        deleteButton!!.setOnClickListener { v ->
+        deleteButton!!.setOnClickListener {
             timeString = timeString.substring(0, timeString.length - 1)
             timeString = "0$timeString"
             updateTimeView()
         }
-        deleteButton!!.setOnLongClickListener { v ->
+        deleteButton!!.setOnLongClickListener {
             timeString = "000000"
             updateTimeView()
             true
@@ -121,10 +121,7 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
 
     private fun updateTimeView() {
-        if (timeString.matches("000000".toRegex()))
-            deleteButton!!.isEnabled = false
-        else
-            deleteButton!!.isEnabled = true
+        deleteButton!!.isEnabled = !timeString.matches("000000".toRegex())
         if (timeString.length == 6) {
             val hours = timeString.substring(0, 2)
             val minutes = timeString.substring(2, 4)
@@ -138,11 +135,11 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
 
     override fun onClick(view: View) {
         val ids = view.id
-        if (ids >= 100 && ids < 110) {
+        if (ids in 100..109) {
             val charS = timeString[0].toString()
             if (charS.matches("0".toRegex())) {
                 timeString = timeString.substring(1, timeString.length)
-                timeString = timeString + (ids - 100).toString()
+                timeString += (ids - 100).toString()
                 updateTimeView()
             }
         }

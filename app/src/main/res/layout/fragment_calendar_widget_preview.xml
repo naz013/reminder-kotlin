@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <RelativeLayout
-        android:id="@+id/background"
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/note"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/swipe_to_change_theme"
+        android:textSize="20sp"
+        app:font_style="roboto_regular" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/swipe_to_change_theme"
-            android:textSize="20sp"
-            app:font_style="roboto_regular" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/themeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/note"
+        android:layout_marginBottom="45dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:font_style="roboto_medium" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/themeTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/note"
-            android:layout_marginBottom="45dp"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:textSize="30sp"
-            app:font_style="roboto_medium" />
+    <include
+        android:id="@+id/previewView"
+        layout="@layout/widget_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_alignParentBottom="true" />
 
-        <include
-            android:id="@+id/previewView"
-            layout="@layout/widget_calendar"
-            android:layout_width="match_parent"
-            android:layout_height="290dp"
-            android:layout_alignParentBottom="true" />
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

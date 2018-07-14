@@ -1,24 +1,21 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.os.Build
-import androidx.annotation.DrawableRes
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.RelativeLayout
 import android.widget.TextView
-
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.SwitchCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
-
-import java.util.ArrayList
-
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.SwitchCompat
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -55,10 +52,8 @@ class PrefsView : RelativeLayout {
             if (viewType == CHECK)
                 checkBox!!.isChecked = checked
             else if (viewType == SWITCH) switchView!!.isChecked = checked
-            if (mOnCheckedListeners != null) {
-                for (listener in mOnCheckedListeners) {
-                    listener.onCheckedChange(checked)
-                }
+            for (listener in mOnCheckedListeners) {
+                listener.onCheckedChange(checked)
             }
         }
     private var isForPro: Boolean = false
@@ -94,9 +89,9 @@ class PrefsView : RelativeLayout {
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(
                     attrs, R.styleable.PrefsView, 0, 0)
-            var titleText: String? = ""
-            var detailText: String? = ""
-            var valueText: String? = ""
+            var titleText = ""
+            var detailText = ""
+            var valueText = ""
             var divTop = false
             var divBottom = false
             var res = 0
@@ -138,7 +133,11 @@ class PrefsView : RelativeLayout {
     fun setDependentView(view: PrefsView?) {
         if (view != null) {
             mDependencyViews.add(view)
-            view.setOnCheckedListener({ checked -> checkDependency() })
+            view.setOnCheckedListener(object : OnCheckedListener {
+                override fun onCheckedChange(checked: Boolean) {
+                    checkDependency()
+                }
+            })
         }
         checkDependency()
     }
@@ -157,7 +156,11 @@ class PrefsView : RelativeLayout {
     fun setReverseDependentView(view: PrefsView?) {
         if (view != null) {
             mReverseDependencyViews.add(view)
-            view.setOnCheckedListener({ checked -> checkReverseDependency() })
+            view.setOnCheckedListener(object : OnCheckedListener {
+                override fun onCheckedChange(checked: Boolean) {
+                    checkReverseDependency()
+                }
+            })
         }
         checkReverseDependency()
     }
@@ -174,14 +177,14 @@ class PrefsView : RelativeLayout {
     }
 
     private fun setVisible() {
-        if (isForPro) {
+        visibility = if (isForPro) {
             if (Module.isPro) {
-                visibility = View.VISIBLE
+                View.VISIBLE
             } else {
-                visibility = View.GONE
+                View.GONE
             }
         } else {
-            visibility = View.VISIBLE
+            View.VISIBLE
         }
     }
 
@@ -267,9 +270,9 @@ class PrefsView : RelativeLayout {
 
     companion object {
 
-        private val CHECK = 0
-        private val SWITCH = 1
-        private val VIEW = 2
-        private val TEXT = 3
+        private const val CHECK = 0
+        private const val SWITCH = 1
+        private const val VIEW = 2
+        private const val TEXT = 3
     }
 }

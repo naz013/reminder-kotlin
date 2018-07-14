@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.views
 
-import android.content.ContentResolver
 import android.content.Context
-import android.database.Cursor
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.provider.ContactsContract
@@ -15,17 +13,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.ListItemEmailBinding
-
+import kotlinx.android.synthetic.main.list_item_email.view.*
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.HashSet
-
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -55,7 +48,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
     private val mLoadCallback = object : EmailCallback {
         override fun onLoadFinish(list: List<EmailItem>) {
             mData = list
-            setAdapter(adapter = EmailAdapter(mData))
+            setAdapter(EmailAdapter(mData))
         }
     }
 
@@ -85,7 +78,7 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
 
             }
         })
-        setOnItemClickListener { adapterView, view, i, l -> setText((adapter!!.getItem(i) as EmailItem).email) }
+        setOnItemClickListener { _, _, i, _ -> setText((adapter!!.getItem(i) as EmailItem).email) }
         LoadAsync(mLoadCallback).execute()
     }
 
@@ -126,16 +119,16 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             return 0
         }
 
-        override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
+        override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
             var view = view
             if (view == null) {
-                view = ListItemEmailBinding.inflate(LayoutInflater.from(mContext), viewGroup, false).root
+                view = LayoutInflater.from(mContext).inflate(R.layout.list_item_email, viewGroup, false)
             }
-            val item = items[i]
-            val nameView = view.findViewById<RoboTextView>(R.id.nameView)
-            val emailView = view.findViewById<RoboTextView>(R.id.emailView)
-            nameView.text = item.name
-            emailView.text = item.email
+            if (view != null) {
+                val item = items[i]
+                view.nameView.text = item.name
+                view.emailView.text = item.email
+            }
             return view
         }
 
@@ -143,17 +136,17 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
             if (filter == null) {
                 filter = ValueFilter()
             }
-            return filter
+            return filter!!
         }
 
         internal inner class ValueFilter : Filter() {
             override fun performFiltering(constraint: CharSequence?): Filter.FilterResults {
                 val results = Filter.FilterResults()
-                if (constraint != null && constraint.length > 0) {
+                if (constraint != null && constraint.isNotEmpty()) {
                     val filterList = ArrayList<EmailItem>()
                     for (i in mData.indices) {
                         val reference = WeakReference((mData[i].email + mData[i].name).toLowerCase())
-                        if (reference.get().contains(constraint.toString().toLowerCase())) {
+                        if (reference.get()!!.contains(constraint.toString().toLowerCase())) {
                             filterList.add(mData[i])
                         }
                     }
@@ -210,14 +203,9 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         }
     }
 
-    private class EmailItem(val name: String, val email: String)
+    class EmailItem(val name: String, val email: String)
 
-    internal interface EmailCallback {
+    interface EmailCallback {
         fun onLoadFinish(list: List<EmailItem>)
-    }
-
-    companion object {
-
-        private val TAG = "EmailAutoCompleteView"
     }
 }

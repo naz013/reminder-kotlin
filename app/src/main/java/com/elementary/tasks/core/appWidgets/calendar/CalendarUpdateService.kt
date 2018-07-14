@@ -25,7 +25,6 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarUpdateService : IntentService("CalendarUpdateService") {
 
     override fun onHandleIntent(intent: Intent?) {
@@ -37,7 +36,7 @@ class CalendarUpdateService : IntentService("CalendarUpdateService") {
         var year = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, 0)
         if (action != 0) {
             val editor = sp.edit()
-            if (month < 11 && month >= 0) {
+            if (month in 0..10) {
                 month += 1
             } else {
                 month = 0
