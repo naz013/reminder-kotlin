@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings.calendar
 
 import android.app.AlarmManager
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.pm.PackageManager
@@ -15,11 +14,10 @@ import android.widget.CompoundButton
 import android.widget.Toast
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -30,7 +28,6 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboButton
-import com.elementary.tasks.core.views.roboto.RoboCheckBox
 import com.elementary.tasks.databinding.FragmentEventsImportBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 

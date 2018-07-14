@@ -4,14 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
-import android.util.DisplayMetrics
 
-import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil

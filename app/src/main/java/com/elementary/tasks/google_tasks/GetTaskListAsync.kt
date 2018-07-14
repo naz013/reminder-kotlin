@@ -3,13 +3,11 @@ package com.elementary.tasks.google_tasks
 import android.content.Context
 import android.os.AsyncTask
 
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.google.api.services.tasks.model.Task
-import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
 
 import java.io.IOException

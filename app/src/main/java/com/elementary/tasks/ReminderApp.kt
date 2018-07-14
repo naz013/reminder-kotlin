@@ -54,12 +54,12 @@ class ReminderApp : MultiDexApplication() {
         Notifier.createChannels(this)
         Fabric.with(this, Crashlytics(), Answers())
         Prefs.getInstance(this)
-        JobManager.create(this).addJobCreator { tag -> EventJobService() }
+        JobManager.create(this).addJobCreator { EventJobService() }
     }
 
     companion object {
 
-        var appComponent: AppComponent? = null
+        lateinit var appComponent: AppComponent
             private set
     }
 }

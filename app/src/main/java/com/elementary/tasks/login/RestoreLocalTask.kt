@@ -5,11 +5,8 @@ import android.content.Context
 import android.os.AsyncTask
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.models.Group
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.ContextHolder
 import com.elementary.tasks.core.utils.LogUtil

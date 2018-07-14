@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -11,7 +10,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.media.AudioManager
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import android.provider.Settings
 import android.speech.RecognizerIntent
@@ -20,7 +18,7 @@ import android.widget.Toast
 
 import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
-import com.elementary.tasks.core.app_widgets.voice_control.VoiceWidgetDialog
+import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
 import com.elementary.tasks.core.contacts.ContactsActivity
 import com.elementary.tasks.core.interfaces.LCAMListener
 import com.elementary.tasks.core.services.GeolocationService
