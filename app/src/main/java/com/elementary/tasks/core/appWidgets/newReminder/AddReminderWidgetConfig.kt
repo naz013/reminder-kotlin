@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.new_birthday
+package com.elementary.tasks.core.appWidgets.newReminder
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -9,17 +9,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.databinding.WidgetAddBirthdayConfigBinding
-
-import java.util.ArrayList
-import java.util.Collections
-
-import androidx.databinding.DataBindingUtil
+import kotlinx.android.synthetic.main.widget_add_reminder.view.*
+import kotlinx.android.synthetic.main.widget_add_reminder_config.*
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -40,18 +36,16 @@ import androidx.databinding.DataBindingUtil
  * limitations under the License.
  */
 
-class AddBirthdayWidgetConfig : ThemedActivity() {
+class AddReminderWidgetConfig : ThemedActivity() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
     private var color: Int = 0
 
-    private var binding: WidgetAddBirthdayConfigBinding? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        binding = DataBindingUtil.setContentView(this, R.layout.widget_add_birthday_config)
+        setContentView(R.layout.widget_add_reminder_config)
         initActionBar()
 
         val headerBgColor = findViewById<Spinner>(R.id.headerBgColor)
@@ -71,7 +65,7 @@ class AddBirthdayWidgetConfig : ThemedActivity() {
         headerBgColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 color = WidgetUtils.getDrawable(i)
-                binding!!.widgetLayout.widgetBg.setBackgroundResource(color)
+                widgetLayout.widgetBg.setBackgroundResource(color)
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -81,10 +75,10 @@ class AddBirthdayWidgetConfig : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.add_birthday)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.add_reminder_menu)
     }
 
     private fun readIntent() {
@@ -99,7 +93,7 @@ class AddBirthdayWidgetConfig : ThemedActivity() {
         }
         resultValue = Intent()
         resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-        setResult(Activity.RESULT_CANCELED, resultValue)
+        setResult(RESULT_CANCELED, resultValue)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -109,28 +103,28 @@ class AddBirthdayWidgetConfig : ThemedActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_add -> {
                 savePrefs()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun savePrefs() {
-        val sp = getSharedPreferences(ADD_BIRTHDAY_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(ADD_REMINDER_WIDGET_PREF, MODE_PRIVATE)
         val editor = sp.edit()
-        editor.putInt(ADD_BIRTHDAY_WIDGET_COLOR + widgetID, color)
+        editor.putInt(ADD_REMINDER_WIDGET_COLOR + widgetID, color)
         editor.apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
-        AddBirthdayWidget.updateWidget(this@AddBirthdayWidgetConfig, appWidgetManager, sp, widgetID)
-        setResult(Activity.RESULT_OK, resultValue)
+        AddReminderWidget.updateWidget(this@AddReminderWidgetConfig, appWidgetManager, sp, widgetID)
+        setResult(RESULT_OK, resultValue)
         finish()
     }
 
     companion object {
-        val ADD_BIRTHDAY_WIDGET_PREF = "widget_pref"
-        val ADD_BIRTHDAY_WIDGET_COLOR = "widget_color_"
+        const val ADD_REMINDER_WIDGET_PREF = "widget_pref"
+        const val ADD_REMINDER_WIDGET_COLOR = "widget_color_"
     }
 }

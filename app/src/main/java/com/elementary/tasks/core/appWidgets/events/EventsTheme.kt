@@ -6,10 +6,8 @@ import android.os.Parcelable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
-
 import com.elementary.tasks.R
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -67,17 +65,7 @@ class EventsTheme : Parcelable {
     var windowTextColor: Int = 0
         private set
 
-    val CREATOR: Parcelable.Creator<EventsTheme> = object : Parcelable.Creator<EventsTheme> {
-        override fun createFromParcel(`in`: Parcel): EventsTheme {
-            return EventsTheme(`in`)
-        }
-
-        override fun newArray(size: Int): Array<EventsTheme> {
-            return arrayOfNulls(size)
-        }
-    }
-
-    private constructor() {}
+    private constructor()
 
     constructor(@ColorRes headerColor: Int, @ColorRes backgroundColor: Int, @ColorInt titleColor: Int,
                 @DrawableRes plusIcon: Int, @DrawableRes settingsIcon: Int, @DrawableRes voiceIcon: Int,
@@ -101,7 +89,7 @@ class EventsTheme : Parcelable {
         readFromParcel(`in`)
     }
 
-    fun readFromParcel(`in`: Parcel) {
+    private fun readFromParcel(`in`: Parcel) {
         title = `in`.readString()
         backgroundColor = `in`.readInt()
         headerColor = `in`.readInt()
@@ -136,6 +124,17 @@ class EventsTheme : Parcelable {
     }
 
     companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<EventsTheme> = object : Parcelable.Creator<EventsTheme> {
+            override fun createFromParcel(`in`: Parcel): EventsTheme {
+                return EventsTheme(`in`)
+            }
+
+            override fun newArray(size: Int): Array<EventsTheme?> {
+                return arrayOfNulls(size)
+            }
+        }
 
         private fun getResColor(ctx: Context, res: Int): Int {
             return ctx.resources.getColor(res)

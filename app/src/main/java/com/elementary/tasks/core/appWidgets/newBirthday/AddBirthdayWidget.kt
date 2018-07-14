@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.quick_reminder
+package com.elementary.tasks.core.appWidgets.newBirthday
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -9,8 +9,8 @@ import android.content.SharedPreferences
 import android.widget.RemoteViews
 
 import com.elementary.tasks.R
+import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
-import com.elementary.tasks.reminder.create_edit.AddReminderActivity
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -31,12 +31,12 @@ import com.elementary.tasks.reminder.create_edit.AddReminderActivity
  * limitations under the License.
  */
 
-class QuickReminderWidget : AppWidgetProvider() {
+class AddBirthdayWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         val sp = context.getSharedPreferences(
-                QuickReminderWidgetConfig.QUICK_REMINDER_WIDGET_PREF, Context.MODE_PRIVATE)
+                AddBirthdayWidgetConfig.ADD_BIRTHDAY_WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
             updateWidget(context, appWidgetManager, sp, i)
         }
@@ -46,13 +46,13 @@ class QuickReminderWidget : AppWidgetProvider() {
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager,
                          sp: SharedPreferences, widgetID: Int) {
-            val rv = RemoteViews(context.packageName, R.layout.widget_quick_reminder)
-            val widgetColor = sp.getInt(QuickReminderWidgetConfig.QUICK_REMINDER_WIDGET_COLOR + widgetID, 0)
+            val rv = RemoteViews(context.packageName, R.layout.widget_add_birthday)
+            val widgetColor = sp.getInt(AddBirthdayWidgetConfig.ADD_BIRTHDAY_WIDGET_COLOR + widgetID, 0)
             rv.setInt(R.id.widgetBg, "setBackgroundResource", widgetColor)
-            val configIntent = Intent(context, AddReminderActivity::class.java)
+            val configIntent = Intent(context, AddBirthdayActivity::class.java)
             val configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0)
             rv.setOnClickPendingIntent(R.id.imageView, configPendingIntent)
-            WidgetUtils.setIcon(context, rv, R.drawable.ic_access_time_white_24dp, R.id.imageView)
+            WidgetUtils.setIcon(context, rv, R.drawable.ic_cake_white_24dp, R.id.imageView)
             appWidgetManager.updateAppWidget(widgetID, rv)
         }
     }

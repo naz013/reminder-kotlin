@@ -32,7 +32,7 @@ class CalendarItem : Parcelable {
     var id: String? = null
     var date: Long = 0
     var viewType: Int = 0
-    val item: Any
+    var item: Any? = null
 
     enum class Type {
         BIRTHDAY, REMINDER
@@ -75,16 +75,15 @@ class CalendarItem : Parcelable {
 
     companion object {
 
+        @JvmField
         val CREATOR: Parcelable.Creator<CalendarItem> = object : Parcelable.Creator<CalendarItem> {
             override fun createFromParcel(`in`: Parcel): CalendarItem {
                 return CalendarItem(`in`)
             }
 
-            override fun newArray(size: Int): Array<CalendarItem> {
-
+            override fun newArray(size: Int): Array<CalendarItem?> {
                 return arrayOfNulls(size)
             }
-
         }
     }
 }

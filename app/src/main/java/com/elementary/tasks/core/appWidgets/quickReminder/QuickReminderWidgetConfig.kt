@@ -1,8 +1,8 @@
-package com.elementary.tasks.core.appWidgets.quick_reminder
+package com.elementary.tasks.core.appWidgets.quickReminder
 
+import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,15 +10,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.databinding.WidgetQuickReminderConfigBinding
-
-import java.util.ArrayList
-import java.util.Collections
+import kotlinx.android.synthetic.main.widget_quick_reminder.view.*
+import kotlinx.android.synthetic.main.widget_quick_reminder_config.*
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -38,19 +36,16 @@ import java.util.Collections
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class QuickReminderWidgetConfig : ThemedActivity() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
     private var color: Int = 0
 
-    private var binding: WidgetQuickReminderConfigBinding? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        binding = DataBindingUtil.setContentView(this, R.layout.widget_quick_reminder_config)
+        setContentView(R.layout.widget_quick_reminder_config)
         initActionBar()
 
         val headerBgColor = findViewById<Spinner>(R.id.headerBgColor)
@@ -70,7 +65,7 @@ class QuickReminderWidgetConfig : ThemedActivity() {
         headerBgColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 color = WidgetUtils.getDrawable(i)
-                binding!!.widgetLayout.widgetBg.setBackgroundResource(color)
+                widgetLayout.widgetBg.setBackgroundResource(color)
             }
 
             override fun onNothingSelected(adapterView: AdapterView<*>) {
@@ -80,10 +75,10 @@ class QuickReminderWidgetConfig : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.add_reminder_menu)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.add_reminder_menu)
     }
 
     private fun readIntent() {
@@ -98,7 +93,7 @@ class QuickReminderWidgetConfig : ThemedActivity() {
         }
         resultValue = Intent()
         resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-        setResult(Activity.RESULT_CANCELED, resultValue)
+        setResult(RESULT_CANCELED, resultValue)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -108,17 +103,17 @@ class QuickReminderWidgetConfig : ThemedActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_add -> {
                 savePrefs()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun savePrefs() {
-        val sp = getSharedPreferences(QUICK_REMINDER_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(QUICK_REMINDER_WIDGET_PREF, MODE_PRIVATE)
         val editor = sp.edit()
         editor.putInt(QUICK_REMINDER_WIDGET_COLOR + widgetID, color)
         editor.apply()
@@ -129,7 +124,7 @@ class QuickReminderWidgetConfig : ThemedActivity() {
     }
 
     companion object {
-        val QUICK_REMINDER_WIDGET_PREF = "widget_pref"
-        val QUICK_REMINDER_WIDGET_COLOR = "widget_color_"
+        const val QUICK_REMINDER_WIDGET_PREF = "widget_pref"
+        const val QUICK_REMINDER_WIDGET_COLOR = "widget_color_"
     }
 }

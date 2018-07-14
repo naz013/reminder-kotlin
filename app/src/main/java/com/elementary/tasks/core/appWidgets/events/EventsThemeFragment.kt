@@ -5,15 +5,10 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.databinding.FragmentEventsWidgetPreviewBinding
-
-import java.util.ArrayList
-import java.util.Formatter
-import java.util.GregorianCalendar
-import java.util.Locale
-
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
+import kotlinx.android.synthetic.main.fragment_events_widget_preview.*
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -46,15 +41,18 @@ class EventsThemeFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentEventsWidgetPreviewBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_events_widget_preview, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val eventsTheme = mList!![mPageNumber]
 
         val windowColor = eventsTheme.windowColor
-        binding.background.setBackgroundResource(windowColor)
+        background.setBackgroundResource(windowColor)
         val windowTextColor = eventsTheme.windowTextColor
-        binding.themeTitle.setTextColor(windowTextColor)
-        binding.themeTip.setTextColor(windowTextColor)
+        themeTitle.setTextColor(windowTextColor)
+        themeTip.setTextColor(windowTextColor)
 
         val headerColor = eventsTheme.headerColor
         val backgroundColor = eventsTheme.backgroundColor
@@ -66,21 +64,21 @@ class EventsThemeFragment : Fragment() {
         val plusIcon = eventsTheme.plusIcon
         val voiceIcon = eventsTheme.voiceIcon
 
-        binding.widgetDate.setTextColor(titleColor)
-        binding.taskText.setTextColor(itemTextColor)
-        binding.taskNumber.setTextColor(itemTextColor)
-        binding.taskDate.setTextColor(itemTextColor)
-        binding.taskTime.setTextColor(itemTextColor)
+        widgetDate.setTextColor(titleColor)
+        taskText.setTextColor(itemTextColor)
+        taskNumber.setTextColor(itemTextColor)
+        taskDate.setTextColor(itemTextColor)
+        taskTime.setTextColor(itemTextColor)
 
-        binding.headerBg.setBackgroundResource(headerColor)
-        binding.widgetBg.setBackgroundResource(backgroundColor)
-        binding.listItemCard.setBackgroundResource(itemBackground)
+        headerBg.setBackgroundResource(headerColor)
+        widgetBg.setBackgroundResource(backgroundColor)
+        listItemCard.setBackgroundResource(itemBackground)
 
-        binding.plusButton.setImageResource(plusIcon)
-        binding.optionsButton.setImageResource(settingsIcon)
-        binding.voiceButton.setImageResource(voiceIcon)
+        plusButton.setImageResource(plusIcon)
+        optionsButton.setImageResource(settingsIcon)
+        voiceButton.setImageResource(voiceIcon)
 
-        binding.themeTitle.text = eventsTheme.title
+        themeTitle.text = eventsTheme.title
 
         val monthYearStringBuilder = StringBuilder(50)
         val monthYearFormatter = Formatter(monthYearStringBuilder, Locale.getDefault())
@@ -88,14 +86,13 @@ class EventsThemeFragment : Fragment() {
         val cal = GregorianCalendar()
         val monthTitle = DateUtils.formatDateRange(activity,
                 monthYearFormatter, cal.timeInMillis, cal.timeInMillis, monthYearFlag).toString()
-        binding.widgetDate.text = monthTitle.toUpperCase()
-        return binding.root
+        widgetDate.text = monthTitle.toUpperCase()
     }
 
     companion object {
 
-        internal val ARGUMENT_PAGE_NUMBER = "arg_page_number"
-        internal val ARGUMENT_DATA = "arg_data"
+        internal const val ARGUMENT_PAGE_NUMBER = "arg_page_number"
+        internal const val ARGUMENT_DATA = "arg_data"
 
         fun newInstance(page: Int, list: List<EventsTheme>): EventsThemeFragment {
             val pageFragment = EventsThemeFragment()

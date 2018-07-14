@@ -2,22 +2,18 @@ package com.elementary.tasks.core.appWidgets.events
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SeekBar
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.databinding.WidgetCurrentTasksConfigBinding
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
-
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.elementary.tasks.R
+import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.utils.Dialogues
+import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import kotlinx.android.synthetic.main.widget_current_tasks_config.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -44,29 +40,28 @@ class EventsWidgetConfig : ThemedActivity() {
 
     private var textSize: Int = 0
 
-    private var binding: WidgetCurrentTasksConfigBinding? = null
     private var mThemes: List<EventsTheme>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        binding = DataBindingUtil.setContentView(this, R.layout.widget_current_tasks_config)
+        setContentView(R.layout.widget_current_tasks_config)
         initActionBar()
         loadThemes()
         showCurrentTheme()
     }
 
     private fun showCurrentTheme() {
-        val sp = getSharedPreferences(EVENTS_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(EVENTS_WIDGET_PREF, MODE_PRIVATE)
         val theme = sp.getInt(EVENTS_WIDGET_THEME + widgetID, 0)
-        binding!!.themePager.setCurrentItem(theme, true)
+        themePager.setCurrentItem(theme, true)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.active_reminders)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.active_reminders)
     }
 
     private fun readIntent() {
@@ -81,13 +76,13 @@ class EventsWidgetConfig : ThemedActivity() {
         }
         resultValue = Intent()
         resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-        setResult(Activity.RESULT_CANCELED, resultValue)
+        setResult(RESULT_CANCELED, resultValue)
     }
 
     private fun loadThemes() {
         mThemes = EventsTheme.getThemes(this)
-        val adapter = MyFragmentPagerAdapter(supportFragmentManager, mThemes)
-        binding!!.themePager.adapter = adapter
+        val adapter = MyFragmentPagerAdapter(supportFragmentManager, mThemes!!)
+        themePager.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -110,7 +105,7 @@ class EventsWidgetConfig : ThemedActivity() {
     private fun showTextSizeDialog() {
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.text_size)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(this))
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = 13
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -129,31 +124,31 @@ class EventsWidgetConfig : ThemedActivity() {
         b.seekBar.progress = 2
         textSize = 2 + 12
         b.titleView.text = textSize.toString()
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
             dialogInterface.dismiss()
             updateWidget()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 
     private fun updateWidget() {
-        val sp = getSharedPreferences(EVENTS_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(EVENTS_WIDGET_PREF, MODE_PRIVATE)
         val editor = sp.edit()
-        editor.putInt(EVENTS_WIDGET_THEME + widgetID, binding!!.themePager.currentItem)
+        editor.putInt(EVENTS_WIDGET_THEME + widgetID, themePager.currentItem)
         editor.putFloat(EVENTS_WIDGET_TEXT_SIZE + widgetID, textSize.toFloat())
         editor.apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
         EventsWidget.updateWidget(this@EventsWidgetConfig, appWidgetManager, sp, widgetID)
-        setResult(Activity.RESULT_OK, resultValue)
+        setResult(RESULT_OK, resultValue)
         finish()
     }
 
-    private inner class MyFragmentPagerAdapter internal constructor(fm: FragmentManager, private val arrayList: List<EventsTheme>) : FragmentPagerAdapter(fm) {
+    inner class MyFragmentPagerAdapter internal constructor(fm: FragmentManager, private val arrayList: List<EventsTheme>) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            return EventsThemeFragment.newInstance(position, mThemes)
+            return EventsThemeFragment.newInstance(position, mThemes!!)
         }
 
         override fun getCount(): Int {
@@ -162,8 +157,8 @@ class EventsWidgetConfig : ThemedActivity() {
     }
 
     companion object {
-        val EVENTS_WIDGET_PREF = "widget_pref"
-        val EVENTS_WIDGET_TEXT_SIZE = "widget_text_size_"
-        val EVENTS_WIDGET_THEME = "widget_theme_"
+        const val EVENTS_WIDGET_PREF = "widget_pref"
+        const val EVENTS_WIDGET_TEXT_SIZE = "widget_text_size_"
+        const val EVENTS_WIDGET_THEME = "widget_theme_"
     }
 }

@@ -49,7 +49,7 @@ class EventEditService : IntentService("EventEditService") {
 
     companion object {
 
-        private val TAG = "EventEditService"
-        val TYPE = "type"
+        private const val TAG = "EventEditService"
+        const val TYPE = "type"
     }
 }

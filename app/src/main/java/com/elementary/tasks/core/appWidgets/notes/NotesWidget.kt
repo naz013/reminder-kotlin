@@ -33,10 +33,6 @@ import com.elementary.tasks.notes.create.CreateNoteActivity
 
 class NotesWidget : AppWidgetProvider() {
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-    }
-
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(
                 NotesWidgetConfig.NOTES_WIDGET_PREF, Context.MODE_PRIVATE)

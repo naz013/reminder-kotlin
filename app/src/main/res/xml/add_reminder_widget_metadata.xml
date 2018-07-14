@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="com.elementary.tasks.core.appWidgets.new_reminder.AddReminderWidgetConfig"
+    android:configure="com.elementary.tasks.core.appWidgets.newReminder.AddReminderWidgetConfig"
     android:initialLayout="@layout/widget_add_reminder"
     android:minHeight="40dp"
     android:minWidth="40dp"

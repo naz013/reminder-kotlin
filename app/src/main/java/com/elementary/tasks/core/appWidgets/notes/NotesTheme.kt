@@ -56,17 +56,7 @@ class NotesTheme : Parcelable {
     var windowTextColor: Int = 0
         private set
 
-    val CREATOR: Parcelable.Creator<NotesTheme> = object : Parcelable.Creator<NotesTheme> {
-        override fun createFromParcel(`in`: Parcel): NotesTheme {
-            return NotesTheme(`in`)
-        }
-
-        override fun newArray(size: Int): Array<NotesTheme> {
-            return arrayOfNulls(size)
-        }
-    }
-
-    private constructor() {}
+    private constructor()
 
     constructor(@ColorRes headerColor: Int, @ColorRes backgroundColor: Int, @ColorInt titleColor: Int,
                 @DrawableRes plusIcon: Int, @DrawableRes settingsIcon: Int,
@@ -85,7 +75,7 @@ class NotesTheme : Parcelable {
         readFromParcel(`in`)
     }
 
-    fun readFromParcel(`in`: Parcel) {
+    private fun readFromParcel(`in`: Parcel) {
         title = `in`.readString()
         backgroundColor = `in`.readInt()
         headerColor = `in`.readInt()
@@ -112,6 +102,17 @@ class NotesTheme : Parcelable {
     }
 
     companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<NotesTheme> = object : Parcelable.Creator<NotesTheme> {
+            override fun createFromParcel(`in`: Parcel): NotesTheme {
+                return NotesTheme(`in`)
+            }
+
+            override fun newArray(size: Int): Array<NotesTheme?> {
+                return arrayOfNulls(size)
+            }
+        }
 
         private fun getResColor(ctx: Context, res: Int): Int {
             return ctx.resources.getColor(res)

@@ -5,15 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.databinding.WidgetNoteConfigBinding
-
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.elementary.tasks.R
+import com.elementary.tasks.core.ThemedActivity
+import kotlinx.android.synthetic.main.widget_note_config.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -38,29 +35,28 @@ class NotesWidgetConfig : ThemedActivity() {
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
 
-    private var binding: WidgetNoteConfigBinding? = null
     private var mThemes: List<NotesTheme>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         readIntent()
-        binding = DataBindingUtil.setContentView(this, R.layout.widget_note_config)
+        setContentView(R.layout.widget_note_config)
         initActionBar()
         loadThemes()
         showCurrentTheme()
     }
 
     private fun showCurrentTheme() {
-        val sp = getSharedPreferences(NOTES_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(NOTES_WIDGET_PREF, MODE_PRIVATE)
         val theme = sp.getInt(NOTES_WIDGET_THEME + widgetID, 0)
-        binding!!.themePager.setCurrentItem(theme, true)
+        themePager.setCurrentItem(theme, true)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.notes)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.notes)
     }
 
     private fun readIntent() {
@@ -75,13 +71,13 @@ class NotesWidgetConfig : ThemedActivity() {
         }
         resultValue = Intent()
         resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
-        setResult(Activity.RESULT_CANCELED, resultValue)
+        setResult(RESULT_CANCELED, resultValue)
     }
 
     private fun loadThemes() {
         mThemes = NotesTheme.getThemes(this)
-        val adapter = MyFragmentPagerAdapter(supportFragmentManager, mThemes)
-        binding!!.themePager.adapter = adapter
+        val adapter = MyFragmentPagerAdapter(supportFragmentManager, mThemes!!)
+        themePager.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -102,20 +98,20 @@ class NotesWidgetConfig : ThemedActivity() {
     }
 
     private fun updateWidget() {
-        val sp = getSharedPreferences(NOTES_WIDGET_PREF, Context.MODE_PRIVATE)
+        val sp = getSharedPreferences(NOTES_WIDGET_PREF, MODE_PRIVATE)
         val editor = sp.edit()
-        editor.putInt(NOTES_WIDGET_THEME + widgetID, binding!!.themePager.currentItem)
+        editor.putInt(NOTES_WIDGET_THEME + widgetID, themePager.currentItem)
         editor.apply()
         val appWidgetManager = AppWidgetManager.getInstance(this)
         NotesWidget.updateWidget(this@NotesWidgetConfig, appWidgetManager, sp, widgetID)
-        setResult(Activity.RESULT_OK, resultValue)
+        setResult(RESULT_OK, resultValue)
         finish()
     }
 
-    private inner class MyFragmentPagerAdapter internal constructor(fm: FragmentManager, private val arrayList: List<NotesTheme>) : FragmentPagerAdapter(fm) {
+    inner class MyFragmentPagerAdapter internal constructor(fm: FragmentManager, private val arrayList: List<NotesTheme>) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            return NotesThemeFragment.newInstance(position, mThemes)
+            return NotesThemeFragment.newInstance(position, mThemes!!)
         }
 
         override fun getCount(): Int {
@@ -124,7 +120,7 @@ class NotesWidgetConfig : ThemedActivity() {
     }
 
     companion object {
-        val NOTES_WIDGET_PREF = "notes_pref"
-        val NOTES_WIDGET_THEME = "notes_theme_"
+        const val NOTES_WIDGET_PREF = "notes_pref"
+        const val NOTES_WIDGET_THEME = "notes_theme_"
     }
 }

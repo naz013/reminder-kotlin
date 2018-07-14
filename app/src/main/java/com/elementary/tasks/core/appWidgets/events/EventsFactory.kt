@@ -8,25 +8,22 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-
+import com.elementary.tasks.core.utils.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
-import java.util.Collections
 import java.util.HashMap
 import java.util.Locale
+import kotlin.Boolean
+import kotlin.Comparator
+import kotlin.Int
+import kotlin.Long
+import kotlin.String
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -51,14 +48,9 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
 
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
-    private val mCount: TimeCount
-    private val widgetID: Int
+    private val mCount: TimeCount = TimeCount.getInstance(mContext)
+    private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
-    init {
-        mCount = TimeCount.getInstance(mContext)
-        widgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-    }
 
     override fun onCreate() {
         data.clear()
@@ -82,27 +74,33 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             var time = ""
             var date = ""
             var viewType = 1
-            if (Reminder.isGpsType(type)) {
-                val place = item.places[0]
-                date = String.format(Locale.getDefault(), "%.5f", place.latitude)
-                time = String.format(Locale.getDefault(), "%.5f", place.longitude)
-            } else if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-                val calendar = Calendar.getInstance()
-                calendar.timeInMillis = eventTime
-                date = ReminderUtils.getRepeatString(mContext, item.weekdays)
-                time = TimeUtil.getTime(calendar.time, is24)
-            } else if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-                val calendar1 = Calendar.getInstance()
-                calendar1.timeInMillis = eventTime
-                date = TimeUtil.DATE_FORMAT.format(calendar1.time)
-                time = TimeUtil.getTime(calendar1.time, is24)
-            } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-                viewType = 2
-                map[id] = item
-            } else {
-                val dT = mCount.getNextDateTime(eventTime)
-                date = dT[0]
-                time = dT[1]
+            when {
+                Reminder.isGpsType(type) -> {
+                    val place = item.places[0]
+                    date = String.format(Locale.getDefault(), "%.5f", place.latitude)
+                    time = String.format(Locale.getDefault(), "%.5f", place.longitude)
+                }
+                Reminder.isBase(type, Reminder.BY_WEEK) -> {
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = eventTime
+                    date = ReminderUtils.getRepeatString(mContext, item.weekdays)
+                    time = TimeUtil.getTime(calendar.time, is24)
+                }
+                Reminder.isBase(type, Reminder.BY_MONTH) -> {
+                    val calendar1 = Calendar.getInstance()
+                    calendar1.timeInMillis = eventTime
+                    date = TimeUtil.DATE_FORMAT.format(calendar1.time)
+                    time = TimeUtil.getTime(calendar1.time, is24)
+                }
+                Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> {
+                    viewType = 2
+                    map[id] = item
+                }
+                else -> {
+                    val dT = mCount.getNextDateTime(eventTime)
+                    date = dT[0]
+                    time = dT[1]
+                }
             }
             data.add(CalendarItem(CalendarItem.Type.REMINDER, summary, item.target, id, time, date, eventTime, viewType, item))
         }
@@ -147,7 +145,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
                 n++
             } while (n <= 7)
         }
-        Collections.sort(data) { eventsItem, o2 ->
+        data.sortWith(Comparator { eventsItem, o2 ->
             var time1: Long = 0
             var time2: Long = 0
             if (eventsItem.item is Birthday) {
@@ -173,7 +171,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
                 time2 = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             }
             (time1 - time2).toInt()
-        }
+        })
     }
 
     override fun onDestroy() {
@@ -270,42 +268,44 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             }
 
             var count = 0
-            val lists = map[item.id].getShoppings()
+            val lists = map[item.id]?.shoppings
             rView.removeAllViews(R.id.todoList)
-            for (list in lists) {
-                val view = RemoteViews(mContext.packageName, R.layout.list_item_task_item_widget)
-                val isBlack = checkboxColor == 0
-                if (list.isChecked) {
-                    if (isBlack) {
-                        view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_black_24dp)
+            if (lists != null) {
+                for (list in lists) {
+                    val view = RemoteViews(mContext.packageName, R.layout.list_item_task_item_widget)
+                    val isBlack = checkboxColor == 0
+                    if (list.isChecked) {
+                        if (isBlack) {
+                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_black_24dp)
+                        } else {
+                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_white_24dp)
+                        }
                     } else {
-                        view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_white_24dp)
+                        if (isBlack) {
+                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_black_24dp)
+                        } else {
+                            view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_white_24dp)
+                        }
                     }
-                } else {
-                    if (isBlack) {
-                        view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_black_24dp)
+
+                    view.setTextColor(R.id.shopText, itemTextColor)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
                     } else {
-                        view.setInt(R.id.checkView, "setBackgroundResource", R.drawable.ic_check_box_outline_blank_white_24dp)
+                        view.setFloat(R.id.shopText, "setTextSize", itemTextSize)
                     }
-                }
 
-                view.setTextColor(R.id.shopText, itemTextColor)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                } else {
-                    view.setFloat(R.id.shopText, "setTextSize", itemTextSize)
-                }
-
-                count++
-                if (count == 9) {
-                    view.setViewVisibility(R.id.checkView, View.INVISIBLE)
-                    view.setTextViewText(R.id.shopText, "...")
-                    rView.addView(R.id.todoList, view)
-                    break
-                } else {
-                    view.setViewVisibility(R.id.checkView, View.VISIBLE)
-                    view.setTextViewText(R.id.shopText, list.summary)
-                    rView.addView(R.id.todoList, view)
+                    count++
+                    if (count == 9) {
+                        view.setViewVisibility(R.id.checkView, View.INVISIBLE)
+                        view.setTextViewText(R.id.shopText, "...")
+                        rView.addView(R.id.todoList, view)
+                        break
+                    } else {
+                        view.setViewVisibility(R.id.checkView, View.VISIBLE)
+                        view.setTextViewText(R.id.shopText, list.summary)
+                        rView.addView(R.id.todoList, view)
+                    }
                 }
             }
 

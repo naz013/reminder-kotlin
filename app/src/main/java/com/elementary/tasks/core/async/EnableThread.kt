@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.async
 
 import android.content.Context
-
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
 
 /**
  * Copyright 2017 Nazar Suhovich
