@@ -10,22 +10,16 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.calendar.FlextHelper
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.FragmentCalendarWidgetPreviewBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-
-import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Formatter
-import java.util.GregorianCalendar
-import java.util.Locale
-
 import hirondelle.date4j.DateTime
+import kotlinx.android.synthetic.main.fragment_calendar_widget_preview.*
+import kotlinx.android.synthetic.main.widget_calendar.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -45,7 +39,6 @@ import hirondelle.date4j.DateTime
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarThemeFragment : BaseNavigationFragment() {
     private var pageNumber: Int = 0
     private var list: List<CalendarTheme> = ArrayList()
@@ -61,14 +54,18 @@ class CalendarThemeFragment : BaseNavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentCalendarWidgetPreviewBinding.inflate(inflater, container, false)
-        themeUtil = ThemeUtil.getInstance(context)
+        return inflater.inflate(R.layout.fragment_calendar_widget_preview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        themeUtil = ThemeUtil.getInstance(context!!)
         val calendarTheme = list[pageNumber]
         val windowColor = calendarTheme.windowColor
-        binding.previewView.widgetBg.setBackgroundResource(windowColor)
+        previewView.widgetBg.setBackgroundResource(windowColor)
         val windowTextColor = calendarTheme.windowTextColor
-        binding.themeTitle.setTextColor(windowTextColor)
-        binding.note.setTextColor(windowTextColor)
+        themeTitle.setTextColor(windowTextColor)
+        note.setTextColor(windowTextColor)
 
         val itemTextColor = calendarTheme.itemTextColor
         val widgetBgColor = calendarTheme.widgetBgColor
@@ -87,16 +84,16 @@ class CalendarThemeFragment : BaseNavigationFragment() {
         val birthdayMark = calendarTheme.birthdayMark
         val reminderMark = calendarTheme.reminderMark
 
-        binding.previewView.weekdayGrid.setBackgroundResource(widgetBgColor)
-        binding.previewView.header.setBackgroundResource(headerColor)
-        binding.previewView.currentDate.setTextColor(titleColor)
-        binding.previewView.monthGrid.setBackgroundResource(borderColor)
+        previewView.weekdayGrid.setBackgroundResource(widgetBgColor)
+        previewView.header.setBackgroundResource(headerColor)
+        previewView.currentDate.setTextColor(titleColor)
+        previewView.monthGrid.setBackgroundResource(borderColor)
 
-        binding.previewView.plusButton.setImageResource(iconPlus)
-        binding.previewView.nextMonth.setImageResource(rightArrow)
-        binding.previewView.prevMonth.setImageResource(leftArrow)
-        binding.previewView.voiceButton.setImageResource(iconVoice)
-        binding.previewView.settingsButton.setImageResource(iconSettings)
+        previewView.plusButton.setImageResource(iconPlus)
+        previewView.nextMonth.setImageResource(rightArrow)
+        previewView.prevMonth.setImageResource(leftArrow)
+        previewView.voiceButton.setImageResource(iconVoice)
+        previewView.settingsButton.setImageResource(iconSettings)
 
         val monthYearStringBuilder = StringBuilder(50)
         val monthYearFormatter = Formatter(monthYearStringBuilder, Locale.getDefault())
@@ -104,13 +101,12 @@ class CalendarThemeFragment : BaseNavigationFragment() {
         val cal = GregorianCalendar()
         val monthTitle = DateUtils.formatDateRange(activity,
                 monthYearFormatter, cal.timeInMillis, cal.timeInMillis, monthYearFlag).toString()
-        binding.previewView.currentDate.text = monthTitle.toUpperCase()
+        previewView.currentDate.text = monthTitle.toUpperCase()
 
-        binding.themeTitle.text = calendarTheme.title
+        themeTitle.text = calendarTheme.title
 
-        binding.previewView.weekdayGrid.adapter = WeekdayAdapter(activity, itemTextColor)
-        binding.previewView.monthGrid.adapter = MonthGridAdapter(activity, intArrayOf(itemTextColor, rowColor, currentMark, birthdayMark, reminderMark))
-        return binding.root
+        previewView.weekdayGrid.adapter = WeekdayAdapter(activity!!, itemTextColor)
+        previewView.monthGrid.adapter = MonthGridAdapter(activity!!, intArrayOf(itemTextColor, rowColor, currentMark, birthdayMark, reminderMark))
     }
 
     private inner class WeekdayAdapter internal constructor(private val context: Context, private val textColor: Int) : BaseAdapter() {
@@ -314,8 +310,8 @@ class CalendarThemeFragment : BaseNavigationFragment() {
 
     companion object {
 
-        internal val ARGUMENT_PAGE_NUMBER = "arg_page_number"
-        internal val ARGUMENT_DATA = "arg_data"
+        internal const val ARGUMENT_PAGE_NUMBER = "arg_page_number"
+        internal const val ARGUMENT_DATA = "arg_data"
 
         fun newInstance(page: Int, list: List<CalendarTheme>): CalendarThemeFragment {
             val pageFragment = CalendarThemeFragment()

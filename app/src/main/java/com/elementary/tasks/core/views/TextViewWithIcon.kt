@@ -1,19 +1,16 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.os.Build
-import androidx.annotation.DrawableRes
 import android.util.AttributeSet
-
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
-
-import androidx.appcompat.content.res.AppCompatResources
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -53,11 +50,10 @@ class TextViewWithIcon : RoboTextView {
             setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
             return
         }
-        val drawableLeft: Drawable?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawableLeft = context.getDrawable(icon)
+        val drawableLeft: Drawable? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.getDrawable(icon)
         } else {
-            drawableLeft = AppCompatResources.getDrawable(context, icon)
+            AppCompatResources.getDrawable(context, icon)
         }
         compoundDrawablePadding = MeasureUtils.dp2px(context, 16)
         setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)
@@ -72,10 +68,10 @@ class TextViewWithIcon : RoboTextView {
                 val themeUtil = ThemeUtil.getInstance(context)
                 val isDark = themeUtil.isDark
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (isDark) {
-                        drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon_light)
+                    drawableLeft = if (isDark) {
+                        a.getDrawable(R.styleable.TextViewWithIcon_tv_icon_light)
                     } else {
-                        drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon)
+                        a.getDrawable(R.styleable.TextViewWithIcon_tv_icon)
                     }
                 } else {
                     var drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon, -1)
@@ -97,6 +93,6 @@ class TextViewWithIcon : RoboTextView {
 
     companion object {
 
-        private val TAG = "TextViewWithIcon"
+        private const val TAG = "TextViewWithIcon"
     }
 }

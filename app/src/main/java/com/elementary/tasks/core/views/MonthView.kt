@@ -6,23 +6,18 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.os.Handler
-import androidx.annotation.IntRange
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-
+import androidx.annotation.IntRange
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-
-import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.HashMap
-
 import hirondelle.date4j.DateTime
+import java.lang.ref.WeakReference
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -134,7 +129,7 @@ class MonthView : View, View.OnTouchListener {
         val firstDateOfMonth = DateTime(mYear, mMonth, 1, 0, 0, 0, 0)
         val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
         var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
-        val startDayOfWeek = Prefs.getInstance(mContext).startDay + 1
+        val startDayOfWeek = Prefs.getInstance(mContext!!).startDay + 1
         if (weekdayOfFirstDate < startDayOfWeek) {
             weekdayOfFirstDate += 7
         }
@@ -169,7 +164,7 @@ class MonthView : View, View.OnTouchListener {
         val lastDateTime = mDateTimeList!![size - 1]
         for (i in 1..numOfDays) {
             val nextDateTime = WeakReference(lastDateTime.plusDays(i))
-            mDateTimeList!!.add(nextDateTime.get())
+            mDateTimeList!!.add(nextDateTime.get()!!)
         }
     }
 
@@ -189,7 +184,7 @@ class MonthView : View, View.OnTouchListener {
                 color = Color.GRAY
             } else {
                 if (eventsMap.containsKey(dateTime)) {
-                    drawEvents(canvas, eventsMap[dateTime], rect)
+                    drawEvents(canvas, eventsMap[dateTime]!!, rect)
                 }
                 if (dateTime.day == currentDay && dateTime.month == currentMonth && dateTime.year == currentYear) {
                     color = mTodayColor
@@ -211,14 +206,14 @@ class MonthView : View, View.OnTouchListener {
         val maxEvents = GRID_R_C * GRID_R_C
         while (events.hasNext() && index < maxEvents) {
             val event = WeakReference(events.next)
-            circlePaint!!.color = event.get().color
-            val r = rects.get(index)
+            circlePaint!!.color = event.get()!!.color
+            val r = rects!![index]
             val cX = r.centerX()
             val cY = r.centerY()
             if (index > 0 && index < maxEvents - 1) {
                 val prev = WeakReference<Events.Event>(events.previousWithoutMoving)
                 if (prev.get() != null) {
-                    val end = rects.get(index - 1)
+                    val end = rects[index - 1]
                     canvas.drawLine(cX.toFloat(), cY.toFloat(), end.centerX().toFloat(), end.centerY().toFloat(), circlePaint!!)
                 }
             }
@@ -255,7 +250,7 @@ class MonthView : View, View.OnTouchListener {
                 val top = i * circleHeight + rectTop
                 val left = j * circleWidth + rectLeft
                 val tmp = WeakReference(Rect(left, top, left + circleWidth, top + circleHeight))
-                rects.add(tmp.get())
+                rects.add(tmp.get()!!)
             }
         }
         circlesMap[rect] = rects
@@ -310,7 +305,7 @@ class MonthView : View, View.OnTouchListener {
         val y = motionEvent.y.toInt()
         for (i in 0 until ROWS * COLS) {
             val rect = mCells!![i]
-            if (rect != null && rect.contains(x, y)) {
+            if (rect.contains(x, y)) {
                 mTouchPosition = i
                 mTouchRect = rect
                 mLongClickHandler.postDelayed(mLongRunnable, LONG_CLICK_TIME)
@@ -329,10 +324,10 @@ class MonthView : View, View.OnTouchListener {
 
     companion object {
 
-        private val TAG = "MonthView"
-        private val ROWS = 6
-        private val COLS = 7
-        private val GRID_R_C = 3
-        private val LONG_CLICK_TIME: Long = 500
+        private const val TAG = "MonthView"
+        private const val ROWS = 6
+        private const val COLS = 7
+        private const val GRID_R_C = 3
+        private const val LONG_CLICK_TIME: Long = 500
     }
 }

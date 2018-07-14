@@ -1,76 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headerItem"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="?attr/colorPrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/headerItem"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
-        <ImageView
-            android:id="@+id/headerImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_constraintBottom_creator="1"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/appNameBanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/whitePrimary30"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="@color/whitePrimary"
+        android:textSize="25sp"
+        app:font_style="roboto_regular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/appNameBanner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/whitePrimary30"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="@color/whitePrimary"
-            android:textSize="25sp"
-            app:font_style="roboto_regular"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_constraintBottom_creator="1"
-            tools:layout_constraintLeft_creator="1"
-            tools:layout_constraintRight_creator="1"
-            tools:layout_constraintTop_creator="1" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/sale_badge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:background="@color/whitePrimary30"
+        android:padding="4dp"
+        android:textColor="@color/whitePrimary"
+        android:textSize="14sp"
+        app:font_style="roboto_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/sale_badge"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginStart="0dp"
-            android:background="@color/whitePrimary30"
-            android:padding="4dp"
-            android:textColor="@color/whitePrimary"
-            android:textSize="14sp"
-            app:font_style="roboto_bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/update_badge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/whitePrimary30"
+        android:padding="4dp"
+        android:textColor="@color/whitePrimary"
+        android:textSize="14sp"
+        app:font_style="roboto_bold"
+        app:layout_constraintBottom_toTopOf="@+id/sale_badge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/update_badge"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/whitePrimary30"
-            android:padding="4dp"
-            android:textColor="@color/whitePrimary"
-            android:textSize="14sp"
-            app:font_style="roboto_bold"
-            app:layout_constraintBottom_toTopOf="@+id/sale_badge"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

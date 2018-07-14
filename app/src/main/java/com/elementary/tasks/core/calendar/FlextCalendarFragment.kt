@@ -7,32 +7,21 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.views.MonthView
-import com.elementary.tasks.databinding.FragmentFlextCalBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-
+import hirondelle.date4j.DateTime
+import kotlinx.android.synthetic.main.fragment_flext_cal.*
 import org.apache.commons.lang3.StringUtils
-
+import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.Formatter
-import java.util.GregorianCalendar
-import java.util.HashMap
-import java.util.Locale
-import java.util.TimeZone
-
-import androidx.viewpager.widget.ViewPager
-import hirondelle.date4j.DateTime
-import timber.log.Timber
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -52,7 +41,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callback {
+open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callback {
 
     /**
      * First day of month time
@@ -69,7 +58,7 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
     protected var month = -1
     protected var year = -1
 
-    protected var enableImage = true
+    private var enableImage = true
     protected var isDark = true
 
     /**
@@ -85,20 +74,19 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
 
     private val photosList = longArrayOf(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
-    protected var startDayOfWeek = SUNDAY
+    private var startDayOfWeek = SUNDAY
 
     private var dateItemClickListener: MonthView.OnDateClick? = null
     private var dateItemLongClickListener: MonthView.OnDateLongClick? = null
 
     private var caldroidListener: FlextListener? = null
-    private var binding: FragmentFlextCalBinding? = null
     private var pageChangeListener: DatePageChangeListener? = null
 
-    val newWeekdayAdapter: WeekdayArrayAdapter
-        get() = WeekdayArrayAdapter(activity, android.R.layout.simple_list_item_1,
+    private val newWeekdayAdapter: WeekdayArrayAdapter
+        get() = WeekdayArrayAdapter(activity!!, android.R.layout.simple_list_item_1,
                 daysOfWeek, isDark)
 
-    protected val daysOfWeek: ArrayList<String>
+    private val daysOfWeek: ArrayList<String>
         get() {
             val list = ArrayList<String>()
             val fmt = SimpleDateFormat("EEE", Locale.getDefault())
@@ -126,30 +114,36 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
     }
 
     private fun getDateItemClickListener(): MonthView.OnDateClick {
-        if (dateItemClickListener == null) {
-            dateItemClickListener = { dateTime ->
-                if (caldroidListener != null) {
-                    val date = FlextHelper.convertDateTimeToDate(dateTime)
-                    caldroidListener!!.onClickDate(date)
+        var dateClick = dateItemClickListener
+        if (dateClick == null) {
+            dateClick = object : MonthView.OnDateClick {
+                override fun onClick(dateTime: DateTime) {
+                    if (caldroidListener != null) {
+                        val date = FlextHelper.convertDateTimeToDate(dateTime)
+                        caldroidListener!!.onClickDate(date)
+                    }
                 }
             }
         }
-        return dateItemClickListener
+        return dateClick
     }
 
     private fun getDateItemLongClickListener(): MonthView.OnDateLongClick {
-        if (dateItemLongClickListener == null) {
-            dateItemLongClickListener = { dateTime ->
-                if (caldroidListener != null) {
-                    val date = FlextHelper.convertDateTimeToDate(dateTime)
-                    caldroidListener!!.onLongClickDate(date)
+        var dateLongClick = dateItemLongClickListener
+        if (dateLongClick == null) {
+            dateLongClick = object : MonthView.OnDateLongClick {
+                override fun onLongClick(dateTime: DateTime) {
+                    if (caldroidListener != null) {
+                        val date = FlextHelper.convertDateTimeToDate(dateTime)
+                        caldroidListener!!.onLongClickDate(date)
+                    }
                 }
             }
         }
-        return dateItemLongClickListener
+        return dateLongClick
     }
 
-    protected fun refreshMonthTitleTextView() {
+    private fun refreshMonthTitleTextView() {
         firstMonthTime.set(Calendar.YEAR, year)
         firstMonthTime.set(Calendar.MONTH, month - 1)
         firstMonthTime.set(Calendar.DAY_OF_MONTH, 1)
@@ -157,18 +151,18 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
         monthYearStringBuilder.setLength(0)
         val monthTitle = DateUtils.formatDateRange(activity,
                 monthYearFormatter, millis, millis, MONTH_YEAR_FLAG).toString()
-        binding!!.monthYear.text = StringUtils.capitalize(monthTitle)
+        monthYear.text = StringUtils.capitalize(monthTitle)
         if (caldroidListener != null) {
             caldroidListener!!.onMonthSelected(month)
         }
-        if (binding!!.imageView != null && enableImage) {
+        if (imageView != null && enableImage) {
             val check = ImageCheck.getInstance()
             if (check.isImage(month - 1, photosList[month - 1])) {
-                Glide.with(binding!!.imageView)
+                Glide.with(imageView)
                         .load(File(check.getImage(month - 1, photosList[month - 1])!!))
-                        .into(binding!!.imageView)
+                        .into(imageView)
             } else {
-                LoadAsync(activity, month - 1, photosList[month - 1]).execute()
+                LoadAsync(activity!!, month - 1, photosList[month - 1]).execute()
             }
         }
     }
@@ -180,14 +174,14 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
         refreshMonthTitleTextView()
     }
 
-    protected fun retrieveInitialArgs() {
+    private fun retrieveInitialArgs() {
         val args = arguments
         if (args != null) {
             month = args.getInt(MONTH, -1)
             year = args.getInt(YEAR, -1)
             startDayOfWeek = args.getInt(START_DAY_OF_WEEK, 1)
             if (startDayOfWeek > 7) {
-                startDayOfWeek = startDayOfWeek % 7
+                startDayOfWeek %= 7
             }
             enableImage = args.getBoolean(ENABLE_IMAGES, true)
             isDark = args.getBoolean(DARK_THEME, true)
@@ -195,7 +189,7 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
             if (photos != null) {
                 for (i in photos.indices) {
                     val id = photos[i]
-                    if (id != -1) photosList[i] = id
+                    if (id != -1L) photosList[i] = id
                 }
             }
         }
@@ -209,7 +203,7 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
     private fun setupDateGridPages() {
         val currentDateTime = DateTime(year, month, 1, 0, 0, 0, 0)
         pageChangeListener = initMonthPager(currentDateTime)
-        val pagerAdapter = MonthPagerAdapter(fragmentManager)
+        val pagerAdapter = MonthPagerAdapter(fragmentManager!!)
         fragments = pagerAdapter.fragments
         fragments!![0].setDate(currentDateTime.month!!, currentDateTime.year!!)
         val nextDateTime = currentDateTime.plus(0, 1, 0, 0, 0, 0, 0,
@@ -227,41 +221,40 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
             dateGridFragment.setOnItemClickListener(getDateItemClickListener())
             dateGridFragment.setOnItemLongClickListener(getDateItemLongClickListener())
         }
-        pageChangeListener!!.setFlextGridAdapters(fragments)
+        pageChangeListener!!.setFlextGridAdapters(fragments!!)
         val infinitePagerAdapter = InfinitePagerAdapter(pagerAdapter)
-        binding!!.monthsInfinitePager.adapter = infinitePagerAdapter
+        months_infinite_pager.adapter = infinitePagerAdapter
     }
 
     private fun initMonthPager(currentDateTime: DateTime): DatePageChangeListener {
         val pageChangeListener = DatePageChangeListener()
         pageChangeListener.setCurrentDateTime(currentDateTime)
-        binding!!.monthsInfinitePager.isEnabled = true
+        months_infinite_pager.isEnabled = true
         if (Module.isLollipop) {
-            binding!!.monthsInfinitePager.addOnPageChangeListener(pageChangeListener)
+            months_infinite_pager.addOnPageChangeListener(pageChangeListener)
         } else {
-            binding!!.monthsInfinitePager.setOnPageChangeListener(pageChangeListener)
+            months_infinite_pager.setOnPageChangeListener(pageChangeListener)
         }
         return pageChangeListener
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         retrieveInitialArgs()
-        binding = FragmentFlextCalBinding.inflate(inflater, container, false)
-        binding!!.loaderView.setVisibility(View.VISIBLE)
+        return inflater.inflate(R.layout.fragment_flext_cal, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loaderView?.visibility = View.VISIBLE
         val weekdaysAdapter = newWeekdayAdapter
-        binding!!.weekdayGridview.adapter = weekdaysAdapter
+        weekday_gridview.adapter = weekdaysAdapter
         setupDateGridPages()
         refreshView()
         if (caldroidListener != null) {
             caldroidListener!!.onViewCreated()
         }
-        return binding!!.root
     }
 
     private fun loadData() {
@@ -294,7 +287,7 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
 
     override fun onReady() {
         Timber.d("onReady: ")
-        binding!!.loaderView.setVisibility(View.GONE)
+        loaderView?.visibility = View.GONE
         val provider = CalendarSingleton.getInstance().provider
         if (provider != null) {
             this.mLastMap.clear()
@@ -304,8 +297,8 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
     }
 
     private fun refreshFragments() {
-        if (binding!!.monthsInfinitePager.adapter != null) {
-            val adapter = binding!!.monthsInfinitePager.adapter as InfinitePagerAdapter?
+        if (months_infinite_pager.adapter != null) {
+            val adapter = months_infinite_pager.adapter as InfinitePagerAdapter?
             adapter!!.notifyDataSetChanged()
         }
         if (pageChangeListener != null) {
@@ -371,21 +364,25 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
             val currentAdapter = flextGridAdapters!![getCurrent(position)]
             val prevAdapter = flextGridAdapters!![getPrevious(position)]
             val nextAdapter = flextGridAdapters!![getNext(position)]
-            if (position == currentPage) {
-                currentAdapter.setEventsMap(mLastMap)
-                currentAdapter.setDateTime(currentDateTime)
-                prevAdapter.setEventsMap(mLastMap)
-                prevAdapter.setDateTime(currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
-                nextAdapter.setEventsMap(mLastMap)
-                nextAdapter.setDateTime(currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
-            } else if (position > currentPage) {
-                currentDateTime = currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay)
-                nextAdapter.setEventsMap(mLastMap)
-                nextAdapter.setDateTime(currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
-            } else {
-                currentDateTime = currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay)
-                prevAdapter.setEventsMap(mLastMap)
-                prevAdapter.setDateTime(currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
+            when {
+                position == currentPage -> {
+                    currentAdapter.setEventsMap(mLastMap)
+                    currentAdapter.setDateTime(currentDateTime!!)
+                    prevAdapter.setEventsMap(mLastMap)
+                    prevAdapter.setDateTime(currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
+                    nextAdapter.setEventsMap(mLastMap)
+                    nextAdapter.setDateTime(currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
+                }
+                position > currentPage -> {
+                    currentDateTime = currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay)
+                    nextAdapter.setEventsMap(mLastMap)
+                    nextAdapter.setDateTime(currentDateTime!!.plus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
+                }
+                else -> {
+                    currentDateTime = currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay)
+                    prevAdapter.setEventsMap(mLastMap)
+                    prevAdapter.setDateTime(currentDateTime!!.minus(0, 1, 0, 0, 0, 0, 0, DateTime.DayOverflow.LastDay))
+                }
             }// Swipe left
             // Detect if swipe right or swipe left
             // Swipe right
@@ -404,7 +401,7 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
 
     companion object {
 
-        private val TAG = "FlextCalendarFragment"
+        private const val TAG = "FlextCalendarFragment"
 
         /**
          * Weekday conventions
@@ -415,20 +412,20 @@ class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.Callb
         /**
          * Flags to display month
          */
-        private val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE
+        private const val MONTH_YEAR_FLAG = (DateUtils.FORMAT_SHOW_DATE
                 or DateUtils.FORMAT_NO_MONTH_DAY or DateUtils.FORMAT_SHOW_YEAR)
 
-        val NUMBER_OF_PAGES = 4
+        const val NUMBER_OF_PAGES = 4
 
         /**
          * Initial params key
          */
-        val MONTH = "month"
-        val YEAR = "year"
-        val START_DAY_OF_WEEK = "startDayOfWeek"
-        val ENABLE_IMAGES = "enableImages"
-        val DARK_THEME = "dark_theme"
-        val MONTH_IMAGES = "month_images"
+        const val MONTH = "month"
+        const val YEAR = "year"
+        const val START_DAY_OF_WEEK = "startDayOfWeek"
+        const val ENABLE_IMAGES = "enableImages"
+        const val DARK_THEME = "dark_theme"
+        const val MONTH_IMAGES = "month_images"
 
         fun newInstance(): FlextCalendarFragment {
             val fragment = FlextCalendarFragment()

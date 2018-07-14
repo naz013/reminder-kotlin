@@ -48,7 +48,7 @@ class Birthday : RecyclerInterface {
     var month: Int = 0
     @SerializedName("uniqueId")
     @PrimaryKey(autoGenerate = true)
-    val uniqueId: Int = 0
+    var uniqueId: Int = 0
     @SerializedName("dayMonth")
     var dayMonth: String = ""
     @SerializedName("uuId")

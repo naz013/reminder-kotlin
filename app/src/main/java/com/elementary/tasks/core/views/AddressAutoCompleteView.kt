@@ -14,12 +14,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import com.elementary.tasks.core.async.GeocoderTask
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
-
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,20 +39,21 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView
  */
 class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
-    private var mContext: Context? = null
     private var mTypeface: Typeface? = null
     private var foundPlaces: List<Address>? = null
 
     private var task: GeocoderTask? = null
     private var mAdapter: AddressAdapter? = null
-    private var isEnabled = true
+    private var isEnabledInner = true
 
-    private val mExecutionCallback = GeocoderTask.GeocoderListener { addresses ->
-        LogUtil.d(TAG, "onAddressReceived: $addresses")
-        foundPlaces = addresses
-        mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, addresses)
-        setAdapter<AddressAdapter>(mAdapter)
-        mAdapter!!.notifyDataSetChanged()
+    private val mExecutionCallback = object : GeocoderTask.GeocoderListener {
+        override fun onAddressReceived(addresses: List<Address>) {
+            LogUtil.d(TAG, "onAddressReceived: $addresses")
+            foundPlaces = addresses
+            mAdapter = AddressAdapter(context, android.R.layout.simple_list_item_2, addresses)
+            setAdapter<AddressAdapter>(mAdapter)
+            mAdapter!!.notifyDataSetChanged()
+        }
     }
 
     constructor(context: Context) : super(context) {
@@ -70,14 +69,13 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        this.mContext = context
         mTypeface = AssetsUtil.getDefaultTypeface(getContext())
 
         addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                if (isEnabled) performTypeValue(charSequence.toString())
+                if (isEnabledInner) performTypeValue(charSequence.toString())
             }
 
             override fun afterTextChanged(editable: Editable) {
@@ -86,7 +84,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         })
         setSingleLine(true)
         imeOptions = EditorInfo.IME_ACTION_SEARCH
-        setOnEditorActionListener { textView, actionId, event ->
+        setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 performTypeValue(text.toString().trim { it <= ' ' })
                 return@setOnEditorActionListener true
@@ -103,7 +101,7 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
         if (task != null && !task!!.isCancelled) {
             task!!.cancel(true)
         }
-        task = GeocoderTask(mContext, mExecutionCallback)
+        task = GeocoderTask(context, mExecutionCallback)
         task!!.execute(s)
     }
 
@@ -117,9 +115,9 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
     override fun setOnItemClickListener(l: AdapterView.OnItemClickListener?) {
         super.setOnItemClickListener { adapterView, view, i, l1 ->
             if (mAdapter != null) {
-                isEnabled = false
+                isEnabledInner = false
                 setText(mAdapter!!.getName(i))
-                isEnabled = true
+                isEnabledInner = true
             }
             l?.onItemClick(adapterView, view, i, l1)
         }
@@ -164,6 +162,6 @@ class AddressAutoCompleteView : AppCompatAutoCompleteTextView {
 
     companion object {
 
-        private val TAG = "AddressAutoCompleteView"
+        private const val TAG = "AddressAutoCompleteView"
     }
 }

@@ -38,19 +38,14 @@ import hirondelle.date4j.DateTime
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarMonthFactory internal constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val mDateTimeList = ArrayList<DateTime>()
     private val mPagerData = ArrayList<WidgetItem>()
-    private val mWidgetId: Int
+    private val mWidgetId: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private var mDay: Int = 0
     private var mMonth: Int = 0
     private var mYear: Int = 0
-
-    init {
-        mWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
-    }
 
     override fun onCreate() {
         mDateTimeList.clear()

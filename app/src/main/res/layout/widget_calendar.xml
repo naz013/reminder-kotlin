@@ -1,116 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetBg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/widgetBg"
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
-        <RelativeLayout
-            android:id="@+id/header"
+        <ImageButton
+            android:id="@+id/plusButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/acc_add"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/voiceButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/plusButton"
+            android:layout_toStartOf="@+id/plusButton"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/voice_control"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/voiceButton"
+            android:layout_toStartOf="@+id/voiceButton"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/action_settings"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/nextMonth"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/settingsButton"
+            android:layout_toStartOf="@+id/settingsButton"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/acc_next"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/prevMonth"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/acc_previous"
+            android:gravity="center"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/currentDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
-
-            <ImageButton
-                android:id="@+id/plusButton"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/acc_add"
-                android:gravity="center"
-                android:visibility="visible" />
-
-            <ImageButton
-                android:id="@+id/voiceButton"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/plusButton"
-                android:layout_toStartOf="@+id/plusButton"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/voice_control"
-                android:gravity="center"
-                android:visibility="visible" />
-
-            <ImageButton
-                android:id="@+id/settingsButton"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/voiceButton"
-                android:layout_toStartOf="@+id/voiceButton"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/action_settings"
-                android:gravity="center"
-                android:visibility="visible" />
-
-            <ImageButton
-                android:id="@+id/nextMonth"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/settingsButton"
-                android:layout_toStartOf="@+id/settingsButton"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/acc_next"
-                android:gravity="center"
-                android:visibility="visible" />
-
-            <ImageButton
-                android:id="@+id/prevMonth"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/acc_previous"
-                android:gravity="center"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/currentDate"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_toEndOf="@+id/prevMonth"
-                android:layout_toLeftOf="@+id/nextMonth"
-                android:layout_toRightOf="@+id/prevMonth"
-                android:layout_toStartOf="@+id/nextMonth"
-                android:gravity="center|start"
-                android:maxLines="1"
-                android:paddingLeft="16dp"
-                android:paddingStart="16dp"
-                android:singleLine="true"
-                android:textColor="@color/blackPrimary"
-                android:textSize="16sp" />
-
-        </RelativeLayout>
-
-        <GridView
-            android:id="@+id/weekdayGrid"
-            android:layout_width="match_parent"
-            android:layout_height="23dp"
-            android:layout_below="@+id/header"
-            android:background="@color/whitePrimary"
-            android:numColumns="7"
-            android:overScrollMode="never" />
-
-        <GridView
-            android:id="@+id/monthGrid"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/weekdayGrid"
-            android:background="@color/material_divider"
-            android:horizontalSpacing="1dp"
-            android:numColumns="7"
-            android:overScrollMode="never"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="1dp" />
+            android:layout_height="42dp"
+            android:layout_toEndOf="@+id/prevMonth"
+            android:layout_toLeftOf="@+id/nextMonth"
+            android:layout_toRightOf="@+id/prevMonth"
+            android:layout_toStartOf="@+id/nextMonth"
+            android:gravity="center|start"
+            android:maxLines="1"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:singleLine="true"
+            android:textColor="@color/blackPrimary"
+            android:textSize="16sp" />
 
     </RelativeLayout>
-</layout>
+
+    <GridView
+        android:id="@+id/weekdayGrid"
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:layout_below="@+id/header"
+        android:background="@color/whitePrimary"
+        android:numColumns="7"
+        android:overScrollMode="never" />
+
+    <GridView
+        android:id="@+id/monthGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/weekdayGrid"
+        android:background="@color/material_divider"
+        android:horizontalSpacing="1dp"
+        android:numColumns="7"
+        android:overScrollMode="never"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="1dp" />
+
+</RelativeLayout>

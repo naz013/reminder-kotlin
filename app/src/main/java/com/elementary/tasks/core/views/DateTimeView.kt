@@ -5,17 +5,16 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.TimePicker
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
-
 import java.text.DateFormat
-import java.util.Calendar
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,7 +47,7 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private var mListener: OnSelectListener? = null
     private var mDateFormat: DateFormat = TimeUtil.FULL_DATE_FORMAT
 
-    private val mDateClick = { view -> selectDate() }
+    private val mDateClick = View.OnClickListener{ selectDate() }
 
     var dateTime: Long
         get() {
@@ -84,8 +83,8 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         layoutParams = params
         mDateView = findViewById(R.id.dateField)
         mTimeView = findViewById(R.id.timeField)
-        mDateView!!.setOnClickListener(mDateClick)
-        mTimeView!!.setOnClickListener { v -> selectTime() }
+        mDateView?.setOnClickListener(mDateClick)
+        mTimeView?.setOnClickListener { selectTime() }
         updateDateTime(0)
     }
 
@@ -151,11 +150,11 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         if (mListener != null) mListener!!.onTimeSelect(mills, mHour, mMinute)
     }
 
-    fun selectDate() {
+    private fun selectDate() {
         TimeUtil.showDatePicker(context, this, mYear, mMonth, mDay)
     }
 
-    fun selectTime() {
+    private fun selectTime() {
         TimeUtil.showTimePicker(context, this, mHour, mMinute)
     }
 

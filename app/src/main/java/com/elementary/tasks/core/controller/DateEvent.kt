@@ -22,8 +22,7 @@ import com.elementary.tasks.core.utils.TimeUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-internal class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
+class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override val isActive: Boolean
         get() = reminder.isActive
@@ -47,22 +46,22 @@ internal class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) 
 
     override fun next(): Boolean {
         reminder.delay = 0
-        if (canSkip()) {
+        return if (canSkip()) {
             val time = calculateTime(false)
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = reminder.eventCount + 1
-            return start()
+            start()
         } else {
-            return stop()
+            stop()
         }
     }
 
     override fun onOff(): Boolean {
-        if (isActive) {
-            return stop()
+        return if (isActive) {
+            stop()
         } else {
             super.save()
-            return start()
+            start()
         }
     }
 

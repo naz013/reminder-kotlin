@@ -47,11 +47,10 @@ class ColorPickerView : LinearLayout {
     private var indigo: ImageButton? = null
     private var lime: ImageButton? = null
     private var prevId: Int = 0
-    var selectedCode: Int = 0
-        private set
+    private var selectedCode: Int = 0
     private var mColorListener: OnColorListener? = null
 
-    private val listener = { v -> themeColorSwitch(v.getId()) }
+    private val listener = View.OnClickListener{ v -> themeColorSwitch(v.id) }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -122,9 +121,9 @@ class ColorPickerView : LinearLayout {
         }
     }
 
-    private fun setOnClickListener(vararg views: View) {
+    private fun setOnClickListener(vararg views: View?) {
         for (view in views) {
-            view.setOnClickListener(listener)
+            view?.setOnClickListener(listener)
         }
     }
 

@@ -33,8 +33,6 @@ class PlacesTypeConverter {
 
     @TypeConverter
     fun toList(json: String): List<Place>? {
-        return Gson().fromJson<List<Place>>(json, object : TypeToken<List<Place>>() {
-
-        }.type)
+        return Gson().fromJson<List<Place>>(json, object : TypeToken<List<Place>>() {}.type)
     }
 }

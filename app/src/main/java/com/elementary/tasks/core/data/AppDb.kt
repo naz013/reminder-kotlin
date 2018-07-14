@@ -46,7 +46,18 @@ import androidx.room.RoomDatabase
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Database(entities = arrayOf(Reminder::class, CalendarEvent::class, Group::class, MissedCall::class, Note::class, Place::class, GoogleTaskList::class, GoogleTask::class, MainImage::class, SmsTemplate::class), version = 1, exportSchema = false)
+@Database(entities = [
+    Reminder::class,
+    CalendarEvent::class,
+    Group::class,
+    MissedCall::class,
+    Note::class,
+    Place::class,
+    GoogleTaskList::class,
+    GoogleTask::class,
+    MainImage::class,
+    SmsTemplate::class
+], version = 1, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
@@ -81,7 +92,7 @@ abstract class AppDb : RoomDatabase() {
                         .allowMainThreadQueries()
                         .build()
             }
-            return INSTANCE
+            return INSTANCE!!
         }
 
         fun destroyInstance() {

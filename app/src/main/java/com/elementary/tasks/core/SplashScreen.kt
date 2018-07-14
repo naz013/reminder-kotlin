@@ -1,10 +1,8 @@
 package com.elementary.tasks.core
 
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
-
 import com.elementary.tasks.core.async.EnableThread
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -58,7 +56,7 @@ class SplashScreen : ThemedActivity() {
     }
 
     private fun initGroups() {
-        if (AppDb.getAppDatabase(this).groupDao().all.size == 0) {
+        if (AppDb.getAppDatabase(this).groupDao().all.isEmpty()) {
             GroupsUtil.initDefault(this)
         }
     }

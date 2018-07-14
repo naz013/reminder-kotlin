@@ -30,25 +30,25 @@ import com.elementary.tasks.core.utils.TimeUtil
  * limitations under the License.
  */
 
-internal abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminder) {
+abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminder) {
 
     protected fun enableReminder() {
         EventJobService.enableReminder(reminder)
     }
 
     protected fun export() {
-        if (reminder.isExportToTasks) {
+        if (reminder.exportToTasks) {
             val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             val mItem = GoogleTask()
-            mItem.listId = null
+            mItem.listId = ""
             mItem.status = Google.TASKS_NEED_ACTION
             mItem.title = reminder.summary
             mItem.dueDate = due
-            mItem.notes = context!!.getString(R.string.from_reminder)
+            mItem.notes = context.getString(R.string.from_reminder)
             mItem.uuId = reminder.uuId
             // TODO: 23.06.2018 Add export to Google Tasks work via WorkManager
         }
-        if (reminder.isExportToCalendar) {
+        if (reminder.exportToCalendar) {
             if (Prefs.getInstance(context).isStockCalendarEnabled) {
                 CalendarUtils.addEventToStock(context, reminder.summary, TimeUtil.getDateTimeFromGmt(reminder.eventTime))
             }
@@ -66,7 +66,7 @@ internal abstract class RepeatableEventManager(reminder: Reminder) : EventManage
     }
 
     override fun pause(): Boolean {
-        Notifier.hideNotification(context!!, reminder.uniqueId)
+        Notifier.hideNotification(context, reminder.uniqueId)
         EventJobService.cancelReminder(reminder.uniqueId.toString())
         RepeatNotificationReceiver().cancelAlarm(context, reminder.uniqueId)
         return true

@@ -91,7 +91,7 @@ class ActionView : LinearLayout {
 
         numberView = findViewById(R.id.numberView)
         numberView!!.isFocusableInTouchMode = true
-        numberView!!.setOnFocusChangeListener { v, hasFocus ->
+        numberView!!.setOnFocusChangeListener { _, hasFocus ->
             mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             if (!hasFocus) {
                 mImm!!.hideSoftInputFromWindow(numberView!!.windowToken, 0)
@@ -99,23 +99,23 @@ class ActionView : LinearLayout {
                 mImm!!.showSoftInput(numberView, 0)
             }
         }
-        numberView!!.setOnClickListener { v ->
+        numberView!!.setOnClickListener {
             mImm = getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             if (!mImm!!.isActive(numberView)) {
                 mImm!!.showSoftInput(numberView, 0)
             }
         }
         radioGroup = findViewById(R.id.radioGroup)
-        radioGroup!!.setOnCheckedChangeListener { radioGroup1, i -> buttonClick(i) }
+        radioGroup!!.setOnCheckedChangeListener { _, i -> buttonClick(i) }
         callAction = findViewById(R.id.callAction)
         callAction!!.isChecked = true
         messageAction = findViewById(R.id.messageAction)
         actionCheck = findViewById(R.id.actionCheck)
-        actionCheck!!.setOnCheckedChangeListener { compoundButton, b ->
-            if (!Permissions.checkPermission(mActivity, Permissions.READ_CONTACTS)) {
+        actionCheck!!.setOnCheckedChangeListener { _, b ->
+            if (!Permissions.checkPermission(mActivity!!, Permissions.READ_CONTACTS)) {
                 actionCheck!!.isChecked = false
-                Permissions.requestPermission(mActivity, REQ_CONTACTS, Permissions.READ_CONTACTS)
-                return@actionCheck.setOnCheckedChangeListener
+                Permissions.requestPermission(mActivity!!, REQ_CONTACTS, Permissions.READ_CONTACTS)
+                return@setOnCheckedChangeListener
             }
             if (b) {
                 openAction()
@@ -163,7 +163,7 @@ class ActionView : LinearLayout {
         this.listener = listener
     }
 
-    fun hasAction(): Boolean {
+    private fun hasAction(): Boolean {
         return actionCheck!!.isChecked
     }
 
@@ -172,7 +172,7 @@ class ActionView : LinearLayout {
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             REQ_CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 actionCheck!!.isChecked = true
@@ -188,8 +188,8 @@ class ActionView : LinearLayout {
 
     companion object {
 
-        val TYPE_CALL = 1
-        val TYPE_MESSAGE = 2
-        private val REQ_CONTACTS = 32564
+        const val TYPE_CALL = 1
+        const val TYPE_MESSAGE = 2
+        private const val REQ_CONTACTS = 32564
     }
 }

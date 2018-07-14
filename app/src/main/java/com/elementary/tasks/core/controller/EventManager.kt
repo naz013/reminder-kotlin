@@ -32,20 +32,19 @@ import javax.inject.Inject
  */
 abstract class EventManager(val reminder: Reminder) : EventControl {
     @Inject
-    var context: Context? = null
+    lateinit var context: Context
     @Inject
     protected var db: AppDb? = null
-        set
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
     }
 
     protected fun save() {
         db!!.reminderDao().insert(reminder)
         UpdatesHelper.getInstance(context).updateWidget()
         if (Prefs.getInstance(context).isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
+            Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 }

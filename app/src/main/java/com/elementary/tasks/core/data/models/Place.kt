@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.google.gson.annotations.SerializedName
-
-import java.util.ArrayList
-import java.util.UUID
-
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.core.utils.SuperUtil
+import com.google.gson.annotations.SerializedName
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,7 +44,7 @@ class Place {
     @SerializedName("address")
     var address: String? = null
     @SerializedName("tags")
-    private var tags: MutableList<String> = ArrayList()
+    var tags: MutableList<String> = mutableListOf()
 
     constructor() {}
 
@@ -61,14 +58,6 @@ class Place {
         this.id = UUID.randomUUID().toString()
         this.address = address
         this.tags.addAll(tags)
-    }
-
-    fun getTags(): List<String> {
-        return tags
-    }
-
-    fun setTags(tags: MutableList<String>) {
-        this.tags = tags
     }
 
     override fun toString(): String {

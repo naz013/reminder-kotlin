@@ -9,7 +9,7 @@
         android:layout_marginTop="16dp">
 
         <LinearLayout
-            android:id="@+id/bgView"
+            android:id="@+id/bgViewStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
@@ -35,7 +35,7 @@
                 android:orientation="horizontal">
 
                 <com.elementary.tasks.core.views.roboto.RoboButton
-                    android:id="@+id/buttonYes"
+                    android:id="@+id/buttonYesStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -45,7 +45,7 @@
                     app:font_style="roboto_light" />
 
                 <com.elementary.tasks.core.views.roboto.RoboButton
-                    android:id="@+id/buttonNo"
+                    android:id="@+id/buttonNoStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"

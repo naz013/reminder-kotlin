@@ -3,10 +3,8 @@ package com.elementary.tasks.core.appWidgets.calendar
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.elementary.tasks.R
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -26,7 +24,6 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarTheme : Parcelable {
     var itemTextColor: Int = 0
     var widgetBgColor: Int = 0
@@ -49,26 +46,17 @@ class CalendarTheme : Parcelable {
         private set
     var iconSettings: Int = 0
         private set
-    val currentMark: Int
-    val birthdayMark: Int
-    val reminderMark: Int
+    var currentMark: Int = 0
+    var birthdayMark: Int = 0
+    var reminderMark: Int = 0
     var title: String? = null
     var windowColor: Int = 0
         private set
     var windowTextColor: Int = 0
         private set
 
-    val CREATOR: Parcelable.Creator<CalendarTheme> = object : Parcelable.Creator<CalendarTheme> {
-        override fun createFromParcel(`in`: Parcel): CalendarTheme {
-            return CalendarTheme(`in`)
-        }
 
-        override fun newArray(size: Int): Array<CalendarTheme> {
-            return arrayOfNulls(size)
-        }
-    }
-
-    private constructor() {}
+    private constructor()
 
     constructor(itemTextColor: Int, widgetBgColor: Int, headerColor: Int, borderColor: Int,
                 titleColor: Int, rowColor: Int, leftArrow: Int, rightArrow: Int, iconPlus: Int, iconVoice: Int,
@@ -97,7 +85,7 @@ class CalendarTheme : Parcelable {
         readFromParcel(`in`)
     }
 
-    fun readFromParcel(`in`: Parcel) {
+    private fun readFromParcel(`in`: Parcel) {
         title = `in`.readString()
         itemTextColor = `in`.readInt()
         widgetBgColor = `in`.readInt()
@@ -136,6 +124,17 @@ class CalendarTheme : Parcelable {
     }
 
     companion object {
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<CalendarTheme> = object : Parcelable.Creator<CalendarTheme> {
+            override fun createFromParcel(`in`: Parcel): CalendarTheme {
+                return CalendarTheme(`in`)
+            }
+
+            override fun newArray(size: Int): Array<CalendarTheme?> {
+                return arrayOfNulls(size)
+            }
+        }
 
         private fun getResColor(ctx: Context, res: Int): Int {
             return ctx.resources.getColor(res)

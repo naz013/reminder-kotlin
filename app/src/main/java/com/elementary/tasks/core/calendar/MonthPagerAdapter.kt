@@ -26,19 +26,19 @@ import androidx.fragment.app.FragmentPagerAdapter
  */
 class MonthPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    var fragments: MutableList<DateGridFragment>? = null
+    var fragments: MutableList<DateGridFragment> = mutableListOf()
         get() {
-            if (field == null) {
+            if (field.isEmpty()) {
                 this.fragments = ArrayList()
                 for (i in 0 until count) {
-                    field!!.add(DateGridFragment())
+                    field.add(DateGridFragment())
                 }
             }
             return field
         }
 
     override fun getItem(position: Int): Fragment {
-        return fragments.get(position)
+        return fragments[position]
     }
 
     override fun getCount(): Int {

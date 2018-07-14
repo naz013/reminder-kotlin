@@ -24,7 +24,7 @@ import com.elementary.tasks.core.utils.TimeUtil
  * limitations under the License.
  */
 
-internal class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
+class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override val isActive: Boolean
         get() = reminder.isActive
@@ -48,7 +48,7 @@ internal class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder)
 
     override fun next(): Boolean {
         reminder.delay = 0
-        if (canSkip()) {
+        return if (canSkip()) {
             var time = calculateTime(false)
             while (time < System.currentTimeMillis()) {
                 reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
@@ -57,15 +57,15 @@ internal class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder)
             LogUtil.d(TAG, "next: " + TimeUtil.getFullDateTime(time, true, true))
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = reminder.eventCount + 1
-            return start()
+            start()
         } else {
-            return stop()
+            stop()
         }
     }
 
     override fun onOff(): Boolean {
-        if (isActive) {
-            return stop()
+        return if (isActive) {
+            stop()
         } else {
             var time = calculateTime(true)
             while (time < System.currentTimeMillis()) {
@@ -74,7 +74,7 @@ internal class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder)
             }
             reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
             reminder.eventCount = 0
-            return start()
+            start()
         }
     }
 
@@ -98,6 +98,6 @@ internal class TimerEvent(reminder: Reminder) : RepeatableEventManager(reminder)
 
     companion object {
 
-        private val TAG = "TimerEvent"
+        private const val TAG = "TimerEvent"
     }
 }

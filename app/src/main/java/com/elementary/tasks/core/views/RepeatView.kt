@@ -1,7 +1,6 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -63,20 +62,24 @@ class RepeatView : LinearLayout, TextWatcher {
     private var mRepeatValue: Int = 0
 
     val eventListener: DateTimeView.OnSelectListener = object : DateTimeView.OnSelectListener {
-        override fun onDateSelect(mills: Long, dayOfMonth: Int, mon: Int, y: Int) {
-            mYear = y
-            mMonth = mon
-            mDay = dayOfMonth
+        override fun onDateSelect(mills: Long, day: Int, month: Int, year: Int) {
+            mYear = year
+            mMonth = month
+            mDay = day
             updatePrediction(mRepeatValue)
         }
 
-        override fun onTimeSelect(mills: Long, hourOfDay: Int, min: Int) {
-            mHour = hourOfDay
-            mMinute = min
+        override fun onTimeSelect(mills: Long, hour: Int, minute: Int) {
+            mHour = hour
+            mMinute = minute
             updatePrediction(mRepeatValue)
         }
     }
-    val timerListener = { time -> initDateTime(System.currentTimeMillis() + time) }
+    val timerListener = object : TimerPickerView.TimerListener {
+        override fun onTimerChange(time: Long) {
+            initDateTime(System.currentTimeMillis() + time)
+        }
+    }
 
     private val multiplier: Long
         get() {
@@ -103,26 +106,32 @@ class RepeatView : LinearLayout, TextWatcher {
                 setProgress(0)
                 return
             }
-            if (mills % (TimeCount.DAY * 7) == 0L) {
-                val progress = mills / (TimeCount.DAY * 7)
-                setProgress(progress.toInt())
-                setState(weeks)
-            } else if (mills % TimeCount.DAY == 0L) {
-                val progress = mills / TimeCount.DAY
-                setProgress(progress.toInt())
-                setState(days)
-            } else if (mills % TimeCount.HOUR == 0L) {
-                val progress = mills / TimeCount.HOUR
-                setProgress(progress.toInt())
-                setState(hours)
-            } else if (mills % TimeCount.MINUTE == 0L) {
-                val progress = mills / TimeCount.MINUTE
-                setProgress(progress.toInt())
-                setState(minutes)
-            } else if (mills % TimeCount.SECOND == 0L) {
-                val progress = mills / TimeCount.SECOND
-                setProgress(progress.toInt())
-                setState(seconds)
+            when {
+                mills % (TimeCount.DAY * 7) == 0L -> {
+                    val progress = mills / (TimeCount.DAY * 7)
+                    setProgress(progress.toInt())
+                    setState(weeks)
+                }
+                mills % TimeCount.DAY == 0L -> {
+                    val progress = mills / TimeCount.DAY
+                    setProgress(progress.toInt())
+                    setState(days)
+                }
+                mills % TimeCount.HOUR == 0L -> {
+                    val progress = mills / TimeCount.HOUR
+                    setProgress(progress.toInt())
+                    setState(hours)
+                }
+                mills % TimeCount.MINUTE == 0L -> {
+                    val progress = mills / TimeCount.MINUTE
+                    setProgress(progress.toInt())
+                    setState(minutes)
+                }
+                mills % TimeCount.SECOND == 0L -> {
+                    val progress = mills / TimeCount.SECOND
+                    setProgress(progress.toInt())
+                    setState(seconds)
+                }
             }
         }
 
@@ -156,16 +165,16 @@ class RepeatView : LinearLayout, TextWatcher {
             }
         }
         mRepeatInput!!.addTextChangedListener(this)
-        mRepeatInput!!.setOnFocusChangeListener { v, hasFocus ->
-            if (mImm == null) return@mRepeatInput.setOnFocusChangeListener
+        mRepeatInput!!.setOnFocusChangeListener { _, hasFocus ->
+            if (mImm == null) return@setOnFocusChangeListener
             if (!hasFocus) {
                 mImm!!.hideSoftInputFromWindow(mRepeatInput!!.windowToken, 0)
             } else {
                 mImm!!.showSoftInput(mRepeatInput, 0)
             }
         }
-        mRepeatInput!!.setOnClickListener { v ->
-            if (mImm == null) return@mRepeatInput.setOnClickListener
+        mRepeatInput!!.setOnClickListener {
+            if (mImm == null) return@setOnClickListener
             if (!mImm!!.isActive(mRepeatInput)) {
                 mImm!!.showSoftInput(mRepeatInput, 0)
             }
@@ -265,6 +274,6 @@ class RepeatView : LinearLayout, TextWatcher {
 
     companion object {
 
-        private val TAG = "RepeatView"
+        private const val TAG = "RepeatView"
     }
 }

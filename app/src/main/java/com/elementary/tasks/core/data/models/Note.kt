@@ -35,12 +35,12 @@ import androidx.room.TypeConverters
 class Note {
 
     @SerializedName("summary")
-    var summary: String? = null
+    var summary: String = ""
     @SerializedName("key")
     @PrimaryKey
-    var key: String? = null
+    var key: String = ""
     @SerializedName("date")
-    var date: String? = null
+    var date: String = ""
     @SerializedName("color")
     var color: Int = 0
     @SerializedName("style")

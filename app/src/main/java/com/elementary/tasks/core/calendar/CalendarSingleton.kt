@@ -22,7 +22,6 @@ import com.elementary.tasks.birthdays.EventsDataProvider
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarSingleton private constructor() {
     var provider: EventsDataProvider? = null
     var fabClick: View.OnClickListener? = null
@@ -39,7 +38,7 @@ class CalendarSingleton private constructor() {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }
