@@ -77,7 +77,7 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         ioHelper.restoreGroup(true)
         val list = AppDb.getAppDatabase(mContext.context).groupDao().all
-        if (list.size == 0) {
+        if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
             val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
             for (item in items) {
@@ -131,9 +131,7 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
             }
             builder.setWhen(System.currentTimeMillis())
             mNotifyMgr!!.notify(2, builder.build())
-            if (mListener != null && mContext != null) {
-                mListener.endExecution(aVoid!!)
-            }
+            mListener?.endExecution(aVoid!!)
         }
         if (mContext != null) {
             UpdatesHelper.getInstance(mContext.context).updateWidget()

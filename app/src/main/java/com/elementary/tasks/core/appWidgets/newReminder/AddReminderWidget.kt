@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.appWidgets.new_reminder
+package com.elementary.tasks.core.appWidgets.newReminder
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -30,7 +30,6 @@ import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class AddReminderWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {

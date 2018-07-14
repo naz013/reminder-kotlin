@@ -38,10 +38,6 @@ import java.util.Locale
 
 class EventsWidget : AppWidgetProvider() {
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-    }
-
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val sp = context.getSharedPreferences(
                 EventsWidgetConfig.EVENTS_WIDGET_PREF, Context.MODE_PRIVATE)

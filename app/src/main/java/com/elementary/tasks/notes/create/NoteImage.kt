@@ -1,9 +1,8 @@
 package com.elementary.tasks.notes.create
 
 import com.google.gson.annotations.SerializedName
-
 import java.io.Serializable
-import java.util.Arrays
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,24 +22,14 @@ import java.util.Arrays
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class NoteImage : Serializable {
 
     @SerializedName("image")
-    private var image: ByteArray? = null
+    var image: ByteArray? = null
 
-    constructor() {}
+    constructor()
 
     constructor(image: ByteArray) {
-        this.image = ByteArray(image.size)
-        System.arraycopy(image, 0, this.image!!, 0, this.image!!.size)
-    }
-
-    fun getImage(): ByteArray? {
-        return image
-    }
-
-    fun setImage(image: ByteArray) {
         this.image = ByteArray(image.size)
         System.arraycopy(image, 0, this.image!!, 0, this.image!!.size)
     }

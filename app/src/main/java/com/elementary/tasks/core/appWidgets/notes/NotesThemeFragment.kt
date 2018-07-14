@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.databinding.FragmentNoteWidgetPreviewBinding
-
-import java.util.ArrayList
-
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
+import kotlinx.android.synthetic.main.fragment_note_widget_preview.*
+import java.util.*
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -30,6 +28,7 @@ import androidx.fragment.app.Fragment
  * limitations under the License.
  */
 class NotesThemeFragment : Fragment() {
+
     private var mPageNumber: Int = 0
     private var mList: List<NotesTheme>? = null
 
@@ -42,14 +41,18 @@ class NotesThemeFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentNoteWidgetPreviewBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_note_widget_preview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val calendarTheme = mList!![mPageNumber]
 
         val windowColor = calendarTheme.windowColor
-        binding.background.setBackgroundResource(windowColor)
+        background.setBackgroundResource(windowColor)
         val windowTextColor = calendarTheme.windowTextColor
-        binding.themeTitle.setTextColor(windowTextColor)
-        binding.themeTip.setTextColor(windowTextColor)
+        themeTitle.setTextColor(windowTextColor)
+        themeTip.setTextColor(windowTextColor)
 
         val headerColor = calendarTheme.headerColor
         val backgroundColor = calendarTheme.backgroundColor
@@ -58,21 +61,20 @@ class NotesThemeFragment : Fragment() {
         val settingsIcon = calendarTheme.settingsIcon
         val plusIcon = calendarTheme.plusIcon
 
-        binding.widgetTitle.setTextColor(titleColor)
-        binding.headerBg.setBackgroundResource(headerColor)
-        binding.widgetBg.setBackgroundResource(backgroundColor)
+        widgetTitle.setTextColor(titleColor)
+        headerBg.setBackgroundResource(headerColor)
+        widgetBg.setBackgroundResource(backgroundColor)
 
-        binding.tasksCount.setImageResource(plusIcon)
-        binding.settingsButton.setImageResource(settingsIcon)
+        tasksCount.setImageResource(plusIcon)
+        settingsButton.setImageResource(settingsIcon)
 
-        binding.themeTitle.text = calendarTheme.title
-        return binding.root
+        themeTitle.text = calendarTheme.title
     }
 
     companion object {
 
-        internal val ARGUMENT_PAGE_NUMBER = "arg_page_number"
-        internal val ARGUMENT_DATA = "arg_data"
+        internal const val ARGUMENT_PAGE_NUMBER = "arg_page_number"
+        internal const val ARGUMENT_DATA = "arg_data"
 
         fun newInstance(page: Int, list: List<NotesTheme>): NotesThemeFragment {
             val pageFragment = NotesThemeFragment()

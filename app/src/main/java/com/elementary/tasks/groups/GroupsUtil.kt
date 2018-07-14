@@ -1,13 +1,10 @@
 package com.elementary.tasks.groups
 
 import android.content.Context
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.dao.GroupDao
 import com.elementary.tasks.core.data.models.Group
-
-import java.util.Random
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,7 +26,7 @@ import java.util.Random
  */
 object GroupsUtil {
 
-    fun initDefault(context: Context): String? {
+    fun initDefault(context: Context): String {
         val random = Random()
         val def = Group(context.getString(R.string.general), random.nextInt(16))
         val dao = AppDb.getAppDatabase(context).groupDao()

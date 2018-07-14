@@ -29,11 +29,7 @@ import java.io.IOException
  */
 
 class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) : AsyncTask<String, Void, List<Address>>() {
-    private val geocoder: Geocoder
-
-    init {
-        geocoder = Geocoder(mContext)
-    }
+    private val geocoder: Geocoder = Geocoder(mContext)
 
     override fun doInBackground(vararg locationName: String): List<Address>? {
         var addresses: List<Address>? = null
@@ -47,7 +43,7 @@ class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) 
     }
 
     override fun onPostExecute(addresses: List<Address>?) {
-        if (addresses == null || addresses.size == 0) {
+        if (addresses == null || addresses.isEmpty()) {
             LogUtil.d(TAG, "No Location found")
         } else {
             mListener?.onAddressReceived(addresses)
@@ -63,6 +59,6 @@ class GeocoderTask(mContext: Context, private val mListener: GeocoderListener?) 
 
     companion object {
 
-        private val TAG = "GeocoderTask"
+        private const val TAG = "GeocoderTask"
     }
 }

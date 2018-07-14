@@ -1,18 +1,11 @@
 package com.elementary.tasks.core.chart
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Point
-import android.graphics.RectF
-import android.graphics.Region
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Daniel Nadeau
@@ -62,8 +55,8 @@ class PieGraph : View {
         canvas.drawColor(Color.TRANSPARENT)
         paint.reset()
         paint.isAntiAlias = true
-        val midX: Float
-        val midY: Float
+        val midX: Float = (width / 2).toFloat()
+        val midY: Float = (height / 2).toFloat()
         var radius: Float
         val innerRadius: Float
         path.reset()
@@ -71,8 +64,6 @@ class PieGraph : View {
         var currentSweep: Float
         var totalValue = 0
         val padding = 2f
-        midX = (width / 2).toFloat()
-        midY = (height / 2).toFloat()
         if (midX < midY) {
             radius = midX
         } else {
@@ -83,8 +74,7 @@ class PieGraph : View {
         for (slice in slices) {
             totalValue += slice.value.toInt()
         }
-        var count = 0
-        for (slice in slices) {
+        for ((count, slice) in slices.withIndex()) {
             val p = Path()
             paint.color = slice.color
             currentSweep = slice.value / totalValue * 360
@@ -110,7 +100,6 @@ class PieGraph : View {
                 paint.alpha = 255
             }
             currentAngle = currentAngle + currentSweep
-            count++
         }
     }
 
@@ -169,7 +158,7 @@ class PieGraph : View {
         postInvalidate()
     }
 
-    internal interface OnSliceClickedListener {
+    interface OnSliceClickedListener {
         fun onClick(index: Int)
     }
 }

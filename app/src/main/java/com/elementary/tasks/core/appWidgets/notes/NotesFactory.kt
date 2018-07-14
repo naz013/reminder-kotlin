@@ -36,11 +36,7 @@ import java.util.ArrayList
 internal class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
 
     private val notes = ArrayList<Note>()
-    private val themeUtil: ThemeUtil
-
-    init {
-        themeUtil = ThemeUtil.getInstance(mContext)
-    }
+    private val themeUtil: ThemeUtil = ThemeUtil.getInstance(mContext)
 
     override fun onCreate() {
         notes.clear()
@@ -60,10 +56,10 @@ internal class NotesFactory(private val mContext: Context) : RemoteViewsService.
     }
 
     private fun getItem(position: Int): Note? {
-        try {
-            return notes[position]
+        return try {
+            notes[position]
         } catch (e: IndexOutOfBoundsException) {
-            return null
+            null
         }
 
     }
@@ -77,7 +73,7 @@ internal class NotesFactory(private val mContext: Context) : RemoteViewsService.
         }
         rView.setInt(R.id.noteBackground, "setBackgroundColor", themeUtil.getNoteLightColor(note.color))
 
-        if (note.images.size > 0) {
+        if (note.images.isNotEmpty()) {
             val image = note.images[0]
             val photo = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
             if (photo != null) {
