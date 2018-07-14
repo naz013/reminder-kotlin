@@ -1,17 +1,15 @@
 package com.elementary.tasks.core.additional
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemMessageBinding
-
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_message.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,16 +29,16 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class SelectableTemplatesAdapter : RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder>() {
 
-internal class SelectableTemplatesAdapter(context: Context) : RecyclerView.Adapter<SelectableTemplatesAdapter.ViewHolder>() {
-
-    private val mDataList = ArrayList<SmsTemplate>()
+    private val mDataList = mutableListOf<SmsTemplate>()
     var selectedPosition = -1
         private set
-    private val themeUtil: ThemeUtil
+    @Inject
+    lateinit var themeUtil: ThemeUtil
 
     init {
-        themeUtil = ThemeUtil.getInstance(context)
+        ReminderApp.appComponent.inject(this)
     }
 
     fun setData(list: List<SmsTemplate>) {
@@ -50,34 +48,34 @@ internal class SelectableTemplatesAdapter(context: Context) : RecyclerView.Adapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_message, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mDataList[position]
-        holder.binding!!.item = item
-        if (item.isSelected) {
-            holder.binding.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()))
-        } else {
-            holder.binding.cardView.setCardBackgroundColor(themeUtil.cardStyle)
-        }
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {
         return mDataList.size
     }
 
-    internal inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding: ListItemMessageBinding?
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: SmsTemplate) {
+            itemView.messageView.text = item.title
+            if (item.isSelected) {
+                itemView.cardView.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorAccent()))
+            } else {
+                itemView.cardView.setCardBackgroundColor(themeUtil.cardStyle)
+            }
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.root.setOnClickListener { view -> selectItem(adapterPosition) }
+            itemView.setOnClickListener { selectItem(adapterPosition) }
         }
     }
 
-    fun getItem(position: Int): SmsTemplate {
+    fun getItem(position: Int): SmsTemplate? {
         return mDataList[position]
     }
 

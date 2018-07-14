@@ -15,7 +15,7 @@ import com.backdoor.engine.Recognizer
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note

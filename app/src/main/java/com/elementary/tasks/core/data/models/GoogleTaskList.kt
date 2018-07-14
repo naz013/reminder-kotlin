@@ -30,18 +30,18 @@ import androidx.room.PrimaryKey
 class GoogleTaskList {
 
     @SerializedName("title")
-    var title: String? = null
+    var title: String = ""
     @SerializedName("listId")
     @PrimaryKey
-    var listId: String? = null
+    var listId: String = ""
     @SerializedName("def")
     var def: Int = 0
     @SerializedName("eTag")
-    private var eTag: String? = null
+    private var eTag: String = ""
     @SerializedName("kind")
-    var kind: String? = null
+    var kind: String = ""
     @SerializedName("selfLink")
-    var selfLink: String? = null
+    var selfLink: String = ""
     @SerializedName("updated")
     var updated: Long = 0
     @SerializedName("color")
@@ -49,14 +49,14 @@ class GoogleTaskList {
     @SerializedName("systemDefault")
     var systemDefault: Int = 0
 
-    constructor() {}
+    constructor()
 
     @Ignore
     constructor(taskList: TaskList, color: Int) {
-        color = color
+        this.color = color
         title = taskList.title
         listId = taskList.id
-        seteTag(taskList.etag)
+        eTag = taskList.etag
         kind = taskList.kind
         selfLink = taskList.selfLink
         updated = if (taskList.updated != null) taskList.updated.value else 0
@@ -65,18 +65,10 @@ class GoogleTaskList {
     fun update(taskList: TaskList) {
         title = taskList.title
         listId = taskList.id
-        seteTag(taskList.etag)
+        eTag = taskList.etag
         kind = taskList.kind
         selfLink = taskList.selfLink
         updated = if (taskList.updated != null) taskList.updated.value else 0
-    }
-
-    fun geteTag(): String? {
-        return eTag
-    }
-
-    fun seteTag(eTag: String) {
-        this.eTag = eTag
     }
 
     override fun toString(): String {

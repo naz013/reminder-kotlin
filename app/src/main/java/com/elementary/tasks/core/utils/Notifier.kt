@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.text.TextUtils
@@ -16,15 +15,12 @@ import android.widget.RemoteViews
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.app_widgets.WidgetUtils
+import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.notes.create.NoteImage
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 
 import java.util.Calendar

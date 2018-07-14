@@ -6,7 +6,9 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.telephony.SmsManager
 import android.view.WindowManager
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
@@ -14,12 +16,9 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplatesViewModel
-import com.elementary.tasks.databinding.ActivityQuickSmsBinding
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.activity_quick_sms.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,39 +40,38 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class QuickSmsActivity : ThemedActivity() {
 
-    private var mAdapter: SelectableTemplatesAdapter? = null
+    private var mAdapter: SelectableTemplatesAdapter = SelectableTemplatesAdapter()
 
     private var number: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData()
-        val binding = DataBindingUtil.setContentView<ActivityQuickSmsBinding>(this, R.layout.activity_quick_sms)
+        setContentView(R.layout.activity_quick_sms)
 
-        binding.messagesList.layoutManager = LinearLayoutManager(this)
-        mAdapter = SelectableTemplatesAdapter(this)
-        binding.messagesList.adapter = mAdapter
+        messagesList.layoutManager = LinearLayoutManager(this)
+        messagesList.adapter = mAdapter
 
-        binding.buttonSend.setOnClickListener { v -> startSending() }
+        buttonSend.onClick { startSending() }
         val name = Contacts.getNameFromNumber(number, this)
-        binding.contactInfo.text = SuperUtil.appendString(name, "\n", number)
+        contactInfo.text = "$name\n$number"
 
         initViewModel()
     }
 
     private fun initViewModel() {
         val viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel::class.java)
-        viewModel.smsTemplates.observe(this, { smsTemplates ->
+        viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
             if (smsTemplates != null) {
                 updateList(smsTemplates)
             }
         })
     }
 
-    private fun updateList(smsTemplates: List<SmsTemplate>?) {
-        mAdapter!!.setData(smsTemplates)
-        if (mAdapter!!.itemCount > 0) {
-            mAdapter!!.selectItem(0)
+    private fun updateList(smsTemplates: List<SmsTemplate>) {
+        mAdapter.setData(smsTemplates)
+        if (mAdapter.itemCount > 0) {
+            mAdapter.selectItem(0)
         }
     }
 
@@ -86,8 +84,8 @@ class QuickSmsActivity : ThemedActivity() {
             Permissions.requestPermission(this, REQ_SMS, Permissions.SEND_SMS)
             return
         }
-        val position = mAdapter!!.selectedPosition
-        val item = mAdapter!!.getItem(position)
+        val position = mAdapter.selectedPosition
+        val item = mAdapter.getItem(position)
         if (item != null) {
             LogUtil.d("TAG", "startSending: " + item.title!!)
             sendSMS(number, item.title)
@@ -95,7 +93,7 @@ class QuickSmsActivity : ThemedActivity() {
         removeFlags()
     }
 
-    fun removeFlags() {
+    private fun removeFlags() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
@@ -118,7 +116,7 @@ class QuickSmsActivity : ThemedActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             REQ_SMS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startSending()
@@ -128,6 +126,6 @@ class QuickSmsActivity : ThemedActivity() {
 
     companion object {
 
-        private val REQ_SMS = 425
+        private const val REQ_SMS = 425
     }
 }

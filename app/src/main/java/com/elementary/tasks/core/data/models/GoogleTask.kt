@@ -1,13 +1,11 @@
 package com.elementary.tasks.core.data.models
 
-import com.elementary.tasks.core.utils.SuperUtil
-import com.google.api.client.util.DateTime
-import com.google.api.services.tasks.model.Task
-import com.google.gson.annotations.SerializedName
-
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.elementary.tasks.core.utils.SuperUtil
+import com.google.api.services.tasks.model.Task
+import com.google.gson.annotations.SerializedName
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,10 +29,10 @@ import androidx.room.PrimaryKey
 class GoogleTask {
 
     @SerializedName("title")
-    var title: String? = null
+    var title: String = ""
     @SerializedName("taskId")
     @PrimaryKey
-    var taskId: String? = null
+    var taskId: String = ""
     @SerializedName("completeDate")
     var completeDate: Long = 0
     @SerializedName("del")
@@ -42,36 +40,36 @@ class GoogleTask {
     @SerializedName("dueDate")
     var dueDate: Long = 0
     @SerializedName("eTag")
-    private var eTag: String? = null
+    var eTag: String = ""
     @SerializedName("kind")
-    var kind: String? = null
+    var kind: String = ""
     @SerializedName("notes")
-    var notes: String? = null
+    var notes: String = ""
     @SerializedName("parent")
-    var parent: String? = null
+    var parent: String = ""
     @SerializedName("position")
-    var position: String? = null
+    var position: String = ""
     @SerializedName("selfLink")
-    var selfLink: String? = null
+    var selfLink: String = ""
     @SerializedName("updateDate")
     var updateDate: Long = 0
     @SerializedName("listId")
-    private var listId: String? = null
+    var listId: String = ""
     @SerializedName("status")
-    var status: String? = null
+    var status: String = ""
     @SerializedName("uuId")
-    var uuId: String? = null
+    var uuId: String = ""
     @SerializedName("hidden")
     var hidden: Int = 0
 
-    constructor() {}
+    constructor()
 
     @Ignore
     constructor(item: GoogleTask) {
-        this.listId = item.getListId()
+        this.listId = item.listId
         this.selfLink = item.selfLink
         this.kind = item.kind
-        this.eTag = item.geteTag()
+        this.eTag = item.eTag
         this.title = item.title
         this.taskId = item.taskId
         this.completeDate = item.completeDate
@@ -157,23 +155,6 @@ class GoogleTask {
         this.position = task.position
         this.updateDate = update
         this.status = task.status
-    }
-
-    fun geteTag(): String? {
-        return eTag
-    }
-
-    fun seteTag(eTag: String) {
-        this.eTag = eTag
-    }
-
-    fun getListId(): String? {
-        return listId
-    }
-
-    fun setListId(listId: String): GoogleTask {
-        this.listId = listId
-        return this
     }
 
     override fun toString(): String {

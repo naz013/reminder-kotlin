@@ -151,7 +151,8 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
     var calendarImages: MonthImage
         get() {
             return try {
-                getObject(PrefsConstants.CALENDAR_IMAGES, MonthImage::class.java) as MonthImage
+                val json = getString(PrefsConstants.CALENDAR_IMAGES)
+                Gson().fromJson<MonthImage>(json, MonthImage::class.java)
             } catch (e: ClassCastException) {
                 MonthImage()
             }

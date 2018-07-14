@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import com.elementary.tasks.core.app_widgets.UpdatesHelper
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.views.ColorPickerView
 import com.elementary.tasks.databinding.FragmentCalendarStyleBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment

@@ -2,16 +2,9 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-
 import com.elementary.tasks.core.cloud.FileConfig
 import com.google.gson.Gson
-
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -69,11 +62,6 @@ abstract class SharedPrefs(context: Context) {
 
     fun putObject(key: String, obj: Any) {
         putString(key, Gson().toJson(obj))
-    }
-
-    fun getObject(key: String, classOfT: Class<*>): Any {
-        val json = getString(key)
-        return Gson().fromJson<*>(json, classOfT) ?: return Any()
     }
 
     fun getString(stringToLoad: String): String {

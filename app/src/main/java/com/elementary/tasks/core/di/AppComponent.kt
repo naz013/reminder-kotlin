@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.di
 
+import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.services.CallReceiver
@@ -33,7 +34,7 @@ import dagger.Component
  * limitations under the License.
  */
 @Singleton
-@Component(modules = arrayOf(AppModule::class, DbModule::class, ThemeModule::class))
+@Component(modules = [AppModule::class, DbModule::class, ThemeModule::class])
 interface AppComponent {
     fun inject(viewModel: BaseDbViewModel)
 
@@ -52,4 +53,6 @@ interface AppComponent {
     fun inject(google: Google)
 
     fun inject(backupTool: BackupTool)
+
+    fun inject(adapter: SelectableTemplatesAdapter)
 }
