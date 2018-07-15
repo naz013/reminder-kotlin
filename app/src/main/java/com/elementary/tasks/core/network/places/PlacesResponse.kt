@@ -26,11 +26,11 @@ class PlacesResponse {
 
     @SerializedName("html_attributions")
     @Expose
-    var htmlAttributions: List<Any>? = null
+    var htmlAttributions: List<Any> = listOf()
     @SerializedName("results")
     @Expose
-    var results: List<Place>? = null
+    var results: List<Place> = listOf()
     @SerializedName("status")
     @Expose
-    var status: String? = null
+    var status: String = ""
 }

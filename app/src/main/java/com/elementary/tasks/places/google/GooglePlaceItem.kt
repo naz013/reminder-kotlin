@@ -22,20 +22,20 @@ import com.google.android.gms.maps.model.LatLng
  */
 
 class GooglePlaceItem {
-    var name: String? = null
-    var id: String? = null
-    var icon: String? = null
-    var address: String? = null
+    var name: String = ""
+    var id: String = ""
+    var icon: String = ""
+    var address: String = ""
     var position: LatLng? = null
     var isSelected: Boolean = false
-    var types: List<String>? = null
+    var types: List<String> = listOf()
 
     constructor() {
         isSelected = false
     }
 
     constructor(name: String, id: String, icon: String, address: String,
-                position: LatLng, types: List<String>, selected: Boolean) {
+                position: LatLng?, types: List<String>, selected: Boolean) {
         this.name = name
         this.id = id
         this.icon = icon

@@ -13,22 +13,16 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
-import com.elementary.tasks.core.views.AddressAutoCompleteView
-import com.elementary.tasks.core.views.ThemedImageButton
-import com.elementary.tasks.databinding.FragmentMapBinding
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,9 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_map.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,16 +53,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
 
     private var mMap: GoogleMap? = null
-    private var layersContainer: CardView? = null
-    private var styleCard: CardView? = null
-    private var placesListCard: CardView? = null
-    private var cardSearch: AddressAutoCompleteView? = null
-    private var zoomOut: ThemedImageButton? = null
-    private var groupOne: LinearLayout? = null
-    private var groupTwo: LinearLayout? = null
-    private var groupThree: LinearLayout? = null
-    private var emptyItem: LinearLayout? = null
-    private var binding: FragmentMapBinding? = null
 
     private var placeRecyclerAdapter = PlacesRecyclerAdapter()
 
@@ -82,7 +64,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     private var isSearch = true
     var isFullscreen = false
     private var isDark = false
-    private var markerTitle: String? = null
+    private var markerTitle: String = ""
     private var markerRadius = -1
     var markerStyle = -1
         private set
@@ -112,20 +94,20 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private val isMarkersVisible: Boolean
-        get() = styleCard != null && styleCard!!.visibility == View.VISIBLE
+        get() = styleCard != null && styleCard.visibility == View.VISIBLE
 
     private val isPlacesVisible: Boolean
-        get() = placesListCard != null && placesListCard!!.visibility == View.VISIBLE
+        get() = placesListCard != null && placesListCard.visibility == View.VISIBLE
 
     private val isLayersVisible: Boolean
-        get() = layersContainer != null && layersContainer!!.visibility == View.VISIBLE
+        get() = layersContainer != null && layersContainer.visibility == View.VISIBLE
 
     fun setSearchEnabled(enabled: Boolean) {
         if (cardSearch != null) {
             if (enabled) {
-                binding!!.searchCard.visibility = View.VISIBLE
+                searchCard.visibility = View.VISIBLE
             } else {
-                binding!!.searchCard.visibility = View.INVISIBLE
+                searchCard.visibility = View.INVISIBLE
             }
         }
     }
@@ -151,24 +133,24 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (mMap != null) {
             markerRadius = radius
             if (markerRadius == -1)
-                markerRadius = prefs!!.radius
+                markerRadius = prefs.radius
             if (clear) mMap!!.clear()
             if (title == null || title.matches("".toRegex())) title = pos!!.toString()
             if (!Module.isPro) markerStyle = 5
             lastPos = pos
-            if (mListener != null) mListener!!.placeChanged(pos, title)
+            if (mListener != null) mListener!!.placeChanged(pos!!, title)
             mMap!!.addMarker(MarkerOptions()
                     .position(pos!!)
                     .title(title)
-                    .icon(getDescriptor(themeUtil!!.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
-            val marker = themeUtil!!.getMarkerRadiusStyle(markerStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             mMap!!.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil!!.getColor(marker.fillColor))
-                    .strokeColor(themeUtil!!.getColor(marker.strokeColor)))
+                    .fillColor(themeUtil.getColor(marker.fillColor))
+                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
             if (animate) animate(pos)
         }
     }
@@ -179,7 +161,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (mMap != null) {
             markerRadius = radius
             if (markerRadius == -1) {
-                markerRadius = prefs!!.radius
+                markerRadius = prefs.radius
             }
             if (!Module.isPro) markerStyle = 5
             this.markerStyle = markerStyle
@@ -190,15 +172,15 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             mMap!!.addMarker(MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(getDescriptor(themeUtil!!.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
-            val marker = themeUtil!!.getMarkerRadiusStyle(markerStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             mMap!!.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil!!.getColor(marker.fillColor))
-                    .strokeColor(themeUtil!!.getColor(marker.strokeColor)))
+                    .fillColor(themeUtil.getColor(marker.fillColor))
+                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
             if (animate) animate(pos)
             return true
         } else {
@@ -210,55 +192,55 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     fun recreateMarker(radius: Int) {
         markerRadius = radius
         if (markerRadius == -1)
-            markerRadius = prefs!!.radius
+            markerRadius = prefs.radius
         if (mMap != null && lastPos != null) {
             mMap!!.clear()
-            if (markerTitle == null || markerTitle!!.matches("".toRegex()))
+            if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
-            if (mListener != null) mListener!!.placeChanged(lastPos, markerTitle)
+            if (mListener != null) mListener!!.placeChanged(lastPos!!, markerTitle)
             if (!Module.isPro) markerStyle = 5
             mMap!!.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
-                    .icon(getDescriptor(themeUtil!!.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(true))
-            val marker = themeUtil!!.getMarkerRadiusStyle(markerStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             mMap!!.addCircle(CircleOptions()
                     .center(lastPos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil!!.getColor(marker.fillColor))
-                    .strokeColor(themeUtil!!.getColor(marker.strokeColor)))
-            animate(lastPos)
+                    .fillColor(themeUtil.getColor(marker.fillColor))
+                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
+            animate(lastPos!!)
         }
     }
 
-    fun recreateStyle(style: Int) {
+    private fun recreateStyle(style: Int) {
         markerStyle = style
         if (mMap != null && lastPos != null) {
             mMap!!.clear()
-            if (markerTitle == null || markerTitle!!.matches("".toRegex()))
+            if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
-            if (mListener != null) mListener!!.placeChanged(lastPos, markerTitle)
+            if (mListener != null) mListener!!.placeChanged(lastPos!!, markerTitle)
             if (!Module.isPro) markerStyle = 5
             mMap!!.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
-                    .icon(getDescriptor(themeUtil!!.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(true))
             if (markerStyle >= 0) {
-                val marker = themeUtil!!.getMarkerRadiusStyle(markerStyle)
+                val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
                 if (markerRadius == -1) {
-                    markerRadius = prefs!!.radius
+                    markerRadius = prefs.radius
                 }
                 mMap!!.addCircle(CircleOptions()
                         .center(lastPos)
                         .radius(markerRadius.toDouble())
                         .strokeWidth(strokeWidth)
-                        .fillColor(themeUtil!!.getColor(marker.fillColor))
-                        .strokeColor(themeUtil!!.getColor(marker.strokeColor)))
+                        .fillColor(themeUtil.getColor(marker.fillColor))
+                        .strokeColor(themeUtil.getColor(marker.strokeColor)))
             }
-            animate(lastPos)
+            animate(lastPos!!)
         }
     }
 
@@ -269,22 +251,22 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         }
     }
 
-    fun animate(latLng: LatLng) {
+    private fun animate(latLng: LatLng) {
         val update = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
         if (mMap != null) mMap!!.animateCamera(update)
     }
 
-    fun moveToMyLocation() {
-        if (!Permissions.checkPermission(context, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(context, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+    private fun moveToMyLocation() {
+        if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(activity!!, REQ_LOC, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
             return
         }
         if (mMap != null) {
-            val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
             val criteria = Criteria()
             var location: Location? = null
             try {
-                location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
+                location = locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false))
             } catch (e: IllegalArgumentException) {
                 LogUtil.e(TAG, "moveToMyLocation: ", e)
             }
@@ -307,17 +289,20 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     fun onBackPressed(): Boolean {
-        if (isLayersVisible) {
-            hideLayers()
-            return false
-        } else if (isMarkersVisible) {
-            hideStyles()
-            return false
-        } else if (isPlacesVisible) {
-            hidePlaces()
-            return false
-        } else {
-            return true
+        return when {
+            isLayersVisible -> {
+                hideLayers()
+                false
+            }
+            isMarkersVisible -> {
+                hideStyles()
+                false
+            }
+            isPlacesVisible -> {
+                hidePlaces()
+                false
+            }
+            else -> true
         }
     }
 
@@ -325,8 +310,8 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (context == null) {
             return
         }
-        if (!prefs!!.isShowcase(SHOWCASE) && isBack) {
-            prefs!!.setShowcase(SHOWCASE, true)
+        if (!prefs.isShowcase(SHOWCASE) && isBack) {
+            prefs.setShowcase(SHOWCASE, true)
         }
     }
 
@@ -340,20 +325,24 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             isBack = args.getBoolean(ENABLE_BACK, true)
             isZoom = args.getBoolean(ENABLE_ZOOM, true)
             isDark = args.getBoolean(THEME_MODE, false)
-            markerStyle = args.getInt(MARKER_STYLE, prefs!!.markerStyle)
+            markerStyle = args.getInt(MARKER_STYLE, prefs.markerStyle)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         initArgs()
-        binding = FragmentMapBinding.inflate(inflater, container, false)
-        markerRadius = prefs!!.radius
+        return inflater.inflate(R.layout.fragment_map, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        markerRadius = prefs.radius
         if (!Module.isPro) {
-            markerStyle = prefs!!.markerStyle
+            markerStyle = prefs.markerStyle
         }
-        isDark = themeUtil!!.isDark
-        setOnMapClickListener(onMapClickListener = { latLng ->
+        isDark = themeUtil.isDark
+        setOnMapClickListener(GoogleMap.OnMapClickListener { latLng ->
             hideLayers()
             hidePlaces()
             hideStyles()
@@ -362,13 +351,12 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             }
         })
 
-        binding!!.mapView.onCreate(savedInstanceState)
-        binding!!.mapView.getMapAsync(mMapCallback)
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(mMapCallback)
 
         initViews()
 
-        cardSearch = binding!!.cardSearch
-        cardSearch!!.setOnItemClickListener { parent, view1, position, id ->
+        cardSearch.setOnItemClickListener { _, _, position, _ ->
             val sel = cardSearch!!.getAddress(position)
             val lat = sel.latitude
             val lon = sel.longitude
@@ -378,17 +366,12 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
                 mListener!!.placeChanged(pos, getFormattedAddress(sel))
             }
         }
-        return binding!!.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         initPlacesViewModel()
     }
 
     private fun initPlacesViewModel() {
         val viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
-        viewModel.places.observe(this, { places ->
+        viewModel.places.observe(this, Observer{ places ->
             if (places != null && isPlaces) {
                 showPlaces(places)
             }
@@ -413,83 +396,61 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun initViews() {
-        groupOne = binding!!.groupOne
-        groupTwo = binding!!.groupTwo
-        groupThree = binding!!.groupThree
-        emptyItem = binding!!.emptyItem
+        placesList.layoutManager = LinearLayoutManager(context)
+        placesList.adapter = placeRecyclerAdapter
 
-        binding!!.placesList.layoutManager = LinearLayoutManager(context)
-        binding!!.placesList.adapter = placeRecyclerAdapter
+        placesListCard.visibility = View.GONE
+        styleCard.visibility = View.GONE
+        zoomCard.setCardBackgroundColor(themeUtil.cardStyle)
+        searchCard.setCardBackgroundColor(themeUtil.cardStyle)
+        myCard.setCardBackgroundColor(themeUtil.cardStyle)
+        layersCard.setCardBackgroundColor(themeUtil.cardStyle)
+        placesCard.setCardBackgroundColor(themeUtil.cardStyle)
+        styleCard.setCardBackgroundColor(themeUtil.cardStyle)
+        placesListCard.setCardBackgroundColor(themeUtil.cardStyle)
+        markersCard.setCardBackgroundColor(themeUtil.cardStyle)
+        backCard.setCardBackgroundColor(themeUtil.cardStyle)
 
-        val zoomCard = binding!!.zoomCard
-        val searchCard = binding!!.searchCard
-        val myCard = binding!!.myCard
-        val layersCard = binding!!.layersCard
-        val placesCard = binding!!.placesCard
-        val backCard = binding!!.backCard
-        styleCard = binding!!.styleCard
-        placesListCard = binding!!.placesListCard
-        val markersCard = binding!!.markersCard
-        placesListCard!!.visibility = View.GONE
-        styleCard!!.visibility = View.GONE
-        zoomCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        searchCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        myCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        layersCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        placesCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        styleCard!!.setCardBackgroundColor(themeUtil!!.cardStyle)
-        placesListCard!!.setCardBackgroundColor(themeUtil!!.cardStyle)
-        markersCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        backCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-
-        layersContainer = binding!!.layersContainer
-        layersContainer!!.visibility = View.GONE
-        layersContainer!!.setCardBackgroundColor(themeUtil!!.cardStyle)
+        layersContainer.visibility = View.GONE
+        layersContainer.setCardBackgroundColor(themeUtil.cardStyle)
 
         if (Module.isLollipop) {
             zoomCard.cardElevation = Configs.CARD_ELEVATION
             searchCard.cardElevation = Configs.CARD_ELEVATION
             myCard.cardElevation = Configs.CARD_ELEVATION
-            layersContainer!!.cardElevation = Configs.CARD_ELEVATION
+            layersContainer.cardElevation = Configs.CARD_ELEVATION
             layersCard.cardElevation = Configs.CARD_ELEVATION
             placesCard.cardElevation = Configs.CARD_ELEVATION
-            styleCard!!.cardElevation = Configs.CARD_ELEVATION
-            placesListCard!!.cardElevation = Configs.CARD_ELEVATION
+            styleCard.cardElevation = Configs.CARD_ELEVATION
+            placesListCard.cardElevation = Configs.CARD_ELEVATION
             markersCard.cardElevation = Configs.CARD_ELEVATION
             backCard.cardElevation = Configs.CARD_ELEVATION
         }
 
-        val style = themeUtil!!.cardStyle
+        val style = themeUtil.cardStyle
         zoomCard.setCardBackgroundColor(style)
         searchCard.setCardBackgroundColor(style)
         myCard.setCardBackgroundColor(style)
-        layersContainer!!.setCardBackgroundColor(style)
+        layersContainer.setCardBackgroundColor(style)
         layersCard.setCardBackgroundColor(style)
         placesCard.setCardBackgroundColor(style)
-        styleCard!!.setCardBackgroundColor(style)
-        placesListCard!!.setCardBackgroundColor(style)
+        styleCard.setCardBackgroundColor(style)
+        placesListCard.setCardBackgroundColor(style)
         markersCard.setCardBackgroundColor(style)
         backCard.setCardBackgroundColor(style)
 
-        val cardClear = binding!!.cardClear
-        zoomOut = binding!!.mapZoom
-        val layers = binding!!.layers
-        val myLocation = binding!!.myLocation
-        val markers = binding!!.markers
-        val backButton = binding!!.backButton
-
         cardClear.setOnClickListener(this)
-        zoomOut!!.setOnClickListener(this)
+        mapZoom.setOnClickListener(this)
         layers.setOnClickListener(this)
         myLocation.setOnClickListener(this)
         markers.setOnClickListener(this)
-        binding!!.places.setOnClickListener(this)
+        places.setOnClickListener(this)
         backButton.setOnClickListener(this)
 
-        binding!!.typeNormal.setOnClickListener(this)
-        binding!!.typeSatellite.setOnClickListener(this)
-        binding!!.typeHybrid.setOnClickListener(this)
-        binding!!.typeTerrain.setOnClickListener(this)
+        typeNormal.setOnClickListener(this)
+        typeSatellite.setOnClickListener(this)
+        typeHybrid.setOnClickListener(this)
+        typeTerrain.setOnClickListener(this)
 
         if (!isPlaces) {
             placesCard.visibility = View.GONE
@@ -510,13 +471,13 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun loadMarkers() {
-        groupOne!!.removeAllViewsInLayout()
-        groupTwo!!.removeAllViewsInLayout()
-        groupThree!!.removeAllViewsInLayout()
+        groupOne.removeAllViewsInLayout()
+        groupTwo.removeAllViewsInLayout()
+        groupThree.removeAllViewsInLayout()
         for (i in 0 until ThemeUtil.NUM_OF_MARKERS) {
             val ib = ImageButton(context)
             ib.setBackgroundResource(android.R.color.transparent)
-            ib.setImageResource(themeUtil!!.getMarkerStyle(i))
+            ib.setImageResource(themeUtil.getMarkerStyle(i))
             ib.id = i + ThemeUtil.NUM_OF_MARKERS
             ib.setOnClickListener(this)
             val params = LinearLayout.LayoutParams(
@@ -525,51 +486,51 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             val px = MeasureUtils.dp2px(context!!, 2)
             params.setMargins(px, px, px, px)
             ib.layoutParams = params
-            if (i < 5) {
-                groupOne!!.addView(ib)
-            } else if (i < 10) {
-                groupTwo!!.addView(ib)
-            } else {
-                groupThree!!.addView(ib)
+            when {
+                i < 5 -> groupOne.addView(ib)
+                i < 10 -> groupTwo.addView(ib)
+                else -> groupThree.addView(ib)
             }
         }
     }
 
     private fun setMyLocation() {
-        if (!Permissions.checkPermission(context, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+        if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
         } else {
             mMap!!.isMyLocationEnabled = true
         }
     }
 
-    private fun showPlaces(places: List<Place>?) {
-        placeRecyclerAdapter.actionsListener = { view, position, place, actions ->
-            when (actions) {
-                ListActions.OPEN, ListActions.MORE -> {
-                    hideLayers()
-                    hidePlaces()
-                    if (place != null) {
-                        addMarker(LatLng(place!!.latitude, place!!.longitude), markerTitle, true, true, markerRadius)
+    private fun showPlaces(places: List<Place>) {
+        placeRecyclerAdapter.actionsListener = object : ActionsListener<Place> {
+            override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
+                when (actions) {
+                    ListActions.OPEN, ListActions.MORE -> {
+                        hideLayers()
+                        hidePlaces()
+                        if (t != null) {
+                            addMarker(LatLng(t.latitude, t.longitude), markerTitle, true, true, markerRadius)
+                        }
                     }
                 }
             }
         }
         placeRecyclerAdapter.data = places
-        if (places!!.isEmpty()) {
-            binding!!.placesCard.visibility = View.GONE
-            binding!!.placesList.visibility = View.GONE
+        if (places.isEmpty()) {
+            placesCard.visibility = View.GONE
+            placesList.visibility = View.GONE
             emptyItem!!.visibility = View.VISIBLE
         } else {
             emptyItem!!.visibility = View.GONE
-            binding!!.placesCard.visibility = View.VISIBLE
-            binding!!.placesList.visibility = View.VISIBLE
+            placesCard.visibility = View.VISIBLE
+            placesList.visibility = View.VISIBLE
             addMarkers(places)
         }
     }
 
-    private fun addMarkers(list: List<Place>?) {
-        if (list != null && list.size > 0) {
+    private fun addMarkers(list: List<Place>) {
+        if (list.isNotEmpty()) {
             for (model in list) {
                 addMarker(LatLng(model.latitude, model.longitude), model.name, false,
                         model.marker, false, model.radius)
@@ -587,13 +548,13 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context, styleCard!!)
+            ViewUtils.slideInUp(context!!, styleCard!!)
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context, styleCard!!)
+            ViewUtils.slideOutDown(context!!, styleCard!!)
         }
     }
 
@@ -607,13 +568,13 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (isPlacesVisible) {
             hidePlaces()
         } else {
-            ViewUtils.slideInUp(context, placesListCard!!)
+            ViewUtils.slideInUp(context!!, placesListCard!!)
         }
     }
 
     private fun hidePlaces() {
         if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context, placesListCard!!)
+            ViewUtils.slideOutDown(context!!, placesListCard!!)
         }
     }
 
@@ -643,50 +604,40 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             mListener!!.onZoomClick(isFullscreen)
         }
         if (isFullscreen) {
-            if (isDark)
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
-            else
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
+            if (isDark) mapZoom.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
+            else mapZoom.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
         } else {
             restoreScaleButton()
         }
     }
 
     override fun onResume() {
-        binding!!.mapView.onResume()
+        mapView.onResume()
         super.onResume()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        if (binding != null) {
-            binding!!.mapView.onLowMemory()
-        }
+        mapView.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (binding != null) {
-            binding!!.mapView.onDestroy()
-        }
+        mapView.onDestroy()
     }
 
     override fun onPause() {
         super.onPause()
-        if (binding != null) {
-            binding!!.mapView.onPause()
-        }
+        mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        if (binding != null) {
-            binding!!.mapView.onStop()
-        }
+        mapView.onStop()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             REQ_LOC -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 moveToMyLocation()
@@ -729,26 +680,24 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun restoreScaleButton() {
-        if (isDark)
-            zoomOut!!.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
-        else
-            zoomOut!!.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
+        if (isDark) mapZoom.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
+        else mapZoom.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
     }
 
     companion object {
 
-        private val TAG = "AdvancedMapFragment"
-        private val SHOWCASE = "map_showcase"
-        private val REQ_LOC = 1245
+        private const val TAG = "AdvancedMapFragment"
+        private const val SHOWCASE = "map_showcase"
+        private const val REQ_LOC = 1245
 
-        val ENABLE_TOUCH = "enable_touch"
-        val ENABLE_PLACES = "enable_places"
-        val ENABLE_SEARCH = "enable_search"
-        val ENABLE_STYLES = "enable_styles"
-        val ENABLE_BACK = "enable_back"
-        val ENABLE_ZOOM = "enable_zoom"
-        val MARKER_STYLE = "marker_style"
-        val THEME_MODE = "theme_mode"
+        const val ENABLE_TOUCH = "enable_touch"
+        const val ENABLE_PLACES = "enable_places"
+        const val ENABLE_SEARCH = "enable_search"
+        const val ENABLE_STYLES = "enable_styles"
+        const val ENABLE_BACK = "enable_back"
+        const val ENABLE_ZOOM = "enable_zoom"
+        const val MARKER_STYLE = "marker_style"
+        const val THEME_MODE = "theme_mode"
 
         fun newInstance(isTouch: Boolean, isPlaces: Boolean,
                         isSearch: Boolean, isStyles: Boolean,

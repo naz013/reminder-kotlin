@@ -25,7 +25,7 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
+import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues

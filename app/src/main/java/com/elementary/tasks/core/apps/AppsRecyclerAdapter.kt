@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 
-import com.elementary.tasks.core.file_explorer.RecyclerClickListener
+import com.elementary.tasks.core.fileExplorer.RecyclerClickListener
 import com.elementary.tasks.databinding.ListItemApplicationBinding
 
 import java.util.ArrayList

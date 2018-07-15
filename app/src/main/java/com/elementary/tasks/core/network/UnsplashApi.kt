@@ -23,7 +23,6 @@ import retrofit2.http.GET
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 interface UnsplashApi {
 
     @get:GET("list")
@@ -31,6 +30,6 @@ interface UnsplashApi {
 
     companion object {
 
-        val BASE_URL = "https://unsplash.it"
+        const val BASE_URL = "https://unsplash.it"
     }
 }

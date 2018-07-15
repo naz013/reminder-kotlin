@@ -1,24 +1,19 @@
-package com.elementary.tasks.core.file_explorer
+package com.elementary.tasks.core.fileExplorer
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemFileLayoutBinding
-
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.list_item_file.view.*
 import java.io.File
-import java.util.ArrayList
-
-import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,42 +33,43 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class FileRecyclerAdapter internal constructor(private val mContext: Context, dataItemList: List<FileDataItem>, private val mListener: RecyclerClickListener?, private val mCallback: FilterCallback?) : RecyclerView.Adapter<FileRecyclerAdapter.ContactViewHolder>() {
-    private val mDataList: MutableList<FileDataItem>?
+class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactViewHolder>() {
 
-    init {
-        this.mDataList = ArrayList(dataItemList)
+    private val mDataList: MutableList<FileDataItem> = mutableListOf()
+    var filterCallback: ((Int) -> Unit)? = null
+    var clickListener: ((Int) -> Unit)? = null
+
+    fun setData(list: List<FileDataItem>) {
+        this.mDataList.clear()
+        this.mDataList.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        val inflater = LayoutInflater.from(mContext)
-        return ContactViewHolder(ListItemFileLayoutBinding.inflate(inflater, parent, false).root)
+        return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_file, parent, false))
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        val item = mDataList!![position]
-        holder.binding!!.item = item
+        holder.bind(mDataList[position])
     }
 
-    override fun getItemCount(): Int {
-        return mDataList?.size ?: 0
-    }
+    override fun getItemCount(): Int = mDataList.size
 
-    internal inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var binding: ListItemFileLayoutBinding? = null
+    inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(fileDataItem: FileDataItem) {
+            itemView.itemName.text = fileDataItem.fileName
+            loadImage(itemView.itemImage, fileDataItem)
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.setClick { view ->
-                mListener?.onItemClick(adapterPosition)
-            }
+            itemView.onClick { clickListener?.invoke(adapterPosition) }
         }
     }
 
     fun filter(q: String, list: List<FileDataItem>) {
         val res = filter(list, q)
         animateTo(res)
-        mCallback?.filter(res.size)
+        filterCallback?.invoke(res.size)
     }
 
     private fun filter(mData: List<FileDataItem>?, q: String): List<FileDataItem> {
@@ -102,34 +98,34 @@ class FileRecyclerAdapter internal constructor(private val mContext: Context, da
     }
 
     fun getItem(position: Int): FileDataItem {
-        return mDataList!![position]
+        return mDataList[position]
     }
 
-    fun removeItem(position: Int): FileDataItem {
-        val model = mDataList!!.removeAt(position)
+    private fun removeItem(position: Int): FileDataItem {
+        val model = mDataList.removeAt(position)
         notifyItemRemoved(position)
         return model
     }
 
-    fun addItem(position: Int, model: FileDataItem) {
-        mDataList!!.add(position, model)
+    private fun addItem(position: Int, model: FileDataItem) {
+        mDataList.add(position, model)
         notifyItemInserted(position)
     }
 
-    fun moveItem(fromPosition: Int, toPosition: Int) {
-        val model = mDataList!!.removeAt(fromPosition)
+    private fun moveItem(fromPosition: Int, toPosition: Int) {
+        val model = mDataList.removeAt(fromPosition)
         mDataList.add(toPosition, model)
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    fun animateTo(models: List<FileDataItem>) {
+    private fun animateTo(models: List<FileDataItem>) {
         applyAndAnimateRemovals(models)
         applyAndAnimateAdditions(models)
         applyAndAnimateMovedItems(models)
     }
 
     private fun applyAndAnimateRemovals(newModels: List<FileDataItem>) {
-        for (i in mDataList!!.indices.reversed()) {
+        for (i in mDataList.indices.reversed()) {
             val model = mDataList[i]
             if (!newModels.contains(model)) {
                 removeItem(i)
@@ -142,7 +138,7 @@ class FileRecyclerAdapter internal constructor(private val mContext: Context, da
         val count = newModels.size
         while (i < count) {
             val model = newModels[i]
-            if (!mDataList!!.contains(model)) {
+            if (!mDataList.contains(model)) {
                 addItem(i, model)
             }
             i++
@@ -152,7 +148,7 @@ class FileRecyclerAdapter internal constructor(private val mContext: Context, da
     private fun applyAndAnimateMovedItems(newModels: List<FileDataItem>) {
         for (toPosition in newModels.indices.reversed()) {
             val model = newModels[toPosition]
-            val fromPosition = mDataList!!.indexOf(model)
+            val fromPosition = mDataList.indexOf(model)
             if (fromPosition >= 0 && fromPosition != toPosition) {
                 moveItem(fromPosition, toPosition)
             }
@@ -161,12 +157,11 @@ class FileRecyclerAdapter internal constructor(private val mContext: Context, da
 
     companion object {
 
-        private val TAG = "FileRecyclerAdapter"
+        private const val TAG = "FileRecyclerAdapter"
 
-        @BindingAdapter("loadImage")
         fun loadImage(imageView: ImageView, item: FileDataItem) {
             val isDark = ThemeUtil.getInstance(imageView.context).isDark
-            if (item.filePath != null && isPicture(item.filePath)) {
+            if (item.filePath != "" && isPicture(item.filePath)) {
                 Glide.with(imageView.context)
                         .load(File(item.filePath))
                         .apply(RequestOptions.centerCropTransform())

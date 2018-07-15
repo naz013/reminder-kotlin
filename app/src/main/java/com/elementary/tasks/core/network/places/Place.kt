@@ -29,38 +29,38 @@ class Place {
     var geometry: Geometry? = null
     @SerializedName("icon")
     @Expose
-    var icon: String? = null
+    var icon: String = ""
     @SerializedName("id")
     @Expose
-    var id: String? = null
+    var id: String = ""
     @SerializedName("name")
     @Expose
-    var name: String? = null
+    var name: String = ""
     @SerializedName("opening_hours")
     @Expose
     var openingHours: OpeningHours? = null
     @SerializedName("photos")
     @Expose
-    var photos: List<Photo>? = null
+    var photos: List<Photo> = listOf()
     @SerializedName("place_id")
     @Expose
-    var placeId: String? = null
+    var placeId: String = ""
     @SerializedName("scope")
     @Expose
-    var scope: String? = null
+    var scope: String = ""
     @SerializedName("alt_ids")
     @Expose
-    var altIds: List<AltId>? = null
+    var altIds: List<AltId> = listOf()
     @SerializedName("reference")
     @Expose
-    var reference: String? = null
+    var reference: String = ""
     @SerializedName("types")
     @Expose
-    var types: List<String>? = null
+    var types: List<String> = listOf()
     @SerializedName("vicinity")
     @Expose
-    var vicinity: String? = null
+    var vicinity: String = ""
     @SerializedName("formatted_address")
     @Expose
-    var formattedAddress: String? = null
+    var formattedAddress: String = ""
 }

@@ -29,8 +29,7 @@ import com.elementary.tasks.core.utils.Prefs
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class LocationTracker(private val mContext: Context?, private val mCallback: Callback?) : LocationListener {
+class LocationTracker(private val mContext: Context?, private val mCallback: ((lat: Double, lng: Double) -> Unit)?) : LocationListener {
     private var mLocationManager: LocationManager? = null
 
     init {
@@ -40,7 +39,7 @@ class LocationTracker(private val mContext: Context?, private val mCallback: Cal
     override fun onLocationChanged(location: Location) {
         val latitude = location.latitude
         val longitude = location.longitude
-        mCallback?.onChange(latitude, longitude)
+        mCallback?.invoke(latitude, longitude)
     }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
@@ -76,9 +75,5 @@ class LocationTracker(private val mContext: Context?, private val mCallback: Cal
         } else {
             mLocationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, time, distance.toFloat(), this)
         }
-    }
-
-    interface Callback {
-        fun onChange(lat: Double, lon: Double)
     }
 }

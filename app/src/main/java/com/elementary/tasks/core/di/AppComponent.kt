@@ -7,6 +7,7 @@ import com.elementary.tasks.core.dialogs.BaseDialog
 import com.elementary.tasks.core.services.CallReceiver
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
+import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.ShoppingHolder
@@ -57,4 +58,5 @@ interface AppComponent {
 
     fun inject(adapter: SelectableTemplatesAdapter)
     fun inject(baseDialog: BaseDialog)
+    fun inject(googlePlacesAdapter: GooglePlacesAdapter)
 }
