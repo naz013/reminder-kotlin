@@ -28,7 +28,9 @@ class Text(text: String, fontSize: Float, textPaint: Paint) : Drawing {
 
     var text = ""
     private var fontSize = 32f
-    private val textPaint = Paint()
+        get
+        set
+    private var textPaint = Paint()
     override var x = 0f
     override var y = 0f
     var fontFamily: Int = 0
@@ -75,7 +77,7 @@ class Text(text: String, fontSize: Float, textPaint: Paint) : Drawing {
     }
 
     private fun drawText(canvas: Canvas, scale: Boolean) {
-        if (this.text.length <= 0) {
+        if (this.text.isEmpty()) {
             return
         }
         val textX = this.getTextX(scale)

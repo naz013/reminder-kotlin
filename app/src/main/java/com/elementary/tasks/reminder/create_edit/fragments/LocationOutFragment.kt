@@ -31,8 +31,6 @@ import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.google.android.gms.maps.model.LatLng
 
-import java.util.Collections
-
 /**
  * Copyright 2016 Nazar Suhovich
  *
@@ -98,16 +96,6 @@ class LocationOutFragment : RadiusTypeFragment() {
             }
             ViewUtils.fadeOutAnimation(binding!!.mapContainer)
             ViewUtils.fadeInAnimation(binding!!.specsContainer)
-        }
-    }
-    private val mLocationCallback = LocationTracker.Callback { lat, lon ->
-        lastPos = LatLng(lat, lon)
-        val _Location = SuperUtil.getAddress(lat, lon)
-        var text = `interface`!!.summary
-        if (TextUtils.isEmpty(text)) text = _Location
-        binding!!.currentLocation.text = _Location
-        if (advancedMapFragment != null) {
-            advancedMapFragment!!.addMarker(lastPos, text, true, true, radius)
         }
     }
 
@@ -233,7 +221,16 @@ class LocationOutFragment : RadiusTypeFragment() {
             if (binding!!.currentCheck.isChecked) {
                 binding!!.mapCheck.isChecked = false
                 if (Permissions.checkPermission(activity, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-                    mTracker = LocationTracker(context, mLocationCallback)
+                    mTracker = LocationTracker(context) { lat, lng ->
+                        lastPos = LatLng(lat, lng)
+                        val mLocation = SuperUtil.getAddress(lat, lng)
+                        var text = `interface`!!.summary
+                        if (TextUtils.isEmpty(text)) text = mLocation
+                        binding!!.currentLocation.text = mLocation
+                        if (advancedMapFragment != null) {
+                            advancedMapFragment!!.addMarker(lastPos, text, true, true, radius)
+                        }
+                    }
                 } else {
                     Permissions.requestPermission(activity, LOCATION, Permissions.ACCESS_FINE_LOCATION, Permissions.ACCESS_COARSE_LOCATION)
                 }

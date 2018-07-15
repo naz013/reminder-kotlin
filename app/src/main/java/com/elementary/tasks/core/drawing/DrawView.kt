@@ -1,29 +1,18 @@
 package com.elementary.tasks.core.drawing
 
 import android.content.Context
-import android.graphics.Bitmap
+import android.graphics.*
 import android.graphics.Bitmap.CompressFormat
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PathEffect
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.RectF
-import androidx.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-
+import androidx.annotation.ColorInt
 import com.elementary.tasks.core.interfaces.Observable
 import com.elementary.tasks.core.interfaces.Observer
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
-
 import java.io.ByteArrayOutputStream
-import java.util.ArrayList
+import java.util.*
 
 /*
   CanvasView.java
@@ -703,7 +692,7 @@ class DrawView : View, Observable {
      * @param opacity
      */
     fun setOpacity(opacity: Int, mode: Mode) {
-        if (opacity >= 0 && opacity <= 255) {
+        if (opacity in 0..255) {
             this.opacity = opacity
         } else {
             this.opacity = 255
@@ -736,7 +725,7 @@ class DrawView : View, Observable {
      */
     fun getFontSize(): Float {
         val drawing = current
-        return (drawing as? Text)?.fontSize ?: this.fontSize
+        return (drawing as? Text)?.getFontSize() ?: this.fontSize
     }
 
     /**
@@ -753,7 +742,7 @@ class DrawView : View, Observable {
         }
         val drawing = current
         if (drawing is Text) {
-            drawing.fontSize = this.fontSize
+            drawing.setFontSize(this.fontSize)
             this.invalidate()
         }
     }
@@ -799,9 +788,9 @@ class DrawView : View, Observable {
     fun addBitmap(bitmap: Bitmap) {
         this.currentItem = Image(bitmap)
         if (this.historyPointer == this.elements.size) {
-            this.elements.add(currentItem)
+            this.elements.add(currentItem!!)
         } else {
-            this.elements.add(historyPointer, currentItem)
+            this.elements.add(historyPointer, currentItem!!)
         }
         this.historyPointer++
         if (mCanvas != null) {

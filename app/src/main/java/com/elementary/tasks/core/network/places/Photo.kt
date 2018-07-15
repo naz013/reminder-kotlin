@@ -29,10 +29,10 @@ class Photo {
     var height: Long = 0
     @SerializedName("html_attributions")
     @Expose
-    var htmlAttributions: List<Any>? = null
+    var htmlAttributions: List<Any> = listOf()
     @SerializedName("photo_reference")
     @Expose
-    var photoReference: String? = null
+    var photoReference: String = ""
     @SerializedName("width")
     @Expose
     var width: Long = 0

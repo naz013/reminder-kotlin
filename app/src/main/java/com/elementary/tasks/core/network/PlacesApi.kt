@@ -25,7 +25,6 @@ import retrofit2.http.QueryMap
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 interface PlacesApi {
 
     @GET("nearbysearch/json?")
@@ -35,8 +34,8 @@ interface PlacesApi {
     fun getPlaces(@QueryMap params: Map<String, String>): Call<PlacesResponse>
 
     companion object {
-        val OK = 200
+        const val OK = 200
 
-        val BASE_URL = "https://maps.googleapis.com/maps/api/place/"
+        const val BASE_URL = "https://maps.googleapis.com/maps/api/place/"
     }
 }

@@ -18,9 +18,8 @@ package com.elementary.tasks.core.network
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 interface Api {
     companion object {
-        val OK = 200
+        const val OK = 200
     }
 }

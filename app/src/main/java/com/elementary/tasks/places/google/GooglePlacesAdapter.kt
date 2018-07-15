@@ -1,19 +1,15 @@
 package com.elementary.tasks.places.google
 
-import android.content.Context
-import androidx.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemSimpleTextAdvancedBinding
-
-import java.util.ArrayList
-
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_simple_text_advanced.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,26 +29,45 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GooglePlacesAdapter(context: Context, array: List<GooglePlaceItem>) : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>() {
+class GooglePlacesAdapter : RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>() {
 
-    private val array = ArrayList<GooglePlaceItem>()
+    private val array = mutableListOf<GooglePlaceItem>()
     private var mEventListener: SimpleListener? = null
     private val isDark: Boolean
 
     private val last: Int
         get() = itemCount - 1
 
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
     init {
-        this.array.addAll(array)
-        isDark = ThemeUtil.getInstance(context).isDark
+        ReminderApp.appComponent.inject(this)
+        isDark = themeUtil.isDark
+    }
+
+    fun setPlaces(list: List<GooglePlaceItem>) {
+        this.array.clear()
+        this.array.addAll(list)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-
-        var binding: ListItemSimpleTextAdvancedBinding? = null
+        fun bind(googlePlaceItem: GooglePlaceItem) {
+            itemView.text1.text = googlePlaceItem.name
+            itemView.text2.text = googlePlaceItem.address
+            itemView.placeIcon.setImageResource(getIcon(googlePlaceItem.types))
+            if (itemCount > 1 && adapterPosition == last) {
+                itemView.placeCheck.visibility = View.GONE
+                itemView.placeIcon.visibility = View.GONE
+                itemView.text2.text = ""
+            } else {
+                itemView.placeCheck.visibility = View.VISIBLE
+                itemView.placeIcon.visibility = View.VISIBLE
+            }
+        }
 
         init {
-            binding = DataBindingUtil.bind(v)
             v.setOnClickListener { view ->
                 if (itemCount > 1 && adapterPosition == last) {
                     for (item in array) item.isSelected = !item.isSelected
@@ -63,7 +78,7 @@ class GooglePlacesAdapter(context: Context, array: List<GooglePlaceItem>) : Recy
                     }
                 }
             }
-            binding!!.placeCheck.setOnClickListener { v1 ->
+            itemView.placeCheck.setOnClickListener {
                 val item = array[adapterPosition]
                 item.isSelected = !item.isSelected
                 notifyItemChanged(adapterPosition)
@@ -72,21 +87,11 @@ class GooglePlacesAdapter(context: Context, array: List<GooglePlaceItem>) : Recy
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemSimpleTextAdvancedBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_simple_text_advanced, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = array[position]
-        holder.binding!!.item = item
-        holder.binding!!.placeIcon.setImageResource(getIcon(item.types))
-        if (itemCount > 1 && position == last) {
-            holder.binding!!.placeCheck.visibility = View.GONE
-            holder.binding!!.placeIcon.visibility = View.GONE
-            holder.binding!!.text2.text = ""
-        } else {
-            holder.binding!!.placeCheck.visibility = View.VISIBLE
-            holder.binding!!.placeIcon.visibility = View.VISIBLE
-        }
+        holder.bind(array[position])
     }
 
     override fun getItemId(position: Int): Long {

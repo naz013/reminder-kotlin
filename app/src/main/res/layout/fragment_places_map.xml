@@ -10,7 +10,7 @@
         android:visibility="visible">
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+            android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -98,7 +98,7 @@
                     android:layout_marginTop="8dp">
 
                     <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/places"
+                        android:id="@+id/placesButton"
                         android:layout_width="@dimen/create_imagebutton_size"
                         android:layout_height="@dimen/create_imagebutton_size"
                         android:background="?attr/selectableItemBackgroundBorderless"

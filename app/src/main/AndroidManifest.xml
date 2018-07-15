@@ -115,7 +115,7 @@
         <activity android:name=".core.additional.QuickSmsActivity" />
         <activity android:name=".core.additional.FollowReminderActivity" />
         <activity
-            android:name=".core.file_explorer.FileExplorerActivity"
+            android:name=".core.fileExplorer.FileExplorerActivity"
             android:configChanges="keyboardHidden" />
         <activity
             android:name=".groups.CreateGroupActivity"

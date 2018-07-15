@@ -1,158 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:paddingBottom="50dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageButton
-                    android:id="@+id/clearButton"
-                    style="@style/Widget.AppCompat.ActionButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:contentDescription="@string/acc_clear_search_field"
-                    app:srcCompat="@drawable/ic_clear_white_24dp" />
-
-                <com.elementary.tasks.core.views.roboto.RoboEditText
-                    android:id="@+id/searchField"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/clearButton"
-                    android:layout_toStartOf="@+id/clearButton"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/type_to_search"
-                    android:paddingEnd="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingStart="8dp"
-                    android:textColor="@color/whitePrimary"
-                    android:textColorHint="@color/whitePrimary"
-                    app:edit_font_style="roboto_light" />
-
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingBottom="50dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-42dp">
+            android:layout_height="wrap_content">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mDataList"
+            <ImageButton
+                android:id="@+id/clearButton"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/acc_clear_search_field"
+                app:srcCompat="@drawable/ic_clear_white_24dp" />
+
+            <com.elementary.tasks.core.views.roboto.RoboEditText
+                android:id="@+id/searchField"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/playerLayout"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_height="56dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/clearButton"
+                android:layout_toStartOf="@+id/clearButton"
+                android:background="@android:color/transparent"
+                android:hint="@string/type_to_search"
+                android:paddingEnd="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingStart="8dp"
+                android:textColor="@color/whitePrimary"
+                android:textColorHint="@color/whitePrimary"
+                app:edit_font_style="roboto_light" />
 
-            <LinearLayout
-                android:id="@+id/playerLayout"
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-42dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/playerLayout"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" />
+
+        <LinearLayout
+            android:id="@+id/playerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-22dp"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-22dp"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp">
+                    android:orientation="vertical">
+
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/currentMelody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:maxLines="1"
+                        android:text="Melody"
+                        android:textSize="18sp"
+                        app:font_style="roboto_regular" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/currentMelody"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <com.elementary.tasks.core.views.ThemedImageButton
+                            android:id="@+id/playButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:contentDescription="@string/acc_play"
+                            app:tb_icon="@drawable/ic_play_arrow_black_24dp"
+                            app:tb_icon_light="@drawable/ic_play_arrow_white_24dp" />
+
+                        <com.elementary.tasks.core.views.ThemedImageButton
+                            android:id="@+id/pauseButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginTop="8dp"
-                            android:maxLines="1"
-                            android:text="Melody"
-                            android:textSize="18sp"
-                            app:font_style="roboto_regular" />
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/acc_pause"
+                            app:tb_icon="@drawable/ic_pause_black_24dp"
+                            app:tb_icon_light="@drawable/ic_pause_white_24dp" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
+                        <com.elementary.tasks.core.views.ThemedImageButton
+                            android:id="@+id/stopButton"
+                            style="@style/Widget.AppCompat.ActionButton"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginTop="8dp"
-                            android:orientation="horizontal">
+                            android:layout_marginStart="8dp"
+                            android:contentDescription="@string/acc_stop"
+                            app:tb_icon="@drawable/ic_stop_black_24dp"
+                            app:tb_icon_light="@drawable/ic_stop_white_24dp" />
 
-                            <com.elementary.tasks.core.views.ThemedImageButton
-                                android:id="@+id/playButton"
-                                style="@style/Widget.AppCompat.ActionButton"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:contentDescription="@string/acc_play"
-                                app:tb_icon="@drawable/ic_play_arrow_black_24dp"
-                                app:tb_icon_light="@drawable/ic_play_arrow_white_24dp" />
-
-                            <com.elementary.tasks.core.views.ThemedImageButton
-                                android:id="@+id/pauseButton"
-                                style="@style/Widget.AppCompat.ActionButton"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:contentDescription="@string/acc_pause"
-                                app:tb_icon="@drawable/ic_pause_black_24dp"
-                                app:tb_icon_light="@drawable/ic_pause_white_24dp" />
-
-                            <com.elementary.tasks.core.views.ThemedImageButton
-                                android:id="@+id/stopButton"
-                                style="@style/Widget.AppCompat.ActionButton"
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:contentDescription="@string/acc_stop"
-                                app:tb_icon="@drawable/ic_stop_black_24dp"
-                                app:tb_icon_light="@drawable/ic_stop_white_24dp" />
-
-                        </LinearLayout>
                     </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_marginRight="@dimen/fab_margin"
-                    android:layout_marginTop="-36dp"
-                    android:contentDescription="@string/acc_select_melody"
-                    app:srcCompat="@drawable/ic_done_white_24dp" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="@dimen/fab_margin"
+                android:layout_marginRight="@dimen/fab_margin"
+                android:layout_marginTop="-36dp"
+                android:contentDescription="@string/acc_select_melody"
+                app:srcCompat="@drawable/ic_done_white_24dp" />
 
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-</layout>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

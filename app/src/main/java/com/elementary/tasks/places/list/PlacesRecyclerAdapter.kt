@@ -4,17 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemPlaceBinding
-
-import java.util.ArrayList
-import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_place.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHolder>() {
 
-    private val mData = ArrayList<Place>()
+    private val mData = mutableListOf<Place>()
     var actionsListener: ActionsListener<Place>? = null
 
     var data: List<Place>
@@ -52,10 +48,12 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        internal var binding: ListItemPlaceBinding? = null
+        fun bind(item: Place) {
+            itemView.textView.text = item.name
+            loadMarker(itemView.markerImage, item.marker)
+        }
 
         init {
-            binding = DataBindingUtil.bind(v)
             v.setOnClickListener { view ->
                 if (actionsListener != null) {
                     actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
@@ -75,16 +73,14 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_place, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding!!.item = getItem(position)
+        holder.bind(getItem(position))
     }
 
     companion object {
-
-        @BindingAdapter("loadMarker")
         fun loadMarker(view: ImageView, color: Int) {
             view.setImageResource(ThemeUtil.getInstance(view.context).getMarkerStyle(color))
         }

@@ -5,20 +5,13 @@ import android.content.Intent
 import android.location.Location
 import android.os.IBinder
 import android.text.TextUtils
-
+import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.location.LocationTracker
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-
-import androidx.core.app.NotificationCompat
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,13 +38,6 @@ class GeolocationService : Service() {
     private var isNotificationEnabled: Boolean = false
     private var stockRadius: Int = 0
 
-    private val mLocationCallback = { lat, lon ->
-        val locationA = Location("point A")
-        locationA.latitude = lat
-        locationA.longitude = lon
-        checkReminders(locationA)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         if (mTracker != null) mTracker!!.removeUpdates()
@@ -67,7 +53,12 @@ class GeolocationService : Service() {
         LogUtil.d(TAG, "geo service started")
         isNotificationEnabled = Prefs.getInstance(applicationContext).isDistanceNotificationEnabled
         stockRadius = Prefs.getInstance(applicationContext).radius
-        mTracker = LocationTracker(applicationContext, mLocationCallback)
+        mTracker = LocationTracker(applicationContext) { lat, lng ->
+            val locationA = Location("point A")
+            locationA.latitude = lat
+            locationA.longitude = lng
+            checkReminders(locationA)
+        }
         showDefaultNotification()
         return Service.START_STICKY
     }
@@ -92,12 +83,10 @@ class GeolocationService : Service() {
 
     private fun selectBranch(locationA: Location, reminder: Reminder) {
         if (reminder.isNotificationShown) return
-        if (Reminder.isBase(reminder.type, Reminder.BY_OUT)) {
-            checkOut(locationA, reminder)
-        } else if (Reminder.isBase(reminder.type, Reminder.BY_PLACES)) {
-            checkPlaces(locationA, reminder)
-        } else {
-            checkSimple(locationA, reminder)
+        when {
+            Reminder.isBase(reminder.type, Reminder.BY_OUT) -> checkOut(locationA, reminder)
+            Reminder.isBase(reminder.type, Reminder.BY_PLACES) -> checkPlaces(locationA, reminder)
+            else -> checkSimple(locationA, reminder)
         }
     }
 
@@ -152,14 +141,16 @@ class GeolocationService : Service() {
             }
         } else {
             if (roundedDistance < getRadius(place.radius)) {
-                AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder.setLocked(true))
+                reminder.isLocked = true
+                AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
             }
         }
     }
 
     private fun showReminder(reminder: Reminder) {
         if (reminder.isNotificationShown) return
-        AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder.setNotificationShown(true))
+        reminder.isNotificationShown = true
+        AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
         application.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uniqueId))
     }
 
@@ -197,7 +188,7 @@ class GeolocationService : Service() {
 
     companion object {
 
-        private val TAG = "GeolocationService"
-        val NOTIFICATION_ID = 1245
+        private const val TAG = "GeolocationService"
+        const val NOTIFICATION_ID = 1245
     }
 }

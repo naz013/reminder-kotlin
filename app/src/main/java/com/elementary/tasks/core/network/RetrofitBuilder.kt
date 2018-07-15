@@ -40,7 +40,7 @@ object RetrofitBuilder {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
             }
-            return retrofit
+            return retrofit!!
         }
 
     private val placesBuilder: Retrofit
@@ -52,12 +52,12 @@ object RetrofitBuilder {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
             }
-            return retrofitPlaces
+            return retrofitPlaces!!
         }
 
-    val unsplashApi = retrofitBuilder.create(UnsplashApi::class.java)
+    val unsplashApi: UnsplashApi = retrofitBuilder.create(UnsplashApi::class.java)
 
-    val placesApi = placesBuilder.create(PlacesApi::class.java)
+    val placesApi: PlacesApi = placesBuilder.create(PlacesApi::class.java)
 
     private val client: OkHttpClient
         get() {

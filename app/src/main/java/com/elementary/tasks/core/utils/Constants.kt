@@ -20,19 +20,6 @@ package com.elementary.tasks.core.utils
  */
 class Constants private constructor() {
 
-    object Contacts {
-        val COLUMN_ID = "_id"
-        val COLUMN_CONTACT_ID = "contact_id"
-        val COLUMN_NAME = "display_name"
-        val COLUMN_NUMBER = "phone_number"
-        val COLUMN_CONTACT_MAIL = "e_mail"
-        val COLUMN_BIRTHDATE = "birthday"
-        val COLUMN_UUID = "photo_id"
-        val COLUMN_DAY = "day"
-        val COLUMN_VAR = "var"
-        val COLUMN_MONTH = "month"
-    }
-
     companion object {
 
         val MAP_NORMAL = 1
@@ -73,22 +60,5 @@ class Constants private constructor() {
         val ORDER_NAME_Z_A = "name_za"
 
         val WEB_URL = "http://future-graph-651.appspot.com/"
-
-        val COLUMN_ID = "_id"
-        val COLUMN_TEXT = "task_text"
-        val COLUMN_FEATURE_TIME = "tech_int"
-        val COLUMN_DELAY = "tech_lint"
-        val COLUMN_TECH_VAR = "tech_var"
-        val COLUMN_DATE_TIME = "var"
-        val COLUMN_CATEGORY = "var2"
-
-        val COLUMN_NOTE = "note"
-        val COLUMN_COLOR = "color"
-        val COLUMN_IMAGE = "image"
-        val COLUMN_FONT_STYLE = "font_style"
-        val COLUMN_FONT_COLOR = "font_color"
-        val COLUMN_FONT_SIZE = "font_size"
-        val COLUMN_FONT_UNDERLINED = "font_underlined"
-        val COLUMN_LINK_ID = "font_crossed"
     }
 }

@@ -12,44 +12,31 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
-
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.network.Api
 import com.elementary.tasks.core.network.places.PlacesResponse
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.views.ThemedImageButton
-import com.elementary.tasks.core.views.roboto.RoboEditText
-import com.elementary.tasks.databinding.FragmentPlacesMapBinding
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.places.google.GooglePlaceItem
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.PlaceParser
 import com.elementary.tasks.places.google.RequestBuilder
-import com.elementary.tasks.core.data.models.Place
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-
-import java.util.ArrayList
-
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_places_map.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -71,20 +58,9 @@ import retrofit2.Response
  */
 class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
 
-    private var binding: FragmentPlacesMapBinding? = null
     private var mMap: GoogleMap? = null
-    private var layersContainer: CardView? = null
-    private var styleCard: CardView? = null
-    private var placesListCard: CardView? = null
-    private var cardSearch: RoboEditText? = null
-    private var zoomOut: ThemedImageButton? = null
-    private var markers: ThemedImageButton? = null
-    private var groupOne: LinearLayout? = null
-    private var groupTwo: LinearLayout? = null
-    private var groupThree: LinearLayout? = null
-    private var emptyItem: LinearLayout? = null
 
-    private var spinnerArray: MutableList<GooglePlaceItem>? = ArrayList()
+    private var spinnerArray: MutableList<GooglePlaceItem> = mutableListOf()
 
     private var isZoom = true
     private var isFullscreen = false
@@ -107,7 +83,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         mMap!!.uiSettings.isCompassEnabled = true
         setStyle(mMap!!)
         setMyLocation()
-        mMap!!.setOnMapClickListener { latLng ->
+        mMap!!.setOnMapClickListener {
             hideLayers()
             hidePlaces()
             hideStyles()
@@ -115,10 +91,6 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (mCallback != null) {
             mCallback!!.onMapReady()
         }
-    }
-    private val mTrackerCallback = { lat, lon ->
-        mLat = lat
-        mLng = lon
     }
     private val mSearchCallback = object : Callback<PlacesResponse> {
         override fun onResponse(call: Call<PlacesResponse>, response: Response<PlacesResponse>) {
@@ -128,7 +100,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
                     places.add(PlaceParser.getDetails(place))
                 }
                 spinnerArray = places
-                if (spinnerArray!!.size == 0) {
+                if (spinnerArray.size == 0) {
                     Toast.makeText(context, SuperUtil.getString(this@PlacesMapFragment, R.string.no_places_found), Toast.LENGTH_SHORT).show()
                 }
                 addSelectAllItem()
@@ -146,8 +118,8 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     val places: List<Place>
         get() {
             val places = ArrayList<Place>()
-            if (spinnerArray != null && spinnerArray!!.size > 0) {
-                for (model in spinnerArray!!) {
+            if (spinnerArray.size > 0) {
+                for (model in spinnerArray) {
                     if (model.isSelected) {
                         if (model.position != null) {
                             places.add(Place(mRadius, markerStyle, model.position!!.latitude,
@@ -160,13 +132,13 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         }
 
     private val isMarkersVisible: Boolean
-        get() = styleCard != null && styleCard!!.visibility == View.VISIBLE
+        get() = styleCard.visibility == View.VISIBLE
 
     private val isPlacesVisible: Boolean
-        get() = placesListCard != null && placesListCard!!.visibility == View.VISIBLE
+        get() = placesListCard.visibility == View.VISIBLE
 
     private val isLayersVisible: Boolean
-        get() = layersContainer != null && layersContainer!!.visibility == View.VISIBLE
+        get() = layersContainer.visibility == View.VISIBLE
 
     fun setListener(listener: MapListener) {
         this.mMapListener = listener
@@ -190,7 +162,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
             if (pos.latitude == 0.0 && pos.longitude == 0.0) return
             mRadius = radius
             if (mRadius == -1) {
-                mRadius = prefs!!.radius
+                mRadius = prefs.radius
             }
             if (clear) {
                 mMap!!.clear()
@@ -201,16 +173,16 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
             mMap!!.addMarker(MarkerOptions()
                     .position(pos)
                     .title(title)
-                    .icon(getDescriptor(themeUtil!!.getMarkerStyle(markerStyle)))
+                    .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
-            val marker = themeUtil!!.getMarkerRadiusStyle(markerStyle)
+            val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
             val strokeWidth = 3f
             mMap!!.addCircle(CircleOptions()
                     .center(pos)
                     .radius(mRadius.toDouble())
                     .strokeWidth(strokeWidth)
-                    .fillColor(themeUtil!!.getColor(marker.fillColor))
-                    .strokeColor(themeUtil!!.getColor(marker.strokeColor)))
+                    .fillColor(themeUtil.getColor(marker.fillColor))
+                    .strokeColor(themeUtil.getColor(marker.strokeColor)))
             if (animate) {
                 animate(pos)
             }
@@ -220,7 +192,7 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     fun recreateMarker(radius: Int) {
         mRadius = radius
         if (mRadius == -1) {
-            mRadius = prefs!!.radius
+            mRadius = prefs.radius
         }
         if (mMap != null) {
             addMarkers()
@@ -235,8 +207,8 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun addSelectAllItem() {
-        if (spinnerArray != null && spinnerArray!!.size > 1) {
-            spinnerArray!!.add(GooglePlaceItem(SuperUtil.getString(this@PlacesMapFragment, R.string.add_all), null, null, null, null, null, false))
+        if (spinnerArray.size > 1) {
+            spinnerArray.add(GooglePlaceItem(SuperUtil.getString(this@PlacesMapFragment, R.string.add_all), "", "", "", null, listOf(), false))
         }
     }
 
@@ -254,17 +226,20 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     fun onBackPressed(): Boolean {
-        if (isLayersVisible) {
-            hideLayers()
-            return false
-        } else if (isMarkersVisible) {
-            hideStyles()
-            return false
-        } else if (isPlacesVisible) {
-            hidePlaces()
-            return false
-        } else {
-            return true
+        return when {
+            isLayersVisible -> {
+                hideLayers()
+                false
+            }
+            isMarkersVisible -> {
+                hideStyles()
+                false
+            }
+            isPlacesVisible -> {
+                hidePlaces()
+                false
+            }
+            else -> true
         }
     }
 
@@ -273,103 +248,87 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (args != null) {
             isZoom = args.getBoolean(ENABLE_ZOOM, true)
             isDark = args.getBoolean(THEME_MODE, false)
-            markerStyle = args.getInt(MARKER_STYLE, prefs!!.markerStyle)
+            markerStyle = args.getInt(MARKER_STYLE, prefs.markerStyle)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         initArgs()
-        binding = FragmentPlacesMapBinding.inflate(inflater, container, false)
-        mRadius = prefs!!.radius
-        isDark = themeUtil!!.isDark
+        return inflater.inflate(R.layout.fragment_places_map, container, false)
+    }
 
-        binding!!.mapView.onCreate(savedInstanceState)
-        binding!!.mapView.getMapAsync(mMapCallback)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mRadius = prefs.radius
+        isDark = themeUtil.isDark
+
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(mMapCallback)
 
         initViews()
-        cardSearch = binding!!.cardSearch
-        cardSearch!!.setHint(R.string.search_place)
-        cardSearch!!.setOnEditorActionListener { textView, actionId, event ->
+        cardSearch.setHint(R.string.search_place)
+        cardSearch.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 hideKeyboard()
                 loadPlaces()
-                return@cardSearch.setOnEditorActionListener true
+                return@setOnEditorActionListener true
             }
             false
         }
-        return binding!!.root
     }
 
     private fun initViews() {
-        groupOne = binding!!.groupOne
-        groupTwo = binding!!.groupTwo
-        groupThree = binding!!.groupThree
-        emptyItem = binding!!.emptyItem
-        binding!!.placesList.layoutManager = LinearLayoutManager(context)
+        placesList.layoutManager = LinearLayoutManager(context)
 
-        val zoomCard = binding!!.zoomCard
-        val searchCard = binding!!.searchCard
-        val layersCard = binding!!.layersCard
-        val placesCard = binding!!.placesCard
-        val backCard = binding!!.backCard
-        styleCard = binding!!.styleCard
-        placesListCard = binding!!.placesListCard
-        val markersCard = binding!!.markersCard
-        placesListCard!!.visibility = View.GONE
-        styleCard!!.visibility = View.GONE
+        placesListCard.visibility = View.GONE
+        styleCard.visibility = View.GONE
 
-        zoomCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        searchCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        layersCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        placesCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        styleCard!!.setCardBackgroundColor(themeUtil!!.cardStyle)
-        placesListCard!!.setCardBackgroundColor(themeUtil!!.cardStyle)
-        markersCard.setCardBackgroundColor(themeUtil!!.cardStyle)
-        backCard.setCardBackgroundColor(themeUtil!!.cardStyle)
+        zoomCard.setCardBackgroundColor(themeUtil.cardStyle)
+        searchCard.setCardBackgroundColor(themeUtil.cardStyle)
+        layersCard.setCardBackgroundColor(themeUtil.cardStyle)
+        placesCard.setCardBackgroundColor(themeUtil.cardStyle)
+        styleCard.setCardBackgroundColor(themeUtil.cardStyle)
+        placesListCard.setCardBackgroundColor(themeUtil.cardStyle)
+        markersCard.setCardBackgroundColor(themeUtil.cardStyle)
+        backCard.setCardBackgroundColor(themeUtil.cardStyle)
 
-        layersContainer = binding!!.layersContainer
-        layersContainer!!.visibility = View.GONE
-        layersContainer!!.setCardBackgroundColor(themeUtil!!.cardStyle)
+        layersContainer.visibility = View.GONE
+        layersContainer.setCardBackgroundColor(themeUtil.cardStyle)
 
         if (Module.isLollipop) {
             zoomCard.cardElevation = Configs.CARD_ELEVATION
             searchCard.cardElevation = Configs.CARD_ELEVATION
-            layersContainer!!.cardElevation = Configs.CARD_ELEVATION
+            layersContainer.cardElevation = Configs.CARD_ELEVATION
             layersCard.cardElevation = Configs.CARD_ELEVATION
             placesCard.cardElevation = Configs.CARD_ELEVATION
-            styleCard!!.cardElevation = Configs.CARD_ELEVATION
-            placesListCard!!.cardElevation = Configs.CARD_ELEVATION
+            styleCard.cardElevation = Configs.CARD_ELEVATION
+            placesListCard.cardElevation = Configs.CARD_ELEVATION
             markersCard.cardElevation = Configs.CARD_ELEVATION
             backCard.cardElevation = Configs.CARD_ELEVATION
         }
 
-        val style = themeUtil!!.cardStyle
+        val style = themeUtil.cardStyle
         zoomCard.setCardBackgroundColor(style)
         searchCard.setCardBackgroundColor(style)
-        layersContainer!!.setCardBackgroundColor(style)
+        layersContainer.setCardBackgroundColor(style)
         layersCard.setCardBackgroundColor(style)
         placesCard.setCardBackgroundColor(style)
-        styleCard!!.setCardBackgroundColor(style)
-        placesListCard!!.setCardBackgroundColor(style)
+        styleCard.setCardBackgroundColor(style)
+        placesListCard.setCardBackgroundColor(style)
         markersCard.setCardBackgroundColor(style)
         backCard.setCardBackgroundColor(style)
 
-        val cardClear = binding!!.cardClear
-        zoomOut = binding!!.mapZoom
-        val layers = binding!!.layers
-        markers = binding!!.markers
-
         cardClear.setOnClickListener(this)
-        zoomOut!!.setOnClickListener(this)
+        mapZoom.setOnClickListener(this)
         layers.setOnClickListener(this)
-        markers!!.setOnClickListener(this)
-        binding!!.places.setOnClickListener(this)
+        markers.setOnClickListener(this)
+        placesButton.setOnClickListener(this)
 
-        binding!!.typeNormal.setOnClickListener(this)
-        binding!!.typeSatellite.setOnClickListener(this)
-        binding!!.typeHybrid.setOnClickListener(this)
-        binding!!.typeTerrain.setOnClickListener(this)
+        typeNormal.setOnClickListener(this)
+        typeSatellite.setOnClickListener(this)
+        typeHybrid.setOnClickListener(this)
+        typeTerrain.setOnClickListener(this)
 
         backCard.visibility = View.GONE
         if (!Module.isPro) {
@@ -382,18 +341,18 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun hideKeyboard() {
-        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         imm?.hideSoftInputFromWindow(cardSearch!!.windowToken, 0)
     }
 
     private fun loadMarkers() {
-        groupOne!!.removeAllViewsInLayout()
-        groupTwo!!.removeAllViewsInLayout()
-        groupThree!!.removeAllViewsInLayout()
+        groupOne.removeAllViewsInLayout()
+        groupTwo.removeAllViewsInLayout()
+        groupThree.removeAllViewsInLayout()
         for (i in 0 until ThemeUtil.NUM_OF_MARKERS) {
             val ib = ImageButton(context)
             ib.setBackgroundResource(android.R.color.transparent)
-            ib.setImageResource(themeUtil!!.getMarkerStyle(i))
+            ib.setImageResource(themeUtil.getMarkerStyle(i))
             ib.id = i + ThemeUtil.NUM_OF_MARKERS
             ib.setOnClickListener(this)
             val params = LinearLayout.LayoutParams(
@@ -402,19 +361,17 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
             val px = MeasureUtils.dp2px(context!!, 2)
             params.setMargins(px, px, px, px)
             ib.layoutParams = params
-            if (i < 5) {
-                groupOne!!.addView(ib)
-            } else if (i < 10) {
-                groupTwo!!.addView(ib)
-            } else {
-                groupThree!!.addView(ib)
+            when {
+                i < 5 -> groupOne.addView(ib)
+                i < 10 -> groupTwo.addView(ib)
+                else -> groupThree.addView(ib)
             }
         }
     }
 
     private fun setMyLocation() {
-        if (!Permissions.checkPermission(context, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
-            Permissions.requestPermission(context, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
+        if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
+            Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
         } else {
             mMap!!.isMyLocationEnabled = true
         }
@@ -438,35 +395,36 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     private fun refreshAdapter(show: Boolean) {
-        val placesAdapter = GooglePlacesAdapter(context, spinnerArray)
+        val placesAdapter = GooglePlacesAdapter()
+        placesAdapter.setPlaces(spinnerArray)
         placesAdapter.setEventListener(object : SimpleListener {
             override fun onItemClicked(position: Int, view: View) {
                 hideLayers()
                 hidePlaces()
-                animate(spinnerArray!![position].position)
+                animate(spinnerArray[position].position)
             }
 
             override fun onItemLongClicked(position: Int, view: View) {
 
             }
         })
-        if (spinnerArray != null && spinnerArray!!.size > 0) {
-            emptyItem!!.visibility = View.GONE
-            binding!!.placesList.visibility = View.VISIBLE
-            binding!!.placesList.adapter = placesAdapter
+        if (spinnerArray.size > 0) {
+            emptyItem.visibility = View.GONE
+            placesList.visibility = View.VISIBLE
+            placesList.adapter = placesAdapter
             addMarkers()
-            if (!isPlacesVisible && show) ViewUtils.slideInUp(context, placesListCard!!)
+            if (!isPlacesVisible && show) ViewUtils.slideInUp(context!!, placesListCard!!)
         } else {
-            binding!!.placesList.visibility = View.GONE
-            emptyItem!!.visibility = View.VISIBLE
+            placesList.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
         }
     }
 
     private fun toModels(list: List<Place>?, select: Boolean) {
         spinnerArray = ArrayList()
-        if (list != null && list.size > 0) {
+        if (list != null && list.isNotEmpty()) {
             for (model in list) {
-                spinnerArray!!.add(GooglePlaceItem(model.name, model.id, null, model.address, LatLng(model.latitude,
+                spinnerArray.add(GooglePlaceItem(model.name, model.id, "", model.address, LatLng(model.latitude,
                         model.longitude), model.tags, select))
             }
         }
@@ -474,8 +432,8 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
 
     private fun addMarkers() {
         mMap!!.clear()
-        if (spinnerArray != null && spinnerArray!!.size > 0) {
-            for (model in spinnerArray!!) {
+        if (spinnerArray.size > 0) {
+            for (model in spinnerArray) {
                 addMarker(model.position, model.name, false, false, mRadius)
             }
         }
@@ -491,13 +449,13 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (isMarkersVisible) {
             hideStyles()
         } else {
-            ViewUtils.slideInUp(context, styleCard!!)
+            ViewUtils.slideInUp(context!!, styleCard!!)
         }
     }
 
     private fun hideStyles() {
         if (isMarkersVisible) {
-            ViewUtils.slideOutDown(context, styleCard!!)
+            ViewUtils.slideOutDown(context!!, styleCard!!)
         }
     }
 
@@ -511,13 +469,13 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (isPlacesVisible) {
             hidePlaces()
         } else {
-            ViewUtils.slideInUp(context, placesListCard!!)
+            ViewUtils.slideInUp(context!!, placesListCard!!)
         }
     }
 
     private fun hidePlaces() {
         if (isPlacesVisible) {
-            ViewUtils.slideOutDown(context, placesListCard!!)
+            ViewUtils.slideOutDown(context!!, placesListCard!!)
         }
     }
 
@@ -531,13 +489,13 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         if (isLayersVisible) {
             hideLayers()
         } else {
-            ViewUtils.showOver(layersContainer!!)
+            ViewUtils.showOver(layersContainer)
         }
     }
 
     private fun hideLayers() {
         if (isLayersVisible) {
-            ViewUtils.hideOver(layersContainer!!)
+            ViewUtils.hideOver(layersContainer)
         }
     }
 
@@ -548,60 +506,55 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
         }
         if (isFullscreen) {
             if (isDark)
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
+                mapZoom.setImageResource(R.drawable.ic_arrow_downward_white_24dp)
             else
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
+                mapZoom.setImageResource(R.drawable.ic_arrow_downward_black_24dp)
         } else {
             if (isDark)
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
+                mapZoom.setImageResource(R.drawable.ic_arrow_upward_white_24dp)
             else
-                zoomOut!!.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
+                mapZoom.setImageResource(R.drawable.ic_arrow_upward_black_24dp)
         }
     }
 
     override fun onResume() {
-        binding!!.mapView.onResume()
+        mapView.onResume()
         super.onResume()
         startTracking()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        if (binding != null) {
-            binding!!.mapView.onLowMemory()
-        }
+        mapView.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (binding != null) {
-            binding!!.mapView.onDestroy()
-        }
+        mapView.onDestroy()
         cancelTracking()
     }
 
     override fun onPause() {
         super.onPause()
-        if (binding != null) {
-            binding!!.mapView.onPause()
-        }
+        mapView.onPause()
         cancelTracking()
     }
 
     override fun onStop() {
         super.onStop()
-        if (binding != null) {
-            binding!!.mapView.onStop()
-        }
+        mapView.onStop()
         cancelTracking()
     }
 
     private fun startTracking() {
-        mLocList = LocationTracker(context, mTrackerCallback)
+        mLocList = LocationTracker(context) { lat, lng ->
+            mLat = lat
+            mLng = lng
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             205 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setMyLocation()
@@ -654,9 +607,9 @@ class PlacesMapFragment : BaseMapFragment(), View.OnClickListener {
 
     companion object {
 
-        val ENABLE_ZOOM = "enable_zoom"
-        val MARKER_STYLE = "marker_style"
-        val THEME_MODE = "theme_mode"
+        const val ENABLE_ZOOM = "enable_zoom"
+        const val MARKER_STYLE = "marker_style"
+        const val THEME_MODE = "theme_mode"
 
         fun newInstance(isZoom: Boolean, isDark: Boolean): PlacesMapFragment {
             val fragment = PlacesMapFragment()

@@ -1,7 +1,6 @@
 package com.elementary.tasks.navigation.settings
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 
 import com.elementary.tasks.R
-import com.elementary.tasks.core.file_explorer.FileExplorerActivity
+import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LED

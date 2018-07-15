@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.file_explorer
+package com.elementary.tasks.core.fileExplorer
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,10 +18,6 @@ package com.elementary.tasks.core.file_explorer
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class FileDataItem(val fileName: String, var icon: Int?, val filePath: String) {
-
-    override fun toString(): String {
-        return fileName
-    }
+interface RecyclerClickListener {
+    fun onItemClick(position: Int)
 }

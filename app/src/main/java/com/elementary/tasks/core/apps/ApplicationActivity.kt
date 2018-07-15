@@ -11,7 +11,7 @@ import android.view.inputmethod.InputMethodManager
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.file_explorer.RecyclerClickListener
+import com.elementary.tasks.core.fileExplorer.RecyclerClickListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.databinding.ActivityApplicationListBinding
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
