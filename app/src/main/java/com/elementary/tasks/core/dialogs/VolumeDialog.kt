@@ -1,15 +1,12 @@
 package com.elementary.tasks.core.dialogs
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.SeekBar
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
+import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -29,17 +26,13 @@ import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class VolumeDialog : BaseDialog() {
-
-    private val mCancelListener = { dialogInterface -> finish() }
-    private val mOnDismissListener = { dialogInterface -> finish() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.loudness)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(this))
+        val b = LayoutInflater.from(this).inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = 25
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -57,12 +50,12 @@ class VolumeDialog : BaseDialog() {
         val loudness = Prefs.getInstance(this).loudness
         b.seekBar.progress = loudness
         b.titleView.text = loudness.toString()
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialog, which -> Prefs.getInstance(this).loudness = b.seekBar.progress }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { _, _ -> Prefs.getInstance(this).loudness = b.seekBar.progress }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val alertDialog = builder.create()
-        alertDialog.setOnCancelListener(mCancelListener)
-        alertDialog.setOnDismissListener(mOnDismissListener)
+        alertDialog.setOnCancelListener { finish() }
+        alertDialog.setOnDismissListener { finish() }
         alertDialog.show()
     }
 }

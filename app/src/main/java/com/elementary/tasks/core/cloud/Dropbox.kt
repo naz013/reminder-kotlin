@@ -56,19 +56,19 @@ class Dropbox(private val mContext: Context) {
      * @return Boolean
      */
     val isLinked: Boolean
-        get() = mDBApi != null && Prefs.getInstance(mContext).dropboxToken != null
+        get() = mDBApi != null && Prefs.getInstance(mContext).dropboxToken != ""
 
     /**
      * Start connection to Dropbox.
      */
     fun startSession() {
         var token = Prefs.getInstance(mContext).dropboxToken
-        if (token == null) {
+        if (token == "") {
             token = Auth.getOAuth2Token()
             Prefs.getInstance(mContext).dropboxToken = token
         }
         if (token == null) {
-            Prefs.getInstance(mContext).dropboxToken = null
+            Prefs.getInstance(mContext).dropboxToken = ""
             return
         }
         val requestConfig = DbxRequestConfig.newBuilder("Just Reminder")
@@ -139,8 +139,8 @@ class Dropbox(private val mContext: Context) {
     }
 
     private fun clearKeys() {
-        Prefs.getInstance(mContext).dropboxToken = null
-        Prefs.getInstance(mContext).dropboxUid = null
+        Prefs.getInstance(mContext).dropboxToken = ""
+        Prefs.getInstance(mContext).dropboxUid = ""
     }
 
     /**
@@ -170,19 +170,13 @@ class Dropbox(private val mContext: Context) {
                 e.printStackTrace()
             }
 
-            val folder: String
-            if (path.matches(MemoryUtil.DIR_NOTES_SD.toRegex())) {
-                folder = dbxNoteFolder
-            } else if (path.matches(MemoryUtil.DIR_GROUP_SD.toRegex())) {
-                folder = dbxGroupFolder
-            } else if (path.matches(MemoryUtil.DIR_BIRTHDAY_SD.toRegex())) {
-                folder = dbxBirthFolder
-            } else if (path.matches(MemoryUtil.DIR_PLACES_SD.toRegex())) {
-                folder = dbxPlacesFolder
-            } else if (path.matches(MemoryUtil.DIR_TEMPLATES_SD.toRegex())) {
-                folder = dbxTemplatesFolder
-            } else {
-                folder = dbxFolder
+            val folder: String = when {
+                path.matches(MemoryUtil.DIR_NOTES_SD.toRegex()) -> dbxNoteFolder
+                path.matches(MemoryUtil.DIR_GROUP_SD.toRegex()) -> dbxGroupFolder
+                path.matches(MemoryUtil.DIR_BIRTHDAY_SD.toRegex()) -> dbxBirthFolder
+                path.matches(MemoryUtil.DIR_PLACES_SD.toRegex()) -> dbxPlacesFolder
+                path.matches(MemoryUtil.DIR_TEMPLATES_SD.toRegex()) -> dbxTemplatesFolder
+                else -> dbxFolder
             }
             if (fis == null) return
             try {
@@ -211,7 +205,7 @@ class Dropbox(private val mContext: Context) {
             return
         }
         if (fileName != null) {
-            val tmpFile = File(dir!!.toString(), fileName)
+            val tmpFile = File(dir.toString(), fileName)
             var fis: FileInputStream? = null
             try {
                 fis = FileInputStream(tmpFile)
@@ -273,20 +267,14 @@ class Dropbox(private val mContext: Context) {
     }
 
     fun deleteFile(fileName: String) {
-        if (fileName.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-            deleteReminder(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_NOTE)) {
-            deleteNote(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_GROUP)) {
-            deleteGroup(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-            deleteBirthday(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_PLACE)) {
-            deletePlace(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-            deleteTemplate(fileName)
-        } else if (fileName.endsWith(FileConfig.FILE_NAME_SETTINGS)) {
-            deleteSettings(fileName)
+        when {
+            fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> deleteReminder(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> deleteNote(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> deleteGroup(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> deleteBirthday(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> deletePlace(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> deleteTemplate(fileName)
+            fileName.endsWith(FileConfig.FILE_NAME_SETTINGS) -> deleteSettings(fileName)
         }
     }
 
@@ -777,7 +765,7 @@ class Dropbox(private val mContext: Context) {
 
     companion object {
 
-        private val TAG = "Dropbox"
-        private val APP_KEY = "4zi1d414h0v8sxe"
+        private const val TAG = "Dropbox"
+        private const val APP_KEY = "4zi1d414h0v8sxe"
     }
 }

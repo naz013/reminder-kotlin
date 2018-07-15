@@ -6,11 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
-
+import androidx.appcompat.app.AlertDialog
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
-import androidx.appcompat.app.AlertDialog
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,10 +30,9 @@ import androidx.appcompat.app.AlertDialog
  * limitations under the License.
  */
 class DropboxLogin(private val mContext: Activity, private val mCallback: DropboxLogin.LoginCallback) {
-    private val mDropbox: Dropbox
+    private val mDropbox: Dropbox = Dropbox(mContext)
 
     init {
-        this.mDropbox = Dropbox(mContext)
         this.mDropbox.startSession()
     }
 
@@ -75,23 +73,20 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
 
     private fun isAppInstalled(packageName: String): Boolean {
         val pm = mContext.packageManager
-        var installed: Boolean
-        try {
+        return try {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-            installed = true
+            true
         } catch (e: PackageManager.NameNotFoundException) {
-            installed = false
+            false
         }
-
-        return installed
     }
 
     private fun checkDialog(): Dialog {
         return AlertDialog.Builder(mContext)
                 .setMessage(mContext.getString(R.string.other_version_detected))
-                .setPositiveButton(mContext.getString(R.string.open)) { dialogInterface, i -> openApp() }
-                .setNegativeButton(mContext.getString(R.string.delete)) { dialogInterface, i -> deleteApp() }
-                .setNeutralButton(mContext.getString(R.string.cancel)) { dialogInterface, i -> dialogInterface.dismiss() }
+                .setPositiveButton(mContext.getString(R.string.open)) { _, _ -> openApp() }
+                .setNegativeButton(mContext.getString(R.string.delete)) { _, _ -> deleteApp() }
+                .setNeutralButton(mContext.getString(R.string.cancel)) { dialogInterface, _ -> dialogInterface.dismiss() }
                 .setCancelable(true)
                 .create()
     }
@@ -109,10 +104,10 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
     private fun openApp() {
         val i: Intent?
         val manager = mContext.packageManager
-        if (Module.isPro) {
-            i = manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
+        i = if (Module.isPro) {
+            manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER)
         } else {
-            i = manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
+            manager.getLaunchIntentForPackage(MARKET_APP_JUSTREMINDER_PRO)
         }
         i?.addCategory(Intent.CATEGORY_LAUNCHER)
         mContext.startActivity(i)
@@ -124,8 +119,8 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
 
     companion object {
 
-        val TAG = "DropboxLogin"
-        val MARKET_APP_JUSTREMINDER = "com.cray.software.justreminder"
-        val MARKET_APP_JUSTREMINDER_PRO = "com.cray.software.justreminderpro"
+        const val TAG = "DropboxLogin"
+        const val MARKET_APP_JUSTREMINDER = "com.cray.software.justreminder"
+        const val MARKET_APP_JUSTREMINDER_PRO = "com.cray.software.justreminderpro"
     }
 }

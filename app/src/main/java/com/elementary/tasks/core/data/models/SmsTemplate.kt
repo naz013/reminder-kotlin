@@ -26,19 +26,19 @@ import androidx.room.PrimaryKey
  */
 @Entity
 class SmsTemplate {
-    var title: String? = null
+    var title: String = ""
     @PrimaryKey
-    var key: String? = null
-    var date: String? = null
+    var key: String = ""
+    var date: String = ""
     var isSelected: Boolean = false
 
-    constructor(title: String?, date: String) {
+    constructor(title: String, date: String) {
         this.title = title
         this.date = date
         this.key = UUID.randomUUID().toString()
     }
 
-    constructor(title: String?) {
+    constructor(title: String) {
         this.title = title
         this.date = TimeUtil.gmtDateTime
         this.key = UUID.randomUUID().toString()

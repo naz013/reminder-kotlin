@@ -1,14 +1,12 @@
 package com.elementary.tasks.core.contacts
 
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.MenuItem
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.databinding.ActivityContactsListBinding
+import kotlinx.android.synthetic.main.activity_contacts_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,47 +29,45 @@ import com.elementary.tasks.databinding.ActivityContactsListBinding
 
 class ContactsActivity : ThemedActivity(), NumberCallback {
 
-    private var binding: ActivityContactsListBinding? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_contacts_list)
+        setContentView(R.layout.activity_contacts_list)
         initActionBar()
         initTabNavigation()
     }
 
     private fun initTabNavigation() {
         val mSectionsPagerAdapter = ViewPagerAdapter(this, supportFragmentManager)
-        binding!!.viewPager.adapter = mSectionsPagerAdapter
-        binding!!.tabLayout.setupWithViewPager(binding!!.viewPager)
+        viewPager.adapter = mSectionsPagerAdapter
+        tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(false)
             supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         }
-        binding!!.toolbar.title = ""
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = ""
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             val intent = Intent()
-            setResult(Activity.RESULT_CANCELED, intent)
+            setResult(RESULT_CANCELED, intent)
             finish()
         }
         return true
     }
 
-    override fun onContactSelected(number: String?, name: String) {
+    override fun onContactSelected(number: String, name: String) {
         val intent = Intent()
-        if (number != null) {
+        if (number != "") {
             intent.putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
         }
         intent.putExtra(Constants.SELECTED_CONTACT_NAME, name)
-        setResult(Activity.RESULT_OK, intent)
+        setResult(RESULT_OK, intent)
         finish()
     }
 }

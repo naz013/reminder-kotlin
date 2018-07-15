@@ -56,10 +56,10 @@ import javax.inject.Inject
 
 class BackupTool private constructor() {
     @Inject
-    var mContext: Context? = null
+    lateinit var mContext: Context
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
     }
 
     fun exportTemplates() {
@@ -71,10 +71,10 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importTemplates() {
         val dir = MemoryUtil.templatesDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
-                for (file in files!!) {
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
                         val item = getTemplate(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.title)
@@ -88,7 +88,7 @@ class BackupTool private constructor() {
         }
     }
 
-    fun exportTemplate(item: SmsTemplate) {
+    private fun exportTemplate(item: SmsTemplate) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.templatesDir
         if (dir != null) {
@@ -113,14 +113,14 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getTemplate(filePath: String?, json: String?): SmsTemplate? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), SmsTemplate::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, SmsTemplate::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
@@ -133,10 +133,10 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importPlaces() {
         val dir = MemoryUtil.placesDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
-                for (file in files!!) {
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_PLACE)) {
                         val item = getPlace(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.name) ||
@@ -150,7 +150,7 @@ class BackupTool private constructor() {
         }
     }
 
-    fun exportPlace(item: Place) {
+    private fun exportPlace(item: Place) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.placesDir
         if (dir != null) {
@@ -175,14 +175,14 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getPlace(filePath: String?, json: String?): Place? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Place::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, Place::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
@@ -195,10 +195,10 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importBirthdays() {
         val dir = MemoryUtil.birthdaysDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
-                for (file in files!!) {
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
                         val item = getBirthday(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.name)
@@ -212,11 +212,11 @@ class BackupTool private constructor() {
         }
     }
 
-    fun exportBirthday(item: Birthday) {
+    private fun exportBirthday(item: Birthday) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.birthdaysDir
         if (dir != null) {
-            val exportFileName = item.uuId!! + FileConfig.FILE_NAME_BIRTHDAY
+            val exportFileName = item.uuId + FileConfig.FILE_NAME_BIRTHDAY
             try {
                 writeFile(File(dir, exportFileName), jsonData.get())
                 jsonData.clear()
@@ -237,14 +237,14 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getBirthday(filePath: String?, json: String?): Birthday? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Birthday::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, Birthday::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
@@ -254,11 +254,11 @@ class BackupTool private constructor() {
         }
     }
 
-    fun exportGroup(item: Group) {
+    private fun exportGroup(item: Group) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.groupsDir
         if (dir != null) {
-            val exportFileName = item.uuId!! + FileConfig.FILE_NAME_GROUP
+            val exportFileName = item.uuId + FileConfig.FILE_NAME_GROUP
             val file = File(dir, exportFileName)
             LogUtil.d(TAG, "exportGroup: $file")
             try {
@@ -276,11 +276,11 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importGroups() {
         val dir = MemoryUtil.groupsDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
-                val groups = AppDb.getAppDatabase(mContext).groupDao().all
-                for (file in files!!) {
+                val groups = AppDb.getAppDatabase(mContext).groupDao().all.toMutableList()
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         val item = getGroup(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.uuId)) continue
@@ -312,14 +312,14 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getGroup(filePath: String?, json: String?): Group? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Group::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, Group::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
@@ -332,11 +332,11 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importReminders(mContext: Context) {
         val dir = MemoryUtil.remindersDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
                 val defaultGroup = AppDb.getAppDatabase(mContext).groupDao().default
-                for (file in files!!) {
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         val reminder = getReminder(file.toString(), null) ?: continue
                         if (reminder.isRemoved || !reminder.isActive) {
@@ -373,7 +373,7 @@ class BackupTool private constructor() {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.remindersDir
         if (dir != null) {
-            val exportFileName = item.uuId!! + FileConfig.FILE_NAME_REMINDER
+            val exportFileName = item.uuId + FileConfig.FILE_NAME_REMINDER
             try {
                 return writeFile(File(dir, exportFileName), jsonData.get())
             } catch (e: IOException) {
@@ -399,38 +399,38 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getReminder(filePath: String?, json: String?): Reminder? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Reminder::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, Reminder::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getNote(cr: ContentResolver, name: Uri): Note? {
-        try {
+        return try {
             val note = WeakReference(Gson().fromJson(readFileToJson(cr, name), Note::class.java))
-            return note.get()
+            note.get()
         } catch (e: Exception) {
-            return null
+            null
         }
 
     }
 
     @Throws(IOException::class, IllegalStateException::class)
     fun getNote(filePath: String?, json: String?): Note? {
-        if (filePath != null && MemoryUtil.isSdPresent) {
+        return if (filePath != null && MemoryUtil.isSdPresent) {
             val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Note::class.java))
-            return item.get()
+            item.get()
         } else if (json != null) {
             val item = WeakReference(Gson().fromJson(json, Note::class.java))
-            return item.get()
+            item.get()
         } else {
-            return null
+            null
         }
     }
 
@@ -443,10 +443,10 @@ class BackupTool private constructor() {
     @Throws(IOException::class, IllegalStateException::class)
     fun importNotes() {
         val dir = MemoryUtil.notesDir
-        if (dir != null && dir!!.exists()) {
-            val files = dir!!.listFiles()
+        if (dir != null && dir.exists()) {
+            val files = dir.listFiles()
             if (files != null) {
-                for (file in files!!) {
+                for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_NOTE)) {
                         val item = getNote(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.key)) {
@@ -459,11 +459,11 @@ class BackupTool private constructor() {
         }
     }
 
-    fun exportNote(item: Note) {
+    private fun exportNote(item: Note) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.notesDir
         if (dir != null) {
-            val exportFileName = item.key!! + FileConfig.FILE_NAME_NOTE
+            val exportFileName = item.key + FileConfig.FILE_NAME_NOTE
             try {
                 writeFile(File(dir, exportFileName), jsonData.get())
                 jsonData.clear()
@@ -482,10 +482,10 @@ class BackupTool private constructor() {
         var file: File? = null
         val dir = MemoryUtil.mailDir
         if (dir != null) {
-            val exportFileName = item.key!! + FileConfig.FILE_NAME_NOTE
+            val exportFileName = item.key + FileConfig.FILE_NAME_NOTE
             file = File(dir, exportFileName)
             try {
-                writeFile(file!!, jsonData.get())
+                writeFile(file, jsonData.get())
                 jsonData.clear()
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -498,7 +498,7 @@ class BackupTool private constructor() {
     }
 
     @Throws(IOException::class)
-    fun readFileToJson(cr: ContentResolver, name: Uri): String? {
+    private fun readFileToJson(cr: ContentResolver, name: Uri): String? {
         var inputStream: InputStream? = null
         try {
             inputStream = cr.openInputStream(name)
@@ -512,10 +512,13 @@ class BackupTool private constructor() {
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val r = BufferedReader(InputStreamReader(output64))
         val total = StringBuilder()
-        var line: String
-        while ((line = r.readLine()) != null) {
-            total.append(line)
-        }
+        var line: String?
+        do {
+            line = r.readLine()
+            if (line != null) {
+                total.append(line)
+            }
+        } while (line != null)
         output64.close()
         inputStream.close()
         val res = total.toString()
@@ -527,15 +530,18 @@ class BackupTool private constructor() {
     }
 
     @Throws(IOException::class)
-    fun readFileToJson(path: String): String {
+    private fun readFileToJson(path: String): String {
         val inputStream = FileInputStream(path)
         val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
         val r = BufferedReader(InputStreamReader(output64))
         val total = StringBuilder()
-        var line: String
-        while ((line = r.readLine()) != null) {
-            total.append(line)
-        }
+        var line: String?
+        do {
+            line = r.readLine()
+            if (line != null) {
+                total.append(line)
+            }
+        } while (line != null)
         output64.close()
         inputStream.close()
         val res = total.toString()
@@ -563,9 +569,12 @@ class BackupTool private constructor() {
         val output = ByteArrayOutputStream()
         val output64 = Base64OutputStream(output, Base64.DEFAULT)
         try {
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                output64.write(buffer, 0, bytesRead)
-            }
+            do {
+                bytesRead = inputStream.read(buffer)
+                if (bytesRead != -1) {
+                    output64.write(buffer, 0, bytesRead)
+                }
+            } while (bytesRead != -1)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -599,7 +608,7 @@ class BackupTool private constructor() {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

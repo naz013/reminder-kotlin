@@ -3,6 +3,7 @@ package com.elementary.tasks.core.di
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.controller.EventManager
+import com.elementary.tasks.core.dialogs.BaseDialog
 import com.elementary.tasks.core.services.CallReceiver
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
@@ -55,4 +56,5 @@ interface AppComponent {
     fun inject(backupTool: BackupTool)
 
     fun inject(adapter: SelectableTemplatesAdapter)
+    fun inject(baseDialog: BaseDialog)
 }

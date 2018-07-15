@@ -3,12 +3,12 @@ package com.elementary.tasks.core.cloud
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Prefs
 import com.google.android.gms.auth.GoogleAuthException
@@ -18,12 +18,8 @@ import com.google.android.gms.common.AccountPicker
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.services.drive.DriveScopes
 import com.google.api.services.tasks.TasksScopes
-
-import java.io.IOException
-
 import timber.log.Timber
-
-import android.app.Activity.RESULT_OK
+import java.io.IOException
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -46,7 +42,7 @@ import android.app.Activity.RESULT_OK
 
 class GoogleLogin(private val activity: Activity, private val mCallback: LoginCallback?) {
 
-    private var mGoogle: Google? = null
+    private var mGoogle: Google? = Google.getInstance()
     private var mAccountName: String? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var mProgress: ProgressDialog? = null
@@ -54,10 +50,6 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
 
     val isLogged: Boolean
         get() = mGoogle != null
-
-    init {
-        this.mGoogle = Google.getInstance(activity)
-    }
 
     fun logOut() {
         Prefs.getInstance(activity).driveUser = Prefs.DRIVE_USER_NONE
@@ -85,7 +77,7 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
                             mCallback?.onFail()
                         }
                     } else {
-                        finishLogin()
+                        finishLogin(mAccountName!!)
                         mCallback?.onSuccess()
                     }
                 } else {
@@ -103,7 +95,6 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
             }
         } catch (ignored: IllegalArgumentException) {
         }
-
         mProgress = null
     }
 
@@ -138,7 +129,6 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
             Timber.d("getAccessToken: null")
             return null
         }
-
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -148,16 +138,20 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
             getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName))
         } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
             mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
-            finishLogin()
-            mCallback?.onSuccess()
+            if (mAccountName != null) {
+                finishLogin(mAccountName!!)
+                mCallback?.onSuccess()
+            } else {
+                mCallback?.onFail()
+            }
         } else {
             mCallback?.onFail()
         }
     }
 
-    private fun finishLogin() {
-        Prefs.getInstance(activity).driveUser = mAccountName
-        mGoogle = Google.getInstance(activity)
+    private fun finishLogin(account: String) {
+        Prefs.getInstance(activity).driveUser = account
+        mGoogle = Google.getInstance()
     }
 
     interface LoginCallback {
@@ -168,8 +162,8 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
 
     companion object {
 
-        private val REQUEST_AUTHORIZATION = 1
-        private val REQUEST_ACCOUNT_PICKER = 3
-        private val RT_CODE = "rt"
+        private const val REQUEST_AUTHORIZATION = 1
+        private const val REQUEST_ACCOUNT_PICKER = 3
+        private const val RT_CODE = "rt"
     }
 }

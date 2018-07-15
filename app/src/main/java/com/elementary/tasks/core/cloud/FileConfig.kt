@@ -23,37 +23,37 @@ object FileConfig {
     /**
      * File extensions for reminder.
      */
-    val FILE_NAME_REMINDER = ".ta2"
+    const val FILE_NAME_REMINDER = ".ta2"
 
     /**
      * File extension for note.
      */
-    val FILE_NAME_NOTE = ".no2"
+    const val FILE_NAME_NOTE = ".no2"
 
     /**
      * File extension for reminder group.
      */
-    val FILE_NAME_GROUP = ".gr2"
+    const val FILE_NAME_GROUP = ".gr2"
 
     /**
      * File extension for birthday.
      */
-    val FILE_NAME_BIRTHDAY = ".bi2"
+    const val FILE_NAME_BIRTHDAY = ".bi2"
 
     /**
      * File extension for image.
      */
-    val FILE_NAME_IMAGE = ".jpeg"
+    const val FILE_NAME_IMAGE = ".jpeg"
 
     /**
      * File extension for place.
      */
-    val FILE_NAME_PLACE = ".pl2"
+    const val FILE_NAME_PLACE = ".pl2"
 
     /**
      * File extension for message template.
      */
-    val FILE_NAME_TEMPLATE = ".te2"
+    const val FILE_NAME_TEMPLATE = ".te2"
 
-    val FILE_NAME_SETTINGS = "app.settings"
+    const val FILE_NAME_SETTINGS = "app.settings"
 }

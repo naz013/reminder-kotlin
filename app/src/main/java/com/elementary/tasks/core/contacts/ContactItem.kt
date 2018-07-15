@@ -18,4 +18,4 @@ package com.elementary.tasks.core.contacts
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactItem(var name: String?, var uri: String?, var id: Int)
+class ContactItem(var name: String, var uri: String?, var id: Int)

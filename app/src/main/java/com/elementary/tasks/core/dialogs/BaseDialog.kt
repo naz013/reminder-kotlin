@@ -1,10 +1,10 @@
 package com.elementary.tasks.core.dialogs
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.ThemeUtil
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -27,12 +27,15 @@ import com.elementary.tasks.core.utils.ThemeUtil
 
 abstract class BaseDialog : FragmentActivity() {
 
-    var themeUtil: ThemeUtil? = null
-        private set
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        themeUtil = ThemeUtil.getInstance(this)
-        setTheme(themeUtil!!.dialogStyle)
+        setTheme(themeUtil.dialogStyle)
     }
 }
