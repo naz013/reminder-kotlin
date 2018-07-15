@@ -641,9 +641,9 @@ class DrawView : View, Observable {
         this.currentItem!!.x = startX
         this.currentItem!!.y = startY
         if (this.historyPointer == this.elements.size) {
-            this.elements.add(currentItem)
+            this.elements.add(currentItem!!)
         } else {
-            this.elements.add(historyPointer, currentItem)
+            this.elements.add(historyPointer, currentItem!!)
         }
         this.historyPointer++
         this.invalidate()
@@ -720,7 +720,7 @@ class DrawView : View, Observable {
     }
 
     fun setScale(scale: Int, mode: Mode) {
-        if (scale >= 1 && scale <= 100) {
+        if (scale in 1..100) {
             val drawing = current
             if (mode == Mode.IMAGE && drawing is Image) {
                 drawing.setScalePercentage(scale)

@@ -2,15 +2,12 @@ package com.elementary.tasks.core.cloud
 
 import android.content.Context
 import android.text.TextUtils
-
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.backups.UserItem
-import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MemoryUtil
@@ -18,29 +15,20 @@ import com.elementary.tasks.core.utils.Prefs
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.FileContent
-import com.google.api.client.http.HttpTransport
-import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.Data
 import com.google.api.client.util.DateTime
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
-import com.google.api.services.drive.model.About
 import com.google.api.services.drive.model.File
-import com.google.api.services.drive.model.FileList
 import com.google.api.services.tasks.Tasks
 import com.google.api.services.tasks.TasksScopes
 import com.google.api.services.tasks.model.Task
 import com.google.api.services.tasks.model.TaskList
 import com.google.api.services.tasks.model.TaskLists
-
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.OutputStream
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -63,7 +51,7 @@ import javax.inject.Inject
  */
 
 class Google @Throws(IllegalStateException::class)
-private constructor(context: Context) {
+private constructor() {
 
     private var driveService: Drive? = null
     private var tasksService: Tasks? = null
@@ -73,16 +61,14 @@ private constructor(context: Context) {
     var drive: Drives? = null
         private set
     @Inject
-    var mContext: Context? = null
+    lateinit var mContext: Context
 
     init {
-        ReminderApp.appComponent!!.inject(this)
-    }
+        ReminderApp.appComponent.inject(this)
 
-    init {
-        val user = Prefs.getInstance(context).driveUser
+        val user = Prefs.getInstance(mContext).driveUser
         if (user.matches(".*@.*".toRegex())) {
-            val credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS))
+            val credential = GoogleAccountCredential.usingOAuth2(mContext, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS))
             credential.selectedAccountName = user
             val mJsonFactory = GsonFactory.getDefaultInstance()
             val mTransport = AndroidHttp.newCompatibleTransport()
@@ -115,7 +101,7 @@ private constructor(context: Context) {
             try {
                 val task = Task()
                 task.title = item.title
-                if (item.notes != null) {
+                if (item.notes != "") {
                     task.notes = item.notes
                 }
                 if (item.dueDate != 0L) {
@@ -124,12 +110,12 @@ private constructor(context: Context) {
                 val result: Task?
                 val listId = item.listId
                 if (!TextUtils.isEmpty(listId)) {
-                    result = tasksService!!.tasks().insert(listId!!, task).execute()
+                    result = tasksService!!.tasks().insert(listId, task).execute()
                 } else {
                     val googleTaskList = AppDb.getAppDatabase(mContext).googleTaskListsDao().default
                     if (googleTaskList != null) {
                         item.listId = googleTaskList.listId
-                        result = tasksService!!.tasks().insert(googleTaskList.listId!!, task).execute()
+                        result = tasksService!!.tasks().insert(googleTaskList.listId, task).execute()
                     } else {
                         result = tasksService!!.tasks().insert("@default", task).execute()
                         val list = tasksService!!.tasklists().get("@default").execute()
@@ -164,25 +150,25 @@ private constructor(context: Context) {
 
         @Throws(IOException::class)
         fun deleteTask(item: GoogleTask) {
-            if (item.listId == null || tasksService == null) return
-            tasksService!!.tasks().delete(item.listId!!, item.taskId!!).execute()
+            if (item.listId == "" || tasksService == null) return
+            tasksService!!.tasks().delete(item.listId, item.taskId).execute()
         }
 
         @Throws(IOException::class)
         fun updateTask(item: GoogleTask) {
             if (tasksService == null) return
-            val task = tasksService!!.tasks().get(item.listId!!, item.taskId!!).execute()
+            val task = tasksService!!.tasks().get(item.listId, item.taskId).execute()
             task.status = TASKS_NEED_ACTION
             task.title = item.title
             task.completed = Data.NULL_DATE_TIME
             if (item.dueDate != 0L) task.due = DateTime(item.dueDate)
-            if (item.notes != null) task.notes = item.notes
+            if (item.notes != "") task.notes = item.notes
             task.updated = DateTime(System.currentTimeMillis())
-            tasksService!!.tasks().update(item.listId!!, task.id, task).execute()
+            tasksService!!.tasks().update(item.listId, task.id, task).execute()
         }
 
         fun getTasks(listId: String): List<Task> {
-            var taskLists: List<Task>? = ArrayList()
+            var taskLists: List<Task> = ArrayList()
             if (tasksService == null) return taskLists
             try {
                 taskLists = tasksService!!.tasks().list(listId).execute().items
@@ -251,7 +237,7 @@ private constructor(context: Context) {
                 return false
             }
             try {
-                val task = tasksService!!.tasks().get(oldList, item.taskId!!).execute()
+                val task = tasksService!!.tasks().get(oldList, item.taskId).execute()
                 if (task != null) {
                     val clone = GoogleTask(item)
                     clone.listId = oldList
@@ -279,7 +265,7 @@ private constructor(context: Context) {
                     val about = driveService!!.about().get().setFields("user, storageQuota").execute()
                     val quota = about.storageQuota
                     return UserItem(about.user.displayName, quota.limit!!,
-                            quota.usage!!, countFiles().toLong(), about.user.photoLink)
+                            quota.usage!!, countFiles(), about.user.photoLink)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -321,7 +307,7 @@ private constructor(context: Context) {
          * @return number of files in local folder.
          */
         @Throws(IOException::class)
-        internal fun countFiles(): Int {
+        private fun countFiles(): Int {
             var count = 0
             if (driveService == null) return 0
             val request = driveService!!.files().list().setQ("mimeType = 'text/plain'").setFields("nextPageToken, files")
@@ -330,20 +316,14 @@ private constructor(context: Context) {
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
                 for (f in fileList) {
                     val title = f.name
-                    if (title.contains(FileConfig.FILE_NAME_SETTINGS)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_TEMPLATE)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_PLACE)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_BIRTHDAY)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_GROUP)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_NOTE)) {
-                        count++
-                    } else if (title.endsWith(FileConfig.FILE_NAME_REMINDER)) {
-                        count++
+                    when {
+                        title.contains(FileConfig.FILE_NAME_SETTINGS) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_PLACE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_GROUP) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_NOTE) -> count++
+                        title.endsWith(FileConfig.FILE_NAME_REMINDER) -> count++
                     }
                 }
                 request.pageToken = files.nextPageToken
@@ -353,27 +333,28 @@ private constructor(context: Context) {
 
         @Throws(IOException::class)
         fun saveSettingsToDrive() {
-            var folderId: String? = null
+            var foId: String? = null
             try {
-                folderId = folderId
+                foId = folderId
             } catch (ignored: IllegalArgumentException) {
             }
 
-            if (folderId == null || driveService == null) {
+            if (foId == null || driveService == null) {
                 return
             }
             val folder = MemoryUtil.prefsDir ?: return
-            val files = folder!!.listFiles() ?: return
+            val files = folder.listFiles() ?: return
             for (file in files) {
                 if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) continue
-                removeAllCopies(file.getName())
+                removeAllCopies(file.name)
                 val fileMetadata = File()
-                fileMetadata.name = file.getName()
+                fileMetadata.name = file.name
                 fileMetadata.description = "Settings Backup"
-                fileMetadata.parents = listOf(folderId)
+                fileMetadata.parents = listOf(foId)
                 val mediaContent = FileContent("text/plain", file)
-                (driveService!!.files().create(fileMetadata, mediaContent).fields = "id")
-                        .execute()
+                val req = driveService!!.files().create(fileMetadata, mediaContent)
+                req.fields = "id"
+                req.execute()
                 break
             }
         }
@@ -398,7 +379,7 @@ private constructor(context: Context) {
         fun downloadSettings(context: Context, deleteFile: Boolean) {
             if (driveService == null) return
             val folder = MemoryUtil.prefsDir
-            if (folder == null || !folder!!.exists() && !folder!!.mkdirs()) {
+            if (folder == null || !folder.exists() && !folder.mkdirs()) {
                 return
             }
             val request = driveService!!.files().list()
@@ -523,13 +504,13 @@ private constructor(context: Context) {
             if (metadata.folder == null) return
             if (driveService == null) return
             val files = metadata.folder.listFiles() ?: return
-            var folderId: String? = null
+            var foId: String? = null
             try {
-                folderId = folderId
+                foId = folderId
             } catch (ignored: IllegalArgumentException) {
             }
 
-            if (folderId == null) {
+            if (foId == null) {
                 return
             }
             for (file in files) {
@@ -538,7 +519,7 @@ private constructor(context: Context) {
                 val fileMetadata = File()
                 fileMetadata.name = file.name
                 fileMetadata.description = metadata.meta
-                fileMetadata.parents = listOf(folderId)
+                fileMetadata.parents = listOf(foId)
                 val mediaContent = FileContent("text/plain", file)
                 driveService!!.files().create(fileMetadata, mediaContent)
                         .setFields("id")
@@ -557,13 +538,13 @@ private constructor(context: Context) {
             if (metadata.folder == null) return
             if (driveService == null) return
             val files = metadata.folder.listFiles() ?: return
-            var folderId: String? = null
+            var fId: String? = null
             try {
-                folderId = folderId
+                fId = folderId
             } catch (ignored: IllegalArgumentException) {
             }
 
-            if (folderId == null) {
+            if (fId == null) {
                 return
             }
             val f = java.io.File(pathToFile)
@@ -575,7 +556,7 @@ private constructor(context: Context) {
             val fileMetadata = File()
             fileMetadata.name = f.name
             fileMetadata.description = metadata.meta
-            fileMetadata.parents = listOf(folderId)
+            fileMetadata.parents = listOf(fId)
             val mediaContent = FileContent("text/plain", f)
             driveService!!.files().create(fileMetadata, mediaContent)
                     .setFields("id")
@@ -627,13 +608,16 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadTemplates(deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.googleRemindersDir, null, { file ->
-                try {
-                    AppDb.getAppDatabase(mContext).smsTemplatesDao().insert(backupTool.getTemplate(file.toString(), null))
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.googleRemindersDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val item = backupTool.getTemplate(file.toString(), null)
+                        if (item != null) AppDb.getAppDatabase(mContext).smsTemplatesDao().insert(item)
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadTemplates: " + e.localizedMessage)
+                    }
                 }
             }))
         }
@@ -646,21 +630,23 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadReminders(context: Context, deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.googleRemindersDir, null, { file ->
-                try {
-                    val reminder = backupTool.getReminder(file.toString(), null)
-                    if (reminder == null || reminder.isRemoved || !reminder.isActive) return@download
-                    AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
-                    val control = EventControlFactory.getController(reminder)
-                    if (control.canSkip()) {
-                        control.next()
-                    } else {
-                        control.start()
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.googleRemindersDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val reminder = backupTool.getReminder(file.toString(), null)
+                        if (reminder == null || reminder.isRemoved || !reminder.isActive) return
+                        AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
+                        val control = EventControlFactory.getController(reminder)
+                        if (control.canSkip()) {
+                            control.next()
+                        } else {
+                            control.start()
+                        }
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
                     }
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadReminders: " + e.localizedMessage)
                 }
             }))
         }
@@ -673,13 +659,16 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadPlaces(deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.googlePlacesDir, null, { file ->
-                try {
-                    AppDb.getAppDatabase(mContext).placesDao().insert(backupTool.getPlace(file.toString(), null))
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.googlePlacesDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val item = backupTool.getPlace(file.toString(), null)
+                        if (item != null) AppDb.getAppDatabase(mContext).placesDao().insert(item)
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadPlaces: " + e.localizedMessage)
+                    }
                 }
             }))
         }
@@ -692,13 +681,16 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadNotes(deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.googleNotesDir, null, { file ->
-                try {
-                    AppDb.getAppDatabase(mContext).notesDao().insert(backupTool.getNote(file.toString(), null))
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.googleNotesDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val item = backupTool.getNote(file.toString(), null)
+                        if (item != null) AppDb.getAppDatabase(mContext).notesDao().insert(item)
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadNotes: " + e.localizedMessage)
+                    }
                 }
             }))
         }
@@ -711,13 +703,16 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadGroups(deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.googleGroupsDir, null, { file ->
-                try {
-                    AppDb.getAppDatabase(mContext).groupDao().insert(backupTool.getGroup(file.toString(), null))
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.googleGroupsDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val item = backupTool.getGroup(file.toString(), null)
+                        if (item != null) AppDb.getAppDatabase(mContext).groupDao().insert(item)
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
+                    }
                 }
             }))
         }
@@ -730,13 +725,16 @@ private constructor(context: Context) {
         @Throws(IOException::class)
         fun downloadBirthdays(deleteBackup: Boolean) {
             val backupTool = BackupTool.getInstance()
-            download(deleteBackup, Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.googleBirthdaysDir, null, { file ->
-                try {
-                    AppDb.getAppDatabase(mContext).birthdaysDao().insert(backupTool.getBirthday(file.toString(), null))
-                } catch (e: IOException) {
-                    LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
-                } catch (e: IllegalStateException) {
-                    LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
+            download(deleteBackup, Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.googleBirthdaysDir, null, object : Action {
+                override fun onSave(file: java.io.File) {
+                    try {
+                        val item = backupTool.getBirthday(file.toString(), null)
+                        if (item != null) AppDb.getAppDatabase(mContext).birthdaysDao().insert(item)
+                    } catch (e: IOException) {
+                        LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
+                    } catch (e: IllegalStateException) {
+                        LogUtil.d(TAG, "downloadBirthdays: " + e.localizedMessage)
+                    }
                 }
             }))
         }
@@ -750,11 +748,11 @@ private constructor(context: Context) {
         fun deleteReminderFileByName(title: String?) {
             var title = title
             LogUtil.d(TAG, "deleteReminderFileByName: " + title!!)
-            if (title == null || driveService == null) {
+            if (title == "" || driveService == null) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -784,7 +782,7 @@ private constructor(context: Context) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -814,7 +812,7 @@ private constructor(context: Context) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -844,7 +842,7 @@ private constructor(context: Context) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -874,7 +872,7 @@ private constructor(context: Context) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -899,7 +897,7 @@ private constructor(context: Context) {
                 return
             }
             val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (strs.size != 0) {
+            if (strs.isNotEmpty()) {
                 title = strs[0]
             }
             val request = driveService!!.files().list()
@@ -983,7 +981,10 @@ private constructor(context: Context) {
             return folderInsert?.execute()
         }
 
-        private inner class Metadata internal constructor(internal val fileExt: String, internal val folder: java.io.File?, internal val meta: String?, val action: Action?)
+        inner class Metadata internal constructor(internal val fileExt: String,
+                                                  internal val folder: java.io.File?,
+                                                  internal val meta: String?,
+                                                  val action: Action?)
     }
 
     interface GoogleTaksFunc {
@@ -994,29 +995,28 @@ private constructor(context: Context) {
         fun apply(googleTaskList: GoogleTaskList?)
     }
 
-    private interface Action {
+    internal interface Action {
         fun onSave(file: java.io.File)
     }
 
     companion object {
 
-        val TASKS_NEED_ACTION = "needsAction"
-        val TASKS_COMPLETE = "completed"
-        private val TAG = "Google"
-        private val APPLICATION_NAME = "Reminder/6.0"
-        private val FOLDER_NAME = "Reminder"
+        const val TASKS_NEED_ACTION = "needsAction"
+        const val TASKS_COMPLETE = "completed"
+        private const val TAG = "Google"
+        private const val APPLICATION_NAME = "Reminder/6.0"
+        private const val FOLDER_NAME = "Reminder"
 
         private var instance: Google? = null
 
-        fun getInstance(context: Context): Google? {
+        fun getInstance(): Google? {
             try {
-                instance = Google(context.applicationContext)
+                instance = Google()
             } catch (e: IllegalArgumentException) {
                 LogUtil.d(TAG, "getInstance: " + e.localizedMessage)
             } catch (e: NullPointerException) {
                 LogUtil.d(TAG, "getInstance: " + e.localizedMessage)
             }
-
             return instance
         }
     }

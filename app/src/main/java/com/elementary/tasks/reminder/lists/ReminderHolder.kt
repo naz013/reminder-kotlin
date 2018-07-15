@@ -38,10 +38,10 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     @Inject
-    var themeUtil: ThemeUtil? = null
+    lateinit var themeUtil: ThemeUtil
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
         if (editable) {
             itemView.itemCheck.visibility = View.VISIBLE
         } else {
@@ -95,9 +95,9 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     private fun loadCard(group: Group?) {
         if (group != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(group.color)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(group.color)))
         } else {
-            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(0)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }
     }
 

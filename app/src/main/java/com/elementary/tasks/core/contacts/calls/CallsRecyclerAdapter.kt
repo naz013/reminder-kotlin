@@ -1,17 +1,21 @@
-package com.elementary.tasks.core.contacts
+package com.elementary.tasks.core.contacts.calls
 
 import android.net.Uri
+import android.provider.CallLog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.mcxiaoke.koi.ext.onClick
-import kotlinx.android.synthetic.main.list_item_contact.view.*
+import kotlinx.android.synthetic.main.list_item_call.view.*
 import java.util.*
 
 /**
@@ -32,14 +36,14 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.ContactViewHolder>() {
+class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRecyclerAdapter.ContactViewHolder>() {
 
-    private val mDataList: MutableList<ContactItem> = mutableListOf()
+    private val mDataList: MutableList<CallsItem> = mutableListOf()
     var filterCallback: ((Int) -> Unit)? = null
     var clickListener: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false))
+        return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_call, parent, false))
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
@@ -51,28 +55,36 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
     }
 
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(contactItem: ContactItem) {
-            itemView.itemName.text = contactItem.name
-            loadImage(itemView.itemImage, contactItem.uri)
+        fun bind(callsItem: CallsItem) {
+            if (callsItem.name == "") {
+                itemView.itemName.text = callsItem.number
+            } else {
+                itemView.itemName.text = callsItem.name
+            }
+            loadImage(itemView.itemImage, callsItem.uri)
+            loadDate(itemView.itemDate, callsItem.date)
+            loadIcon(itemView.itemType, callsItem.type)
         }
 
         init {
-            itemView.onClick { clickListener?.invoke(adapterPosition) }
+            itemView.onClick {
+                clickListener?.invoke(adapterPosition)
+            }
         }
     }
 
-    fun filter(q: String, list: List<ContactItem>) {
+    fun filter(q: String, list: List<CallsItem>) {
         val res = filter(list, q)
         animateTo(res)
         filterCallback?.invoke(res.size)
     }
 
-    private fun filter(mData: List<ContactItem>?, q: String): List<ContactItem> {
+    private fun filter(mData: List<CallsItem>?, q: String): List<CallsItem> {
         var mData = mData
         var q = q
         q = q.toLowerCase()
-        var filteredModelList: MutableList<ContactItem> = ArrayList()
         if (mData == null) mData = ArrayList()
+        var filteredModelList: MutableList<CallsItem> = ArrayList()
         if (q.matches("".toRegex())) {
             filteredModelList = ArrayList(mData)
         } else {
@@ -81,10 +93,10 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         return filteredModelList
     }
 
-    private fun getFiltered(models: List<ContactItem>, query: String): List<ContactItem> {
-        val list = ArrayList<ContactItem>()
+    private fun getFiltered(models: List<CallsItem>, query: String): List<CallsItem> {
+        val list = ArrayList<CallsItem>()
         for (model in models) {
-            val text = model.name.toLowerCase()
+            val text = model.numberName.toLowerCase()
             if (text.contains(query)) {
                 list.add(model)
             }
@@ -92,13 +104,13 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         return list
     }
 
-    private fun removeItem(position: Int): ContactItem {
+    private fun removeItem(position: Int): CallsItem {
         val model = mDataList.removeAt(position)
         notifyItemRemoved(position)
         return model
     }
 
-    private fun addItem(position: Int, model: ContactItem) {
+    private fun addItem(position: Int, model: CallsItem) {
         mDataList.add(position, model)
         notifyItemInserted(position)
     }
@@ -109,13 +121,13 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    private fun animateTo(models: List<ContactItem>) {
+    private fun animateTo(models: List<CallsItem>) {
         applyAndAnimateRemovals(models)
         applyAndAnimateAdditions(models)
         applyAndAnimateMovedItems(models)
     }
 
-    private fun applyAndAnimateRemovals(newModels: List<ContactItem>) {
+    private fun applyAndAnimateRemovals(newModels: List<CallsItem>) {
         for (i in mDataList.indices.reversed()) {
             val model = mDataList[i]
             if (!newModels.contains(model)) {
@@ -124,7 +136,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         }
     }
 
-    private fun applyAndAnimateAdditions(newModels: List<ContactItem>) {
+    private fun applyAndAnimateAdditions(newModels: List<CallsItem>) {
         var i = 0
         val count = newModels.size
         while (i < count) {
@@ -136,7 +148,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         }
     }
 
-    private fun applyAndAnimateMovedItems(newModels: List<ContactItem>) {
+    private fun applyAndAnimateMovedItems(newModels: List<CallsItem>) {
         for (toPosition in newModels.indices.reversed()) {
             val model = newModels[toPosition]
             val fromPosition = mDataList.indexOf(model)
@@ -146,14 +158,8 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
         }
     }
 
-    fun getItem(position: Int): ContactItem {
+    fun getItem(position: Int): CallsItem {
         return mDataList[position]
-    }
-
-    fun setData(it: List<ContactItem>) {
-        this.mDataList.clear()
-        this.mDataList.addAll(it)
-        notifyDataSetChanged()
     }
 
     fun loadImage(imageView: ImageView, v: String?) {
@@ -167,5 +173,25 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
                 .apply(RequestOptions.centerCropTransform())
                 .apply(RequestOptions.overrideOf(100, 100))
                 .into(imageView)
+    }
+
+    fun loadIcon(imageView: ImageView, type: Int) {
+        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        when (type) {
+            CallLog.Calls.INCOMING_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_received_white_24dp else R.drawable.ic_call_received_black_24dp)
+            CallLog.Calls.MISSED_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_missed_white_24dp else R.drawable.ic_call_missed_black_24dp)
+            else -> imageView.setImageResource(if (isDark) R.drawable.ic_call_made_white_24dp else R.drawable.ic_call_made_black_24dp)
+        }
+    }
+
+    fun loadDate(textView: AppCompatTextView, date: Long) {
+        val is24 = Prefs.getInstance(textView.context).is24HourFormatEnabled
+        textView.text = TimeUtil.getSimpleDateTime(date, is24)
+    }
+
+    fun setData(it: List<CallsItem>) {
+        this.mDataList.clear()
+        this.mDataList.addAll(it)
+        notifyDataSetChanged()
     }
 }

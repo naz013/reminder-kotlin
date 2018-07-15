@@ -37,16 +37,16 @@ class Place {
     @SerializedName("longitude")
     var longitude: Double = 0.toDouble()
     @SerializedName("name")
-    var name: String? = null
+    var name: String = ""
     @SerializedName("id")
     @PrimaryKey
-    var id: String? = null
+    var id: String = ""
     @SerializedName("address")
-    var address: String? = null
+    var address: String = ""
     @SerializedName("tags")
     var tags: MutableList<String> = mutableListOf()
 
-    constructor() {}
+    constructor()
 
     @Ignore
     constructor(radius: Int, marker: Int, latitude: Double, longitude: Double, name: String, address: String, tags: List<String>) {

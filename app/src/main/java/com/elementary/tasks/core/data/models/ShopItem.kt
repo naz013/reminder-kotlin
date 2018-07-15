@@ -28,15 +28,15 @@ import java.util.UUID
 class ShopItem {
 
     @SerializedName("summary")
-    var summary: String? = null
+    var summary: String = ""
     @SerializedName("isDeleted")
     var isDeleted = false
     @SerializedName("checked")
     var isChecked = false
     @SerializedName("uuId")
-    var uuId: String? = null
+    var uuId: String = ""
     @SerializedName("createTime")
-    var createTime: String? = null
+    var createTime: String = ""
 
     constructor(summary: String) {
         this.summary = summary

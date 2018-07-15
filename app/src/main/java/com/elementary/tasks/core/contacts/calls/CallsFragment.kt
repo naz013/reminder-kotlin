@@ -1,9 +1,8 @@
-package com.elementary.tasks.core.contacts
+package com.elementary.tasks.core.contacts.calls
 
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,8 +12,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import kotlinx.android.synthetic.main.fragment_contacts.*
+import com.elementary.tasks.core.contacts.NumberCallback
+import kotlinx.android.synthetic.main.fragment_calls.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,13 +33,12 @@ import kotlinx.android.synthetic.main.fragment_contacts.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsFragment : Fragment() {
+class CallsFragment : Fragment() {
 
     private var mCallback: NumberCallback? = null
 
-    private val mDataList: MutableList<ContactItem> = mutableListOf()
-    private val mAdapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
-    private var name: String = ""
+    private var mDataList: List<CallsItem> = mutableListOf()
+    private var mAdapter: CallsRecyclerAdapter = CallsRecyclerAdapter()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -50,7 +48,6 @@ class ContactsFragment : Fragment() {
             } catch (e: ClassCastException) {
                 throw ClassCastException()
             }
-
         }
     }
 
@@ -62,12 +59,11 @@ class ContactsFragment : Fragment() {
             } catch (e: ClassCastException) {
                 throw ClassCastException()
             }
-
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_contacts, container, false)
+        return inflater.inflate(R.layout.fragment_calls, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,14 +71,13 @@ class ContactsFragment : Fragment() {
         initSearchView()
         initRecyclerView()
         refreshLayout.isRefreshing = true
-        refreshLayout.setOnRefreshListener{ this.loadData() }
+        refreshLayout.setOnRefreshListener { loadData() }
         loadData()
     }
 
     private fun loadData() {
-        ContactsAsync(context!!) {
-            this.mDataList.clear()
-            this.mDataList.addAll(it)
+        CallsAsync(context!!) {
+            this.mDataList = it
             refreshLayout.isRefreshing = false
             mAdapter.setData(it)
             refreshView(mAdapter.itemCount)
@@ -96,12 +91,15 @@ class ContactsFragment : Fragment() {
         }
         mAdapter.clickListener = {
             if (it != -1) {
-                name = mAdapter.getItem(it).name
-                selectNumber(mAdapter.getItem(it).name)
+                val number = mAdapter.getItem(it).number
+                val name = mAdapter.getItem(it).name
+                if (mCallback != null) {
+                    mCallback!!.onContactSelected(number, name)
+                }
             }
         }
         contactsList.layoutManager = LinearLayoutManager(context)
-        contactsList.setHasFixedSize(true)
+        contactsList.adapter = mAdapter
     }
 
     private fun initSearchView() {
@@ -118,53 +116,6 @@ class ContactsFragment : Fragment() {
 
             }
         })
-    }
-
-    private fun selectNumber(name: String) {
-        val c = context!!.contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?",
-                arrayOf(name), null) ?: return
-        val phoneIdx = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-        val phoneType = c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE)
-        if (c.count > 1) {
-            val numbers = arrayOfNulls<CharSequence>(c.count)
-            var i = 0
-            if (c.moveToFirst()) {
-                while (!c.isAfterLast) {
-                    val type = ContactsContract.CommonDataKinds.Phone.getTypeLabel(
-                            resources, c.getInt(phoneType), "") as String
-                    val number = type + ": " + c.getString(phoneIdx)
-                    numbers[i++] = number
-                    c.moveToNext()
-                }
-                val builder = Dialogues.getDialog(context!!)
-                builder.setItems(numbers) { dialog, which ->
-                    dialog.dismiss()
-                    var number = numbers[which] as String
-                    val index = number.indexOf(":")
-                    number = number.substring(index + 2)
-                    if (mCallback != null) {
-                        mCallback!!.onContactSelected(number, this.name)
-                    }
-                }
-                val alert = builder.create()
-                alert.show()
-
-            }
-        } else if (c.count == 1) {
-            if (c.moveToFirst()) {
-                val number = c.getString(phoneIdx)
-                if (mCallback != null) {
-                    mCallback!!.onContactSelected(number, this.name)
-                }
-            }
-        } else if (c.count == 0) {
-            if (mCallback != null) {
-                mCallback!!.onContactSelected("", this.name)
-            }
-        }
-        c.close()
     }
 
     private fun refreshView(count: Int) {
@@ -185,8 +136,8 @@ class ContactsFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(): ContactsFragment {
-            return ContactsFragment()
+        fun newInstance(): CallsFragment {
+            return CallsFragment()
         }
     }
 }

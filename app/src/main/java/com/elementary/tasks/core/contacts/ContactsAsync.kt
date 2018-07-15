@@ -1,14 +1,9 @@
 package com.elementary.tasks.core.contacts
 
 import android.content.Context
-import android.database.Cursor
-import android.net.Uri
 import android.os.AsyncTask
 import android.provider.ContactsContract
-
 import com.elementary.tasks.core.utils.Contacts
-
-import java.util.ArrayList
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,14 +23,13 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsAsync(private val mContext: Context, private val mListener: LoadListener?) : AsyncTask<Void, Void, Void>() {
+class ContactsAsync(private val mContext: Context, private val mListener: ((List<ContactItem>) -> Unit)?) : AsyncTask<Void, Void, Void>() {
 
-    private var mList: MutableList<ContactItem>? = null
+    private var mList: MutableList<ContactItem> = mutableListOf()
 
     override fun doInBackground(vararg params: Void): Void? {
         val cursor = mContext.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC")
-        mList = ArrayList()
-        mList!!.clear()
+        mList.clear()
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
@@ -46,18 +40,18 @@ class ContactsAsync(private val mContext: Context, private val mListener: LoadLi
                 if (uri != null) {
                     photo = uri.toString()
                 }
-                if (hasPhone.equals("1", ignoreCase = true)) {
-                    hasPhone = "true"
+                hasPhone = if (hasPhone.equals("1", ignoreCase = true)) {
+                    "true"
                 } else {
-                    hasPhone = "false"
+                    "false"
                 }
                 if (name != null && java.lang.Boolean.parseBoolean(hasPhone)) {
                     val data = ContactItem(name, photo, id)
                     val pos = getPosition(name)
                     if (pos == -1) {
-                        mList!!.add(data)
+                        mList.add(data)
                     } else {
-                        mList!!.add(pos, data)
+                        mList.add(pos, data)
                     }
                 }
             }
@@ -67,14 +61,14 @@ class ContactsAsync(private val mContext: Context, private val mListener: LoadLi
     }
 
     private fun getPosition(name: String): Int {
-        if (mList!!.size == 0) {
+        if (mList.size == 0) {
             return 0
         }
         var position = -1
-        for (data in mList!!) {
-            val comp = name.compareTo(data.name!!)
+        for (data in mList) {
+            val comp = name.compareTo(data.name)
             if (comp <= 0) {
-                position = mList!!.indexOf(data)
+                position = mList.indexOf(data)
                 break
             }
         }
@@ -83,6 +77,6 @@ class ContactsAsync(private val mContext: Context, private val mListener: LoadLi
 
     override fun onPostExecute(aVoid: Void) {
         super.onPostExecute(aVoid)
-        mListener?.onLoaded(mList)
+        mListener?.invoke(mList)
     }
 }

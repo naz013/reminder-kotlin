@@ -26,20 +26,20 @@ import com.google.gson.annotations.SerializedName
 class MainImage {
 
     @SerializedName("format")
-    var format: String? = null
+    var format: String = ""
     @SerializedName("width")
     var width: Int = 0
     @SerializedName("height")
     var height: Int = 0
     @SerializedName("filename")
-    var filename: String? = null
+    var filename: String = ""
     @SerializedName("id")
     @PrimaryKey
     var id: Long = 0
     @SerializedName("author")
-    var author: String? = null
+    var author: String = ""
     @SerializedName("author_url")
-    var authorUrl: String? = null
+    var authorUrl: String = ""
     @SerializedName("post_url")
-    var postUrl: String? = null
+    var postUrl: String = ""
 }

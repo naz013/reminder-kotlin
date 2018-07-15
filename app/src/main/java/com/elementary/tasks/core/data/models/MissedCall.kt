@@ -32,7 +32,7 @@ class MissedCall {
 
     @SerializedName("number")
     @PrimaryKey
-    var number: String? = null
+    var number: String = ""
     @SerializedName("dateTime")
     var dateTime: Long = 0
     @SerializedName("uniqueId")

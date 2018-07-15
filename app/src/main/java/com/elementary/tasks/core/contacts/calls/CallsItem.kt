@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.contacts
+package com.elementary.tasks.core.contacts.calls
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,6 +18,6 @@ package com.elementary.tasks.core.contacts
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface CallsLogListener {
-    fun onLoaded(list: List<CallsItem>)
+class CallsItem(var name: String, var number: String, var uri: String?, var date: Long, var id: Int, var type: Int) {
+    val numberName: String = number + if (name != "") name else ""
 }
