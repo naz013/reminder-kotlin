@@ -13,7 +13,7 @@ import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplateViewModel
+import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplateViewModel
 import com.elementary.tasks.databinding.ActivityTemplateBinding
 
 import java.io.IOException

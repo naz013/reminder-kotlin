@@ -130,10 +130,10 @@ class SoundStackHolder private constructor() : Sound.PlaybackCallback {
         if (!hasVolumePermission) return
         if (mAudioManager == null) return
 
-        if (isSystemLoudnessEnabled)
-            mStream = mSystemStream
+        mStream = if (isSystemLoudnessEnabled)
+            mSystemStream
         else
-            mStream = AudioManager.STREAM_MUSIC
+            AudioManager.STREAM_MUSIC
 
         val volPercent = mMaxVolume.toFloat() / Configs.MAX_VOLUME
         val maxVol = mAudioManager!!.getStreamMaxVolume(mStream)
@@ -162,7 +162,7 @@ class SoundStackHolder private constructor() : Sound.PlaybackCallback {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

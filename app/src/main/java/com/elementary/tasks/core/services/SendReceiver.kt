@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.SmsManager
 
-import com.elementary.tasks.core.interfaces.SendListener
-
 /**
  * Copyright 2016 Nazar Suhovich
  *

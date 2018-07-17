@@ -32,32 +32,34 @@ class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.d(TAG, "onReceive: ")
-        EnableThread(context).start()
-        val alarmReceiver = AlarmReceiver()
-        val prefs = Prefs.getInstance(context)
-        if (prefs.isBirthdayReminderEnabled) {
-            EventJobService.enableBirthdayAlarm(context)
-        }
-        if (prefs.isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
-        }
-        if (prefs.isContactAutoCheckEnabled) {
-            alarmReceiver.enableBirthdayCheckAlarm(context)
-        }
-        if (prefs.isAutoEventsCheckEnabled) {
-            alarmReceiver.enableEventCheck(context)
-        }
-        if (prefs.isAutoBackupEnabled) {
-            alarmReceiver.enableAutoSync(context)
-        }
-        if (prefs.isBirthdayPermanentEnabled) {
-            alarmReceiver.enableBirthdayPermanentAlarm(context)
-            Notifier.showBirthdayPermanent(context)
+        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            EnableThread(context).start()
+            val alarmReceiver = AlarmReceiver()
+            val prefs = Prefs.getInstance(context)
+            if (prefs.isBirthdayReminderEnabled) {
+                EventJobService.enableBirthdayAlarm(context)
+            }
+            if (prefs.isSbNotificationEnabled) {
+                Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+            }
+            if (prefs.isContactAutoCheckEnabled) {
+                alarmReceiver.enableBirthdayCheckAlarm(context)
+            }
+            if (prefs.isAutoEventsCheckEnabled) {
+                alarmReceiver.enableEventCheck(context)
+            }
+            if (prefs.isAutoBackupEnabled) {
+                alarmReceiver.enableAutoSync(context)
+            }
+            if (prefs.isBirthdayPermanentEnabled) {
+                alarmReceiver.enableBirthdayPermanentAlarm(context)
+                Notifier.showBirthdayPermanent(context)
+            }
         }
     }
 
     companion object {
 
-        private val TAG = "BootReceiver"
+        private const val TAG = "BootReceiver"
     }
 }

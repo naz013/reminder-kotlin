@@ -14,6 +14,7 @@ import android.net.Uri
 import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.util.Base64
+import android.view.View
 import android.widget.Toast
 
 import com.backdoor.engine.ObjectUtil
@@ -31,6 +32,7 @@ import java.io.UnsupportedEncodingException
 import java.util.Locale
 
 import androidx.fragment.app.Fragment
+import java.nio.charset.Charset
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -53,11 +55,11 @@ import androidx.fragment.app.Fragment
 
 object SuperUtil {
 
-    private val TAG = "SuperUtil"
+    private const val TAG = "SuperUtil"
 
     fun hasVolumePermission(context: Context): Boolean {
         if (Module.isNougat) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
             return notificationManager != null && notificationManager.isNotificationPolicyAccessGranted
         }
         return true
@@ -81,7 +83,7 @@ object SuperUtil {
     }
 
     fun isHeadsetUsing(context: Context): Boolean {
-        val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val manager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
         return manager != null && (manager.isBluetoothA2dpOn || manager.isWiredHeadsetOn)
     }
 
@@ -97,12 +99,12 @@ object SuperUtil {
             return false
         }
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS || mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_NONE) {
+        return if (mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALARMS || mNotificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_NONE) {
             LogUtil.d(TAG, "isDoNotDisturbEnabled: true")
-            return true
+            true
         } else {
             LogUtil.d(TAG, "isDoNotDisturbEnabled: false")
-            return false
+            false
         }
     }
 
@@ -123,7 +125,7 @@ object SuperUtil {
                 } catch (ignored: ActivityNotFoundException) {
                 }
             }
-            builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+            builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             builder.create().show()
         }
     }
@@ -138,10 +140,10 @@ object SuperUtil {
     }
 
     fun showLocationAlert(context: Context, callbacks: ReminderInterface) {
-        callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings)) { v ->
+        callbacks.showSnackbar(context.getString(R.string.gps_not_enabled), context.getString(R.string.action_settings), View.OnClickListener {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             context.startActivity(intent)
-        }
+        })
     }
 
     fun getObjectPrint(o: Any, clazz: Class<*>): String {
@@ -165,13 +167,13 @@ object SuperUtil {
         val googleAPI = GoogleApiAvailability.getInstance()
         val result = googleAPI.isGooglePlayServicesAvailable(a)
         LogUtil.d(TAG, "Result is: $result")
-        if (result != ConnectionResult.SUCCESS) {
+        return if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(a, result, 69).show()
             }
-            return false
+            false
         } else {
-            return true
+            true
         }
     }
 
@@ -204,15 +206,13 @@ object SuperUtil {
     fun appendString(vararg strings: String): String {
         val stringBuilder = StringBuilder()
         for (string in strings) {
-            if (string != null) {
-                stringBuilder.append(string)
-            }
+            stringBuilder.append(string)
         }
         return stringBuilder.toString()
     }
 
     fun getAfterTime(timeString: String): Long {
-        if (timeString.length == 6 && !timeString.matches("000000".toRegex())) {
+        return if (timeString.length == 6 && !timeString.matches("000000".toRegex())) {
             val hours = timeString.substring(0, 2)
             val minutes = timeString.substring(2, 4)
             val seconds = timeString.substring(4, 6)
@@ -222,9 +222,9 @@ object SuperUtil {
             val s: Long = 1000
             val m = s * 60
             val h = m * 60
-            return hour * h + minute * m + sec * s
+            hour * h + minute * m + sec * s
         } else
-            return 0
+            0
     }
 
     fun startVoiceRecognitionActivity(activity: Activity, requestCode: Int, isLive: Boolean) {
@@ -251,12 +251,12 @@ object SuperUtil {
 
     fun isAppInstalled(context: Context, packageName: String): Boolean {
         val pm = context.packageManager
-        var installed: Boolean
-        try {
+        val installed: Boolean
+        installed = try {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-            installed = true
+            true
         } catch (e: PackageManager.NameNotFoundException) {
-            installed = false
+            false
         }
 
         return installed
@@ -289,11 +289,10 @@ object SuperUtil {
         var result = ""
         val byte_string = Base64.decode(string, Base64.DEFAULT)
         try {
-            result = String(byte_string, "UTF-8")
+            result = String(byte_string, charset("UTF-8"))
         } catch (e1: UnsupportedEncodingException) {
             e1.printStackTrace()
         }
-
         return result
     }
 
@@ -304,7 +303,6 @@ object SuperUtil {
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
-
         return Base64.encodeToString(string_byted, Base64.DEFAULT).trim { it <= ' ' }
     }
 
@@ -316,6 +314,5 @@ object SuperUtil {
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(context, context.getString(R.string.could_not_launch_market), Toast.LENGTH_SHORT).show()
         }
-
     }
 }

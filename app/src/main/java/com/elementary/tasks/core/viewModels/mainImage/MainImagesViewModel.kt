@@ -1,11 +1,13 @@
-package com.elementary.tasks.core.viewModels.sms_templates
+package com.elementary.tasks.core.viewModels.mainImage
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.SmsTemplate
+import androidx.lifecycle.LiveData
+import com.elementary.tasks.core.data.models.MainImage
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.navigation.settings.additional.DeleteTemplateFilesAsync
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -25,17 +27,22 @@ import com.elementary.tasks.navigation.settings.additional.DeleteTemplateFilesAs
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewModel(application) {
+class MainImagesViewModel(application: Application) : BaseDbViewModel(application) {
 
-    fun deleteSmsTemplate(smsTemplate: SmsTemplate) {
+    var images: LiveData<List<MainImage>>
+
+    init {
+        images = appDb.mainImagesDao().loadAll()
+    }
+
+    fun saveImages(mainImages: List<MainImage>) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.smsTemplatesDao().delete(smsTemplate)
-            end {
+        launch(CommonPool) {
+            appDb.mainImagesDao().insertAll(mainImages)
+            withUIContext {
                 isInProgress.postValue(false)
-                result.postValue(Commands.DELETED)
+                result.postValue(Commands.SAVED)
             }
-            DeleteTemplateFilesAsync(getApplication()).execute(smsTemplate.key)
         }
     }
 }

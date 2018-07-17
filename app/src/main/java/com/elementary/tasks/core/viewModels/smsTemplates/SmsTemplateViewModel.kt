@@ -1,12 +1,14 @@
-package com.elementary.tasks.core.viewModels.sms_templates
+package com.elementary.tasks.core.viewModels.smsTemplates
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.viewModels.Commands
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,14 +33,14 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
     var smsTemplate: LiveData<SmsTemplate>
 
     init {
-        smsTemplate = appDb!!.smsTemplatesDao().loadByKey(key)
+        smsTemplate = appDb.smsTemplatesDao().loadByKey(key)
     }
 
     fun saveTemplate(smsTemplate: SmsTemplate) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.smsTemplatesDao().insert(smsTemplate)
-            end {
+        launch(CommonPool) {
+            appDb.smsTemplatesDao().insert(smsTemplate)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

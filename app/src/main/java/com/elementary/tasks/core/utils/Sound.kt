@@ -37,8 +37,7 @@ class Sound(private val mContext: Context) {
         private set
     private var lastFile: String? = null
     private var mRingtone: Ringtone? = null
-    var isDone: Boolean = false
-        private set
+    private var isDone: Boolean = false
     private var mCallback: PlaybackCallback? = null
     private val mRingtoneHandler = Handler()
     private val mRingtoneRunnable = object : Runnable {
@@ -55,10 +54,10 @@ class Sound(private val mContext: Context) {
 
     val isPlaying: Boolean
         get() {
-            try {
-                return mMediaPlayer != null && mMediaPlayer!!.isPlaying
+            return try {
+                mMediaPlayer != null && mMediaPlayer!!.isPlaying
             } catch (e: IllegalStateException) {
-                return false
+                false
             }
 
         }
@@ -139,8 +138,8 @@ class Sound(private val mContext: Context) {
             notifyStart()
             mp.start()
         }
-        mMediaPlayer!!.setOnCompletionListener { mp -> notifyFinish() }
-        mMediaPlayer!!.setOnErrorListener { mp, what, extra ->
+        mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
+        mMediaPlayer!!.setOnErrorListener { _, _, _ ->
             notifyFinish()
             false
         }
@@ -185,8 +184,8 @@ class Sound(private val mContext: Context) {
                 notifyStart()
                 mp.start()
             }
-            mMediaPlayer!!.setOnCompletionListener { mp -> notifyFinish() }
-            mMediaPlayer!!.setOnErrorListener { mp, what, extra ->
+            mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
+            mMediaPlayer!!.setOnErrorListener { _, _, _ ->
                 notifyFinish()
                 false
             }
@@ -240,8 +239,8 @@ class Sound(private val mContext: Context) {
             notifyStart()
             mp.start()
         }
-        mMediaPlayer!!.setOnCompletionListener { mp -> notifyFinish() }
-        mMediaPlayer!!.setOnErrorListener { mp, what, extra ->
+        mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
+        mMediaPlayer!!.setOnErrorListener { _, _, _ ->
             notifyFinish()
             false
         }

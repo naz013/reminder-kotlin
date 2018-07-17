@@ -1,8 +1,10 @@
 package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
-
 import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.utils.withUIContext
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -26,10 +28,10 @@ class GroupsViewModel(application: Application) : BaseGroupsViewModel(applicatio
 
     fun changeGroupColor(group: Group, color: Int) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             group.color = color
-            appDb!!.groupDao().insert(group)
-            end { isInProgress.postValue(false) }
+            appDb.groupDao().insert(group)
+            withUIContext { isInProgress.postValue(false) }
         }
     }
 }

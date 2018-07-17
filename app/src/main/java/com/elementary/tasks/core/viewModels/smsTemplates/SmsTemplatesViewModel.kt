@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.viewModels.sms_templates
+package com.elementary.tasks.core.viewModels.smsTemplates
 
 import android.app.Application
 
@@ -29,6 +29,6 @@ class SmsTemplatesViewModel(application: Application) : BaseSmsTemplatesViewMode
     var smsTemplates: LiveData<List<SmsTemplate>>
 
     init {
-        smsTemplates = appDb!!.smsTemplatesDao().loadAll()
+        smsTemplates = appDb.smsTemplatesDao().loadAll()
     }
 }

@@ -30,28 +30,22 @@ import androidx.core.content.ContextCompat
 @TargetApi(Build.VERSION_CODES.M)
 object Permissions {
 
-    val READ_CONTACTS = Manifest.permission.READ_CONTACTS
-    val GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS
-
-    val READ_CALENDAR = Manifest.permission.READ_CALENDAR
-    val WRITE_CALENDAR = Manifest.permission.WRITE_CALENDAR
-
-    val WRITE_EXTERNAL = Manifest.permission.WRITE_EXTERNAL_STORAGE
-    val READ_EXTERNAL = Manifest.permission.READ_EXTERNAL_STORAGE
-
-    val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
-    val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
-
-    val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
-    val CALL_PHONE = Manifest.permission.CALL_PHONE
-
-    val SEND_SMS = Manifest.permission.SEND_SMS
-
-    val MANAGE_DOCUMENTS = Manifest.permission.MANAGE_DOCUMENTS
-    val READ_CALLS = Manifest.permission.READ_CALL_LOG
-    val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
-    val BLUETOOTH = Manifest.permission.BLUETOOTH
-    val CAMERA = Manifest.permission.CAMERA
+    const val READ_CONTACTS = Manifest.permission.READ_CONTACTS
+    const val GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS
+    const val READ_CALENDAR = Manifest.permission.READ_CALENDAR
+    const val WRITE_CALENDAR = Manifest.permission.WRITE_CALENDAR
+    const val WRITE_EXTERNAL = Manifest.permission.WRITE_EXTERNAL_STORAGE
+    const val READ_EXTERNAL = Manifest.permission.READ_EXTERNAL_STORAGE
+    const val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
+    const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
+    const val READ_PHONE_STATE = Manifest.permission.READ_PHONE_STATE
+    const val CALL_PHONE = Manifest.permission.CALL_PHONE
+    const val SEND_SMS = Manifest.permission.SEND_SMS
+    const val MANAGE_DOCUMENTS = Manifest.permission.MANAGE_DOCUMENTS
+    const val READ_CALLS = Manifest.permission.READ_CALL_LOG
+    const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
+    const val BLUETOOTH = Manifest.permission.BLUETOOTH
+    const val CAMERA = Manifest.permission.CAMERA
 
     fun checkPermission(a: Context, vararg permissions: String): Boolean {
         if (!Module.isMarshmallow) {

@@ -38,20 +38,20 @@ import java.util.TimeZone
 
 object TimeUtil {
 
-    val GMT = "GMT"
+    private const val GMT = "GMT"
 
-    val FORMAT_24 = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-    val TIME_STAMP_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault())
-    val FORMAT_12 = SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault())
+    private val FORMAT_24 = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+    private val TIME_STAMP_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault())
+    private val FORMAT_12 = SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault())
     val FULL_DATE_FORMAT = SimpleDateFormat("EEE, dd MMM yyyy", Locale.getDefault())
-    val FULL_DATE_TIME_24 = SimpleDateFormat("EEE, dd MMM yyyy HH:mm", Locale.getDefault())
-    val FULL_DATE_TIME_12 = SimpleDateFormat("EEE, dd MMM yyyy K:mm a", Locale.getDefault())
+    private val FULL_DATE_TIME_24 = SimpleDateFormat("EEE, dd MMM yyyy HH:mm", Locale.getDefault())
+    private val FULL_DATE_TIME_12 = SimpleDateFormat("EEE, dd MMM yyyy K:mm a", Locale.getDefault())
     val DATE_FORMAT = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-    val TIME_24 = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val TIME_12 = SimpleDateFormat("K:mm a", Locale.getDefault())
+    private val TIME_24 = SimpleDateFormat("HH:mm", Locale.getDefault())
+    private val TIME_12 = SimpleDateFormat("K:mm a", Locale.getDefault())
     val SIMPLE_DATE = SimpleDateFormat("d MMMM", Locale.getDefault())
-    val SIMPLE_DATE_TIME = SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault())
-    val SIMPLE_DATE_TIME_12 = SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault())
+    private val SIMPLE_DATE_TIME = SimpleDateFormat("d MMMM, HH:mm", Locale.getDefault())
+    private val SIMPLE_DATE_TIME_12 = SimpleDateFormat("d MMMM, K:mm a", Locale.getDefault())
 
     private val GMT_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.getDefault())
     private val FIRE_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
@@ -253,10 +253,10 @@ object TimeUtil {
                 format = SimpleDateFormat("EEEE, MMMM dd yyyy HH:mm", loc)
             }
         } else {
-            if (is24) {
-                format = SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
+            format = if (is24) {
+                SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm", loc)
             } else {
-                format = SimpleDateFormat("EEEE, dd MMMM yyyy K:mm a", loc)
+                SimpleDateFormat("EEEE, dd MMMM yyyy K:mm a", loc)
             }
         }
         return format.format(calendar.time)
@@ -352,15 +352,15 @@ object TimeUtil {
         return format.format(date)
     }
 
-    fun getDate(date: String?): Date? {
-        try {
-            return TIME_24.parse(date)
-        } catch (e: ParseException) {
-            return null
-        } catch (e: NumberFormatException) {
-            return null
+    fun getDate(date: String): Date? {
+        return try {
+            TIME_24.parse(date)
+        } catch (e: Exception) {
+            null
+        } catch (e: java.lang.Exception) {
+            null
         } catch (e: ArrayIndexOutOfBoundsException) {
-            return null
+            null
         }
 
     }
@@ -406,7 +406,7 @@ object TimeUtil {
         }
     }
 
-    fun getAge(year: Int): Int {
+    private fun getAge(year: Int): Int {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         val mYear = calendar.get(Calendar.YEAR)
@@ -439,16 +439,16 @@ object TimeUtil {
             hourStr = hours.toString()
         }
         val minuteStr: String
-        if (minutes < 10) {
-            minuteStr = "0$minutes"
+        minuteStr = if (minutes < 10) {
+            "0$minutes"
         } else {
-            minuteStr = minutes.toString()
+            minutes.toString()
         }
         val secondStr: String
-        if (seconds < 10) {
-            secondStr = "0$seconds"
+        secondStr = if (seconds < 10) {
+            "0$seconds"
         } else {
-            secondStr = seconds.toString()
+            seconds.toString()
         }
         return hourStr + minuteStr + secondStr
     }

@@ -2,22 +2,21 @@ package com.elementary.tasks.core.viewModels.reminders
 
 import android.app.Application
 import android.widget.Toast
-
+import androidx.lifecycle.LiveData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.DeleteFilesAsync
 import com.elementary.tasks.reminder.work.UpdateFilesAsync
-
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.stream.Collectors
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -47,23 +46,22 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             val list = ArrayList<String>()
             val groups = allGroups.value
             if (groups != null) {
-                list.addAll(groups.stream().map<String>(Function<Group, String> { it.getTitle() }).collect<List<String>, Any>(Collectors.toList()))
+                list.addAll(groups.map { it.title }.toList())
             }
             return list
         }
 
     init {
-
-        defaultGroup = appDb!!.groupDao().loadDefault()
-        allGroups = appDb!!.groupDao().loadAll()
+        defaultGroup = appDb.groupDao().loadDefault()
+        allGroups = appDb.groupDao().loadAll()
     }
 
     fun saveAndStartReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.reminderDao().insert(reminder)
+        launch(CommonPool) {
+            appDb.reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
-            end {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
@@ -71,10 +69,9 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
         }
     }
 
-    fun copyReminder(reminder: Reminder, time: Long, name: String?) {
-        if (reminder == null) return
+    fun copyReminder(reminder: Reminder, time: Long, name: String) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             val newItem = reminder.copy()
             newItem.summary = name
             val calendar = Calendar.getInstance()
@@ -90,47 +87,46 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             }
             newItem.eventTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
             newItem.startTime = TimeUtil.getGmtFromDateTime(calendar.timeInMillis)
-            appDb!!.reminderDao().insert(newItem)
+            appDb.reminderDao().insert(newItem)
             EventControlFactory.getController(newItem).start()
-            end { Toast.makeText(getApplication(), R.string.reminder_created, Toast.LENGTH_SHORT).show() }
+            withUIContext { Toast.makeText(getApplication(), R.string.reminder_created, Toast.LENGTH_SHORT).show() }
         }
     }
 
     fun stopReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             EventControlFactory.getController(reminder).stop()
-            end { isInProgress.postValue(false) }
+            withUIContext { isInProgress.postValue(false) }
         }
     }
 
     fun pauseReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             EventControlFactory.getController(reminder).pause()
-            end { isInProgress.postValue(false) }
+            withUIContext { isInProgress.postValue(false) }
         }
     }
 
     fun resumeReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             EventControlFactory.getController(reminder).resume()
-            end { isInProgress.postValue(false) }
+            withUIContext { isInProgress.postValue(false) }
         }
     }
 
     fun toggleReminder(reminder: Reminder) {
-        if (reminder == null) return
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             if (!EventControlFactory.getController(reminder).onOff()) {
-                end {
+                withUIContext {
                     isInProgress.postValue(false)
                     Toast.makeText(getApplication(), R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                end {
+                withUIContext {
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
@@ -141,11 +137,11 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun moveToTrash(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
-            appDb!!.reminderDao().insert(reminder)
-            end {
+            appDb.reminderDao().insert(reminder)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
@@ -156,10 +152,10 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun changeGroup(reminder: Reminder, groupId: String) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             reminder.groupUuId = groupId
-            appDb!!.reminderDao().insert(reminder)
-            end {
+            appDb.reminderDao().insert(reminder)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
@@ -169,10 +165,10 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             EventControlFactory.getController(reminder).stop()
-            appDb!!.reminderDao().delete(reminder)
-            end {
+            appDb.reminderDao().delete(reminder)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
                 if (showMessage) Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
@@ -184,9 +180,9 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     fun saveReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.reminderDao().insert(reminder)
-            end {
+        launch(CommonPool) {
+            appDb.reminderDao().insert(reminder)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

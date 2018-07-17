@@ -29,6 +29,6 @@ class PlacesViewModel(application: Application) : BasePlacesViewModel(applicatio
     var places: LiveData<List<Place>>
 
     init {
-        places = appDb!!.placesDao().loadAll()
+        places = appDb.placesDao().loadAll()
     }
 }

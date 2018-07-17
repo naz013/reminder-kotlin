@@ -24,25 +24,25 @@ import com.elementary.tasks.R
  */
 
 object LED {
-    val NUM_OF_LEDS = 17
+    const val NUM_OF_LEDS = 17
 
-    val WHITE = -0x1
-    val RED = -0xbbcca
-    val GREEN = -0xb350b0
-    val BLUE = -0xde690d
-    val ORANGE = -0x6800
-    val YELLOW = -0x14c5
-    val AMBER = -0x3ef9
-    val PINK = -0x16e19d
-    val GREEN_LIGHT = -0x743cb6
-    val BLUE_LIGHT = -0xfc560c
-    val CYAN = -0xff432c
-    val PURPLE = -0x63d850
-    val LIME = -0x3223c7
-    val INDIGO = -0xc0ae4b
-    val DEEP_PURPLE = -0x98c549
-    val DEEP_ORANGE = -0xa8de
-    val TEAL = -0xff6978
+    private const val WHITE = -0x1
+    private const val RED = -0xbbcca
+    private const val GREEN = -0xb350b0
+    const val BLUE = -0xde690d
+    private const val ORANGE = -0x6800
+    private const val YELLOW = -0x14c5
+    private const val AMBER = -0x3ef9
+    private const val PINK = -0x16e19d
+    private const val GREEN_LIGHT = -0x743cb6
+    private const val BLUE_LIGHT = -0xfc560c
+    private const val CYAN = -0xff432c
+    private const val PURPLE = -0x63d850
+    private const val LIME = -0x3223c7
+    private const val INDIGO = -0xc0ae4b
+    private const val DEEP_PURPLE = -0x98c549
+    private const val DEEP_ORANGE = -0xa8de
+    private const val TEAL = -0xff6978
 
     fun getLED(code: Int): Int {
         if (!Module.isPro) {
@@ -73,7 +73,7 @@ object LED {
     }
 
     fun getAllNames(context: Context): Array<String> {
-        val colors = arrayOfNulls<String>(LED.NUM_OF_LEDS)
+        val colors = arrayOf<String>()
         for (i in 0 until LED.NUM_OF_LEDS) {
             colors[i] = LED.getTitle(context, i)
         }

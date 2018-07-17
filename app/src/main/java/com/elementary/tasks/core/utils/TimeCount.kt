@@ -2,15 +2,11 @@ package com.elementary.tasks.core.utils
 
 import android.app.AlarmManager
 import android.content.Context
-import androidx.annotation.StringRes
 import android.text.TextUtils
-
+import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,14 +28,10 @@ import java.util.Locale
  */
 class TimeCount private constructor(context: Context) {
 
-    private val holder: ContextHolder
+    private val holder: ContextHolder = ContextHolder(context)
 
     private val context: Context
         get() = holder.context
-
-    init {
-        this.holder = ContextHolder(context)
-    }
 
     fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {
         val hours = reminder.hours
@@ -52,7 +44,7 @@ class TimeCount private constructor(context: Context) {
             calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime) + reminder.repeatInterval
         }
         var mHour = calendar.get(Calendar.HOUR_OF_DAY)
-        if (hours != null && hours.size > 0) {
+        if (hours.isNotEmpty()) {
             while (hours.contains(mHour)) {
                 calendar.timeInMillis = calendar.timeInMillis + reminder.repeatInterval
                 mHour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -60,7 +52,7 @@ class TimeCount private constructor(context: Context) {
             return calendar.timeInMillis
         }
         var eventTime = calendar.timeInMillis
-        if (fromHour != null && toHour != null) {
+        if (fromHour != "" && toHour != "") {
             val fromDate = TimeUtil.getDate(fromHour)
             val toDate = TimeUtil.getDate(toHour)
             if (fromDate != null && toDate != null) {
@@ -79,7 +71,7 @@ class TimeCount private constructor(context: Context) {
                 calendar.set(Calendar.MINUTE, minute)
                 val end = calendar.timeInMillis
                 while (isRange(eventTime, start, end)) {
-                    eventTime = eventTime + reminder.repeatInterval
+                    eventTime += reminder.repeatInterval
                 }
             }
         }
@@ -90,19 +82,19 @@ class TimeCount private constructor(context: Context) {
         return if (start > end) {
             time >= start || time < end
         } else {
-            time >= start && time <= end
+            time in start..end
         }
     }
 
     fun generateDateTime(eventTime: String, repeat: Long): Long {
-        if (TextUtils.isEmpty(eventTime)) {
-            return 0
+        return if (TextUtils.isEmpty(eventTime)) {
+            0
         } else {
             var time = TimeUtil.getDateTimeFromGmt(eventTime)
             while (time < System.currentTimeMillis()) {
                 time += repeat
             }
-            return time
+            time
         }
     }
 
@@ -143,7 +135,7 @@ class TimeCount private constructor(context: Context) {
                 }
             }
         } else if (difference > HOUR) {
-            hours = days * 24 + hours
+            hours += days * 24
             if (lang.startsWith("uk") || lang.startsWith("ru")) {
                 var last = hours
                 while (last > 10) {
@@ -164,7 +156,7 @@ class TimeCount private constructor(context: Context) {
                 }
             }
         } else if (difference > MINUTE) {
-            minutes = hours * 60 + minutes
+            minutes += hours * 60
             if (lang.startsWith("uk") || lang.startsWith("ru")) {
                 var last = minutes
                 while (last > 10) {
@@ -201,8 +193,8 @@ class TimeCount private constructor(context: Context) {
         cc.timeInMillis = startTime
         cc.set(Calendar.SECOND, 0)
         cc.set(Calendar.MILLISECOND, 0)
-        if (delay > 0) {
-            return startTime + delay * MINUTE
+        return if (delay > 0) {
+            startTime + delay * MINUTE
         } else {
             while (true) {
                 val mDay = cc.get(Calendar.DAY_OF_WEEK)
@@ -211,7 +203,7 @@ class TimeCount private constructor(context: Context) {
                 }
                 cc.timeInMillis = cc.timeInMillis + DAY
             }
-            return cc.timeInMillis
+            cc.timeInMillis
         }
     }
 
@@ -219,7 +211,7 @@ class TimeCount private constructor(context: Context) {
         val weekdays = reminder.weekdays ?: return 0
         val beforeValue = reminder.remindBefore
         val cc = Calendar.getInstance()
-        if (reminder.eventTime != null) {
+        if (reminder.eventTime != "") {
             cc.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         }
         cc.set(Calendar.SECOND, 0)
@@ -237,7 +229,7 @@ class TimeCount private constructor(context: Context) {
     fun getNextMonthDayTime(reminder: Reminder): Long {
         val dayOfMonth = reminder.dayOfMonth
         var fromTime = System.currentTimeMillis()
-        if (reminder.eventTime != null) {
+        if (reminder.eventTime != "") {
             fromTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         }
         val beforeValue = reminder.remindBefore
@@ -275,19 +267,19 @@ class TimeCount private constructor(context: Context) {
     }
 
     fun getNextDateTime(timeLong: Long): Array<String> {
-        val date: String?
-        val time: String?
+        val date: String
+        val time: String
         if (timeLong == 0L) {
-            date = null
-            time = null
+            date = ""
+            time = ""
         } else {
             val cl = Calendar.getInstance()
             cl.timeInMillis = timeLong
             val mTime = cl.time
             date = TimeUtil.DATE_FORMAT.format(mTime)
-            time = TimeUtil.getTime(mTime, Prefs.getInstance(context).getBoolean(Prefs.IS_24_TIME_FORMAT))
+            time = TimeUtil.getTime(mTime, Prefs.getInstance(context).getBoolean(PrefsConstants.IS_24_TIME_FORMAT))
         }
-        return arrayOf<String>(date, time)
+        return arrayOf(date, time)
     }
 
     fun getNextYearDayTime(reminder: Reminder): Long {
@@ -295,7 +287,7 @@ class TimeCount private constructor(context: Context) {
         val monthOfYear = reminder.monthOfYear
         var fromTime = System.currentTimeMillis()
         val beforeValue = reminder.remindBefore
-        if (reminder.eventTime != null) {
+        if (reminder.eventTime != "") {
             fromTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         }
         val cc = Calendar.getInstance()
@@ -310,18 +302,18 @@ class TimeCount private constructor(context: Context) {
 
     companion object {
 
-        val SECOND: Long = 1000
-        val MINUTE = 60 * SECOND
-        val HOUR = MINUTE * 60
-        val HALF_DAY = HOUR * 12
-        val DAY = HALF_DAY * 2
+        const val SECOND: Long = 1000
+        const val MINUTE = 60 * SECOND
+        const val HOUR = MINUTE * 60
+        private const val HALF_DAY = HOUR * 12
+        const val DAY = HALF_DAY * 2
         private var instance: TimeCount? = null
 
         fun getInstance(context: Context): TimeCount {
             if (instance == null) {
                 instance = TimeCount(context.applicationContext)
             }
-            return instance
+            return instance!!
         }
 
         fun isCurrent(eventTime: String?): Boolean {

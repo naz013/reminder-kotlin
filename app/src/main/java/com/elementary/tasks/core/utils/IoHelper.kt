@@ -27,15 +27,10 @@ import java.io.IOException
  */
 
 class IoHelper(private val mContext: Context) {
-    private val isConnected: Boolean
-    private val mDrive: Google?
-    private val mDropbox: Dropbox
 
-    init {
-        isConnected = SuperUtil.isConnected(mContext)
-        mDrive = Google.getInstance(mContext)
-        mDropbox = Dropbox(mContext)
-    }
+    private val isConnected: Boolean = SuperUtil.isConnected(mContext)
+    private val mDrive: Google? = Google.getInstance()
+    private val mDropbox: Dropbox = Dropbox(mContext)
 
     /**
      * Create backup files for reminders, groups, birthdays and notes.
@@ -55,7 +50,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadSettings()
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.saveSettingsToDrive()
                 }
             } catch (e: IOException) {
@@ -72,7 +67,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportGroups()
         if (isConnected) {
             mDropbox.uploadGroups()
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.saveGroupsToDrive()
             }
         }
@@ -93,7 +88,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadGroups(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadGroups(delete)
                 }
             } catch (e: IOException) {
@@ -110,7 +105,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportReminders()
         if (isConnected) {
             mDropbox.uploadReminderByFileName(null)
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.saveRemindersToDrive()
             }
         }
@@ -131,7 +126,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadReminders(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadReminders(mContext, delete)
                 }
             } catch (e: IOException) {
@@ -150,7 +145,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportNotes()
         if (isConnected) {
             mDropbox.uploadNotes()
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.saveNotesToDrive()
             }
         }
@@ -171,7 +166,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadNotes(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadNotes(delete)
                 }
             } catch (e: IOException) {
@@ -188,7 +183,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportBirthdays()
         if (isConnected) {
             mDropbox.uploadBirthdays()
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.saveBirthdaysToDrive()
             }
         }
@@ -209,7 +204,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadBirthdays(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadBirthdays(delete)
                 }
             } catch (e: IOException) {
@@ -226,7 +221,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportPlaces()
         if (isConnected) {
             mDropbox.uploadPlaces()
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.savePlacesToDrive()
             }
         }
@@ -247,7 +242,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadPlaces(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadPlaces(delete)
                 }
             } catch (e: IOException) {
@@ -264,7 +259,7 @@ class IoHelper(private val mContext: Context) {
         BackupTool.getInstance().exportTemplates()
         if (isConnected) {
             mDropbox.uploadTemplates()
-            if (mDrive != null && mDrive.drive != null) {
+            if (mDrive?.drive != null) {
                 mDrive.drive!!.saveTemplatesToDrive()
             }
         }
@@ -285,7 +280,7 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.downloadTemplates(delete)
             try {
-                if (mDrive != null && mDrive.drive != null) {
+                if (mDrive?.drive != null) {
                     mDrive.drive!!.downloadTemplates(delete)
                 }
             } catch (e: IOException) {

@@ -84,13 +84,11 @@ object Contacts {
         var contactId = 0
         val contentResolver = context.contentResolver
         val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID), null, null, null)
-        try {
-            if (contactLookup != null && contactLookup.count > 0) {
-                contactLookup.moveToNext()
-                contactId = contactLookup.getInt(contactLookup.getColumnIndex(ContactsContract.PhoneLookup._ID))
+        contactLookup.use { look ->
+            if (look != null && look.count > 0) {
+                look.moveToNext()
+                contactId = look.getInt(look.getColumnIndex(ContactsContract.PhoneLookup._ID))
             }
-        } finally {
-            contactLookup?.close()
         }
         return contactId
     }
@@ -108,13 +106,11 @@ object Contacts {
         var name = "?"
         val contentResolver = context.contentResolver
         val contactLookup = contentResolver.query(uri, arrayOf(ContactsContract.Data.DISPLAY_NAME), null, null, null)
-        try {
-            if (contactLookup != null && contactLookup.count > 0) {
-                contactLookup.moveToNext()
-                name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
+        contactLookup.use { look ->
+            if (look != null && look.count > 0) {
+                look.moveToNext()
+                name = look.getString(look.getColumnIndex(ContactsContract.Data.DISPLAY_NAME))
             }
-        } finally {
-            contactLookup?.close()
         }
         return name
     }

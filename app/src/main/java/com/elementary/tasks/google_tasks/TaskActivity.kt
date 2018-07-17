@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskViewModel
+import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
 import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
 
 import java.util.ArrayList

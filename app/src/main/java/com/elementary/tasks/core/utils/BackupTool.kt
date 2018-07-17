@@ -7,32 +7,14 @@ import android.text.TextUtils
 import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
-
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.FileConfig
-import com.elementary.tasks.core.controller.EventControl
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Group
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.data.models.*
 import com.google.gson.Gson
-
-import java.io.BufferedReader
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.*
 import java.lang.ref.WeakReference
-
 import javax.inject.Inject
 
 /**
@@ -92,7 +74,7 @@ class BackupTool private constructor() {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.templatesDir
         if (dir != null) {
-            val exportFileName = item.key!! + FileConfig.FILE_NAME_TEMPLATE
+            val exportFileName = item.key + FileConfig.FILE_NAME_TEMPLATE
             try {
                 writeFile(File(dir, exportFileName), jsonData.get())
                 jsonData.clear()
@@ -154,7 +136,7 @@ class BackupTool private constructor() {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.placesDir
         if (dir != null) {
-            val exportFileName = item.id!! + FileConfig.FILE_NAME_PLACE
+            val exportFileName = item.id + FileConfig.FILE_NAME_PLACE
             try {
                 writeFile(File(dir, exportFileName), jsonData.get())
                 jsonData.clear()

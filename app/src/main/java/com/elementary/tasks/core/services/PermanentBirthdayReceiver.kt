@@ -47,8 +47,8 @@ class PermanentBirthdayReceiver : BroadcastReceiver() {
 
     companion object {
 
-        val BIRTHDAY_PERM_ID = 356665
-        val ACTION_SHOW = Actions.Birthday.ACTION_SB_SHOW
-        val ACTION_HIDE = Actions.Birthday.ACTION_SB_HIDE
+        const val BIRTHDAY_PERM_ID = 356665
+        const val ACTION_SHOW = Actions.Birthday.ACTION_SB_SHOW
+        const val ACTION_HIDE = Actions.Birthday.ACTION_SB_HIDE
     }
 }

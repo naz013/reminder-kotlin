@@ -91,27 +91,22 @@ class BirthdayActionService : BroadcastReceiver() {
         if (intent != null) {
             val action = intent.action
             LogUtil.d(TAG, "onStartCommand: " + action!!)
-            if (action != null) {
-                if (action.matches(ACTION_CALL.toRegex())) {
-                    makeCall(context, intent)
-                } else if (action.matches(ACTION_SMS.toRegex())) {
-                    sendSms(context, intent)
-                } else if (action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex())) {
-                    hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
-                } else {
-                    showReminder(context, intent)
-                }
+            when {
+                action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
+                action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
+                action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+                else -> showReminder(context, intent)
             }
         }
     }
 
     companion object {
 
-        val ACTION_SHOW = Actions.Birthday.ACTION_SHOW_FULL
-        val ACTION_CALL = Actions.Birthday.ACTION_CALL
-        val ACTION_SMS = Actions.Birthday.ACTION_SMS
+        const val ACTION_SHOW = Actions.Birthday.ACTION_SHOW_FULL
+        const val ACTION_CALL = Actions.Birthday.ACTION_CALL
+        const val ACTION_SMS = Actions.Birthday.ACTION_SMS
 
-        private val TAG = "BirthdayActionService"
+        private const val TAG = "BirthdayActionService"
 
         fun hide(context: Context, id: Int): Intent {
             return intent(context, id, PermanentBirthdayReceiver.ACTION_HIDE)

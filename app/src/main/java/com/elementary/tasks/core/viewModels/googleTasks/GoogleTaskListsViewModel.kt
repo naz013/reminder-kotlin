@@ -1,7 +1,7 @@
-package com.elementary.tasks.core.viewModels.google_tasks
+package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
-
+import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -9,12 +9,12 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.google.api.services.tasks.model.TaskLists
-
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import java.io.IOException
-import java.util.ArrayList
-import java.util.Random
-
-import androidx.lifecycle.LiveData
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -39,12 +39,12 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     var googleTaskLists: LiveData<List<GoogleTaskList>>
 
     init {
-        googleTaskLists = appDb!!.googleTaskListsDao().loadAll()
+        googleTaskLists = appDb.googleTaskListsDao().loadAll()
     }
 
     fun sync() {
-        val mGoogle = Google.getInstance(getApplication())
-        if (mGoogle == null || mGoogle.tasks == null) {
+        val mGoogle = Google.getInstance()
+        if (mGoogle?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -53,10 +53,10 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
             return
         }
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             var lists: TaskLists? = null
             try {
-                lists = mGoogle.tasks!!.taskLists
+                lists = mGoogle.tasks?.taskLists
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -64,7 +64,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
             if (lists != null && lists.size > 0 && lists.items != null) {
                 for (item in lists.items) {
                     val listId = item.id
-                    var taskList = appDb!!.googleTaskListsDao().getById(listId)
+                    var taskList = appDb.googleTaskListsDao().getById(listId)
                     if (taskList != null) {
                         taskList.update(item)
                     } else {
@@ -72,10 +72,10 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         val color = r.nextInt(15)
                         taskList = GoogleTaskList(item, color)
                     }
-                    appDb!!.googleTaskListsDao().insert(taskList)
-                    val tasks = mGoogle.tasks!!.getTasks(listId)
-                    if (tasks.isEmpty()) {
-                        end {
+                    appDb.googleTaskListsDao().insert(taskList)
+                    val tasks = mGoogle.tasks?.getTasks(listId)
+                    if (tasks == null || tasks.isEmpty()) {
+                        withContext(UI) {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
                             UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
@@ -83,7 +83,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                     } else {
                         val googleTasks = ArrayList<GoogleTask>()
                         for (task in tasks) {
-                            var googleTask = appDb!!.googleTasksDao().getById(task.id)
+                            var googleTask = appDb.googleTasksDao().getById(task.id)
                             if (googleTask != null) {
                                 googleTask.listId = listId
                                 googleTask.update(task)
@@ -92,8 +92,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                             }
                             googleTasks.add(googleTask)
                         }
-                        appDb!!.googleTasksDao().insertAll(googleTasks)
-                        end {
+                        appDb.googleTasksDao().insertAll(googleTasks)
+                        withContext(UI) {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
                             UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
@@ -109,8 +109,8 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
     }
 
     fun clearList(googleTaskList: GoogleTaskList) {
-        val mGoogle = Google.getInstance(getApplication())
-        if (mGoogle == null || mGoogle.tasks == null) {
+        val mGoogle = Google.getInstance()
+        if (mGoogle?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -118,11 +118,11 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
             result.postValue(Commands.FAILED)
         } else {
             isInProgress.postValue(true)
-            run {
-                val googleTasks = appDb!!.googleTasksDao().getAllByList(googleTaskList.listId, Google.TASKS_COMPLETE)
-                appDb!!.googleTasksDao().deleteAll(googleTasks)
+            launch(CommonPool) {
+                val googleTasks = appDb.googleTasksDao().getAllByList(googleTaskList.listId, Google.TASKS_COMPLETE)
+                appDb.googleTasksDao().deleteAll(googleTasks)
                 mGoogle.tasks!!.clearTaskList(googleTaskList.listId)
-                end {
+                withContext(UI) {
                     isInProgress.postValue(false)
                     result.postValue(Commands.UPDATED)
                     UpdatesHelper.getInstance(getApplication()).updateTasksWidget()

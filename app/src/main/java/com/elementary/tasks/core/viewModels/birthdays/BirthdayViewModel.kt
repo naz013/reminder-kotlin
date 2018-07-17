@@ -31,7 +31,7 @@ class BirthdayViewModel private constructor(application: Application, id: Int) :
     var birthday: LiveData<Birthday>
 
     init {
-        birthday = appDb!!.birthdaysDao().loadById(id)
+        birthday = appDb.birthdaysDao().loadById(id)
     }
 
     class Factory(private val application: Application, private val key: Int) : ViewModelProvider.NewInstanceFactory() {

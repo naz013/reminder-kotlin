@@ -48,11 +48,10 @@ object FastBlur {
         //
         // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
 
-        val bitmap: Bitmap
-        if (canReuseInBitmap) {
-            bitmap = sentBitmap
+        val bitmap = if (canReuseInBitmap) {
+            sentBitmap
         } else {
-            bitmap = sentBitmap.copy(sentBitmap.config, true)
+            sentBitmap.copy(sentBitmap.config, true)
         }
 
         if (radius < 1) {

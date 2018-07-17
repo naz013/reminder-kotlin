@@ -64,7 +64,7 @@ class ConversationActivity : ThemedActivity() {
     private var binding: ActivityConversationBinding? = null
 
     private val mAdapter = ConversationAdapter()
-    private var viewModel: ConversationViewModel? = null
+    private lateinit var viewModel: ConversationViewModel
     private var tts: TextToSpeech? = null
     private var isTtsReady: Boolean = false
     private var mAskAction: AskAction? = null
@@ -94,7 +94,7 @@ class ConversationActivity : ThemedActivity() {
 
         override fun onRmsChanged(v: Float) {
             var v = v
-            v = v * 2000
+            v *= 2000
             var db = 0.0
             if (v > 1) {
                 db = 20 * Math.log10(v.toDouble())
@@ -145,7 +145,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun parseResults(list: List<String>?) {
-        LogUtil.d(TAG, "parseResults: " + list!!)
+        LogUtil.d(TAG, "parseResults: " + list)
         if (list == null || list.isEmpty()) {
             showSilentMessage()
             return
@@ -369,7 +369,7 @@ class ConversationActivity : ThemedActivity() {
     private fun noteAction(model: Model) {
         stopView()
         addResponse(getLocalized(R.string.note_created))
-        val item = viewModel!!.createNote(model.summary)
+        val item = viewModel.createNote(model.summary)
         addObjectResponse(Reply(Reply.NOTE, item))
         Handler().postDelayed({ askNoteAction(item) }, 1000)
     }

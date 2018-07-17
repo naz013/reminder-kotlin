@@ -8,6 +8,8 @@ import com.elementary.tasks.notes.work.DeleteNoteFilesAsync
 import java.util.ArrayList
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -32,16 +34,18 @@ class NotesViewModel(application: Application) : BaseNotesViewModel(application)
     var notes: LiveData<List<Note>>
 
     init {
-        notes = appDb!!.notesDao().loadAll()
+        notes = appDb.notesDao().loadAll()
     }
 
     fun deleteAll(list: List<Note>) {
-        val ids = ArrayList<String>()
-        for (item in list) {
-            ids.add(item.key)
+        launch(CommonPool) {
+            val ids = ArrayList<String>()
+            for (item in list) {
+                ids.add(item.key)
+            }
+            appDb.notesDao().delete(list)
+            DeleteNoteFilesAsync(getApplication()).execute(*ids.toTypedArray())
         }
-        appDb!!.notesDao().delete(list)
-        DeleteNoteFilesAsync(getApplication()).execute(*ids.toTypedArray())
     }
 
     fun reload() {

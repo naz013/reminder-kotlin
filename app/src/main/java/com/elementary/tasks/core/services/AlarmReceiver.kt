@@ -5,30 +5,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
-
+import androidx.legacy.content.WakefulBroadcastReceiver
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-
+import com.elementary.tasks.core.utils.*
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
-
-import java.util.Calendar
-
-import androidx.legacy.content.WakefulBroadcastReceiver
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -101,7 +89,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_BIRTHDAY_PERMANENT
         val alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_PERMANENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         alarmMgr?.cancel(alarmIntent)
     }
 
@@ -133,7 +121,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_BIRTHDAY_AUTO
         val alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         alarmMgr?.cancel(alarmIntent)
     }
 
@@ -158,7 +146,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_EVENTS_CHECK
         val alarmIntent = PendingIntent.getBroadcast(context, EVENTS_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         alarmMgr?.cancel(alarmIntent)
     }
 
@@ -183,7 +171,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.action = ACTION_SYNC_AUTO
         val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
         alarmMgr?.cancel(alarmIntent)
     }
 
@@ -193,32 +181,27 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
             val currTime = System.currentTimeMillis()
             val calID = Prefs.getInstance(mContext).eventsCalendar
             val eventItems = CalendarUtils.getEvents(mContext, calID)
-            if (eventItems.size > 0) {
+            if (eventItems.isNotEmpty()) {
                 val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds
                 for (item in eventItems) {
                     val itemId = item.id
                     if (!list.contains(itemId)) {
                         val rrule = item.rrule
                         var repeat: Long = 0
-                        if (rrule != null && !rrule.matches("".toRegex())) {
+                        if (!rrule.matches("".toRegex())) {
                             try {
                                 val rule = RecurrenceRule(rrule)
                                 val interval = rule.interval
                                 val freq = rule.freq
-                                if (freq === Freq.SECONDLY)
-                                    repeat = interval * TimeCount.SECOND
-                                else if (freq === Freq.MINUTELY)
-                                    repeat = interval * TimeCount.MINUTE
-                                else if (freq === Freq.HOURLY)
-                                    repeat = interval * TimeCount.HOUR
-                                else if (freq === Freq.WEEKLY)
-                                    repeat = interval.toLong() * 7 * TimeCount.DAY
-                                else if (freq === Freq.MONTHLY)
-                                    repeat = interval.toLong() * 30 * TimeCount.DAY
-                                else if (freq === Freq.YEARLY)
-                                    repeat = interval.toLong() * 365 * TimeCount.DAY
-                                else
-                                    repeat = interval * TimeCount.DAY
+                                repeat = when {
+                                    freq === Freq.SECONDLY -> interval * TimeCount.SECOND
+                                    freq === Freq.MINUTELY -> interval * TimeCount.MINUTE
+                                    freq === Freq.HOURLY -> interval * TimeCount.HOUR
+                                    freq === Freq.WEEKLY -> interval.toLong() * 7 * TimeCount.DAY
+                                    freq === Freq.MONTHLY -> interval.toLong() * 30 * TimeCount.DAY
+                                    freq === Freq.YEARLY -> interval.toLong() * 365 * TimeCount.DAY
+                                    else -> interval * TimeCount.DAY
+                                }
                             } catch (e: InvalidRecurrenceRuleException) {
                                 e.printStackTrace()
                             }
@@ -226,7 +209,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
                         }
                         val summary = item.title
                         val def = AppDb.getAppDatabase(mContext).groupDao().default
-                        var categoryId: String? = ""
+                        var categoryId = ""
                         if (def != null) {
                             categoryId = def.uuId
                         }
@@ -250,7 +233,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
             return null
         }
 
-        private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String?) {
+        private fun saveReminder(itemId: Long, summary: String, dtStart: Long, repeat: Long, categoryId: String) {
             val reminder = Reminder()
             reminder.type = Reminder.BY_DATE
             reminder.repeatInterval = repeat
@@ -267,16 +250,16 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
 
     companion object {
 
-        private val AUTO_SYNC_ID = Integer.MAX_VALUE - 1
-        private val BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2
-        private val BIRTHDAY_CHECK_ID = Integer.MAX_VALUE - 4
-        private val EVENTS_CHECK_ID = Integer.MAX_VALUE - 5
+        private const val AUTO_SYNC_ID = Integer.MAX_VALUE - 1
+        private const val BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2
+        private const val BIRTHDAY_CHECK_ID = Integer.MAX_VALUE - 4
+        private const val EVENTS_CHECK_ID = Integer.MAX_VALUE - 5
 
-        private val ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT"
-        private val ACTION_BIRTHDAY_AUTO = "com.elementary.alarm.BIRTHDAY_AUTO"
-        private val ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO"
-        private val ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK"
+        private const val ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT"
+        private const val ACTION_BIRTHDAY_AUTO = "com.elementary.alarm.BIRTHDAY_AUTO"
+        private const val ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO"
+        private const val ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK"
 
-        private val TAG = "AlarmReceiver"
+        private const val TAG = "AlarmReceiver"
     }
 }

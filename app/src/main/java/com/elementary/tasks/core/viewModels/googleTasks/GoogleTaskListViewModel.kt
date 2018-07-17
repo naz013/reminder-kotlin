@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.viewModels.google_tasks
+package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
 
@@ -12,6 +12,10 @@ import java.io.IOException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -38,18 +42,19 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     var googleTasks: LiveData<List<GoogleTask>>
 
     init {
-        googleTaskList = appDb!!.googleTaskListsDao().loadById(listId)
-        defaultTaskList = appDb!!.googleTaskListsDao().loadDefault()
+        defaultTaskList = appDb.googleTaskListsDao().loadDefault()
         if (listId == null) {
-            googleTasks = appDb!!.googleTasksDao().loadAll()
+            googleTasks = appDb.googleTasksDao().loadAll()
+            googleTaskList = appDb.googleTaskListsDao().loadById("")
         } else {
-            googleTasks = appDb!!.googleTasksDao().loadAllByList(listId)
+            googleTaskList = appDb.googleTaskListsDao().loadById(listId)
+            googleTasks = appDb.googleTasksDao().loadAllByList(listId)
         }
     }
 
     fun newGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance(getApplication())
-        if (google == null || google.tasks == null) {
+        val google = Google.getInstance()
+        if (google?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -58,9 +63,9 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
             return
         }
         isInProgress.postValue(true)
-        run {
-            google.tasks!!.insertTasksList(googleTaskList.title, googleTaskList.color)
-            end {
+        launch(CommonPool) {
+            google.tasks?.insertTasksList(googleTaskList.title, googleTaskList.color)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
@@ -68,8 +73,8 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
     }
 
     fun updateGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance(getApplication())
-        if (google == null || google.tasks == null) {
+        val google = Google.getInstance()
+        if (google?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -78,16 +83,16 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
             return
         }
         isInProgress.postValue(true)
-        run {
-            appDb!!.googleTaskListsDao().insert(googleTaskList)
+        launch(CommonPool) {
+            appDb.googleTaskListsDao().insert(googleTaskList)
             try {
-                google.tasks!!.updateTasksList(googleTaskList.title, googleTaskList.listId)
-                end {
+                google.tasks?.updateTasksList(googleTaskList.title, googleTaskList.listId)
+                withContext(UI) {
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
             } catch (e: IOException) {
-                end {
+                withContext(UI) {
                     isInProgress.postValue(false)
                     result.postValue(Commands.FAILED)
                 }
@@ -97,9 +102,9 @@ class GoogleTaskListViewModel(application: Application, listId: String?) : BaseT
 
     fun saveLocalGoogleTaskList(googleTaskList: GoogleTaskList) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.googleTaskListsDao().insert(googleTaskList)
-            end {
+        launch(CommonPool) {
+            appDb.googleTaskListsDao().insert(googleTaskList)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

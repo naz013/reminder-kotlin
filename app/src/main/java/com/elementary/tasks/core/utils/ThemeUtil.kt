@@ -755,7 +755,7 @@ class ThemeUtil {
         return getColor(colorPrimaryDark(code))
     }
 
-    fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
+    private fun adjustAlpha(color: Int, @IntRange(from = 0, to = 100) factor: Int): Int {
         val alpha = 255f * (factor.toFloat() / 100f)
         val red = android.graphics.Color.red(color)
         val green = android.graphics.Color.green(color)

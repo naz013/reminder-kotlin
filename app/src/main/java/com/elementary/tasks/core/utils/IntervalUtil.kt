@@ -27,12 +27,12 @@ import java.util.ArrayList
 
 object IntervalUtil {
 
-    val REPEAT_CODE_ONCE = 0
-    val INTERVAL_DAY = 1
-    val INTERVAL_WEEK = INTERVAL_DAY * 7
-    val INTERVAL_TWO_WEEKS = INTERVAL_WEEK * 2
-    val INTERVAL_THREE_WEEKS = INTERVAL_WEEK * 3
-    val INTERVAL_FOUR_WEEKS = INTERVAL_WEEK * 4
+    private const val REPEAT_CODE_ONCE = 0
+    const val INTERVAL_DAY = 1
+    private const val INTERVAL_WEEK = INTERVAL_DAY * 7
+    private const val INTERVAL_TWO_WEEKS = INTERVAL_WEEK * 2
+    private const val INTERVAL_THREE_WEEKS = INTERVAL_WEEK * 3
+    private const val INTERVAL_FOUR_WEEKS = INTERVAL_WEEK * 4
 
     fun getWeekRepeat(mon: Boolean, tue: Boolean, wed: Boolean, thu: Boolean, fri: Boolean,
                       sat: Boolean, sun: Boolean): List<Int> {
@@ -65,18 +65,13 @@ object IntervalUtil {
         val interval: String
         if (tmp > 1000) {
             code /= day
-            if (code == REPEAT_CODE_ONCE.toLong()) {
-                interval = "0"
-            } else if (code == INTERVAL_WEEK.toLong()) {
-                interval = String.format(mContext.getString(R.string.xW), 1.toString())
-            } else if (code == INTERVAL_TWO_WEEKS.toLong()) {
-                interval = String.format(mContext.getString(R.string.xW), 2.toString())
-            } else if (code == INTERVAL_THREE_WEEKS.toLong()) {
-                interval = String.format(mContext.getString(R.string.xW), 3.toString())
-            } else if (code == INTERVAL_FOUR_WEEKS.toLong()) {
-                interval = String.format(mContext.getString(R.string.xW), 4.toString())
-            } else {
-                interval = String.format(mContext.getString(R.string.xD), code.toString())
+            interval = when (code) {
+                REPEAT_CODE_ONCE.toLong() -> "0"
+                INTERVAL_WEEK.toLong() -> String.format(mContext.getString(R.string.xW), 1.toString())
+                INTERVAL_TWO_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 2.toString())
+                INTERVAL_THREE_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 3.toString())
+                INTERVAL_FOUR_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 4.toString())
+                else -> String.format(mContext.getString(R.string.xD), code.toString())
             }
         } else {
             return if (tmp == 0L) {

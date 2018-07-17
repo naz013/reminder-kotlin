@@ -27,7 +27,7 @@ import java.io.FileNotFoundException
  */
 object BitmapUtils {
 
-    private val REQUIRED_SIZE = 350
+    private const val REQUIRED_SIZE = 350
 
     @Throws(FileNotFoundException::class)
     fun decodeUriToBitmap(context: Context, selectedImage: Uri): Bitmap {

@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.UriUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.main_image.MainImagesViewModel
+import com.elementary.tasks.core.viewModels.mainImage.MainImagesViewModel
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
 import com.elementary.tasks.databinding.ActivityMainImageBinding
 

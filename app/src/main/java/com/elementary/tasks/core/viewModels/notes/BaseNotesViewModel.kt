@@ -6,10 +6,13 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.notes.work.DeleteNoteFilesAsync
 import com.elementary.tasks.reminder.work.DeleteFilesAsync
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -29,13 +32,13 @@ import com.elementary.tasks.reminder.work.DeleteFilesAsync
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(application) {
+abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteNote(note: Note) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.notesDao().delete(note)
-            end {
+        launch(CommonPool) {
+            appDb.notesDao().delete(note)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
@@ -45,9 +48,9 @@ internal abstract class BaseNotesViewModel(application: Application) : BaseDbVie
 
     fun saveNote(note: Note) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.notesDao().insert(note)
-            end {
+        launch(CommonPool) {
+            appDb.notesDao().insert(note)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
@@ -56,10 +59,10 @@ internal abstract class BaseNotesViewModel(application: Application) : BaseDbVie
 
     fun deleteReminder(reminder: Reminder) {
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             EventControlFactory.getController(reminder).stop()
-            appDb!!.reminderDao().delete(reminder)
-            end {
+            appDb.reminderDao().delete(reminder)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.UPDATED)
             }

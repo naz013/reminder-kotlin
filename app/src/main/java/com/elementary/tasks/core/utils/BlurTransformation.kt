@@ -3,6 +3,7 @@ package com.elementary.tasks.core.utils
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import com.bumptech.glide.load.Key
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
@@ -68,10 +69,10 @@ class BlurTransformation @JvmOverloads constructor(private val radius: Int = MAX
 
     companion object {
 
-        private val VERSION = 1
-        private val ID = "jp.wasabeef.glide.transformations.BlurTransformation.$VERSION"
+        private const val VERSION = 1
+        private const val ID = "jp.wasabeef.glide.transformations.BlurTransformation.$VERSION"
 
-        private val MAX_RADIUS = 25
-        private val DEFAULT_DOWN_SAMPLING = 1
+        private const val MAX_RADIUS = 25
+        private const val DEFAULT_DOWN_SAMPLING = 1
     }
 }

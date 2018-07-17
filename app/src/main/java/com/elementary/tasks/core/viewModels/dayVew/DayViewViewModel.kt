@@ -52,7 +52,7 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
     fun deleteBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            appDb!!.birthdaysDao().delete(birthday)
+            appDb.birthdaysDao().delete(birthday)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
@@ -67,7 +67,7 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
         launch(CommonPool) {
             reminder.isRemoved = true
             EventControlFactory.getController(reminder).stop()
-            appDb!!.reminderDao().insert(reminder)
+            appDb.reminderDao().insert(reminder)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)

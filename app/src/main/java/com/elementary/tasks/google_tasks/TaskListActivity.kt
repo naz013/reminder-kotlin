@@ -12,7 +12,7 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskListViewModel
+import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.core.views.ColorPickerView
 import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
 import androidx.databinding.DataBindingUtil

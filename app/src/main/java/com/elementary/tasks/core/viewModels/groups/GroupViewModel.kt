@@ -1,12 +1,14 @@
 package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.Group
-import com.elementary.tasks.core.viewModels.Commands
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,14 +33,14 @@ class GroupViewModel private constructor(application: Application, id: String) :
     var group: LiveData<Group>
 
     init {
-        group = appDb!!.groupDao().loadById(id)
+        group = appDb.groupDao().loadById(id)
     }
 
     fun saveGroup(group: Group) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.groupDao().insert(group)
-            end {
+        launch(CommonPool) {
+            appDb.groupDao().insert(group)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

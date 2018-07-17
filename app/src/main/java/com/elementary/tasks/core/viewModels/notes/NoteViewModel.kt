@@ -1,15 +1,12 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Reminder
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-
-import com.elementary.tasks.notes.preview.NotePreviewActivity.PREVIEW_IMAGES
+import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.notes.preview.NotePreviewActivity.Companion.PREVIEW_IMAGES
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -32,16 +29,16 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity.PREVIEW_IMAGES
 class NoteViewModel private constructor(application: Application, key: String) : BaseNotesViewModel(application) {
 
     var note: LiveData<Note>
-    var editedPicture: LiveData<Note>
+    lateinit var editedPicture: LiveData<Note>
     var reminder: LiveData<Reminder>
 
     init {
-        note = appDb!!.notesDao().loadById(key)
-        reminder = appDb!!.reminderDao().loadByNoteKey(key)
+        note = appDb.notesDao().loadById(key)
+        reminder = appDb.reminderDao().loadByNoteKey(key)
     }
 
     fun loadEditedPicture() {
-        editedPicture = appDb!!.notesDao().loadById(PREVIEW_IMAGES)
+        editedPicture = appDb.notesDao().loadById(PREVIEW_IMAGES)
     }
 
     class Factory(private val application: Application, private val key: String) : ViewModelProvider.NewInstanceFactory() {

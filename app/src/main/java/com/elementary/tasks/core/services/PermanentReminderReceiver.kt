@@ -46,8 +46,8 @@ class PermanentReminderReceiver : BroadcastReceiver() {
 
     companion object {
 
-        val PERM_ID = 356664
-        val ACTION_SHOW = Actions.Reminder.ACTION_SB_SHOW
-        val ACTION_HIDE = Actions.Reminder.ACTION_SB_HIDE
+        const val PERM_ID = 356664
+        const val ACTION_SHOW = Actions.Reminder.ACTION_SB_SHOW
+        const val ACTION_HIDE = Actions.Reminder.ACTION_SB_HIDE
     }
 }

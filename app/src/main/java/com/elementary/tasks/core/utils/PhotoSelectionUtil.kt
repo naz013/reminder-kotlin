@@ -75,11 +75,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
 
     private fun checkSdPermission(code: Int): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            return if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
                 Permissions.requestPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
-                return false
+                false
             } else {
-                return true
+                true
             }
         }
         return true
@@ -87,11 +87,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
 
     private fun checkCameraPermission(code: Int): Boolean {
         if (Module.isNougat) {
-            if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)) {
+            return if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)) {
                 Permissions.requestPermission(activity, code, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.CAMERA)
-                return false
+                false
             } else {
-                return true
+                true
             }
         }
         return true
@@ -142,7 +142,7 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) {
+        if (grantResults.isEmpty()) {
             return
         }
         when (requestCode) {
@@ -175,9 +175,9 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
 
     companion object {
 
-        private val PICK_FROM_GALLERY = 25
-        private val PICK_FROM_CAMERA = 26
-        private val REQUEST_SD_CARD = 1112
-        private val REQUEST_CAMERA = 1113
+        private const val PICK_FROM_GALLERY = 25
+        private const val PICK_FROM_CAMERA = 26
+        private const val REQUEST_SD_CARD = 1112
+        private const val REQUEST_CAMERA = 1113
     }
 }

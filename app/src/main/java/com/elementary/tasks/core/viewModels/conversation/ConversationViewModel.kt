@@ -5,13 +5,8 @@ import android.content.Intent
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.widget.Toast
-
-import com.backdoor.engine.Action
-import com.backdoor.engine.ActionType
-import com.backdoor.engine.ContactOutput
-import com.backdoor.engine.ContactsInterface
-import com.backdoor.engine.Model
-import com.backdoor.engine.Recognizer
+import androidx.lifecycle.MutableLiveData
+import com.backdoor.engine.*
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
@@ -23,23 +18,17 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog
 import com.elementary.tasks.core.dialogs.VoiceResultDialog
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.BaseRemindersViewModel
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity
-
-import java.util.ArrayList
-import java.util.LinkedList
-import java.util.Random
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -87,9 +76,9 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getNotes() {
         isInProgress.postValue(true)
-        run {
-            val list = LinkedList(appDb!!.notesDao().all)
-            end {
+        launch(CommonPool) {
+            val list = LinkedList(appDb.notesDao().all)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 notes.postValue(list)
             }
@@ -98,9 +87,9 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getShoppingReminders() {
         isInProgress.postValue(true)
-        run {
-            val list = LinkedList(appDb!!.reminderDao().getAllTypes(true, false, intArrayOf(Reminder.BY_DATE_SHOP)))
-            end {
+        launch(CommonPool) {
+            val list = LinkedList(appDb.reminderDao().getAllTypes(true, false, intArrayOf(Reminder.BY_DATE_SHOP)))
+            withContext(UI) {
                 isInProgress.postValue(false)
                 shoppingLists.postValue(list)
             }
@@ -109,13 +98,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getEnabledReminders(dateTime: Long) {
         isInProgress.postValue(true)
-        run {
-            val list = LinkedList(appDb!!.reminderDao().getAllTypesInRange(
+        launch(CommonPool) {
+            val list = LinkedList(appDb.reminderDao().getAllTypesInRange(
                     true,
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 enabledReminders.postValue(list)
             }
@@ -124,12 +113,12 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getReminders(dateTime: Long) {
         isInProgress.postValue(true)
-        run {
-            val list = LinkedList(appDb!!.reminderDao().getActiveInRange(
+        launch(CommonPool) {
+            val list = LinkedList(appDb.reminderDao().getActiveInRange(
                     false,
                     TimeUtil.getGmtFromDateTime(System.currentTimeMillis()),
                     TimeUtil.getGmtFromDateTime(dateTime)))
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 activeReminders.postValue(list)
             }
@@ -138,15 +127,15 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun getBirthdays(dateTime: Long, time: Long) {
         isInProgress.postValue(true)
-        run {
-            val list = LinkedList(appDb!!.birthdaysDao().all)
+        launch(CommonPool) {
+            val list = LinkedList(appDb.birthdaysDao().all)
             for (i in list.indices.reversed()) {
                 val itemTime = list[i].getDateTime(time)
                 if (itemTime < System.currentTimeMillis() || itemTime > dateTime) {
                     list.removeAt(i)
                 }
             }
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 birthdays.postValue(list)
             }
@@ -180,30 +169,26 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                 val types = model.type
                 if (types == ActionType.ACTION && isWidget) {
                     val action = model.action
-                    if (action == Action.APP) {
-                        getApplication<Application>().startActivity(Intent(getApplication(), SplashScreen::class.java))
-                    } else if (action == Action.HELP) {
-                        getApplication<Application>().startActivity(Intent(getApplication(), VoiceHelpDialog::class.java)
+                    when (action) {
+                        Action.APP -> getApplication<Application>().startActivity(Intent(getApplication(), SplashScreen::class.java))
+                        Action.HELP -> getApplication<Application>().startActivity(Intent(getApplication(), VoiceHelpDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-                    } else if (action == Action.BIRTHDAY) {
-                        getApplication<Application>().startActivity(Intent(getApplication(), AddBirthdayActivity::class.java))
-                    } else if (action == Action.REMINDER) {
-                        getApplication<Application>().startActivity(Intent(getApplication(), AddReminderActivity::class.java))
-                    } else if (action == Action.VOLUME) {
-                        getApplication<Application>().startActivity(Intent(getApplication(), VolumeDialog::class.java)
+                        Action.BIRTHDAY -> getApplication<Application>().startActivity(Intent(getApplication(), AddBirthdayActivity::class.java))
+                        Action.REMINDER -> getApplication<Application>().startActivity(Intent(getApplication(), AddReminderActivity::class.java))
+                        Action.VOLUME -> getApplication<Application>().startActivity(Intent(getApplication(), VolumeDialog::class.java)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-                    } else if (action == Action.TRASH) {
-                        emptyTrash(true)
-                    } else if (action == Action.DISABLE) {
-                        disableAllReminders(true)
-                    } else if (action == Action.SETTINGS) {
-                        val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
-                        startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
-                        getApplication<Application>().startActivity(startActivityIntent)
-                    } else if (action == Action.REPORT) {
-                        val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
-                        startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback)
-                        getApplication<Application>().startActivity(startActivityIntent)
+                        Action.TRASH -> emptyTrash(true)
+                        Action.DISABLE -> disableAllReminders(true)
+                        Action.SETTINGS -> {
+                            val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
+                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_settings)
+                            getApplication<Application>().startActivity(startActivityIntent)
+                        }
+                        Action.REPORT -> {
+                            val startActivityIntent = Intent(getApplication(), MainActivity::class.java)
+                            startActivityIntent.putExtra(Constants.INTENT_POSITION, R.id.nav_feedback)
+                            getApplication<Application>().startActivity(startActivityIntent)
+                        }
                     }
                 } else if (types == ActionType.NOTE) {
                     saveNote(createNote(model.summary), true, true)
@@ -231,11 +216,11 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun disableAllReminders(showToast: Boolean) {
         isInProgress.postValue(true)
-        run {
-            for (reminder in appDb!!.reminderDao().getAll(true, false)) {
+        launch(CommonPool) {
+            for (reminder in appDb.reminderDao().getAll(true, false)) {
                 stopReminder(reminder)
             }
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
                 if (showToast) {
@@ -247,13 +232,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun emptyTrash(showToast: Boolean) {
         isInProgress.postValue(true)
-        run {
-            val archived = appDb!!.reminderDao().getAll(false, true)
+        launch(CommonPool) {
+            val archived = appDb.reminderDao().getAll(false, true)
             for (reminder in archived) {
                 deleteReminder(reminder, false)
                 CalendarUtils.deleteEvents(getApplication(), reminder.uniqueId)
             }
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.TRASH_CLEARED)
                 if (showToast) {
@@ -277,10 +262,10 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             typeT = Reminder.BY_WEEK
             eventTime = TimeCount.getInstance(getApplication()).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0)
             if (!TextUtils.isEmpty(number)) {
-                if (action == Action.WEEK_CALL)
-                    typeT = Reminder.BY_WEEK_CALL
+                typeT = if (action == Action.WEEK_CALL)
+                    Reminder.BY_WEEK_CALL
                 else
-                    typeT = Reminder.BY_WEEK_SMS
+                    Reminder.BY_WEEK_SMS
             }
         } else if (action == Action.CALL) {
             typeT = Reminder.BY_DATE_CALL
@@ -290,13 +275,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             typeT = Reminder.BY_DATE_EMAIL
         }
         val item = defaultGroup.value
-        var categoryId: String? = ""
+        var categoryId = ""
         if (item != null) {
             categoryId = item.uuId
         }
         val prefs = Prefs.getInstance(getApplication())
-        val isCal = prefs.getBoolean(Prefs.EXPORT_TO_CALENDAR)
-        val isStock = prefs.getBoolean(Prefs.EXPORT_TO_STOCK)
+        val isCal = prefs.getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
+        val isStock = prefs.getBoolean(PrefsConstants.EXPORT_TO_STOCK)
         val reminder = Reminder()
         reminder.type = typeT
         reminder.summary = summary
@@ -306,11 +291,11 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         reminder.target = number
         reminder.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
         reminder.startTime = TimeUtil.getGmtFromDateTime(eventTime)
-        reminder.isExportToCalendar = isCalendar && (isCal || isStock)
+        reminder.exportToCalendar = isCalendar && (isCal || isStock)
         return reminder
     }
 
-    fun createNote(note: String?): Note {
+    fun createNote(note: String): Note {
         val color = Random().nextInt(15)
         val item = Note()
         item.color = color
@@ -321,24 +306,26 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     fun saveNote(note: Note, showToast: Boolean, addQuickNote: Boolean) {
         val prefs = Prefs.getInstance(getApplication())
-        if (addQuickNote && prefs.getBoolean(Prefs.QUICK_NOTE_REMINDER)) {
+        if (addQuickNote && prefs.getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)) {
             saveQuickReminder(note.key, note.summary)
         }
-        appDb!!.notesDao().insert(note)
+        launch(CommonPool) {
+            appDb.notesDao().insert(note)
+        }
         UpdatesHelper.getInstance(getApplication()).updateNotesWidget()
         if (showToast) {
             Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun saveQuickReminder(key: String?, summary: String?): Reminder {
-        val after = (Prefs.getInstance(getApplication()).getInt(Prefs.QUICK_NOTE_REMINDER_TIME) * 1000 * 60).toLong()
+    fun saveQuickReminder(key: String, summary: String): Reminder {
+        val after = (Prefs.getInstance(getApplication()).getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME) * 1000 * 60).toLong()
         val due = System.currentTimeMillis() + after
         val mReminder = Reminder()
         mReminder.type = Reminder.BY_DATE
         mReminder.delay = 0
         mReminder.eventCount = 0
-        mReminder.isUseGlobal = true
+        mReminder.useGlobal = true
         mReminder.noteId = key
         mReminder.summary = summary
         val def = defaultGroup.value
@@ -356,13 +343,15 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     }
 
     fun saveGroup(model: Group, showToast: Boolean) {
-        appDb!!.groupDao().insert(model)
-        if (showToast) {
-            Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
+        launch(CommonPool) {
+            appDb.groupDao().insert(model)
         }
+            if (showToast) {
+                Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private inner class ContactHelper : ContactsInterface {
+    inner class ContactHelper : ContactsInterface {
 
         override fun findEmail(input: String): ContactOutput? {
             var input = input
@@ -372,6 +361,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             var number: String? = null
             val parts = input.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             for (part in parts) {
+                var res = part
                 while (part.length > 1) {
                     val selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
                     val projection = arrayOf(ContactsContract.CommonDataKinds.Email.DATA)
@@ -383,10 +373,10 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                     }
                     if (number != null)
                         break
-                    part = part.substring(0, part.length - 2)
+                    res = part.substring(0, part.length - 2)
                 }
                 if (number != null) {
-                    input = input.replace(part, "")
+                    input = input.replace(res, "")
                     break
                 }
             }
@@ -401,6 +391,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             var number: String? = null
             val parts = input.split("\\s".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             for (part in parts) {
+                var res = part
                 while (part.length > 1) {
                     val selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like '%" + part + "%'"
                     val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
@@ -413,10 +404,10 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
                     if (number != null) {
                         break
                     }
-                    part = part.substring(0, part.length - 1)
+                    res = part.substring(0, part.length - 1)
                 }
                 if (number != null) {
-                    input = input.replace(part, "")
+                    input = input.replace(res, "")
                     break
                 }
             }
@@ -426,6 +417,6 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
 
     companion object {
 
-        private val TAG = "ConversationViewModel"
+        private const val TAG = "ConversationViewModel"
     }
 }
