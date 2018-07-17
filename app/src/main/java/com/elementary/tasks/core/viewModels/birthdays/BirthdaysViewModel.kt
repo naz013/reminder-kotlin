@@ -1,15 +1,17 @@
 package com.elementary.tasks.core.viewModels.birthdays
 
 import android.app.Application
-
+import androidx.lifecycle.LiveData
 import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
+import java.util.*
 
-import java.util.ArrayList
-
-import androidx.lifecycle.LiveData
-
+@Suppress("JoinDeclarationAndAssignment")
 /**
  * Copyright 2018 Nazar Suhovich
  *
@@ -33,23 +35,23 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
     var birthdays: LiveData<List<Birthday>>
 
     init {
-        birthdays = appDb!!.birthdaysDao().loadAll()
+        birthdays = appDb.birthdaysDao().loadAll()
     }
 
     fun deleteAllBirthdays() {
         isInProgress.postValue(true)
-        run {
-            val list = appDb!!.birthdaysDao().all
+        launch(CommonPool) {
+            val list = appDb.birthdaysDao().all
             val ids = ArrayList<String>()
             for (birthday in list) {
-                appDb!!.birthdaysDao().delete(birthday)
+                appDb.birthdaysDao().delete(birthday)
                 ids.add(birthday.uuId)
             }
-            end {
+            DeleteBirthdayFilesAsync(getApplication()).execute(*ids.toTypedArray())
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeleteBirthdayFilesAsync(getApplication()).execute(*ids.toTypedArray())
         }
     }
 }

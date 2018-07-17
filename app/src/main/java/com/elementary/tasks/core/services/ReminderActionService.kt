@@ -3,21 +3,17 @@ package com.elementary.tasks.core.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
+import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.Actions
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.reminder.ReminderUpdateEvent
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-
 import org.greenrobot.eventbus.EventBus
-
-import androidx.core.app.NotificationManagerCompat
 import timber.log.Timber
 
 /**
@@ -63,7 +59,7 @@ class ReminderActionService : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent != null) {
             val action = intent.action
-            LogUtil.d(TAG, "onStartCommand: " + action!!)
+            LogUtil.d(TAG, "onStartCommand: $action")
             if (action != null) {
                 if (action.matches(ACTION_HIDE.toRegex())) {
                     hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
@@ -92,10 +88,10 @@ class ReminderActionService : BroadcastReceiver() {
 
     companion object {
 
-        val ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL
-        val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
-        val ACTION_RUN = Actions.Reminder.ACTION_RUN
+        const val ACTION_SHOW = Actions.Reminder.ACTION_SHOW_FULL
+        const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
+        const val ACTION_RUN = Actions.Reminder.ACTION_RUN
 
-        private val TAG = "ReminderActionService"
+        private const val TAG = "ReminderActionService"
     }
 }

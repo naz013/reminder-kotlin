@@ -1,12 +1,15 @@
 package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
-
+import androidx.lifecycle.LiveData
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.groups.DeleteGroupFilesAsync
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -26,19 +29,19 @@ import androidx.lifecycle.LiveData
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(application) {
+abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(application) {
 
     var allGroups: LiveData<List<Group>>
 
     init {
-        allGroups = appDb!!.groupDao().loadAll()
+        allGroups = appDb.groupDao().loadAll()
     }
 
     fun deleteGroup(group: Group) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.groupDao().delete(group)
-            end {
+        launch(CommonPool) {
+            appDb.groupDao().delete(group)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }

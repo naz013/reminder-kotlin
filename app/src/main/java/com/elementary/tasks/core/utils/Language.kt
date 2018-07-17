@@ -2,17 +2,11 @@ package com.elementary.tasks.core.utils
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.res.AssetManager
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
-import android.util.DisplayMetrics
-
 import com.elementary.tasks.R
-
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,15 +38,11 @@ class Language {
      */
     fun getLocale(context: Context, isBirth: Boolean): Locale? {
         var res: Locale? = null
-        val locale: String?
-        if (isBirth) {
-            locale = Prefs.getInstance(context).birthdayTtsLocale
+        val locale: String = (if (isBirth) {
+            Prefs.getInstance(context).birthdayTtsLocale
         } else {
-            locale = Prefs.getInstance(context).ttsLocale
-        }
-        if (locale == null) {
-            return Locale.ENGLISH
-        }
+            Prefs.getInstance(context).ttsLocale
+        }) ?: return Locale.ENGLISH
         when (locale) {
             ENGLISH -> res = Locale.ENGLISH
             FRENCH -> res = Locale.FRENCH
@@ -69,20 +59,20 @@ class Language {
     }
 
     companion object {
-        val ENGLISH = "en"
-        val FRENCH = "fr"
-        val GERMAN = "de"
-        val ITALIAN = "it"
-        val JAPANESE = "ja"
-        val KOREAN = "ko"
-        val POLISH = "pl"
-        val RUSSIAN = "ru"
-        val SPANISH = "es"
-        val UKRAINIAN = "uk"
+        const val ENGLISH = "en"
+        const val FRENCH = "fr"
+        const val GERMAN = "de"
+        const val ITALIAN = "it"
+        const val JAPANESE = "ja"
+        const val KOREAN = "ko"
+        const val POLISH = "pl"
+        const val RUSSIAN = "ru"
+        const val SPANISH = "es"
+        const val UKRAINIAN = "uk"
 
-        val EN = "en-US"
-        val RU = "ru-RU"
-        val UK = "uk-UA"
+        private const val EN = "en-US"
+        private const val RU = "ru-RU"
+        private const val UK = "uk-UA"
 
         fun onAttach(context: Context): Context {
             return setLocale(context, getScreenLanguage(Prefs.getInstance(context).appLanguage))
@@ -116,10 +106,10 @@ class Language {
         }
 
         fun getLocalized(context: Context, id: Int): String {
-            if (Module.isJellyMR1) {
+            return if (Module.isJellyMR1) {
                 val configuration = Configuration(context.resources.configuration)
                 configuration.setLocale(Locale(Language.getTextLanguage(Prefs.getInstance(context).voiceLocale)))
-                return context.createConfigurationContext(configuration).resources.getString(id)
+                context.createConfigurationContext(configuration).resources.getString(id)
             } else {
                 val standardResources = context.resources
                 val assets = standardResources.assets
@@ -127,7 +117,7 @@ class Language {
                 val config = Configuration(standardResources.configuration)
                 config.locale = Locale(Language.getTextLanguage(Prefs.getInstance(context).voiceLocale))
                 val defaultResources = Resources(assets, metrics, config)
-                return defaultResources.getString(id)
+                defaultResources.getString(id)
             }
         }
 
@@ -162,20 +152,20 @@ class Language {
         }
 
         fun getTextLanguage(code: Int): String {
-            when (code) {
-                0 -> return ENGLISH
-                1 -> return RUSSIAN
-                2 -> return UKRAINIAN
-                else -> return ENGLISH
+            return when (code) {
+                0 -> ENGLISH
+                1 -> RUSSIAN
+                2 -> UKRAINIAN
+                else -> ENGLISH
             }
         }
 
         fun getLanguage(code: Int): String {
-            when (code) {
-                0 -> return EN
-                1 -> return RU
-                2 -> return UK
-                else -> return EN
+            return when (code) {
+                0 -> EN
+                1 -> RU
+                2 -> UK
+                else -> EN
             }
         }
 

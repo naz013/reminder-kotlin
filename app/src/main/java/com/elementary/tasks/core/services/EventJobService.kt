@@ -52,17 +52,16 @@ class EventJobService : Job() {
             EVENT_BIRTHDAY -> birthdayAction(context)
             else -> {
                 val bundle = params.extras
-                if (bundle.getBoolean(ARG_MISSED, false)) {
-                    openMissedScreen(params.tag)
-                    enableMissedCall(context, params.tag)
-                } else if (bundle.getBoolean(ARG_LOCATION, false)) {
-                    SuperUtil.startGpsTracking(context)
-                } else {
-                    try {
+                when {
+                    bundle.getBoolean(ARG_MISSED, false) -> {
+                        openMissedScreen(params.tag)
+                        enableMissedCall(context, params.tag)
+                    }
+                    bundle.getBoolean(ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
+                    else -> try {
                         start(context, Integer.parseInt(params.tag))
                     } catch (ignored: NumberFormatException) {
                     }
-
                 }
             }
         }
@@ -121,16 +120,11 @@ class EventJobService : Job() {
 
     companion object {
 
-        private val TAG = "EventJobService"
-        private val EVENT_BIRTHDAY = "event_birthday"
-        private val EVENT_BIRTHDAY_CHECK = "event_birthday_check"
-        private val EVENT_BIRTHDAY_PERMANENT = "event_birthday_permanent"
-        private val EVENT_CHECK = "event_check"
-        private val EVENT_SYNC = "event_sync"
+        private const val TAG = "EventJobService"
+        private const val EVENT_BIRTHDAY = "event_birthday"
 
-        private val ARG_LOCATION = "arg_location"
-        private val ARG_MISSED = "arg_missed"
-        private val ARG_REPEAT = "arg_repeat"
+        private const val ARG_LOCATION = "arg_location"
+        private const val ARG_MISSED = "arg_missed"
 
         fun cancelBirthdayAlarm() {
             cancelReminder(EVENT_BIRTHDAY)

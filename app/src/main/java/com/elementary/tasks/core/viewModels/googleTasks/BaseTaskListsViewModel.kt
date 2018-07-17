@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.viewModels.google_tasks
+package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
 
@@ -9,6 +9,10 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 import java.io.IOException
 
@@ -30,11 +34,11 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewModel(application) {
+abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteGoogleTaskList(googleTaskList: GoogleTaskList) {
-        val google = Google.getInstance(getApplication())
-        if (google == null || google.tasks == null) {
+        val google = Google.getInstance()
+        if (google?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -43,20 +47,20 @@ internal abstract class BaseTaskListsViewModel(application: Application) : BaseD
             return
         }
         isInProgress.postValue(true)
-        run {
+        launch(CommonPool) {
             val def = googleTaskList.def
             google.tasks!!.deleteTaskList(googleTaskList.listId)
-            appDb!!.googleTaskListsDao().delete(googleTaskList)
-            appDb!!.googleTasksDao().deleteAll(googleTaskList.listId)
+            appDb.googleTaskListsDao().delete(googleTaskList)
+            appDb.googleTasksDao().deleteAll(googleTaskList.listId)
             if (def == 1) {
-                val lists = appDb!!.googleTaskListsDao().all
+                val lists = appDb.googleTaskListsDao().all
                 if (!lists.isEmpty()) {
                     val taskList = lists[0]
                     taskList.def = 1
-                    appDb!!.googleTaskListsDao().insert(taskList)
+                    appDb.googleTaskListsDao().insert(taskList)
                 }
             }
-            end {
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
@@ -64,8 +68,8 @@ internal abstract class BaseTaskListsViewModel(application: Application) : BaseD
     }
 
     fun toggleTask(googleTask: GoogleTask) {
-        val mGoogle = Google.getInstance(getApplication())
-        if (mGoogle == null || mGoogle.tasks == null) {
+        val mGoogle = Google.getInstance()
+        if (mGoogle?.tasks == null) {
             return
         }
         val isConnected = SuperUtil.isConnected(getApplication())
@@ -73,20 +77,20 @@ internal abstract class BaseTaskListsViewModel(application: Application) : BaseD
             result.postValue(Commands.FAILED)
         } else {
             isInProgress.postValue(true)
-            run {
+            launch(CommonPool) {
                 try {
                     if (googleTask.status == Google.TASKS_NEED_ACTION) {
-                        mGoogle.tasks!!.updateTaskStatus(Google.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
+                        mGoogle.tasks?.updateTaskStatus(Google.TASKS_COMPLETE, googleTask.listId, googleTask.taskId)
                     } else {
-                        mGoogle.tasks!!.updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
+                        mGoogle.tasks?.updateTaskStatus(Google.TASKS_NEED_ACTION, googleTask.listId, googleTask.taskId)
                     }
-                    end {
+                    withContext(UI) {
                         isInProgress.postValue(false)
                         result.postValue(Commands.UPDATED)
                         UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
                     }
                 } catch (e: IOException) {
-                    end {
+                    withContext(UI) {
                         isInProgress.postValue(false)
                         result.postValue(Commands.FAILED)
                     }

@@ -6,18 +6,14 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
-
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.BirthdayActionService
 import com.elementary.tasks.core.services.ReminderActionService
-
-import java.util.Calendar
-
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,15 +35,15 @@ import androidx.core.app.NotificationManagerCompat
  */
 object ReminderUtils {
 
-    internal val DAY_CHECKED = 1
-    private val TAG = "ReminderUtils"
+    const val DAY_CHECKED = 1
+    private const val TAG = "ReminderUtils"
 
     private fun getSoundUri(melody: String?, context: Context): Uri {
-        if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
-            return UriUtil.getUri(context, melody)
+        return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
+            UriUtil.getUri(context, melody)
         } else {
             val defMelody = Prefs.getInstance(context).melodyFile
-            return if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody!!)) {
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 UriUtil.getUri(context, defMelody)
             } else {
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -70,12 +66,12 @@ object ReminderUtils {
         builder.setOngoing(true)
         builder.priority = NotificationCompat.PRIORITY_HIGH
         builder.setContentTitle(birthday.name)
-        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
-            val melodyPath: String?
-            if (Module.isPro && !isGlobal(context)) {
-                melodyPath = Prefs.getInstance(context).birthdayMelody
+        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
+                && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
+            val melodyPath: String? = if (Module.isPro && !isGlobal(context)) {
+                Prefs.getInstance(context).birthdayMelody
             } else {
-                melodyPath = Prefs.getInstance(context).melodyFile
+                Prefs.getInstance(context).melodyFile
             }
             val uri = getSoundUri(melodyPath, context)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -90,11 +86,10 @@ object ReminderUtils {
             if (Module.isPro && !isGlobal(context)) {
                 vibrate = Prefs.getInstance(context).isBirthdayInfiniteVibrationEnabled
             }
-            val pattern: LongArray
-            if (vibrate) {
-                pattern = longArrayOf(150, 86400000)
+            val pattern: LongArray = if (vibrate) {
+                longArrayOf(150, 86400000)
             } else {
-                pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }
@@ -163,11 +158,10 @@ object ReminderUtils {
         builder.setOngoing(true)
         builder.priority = NotificationCompat.PRIORITY_HIGH
         builder.setContentTitle(reminder.summary)
-        val appName: String
-        if (Module.isPro) {
-            appName = context.getString(R.string.app_name_pro)
+        val appName: String = if (Module.isPro) {
+            context.getString(R.string.app_name_pro)
         } else {
-            appName = context.getString(R.string.app_name)
+            context.getString(R.string.app_name)
         }
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
             val uri = getSoundUri(reminder.melodyPath, context)
@@ -175,11 +169,10 @@ object ReminderUtils {
             builder.setSound(uri)
         }
         if (Prefs.getInstance(context).isVibrateEnabled) {
-            val pattern: LongArray
-            if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
-                pattern = longArrayOf(150, 86400000)
+            val pattern: LongArray = if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
+                longArrayOf(150, 86400000)
             } else {
-                pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }
@@ -261,63 +254,58 @@ object ReminderUtils {
 
     fun getTypeString(context: Context, type: Int): String {
         val res: String
-        if (Reminder.isKind(type, Reminder.Kind.CALL)) {
-            val init = context.getString(R.string.make_call)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isKind(type, Reminder.Kind.SMS)) {
-            val init = context.getString(R.string.message)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_CALL)) {
-            val init = context.getString(R.string.skype_call)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE)) {
-            val init = context.getString(R.string.skype_chat)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO)) {
-            val init = context.getString(R.string.video_call)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_APP)) {
-            val init = context.getString(R.string.application)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_LINK)) {
-            val init = context.getString(R.string.open_link)
-            res = init + " (" + getType(context, type) + ")"
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-            res = context.getString(R.string.shopping_list)
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
-            res = context.getString(R.string.e_mail)
-        } else {
-            val init = context.getString(R.string.reminder)
-            res = init + " (" + getType(context, type) + ")"
+        when {
+            Reminder.isKind(type, Reminder.Kind.CALL) -> {
+                val init = context.getString(R.string.make_call)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isKind(type, Reminder.Kind.SMS) -> {
+                val init = context.getString(R.string.message)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_SKYPE_CALL) -> {
+                val init = context.getString(R.string.skype_call)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_SKYPE) -> {
+                val init = context.getString(R.string.skype_chat)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO) -> {
+                val init = context.getString(R.string.video_call)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_DATE_APP) -> {
+                val init = context.getString(R.string.application)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_DATE_LINK) -> {
+                val init = context.getString(R.string.open_link)
+                res = init + " (" + getType(context, type) + ")"
+            }
+            Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> res = context.getString(R.string.shopping_list)
+            Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> res = context.getString(R.string.e_mail)
+            else -> {
+                val init = context.getString(R.string.reminder)
+                res = init + " (" + getType(context, type) + ")"
+            }
         }
         return res
     }
 
     fun getType(context: Context, type: Int): String {
-        val res: String
-        if (Reminder.isBase(type, Reminder.BY_MONTH)) {
-            res = context.getString(R.string.day_of_month)
-        } else if (Reminder.isBase(type, Reminder.BY_WEEK)) {
-            res = context.getString(R.string.alarm)
-        } else if (Reminder.isBase(type, Reminder.BY_LOCATION)) {
-            res = context.getString(R.string.location)
-        } else if (Reminder.isBase(type, Reminder.BY_OUT)) {
-            res = context.getString(R.string.place_out)
-        } else if (Reminder.isSame(type, Reminder.BY_TIME)) {
-            res = context.getString(R.string.timer)
-        } else if (Reminder.isBase(type, Reminder.BY_PLACES)) {
-            res = context.getString(R.string.places)
-        } else if (Reminder.isBase(type, Reminder.BY_SKYPE)) {
-            res = context.getString(R.string.skype)
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_EMAIL)) {
-            res = context.getString(R.string.e_mail)
-        } else if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-            res = context.getString(R.string.shopping_list)
-        } else if (Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR)) {
-            res = context.getString(R.string.yearly)
-        } else {
-            res = context.getString(R.string.by_date)
+        return when {
+            Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
+            Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)
+            Reminder.isBase(type, Reminder.BY_LOCATION) -> context.getString(R.string.location)
+            Reminder.isBase(type, Reminder.BY_OUT) -> context.getString(R.string.place_out)
+            Reminder.isSame(type, Reminder.BY_TIME) -> context.getString(R.string.timer)
+            Reminder.isBase(type, Reminder.BY_PLACES) -> context.getString(R.string.places)
+            Reminder.isBase(type, Reminder.BY_SKYPE) -> context.getString(R.string.skype)
+            Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> context.getString(R.string.e_mail)
+            Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> context.getString(R.string.shopping_list)
+            Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
+            else -> context.getString(R.string.by_date)
         }
-        return res
     }
 }

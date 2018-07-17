@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TelephonyUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.core.viewModels.missed_calls.MissedCallViewModel
+import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
 import com.elementary.tasks.databinding.ActivityReminderDialogBinding
 
 import java.sql.Date

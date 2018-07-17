@@ -1,14 +1,16 @@
-package com.elementary.tasks.core.viewModels.missed_calls
+package com.elementary.tasks.core.viewModels.missedCalls
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.services.EventJobService
-import com.elementary.tasks.core.viewModels.BaseDbViewModel
-import com.elementary.tasks.core.viewModels.Commands
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.models.MissedCall
+import com.elementary.tasks.core.services.EventJobService
+import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.viewModels.BaseDbViewModel
+import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -33,15 +35,15 @@ class MissedCallViewModel private constructor(application: Application, number: 
     var missedCall: LiveData<MissedCall>
 
     init {
-        missedCall = appDb!!.missedCallsDao().loadByNumber(number)
+        missedCall = appDb.missedCallsDao().loadByNumber(number)
     }
 
     fun deleteMissedCall(missedCall: MissedCall) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.missedCallsDao().delete(missedCall)
+        launch(CommonPool) {
+            appDb.missedCallsDao().delete(missedCall)
             EventJobService.cancelMissedCall(missedCall.number)
-            end {
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }

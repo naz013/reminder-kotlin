@@ -6,6 +6,10 @@ import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -25,25 +29,25 @@ import com.elementary.tasks.core.viewModels.Commands
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewModel(application) {
+abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deleteBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.birthdaysDao().delete(birthday)
-            end {
+        launch(CommonPool) {
+            appDb.birthdaysDao().delete(birthday)
+            DeleteBirthdayFilesAsync(getApplication()).execute(birthday.uuId)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeleteBirthdayFilesAsync(getApplication()).execute(birthday.uuId)
         }
     }
 
     fun saveBirthday(birthday: Birthday) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.birthdaysDao().insert(birthday)
-            end {
+        launch(CommonPool) {
+            appDb.birthdaysDao().insert(birthday)
+            withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }

@@ -31,7 +31,7 @@ class ReminderViewModel private constructor(application: Application, id: Int) :
     var reminder: LiveData<Reminder>
 
     init {
-        reminder = appDb!!.reminderDao().loadById(id)
+        reminder = appDb.reminderDao().loadById(id)
     }
 
     class Factory(private val application: Application, private val id: Int) : ViewModelProvider.NewInstanceFactory() {

@@ -16,7 +16,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.viewModels.sms_templates.SmsTemplatesViewModel
+import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_quick_sms.*
 

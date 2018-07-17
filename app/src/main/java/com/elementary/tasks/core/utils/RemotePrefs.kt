@@ -1,14 +1,11 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-
 import com.elementary.tasks.R
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -31,17 +28,14 @@ import java.util.ArrayList
 
 class RemotePrefs private constructor(context: Context) {
 
-    private val mFirebaseRemoteConfig: FirebaseRemoteConfig
+    private val mFirebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     private val mObservers = ArrayList<SaleObserver>()
     private val mUpdateObservers = ArrayList<UpdateObserver>()
-    private val pm: PackageManager
-    private val packageName: String
+    private val pm: PackageManager = context.packageManager
+    private val packageName: String = context.packageName
 
     init {
-        this.pm = context.packageManager
-        this.packageName = context.packageName
-        this.mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         val configSettings = FirebaseRemoteConfigSettings.Builder()
                 .build()
         this.mFirebaseRemoteConfig.setConfigSettings(configSettings)
@@ -144,14 +138,14 @@ class RemotePrefs private constructor(context: Context) {
 
     companion object {
 
-        private val SALE_STARTED = "sale_started"
-        private val SALE_VALUE = "sale_save_value"
-        private val SALE_EXPIRY_DATE = "sale_until_time_utc"
+        private const val SALE_STARTED = "sale_started"
+        private const val SALE_VALUE = "sale_save_value"
+        private const val SALE_EXPIRY_DATE = "sale_until_time_utc"
 
-        private val VERSION_CODE = "version_code"
-        private val VERSION_NAME = "version_name"
+        private const val VERSION_CODE = "version_code"
+        private const val VERSION_NAME = "version_name"
 
-        private val TAG = "RemotePrefs"
+        private const val TAG = "RemotePrefs"
 
         private var instance: RemotePrefs? = null
 
@@ -163,7 +157,7 @@ class RemotePrefs private constructor(context: Context) {
                     }
                 }
             }
-            return instance
+            return instance!!
         }
     }
 }

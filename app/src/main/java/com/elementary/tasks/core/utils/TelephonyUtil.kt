@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -76,6 +77,7 @@ object TelephonyUtil {
         context.startActivity(smsIntent)
     }
 
+    @SuppressLint("MissingPermission")
     fun makeCall(number: String, context: Context) {
         if (TextUtils.isEmpty(number)) {
             return
@@ -91,7 +93,6 @@ object TelephonyUtil {
             context.startActivity(launchIntent)
         } catch (ignored: ActivityNotFoundException) {
         }
-
     }
 
     fun openLink(link: String, context: Context) {
@@ -100,7 +101,6 @@ object TelephonyUtil {
             context.startActivity(browserIntent)
         } catch (ignored: ActivityNotFoundException) {
         }
-
     }
 
     fun skypeCall(number: String, context: Context) {

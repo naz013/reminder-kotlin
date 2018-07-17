@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils
 
+import android.annotation.SuppressLint
 import android.util.Log
 
 import com.elementary.tasks.BuildConfig
@@ -22,10 +23,10 @@ import com.elementary.tasks.BuildConfig
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+@SuppressLint("LogNotTimber")
 object LogUtil {
 
-    private val TAG = "Reminder->"
+    private const val TAG = "Reminder->"
     private val D = BuildConfig.DEBUG
 
     fun i(tag: String, message: String) {

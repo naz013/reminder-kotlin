@@ -2,7 +2,6 @@ package com.elementary.tasks.core.utils
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -10,15 +9,12 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
-
 import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.ArrayList
-import java.util.TimeZone
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -76,13 +72,9 @@ object CalendarUtils {
         }
     }
 
-    /**
-     * Delete event from calendar.
-     *
-     * @param id event identifier inside application.
-     */
+    @SuppressLint("MissingPermission")
     fun deleteEvents(context: Context, id: Int) {
-        val events = AppDb.getAppDatabase(context).calendarEventsDao().getByReminder(id)
+        val events = AppDb.getAppDatabase(context).calendarEventsDao().getByReminder(id).toMutableList()
         val cr = context.contentResolver
         for (i in events.indices.reversed()) {
             val event = events.removeAt(i)

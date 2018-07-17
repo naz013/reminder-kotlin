@@ -3,9 +3,12 @@ package com.elementary.tasks.core.viewModels.places
 import android.app.Application
 
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.places.work.DeletePlaceFilesAsync
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -25,13 +28,13 @@ import com.elementary.tasks.places.work.DeletePlaceFilesAsync
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(application) {
+abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(application) {
 
     fun deletePlace(place: Place) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.placesDao().delete(place)
-            end {
+        launch(CommonPool) {
+            appDb.placesDao().delete(place)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }

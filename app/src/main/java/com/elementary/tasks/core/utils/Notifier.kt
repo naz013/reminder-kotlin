@@ -25,6 +25,7 @@ import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 
 import java.util.Calendar
 import androidx.core.app.NotificationCompat
+import com.elementary.tasks.core.utils.PrefsConstants.WEAR_NOTIFICATION
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,7 +62,7 @@ class Notifier(private val mContext: Context) {
             builder.setSmallIcon(R.drawable.ic_note_nv_white)
         }
         builder.setContentTitle(content)
-        val isWear = sPrefs.getBoolean(Prefs.WEAR_NOTIFICATION)
+        val isWear = sPrefs.getBoolean(WEAR_NOTIFICATION)
         if (isWear && Module.isJellyMR2) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
@@ -76,7 +77,7 @@ class Notifier(private val mContext: Context) {
             s.bigPicture(bitmap)
             builder.setStyle(s)
         }
-        val manager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val manager = mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         manager?.notify(item.uniqueId, builder.build())
         if (isWear && Module.isJellyMR2) {
             val wearableNotificationBuilder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_REMINDER)
@@ -96,14 +97,14 @@ class Notifier(private val mContext: Context) {
 
     companion object {
 
-        val CHANNEL_REMINDER = "reminder.channel1"
-        val CHANNEL_SYSTEM = "reminder.channel2"
+        const val CHANNEL_REMINDER = "reminder.channel1"
+        const val CHANNEL_SYSTEM = "reminder.channel2"
 
-        private val TAG = "Notifier"
+        private const val TAG = "Notifier"
 
         fun createChannels(context: Context) {
             if (Module.isO) {
-                val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
                 if (manager != null) {
                     manager.createNotificationChannel(createReminderChannel(context))
                     manager.createNotificationChannel(createSystemChannel(context))
@@ -134,7 +135,7 @@ class Notifier(private val mContext: Context) {
         }
 
         fun hideNotification(context: Context, id: Int) {
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
             manager?.cancel(id)
         }
 
@@ -162,7 +163,7 @@ class Notifier(private val mContext: Context) {
             builder.setOngoing(true)
             builder.priority = NotificationCompat.PRIORITY_HIGH
             builder.setContentTitle(context.getString(R.string.events))
-            if (list.size > 0) {
+            if (list.isNotEmpty()) {
                 val item = list[0]
                 builder.setContentText(item.date + " | " + item.name + " | " + TimeUtil.getAgeFormatted(context, item.date))
                 if (list.size > 1) {
@@ -179,7 +180,7 @@ class Notifier(private val mContext: Context) {
                 } else {
                     builder.addAction(R.drawable.ic_clear_nv_white, context.getString(R.string.ok), piDismiss)
                 }
-                val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
                 manager?.notify(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID, builder.build())
             }
         }
@@ -220,7 +221,7 @@ class Notifier(private val mContext: Context) {
             val resultPendingInt = stackInt.getPendingIntent(0, 0)
             remoteViews.setOnClickPendingIntent(R.id.text, resultPendingInt)
             remoteViews.setOnClickPendingIntent(R.id.featured, resultPendingInt)
-            val reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false)
+            val reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false).toMutableList()
             val count = reminders.size
             for (i in reminders.indices.reversed()) {
                 val item = reminders[i]
@@ -260,7 +261,7 @@ class Notifier(private val mContext: Context) {
             WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_note_white, R.id.noteAdd)
             WidgetUtils.setIcon(context, remoteViews, R.drawable.ic_notifications_white_24dp, R.id.bellIcon)
             remoteViews.setInt(R.id.notificationBg, "setBackgroundColor", cs.getColor(cs.colorPrimary()))
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
             manager?.notify(PermanentReminderReceiver.PERM_ID, builder.build())
         }
     }

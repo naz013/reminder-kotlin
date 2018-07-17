@@ -38,33 +38,33 @@ import javax.inject.Inject
 
 class CallReceiver : BroadcastReceiver() {
 
-    private var mContext: Context? = null
+    private lateinit var mContext: Context
     private var mIncomingNumber: String? = null
     private var prevState: Int = 0
     private var startCallTime: Long = 0
 
     @Inject
-    var appDb: AppDb? = null
+    lateinit var appDb: AppDb
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        mContext = context
+        val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager?
         if (telephony != null) {
             val customPhoneListener = CustomPhoneStateListener()
             telephony.listen(customPhoneListener, PhoneStateListener.LISTEN_CALL_STATE)
         }
-        mContext = context
     }
 
     inner class CustomPhoneStateListener : PhoneStateListener() {
 
         override fun onCallStateChanged(state: Int, incomingNumber: String?) {
             val prefs = Prefs.getInstance(mContext)
-            LogUtil.d(TAG, "onCallStateChanged: " + incomingNumber!!)
-            if (incomingNumber != null && incomingNumber.length > 0) {
+            LogUtil.d(TAG, "onCallStateChanged: $incomingNumber")
+            if (incomingNumber != null && incomingNumber.isNotEmpty()) {
                 mIncomingNumber = incomingNumber
             } else {
                 return
@@ -81,21 +81,19 @@ class CallReceiver : BroadcastReceiver() {
                         val isFollow = prefs.isFollowReminderEnabled
                         if (mIncomingNumber != null && isFollow) {
                             val number = mIncomingNumber
-                            mContext!!.startActivity(Intent(mContext, FollowReminderActivity::class.java)
+                            mContext.startActivity(Intent(mContext, FollowReminderActivity::class.java)
                                     .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
                                     .putExtra(Constants.SELECTED_TIME, startCallTime)
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP))
-                            break
                         }
-                    }
-                    if (prevState == TelephonyManager.CALL_STATE_RINGING) {
+                    } else if (prevState == TelephonyManager.CALL_STATE_RINGING) {
                         prevState = state
                         val currTime = System.currentTimeMillis()
                         if (currTime - startCallTime >= 1000 * 10) {
-                            LogUtil.d(TAG, "onCallStateChanged: is missed " + mIncomingNumber!!)
-                            if (prefs.isMissedReminderEnabled && mIncomingNumber != null) {
-                                val number = mIncomingNumber
-                                var missedCall = appDb!!.missedCallsDao().getByNumber(number)
+                            val number = mIncomingNumber
+                            LogUtil.d(TAG, "onCallStateChanged: is missed $number")
+                            if (prefs.isMissedReminderEnabled && number != null) {
+                                var missedCall = appDb.missedCallsDao().getByNumber(number)
                                 if (missedCall != null) {
                                     EventJobService.cancelMissedCall(missedCall.number)
                                 } else {
@@ -103,20 +101,18 @@ class CallReceiver : BroadcastReceiver() {
                                 }
                                 missedCall.dateTime = currTime
                                 missedCall.number = number
-                                appDb!!.missedCallsDao().insert(missedCall)
+                                appDb.missedCallsDao().insert(missedCall)
                                 EventJobService.enableMissedCall(mContext, missedCall.number)
-                                break
                             }
                         } else {
                             LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber!!)
                             if (mIncomingNumber != null && prefs.isQuickSmsEnabled) {
                                 val number = mIncomingNumber
-                                if (appDb!!.smsTemplatesDao().all.size > 0) {
-                                    mContext!!.startActivity(Intent(mContext, QuickSmsActivity::class.java)
+                                if (appDb.smsTemplatesDao().all.isNotEmpty()) {
+                                    mContext.startActivity(Intent(mContext, QuickSmsActivity::class.java)
                                             .putExtra(Constants.SELECTED_CONTACT_NUMBER, number)
                                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                                 }
-                                break
                             }
                         }
                     }
@@ -127,6 +123,6 @@ class CallReceiver : BroadcastReceiver() {
 
     companion object {
 
-        private val TAG = "CallReceiver"
+        private const val TAG = "CallReceiver"
     }
 }

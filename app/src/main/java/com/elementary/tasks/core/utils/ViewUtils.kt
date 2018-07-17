@@ -66,14 +66,14 @@ object ViewUtils {
 
     @ColorInt
     fun getColor(context: Context, @ColorRes resource: Int): Int {
-        try {
-            return if (Module.isMarshmallow) {
+        return try {
+            if (Module.isMarshmallow) {
                 context.resources.getColor(resource, null)
             } else {
                 context.resources.getColor(resource)
             }
         } catch (e: Resources.NotFoundException) {
-            return 0
+            0
         }
 
     }

@@ -15,7 +15,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.viewModels.google_tasks.GoogleTaskListsViewModel
+import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListsViewModel
 import com.elementary.tasks.databinding.FragmentGoogleTasksBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 

@@ -29,6 +29,6 @@ class ActiveGpsRemindersViewModel(application: Application) : BaseRemindersViewM
     var events: LiveData<List<Reminder>>
 
     init {
-        events = appDb!!.reminderDao().loadAllTypes(true, false, Reminder.gpsTypes())
+        events = appDb.reminderDao().loadAllTypes(true, false, Reminder.gpsTypes())
     }
 }

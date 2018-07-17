@@ -7,25 +7,15 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.text.TextUtils
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.Sound
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-
-import java.util.Calendar
-
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.legacy.content.WakefulBroadcastReceiver
+import com.elementary.tasks.R
+import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.reminder.preview.ReminderDialogActivity
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -85,11 +75,11 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
     }
 
     private fun getSoundUri(melody: String?, context: Context): Uri {
-        if (!TextUtils.isEmpty(melody)) {
-            return UriUtil.getUri(context, melody!!)
+        return if (!TextUtils.isEmpty(melody)) {
+            UriUtil.getUri(context, melody!!)
         } else {
             val defMelody = Prefs.getInstance(context).melodyFile
-            return if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody!!)) {
+            if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 UriUtil.getUri(context, defMelody)
             } else {
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -123,11 +113,10 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
             builder.setSound(uri)
         }
         if (Prefs.getInstance(context).isVibrateEnabled) {
-            val pattern: LongArray
-            if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
-                pattern = longArrayOf(150, 86400000)
+            val pattern: LongArray = if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
+                longArrayOf(150, 86400000)
             } else {
-                pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }

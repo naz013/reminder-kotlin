@@ -1,12 +1,14 @@
 package com.elementary.tasks.core.viewModels.places
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.viewModels.Commands
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.utils.withUIContext
+import com.elementary.tasks.core.viewModels.Commands
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,14 +33,14 @@ class PlaceViewModel private constructor(application: Application, key: String) 
     var place: LiveData<Place>
 
     init {
-        place = appDb!!.placesDao().loadByKey(key)
+        place = appDb.placesDao().loadByKey(key)
     }
 
     fun savePlace(place: Place) {
         isInProgress.postValue(true)
-        run {
-            appDb!!.placesDao().insert(place)
-            end {
+        launch(CommonPool) {
+            appDb.placesDao().insert(place)
+            withUIContext {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
