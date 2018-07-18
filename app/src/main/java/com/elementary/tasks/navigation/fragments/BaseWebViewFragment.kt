@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import com.elementary.tasks.R
 
-import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import kotlinx.android.synthetic.main.fragment_settings_web_view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,18 +31,19 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 abstract class BaseWebViewFragment : BaseSettingsFragment() {
 
-    private var binding: FragmentSettingsWebViewBinding? = null
-
     protected val webView: WebView
-        get() = binding!!.webView
+        get() = web_view
 
     protected abstract val url: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
-        setExtraParams(binding!!.webView)
-        binding!!.webView.loadUrl(url)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_settings_web_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setExtraParams(web_view)
+        web_view.loadUrl(url)
     }
 
     protected open fun setExtraParams(webView: WebView) {

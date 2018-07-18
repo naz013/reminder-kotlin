@@ -50,7 +50,7 @@ class EventsListFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            mItem = arguments!!.getSerializable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem
+            mItem = arguments?.getSerializable(ARGUMENT_PAGE_NUMBER) as EventsPagerItem?
         }
     }
 

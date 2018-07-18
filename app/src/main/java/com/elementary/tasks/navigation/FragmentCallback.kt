@@ -44,7 +44,7 @@ interface FragmentCallback {
 
     fun onMenuSelect(menu: Int)
 
-    fun onScrollChanged(recyclerView: RecyclerView)
+    fun onScrollChanged(recyclerView: RecyclerView?)
 
     fun addFilters(filters: List<FilterView.Filter>, clear: Boolean)
 

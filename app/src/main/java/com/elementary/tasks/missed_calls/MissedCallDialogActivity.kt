@@ -5,30 +5,19 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TelephonyUtil
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
-import com.elementary.tasks.databinding.ActivityReminderDialogBinding
-
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.activity_reminder_dialog.*
 import java.sql.Date
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -50,66 +39,65 @@ import androidx.lifecycle.ViewModelProviders
  */
 class MissedCallDialogActivity : BaseNotificationActivity() {
 
-    private var binding: ActivityReminderDialogBinding? = null
-    private var viewModel: MissedCallViewModel? = null
+    private lateinit var viewModel: MissedCallViewModel
 
     private var mMissedCall: MissedCall? = null
-    protected override var isScreenResumed: Boolean = false
+    override var isScreenResumed: Boolean = false
         private set
 
-    protected override val melody: String?
-        get() = null
+    override val melody: String
+        get() = ""
 
-    protected override val isVibrate: Boolean
-        get() = prefs!!.isVibrateEnabled
+    override val isVibrate: Boolean
+        get() = prefs.isVibrateEnabled
 
-    protected override val summary: String?
+    override val summary: String
         get() = mMissedCall!!.number
 
-    protected override val uuId: String?
-        get() = null
+    override val uuId: String
+        get() = ""
 
-    protected override val id: Int
+    override val id: Int
         get() = mMissedCall!!.uniqueId
 
-    protected override val ledColor: Int
-        get() = LED.getLED(prefs!!.ledColor)
+    override val ledColor: Int
+        get() = LED.getLED(prefs.ledColor)
 
-    protected override val isAwakeDevice: Boolean
-        get() = prefs!!.isDeviceAwakeEnabled
+    override val isAwakeDevice: Boolean
+        get() = prefs.isDeviceAwakeEnabled
 
-    protected override val isGlobal: Boolean
+    override val isGlobal: Boolean
         get() = false
 
-    protected override val isUnlockDevice: Boolean
-        get() = prefs!!.isDeviceUnlockEnabled
+    override val isUnlockDevice: Boolean
+        get() = prefs.isDeviceUnlockEnabled
 
-    protected override val maxVolume: Int
-        get() = prefs!!.loudness
+    override val maxVolume: Int
+        get() = prefs.loudness
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_reminder_dialog)
+        setContentView(R.layout.activity_reminder_dialog)
 
-        binding!!.card.setCardBackgroundColor(themeUtil!!.cardStyle)
-        if (Module.isLollipop) binding!!.card.cardElevation = Configs.CARD_ELEVATION
-        binding!!.container.visibility = View.GONE
-        binding!!.subjectContainer.visibility = View.GONE
-        loadImage(binding!!.bgImage)
-        colorify(binding!!.buttonOk, binding!!.buttonCancel, binding!!.buttonCall, binding!!.buttonDelay,
-                binding!!.buttonDelayFor, binding!!.buttonNotification, binding!!.buttonEdit)
-        binding!!.buttonDelay.hide()
-        binding!!.buttonDelayFor.hide()
-        binding!!.buttonNotification.hide()
-        binding!!.buttonEdit.hide()
+        card.setCardBackgroundColor(themeUtil.cardStyle)
+        if (Module.isLollipop) card.cardElevation = Configs.CARD_ELEVATION
+        container.visibility = View.GONE
+        subjectContainer.visibility = View.GONE
+        loadImage(bgImage)
+        colorify(buttonOk, buttonCancel, buttonCall, buttonDelay,
+                buttonDelayFor, buttonNotification, buttonEdit)
+        buttonDelay.hide()
+        buttonDelayFor.hide()
+        buttonNotification.hide()
+        buttonEdit.hide()
 
-        binding!!.buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
-        binding!!.buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp)
-        binding!!.buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
+        buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
+        buttonCancel.setImageResource(R.drawable.ic_clear_black_24dp)
+        buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
 
-        binding!!.contactPhoto.borderColor = themeUtil!!.getColor(themeUtil!!.colorPrimary())
-        binding!!.contactPhoto.visibility = View.GONE
+        contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
+        contactPhoto.visibility = View.GONE
 
         initViewModel()
     }
@@ -117,14 +105,14 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this, MissedCallViewModel.Factory(application,
                 intent.getStringExtra(Constants.INTENT_ID))).get(MissedCallViewModel::class.java)
-        viewModel!!.missedCall.observe(this, { missedCall ->
+        viewModel.missedCall.observe(this, Observer{ missedCall ->
             if (missedCall != null) {
-                showInfo(missedCall!!)
+                showInfo(missedCall)
             } else {
                 closeWindow()
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> closeWindow()
@@ -137,31 +125,31 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         this.mMissedCall = missedCall
         var formattedTime = ""
         try {
-            formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs!!.is24HourFormatEnabled)
+            formattedTime = TimeUtil.getTime(Date(missedCall.dateTime), prefs.is24HourFormatEnabled)
         } catch (e: NullPointerException) {
             LogUtil.d(TAG, "onCreate: " + e.localizedMessage)
         }
 
         val name = Contacts.getNameFromNumber(missedCall.number, this)
         val wearMessage = (name ?: "") + "\n" + missedCall.number
-        if (missedCall.number != null) {
+        if (missedCall.number != "") {
             val conID = Contacts.getIdFromNumber(missedCall.number, this).toLong()
             val photo = Contacts.getPhoto(conID)
             if (photo != null) {
-                binding!!.contactPhoto.setImageURI(photo)
+                contactPhoto.setImageURI(photo)
             } else {
-                binding!!.contactPhoto.visibility = View.GONE
+                contactPhoto.visibility = View.GONE
             }
-            binding!!.remText.setText(R.string.missed_call)
-            binding!!.contactInfo.text = wearMessage
-            binding!!.actionDirect.setText(R.string.from)
-            binding!!.someView.setText(R.string.last_called)
-            binding!!.messageView.text = formattedTime
-            binding!!.container.visibility = View.VISIBLE
+            remText.setText(R.string.missed_call)
+            contactInfo.text = wearMessage
+            actionDirect.setText(R.string.from)
+            someView.setText(R.string.last_called)
+            messageView.text = formattedTime
+            container.visibility = View.VISIBLE
         }
-        binding!!.buttonCancel.setOnClickListener { v -> sendSMS() }
-        binding!!.buttonOk.setOnClickListener { v -> ok() }
-        binding!!.buttonCall.setOnClickListener { v -> call() }
+        buttonCancel.onClick { sendSMS() }
+        buttonOk.onClick { ok() }
+        buttonCall.onClick { call() }
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()
     }
@@ -178,7 +166,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     override fun onBackPressed() {
         discardMedia()
-        if (prefs!!.isFoldingEnabled) {
+        if (prefs.isFoldingEnabled) {
             closeWindow()
         } else {
             Toast.makeText(this@MissedCallDialogActivity, getString(R.string.select_one_of_item), Toast.LENGTH_SHORT).show()
@@ -224,20 +212,20 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
 
     private fun removeMissed() {
         if (mMissedCall != null) {
-            viewModel!!.deleteMissedCall(mMissedCall!!)
+            viewModel.deleteMissedCall(mMissedCall!!)
         }
     }
 
     override fun showSendingError() {
-        binding!!.remText.text = getString(R.string.error_sending)
-        binding!!.buttonCall.setImageResource(R.drawable.ic_refresh)
-        if (binding!!.buttonCall.visibility == View.GONE) {
-            binding!!.buttonCall.show()
+        remText.text = getString(R.string.error_sending)
+        buttonCall.setImageResource(R.drawable.ic_refresh)
+        if (buttonCall.visibility == View.GONE) {
+            buttonCall.show()
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 makeCall()
@@ -250,7 +238,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         builder.setContentTitle(name)
         builder.setAutoCancel(false)
         builder.priority = NotificationCompat.PRIORITY_MAX
-        if (prefs!!.isManualRemoveEnabled) {
+        if (prefs.isManualRemoveEnabled) {
             builder.setOngoing(false)
         } else {
             builder.setOngoing(true)
@@ -258,7 +246,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         val appName: String
         if (Module.isPro) {
             appName = getString(R.string.app_name_pro)
-            if (prefs!!.isLedEnabled) {
+            if (prefs.isLedEnabled) {
                 builder.setLights(ledColor, 500, 1000)
             }
         } else {
@@ -273,20 +261,20 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         if (Module.isLollipop) {
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         }
-        if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this) || SuperUtil.checkNotificationPermission(this) && prefs!!.isSoundInSilentModeEnabled)) {
+        if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this) || SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)) {
             val soundUri = soundUri
-            sound!!.playAlarm(soundUri, prefs!!.isInfiniteSoundEnabled)
+            sound!!.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
         }
         if (isVibrate) {
             val pattern: LongArray
-            if (prefs!!.isInfiniteVibrateEnabled) {
+            if (prefs.isInfiniteVibrateEnabled) {
                 pattern = longArrayOf(150, 86400000)
             } else {
                 pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }
-        val isWear = prefs!!.isWearEnabled
+        val isWear = prefs.isWearEnabled
         if (isWear && Module.isJellyMR2) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
@@ -300,9 +288,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     companion object {
-
-        private val TAG = "MCDialogActivity"
-
-        private val CALL_PERM = 612
+        private const val TAG = "MCDialogActivity"
+        private const val CALL_PERM = 612
     }
 }

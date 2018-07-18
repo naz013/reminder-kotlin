@@ -93,7 +93,7 @@ class GroupsFragment : BaseNavigationFragment() {
         if (Module.isPro) {
             items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
         }
-        Dialogues.showLCAM(context!!, { item -> viewModel!!.changeGroupColor(group, item) }, *items)
+        Dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(group, item) }, *items)
     }
 
     private fun initGroupsList() {

@@ -1,272 +1,270 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/bgImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:scaleType="centerCrop" />
 
-            <ImageView
-                android:id="@+id/bgImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+        <LinearLayout
+            android:id="@+id/single_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/single_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/contactPhoto"
+                android:layout_width="@dimen/reminder_photo_size"
+                android:layout_height="@dimen/reminder_photo_size"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:contentDescription="@string/acc_contact_photo"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                app:civ_border_color="@color/material_grey_dialog"
+                app:civ_border_width="5dp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/contactPhoto"
-                    android:layout_width="@dimen/reminder_photo_size"
-                    android:layout_height="@dimen/reminder_photo_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/acc_contact_photo"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    app:civ_border_color="@color/material_grey_dialog"
-                    app:civ_border_width="5dp" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="170dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="4dp"
+                app:contentPadding="8dp">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="170dp"
-                    android:layout_marginTop="16dp"
-                    app:cardCornerRadius="4dp"
-                    app:contentPadding="8dp">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/remText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_gravity="start"
+                        android:gravity="center"
+                        android:text="@string/e_mail"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textSize="@dimen/reminder_text_size_normal" />
 
-                        <TextView
-                            android:id="@+id/remText"
+                    <TextView
+                        android:id="@+id/reminder_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/e_mail"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:id="@+id/container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:gravity="center"
-                            android:text="@string/e_mail"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textSize="@dimen/reminder_text_size_normal" />
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/reminder_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="@string/e_mail"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textSize="17sp" />
-
-                        <LinearLayout
-                            android:id="@+id/container"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:orientation="vertical"
-                            android:visibility="visible">
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-
-                                <TextView
-                                    android:id="@+id/actionDirect"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_centerVertical="true"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginRight="25dp"
-                                    android:text="@string/to"
-                                    android:textSize="15sp" />
-
-                                <TextView
-                                    android:id="@+id/contactInfo"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/actionDirect"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold" />
-
-                            </RelativeLayout>
-
-                            <RelativeLayout
-                                android:id="@+id/subjectContainer"
+                            <TextView
+                                android:id="@+id/actionDirect"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp">
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginRight="25dp"
+                                android:text="@string/to"
+                                android:textSize="15sp" />
 
-                                <TextView
-                                    android:id="@+id/subjectDirect"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_centerVertical="true"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginRight="25dp"
-                                    android:text="@string/subject"
-                                    android:textSize="15sp" />
-
-                                <TextView
-                                    android:id="@+id/subjectView"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/subjectDirect"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold" />
-
-                            </RelativeLayout>
-
-                            <RelativeLayout
+                            <TextView
+                                android:id="@+id/contactInfo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp">
+                                android:layout_toRightOf="@+id/actionDirect"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
 
-                                <TextView
-                                    android:id="@+id/someView"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_centerVertical="true"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginRight="25dp"
-                                    android:text="@string/message"
-                                    android:textSize="15sp" />
+                        </RelativeLayout>
 
-                                <TextView
-                                    android:id="@+id/messageView"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/someView"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold" />
+                        <RelativeLayout
+                            android:id="@+id/subjectContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp">
 
-                            </RelativeLayout>
+                            <TextView
+                                android:id="@+id/subjectDirect"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginRight="25dp"
+                                android:text="@string/subject"
+                                android:textSize="15sp" />
 
-                        </LinearLayout>
+                            <TextView
+                                android:id="@+id/subjectView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/subjectDirect"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/todoList"
-                            android:layout_width="250dp"
-                            android:layout_height="250dp"
-                            android:layout_marginTop="8dp"
-                            android:overScrollMode="never"
-                            android:scrollbars="none"
-                            android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:id="@+id/someView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginRight="25dp"
+                                android:text="@string/message"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/messageView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/someView"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/todoList"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_marginTop="8dp"
+                        android:overScrollMode="never"
+                        android:scrollbars="none"
+                        android:visibility="gone" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/actionContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/delayContainer"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal">
+            </androidx.cardview.widget.CardView>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonOk"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_ok" />
+        </LinearLayout>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonCall"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_make_call" />
+        <LinearLayout
+            android:id="@+id/actionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/delayContainer"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonCancel"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_cancel" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonOk"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_ok" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/button_refresh"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_refresh" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonCall"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_make_call" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonAttachment"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/attach_file"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_attach_file_black_24dp" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_cancel" />
 
-            </LinearLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_refresh"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_refresh" />
 
-            <LinearLayout
-                android:id="@+id/delayContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
-                android:layout_marginBottom="35dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonAttachment"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/attach_file"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_attach_file_black_24dp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonDelay"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_snooze" />
+        </LinearLayout>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonDelayFor"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_snooze_for" />
+        <LinearLayout
+            android:id="@+id/delayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="35dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonNotification"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_move_to_status_bar" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonDelay"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_snooze" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/buttonEdit"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="6dp"
-                    android:contentDescription="@string/acc_button_edit" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonDelayFor"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_snooze_for" />
 
-            </LinearLayout>
-        </RelativeLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonNotification"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_move_to_status_bar" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/buttonEdit"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/acc_button_edit" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

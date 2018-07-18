@@ -27,28 +27,28 @@ import java.util.Locale
 
 class HelpFragment : BaseWebViewFragment() {
 
-    protected override val url: String
+    override val url: String
         get() {
-            val isDark = ThemeUtil.getInstance(context).isDark
+            val isDark = ThemeUtil.getInstance(context!!).isDark
             val localeCheck = Locale.getDefault().toString().toLowerCase()
             val url: String
             if (localeCheck.startsWith("uk")) {
-                if (isDark) {
-                    url = Constants.WEB_URL + "app_help/index.html"
+                url = if (isDark) {
+                    Constants.WEB_URL + "app_help/index.html"
                 } else {
-                    url = Constants.WEB_URL + "app_help/index_light.html"
+                    Constants.WEB_URL + "app_help/index_light.html"
                 }
             } else if (localeCheck.startsWith("ru")) {
-                if (isDark) {
-                    url = Constants.WEB_URL + "app_help/index_ru.html"
+                url = if (isDark) {
+                    Constants.WEB_URL + "app_help/index_ru.html"
                 } else {
-                    url = Constants.WEB_URL + "app_help/index_light_ru.html"
+                    Constants.WEB_URL + "app_help/index_light_ru.html"
                 }
             } else {
-                if (isDark) {
-                    url = Constants.WEB_URL + "app_help/index_en.html"
+                url = if (isDark) {
+                    Constants.WEB_URL + "app_help/index_en.html"
                 } else {
-                    url = Constants.WEB_URL + "app_help/index_light_en.html"
+                    Constants.WEB_URL + "app_help/index_light_en.html"
                 }
             }
             return url
@@ -57,8 +57,8 @@ class HelpFragment : BaseWebViewFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.help))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.help))
+            callback?.onFragmentSelect(this)
         }
     }
 }
