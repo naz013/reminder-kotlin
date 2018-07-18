@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.interfaces.SimpleListener
@@ -13,11 +15,9 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
-import com.elementary.tasks.databinding.FragmentGroupsBinding
 import com.elementary.tasks.groups.CreateGroupActivity
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_groups.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,53 +39,52 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class GroupsFragment : BaseNavigationFragment() {
 
-    private var binding: FragmentGroupsBinding? = null
-    private var viewModel: GroupsViewModel? = null
-    private var mAdapter: GroupsRecyclerAdapter? = null
+    private lateinit var viewModel: GroupsViewModel
+    private var mAdapter: GroupsRecyclerAdapter = GroupsRecyclerAdapter()
 
     private val mEventListener = object : SimpleListener {
         override fun onItemClicked(position: Int, view: View) {
-            startActivity(Intent(context, CreateGroupActivity::class.java).putExtra(Constants.INTENT_ID, mAdapter!!.getItem(position).uuId))
+            startActivity(Intent(context, CreateGroupActivity::class.java)
+                    .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).uuId))
         }
 
         override fun onItemLongClicked(position: Int, view: View) {
             var items = arrayOf(getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-            if (mAdapter!!.itemCount == 1) {
+            if (mAdapter.itemCount == 1) {
                 items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
             }
             Dialogues.showLCAM(context!!, { item ->
                 when (item) {
-                    0 -> changeColor(mAdapter!!.getItem(position))
+                    0 -> changeColor(mAdapter.getItem(position))
                     1 -> startActivity(Intent(context, CreateGroupActivity::class.java)
-                            .putExtra(Constants.INTENT_ID, mAdapter!!.getItem(position).uuId))
-                    2 -> viewModel!!.deleteGroup(mAdapter!!.getItem(position))
+                            .putExtra(Constants.INTENT_ID, mAdapter.getItem(position).uuId))
+                    2 -> viewModel.deleteGroup(mAdapter.getItem(position))
                 }
             }, *items)
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentGroupsBinding.inflate(inflater, container, false)
-        initGroupsList()
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_groups, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initGroupsList()
         initViewModel()
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(GroupsViewModel::class.java)
-        viewModel!!.allGroups.observe(this, { groups ->
+        viewModel.allGroups.observe(this, Observer{ groups ->
             if (groups != null) {
                 showGroups(groups)
             }
         })
     }
 
-    private fun showGroups(groups: List<Group>?) {
-        mAdapter!!.setData(groups)
+    private fun showGroups(groups: List<Group>) {
+        mAdapter.setData(groups)
         refreshView()
     }
 
@@ -98,30 +97,30 @@ class GroupsFragment : BaseNavigationFragment() {
     }
 
     private fun initGroupsList() {
-        binding!!.recyclerView.setHasFixedSize(false)
-        binding!!.recyclerView.layoutManager = LinearLayoutManager(context)
-        mAdapter = GroupsRecyclerAdapter(mEventListener)
-        binding!!.recyclerView.adapter = mAdapter
+        mAdapter.mEventListener = mEventListener
+
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = mAdapter
         refreshView()
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.groups))
-            callback!!.onFragmentSelect(this)
-            callback!!.setClick { view -> startActivity(Intent(context, CreateGroupActivity::class.java)) }
-            callback!!.onScrollChanged(binding!!.recyclerView)
+            callback?.onTitleChange(getString(R.string.groups))
+            callback?.onFragmentSelect(this)
+            callback?.setClick(View.OnClickListener{ startActivity(Intent(context, CreateGroupActivity::class.java)) })
+            callback?.onScrollChanged(recyclerView)
         }
     }
 
     private fun refreshView() {
-        if (mAdapter == null || mAdapter!!.itemCount == 0) {
-            binding!!.emptyItem.visibility = View.VISIBLE
-            binding!!.recyclerView.visibility = View.GONE
+        if (mAdapter.itemCount == 0) {
+            emptyItem.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         } else {
-            binding!!.emptyItem.visibility = View.GONE
-            binding!!.recyclerView.visibility = View.VISIBLE
+            emptyItem.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 }

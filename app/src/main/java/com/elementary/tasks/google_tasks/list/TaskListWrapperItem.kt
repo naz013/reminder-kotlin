@@ -1,12 +1,9 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.list
 
+import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 
 import java.util.ArrayList
-
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,19 +23,15 @@ import androidx.fragment.app.FragmentPagerAdapter
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TaskPagerAdapter(fm: FragmentManager, data: List<GoogleTaskList>?) : FragmentPagerAdapter(fm) {
-
-    private val data = ArrayList<GoogleTaskList>()
+class TaskListWrapperItem(val taskList: GoogleTaskList, mData: List<GoogleTask>,
+                          var position: Int) {
+    private val mData: List<GoogleTask>
 
     init {
-        if (data != null) this.data.addAll(data)
+        this.mData = ArrayList(mData)
     }
 
-    override fun getItem(position: Int): Fragment {
-        return TaskListFragment.newInstance(data[position].listId)
-    }
-
-    override fun getCount(): Int {
-        return data.size
+    fun getmData(): List<GoogleTask> {
+        return mData
     }
 }

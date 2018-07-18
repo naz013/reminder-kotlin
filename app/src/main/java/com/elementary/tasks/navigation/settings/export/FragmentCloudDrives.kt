@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings.export
 
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,8 +20,8 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.views.roboto.RoboButton
 import com.elementary.tasks.databinding.FragmentCloudDrivesBinding
-import com.elementary.tasks.google_tasks.GetTaskListAsync
-import com.elementary.tasks.google_tasks.TasksCallback
+import com.elementary.tasks.google_tasks.work.GetTaskListAsync
+import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 
 /**

@@ -1,45 +1,40 @@
 package com.elementary.tasks.intro
 
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.databinding.ActivityIntroBinding
-import com.elementary.tasks.login.LoginActivity
-
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.elementary.tasks.R
+import com.elementary.tasks.core.ThemedActivity
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.login.LoginActivity
+import kotlinx.android.synthetic.main.activity_intro.*
 
 class IntroActivity : ThemedActivity() {
 
-    private var binding: ActivityIntroBinding? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_intro)
+        setContentView(R.layout.activity_intro)
 
         val mPagerAdapter = SlidePagerAdapter(supportFragmentManager)
-        binding!!.viewPager.adapter = mPagerAdapter
-        binding!!.indicator.setViewPager(binding!!.viewPager)
+        viewPager.adapter = mPagerAdapter
+        indicator.setViewPager(viewPager)
 
-        binding!!.skipButton.setOnClickListener { v -> moveToNextScreen() }
-        binding!!.nextButton.setOnClickListener { v -> moveForward() }
-        if (themeUtil!!.isDark) {
-            binding!!.nextButton.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp)
+        skip_button.setOnClickListener { moveToNextScreen() }
+        next_button.setOnClickListener { moveForward() }
+        if (themeUtil.isDark) {
+            next_button.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp)
         } else {
-            binding!!.nextButton.setImageResource(R.drawable.ic_keyboard_arrow_right_black_24dp)
+            next_button.setImageResource(R.drawable.ic_keyboard_arrow_right_black_24dp)
         }
     }
 
     private fun moveForward() {
-        if (binding!!.viewPager.currentItem >= 4) {
+        if (viewPager.currentItem >= 4) {
             moveToNextScreen()
         } else {
-            binding!!.viewPager.currentItem = binding!!.viewPager.currentItem + 1
+            viewPager.currentItem = viewPager.currentItem + 1
         }
     }
 
@@ -62,10 +57,10 @@ class IntroActivity : ThemedActivity() {
     }
 
     override fun onBackPressed() {
-        if (binding!!.viewPager.currentItem == 0) {
+        if (viewPager.currentItem == 0) {
             super.onBackPressed()
         } else {
-            binding!!.viewPager.currentItem = binding!!.viewPager.currentItem - 1
+            viewPager.currentItem = viewPager.currentItem - 1
         }
     }
 

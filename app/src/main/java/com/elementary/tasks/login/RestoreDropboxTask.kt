@@ -30,14 +30,10 @@ import com.elementary.tasks.groups.GroupsUtil
  * limitations under the License.
  */
 
-class RestoreDropboxTask(context: Context, private val mListener: SyncListener?) : AsyncTask<Void, String, Void>() {
+class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?) : AsyncTask<Void, String, Void>() {
 
-    private val mContext: ContextHolder
+    private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
-
-    init {
-        this.mContext = ContextHolder(context)
-    }
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -67,7 +63,7 @@ class RestoreDropboxTask(context: Context, private val mListener: SyncListener?)
         drive.downloadGroups(false)
 
         val list = AppDb.getAppDatabase(mContext.context).groupDao().all
-        if (list.size == 0) {
+        if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
             val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
             val dao = AppDb.getAppDatabase(mContext.context).reminderDao()
@@ -110,10 +106,6 @@ class RestoreDropboxTask(context: Context, private val mListener: SyncListener?)
         }
         UpdatesHelper.getInstance(mContext.context).updateWidget()
         UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
-        mListener?.onFinish()
-    }
-
-    interface SyncListener {
-        fun onFinish()
+        mListener?.invoke()
     }
 }

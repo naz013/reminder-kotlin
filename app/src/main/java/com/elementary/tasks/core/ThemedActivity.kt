@@ -12,18 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 
 abstract class ThemedActivity : AppCompatActivity() {
 
-    protected var themeUtil: ThemeUtil? = null
+    protected lateinit var themeUtil: ThemeUtil
         private set
-    protected var prefs: Prefs? = null
+    protected lateinit var prefs: Prefs
         private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = Prefs.getInstance(this)
         themeUtil = ThemeUtil.getInstance(this)
-        setTheme(themeUtil!!.style)
+        setTheme(themeUtil.style)
         if (Module.isLollipop) {
-            window.statusBarColor = themeUtil!!.getColor(themeUtil!!.colorPrimaryDark())
+            window.statusBarColor = themeUtil.getColor(themeUtil.colorPrimaryDark())
         }
     }
 

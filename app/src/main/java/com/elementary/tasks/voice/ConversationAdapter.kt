@@ -71,7 +71,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Reply.RESPONSE -> VoiceResponseHolder(ListItemSimpleResponseBinding.inflate(inflater, parent, false).root)
             Reply.REMINDER -> ReminderHolder(parent, null, false)
             Reply.NOTE -> NoteHolder(ListItemNoteBinding.inflate(inflater, parent, false).root, null)
-            Reply.GROUP -> GroupHolder(ListItemGroupBinding.inflate(inflater, parent, false).root, null)
+            Reply.GROUP -> GroupHolder(parent, null)
             Reply.SHOW_MORE -> ShowMoreHolder(ListItemShowReplyBinding.inflate(inflater, parent, false).root)
             Reply.BIRTHDAY -> BirthdayHolder(parent, null)
             Reply.SHOPPING -> ShoppingHolder(parent, null)

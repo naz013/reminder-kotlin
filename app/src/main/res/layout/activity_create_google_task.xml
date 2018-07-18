@@ -1,175 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+        <com.elementary.tasks.core.views.roboto.RoboEditText
+            android:id="@+id/editField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/task"
+            android:maxLines="3"
+            android:textColorHint="@color/whitePrimary"
+            android:textSize="@dimen/create_text_size_secondary"
+            app:edit_font_style="roboto_light" />
 
-            <com.elementary.tasks.core.views.roboto.RoboEditText
-                android:id="@+id/editField"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="70dp"
+            android:orientation="vertical">
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/transparent"
-                android:hint="@string/task"
-                android:maxLines="3"
-                android:textColorHint="@color/whitePrimary"
-                android:textSize="@dimen/create_text_size_secondary"
-                app:edit_font_style="roboto_light" />
+                android:padding="8dp">
 
-        </com.google.android.material.appbar.AppBarLayout>
+                <TableRow android:foreground="?attr/selectableItemBackground">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/noteIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@null"
+                        android:scaleType="center"
+                        app:tb_icon="@drawable/ic_note"
+                        app:tb_icon_light="@drawable/ic_note_white" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="70dp"
-                android:orientation="vertical">
+                    <com.elementary.tasks.core.views.roboto.RoboEditText
+                        android:id="@+id/noteField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/create_margin"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:hint="@string/note"
+                        android:textSize="@dimen/create_text_size_secondary"
+                        app:edit_font_style="roboto_light" />
 
-                <TableLayout
+                </TableRow>
+
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp">
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/create_margin"
+                    android:layout_marginTop="@dimen/create_margin"
+                    android:background="@color/material_divider" />
 
-                    <TableRow android:foreground="?attr/selectableItemBackground">
+                <TableRow android:foreground="?attr/selectableItemBackground">
 
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/noteIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@null"
-                            android:scaleType="center"
-                            app:tb_icon="@drawable/ic_note"
-                            app:tb_icon_light="@drawable/ic_note_white" />
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/dateIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@null"
+                        android:scaleType="center"
+                        app:tb_icon="@drawable/ic_access_time_black_24dp"
+                        app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboEditText
-                            android:id="@+id/noteField"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/create_margin"
-                            android:background="@android:color/transparent"
-                            android:gravity="center_vertical"
-                            android:hint="@string/note"
-                            android:textSize="@dimen/create_text_size_secondary"
-                            app:edit_font_style="roboto_light" />
-
-                    </TableRow>
-
-                    <View
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/dateField"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/create_margin"
-                        android:layout_marginTop="@dimen/create_margin"
-                        android:background="@color/material_divider" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ems="10"
+                        android:text="Tue, 5 Nov 2015"
+                        android:textSize="@dimen/create_text_size_normal" />
 
-                    <TableRow android:foreground="?attr/selectableItemBackground">
+                </TableRow>
 
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/dateIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@null"
-                            android:scaleType="center"
-                            app:tb_icon="@drawable/ic_access_time_black_24dp"
-                            app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/create_margin"
+                    android:layout_marginTop="@dimen/create_margin"
+                    android:background="@color/material_divider" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/dateField"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:ems="10"
-                            android:text="Tue, 5 Nov 2015"
-                            android:textSize="@dimen/create_text_size_normal" />
+                <TableRow android:foreground="?attr/selectableItemBackground">
 
-                    </TableRow>
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/timeIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@null"
+                        android:scaleType="center"
+                        app:tb_icon="@drawable/ic_alarm"
+                        app:tb_icon_light="@drawable/ic_alarm_white" />
 
-                    <View
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/timeField"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/create_margin"
-                        android:layout_marginTop="@dimen/create_margin"
-                        android:background="@color/material_divider" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ems="10"
+                        android:text="14:05"
+                        android:textSize="@dimen/create_text_size_normal" />
 
-                    <TableRow android:foreground="?attr/selectableItemBackground">
+                </TableRow>
 
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/timeIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@null"
-                            android:scaleType="center"
-                            app:tb_icon="@drawable/ic_alarm"
-                            app:tb_icon_light="@drawable/ic_alarm_white" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/create_margin"
+                    android:layout_marginTop="@dimen/create_margin"
+                    android:background="@color/material_divider" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/timeField"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:ems="10"
-                            android:text="14:05"
-                            android:textSize="@dimen/create_text_size_normal" />
+                <TableRow android:foreground="?attr/selectableItemBackground">
 
-                    </TableRow>
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/listIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@null"
+                        android:scaleType="center"
+                        app:tb_icon="@drawable/ic_view_list_black_24dp"
+                        app:tb_icon_light="@drawable/ic_view_list_white_24dp" />
 
-                    <View
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/listText"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="@dimen/create_margin"
-                        android:layout_marginTop="@dimen/create_margin"
-                        android:background="@color/material_divider" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="@dimen/create_margin"
+                        android:clickable="true"
+                        android:text="Reminder"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/create_text_size_normal"
+                        android:textStyle="bold" />
 
-                    <TableRow android:foreground="?attr/selectableItemBackground">
-
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/listIcon"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginRight="15dp"
-                            android:background="@null"
-                            android:scaleType="center"
-                            app:tb_icon="@drawable/ic_view_list_black_24dp"
-                            app:tb_icon_light="@drawable/ic_view_list_white_24dp" />
-
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/listText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="@dimen/create_margin"
-                            android:clickable="true"
-                            android:text="Reminder"
-                            android:textAllCaps="true"
-                            android:textSize="@dimen/create_text_size_normal"
-                            android:textStyle="bold" />
-
-                    </TableRow>
-                </TableLayout>
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-</layout>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

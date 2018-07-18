@@ -33,7 +33,7 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RestoreLocalTask internal constructor(context: Context, private val mListener: RestoreLocalTask.SyncListener) : AsyncTask<Void, String, Int>() {
+class RestoreLocalTask internal constructor(context: Context, private val mListener: (() -> Unit)?) : AsyncTask<Void, String, Int>() {
 
     private val mContext: ContextHolder
     private var mDialog: ProgressDialog? = null
@@ -128,10 +128,6 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
 
         UpdatesHelper.getInstance(mContext.context).updateWidget()
         UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
-        mListener.onFinish()
-    }
-
-    interface SyncListener {
-        fun onFinish()
+        mListener?.invoke()
     }
 }

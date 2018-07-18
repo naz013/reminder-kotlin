@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.create
 
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
@@ -8,7 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
@@ -16,18 +17,11 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
-import com.elementary.tasks.databinding.ActivityCreateGoogleTaskBinding
-
-import java.util.ArrayList
-import java.util.Calendar
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.activity_create_google_task.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,51 +41,39 @@ import androidx.lifecycle.ViewModelProviders
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TaskActivity : ThemedActivity() {
+open class TaskActivity : ThemedActivity() {
 
-    private var binding: ActivityCreateGoogleTaskBinding? = null
-    private var viewModel: GoogleTaskViewModel? = null
+    private lateinit var viewModel: GoogleTaskViewModel
 
     private var mHour = 0
     private var mMinute = 0
     private var mYear = 0
     private var mMonth = 0
     private var mDay = 1
-    private var listId: String? = null
-    private var action: String? = null
+    private var listId: String = ""
+    private var action: String = ""
     private var isReminder = false
     private var isDate = false
 
     private var mItem: GoogleTask? = null
     private var mDialog: ProgressDialog? = null
-    private val mSimpleCallback = object : TasksCallback {
-        override fun onFailed() {
-            hideDialog()
-        }
-
-        override fun onComplete() {
-            hideDialog()
-            finish()
-        }
-    }
-
-    internal var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mYear = year
         mMonth = monthOfYear
         mDay = dayOfMonth
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(year, monthOfYear, dayOfMonth)
-        binding!!.dateField.text = TimeUtil.getDate(calendar.time)
+        dateField.text = TimeUtil.getDate(calendar.time)
     }
 
-    internal var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+    private var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mHour = hourOfDay
         mMinute = minute
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        binding!!.timeField.text = TimeUtil.getTime(c.time, prefs!!.is24HourFormatEnabled)
+        timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
     }
 
     private fun hideDialog() {
@@ -107,7 +89,7 @@ class TaskActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_google_task)
+        setContentView(R.layout.activity_create_google_task)
         initToolbar()
         initFields()
         val calendar = Calendar.getInstance()
@@ -120,52 +102,50 @@ class TaskActivity : ThemedActivity() {
         val intent = intent
         val tmp = intent.getStringExtra(Constants.INTENT_ID)
         action = intent.getStringExtra(TasksConstants.INTENT_ACTION)
-        if (action == null) action = TasksConstants.CREATE
+        if (action == "") action = TasksConstants.CREATE
 
-        if (action!!.matches(TasksConstants.CREATE.toRegex())) {
-            initViewModel(null, tmp)
+        if (action.matches(TasksConstants.CREATE.toRegex())) {
+            initViewModel("", tmp)
         } else {
-            initViewModel(tmp, null)
+            initViewModel(tmp, "")
         }
         switchDate()
     }
 
-    private fun initViewModel(taskId: String?, listId: String?) {
+    private fun initViewModel(taskId: String, listId: String) {
         this.listId = listId
         viewModel = ViewModelProviders.of(this, GoogleTaskViewModel.Factory(application, taskId)).get(GoogleTaskViewModel::class.java)
-        viewModel!!.isInProgress.observe(this, { aBoolean ->
+        viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
-                if (aBoolean!!)
-                    showProgressDialog()
-                else
-                    hideDialog()
+                if (aBoolean) showProgressDialog()
+                else hideDialog()
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> finish()
                 }
             }
         })
-        viewModel!!.googleTask.observe(this, { googleTask ->
+        viewModel.googleTask.observe(this, Observer { googleTask ->
             if (googleTask != null) {
-                editTask(googleTask!!)
+                editTask(googleTask)
             }
         })
-        viewModel!!.googleTaskLists.observe(this, { googleTaskLists ->
-            if (googleTaskLists != null && listId != null) {
-                selectCurrent(googleTaskLists!!)
+        viewModel.googleTaskLists.observe(this, Observer{ googleTaskLists ->
+            if (googleTaskLists != null && listId != "") {
+                selectCurrent(googleTaskLists)
             }
         })
-        viewModel!!.defaultTaskList.observe(this, { googleTaskList ->
-            if (googleTaskList != null && listId == null) {
-                showTaskList(googleTaskList!!)
+        viewModel.defaultTaskList.observe(this, Observer{ googleTaskList ->
+            if (googleTaskList != null && listId == "") {
+                showTaskList(googleTaskList)
             }
         })
-        viewModel!!.reminder.observe(this, { reminder ->
+        viewModel.reminder.observe(this, Observer{ reminder ->
             if (reminder != null) {
-                showReminder(reminder!!)
+                showReminder(reminder)
             }
         })
     }
@@ -173,19 +153,19 @@ class TaskActivity : ThemedActivity() {
     private fun showReminder(reminder: Reminder) {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
-        binding!!.timeField.text = TimeUtil.getTime(calendar.time, prefs!!.is24HourFormatEnabled)
+        timeField.text = TimeUtil.getTime(calendar.time, prefs.is24HourFormatEnabled)
         isReminder = true
     }
 
     private fun showTaskList(googleTaskList: GoogleTaskList) {
         this.listId = googleTaskList.listId
-        binding!!.toolbar.setTitle(R.string.new_task)
-        binding!!.listText.text = googleTaskList.title
+        toolbar.setTitle(R.string.new_task)
+        listText.text = googleTaskList.title
         setColor(googleTaskList.color)
     }
 
     private fun selectCurrent(googleTaskLists: List<GoogleTaskList>) {
-        binding!!.toolbar.setTitle(R.string.new_task)
+        toolbar.setTitle(R.string.new_task)
         for (googleTaskList in googleTaskLists) {
             if (googleTaskList.listId == listId) {
                 showTaskList(googleTaskList)
@@ -197,15 +177,15 @@ class TaskActivity : ThemedActivity() {
     private fun editTask(googleTask: GoogleTask) {
         this.mItem = googleTask
         this.listId = googleTask.listId
-        binding!!.toolbar.setTitle(R.string.edit_task)
-        binding!!.editField.setText(googleTask.title)
+        toolbar.setTitle(R.string.edit_task)
+        editField.setText(googleTask.title)
 
         val note = googleTask.notes
-        if (note != null) {
-            binding!!.noteField.setText(note)
-            binding!!.noteField.setSelection(binding!!.noteField.text!!.toString().trim { it <= ' ' }.length)
+        if (note != "") {
+            noteField.setText(note)
+            noteField.setSelection(noteField.text.toString().trim { it <= ' ' }.length)
         }
-        val time = mItem!!.dueDate
+        val time = googleTask.dueDate
         if (time != 0L) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = time
@@ -215,33 +195,33 @@ class TaskActivity : ThemedActivity() {
             mMonth = calendar.get(Calendar.MONTH)
             mDay = calendar.get(Calendar.DAY_OF_MONTH)
             isDate = true
-            binding!!.dateField.text = TimeUtil.getDate(calendar.time)
+            dateField.text = TimeUtil.getDate(calendar.time)
         }
-        if (viewModel!!.googleTaskLists.value != null) {
-            for (googleTaskList in viewModel!!.googleTaskLists.value!!) {
+        if (viewModel.googleTaskLists.value != null) {
+            for (googleTaskList in viewModel.googleTaskLists.value!!) {
                 if (googleTaskList.listId == googleTask.listId) {
                     showTaskList(googleTaskList)
                     break
                 }
             }
         }
-        viewModel!!.loadReminder(googleTask.uuId)
+        viewModel.loadReminder(googleTask.uuId)
     }
 
     private fun initFields() {
-        binding!!.listText.setOnClickListener { v -> selectList(false) }
-        binding!!.dateField.setOnClickListener { v -> selectDateAction(1) }
-        binding!!.timeField.setOnClickListener { v -> selectDateAction(2) }
+        listText.setOnClickListener { selectList(false) }
+        dateField.setOnClickListener { selectDateAction(1) }
+        timeField.setOnClickListener { selectDateAction(2) }
     }
 
     private fun initToolbar() {
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        setSupportActionBar(binding!!.toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        setSupportActionBar(toolbar)
         if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setHomeButtonEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
         }
     }
 
@@ -294,16 +274,17 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun switchDate() {
-        if (!isDate) binding!!.dateField.text = getString(R.string.no_date)
-        if (!isReminder) binding!!.timeField.text = getString(R.string.no_reminder)
+        if (!isDate) dateField.text = getString(R.string.no_date)
+        if (!isReminder) timeField.text = getString(R.string.no_reminder)
     }
 
-    private fun moveTask(listId: String?) {
-        if (mItem != null) {
-            val initListId = mItem!!.listId
-            if (!listId!!.matches(initListId.toRegex())) {
-                mItem!!.listId = listId
-                viewModel!!.moveGoogleTask(mItem!!, initListId!!)
+    private fun moveTask(listId: String) {
+        val item = mItem
+        if (item != null) {
+            val initListId = item.listId
+            if (!listId.matches(initListId.toRegex())) {
+                item.listId = listId
+                viewModel.moveGoogleTask(item, initListId)
             } else {
                 Toast.makeText(this, getString(R.string.this_is_same_list), Toast.LENGTH_SHORT).show()
             }
@@ -315,14 +296,14 @@ class TaskActivity : ThemedActivity() {
     }
 
     private fun selectList(move: Boolean) {
-        var list = viewModel!!.googleTaskLists.value
+        var list = viewModel.googleTaskLists.value
         if (list == null) list = ArrayList()
         val names = ArrayList<String>()
         var position = 0
         for (i in list.indices) {
             val item = list[i]
             names.add(item.title)
-            if (listId != null && item.listId != null && item.listId!!.matches(listId.toRegex())) {
+            if (listId != "" && item.listId != "" && item.listId.matches(listId.toRegex())) {
                 position = i
             }
         }
@@ -343,18 +324,18 @@ class TaskActivity : ThemedActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (mItem != null && prefs!!.isAutoSaveEnabled) {
+        if (mItem != null && prefs.isAutoSaveEnabled) {
             saveTask()
         }
     }
 
     private fun saveTask() {
-        val taskName = binding!!.editField.text!!.toString().trim { it <= ' ' }
+        val taskName = editField.text.toString().trim { it <= ' ' }
         if (taskName.matches("".toRegex())) {
-            binding!!.editField.error = getString(R.string.must_be_not_empty)
+            editField.error = getString(R.string.must_be_not_empty)
             return
         }
-        val note = binding!!.noteField.text!!.toString().trim { it <= ' ' }
+        val note = noteField.text.toString().trim { it <= ' ' }
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(mYear, mMonth, mDay, 12, 0, 0)
@@ -363,37 +344,38 @@ class TaskActivity : ThemedActivity() {
         if (isDate) due = calendar.timeInMillis
         var reminder: Reminder? = null
         if (isReminder) reminder = createReminder(taskName)
-        if (action!!.matches(TasksConstants.EDIT.toRegex()) && mItem != null) {
-            val initListId = mItem!!.listId
-            mItem!!.listId = listId
-            mItem!!.status = Google.TASKS_NEED_ACTION
-            mItem!!.title = taskName
-            mItem!!.notes = note
+        var item = mItem
+        if (action.matches(TasksConstants.EDIT.toRegex()) && item != null) {
+            val initListId = item.listId
+            item.listId = listId
+            item.status = Google.TASKS_NEED_ACTION
+            item.title = taskName
+            item.notes = note
             if (reminder != null) {
-                mItem!!.uuId = reminder.uuId
+                item.uuId = reminder.uuId
             }
-            mItem!!.dueDate = due
-            if (listId != null) {
-                viewModel!!.updateAndMoveGoogleTask(mItem!!, initListId!!, reminder)
+            item.dueDate = due
+            if (listId != "") {
+                viewModel.updateAndMoveGoogleTask(item, initListId, reminder)
             } else {
-                viewModel!!.updateGoogleTask(mItem!!, reminder)
+                viewModel.updateGoogleTask(item, reminder)
             }
         } else {
-            mItem = GoogleTask()
-            mItem!!.listId = listId
-            mItem!!.status = Google.TASKS_NEED_ACTION
-            mItem!!.title = taskName
-            mItem!!.notes = note
-            mItem!!.dueDate = due
+            item = GoogleTask()
+            item.listId = listId
+            item.status = Google.TASKS_NEED_ACTION
+            item.title = taskName
+            item.notes = note
+            item.dueDate = due
             if (reminder != null) {
-                mItem!!.uuId = reminder.uuId
+                item.uuId = reminder.uuId
             }
-            viewModel!!.newGoogleTask(mItem!!, reminder)
+            viewModel.newGoogleTask(item, reminder)
         }
     }
 
     private fun createReminder(task: String): Reminder? {
-        val group = viewModel!!.defaultGroup.value ?: return null
+        val group = viewModel.defaultGroup.value ?: return null
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(mYear, mMonth, mDay, mHour, mMinute)
@@ -410,25 +392,25 @@ class TaskActivity : ThemedActivity() {
     private fun deleteDialog() {
         val builder = Dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_task))
-        builder.setPositiveButton(getString(R.string.yes)) { dialog, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             deleteTask()
         }
-        builder.setNegativeButton(getString(R.string.no)) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
     }
 
     private fun deleteTask() {
         if (mItem != null) {
-            viewModel!!.deleteGoogleTask(mItem!!)
+            viewModel.deleteGoogleTask(mItem!!)
         }
     }
 
     private fun setColor(i: Int) {
-        binding!!.appBar.setBackgroundColor(themeUtil!!.getNoteColor(i))
+        appBar.setBackgroundColor(themeUtil.getNoteColor(i))
         if (Module.isLollipop) {
-            window.statusBarColor = themeUtil!!.getNoteDarkColor(i)
+            window.statusBarColor = themeUtil.getNoteDarkColor(i)
         }
     }
 
@@ -464,11 +446,11 @@ class TaskActivity : ThemedActivity() {
         }
     }
 
-    protected fun dateDialog() {
+    private fun dateDialog() {
         TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay)
     }
 
-    protected fun timeDialog() {
+    private fun timeDialog() {
         TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute)
     }
 
@@ -479,9 +461,9 @@ class TaskActivity : ThemedActivity() {
 
     companion object {
 
-        private val TAG = "TaskActivity"
+        private const val TAG = "TaskActivity"
 
-        private val MENU_ITEM_DELETE = 12
-        private val MENU_ITEM_MOVE = 14
+        private const val MENU_ITEM_DELETE = 12
+        private const val MENU_ITEM_MOVE = 14
     }
 }

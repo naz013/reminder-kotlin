@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.databinding.FragmentIntroPageBinding
-
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.R
+import kotlinx.android.synthetic.main.fragment_intro_page.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -40,20 +39,23 @@ class PageFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = FragmentIntroPageBinding.inflate(inflater, container, false)
-        val item = ItemFactory.getItem(activity, position)
+        return inflater.inflate(R.layout.fragment_intro_page, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val item = ItemFactory.getItem(activity!!, position)
         if (item != null) {
-            binding.title.text = item.title
-            binding.description.text = item.description
-            binding.imageOne.setImageResource(item.images!![0])
-            if (item.images!!.size > 1) {
-                binding.imageTwo.setImageResource(item.images!![1])
-                binding.imageTwo.visibility = View.VISIBLE
+            title.text = item.title
+            description.text = item.description
+            image_one.setImageResource(item.getImages()!![0])
+            if (item.getImages()!!.size > 1) {
+                image_two.setImageResource(item.getImages()!![1])
+                image_two.visibility = View.VISIBLE
             } else {
-                binding.imageTwo.visibility = View.INVISIBLE
+                image_two.visibility = View.INVISIBLE
             }
         }
-        return binding.root
     }
 
     companion object {

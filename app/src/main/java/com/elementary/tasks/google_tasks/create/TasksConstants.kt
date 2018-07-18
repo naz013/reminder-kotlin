@@ -1,7 +1,7 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.create
 
 /**
- * Copyright 2017 Nazar Suhovich
+ * Copyright 2016 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,5 +18,10 @@ package com.elementary.tasks.google_tasks
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+object TasksConstants {
 
-class UpdateEvent
+    //action types
+    const val INTENT_ACTION = "action"
+    const val EDIT = "edit"
+    const val CREATE = "create"
+}
