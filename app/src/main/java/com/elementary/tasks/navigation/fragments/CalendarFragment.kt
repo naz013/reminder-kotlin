@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-
+import android.view.View
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.calendar.CalendarSingleton
@@ -14,10 +14,7 @@ import com.elementary.tasks.core.calendar.FlextCalendarFragment
 import com.elementary.tasks.core.calendar.FlextListener
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.navigation.settings.images.MonthImage
-
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,7 +34,6 @@ import java.util.Date
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class CalendarFragment : BaseCalendarFragment() {
 
     private val listener = object : FlextListener {
@@ -65,10 +61,6 @@ class CalendarFragment : BaseCalendarFragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater!!.inflate(R.menu.day_view_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -91,7 +83,7 @@ class CalendarFragment : BaseCalendarFragment() {
         if (callback != null) {
             callback!!.onTitleChange(getString(R.string.calendar))
             callback!!.onFragmentSelect(this)
-            CalendarSingleton.getInstance().fabClick = { view ->
+            CalendarSingleton.getInstance().fabClick = View.OnClickListener {
                 dateMills = System.currentTimeMillis()
                 showActionDialog(false)
             }
@@ -102,28 +94,28 @@ class CalendarFragment : BaseCalendarFragment() {
     }
 
     private fun showCalendar() {
-        val themeUtil = ThemeUtil.getInstance(context)
+        val themeUtil = ThemeUtil.getInstance(context!!)
         val calendarView = FlextCalendarFragment()
         val args = Bundle()
         val cal = Calendar.getInstance()
         cal.timeInMillis = System.currentTimeMillis()
         args.putInt(FlextCalendarFragment.MONTH, cal.get(Calendar.MONTH) + 1)
         args.putInt(FlextCalendarFragment.YEAR, cal.get(Calendar.YEAR))
-        if (prefs!!.startDay == 0) {
+        if (prefs.startDay == 0) {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.SUNDAY)
         } else {
             args.putInt(FlextCalendarFragment.START_DAY_OF_WEEK, FlextCalendarFragment.MONDAY)
         }
         args.putBoolean(FlextCalendarFragment.DARK_THEME, themeUtil.isDark)
-        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, prefs!!.isCalendarImagesEnabled)
-        val monthImage = prefs!!.calendarImages
+        args.putBoolean(FlextCalendarFragment.ENABLE_IMAGES, prefs.isCalendarImagesEnabled)
+        val monthImage = prefs.calendarImages
         args.putLongArray(FlextCalendarFragment.MONTH_IMAGES, monthImage.photos)
         calendarView.arguments = args
         calendarView.setListener(listener)
         calendarView.refreshView()
         replaceFragment(calendarView, getString(R.string.calendar))
-        val isReminder = prefs!!.isRemindersInCalendarEnabled
-        val isFeature = prefs!!.isFutureEventEnabled
+        val isReminder = prefs.isRemindersInCalendarEnabled
+        val isFeature = prefs.isFutureEventEnabled
         CalendarSingleton.getInstance().provider = EventsDataProvider(context!!, isReminder, isFeature)
         activity!!.invalidateOptionsMenu()
     }
@@ -148,6 +140,6 @@ class CalendarFragment : BaseCalendarFragment() {
 
     companion object {
 
-        private val TAG = "CalendarFragment"
+        private const val TAG = "CalendarFragment"
     }
 }

@@ -50,7 +50,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private var fragment: Fragment? = null
     private var mNoteView: QuickNoteCoordinator? = null
 
-    private var viewModel: ConversationViewModel? = null
+    private lateinit var viewModel: ConversationViewModel
 
     private var prevItem: Int = 0
     private var beforeSettings: Int = 0
@@ -69,9 +69,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private val isRateDialogShowed: Boolean
         get() {
-            var count = prefs!!.rateCount
+            var count = prefs.rateCount
             count++
-            prefs!!.rateCount = count
+            prefs.rateCount = count
             return count == 10
         }
 
@@ -146,11 +146,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onResume() {
         super.onResume()
-        if (prefs!!.isUiChanged) {
-            prefs!!.isUiChanged = false
+        if (prefs.isUiChanged) {
+            prefs.isUiChanged = false
             recreate()
         }
-        if (!prefs!!.isBetaWarmingShowed) {
+        if (!prefs.isBetaWarmingShowed) {
             showBetaDialog()
         }
         if (isRateDialogShowed) {
@@ -182,13 +182,13 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         builder.setNegativeButton(R.string.never) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.setNeutralButton(R.string.later) { dialogInterface, _ ->
             dialogInterface.dismiss()
-            prefs!!.rateCount = 0
+            prefs.rateCount = 0
         }
         builder.create().show()
     }
 
     private fun showBetaDialog() {
-        prefs!!.isBetaWarmingShowed = true
+        prefs.isBetaWarmingShowed = true
         var appVersion = ""
         try {
             val pInfo = packageManager.getPackageInfo(packageName, 0)
@@ -208,7 +208,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun showMainImage() {
-        val path = prefs!!.imagePath
+        val path = prefs.imagePath
         if (!path.isEmpty() && !path.contains("{")) {
             var fileName: String = path
             if (path.contains("=")) {
@@ -234,7 +234,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onDestroy() {
         super.onDestroy()
-        if (prefs!!.isAutoBackupEnabled && prefs!!.isSettingsBackupEnabled
+        if (prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
                 && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
             BackupSettingTask(this).execute()
         }
@@ -273,13 +273,13 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         var primaryDark = primaryDark
         var accent = accent
         if (primary == 0) {
-            primary = themeUtil!!.getColor(themeUtil!!.colorPrimary())
+            primary = themeUtil.getColor(themeUtil.colorPrimary())
         }
         if (primaryDark == 0) {
-            primaryDark = themeUtil!!.getColor(themeUtil!!.colorPrimaryDark())
+            primaryDark = themeUtil.getColor(themeUtil.colorPrimaryDark())
         }
         if (accent == 0) {
-            accent = themeUtil!!.getColor(themeUtil!!.colorAccent())
+            accent = themeUtil.getColor(themeUtil.colorAccent())
         }
         toolbar.setBackgroundColor(primary)
         if (Module.isLollipop) {
@@ -292,7 +292,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         setMenuVisible()
     }
 
-    override fun onScrollChanged(recyclerView: RecyclerView) {
+    override fun onScrollChanged(recyclerView: RecyclerView?) {
 
     }
 
@@ -350,7 +350,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun setMenuVisible() {
         val menu = nav_view.menu
-        menu.getItem(4).isVisible = Google.getInstance(this) != null
+        menu.getItem(4).isVisible = Google.getInstance() != null
         menu.getItem(13).isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
@@ -408,7 +408,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
             val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            viewModel!!.parseResults(matches, false)
+            viewModel.parseResults(matches, false)
         }
         if (fragment != null) {
             fragment!!.onActivityResult(requestCode, resultCode, data)
@@ -467,7 +467,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         } catch (e: ActivityNotFoundException) {
             Toast.makeText(this, R.string.could_not_launch_market, Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun showProDialog() {
@@ -507,7 +506,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onUpdate(version: String) {
         update_badge.visibility = View.VISIBLE
         update_badge.text = getString(R.string.update_available) + ": " + version
-        update_badge.setOnClickListener { v -> SuperUtil.launchMarket(this@MainActivity) }
+        update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
@@ -516,8 +515,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     companion object {
 
-        val VOICE_RECOGNITION_REQUEST_CODE = 109
-        private val PRESS_AGAIN_TIME = 2000
-        private val CURRENT_SCREEN = "current_screen"
+        const val VOICE_RECOGNITION_REQUEST_CODE = 109
+        private const val PRESS_AGAIN_TIME = 2000
+        private const val CURRENT_SCREEN = "current_screen"
     }
 }

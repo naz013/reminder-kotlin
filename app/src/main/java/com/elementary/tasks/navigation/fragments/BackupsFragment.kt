@@ -147,7 +147,7 @@ class BackupsFragment : BaseNavigationFragment() {
         if (dbx.isLinked) {
             list.add(UserInfoAsync.Info.Dropbox)
         }
-        val gdx = Google.getInstance(context!!)
+        val gdx = Google.getInstance()
         if (gdx != null) {
             list.add(UserInfoAsync.Info.Google)
         }

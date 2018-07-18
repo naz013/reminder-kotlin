@@ -3,13 +3,11 @@ package com.elementary.tasks.navigation.fragments
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.navigation.FragmentCallback
-
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,47 +29,34 @@ import androidx.fragment.app.FragmentTransaction
  */
 abstract class BaseFragment : Fragment() {
 
-    private var mContext: Context? = null
     var callback: FragmentCallback? = null
         private set
-    var prefs: Prefs? = null
+    lateinit var prefs: Prefs
         private set
-
-    override fun getContext(): Context? {
-        return mContext
-    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (mContext == null) {
-            mContext = context
-        }
         if (callback == null) {
             try {
                 callback = context as FragmentCallback?
             } catch (e: ClassCastException) {
             }
-
         }
     }
 
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
-        if (mContext == null) {
-            mContext = activity
-        }
         if (callback == null) {
             try {
                 callback = activity as FragmentCallback?
             } catch (e: ClassCastException) {
             }
-
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = Prefs.getInstance(mContext)
+        prefs = Prefs.getInstance(context!!)
     }
 
     protected fun replaceFragment(fragment: Fragment, title: String) {

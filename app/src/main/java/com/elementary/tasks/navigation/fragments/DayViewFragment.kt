@@ -2,26 +2,16 @@ package com.elementary.tasks.navigation.fragments
 
 import android.app.AlarmManager
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
+import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.CalendarPagerAdapter
 import com.elementary.tasks.birthdays.EventsPagerItem
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.databinding.FragmentDayViewBinding
-
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-
-import androidx.viewpager.widget.ViewPager
+import kotlinx.android.synthetic.main.fragment_day_view.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,7 +33,6 @@ import androidx.viewpager.widget.ViewPager
  */
 class DayViewFragment : BaseCalendarFragment() {
 
-    private var binding: FragmentDayViewBinding? = null
     private val pagerData = ArrayList<EventsPagerItem>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,21 +48,15 @@ class DayViewFragment : BaseCalendarFragment() {
         }
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.day_view_menu, menu)
+        inflater?.inflate(R.menu.day_view_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_voice -> {
-                if (callback != null) {
-                    callback!!.onVoiceAction()
-                }
+                callback?.onVoiceAction()
                 return true
             }
         }
@@ -81,8 +64,7 @@ class DayViewFragment : BaseCalendarFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentDayViewBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_day_view, container, false)
     }
 
     private fun updateMenuTitles() {
@@ -98,10 +80,10 @@ class DayViewFragment : BaseCalendarFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.calendar))
-            callback!!.onFragmentSelect(this)
-            callback!!.onMenuSelect(R.id.nav_day_view)
-            callback!!.setClick { view -> showActionDialog(false) }
+            callback?.onTitleChange(getString(R.string.calendar))
+            callback?.onFragmentSelect(this)
+            callback?.onMenuSelect(R.id.nav_day_view)
+            callback?.setClick(View.OnClickListener { showActionDialog(false) })
         }
         loadData()
     }
@@ -144,13 +126,13 @@ class DayViewFragment : BaseCalendarFragment() {
             position++
             calendar.timeInMillis = calendar.timeInMillis + AlarmManager.INTERVAL_DAY
         }
-        val pagerAdapter = CalendarPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager, pagerData)
+        val pagerAdapter = CalendarPagerAdapter(if (Module.isJellyMR2) childFragmentManager else fragmentManager!!, pagerData)
         try {
-            binding!!.pager.adapter = pagerAdapter
+            pager.adapter = pagerAdapter
         } catch (ignored: IllegalStateException) {
         }
 
-        binding!!.pager.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(i: Int, v: Float, i2: Int) {
 
             }
@@ -167,14 +149,14 @@ class DayViewFragment : BaseCalendarFragment() {
 
             }
         })
-        binding!!.pager.currentItem = targetPosition
+        pager.currentItem = targetPosition
         updateMenuTitles()
     }
 
     companion object {
 
-        private val DATE_KEY = "date"
-        private val POS_KEY = "position"
+        private const val DATE_KEY = "date"
+        private const val POS_KEY = "position"
 
         fun newInstance(date: Long, position: Int): DayViewFragment {
             val pageFragment = DayViewFragment()

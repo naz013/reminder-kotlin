@@ -121,7 +121,7 @@ class GoogleTasksFragment : BaseNavigationFragment() {
         zeroItem.title = getStr(R.string.all)
         zeroItem.color = 25
         googleTaskLists.add(0, zeroItem)
-        val pos = prefs!!.lastGoogleList
+        val pos = prefs.lastGoogleList
 
         this.googleTaskLists.clear()
         this.googleTaskLists.addAll(googleTaskLists)
@@ -139,7 +139,7 @@ class GoogleTasksFragment : BaseNavigationFragment() {
 
             override fun onPageSelected(i: Int) {
                 updateScreen(i)
-                prefs!!.lastGoogleList = i
+                prefs.lastGoogleList = i
                 currentPos = i
                 activity!!.invalidateOptionsMenu()
             }
@@ -173,11 +173,11 @@ class GoogleTasksFragment : BaseNavigationFragment() {
         builder.setTitle(getStr(R.string.order))
         builder.setItems(items) { dialog, which ->
             when (which) {
-                0 -> prefs!!.tasksOrder = Constants.ORDER_DEFAULT
-                1 -> prefs!!.tasksOrder = Constants.ORDER_DATE_A_Z
-                2 -> prefs!!.tasksOrder = Constants.ORDER_DATE_Z_A
-                3 -> prefs!!.tasksOrder = Constants.ORDER_COMPLETED_Z_A
-                4 -> prefs!!.tasksOrder = Constants.ORDER_COMPLETED_A_Z
+                0 -> prefs.tasksOrder = Constants.ORDER_DEFAULT
+                1 -> prefs.tasksOrder = Constants.ORDER_DATE_A_Z
+                2 -> prefs.tasksOrder = Constants.ORDER_DATE_Z_A
+                3 -> prefs.tasksOrder = Constants.ORDER_COMPLETED_Z_A
+                4 -> prefs.tasksOrder = Constants.ORDER_COMPLETED_A_Z
             }
             dialog.dismiss()
             viewModel.reload()

@@ -34,7 +34,7 @@ import com.elementary.tasks.core.utils.Module
 
 class FeedbackFragment : BaseWebViewFragment() {
 
-    protected override val url: String
+    override val url: String
         get() = "https://docs.google.com/forms/d/1vOCBU-izJBQ8VAsA1zYtfHFxe9Q1-Qm9rp_pYG13B1s/viewform"
 
     override fun setExtraParams(webView: WebView) {
@@ -44,11 +44,11 @@ class FeedbackFragment : BaseWebViewFragment() {
             override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {}
 
             override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-                if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
+                return if (url != null && url.contains("https://github.com/naz013/Reminder/issues")) {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-                    return true
+                    true
                 } else {
-                    return false
+                    false
                 }
             }
         }
@@ -58,8 +58,8 @@ class FeedbackFragment : BaseWebViewFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.feedback))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.feedback))
+            callback?.onFragmentSelect(this)
         }
     }
 

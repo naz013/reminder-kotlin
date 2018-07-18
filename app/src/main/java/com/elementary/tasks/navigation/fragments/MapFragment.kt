@@ -4,24 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-
+import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewModel
-import com.elementary.tasks.databinding.BottomSheetLayoutBinding
-import com.elementary.tasks.databinding.FragmentEventsMapBinding
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
+import kotlinx.android.synthetic.main.fragment_events_map.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,21 +44,20 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class MapFragment : BaseNavigationFragment() {
 
-    private var binding: FragmentEventsMapBinding? = null
-    private var viewModel: ActiveGpsRemindersViewModel? = null
+    private lateinit var viewModel: ActiveGpsRemindersViewModel
     private val mAdapter = LocationPlacesAdapter()
 
     private var mGoogleMap: AdvancedMapFragment? = null
-    private var mEventsList: RecyclerView? = null
-    private var mEmptyItem: LinearLayout? = null
 
     private var clickedPosition: Int = 0
     private var pointer: Int = 0
     private var isDataShowed: Boolean = false
 
-    private val mReadyCallback = MapCallback {
-        mGoogleMap!!.setSearchEnabled(false)
-        showData()
+    private val mReadyCallback = object : MapCallback {
+        override fun onMapReady() {
+            mGoogleMap?.setSearchEnabled(false)
+            showData()
+        }
     }
     private val mSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -90,20 +90,19 @@ class MapFragment : BaseNavigationFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentEventsMapBinding.inflate(inflater, container, false)
-        initMap()
-        initViews()
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_events_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMap()
+        initViews()
         initViewModel()
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ActiveGpsRemindersViewModel::class.java)
-        viewModel!!.events.observe(this, { reminders ->
+        viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null && mGoogleMap != null) {
                 showData()
             }
@@ -112,7 +111,7 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, false, false,
-                ThemeUtil.getInstance(context).isDark)
+                ThemeUtil.getInstance(context!!).isDark)
         mGoogleMap!!.setCallback(mReadyCallback)
         mGoogleMap!!.setOnMarkerClick(mOnMarkerClick)
         fragmentManager!!.beginTransaction()
@@ -122,33 +121,33 @@ class MapFragment : BaseNavigationFragment() {
     }
 
     private fun initViews() {
-        val bottomSheet = binding!!.bottomSheet
-        mEventsList = bottomSheet.recyclerView
-        mEventsList!!.layoutManager = LinearLayoutManager(context)
+        bottomSheet.recyclerView.layoutManager = LinearLayoutManager(context)
 
-        mAdapter.actionsListener = { view, position, reminder, actions ->
-            when (actions) {
-                ListActions.OPEN -> showClickedPlace(position, reminder)
+        mAdapter.actionsListener = object : ActionsListener<Reminder> {
+            override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
+                when (actions) {
+                    ListActions.OPEN -> if (t != null) showClickedPlace(position, t)
+                }
             }
-        }
-        mEventsList!!.adapter = mAdapter
 
-        mEmptyItem = bottomSheet.emptyItem
-        binding!!.sheetLayout.setBackgroundColor(ThemeUtil.getInstance(context).cardStyle)
-        val mBottomSheetBehavior = BottomSheetBehavior.from<NestedScrollView>(binding!!.sheetLayout)
+        }
+        bottomSheet.recyclerView.adapter = mAdapter
+
+        sheetLayout.setBackgroundColor(ThemeUtil.getInstance(context!!).cardStyle)
+        val mBottomSheetBehavior = BottomSheetBehavior.from<NestedScrollView>(sheetLayout)
         mBottomSheetBehavior.setBottomSheetCallback(mSheetCallback)
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.map))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.map))
+            callback?.onFragmentSelect(this)
         }
     }
 
     private fun showData() {
-        val data = viewModel!!.events.value
+        val data = viewModel.events.value
         if (isDataShowed || data == null) {
             return
         }
@@ -171,17 +170,12 @@ class MapFragment : BaseNavigationFragment() {
     }
 
     private fun reloadView() {
-        val adapter = mEventsList!!.adapter
-        var size = 0
-        if (adapter != null) {
-            size = mEventsList!!.adapter!!.itemCount
-        }
-        if (size > 0) {
-            mEventsList!!.visibility = View.VISIBLE
-            mEmptyItem!!.visibility = View.GONE
+        if (mAdapter.itemCount > 0) {
+            bottomSheet.recyclerView.visibility = View.VISIBLE
+            bottomSheet.emptyItem.visibility = View.GONE
         } else {
-            mEventsList!!.visibility = View.GONE
-            mEmptyItem!!.visibility = View.VISIBLE
+            bottomSheet.recyclerView.visibility = View.GONE
+            bottomSheet.emptyItem.visibility = View.VISIBLE
         }
     }
 }
