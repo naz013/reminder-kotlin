@@ -32,13 +32,9 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RestoreGoogleTask(context: Context, private val mListener: SyncListener?) : AsyncTask<Void, String, Void>() {
-    private val mContext: ContextHolder
+class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) : AsyncTask<Void, String, Void>() {
+    private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
-
-    init {
-        this.mContext = ContextHolder(context)
-    }
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -63,8 +59,8 @@ class RestoreGoogleTask(context: Context, private val mListener: SyncListener?) 
     }
 
     override fun doInBackground(vararg params: Void): Void? {
-        val drive = Google.getInstance(mContext.context)
-        if (drive != null && drive.drive != null) {
+        val drive = Google.getInstance()
+        if (drive?.drive != null) {
             publishProgress(mContext.context.getString(R.string.syncing_groups))
             try {
                 drive.drive!!.downloadGroups(false)
@@ -75,7 +71,7 @@ class RestoreGoogleTask(context: Context, private val mListener: SyncListener?) 
             }
 
             val list = AppDb.getAppDatabase(mContext.context).groupDao().all
-            if (list.size == 0) {
+            if (list.isEmpty()) {
                 val defUiID = GroupsUtil.initDefault(mContext.context)
                 val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
                 val dao = AppDb.getAppDatabase(mContext.context).reminderDao()
@@ -158,15 +154,10 @@ class RestoreGoogleTask(context: Context, private val mListener: SyncListener?) 
         }
         UpdatesHelper.getInstance(mContext.context).updateWidget()
         UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
-        mListener?.onFinish()
+        mListener?.invoke()
     }
-
-    interface SyncListener {
-        fun onFinish()
-    }
-
     companion object {
 
-        private val TAG = "RestoreGoogleTask"
+        private const val TAG = "RestoreGoogleTask"
     }
 }

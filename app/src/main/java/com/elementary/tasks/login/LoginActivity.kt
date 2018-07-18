@@ -9,14 +9,13 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.URLSpan
 import android.view.View
 import android.webkit.WebView
 import android.widget.CheckBox
-
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
@@ -29,17 +28,15 @@ import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.databinding.ActivityLoginBinding
-import com.elementary.tasks.google_tasks.GetTaskListAsync
-import com.elementary.tasks.google_tasks.TasksCallback
+import com.elementary.tasks.google_tasks.work.GetTaskListAsync
+import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
-
-import java.util.Arrays
-import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.activity_login.*
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -61,14 +58,12 @@ import androidx.databinding.DataBindingUtil
  */
 class LoginActivity : ThemedActivity() {
 
-    private var binding: ActivityLoginBinding? = null
-
     private var googleLogin: GoogleLogin? = null
     private var dropboxLogin: DropboxLogin? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        setContentView(R.layout.activity_login)
         googleLogin = GoogleLogin(this, object : GoogleLogin.LoginCallback {
 
             override fun onSuccess() {
@@ -79,7 +74,11 @@ class LoginActivity : ThemedActivity() {
                 showLoginError()
             }
         })
-        dropboxLogin = DropboxLogin(this) { logged -> if (logged) loadDataFromDropbox() }
+        dropboxLogin = DropboxLogin(this, object : DropboxLogin.LoginCallback {
+            override fun onSuccess(logged: Boolean) {
+                if (logged) loadDataFromDropbox()
+            }
+        })
         initButtons()
         loadPhotoView()
         initCheckbox()
@@ -93,9 +92,9 @@ class LoginActivity : ThemedActivity() {
         Glide.with(this)
                 .load("https://unsplash.it/1080/1920?image=596&blur")
                 .apply(myOptions)
-                .into<>(object : SimpleTarget<Drawable>() {
+                .into(object : SimpleTarget<Drawable>() {
                     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                        binding!!.imageView2.setImageDrawable(resource)
+                        imageView2.setImageDrawable(resource)
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
@@ -113,7 +112,7 @@ class LoginActivity : ThemedActivity() {
         Glide.with(this)
                 .load(R.drawable.photo)
                 .apply(myOptions)
-                .into(binding!!.imageView2)
+                .into(imageView2)
     }
 
     override fun onResume() {
@@ -122,7 +121,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loadDataFromDropbox() {
-        RestoreDropboxTask(this, SyncListener { this.openApplication() }).execute()
+        RestoreDropboxTask(this) { this.openApplication() }.execute()
     }
 
     private fun showLoginError() {
@@ -133,21 +132,21 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initButtons() {
-        binding!!.googleButton.setOnClickListener { view -> googleLoginClick() }
-        binding!!.localButton.setOnClickListener { view -> restoreLocalData() }
-        binding!!.dropboxButton.setOnClickListener { view -> loginToDropbox() }
-        binding!!.skipButton.setOnClickListener { view -> askForBirthdays() }
+        google_button.onClick { googleLoginClick() }
+        local_button.onClick { restoreLocalData() }
+        dropbox_button.onClick { loginToDropbox() }
+        skip_button.onClick { askForBirthdays() }
     }
 
     private fun askForBirthdays() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.import_birthdays))
         builder.setMessage(getString(R.string.would_you_like_to_import_birthdays))
-        builder.setPositiveButton(getString(R.string.import_string)) { dialogInterface, i ->
+        builder.setPositiveButton(getString(R.string.import_string)) { dialogInterface, _ ->
             dialogInterface.dismiss()
             importBirthdays()
         }
-        builder.setNegativeButton(getString(R.string.open_app)) { dialogInterface, i ->
+        builder.setNegativeButton(getString(R.string.open_app)) { dialogInterface, _ ->
             dialogInterface.dismiss()
             openApplication()
         }
@@ -161,11 +160,11 @@ class LoginActivity : ThemedActivity() {
         }
         Prefs.getInstance(this).isContactBirthdaysEnabled = true
         Prefs.getInstance(this).isBirthdayReminderEnabled = true
-        CheckBirthdaysAsync(this, true, TaskCallback { this.openApplication() }).execute()
+        CheckBirthdaysAsync(this, true) { openApplication() }.execute()
     }
 
     private fun initGroups() {
-        if (AppDb.getAppDatabase(this).groupDao().all.size == 0) {
+        if (AppDb.getAppDatabase(this).groupDao().all.isEmpty()) {
             GroupsUtil.initDefault(this)
         }
     }
@@ -183,11 +182,11 @@ class LoginActivity : ThemedActivity() {
             Permissions.requestPermission(this, PERM_LOCAL, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             return
         }
-        RestoreLocalTask(this, RestoreLocalTask.SyncListener { this.openApplication() }).execute()
+        RestoreLocalTask(this) { openApplication() }.execute()
     }
 
     private fun loadDataFromGoogle() {
-        RestoreGoogleTask(this, SyncListener { this.loadGoogleTasks() }).execute()
+        RestoreGoogleTask(this) { this.loadGoogleTasks() }.execute()
     }
 
     private fun loadGoogleTasks() {
@@ -244,16 +243,16 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initCheckbox() {
-        setViewHTML(binding!!.termsCheckBox, getString(R.string.i_accept))
-        binding!!.termsCheckBox.setOnCheckedChangeListener { compoundButton, b -> setEnabling(b) }
-        binding!!.termsCheckBox.isChecked = true
+        setViewHTML(terms_check_box, getString(R.string.i_accept))
+        terms_check_box.setOnCheckedChangeListener { _, b -> setEnabling(b) }
+        terms_check_box.isChecked = true
     }
 
     private fun setEnabling(b: Boolean) {
-        binding!!.dropboxButton.isEnabled = b
-        binding!!.googleButton.isEnabled = b
-        binding!!.localButton.isEnabled = b
-        binding!!.skipButton.isEnabled = b
+        dropbox_button.isEnabled = b
+        google_button.isEnabled = b
+        local_button.isEnabled = b
+        skip_button.isEnabled = b
     }
 
     private fun makeLinkClickable(strBuilder: SpannableStringBuilder, span: URLSpan) {
@@ -276,7 +275,7 @@ class LoginActivity : ThemedActivity() {
         val webView = WebView(this)
         webView.loadUrl("https://craysoftware.wordpress.com/privacy-policy/")
         builder.setView(webView)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -308,10 +307,10 @@ class LoginActivity : ThemedActivity() {
 
     companion object {
 
-        private val PERM = 103
-        private val PERM_DROPBOX = 104
-        private val PERM_LOCAL = 105
-        private val PERM_BIRTH = 106
-        private val TERMS_URL = "termsopen.com"
+        private const val PERM = 103
+        private const val PERM_DROPBOX = 104
+        private const val PERM_LOCAL = 105
+        private const val PERM_BIRTH = 106
+        private const val TERMS_URL = "termsopen.com"
     }
 }

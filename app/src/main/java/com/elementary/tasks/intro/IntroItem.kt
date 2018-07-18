@@ -20,8 +20,7 @@ import androidx.annotation.DrawableRes
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-internal class IntroItem(var title: String?, var description: String?, @DrawableRes vararg images: Int) {
+class IntroItem(var title: String?, var description: String?, @DrawableRes vararg images: Int) {
     @DrawableRes
     private var images: IntArray? = null
 

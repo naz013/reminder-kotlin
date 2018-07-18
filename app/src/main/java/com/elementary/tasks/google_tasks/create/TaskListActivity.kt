@@ -1,10 +1,11 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.create
 
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
@@ -12,11 +13,10 @@ import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.core.views.ColorPickerView
-import com.elementary.tasks.databinding.ActivityCreateTaskListBinding
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.activity_create_task_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -39,8 +39,7 @@ import androidx.lifecycle.ViewModelProviders
 
 class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
-    private var binding: ActivityCreateTaskListBinding? = null
-    private var viewModel: GoogleTaskListViewModel? = null
+    private lateinit var viewModel: GoogleTaskListViewModel
     private var mItem: GoogleTaskList? = null
     private var color: Int = 0
 
@@ -48,44 +47,43 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task_list)
+        setContentView(R.layout.activity_create_task_list)
 
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        setSupportActionBar(binding!!.toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-        }
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        binding!!.pickerView.setListener(this)
+        pickerView.setListener(this)
 
         initViewModel(intent.getStringExtra(Constants.INTENT_ID))
     }
 
     private fun hideDialog() {
-        if (mDialog != null && mDialog!!.isShowing) {
-            mDialog!!.dismiss()
+        try {
+            if (mDialog != null && mDialog!!.isShowing) {
+                mDialog!!.dismiss()
+            }
+        } catch (e: Exception) {
         }
     }
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, GoogleTaskListViewModel.Factory(application, id)).get(GoogleTaskListViewModel::class.java)
-        viewModel!!.googleTaskList.observe(this, { googleTaskList ->
+        viewModel.googleTaskList.observe(this, Observer{ googleTaskList ->
             if (googleTaskList != null) {
-                editTaskList(googleTaskList!!)
+                editTaskList(googleTaskList)
             }
         })
-        viewModel!!.isInProgress.observe(this, { aBoolean ->
+        viewModel.isInProgress.observe(this, Observer{ aBoolean ->
             if (aBoolean != null) {
-                if (aBoolean!!)
-                    showProgressDialog()
-                else
-                    hideDialog()
+                if (aBoolean) showProgressDialog()
+                else hideDialog()
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> finish()
@@ -96,49 +94,50 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun editTaskList(googleTaskList: GoogleTaskList) {
         mItem = googleTaskList
-        binding!!.editField.setText(mItem!!.title)
-        if (mItem!!.def == 1) {
-            binding!!.defaultCheck.isChecked = true
-            binding!!.defaultCheck.isEnabled = false
+        editField.setText(googleTaskList.title)
+        if (googleTaskList.def == 1) {
+            defaultCheck.isChecked = true
+            defaultCheck.isEnabled = false
         }
-        color = mItem!!.color
-        binding!!.pickerView.setSelectedColor(color)
+        color = googleTaskList.color
+        pickerView.setSelectedColor(color)
         setColor(color)
     }
 
     private fun saveTaskList() {
-        val listName = binding!!.editField.text!!.toString()
+        val listName = editField.text.toString().trim()
         if (listName.matches("".toRegex())) {
-            binding!!.editField.error = getString(R.string.must_be_not_empty)
+            editField.error = getString(R.string.must_be_not_empty)
             return
         }
         var isNew = false
-        if (mItem == null) {
-            mItem = GoogleTaskList()
+        var item = mItem
+        if (item == null) {
+            item = GoogleTaskList()
             isNew = true
         }
-        mItem!!.title = listName
-        mItem!!.color = color
-        mItem!!.updated = System.currentTimeMillis()
-        if (binding!!.defaultCheck.isChecked) {
-            mItem!!.def = 1
-            val defList = viewModel!!.defaultTaskList.value
+        item.title = listName
+        item.color = color
+        item.updated = System.currentTimeMillis()
+        if (defaultCheck.isChecked) {
+            item.def = 1
+            val defList = viewModel.defaultTaskList.value
             if (defList != null) {
                 defList.def = 0
-                viewModel!!.saveLocalGoogleTaskList(defList)
+                viewModel.saveLocalGoogleTaskList(defList)
             }
         }
 
         if (isNew) {
-            viewModel!!.newGoogleTaskList(mItem!!)
+            viewModel.newGoogleTaskList(item)
         } else {
-            viewModel!!.updateGoogleTaskList(mItem!!)
+            viewModel.updateGoogleTaskList(item)
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (mItem != null && prefs!!.isAutoSaveEnabled) {
+        if (mItem != null && prefs.isAutoSaveEnabled) {
             saveTaskList()
         }
     }
@@ -148,39 +147,39 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
             MENU_ITEM_DELETE -> {
                 deleteDialog()
-                return true
+                true
             }
             R.id.action_add -> {
                 saveTaskList()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun deleteDialog() {
         val builder = Dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_list))
-        builder.setPositiveButton(getString(R.string.yes)) { dialog, which ->
+        builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
             deleteList()
             finish()
         }
-        builder.setNegativeButton(getString(R.string.no)) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
     }
 
     private fun deleteList() {
         if (mItem != null) {
-            viewModel!!.deleteGoogleTaskList(mItem!!)
+            viewModel.deleteGoogleTaskList(mItem!!)
         }
     }
 
@@ -195,9 +194,9 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun setColor(i: Int) {
         color = i
-        binding!!.appBar.setBackgroundColor(themeUtil!!.getNoteColor(i))
+        appBar.setBackgroundColor(themeUtil.getNoteColor(i))
         if (Module.isLollipop) {
-            window.statusBarColor = themeUtil!!.getNoteDarkColor(i)
+            window.statusBarColor = themeUtil.getNoteDarkColor(i)
         }
     }
 
@@ -213,6 +212,6 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     companion object {
 
-        private val MENU_ITEM_DELETE = 12
+        private const val MENU_ITEM_DELETE = 12
     }
 }

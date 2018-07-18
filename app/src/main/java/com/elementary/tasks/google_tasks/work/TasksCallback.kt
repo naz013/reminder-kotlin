@@ -1,4 +1,4 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.work
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -18,19 +18,9 @@ package com.elementary.tasks.google_tasks
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-object TasksConstants {
 
-    val UPDATE_TASK_LIST = "update_task_list"
-    val UPDATE_TASK = "update_task"
-    val INSERT_TASK_LIST = "insert_task_list"
-    val INSERT_TASK = "insert_task"
-    val DELETE_TASK_LIST = "delete_task_list"
-    val CLEAR_TASK_LIST = "clear_task_list"
-    val DELETE_TASK = "delete_task"
-    val MOVE_TASK = "move_task"
+interface TasksCallback {
+    fun onComplete()
 
-    //action types
-    val INTENT_ACTION = "action"
-    val EDIT = "edit"
-    val CREATE = "create"
+    fun onFailed()
 }

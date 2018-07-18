@@ -131,13 +131,13 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
         }
     }
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_AUTHORIZATION && resultCode == RESULT_OK) {
-            mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
+            mAccountName = data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
             val gam = GoogleAccountManager(activity)
             getAndUseAuthTokenInAsyncTask(gam.getAccountByName(mAccountName))
         } else if (requestCode == REQUEST_ACCOUNT_PICKER && resultCode == RESULT_OK) {
-            mAccountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
+            mAccountName = data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
             if (mAccountName != null) {
                 finishLogin(mAccountName!!)
                 mCallback?.onSuccess()

@@ -1,21 +1,20 @@
 package com.elementary.tasks.intro
 
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.databinding.ActivityGoogleFixBinding
 import com.elementary.tasks.login.LoginActivity
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.activity_google_fix.*
 
 class GoogleFixActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityGoogleFixBinding>(this, R.layout.activity_google_fix)
-        binding.installButton.setOnClickListener { v -> installServices() }
+        setContentView(R.layout.activity_google_fix)
+        install_button.onClick { installServices() }
     }
 
     private fun installServices() {

@@ -10,8 +10,8 @@ import android.widget.RemoteViews
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
-import com.elementary.tasks.google_tasks.TaskActivity
-import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.create.TaskActivity
+import com.elementary.tasks.google_tasks.create.TasksConstants
 
 /**
  * Copyright 2016 Nazar Suhovich

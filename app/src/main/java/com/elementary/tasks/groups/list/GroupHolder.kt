@@ -1,13 +1,16 @@
 package com.elementary.tasks.groups.list
 
-import androidx.databinding.DataBindingUtil
+import android.view.LayoutInflater
 import android.view.View
-
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.interfaces.SimpleListener
-import com.elementary.tasks.databinding.ListItemGroupBinding
-
-import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.core.utils.ThemeUtil
+import com.mcxiaoke.koi.ext.onClick
+import com.mcxiaoke.koi.ext.onLongClick
+import kotlinx.android.synthetic.main.list_item_group.view.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -28,22 +31,25 @@ import androidx.recyclerview.widget.RecyclerView
  * limitations under the License.
  */
 
-class GroupHolder(v: View, private val mEventListener: SimpleListener?) : RecyclerView.ViewHolder(v) {
-
-    private val binding: ListItemGroupBinding?
+class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?) :
+        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
 
     init {
-        binding = DataBindingUtil.bind(v)
-        v.setOnClickListener { view ->
+        itemView.onClick { view ->
             mEventListener?.onItemClicked(adapterPosition, view)
         }
-        v.setOnLongClickListener { view ->
+        itemView.onLongClick { view ->
             mEventListener?.onItemLongClicked(adapterPosition, view)
             true
         }
     }
 
     fun setData(item: Group) {
-        binding!!.item = item
+        itemView.textView.text = item.title
+        loadIndicator(itemView.indicator, item.color)
+    }
+
+    private fun loadIndicator(view: View, color: Int) {
+        view.setBackgroundResource(ThemeUtil.getInstance(view.context).getCategoryIndicator(color))
     }
 }

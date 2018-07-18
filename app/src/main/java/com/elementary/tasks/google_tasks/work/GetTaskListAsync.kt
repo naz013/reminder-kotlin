@@ -1,18 +1,16 @@
-package com.elementary.tasks.google_tasks
+package com.elementary.tasks.google_tasks.work
 
 import android.content.Context
 import android.os.AsyncTask
-
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.google.api.services.tasks.model.TaskLists
-
 import java.io.IOException
 import java.lang.ref.WeakReference
-import java.util.Random
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,18 +32,16 @@ import java.util.Random
  */
 
 class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) : AsyncTask<Void, Void, Boolean>() {
-    private val mGoogle: Google?
+    private val mGoogle: Google? = Google.getInstance()
     private val mHelper: WeakReference<UpdatesHelper>?
-    private val appDb: AppDb
+    private val appDb: AppDb = AppDb.getAppDatabase(context)
 
     init {
-        this.mGoogle = Google.getInstance(context)
-        this.appDb = AppDb.getAppDatabase(context)
         this.mHelper = WeakReference(UpdatesHelper.getInstance(context))
     }
 
-    override fun doInBackground(vararg params: Void): Boolean? {
-        if (mGoogle != null && mGoogle.tasks != null) {
+    override fun doInBackground(vararg params: Void): Boolean {
+        if (mGoogle?.tasks != null) {
             var lists: TaskLists? = null
             try {
                 lists = mGoogle.tasks!!.taskLists

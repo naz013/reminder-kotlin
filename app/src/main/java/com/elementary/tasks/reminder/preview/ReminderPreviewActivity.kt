@@ -33,8 +33,8 @@ import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.databinding.ActivityReminderPreviewBinding
 import com.elementary.tasks.databinding.ListItemTaskBinding
 import com.elementary.tasks.databinding.ListItemNoteBinding
-import com.elementary.tasks.google_tasks.TaskActivity
-import com.elementary.tasks.google_tasks.TasksConstants
+import com.elementary.tasks.google_tasks.create.TaskActivity
+import com.elementary.tasks.google_tasks.create.TasksConstants
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
 import com.google.android.gms.maps.GoogleMap
