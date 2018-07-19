@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -11,20 +10,18 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.databinding.DialogAboutLayoutBinding
-import com.elementary.tasks.databinding.FragmentSettingsOtherBinding
 import com.elementary.tasks.navigation.settings.other.ChangesFragment
 import com.elementary.tasks.navigation.settings.other.OssFragment
 import com.elementary.tasks.navigation.settings.other.PermissionsFragment
-
-import java.util.ArrayList
-import java.util.Arrays
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.dialog_about_layout.view.*
+import kotlinx.android.synthetic.main.fragment_settings_other.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,15 +44,6 @@ import java.util.Arrays
 class OtherSettingsFragment : BaseSettingsFragment() {
 
     private val mDataList = ArrayList<Item>()
-
-    private val mAboutClick = { view -> showAboutDialog() }
-    private val mOssClick = { view -> openOssScreen() }
-    private val mPermissionsClick = { view -> openPermissionsScreen() }
-    private val mChangesClick = { view -> openChangesScreen() }
-    private val mRateClick = { view -> SuperUtil.launchMarket(context!!) }
-    private val mShareClick = { view -> shareApplication() }
-    private val mAddClick = { view -> showPermissionDialog() }
-
     private val translators: String
         get() {
             val list = Arrays.asList(*resources.getStringArray(R.array.app_translators))
@@ -64,80 +52,81 @@ class OtherSettingsFragment : BaseSettingsFragment() {
             return sb.toString()
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentSettingsOtherBinding.inflate(inflater, container, false)
-        binding.aboutPrefs.setOnClickListener(mAboutClick)
-        binding.ossPrefs.setOnClickListener(mOssClick)
-        binding.permissionsPrefs.setOnClickListener(mPermissionsClick)
-        binding.changesPrefs.setOnClickListener(mChangesClick)
-        binding.ratePrefs.setOnClickListener(mRateClick)
-        binding.tellFriendsPrefs.setOnClickListener(mShareClick)
+    override fun layoutRes(): Int = R.layout.fragment_settings_other
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        aboutPrefs.onClick { showAboutDialog() }
+        ossPrefs.onClick { openOssScreen() }
+        permissionsPrefs.onClick { openPermissionsScreen() }
+        changesPrefs.onClick { openChangesScreen() }
+        ratePrefs.onClick { SuperUtil.launchMarket(context!!) }
+        tellFriendsPrefs.onClick { shareApplication() }
         if (Module.isMarshmallow) {
-            binding.permissionsPrefs.visibility = View.VISIBLE
-            binding.addPermissionPrefs.visibility = View.VISIBLE
+            permissionsPrefs.visibility = View.VISIBLE
+            addPermissionPrefs.visibility = View.VISIBLE
         } else {
-            binding.permissionsPrefs.visibility = View.GONE
-            binding.addPermissionPrefs.visibility = View.GONE
+            permissionsPrefs.visibility = View.GONE
+            addPermissionPrefs.visibility = View.GONE
         }
-        binding.addPermissionPrefs.setOnClickListener(mAddClick)
-        return binding.root
+        addPermissionPrefs.onClick { showPermissionDialog() }
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.other))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.other))
+            callback?.onFragmentSelect(this)
         }
     }
 
     private fun requestPermission(position: Int) {
-        Permissions.requestPermission(activity, position, mDataList[position].permission)
+        Permissions.requestPermission(activity!!, position, mDataList[position].permission)
     }
 
     private fun loadDataToList(): Boolean {
         mDataList.clear()
-        if (!Permissions.checkPermission(activity, Permissions.ACCESS_COARSE_LOCATION)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.ACCESS_COARSE_LOCATION)) {
             mDataList.add(Item(getString(R.string.course_location), Permissions.ACCESS_COARSE_LOCATION))
         }
-        if (!Permissions.checkPermission(activity, Permissions.ACCESS_FINE_LOCATION)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.ACCESS_FINE_LOCATION)) {
             mDataList.add(Item(getString(R.string.fine_location), Permissions.ACCESS_FINE_LOCATION))
         }
-        if (!Permissions.checkPermission(activity, Permissions.CALL_PHONE)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.CALL_PHONE)) {
             mDataList.add(Item(getString(R.string.call_phone), Permissions.CALL_PHONE))
         }
-        if (!Permissions.checkPermission(activity, Permissions.GET_ACCOUNTS)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.GET_ACCOUNTS)) {
             mDataList.add(Item(getString(R.string.get_accounts), Permissions.GET_ACCOUNTS))
         }
-        if (!Permissions.checkPermission(activity, Permissions.READ_PHONE_STATE)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_PHONE_STATE)) {
             mDataList.add(Item(getString(R.string.read_phone_state), Permissions.READ_PHONE_STATE))
         }
-        if (!Permissions.checkPermission(activity, Permissions.READ_CALENDAR)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
             mDataList.add(Item(getString(R.string.read_calendar), Permissions.READ_CALENDAR))
         }
-        if (!Permissions.checkPermission(activity, Permissions.WRITE_CALENDAR)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.WRITE_CALENDAR)) {
             mDataList.add(Item(getString(R.string.write_calendar), Permissions.WRITE_CALENDAR))
         }
-        if (!Permissions.checkPermission(activity, Permissions.READ_CONTACTS)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_CONTACTS)) {
             mDataList.add(Item(getString(R.string.read_contacts), Permissions.READ_CONTACTS))
         }
-        if (!Permissions.checkPermission(activity, Permissions.READ_CALLS)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_CALLS)) {
             mDataList.add(Item(getString(R.string.call_history), Permissions.READ_CALLS))
         }
-        if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_EXTERNAL)) {
             mDataList.add(Item(getString(R.string.read_external_storage), Permissions.READ_EXTERNAL))
         }
-        if (!Permissions.checkPermission(activity, Permissions.WRITE_EXTERNAL)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.WRITE_EXTERNAL)) {
             mDataList.add(Item(getString(R.string.write_external_storage), Permissions.WRITE_EXTERNAL))
         }
-        if (!Permissions.checkPermission(activity, Permissions.SEND_SMS)) {
+        if (!Permissions.checkPermission(activity!!, Permissions.SEND_SMS)) {
             mDataList.add(Item(getString(R.string.send_sms), Permissions.SEND_SMS))
         }
-        if (mDataList.size == 0) {
+        return if (mDataList.size == 0) {
             Toast.makeText(context, R.string.all_permissions_are_enabled, Toast.LENGTH_SHORT).show()
-            return false
+            false
         } else {
-            return true
+            true
         }
     }
 
@@ -170,13 +159,13 @@ class OtherSettingsFragment : BaseSettingsFragment() {
             }
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                var convertView = convertView
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
+                var cView = convertView
+                if (cView == null) {
+                    cView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false)
                 }
-                val tvName = convertView!!.findViewById<TextView>(android.R.id.text1)
+                val tvName = cView!!.findViewById<TextView>(android.R.id.text1)
                 tvName.text = mDataList[position].title
-                return convertView
+                return cView
             }
         }, -1) { dialogInterface, i ->
             dialogInterface.dismiss()
@@ -187,14 +176,10 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     private fun showAboutDialog() {
         val builder = Dialogues.getDialog(context!!)
-        val binding = DialogAboutLayoutBinding.inflate(LayoutInflater.from(context))
-        val name: String
-        if (Module.isPro)
-            name = getString(R.string.app_name_pro)
-        else
-            name = getString(R.string.app_name)
+        val binding = LayoutInflater.from(context).inflate(R.layout.dialog_about_layout, null)
+        val name: String = if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
         binding.appName.text = name.toUpperCase()
-        binding.translatorsList.text = translators
+        binding.translators_list.text = translators
         val pInfo: PackageInfo
         try {
             pInfo = context!!.packageManager.getPackageInfo(context!!.packageName, 0)
@@ -203,12 +188,12 @@ class OtherSettingsFragment : BaseSettingsFragment() {
             e.printStackTrace()
         }
 
-        builder.setView(binding.root)
+        builder.setView(binding)
         builder.create().show()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             showPermissionDialog()
         }

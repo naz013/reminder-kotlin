@@ -43,11 +43,11 @@ class TemplateFilterController(private val mCallback: FilterCallback<SmsTemplate
 
     private fun initFilters() {
         val filter = object : AbstractFilter<String, SmsTemplate>(null) {
-            private var query: String? = null
+            private var query: String = ""
 
-            override fun filter(item: SmsTemplate): Boolean {
-                val title = item.title
-                return query == null || query!!.length == 0 || title != null && title.toLowerCase().contains(query!!.toLowerCase())
+            override fun filter(o: SmsTemplate): Boolean {
+                val title = o.title
+                return query.isEmpty() || title != "" && title.toLowerCase().contains(query.toLowerCase())
             }
 
             @Throws(Exception::class)

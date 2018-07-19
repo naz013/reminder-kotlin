@@ -1,164 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <RelativeLayout
-        android:id="@+id/background"
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/themeTip"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/swipe_to_change_theme"
+        android:textSize="20sp" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/themeTip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/swipe_to_change_theme"
-            android:textSize="20sp" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/themeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/themeTip"
+        android:layout_marginBottom="45dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:font_style="roboto_medium" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/themeTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/themeTip"
-            android:layout_marginBottom="45dp"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:textSize="30sp"
-            app:font_style="roboto_medium" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <LinearLayout
+            android:id="@+id/headerBg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/bluePrimary"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/widgetTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="left|center"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:text="@string/google_tasks"
+                android:textColor="@color/whitePrimary"
+                android:textSize="20sp" />
 
             <LinearLayout
-                android:id="@+id/headerBg"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@color/bluePrimary"
-                android:gravity="right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/widgetTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:text="@string/google_tasks"
-                    android:textColor="@color/whitePrimary"
-                    android:textSize="20sp" />
+                <ImageButton
+                    android:id="@+id/optionsButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="5"
+                    android:background="@android:color/transparent"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    app:srcCompat="@drawable/ic_settings_white" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/tasksCount"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="5"
+                    android:background="@android:color/transparent"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    app:srcCompat="@drawable/ic_add_white_24dp" />
 
-                    <ImageButton
-                        android:id="@+id/optionsButton"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="5"
-                        android:background="@android:color/transparent"
-                        android:gravity="right"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        app:srcCompat="@drawable/ic_settings_white" />
-
-                    <ImageButton
-                        android:id="@+id/tasksCount"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="5"
-                        android:background="@android:color/transparent"
-                        android:gravity="right"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        app:srcCompat="@drawable/ic_add_white_24dp" />
-
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widgetBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_divider"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/widgetBg"
+                android:id="@+id/listItemCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/material_divider"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/listItemCard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/listColor"
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/bluePrimary" />
+
+                    <CheckBox
+                        android:id="@+id/checkDone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.9"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.4"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/listColor"
-                            android:layout_width="5dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/bluePrimary" />
-
-                        <CheckBox
-                            android:id="@+id/checkDone"
+                            android:id="@+id/task"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_weight="0.9"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="5dp"
-                            android:layout_weight="0.4"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/task"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:singleLine="true"
-                                android:text="Task"
-                                android:textSize="17sp" />
-
-                            <TextView
-                                android:id="@+id/note"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginTop="3dp"
-                                android:singleLine="true"
-                                android:text="Note"
-                                android:textSize="15sp" />
-
-                        </LinearLayout>
+                            android:singleLine="true"
+                            android:text="Task"
+                            android:textSize="17sp" />
 
                         <TextView
-                            android:id="@+id/taskDate"
+                            android:id="@+id/note"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:layout_margin="4dp"
-                            android:layout_weight="0.7"
-                            android:gravity="center"
-                            android:text="Date"
-                            android:textSize="14sp" />
+                            android:layout_marginTop="3dp"
+                            android:singleLine="true"
+                            android:text="Note"
+                            android:textSize="15sp" />
+
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/taskDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="4dp"
+                        android:layout_weight="0.7"
+                        android:gravity="center"
+                        android:text="Date"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
-</layout>
+    </LinearLayout>
+</RelativeLayout>

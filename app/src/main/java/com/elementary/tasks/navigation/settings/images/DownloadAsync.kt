@@ -40,13 +40,11 @@ import java.util.concurrent.ExecutionException
  * limitations under the License.
  */
 
-internal class DownloadAsync(private val mContext: Context, private val fileName: String, private val filePath: String, private val width: Int, private val height: Int, private val id: Long) : AsyncTask<String, Void, DownloadAsync.Image>() {
+internal class DownloadAsync(private val mContext: Context, private val fileName: String,
+                             private val filePath: String, private val width: Int,
+                             private val height: Int, private val id: Long) : AsyncTask<String, Void, DownloadAsync.Image>() {
     private var mNotifyMgr: NotificationManagerCompat? = null
-    private val builder: NotificationCompat.Builder
-
-    init {
-        builder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_SYSTEM)
-    }
+    private val builder: NotificationCompat.Builder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_SYSTEM)
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -88,7 +86,6 @@ internal class DownloadAsync(private val mContext: Context, private val fileName
         } catch (e: ExecutionException) {
             e.printStackTrace()
         }
-
         return image
     }
 
@@ -136,8 +133,8 @@ internal class DownloadAsync(private val mContext: Context, private val fileName
         mNotifyMgr!!.notify(id.toInt(), builder.build())
     }
 
-    internal class Image {
+    inner class Image {
 
-        private val path: String? = null
+        var path: String? = null
     }
 }

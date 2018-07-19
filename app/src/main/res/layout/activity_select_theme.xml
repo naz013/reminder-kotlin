@@ -21,8 +21,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:gravity="center">
 
         <com.elementary.tasks.core.views.ColorPickerView
             android:id="@+id/pickerView"

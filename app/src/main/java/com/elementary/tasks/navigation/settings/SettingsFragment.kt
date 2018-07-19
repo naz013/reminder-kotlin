@@ -1,12 +1,10 @@
 package com.elementary.tasks.navigation.settings
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsBinding
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.fragment_settings.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,27 +27,28 @@ import com.elementary.tasks.databinding.FragmentSettingsBinding
 
 class SettingsFragment : BaseSettingsFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        binding.generalSettings.setOnClickListener { view -> replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
-        binding.otherSettings.setOnClickListener { view -> replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
-        binding.voiceSettings.setOnClickListener { view -> replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
-        binding.notesSettings.setOnClickListener { view -> replaceFragment(NoteSettingsFragment(), getString(R.string.notes)) }
-        binding.locationSettings.setOnClickListener { view -> replaceFragment(LocationSettingsFragment(), getString(R.string.location)) }
-        binding.additionalSettings.setOnClickListener { view -> replaceFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
-        binding.notificationSettings.setOnClickListener { view -> replaceFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
-        binding.exportSettings.setOnClickListener { view -> replaceFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
-        binding.calendarSettings.setOnClickListener { view -> replaceFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
-        binding.birthdaysSettings.setOnClickListener { view -> replaceFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
-        return binding.root
+    override fun layoutRes(): Int = R.layout.fragment_settings
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        generalSettings.onClick { replaceFragment(GeneralSettingsFragment(), getString(R.string.general)) }
+        otherSettings.onClick { replaceFragment(OtherSettingsFragment(), getString(R.string.other)) }
+        voiceSettings.onClick { replaceFragment(VoiceSettingsFragment(), getString(R.string.voice_control)) }
+        notesSettings.onClick { replaceFragment(NoteSettingsFragment(), getString(R.string.notes)) }
+        locationSettings.onClick { replaceFragment(LocationSettingsFragment(), getString(R.string.location)) }
+        additionalSettings.onClick { replaceFragment(AdditionalSettingsFragment(), getString(R.string.additional)) }
+        notificationSettings.onClick { replaceFragment(NotificationSettingsFragment(), getString(R.string.notification)) }
+        exportSettings.onClick { replaceFragment(ExportSettingsFragment(), getString(R.string.export_and_sync)) }
+        calendarSettings.onClick { replaceFragment(CalendarSettingsFragment(), getString(R.string.calendar)) }
+        birthdaysSettings.onClick { replaceFragment(BirthdaySettingsFragment(), getString(R.string.birthdays)) }
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.action_settings))
-            callback!!.onFragmentSelect(this)
-            callback!!.setClick(null)
+            callback?.onTitleChange(getString(R.string.action_settings))
+            callback?.onFragmentSelect(this)
+            callback?.setClick(null)
         }
     }
 }

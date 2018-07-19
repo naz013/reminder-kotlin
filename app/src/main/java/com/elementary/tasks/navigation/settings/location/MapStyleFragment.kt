@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
-import com.elementary.tasks.databinding.FragmentSettingMapStyleBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import kotlinx.android.synthetic.main.fragment_setting_map_style.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -31,58 +29,49 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
  */
 class MapStyleFragment : BaseSettingsFragment() {
 
-    private var binding: FragmentSettingMapStyleBinding? = null
-
     private val selection: Int
         get() {
-            if (binding!!.styleAuto.isChecked) {
-                return 6
-            } else if (binding!!.styleDay.isChecked) {
-                return 0
-            } else if (binding!!.styleRetro.isChecked) {
-                return 1
-            } else if (binding!!.styleSilver.isChecked) {
-                return 2
-            } else if (binding!!.styleNight.isChecked) {
-                return 3
-            } else if (binding!!.styleDark.isChecked) {
-                return 4
-            } else if (binding!!.styleAubergine.isChecked) {
-                return 5
+            return when {
+                styleAuto.isChecked -> 6
+                styleDay.isChecked -> 0
+                styleRetro.isChecked -> 1
+                styleSilver.isChecked -> 2
+                styleNight.isChecked -> 3
+                styleDark.isChecked -> 4
+                styleAubergine.isChecked -> 5
+                else -> 0
             }
-            return 0
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingMapStyleBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_setting_map_style, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding!!.styleDay.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleAubergine.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleAuto.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleDark.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleNight.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleRetro.setOnClickListener(OnClickListener { this.invoke(it) })
-        binding!!.styleSilver.setOnClickListener(OnClickListener { this.invoke(it) })
+        styleDay.setOnClickListener { this.invoke(it) }
+        styleAubergine.setOnClickListener { this.invoke(it) }
+        styleAuto.setOnClickListener { this.invoke(it) }
+        styleDark.setOnClickListener { this.invoke(it) }
+        styleNight.setOnClickListener { this.invoke(it) }
+        styleRetro.setOnClickListener { this.invoke(it) }
+        styleSilver.setOnClickListener { this.invoke(it) }
 
-        binding!!.styleDay.callOnClick()
+        styleDay.callOnClick()
 
-        selectCurrent(Prefs.getInstance(context).mapStyle)
+        selectCurrent(prefs.mapStyle)
     }
 
     private fun selectCurrent(mapStyle: Int) {
         when (mapStyle) {
-            0 -> binding!!.styleDay.callOnClick()
-            1 -> binding!!.styleRetro.callOnClick()
-            2 -> binding!!.styleSilver.callOnClick()
-            3 -> binding!!.styleNight.callOnClick()
-            4 -> binding!!.styleDark.callOnClick()
-            5 -> binding!!.styleAubergine.callOnClick()
-            6 -> binding!!.styleAuto.callOnClick()
+            0 -> styleDay.callOnClick()
+            1 -> styleRetro.callOnClick()
+            2 -> styleSilver.callOnClick()
+            3 -> styleNight.callOnClick()
+            4 -> styleDark.callOnClick()
+            5 -> styleAubergine.callOnClick()
+            6 -> styleAuto.callOnClick()
         }
     }
 
@@ -94,25 +83,25 @@ class MapStyleFragment : BaseSettingsFragment() {
     }
 
     private fun clearChecks() {
-        binding!!.styleDay.isChecked = false
-        binding!!.styleAubergine.isChecked = false
-        binding!!.styleAuto.isChecked = false
-        binding!!.styleDark.isChecked = false
-        binding!!.styleNight.isChecked = false
-        binding!!.styleRetro.isChecked = false
-        binding!!.styleSilver.isChecked = false
+        styleDay.isChecked = false
+        styleAubergine.isChecked = false
+        styleAuto.isChecked = false
+        styleDark.isChecked = false
+        styleNight.isChecked = false
+        styleRetro.isChecked = false
+        styleSilver.isChecked = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Prefs.getInstance(context).mapStyle = selection
+        prefs.mapStyle = selection
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.map_style))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.map_style))
+            callback?.onFragmentSelect(this)
         }
     }
 

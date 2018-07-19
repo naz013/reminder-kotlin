@@ -35,13 +35,9 @@ import java.io.IOException
  * limitations under the License.
  */
 
-class SyncNotes(private val mContext: Context, private val mListener: SyncListener) : AsyncTask<Void, Void, Boolean>() {
+class SyncNotes(private val mContext: Context, private val mListener: ((Boolean) -> Unit)?) : AsyncTask<Void, Void, Boolean>() {
     private var mNotifyMgr: NotificationManagerCompat? = null
-    private val builder: NotificationCompat.Builder
-
-    init {
-        builder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_SYSTEM)
-    }
+    private val builder: NotificationCompat.Builder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_SYSTEM)
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -56,7 +52,7 @@ class SyncNotes(private val mContext: Context, private val mListener: SyncListen
         mNotifyMgr!!.notify(2, builder.build())
     }
 
-    override fun doInBackground(vararg params: Void): Boolean? {
+    override fun doInBackground(vararg params: Void): Boolean {
         try {
             BackupTool.getInstance().importNotes()
         } catch (e: IOException) {
@@ -70,8 +66,9 @@ class SyncNotes(private val mContext: Context, private val mListener: SyncListen
         if (SuperUtil.isConnected(mContext)) {
             Dropbox(mContext).downloadNotes(true)
             Dropbox(mContext).uploadNotes()
-            if (Google.getInstance(mContext) != null) {
-                val drives = Google.getInstance(mContext)!!.drive
+            val google = Google.getInstance()
+            if (google != null) {
+                val drives = google.drive
                 if (drives != null) {
                     try {
                         drives.downloadNotes(true)
@@ -86,7 +83,7 @@ class SyncNotes(private val mContext: Context, private val mListener: SyncListen
         return true
     }
 
-    override fun onPostExecute(aVoid: Boolean?) {
+    override fun onPostExecute(aVoid: Boolean) {
         super.onPostExecute(aVoid)
         builder.setContentTitle(mContext.getString(R.string.done))
         if (Module.isLollipop) {
@@ -101,11 +98,7 @@ class SyncNotes(private val mContext: Context, private val mListener: SyncListen
         }
         builder.setWhen(System.currentTimeMillis())
         mNotifyMgr!!.notify(2, builder.build())
-        mListener.endExecution(aVoid!!)
+        mListener?.invoke(aVoid)
         UpdatesHelper.getInstance(mContext).updateNotesWidget()
-    }
-
-    interface SyncListener {
-        fun endExecution(b: Boolean)
     }
 }

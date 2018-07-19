@@ -1,84 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="16dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingTop="24dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_launcher" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:paddingTop="24dp">
+        android:orientation="vertical">
 
-        <ImageView
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textSize="@dimen/about_app_title_size"
+            app:font_style="roboto_medium" />
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/appVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textSize="@dimen/about_secondary_text_size"
+            app:font_style="roboto_light" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/rights"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/copyright"
+            android:textSize="@dimen/about_secondary_text_size"
+            app:font_style="roboto_light" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/translators"
+            android:textSize="@dimen/about_secondary_text_size"
+            app:font_style="roboto_light" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/appName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/app_name"
-                android:textSize="@dimen/about_app_title_size"
-                app:font_style="roboto_medium" />
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/appVersion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:textSize="@dimen/about_secondary_text_size"
-                app:font_style="roboto_light" />
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/rights"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@string/copyright"
-                android:textSize="@dimen/about_secondary_text_size"
-                app:font_style="roboto_light" />
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/translators"
-                android:textSize="@dimen/about_secondary_text_size"
-                app:font_style="roboto_light" />
-
-            <ScrollView
+                android:id="@+id/translators_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:overScrollMode="never"
-                android:scrollbars="none">
+                android:textSize="@dimen/about_secondary_text_size"
+                app:font_style="roboto_light" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/translators_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/about_secondary_text_size"
-                    app:font_style="roboto_light" />
-
-            </ScrollView>
-        </LinearLayout>
+        </ScrollView>
     </LinearLayout>
-</layout>
+</LinearLayout>

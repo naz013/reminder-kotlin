@@ -20,7 +20,6 @@ import android.view.View
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 interface SelectListener {
     fun onImageSelected(b: Boolean)
     fun deselectOverItem(position: Int)

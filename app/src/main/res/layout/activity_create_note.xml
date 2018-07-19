@@ -1,186 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:gravity="center|top"
+        android:orientation="vertical"
+        android:visibility="visible">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <RelativeLayout
-            android:id="@+id/layoutContainer"
+        <ScrollView
+            android:id="@+id/touch_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center|top"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:paddingBottom="56dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp">
 
-            <ScrollView
-                android:id="@+id/touch_view"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="56dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="16dp">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagesList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/task_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:hint="@string/note"
+                    android:textColor="@color/blackPrimary"
+                    android:textColorHint="@color/blackPrimary"
+                    android:textSize="@dimen/create_note_text_size" />
 
                 <LinearLayout
+                    android:id="@+id/remindContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="80dp"
-                    android:orientation="vertical">
+                    android:gravity="center|end"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/imagesList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/task_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dp"
-                        android:hint="@string/note"
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/remindDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="27/11/2014"
                         android:textColor="@color/blackPrimary"
-                        android:textColorHint="@color/blackPrimary"
-                        android:textSize="@dimen/create_note_text_size" />
+                        android:textSize="@dimen/create_note_text_size_secondary"
+                        app:font_style="roboto_medium" />
 
-                    <LinearLayout
-                        android:id="@+id/remindContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="80dp"
-                        android:gravity="center|end"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
+                    <com.elementary.tasks.core.views.roboto.RoboTextView
+                        android:id="@+id/remindTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_marginStart="12dp"
+                        android:gravity="center"
+                        android:text="20:00"
+                        android:textColor="@color/blackPrimary"
+                        android:textSize="@dimen/create_note_text_size_secondary"
+                        app:font_style="roboto_medium" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/remindDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="27/11/2014"
-                            android:textColor="@color/blackPrimary"
-                            android:textSize="@dimen/create_note_text_size_secondary"
-                            app:font_style="roboto_medium" />
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/discardReminder"
+                        android:layout_width="@dimen/create_note_image_button_size"
+                        android:layout_height="@dimen/create_note_image_button_size"
+                        android:background="@null"
+                        android:contentDescription="@string/acc_remove_reminder"
+                        app:tb_icon="@drawable/ic_clear_black_24dp"
+                        app:tb_icon_light="@drawable/ic_clear_white_24dp" />
 
-                        <com.elementary.tasks.core.views.roboto.RoboTextView
-                            android:id="@+id/remindTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="24dp"
-                            android:layout_marginLeft="12dp"
-                            android:layout_marginRight="24dp"
-                            android:layout_marginStart="12dp"
-                            android:gravity="center"
-                            android:text="20:00"
-                            android:textColor="@color/blackPrimary"
-                            android:textSize="@dimen/create_note_text_size_secondary"
-                            app:font_style="roboto_medium" />
-
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/discardReminder"
-                            android:layout_width="@dimen/create_note_image_button_size"
-                            android:layout_height="@dimen/create_note_image_button_size"
-                            android:background="@null"
-                            android:contentDescription="@string/acc_remove_reminder"
-                            app:tb_icon="@drawable/ic_clear_black_24dp"
-                            app:tb_icon_light="@drawable/ic_clear_white_24dp" />
-
-                    </LinearLayout>
                 </LinearLayout>
-            </ScrollView>
+            </LinearLayout>
+        </ScrollView>
 
-            <com.haozhang.lib.AnimatedRecordingView
-                android:id="@+id/recordingView"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_above="@+id/bottomBarView"
-                android:visibility="gone" />
+        <com.haozhang.lib.AnimatedRecordingView
+            android:id="@+id/recordingView"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_above="@+id/bottomBarView"
+            android:visibility="gone" />
 
-            <HorizontalScrollView
-                android:id="@+id/bottomBarView"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_alignParentBottom="true"
-                android:overScrollMode="never"
-                android:scrollbars="none">
+        <HorizontalScrollView
+            android:id="@+id/bottomBarView"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_alignParentBottom="true"
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/micButton"
+                    android:layout_width="56dp"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_type_by_voice"
+                    app:tb_icon="@drawable/ic_microphone_black"
+                    app:tb_icon_light="@drawable/ic_microphone_white" />
 
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/micButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_type_by_voice"
-                        app:tb_icon="@drawable/ic_microphone_black"
-                        app:tb_icon_light="@drawable/ic_microphone_white" />
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/colorButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_select_color"
+                    app:tb_icon="@drawable/ic_palette_black_24dp"
+                    app:tb_icon_light="@drawable/ic_palette_white_24dp" />
 
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/colorButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_select_color"
-                        app:tb_icon="@drawable/ic_palette_black_24dp"
-                        app:tb_icon_light="@drawable/ic_palette_white_24dp" />
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_add_image_to_reminder"
+                    app:tb_icon="@drawable/ic_image_black_24dp"
+                    app:tb_icon_light="@drawable/ic_image_white_24dp" />
 
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/imageButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_add_image_to_reminder"
-                        app:tb_icon="@drawable/ic_image_black_24dp"
-                        app:tb_icon_light="@drawable/ic_image_white_24dp" />
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/reminderButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_add_reminder"
+                    app:tb_icon="@drawable/ic_alarm"
+                    app:tb_icon_light="@drawable/ic_alarm_white" />
 
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/reminderButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_add_reminder"
-                        app:tb_icon="@drawable/ic_alarm"
-                        app:tb_icon_light="@drawable/ic_alarm_white" />
+                <com.elementary.tasks.core.views.ThemedImageButton
+                    android:id="@+id/fontButton"
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/acc_change_text_font_style"
+                    app:tb_icon="@drawable/ic_text_format_black_24dp"
+                    app:tb_icon_light="@drawable/ic_text_format_white_24dp" />
 
-                    <com.elementary.tasks.core.views.ThemedImageButton
-                        android:id="@+id/fontButton"
-                        android:layout_width="56dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="@string/acc_change_text_font_style"
-                        app:tb_icon="@drawable/ic_text_format_black_24dp"
-                        app:tb_icon_light="@drawable/ic_text_format_white_24dp" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
-        </RelativeLayout>
-    </LinearLayout>
-</layout>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+</LinearLayout>

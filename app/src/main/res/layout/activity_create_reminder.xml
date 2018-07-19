@@ -1,158 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/navSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elementary.tasks.core.views.roboto.RoboEditText
+                android:id="@+id/taskSummary"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/remind_me"
+                android:maxLines="3"
+                android:textColor="@color/material_white"
+                android:textColorHint="@color/material_white" />
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/navSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </androidx.appcompat.widget.Toolbar>
-
-            <LinearLayout
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:overScrollMode="ifContentScrolls"
+                android:scrollbars="horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboEditText
-                    android:id="@+id/taskSummary"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:hint="@string/remind_me"
-                    android:maxLines="3"
-                    android:textColor="@color/material_white"
-                    android:textColorHint="@color/material_white" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="ifContentScrolls"
-                    android:scrollbars="horizontal">
+                    android:orientation="horizontal">
 
-                    <LinearLayout
+                    <ImageButton
+                        android:id="@+id/customButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_customize_reminder"
+                        app:srcCompat="@drawable/ic_tune_white_24dp" />
+
+                    <com.elementary.tasks.core.views.TextViewWithIcon
+                        android:id="@+id/groupButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:maxLength="15"
+                        android:maxLines="1"
+                        android:text="@string/general"
+                        android:textColor="@color/material_white"
+                        android:textSize="18sp"
+                        app:tv_icon="@drawable/ic_local_offer_white_24dp"
+                        app:tv_icon_light="@drawable/ic_local_offer_white_24dp" />
 
-                        <ImageButton
-                            android:id="@+id/customButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginStart="16dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_customize_reminder"
-                            app:srcCompat="@drawable/ic_tune_white_24dp" />
+                    <ImageButton
+                        android:id="@+id/voiceButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_type_by_voice"
+                        app:srcCompat="@drawable/ic_microphone_white" />
 
-                        <com.elementary.tasks.core.views.TextViewWithIcon
-                            android:id="@+id/groupButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:drawablePadding="8dp"
-                            android:gravity="center"
-                            android:maxLength="15"
-                            android:maxLines="1"
-                            android:text="@string/general"
-                            android:textColor="@color/material_white"
-                            android:textSize="18sp"
-                            app:tv_icon="@drawable/ic_local_offer_white_24dp"
-                            app:tv_icon_light="@drawable/ic_local_offer_white_24dp" />
+                    <ImageButton
+                        android:id="@+id/exclusionButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/acc_customize_exclusions"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_lock_button" />
 
-                        <ImageButton
-                            android:id="@+id/voiceButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_type_by_voice"
-                            app:srcCompat="@drawable/ic_microphone_white" />
+                    <ImageButton
+                        android:id="@+id/melodyButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/melody"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_music_note_white_24dp" />
 
-                        <ImageButton
-                            android:id="@+id/exclusionButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/acc_customize_exclusions"
-                            android:visibility="gone"
-                            app:srcCompat="@drawable/ic_lock_button" />
+                    <ImageButton
+                        android:id="@+id/attachmentButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/attach_file"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_attach_file_white_24dp" />
 
-                        <ImageButton
-                            android:id="@+id/melodyButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/melody"
-                            android:visibility="gone"
-                            app:srcCompat="@drawable/ic_music_note_white_24dp" />
+                    <ImageButton
+                        android:id="@+id/repeatButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="@string/repeat_limit"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_refresh_white" />
 
-                        <ImageButton
-                            android:id="@+id/attachmentButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/attach_file"
-                            android:visibility="gone"
-                            app:srcCompat="@drawable/ic_attach_file_white_24dp" />
+                    <ToggleButton
+                        android:id="@+id/window_type_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:textOn="@string/simple"
+                        android:textOff="@string/full_screen"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:visibility="visible" />
 
-                        <ImageButton
-                            android:id="@+id/repeatButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="@string/repeat_limit"
-                            android:visibility="gone"
-                            app:srcCompat="@drawable/ic_refresh_white" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-                        <ToggleButton
-                            android:id="@+id/window_type_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginStart="8dp"
-                            android:textOn="@string/simple"
-                            android:textOff="@string/full_screen"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:visibility="visible" />
+    <FrameLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appBar" />
 
-                    </LinearLayout>
-                </HorizontalScrollView>
-            </LinearLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/main_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/appBar" />
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

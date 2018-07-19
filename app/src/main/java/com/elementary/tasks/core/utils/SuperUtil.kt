@@ -16,7 +16,7 @@ import android.speech.RecognizerIntent
 import android.util.Base64
 import android.view.View
 import android.widget.Toast
-
+import androidx.fragment.app.Fragment
 import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
@@ -27,12 +27,8 @@ import com.elementary.tasks.reminder.create_edit.fragments.ReminderInterface
 import com.elementary.tasks.voice.ConversationActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-
 import java.io.UnsupportedEncodingException
-import java.util.Locale
-
-import androidx.fragment.app.Fragment
-import java.nio.charset.Charset
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich

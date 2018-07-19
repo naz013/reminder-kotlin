@@ -1,59 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/background"
+    <HorizontalScrollView
+        android:id="@+id/controlView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <HorizontalScrollView
-            android:id="@+id/controlView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+            <com.elementary.tasks.core.views.ThemedImageButton
+                android:id="@+id/rotateLeftButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/acc_rotate_left"
+                app:tb_icon="@drawable/ic_rotate_left_black_24dp"
+                app:tb_icon_light="@drawable/ic_rotate_left_white_24dp" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
-                    android:id="@+id/rotateLeftButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@string/acc_rotate_left"
-                    app:tb_icon="@drawable/ic_rotate_left_black_24dp"
-                    app:tb_icon_light="@drawable/ic_rotate_left_white_24dp" />
+            <com.elementary.tasks.core.views.ThemedImageButton
+                android:id="@+id/rotateRightButton"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/acc_rotate_right"
+                app:tb_icon="@drawable/ic_rotate_right_black_24dp"
+                app:tb_icon_light="@drawable/ic_rotate_right_white_24dp" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
-                    android:id="@+id/rotateRightButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@string/acc_rotate_right"
-                    app:tb_icon="@drawable/ic_rotate_right_black_24dp"
-                    app:tb_icon_light="@drawable/ic_rotate_right_white_24dp" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
-            </LinearLayout>
-        </HorizontalScrollView>
+    <com.theartofdev.edmodo.cropper.CropImageView
+        android:id="@+id/cropImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/controlView"
+        app:cropBackgroundColor="@color/whitePrimary30"
+        app:cropBorderCornerColor="@android:color/transparent"
+        app:cropBorderLineColor="@color/whitePrimary"
+        app:cropBorderLineThickness="2dp"
+        app:cropGuidelines="off"
+        app:cropShape="rectangle" />
 
-        <com.theartofdev.edmodo.cropper.CropImageView
-            android:id="@+id/cropImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/controlView"
-            app:cropBackgroundColor="@color/whitePrimary30"
-            app:cropBorderCornerColor="@android:color/transparent"
-            app:cropBorderLineColor="@color/whitePrimary"
-            app:cropBorderLineThickness="2dp"
-            app:cropGuidelines="off"
-            app:cropShape="rectangle" />
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

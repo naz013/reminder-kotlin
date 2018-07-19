@@ -3,15 +3,14 @@ package com.elementary.tasks.navigation.settings.additional
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.databinding.ListItemMessageBinding
-
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import com.mcxiaoke.koi.ext.onLongClick
+import kotlinx.android.synthetic.main.list_item_message.view.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,8 +37,7 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
             field = list
             notifyDataSetChanged()
         }
-    private var actionsListener: ActionsListener<SmsTemplate>? = null
-        set
+    var actionsListener: ActionsListener<SmsTemplate>? = null
 
     override fun getItemCount(): Int {
         return data.size
@@ -50,32 +48,28 @@ internal class TemplatesAdapter : RecyclerView.Adapter<TemplatesAdapter.ViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_message, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding!!.item = getItem(position)
+        holder.bind(getItem(position))
     }
 
     internal inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding: ListItemMessageBinding?
+        fun bind(item: SmsTemplate) {
+            itemView.messageView.text = item.title
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.root.setOnClickListener { view -> openTemplate(view, adapterPosition) }
-            binding.root.setOnLongClickListener { view ->
-                if (actionsListener != null) {
-                    actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                }
+            itemView.setOnClickListener { view -> openTemplate(view, adapterPosition) }
+            itemView.onLongClick {
+                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }
         }
     }
 
     private fun openTemplate(view: View, position: Int) {
-        if (actionsListener != null) {
-            actionsListener!!.onAction(view, position, getItem(position), ListActions.OPEN)
-        }
+        actionsListener?.onAction(view, position, getItem(position), ListActions.OPEN)
     }
 }

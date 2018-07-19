@@ -1,159 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/windowBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/windowBackground"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.appbar.AppBarLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary" />
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            </com.google.android.material.appbar.AppBarLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <RelativeLayout
+                <include
+                    android:id="@+id/emptyLayout"
+                    layout="@layout/view_item_empty" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagesList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent" />
 
-                    <include
-                        android:id="@+id/emptyLayout"
-                        layout="@layout/view_item_empty" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/imagesList"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </RelativeLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    app:cardBackgroundColor="@color/whitePrimary30">
-
-                    <RadioGroup
-                        android:id="@+id/selectGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                            android:id="@+id/defaultCheck"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/default_image" />
-
-                        <com.elementary.tasks.core.views.roboto.RoboRadioButton
-                            android:id="@+id/noneCheck"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginStart="16dp"
-                            android:text="@string/none" />
-
-                    </RadioGroup>
-                </androidx.cardview.widget.CardView>
             </RelativeLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/fullContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/whitePrimary30"
-            android:visibility="gone">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/imageContainer"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:cardBackgroundColor="@color/whitePrimary30">
+
+                <RadioGroup
+                    android:id="@+id/selectGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                        android:id="@+id/defaultCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/default_image" />
+
+                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                        android:id="@+id/noneCheck"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/none" />
+
+                </RadioGroup>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fullContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whitePrimary30"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            app:cardCornerRadius="4dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                app:cardCornerRadius="4dp">
+                android:orientation="vertical">
+
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/photoInfoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:gravity="center"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/fullImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="288dp"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/photoInfoView"
-                        android:layout_width="match_parent"
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/downloadButton"
+                        android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:gravity="center"
-                        android:textSize="18sp" />
+                        android:background="@null"
+                        android:contentDescription="@string/download_image"
+                        app:tb_icon="@drawable/ic_get_app_black_24dp"
+                        app:tb_icon_light="@drawable/ic_get_app_white_24dp"
+                        app:tb_message="@string/download_image" />
 
-                    <ImageView
-                        android:id="@+id/fullImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="288dp"
-                        android:scaleType="centerCrop" />
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/setReminderButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:background="@null"
+                        android:contentDescription="@string/set_to_reminder_screen"
+                        app:tb_icon="@drawable/ic_notifications_black_24dp"
+                        app:tb_icon_light="@drawable/ic_notifications_white_24dp"
+                        app:tb_message="@string/set_to_reminder_screen" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                    <com.elementary.tasks.core.views.ThemedImageButton
+                        android:id="@+id/setToMonthButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:background="@null"
+                        android:contentDescription="@string/set_image_for_month"
+                        app:tb_icon="@drawable/ic_calendar"
+                        app:tb_icon_light="@drawable/ic_calendar_white"
+                        app:tb_message="@string/set_image_for_month" />
 
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/downloadButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@null"
-                            android:contentDescription="@string/download_image"
-                            app:tb_icon="@drawable/ic_get_app_black_24dp"
-                            app:tb_icon_light="@drawable/ic_get_app_white_24dp"
-                            app:tb_message="@string/download_image" />
-
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/setReminderButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginStart="16dp"
-                            android:background="@null"
-                            android:contentDescription="@string/set_to_reminder_screen"
-                            app:tb_icon="@drawable/ic_notifications_black_24dp"
-                            app:tb_icon_light="@drawable/ic_notifications_white_24dp"
-                            app:tb_message="@string/set_to_reminder_screen" />
-
-                        <com.elementary.tasks.core.views.ThemedImageButton
-                            android:id="@+id/setToMonthButton"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginStart="16dp"
-                            android:background="@null"
-                            android:contentDescription="@string/set_image_for_month"
-                            app:tb_icon="@drawable/ic_calendar"
-                            app:tb_icon_light="@drawable/ic_calendar_white"
-                            app:tb_message="@string/set_image_for_month" />
-
-                    </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </RelativeLayout>
-</layout>
+</RelativeLayout>

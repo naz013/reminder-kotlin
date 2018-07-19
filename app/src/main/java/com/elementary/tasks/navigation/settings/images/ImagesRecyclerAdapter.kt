@@ -1,24 +1,21 @@
 package com.elementary.tasks.navigation.settings.images
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.MainImage
 import com.elementary.tasks.core.network.RetrofitBuilder
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemPhotoBinding
-
-import java.util.ArrayList
-import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_photo.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,15 +35,15 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class ImagesRecyclerAdapter internal constructor(private val mContext: Context, dataItemList: List<MainImage>, private val mListener: SelectListener?) : RecyclerView.Adapter<ImagesRecyclerAdapter.PhotoViewHolder>() {
-    private val mDataList: MutableList<MainImage>?
+class ImagesRecyclerAdapter : RecyclerView.Adapter<ImagesRecyclerAdapter.PhotoViewHolder>() {
+    private val mDataList: MutableList<MainImage> = mutableListOf()
     private var prevSelected = -1
-    private val mPrefs: Prefs
+    @Inject
+    lateinit var mPrefs: Prefs
+    var mListener: SelectListener? = null
 
     init {
-        this.mDataList = ArrayList(dataItemList)
-        this.mPrefs = Prefs.getInstance(mContext)
+        ReminderApp.appComponent.inject(this)
     }
 
     internal fun deselectLast() {
@@ -62,45 +59,55 @@ class ImagesRecyclerAdapter internal constructor(private val mContext: Context, 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PhotoViewHolder(ListItemPhotoBinding.inflate(inflater, parent, false).root)
+        return PhotoViewHolder(inflater.inflate(R.layout.list_item_photo, parent, false))
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        val item = mDataList!![position]
-        holder.binding!!.item = item
-        val params = holder.binding!!.card.layoutParams as GridLayoutManager.LayoutParams
-        if (position < 3) {
-            params.topMargin = MeasureUtils.dp2px(mContext, 56)
-        } else {
-            params.topMargin = 0
-        }
-        holder.binding!!.card.layoutParams = params
-        if (prevSelected == position) {
-            holder.binding!!.selected = true
-        } else {
-            holder.binding!!.selected = false
-        }
+        val item = mDataList[position]
+        holder.bind(item, position)
+
     }
 
     override fun getItemCount(): Int {
-        return mDataList?.size ?: 0
+        return mDataList.size
     }
 
-    internal inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var binding: ListItemPhotoBinding? = null
+    inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: MainImage, position: Int) {
+            itemView.numberView.text = "#${item.id}"
+            itemView.authorView.text = item.author
+            loadPhoto(itemView.photoView, item.id)
+            val params = itemView.card.layoutParams as GridLayoutManager.LayoutParams
+            if (position < 3) {
+                params.topMargin = MeasureUtils.dp2px(itemView.context, 56)
+            } else {
+                params.topMargin = 0
+            }
+            itemView.card.layoutParams = params
+            if (prevSelected == position) {
+                itemView.imageView3.visibility = View.VISIBLE
+            } else {
+                itemView.imageView3.visibility = View.GONE
+            }
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.container.setOnClickListener { view -> performClick(adapterPosition) }
-            binding!!.container.setOnLongClickListener { view ->
+            itemView.container.setOnClickListener { performClick(adapterPosition) }
+            itemView.container.setOnLongClickListener { view ->
                 mListener?.onItemLongClicked(adapterPosition, view)
                 true
             }
         }
     }
 
-    internal fun addItems(list: List<MainImage>) {
-        mDataList!!.addAll(list)
+    fun setItems(list: List<MainImage>) {
+        mDataList.clear()
+        mDataList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun addItems(list: List<MainImage>) {
+        mDataList.addAll(list)
         notifyItemInserted(itemCount - list.size)
     }
 
@@ -114,13 +121,13 @@ class ImagesRecyclerAdapter internal constructor(private val mContext: Context, 
         } else {
             if (prevSelected != -1) {
                 if (prevSelected >= itemCount && mListener != null) {
-                    mListener.deselectOverItem(prevSelected)
+                    mListener?.deselectOverItem(prevSelected)
                 } else {
                     notifyItemChanged(prevSelected)
                 }
             }
             prevSelected = position
-            val item = mDataList!![position]
+            val item = mDataList[position]
             mPrefs.imageId = position
             mPrefs.imagePath = RetrofitBuilder.getImageLink(item.id)
             notifyItemChanged(position)
@@ -128,15 +135,9 @@ class ImagesRecyclerAdapter internal constructor(private val mContext: Context, 
         }
     }
 
-    companion object {
-
-        private val TAG = "ImagesRecyclerAdapter"
-
-        @BindingAdapter("loadPhoto")
-        fun loadPhoto(imageView: ImageView, id: Long) {
-            val isDark = ThemeUtil.getInstance(imageView.context).isDark
-            val url = RetrofitBuilder.getImageLink(id, 800, 480)
-            Glide.with(imageView).load(url).into(imageView)
-        }
+    private fun loadPhoto(imageView: ImageView, id: Long) {
+        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        val url = RetrofitBuilder.getImageLink(id, 800, 480)
+        Glide.with(imageView).load(url).into(imageView)
     }
 }

@@ -1,18 +1,15 @@
 package com.elementary.tasks.navigation.settings
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.databinding.FragmentSettingsVoiceBinding
 import com.elementary.tasks.navigation.settings.voice.HelpFragment
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.fragment_settings_voice.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,50 +32,41 @@ import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
 
 class VoiceSettingsFragment : BaseSettingsFragment() {
 
-    private var binding: FragmentSettingsVoiceBinding? = null
+    override fun layoutRes(): Int = R.layout.fragment_settings_voice
 
-    private val mVoiceClick = { view -> showLanguageDialog() }
-    private val mTimeClick = { view -> replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
-    private val mHelpClick = { view -> replaceFragment(HelpFragment(), getString(R.string.help)) }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingsVoiceBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initLanguagePrefs()
-        initTimePrefs()
-        binding!!.helpPrefs.setOnClickListener(mHelpClick)
+        timePrefs.onClick { replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
+        helpPrefs.onClick { replaceFragment(HelpFragment(), getString(R.string.help)) }
         initConversationPrefs()
-        return binding!!.root
-    }
-
-    private fun initTimePrefs() {
-        binding!!.timePrefs.setOnClickListener(mTimeClick)
     }
 
     private fun initLanguagePrefs() {
-        binding!!.languagePrefs.setOnClickListener(mVoiceClick)
+        languagePrefs.onClick { showLanguageDialog() }
         showLanguage()
     }
 
     private fun showLanguage() {
-        binding!!.languagePrefs.setDetailText(Language.getLanguages(context!!)[prefs!!.voiceLocale])
+        languagePrefs.setDetailText(Language.getLanguages(context!!)[prefs.voiceLocale])
     }
 
     private fun initConversationPrefs() {
-        binding!!.conversationPrefs.setOnClickListener { view -> changeLivePrefs() }
-        binding!!.conversationPrefs.isChecked = prefs!!.isLiveEnabled
+        conversationPrefs.setOnClickListener { changeLivePrefs() }
+        conversationPrefs.isChecked = prefs.isLiveEnabled
     }
 
     private fun changeLivePrefs() {
-        val isChecked = binding!!.conversationPrefs.isChecked
-        prefs!!.isLiveEnabled = !isChecked
-        binding!!.conversationPrefs.isChecked = !isChecked
+        val isChecked = conversationPrefs.isChecked
+        prefs.isLiveEnabled = !isChecked
+        conversationPrefs.isChecked = !isChecked
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.voice_control))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.voice_control))
+            callback?.onFragmentSelect(this)
         }
     }
 
@@ -89,15 +77,15 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
         val locales = Language.getLanguages(context!!)
         val adapter = ArrayAdapter(context!!,
                 android.R.layout.simple_list_item_single_choice, locales)
-        val language = prefs!!.voiceLocale
-        builder.setSingleChoiceItems(adapter, language) { dialog, which ->
+        val language = prefs.voiceLocale
+        builder.setSingleChoiceItems(adapter, language) { _, which ->
             if (which != -1) {
-                prefs!!.voiceLocale = which
+                prefs.voiceLocale = which
             }
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which -> dialog.dismiss() }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
-        dialog.setOnDismissListener { dialogInterface -> showLanguage() }
+        dialog.setOnDismissListener { showLanguage() }
         dialog.show()
     }
 }

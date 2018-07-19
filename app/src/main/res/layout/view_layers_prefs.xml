@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:layout_height="1dp"
+        android:background="?attr/colorAccent" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?attr/colorAccent" />
+    <com.elementary.tasks.core.views.ThemedImageButton
+        android:id="@+id/prefsControl"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackground"
+        app:tb_icon="@drawable/ic_expand_less_white_24dp"
+        app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
 
-        <com.elementary.tasks.core.views.ThemedImageButton
-            android:id="@+id/prefsControl"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackground"
-            app:tb_icon="@drawable/ic_expand_less_white_24dp"
-            app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/layersList"
+        android:layout_width="match_parent"
+        android:layout_height="96dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/layersList"
-            android:layout_width="match_parent"
-            android:layout_height="96dp" />
-
-    </LinearLayout>
-</layout>
+</LinearLayout>

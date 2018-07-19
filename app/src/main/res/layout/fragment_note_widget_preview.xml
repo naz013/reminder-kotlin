@@ -1,118 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <RelativeLayout
-        android:id="@+id/background"
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/themeTip"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/swipe_to_change_theme"
+        android:textSize="20sp" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/themeTip"
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/themeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/themeTip"
+        android:layout_marginBottom="45dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textSize="30sp"
+        app:font_style="roboto_medium" />
+
+    <LinearLayout
+        android:id="@+id/noteLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <RelativeLayout
+            android:id="@+id/headerBg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/swipe_to_change_theme"
-            android:textSize="20sp" />
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/bluePrimary"
+            android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/themeTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/themeTip"
-            android:layout_marginBottom="45dp"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:textSize="30sp"
-            app:font_style="roboto_medium" />
+            <ImageButton
+                android:id="@+id/tasksCount"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_add_black_24dp" />
 
-        <LinearLayout
-            android:id="@+id/noteLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:padding="15dp">
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tasksCount"
+                android:layout_toStartOf="@+id/tasksCount"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_settings_white" />
 
-            <RelativeLayout
-                android:id="@+id/headerBg"
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:id="@+id/widgetTitle"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@color/bluePrimary"
-                android:orientation="horizontal">
+                android:layout_toLeftOf="@+id/settingsButton"
+                android:layout_toStartOf="@+id/settingsButton"
+                android:gravity="center|end"
+                android:maxLines="1"
+                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:singleLine="true"
+                android:text="@string/notes"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/whitePrimary"
+                android:textSize="18sp"
+                app:font_style="roboto_light" />
+        </RelativeLayout>
 
-                <ImageButton
-                    android:id="@+id/tasksCount"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_add_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/settingsButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/tasksCount"
-                    android:layout_toStartOf="@+id/tasksCount"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_settings_white" />
-
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:id="@+id/widgetTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_toLeftOf="@+id/settingsButton"
-                    android:layout_toStartOf="@+id/settingsButton"
-                    android:gravity="center|end"
-                    android:maxLines="1"
-                    android:paddingLeft="16dp"
-                    android:paddingStart="16dp"
-                    android:singleLine="true"
-                    android:text="@string/notes"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/whitePrimary"
-                    android:textSize="18sp"
-                    app:font_style="roboto_light" />
-            </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/widgetBg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_divider"
+            android:minHeight="150dp"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <LinearLayout
-                android:id="@+id/widgetBg"
+                android:id="@+id/listItemCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/material_divider"
-                android:minHeight="150dp"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:background="@color/pinkAccent"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/listItemCard"
+                <com.elementary.tasks.core.views.roboto.RoboTextView
+                    android:id="@+id/note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/pinkAccent"
-                    android:orientation="vertical">
+                    android:padding="10dp"
+                    android:text="@string/app_title"
+                    android:textColor="@color/material_grey" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboTextView
-                        android:id="@+id/note"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:text="@string/app_title"
-                        android:textColor="@color/material_grey" />
-
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
-</layout>
+    </LinearLayout>
+</RelativeLayout>

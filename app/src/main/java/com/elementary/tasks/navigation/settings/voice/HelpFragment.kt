@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-
-import java.util.Locale
+import kotlinx.android.synthetic.main.fragment_settings_web_view.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,29 +28,28 @@ import java.util.Locale
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class HelpFragment : BaseSettingsFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_settings_web_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val localeCheck = Locale.getDefault().toString().toLowerCase()
-        val url: String
-        if (localeCheck.startsWith("uk")) {
-            url = Constants.WEB_URL + "voice_help/voice_uk.html"
-        } else if (localeCheck.startsWith("ru")) {
-            url = Constants.WEB_URL + "voice_help/voice_ru.html"
-        } else {
-            url = Constants.WEB_URL + "voice_help/voice_en.html"
+        val url = when {
+            localeCheck.startsWith("uk") -> Constants.WEB_URL + "voice_help/voice_uk.html"
+            localeCheck.startsWith("ru") -> Constants.WEB_URL + "voice_help/voice_ru.html"
+            else -> Constants.WEB_URL + "voice_help/voice_en.html"
         }
-        binding.webView.loadUrl(url)
-        return binding.root
+        web_view.loadUrl(url)
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.help))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.help))
+            callback?.onFragmentSelect(this)
         }
     }
 }

@@ -22,18 +22,18 @@ import com.elementary.tasks.R
  */
 
 class FragmentBirthdaysColor : FragmentStyle() {
-    protected override val selectedColor: Int
-        get() = prefs!!.birthdayColor
+    override val selectedColor: Int
+        get() = prefs.birthdayColor
 
     override fun saveToPrefs(code: Int) {
-        prefs!!.birthdayColor = code
+        prefs.birthdayColor = code
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.birthdays_color))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.birthdays_color))
+            callback?.onFragmentSelect(this)
         }
     }
 }

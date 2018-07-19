@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import kotlinx.android.synthetic.main.fragment_settings_web_view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,17 +30,20 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 class OssFragment : BaseSettingsFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_settings_web_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val url = "file:///android_asset/files/oss.html"
-        binding.webView.loadUrl(url)
-        return binding.root
+        web_view.loadUrl(url)
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.open_source_licenses))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.open_source_licenses))
+            callback?.onFragmentSelect(this)
         }
     }
 }

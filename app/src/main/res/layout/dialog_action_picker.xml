@@ -1,89 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/dateLabel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/actionContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dateLabel"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="16dp">
+
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/addEvent"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            app:tb_icon="@drawable/ic_alarm"
+            app:tb_icon_light="@drawable/ic_alarm_white" />
+
+        <com.elementary.tasks.core.views.ThemedImageButton
+            android:id="@+id/addBirth"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            app:tb_icon="@drawable/ic_cake_black_24dp"
+            app:tb_icon_light="@drawable/ic_cake_white_24dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/actionContainer"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.tuyenmonkey.mkloader.MKLoader
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mk_color="?attr/colorAccent"
+            app:mk_type="Sharingan" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/dateLabel"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:textSize="18sp" />
-
-        <LinearLayout
-            android:id="@+id/actionContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/dateLabel"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="16dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="16dp">
-
-            <com.elementary.tasks.core.views.ThemedImageButton
-                android:id="@+id/addEvent"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="fitCenter"
-                app:tb_icon="@drawable/ic_alarm"
-                app:tb_icon_light="@drawable/ic_alarm_white" />
-
-            <com.elementary.tasks.core.views.ThemedImageButton
-                android:id="@+id/addBirth"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="fitCenter"
-                app:tb_icon="@drawable/ic_cake_black_24dp"
-                app:tb_icon_light="@drawable/ic_cake_white_24dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/loadingView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/actionContainer"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.tuyenmonkey.mkloader.MKLoader
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:mk_color="?attr/colorAccent"
-                app:mk_type="Sharingan" />
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:text="@string/loading_events"
-                android:textSize="16sp"
-                app:font_style="roboto_bold" />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/eventsList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/actionContainer"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:visibility="gone" />
+            android:layout_marginStart="16dp"
+            android:text="@string/loading_events"
+            android:textSize="16sp"
+            app:font_style="roboto_bold" />
 
-    </RelativeLayout>
-</layout>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/eventsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/actionContainer"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone" />
+
+</RelativeLayout>

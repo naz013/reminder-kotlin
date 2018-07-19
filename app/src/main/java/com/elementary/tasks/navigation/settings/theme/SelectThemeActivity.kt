@@ -2,7 +2,6 @@ package com.elementary.tasks.navigation.settings.theme
 
 import android.os.Bundle
 import android.view.MenuItem
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
@@ -10,9 +9,7 @@ import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.views.ColorPickerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-
-import androidx.appcompat.widget.Toolbar
+import kotlinx.android.synthetic.main.activity_select_theme.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,29 +32,23 @@ import androidx.appcompat.widget.Toolbar
 
 class SelectThemeActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
-    private var mFab: FloatingActionButton? = null
-    private var toolbar: Toolbar? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_theme)
-        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        toolbar!!.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        toolbar!!.title = getString(R.string.theme_color)
-        val loaded = prefs!!.appThemeColor
-        val pickerView = findViewById<ColorPickerView>(R.id.pickerView)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.theme_color)
+        val loaded = prefs.appThemeColor
         pickerView.setListener(this)
         pickerView.setSelectedColor(loaded)
 
-        mFab = findViewById(R.id.fab)
-        mFab!!.backgroundTintList = ViewUtils.getFabState(this, themeUtil!!.colorAccent(), themeUtil!!.colorPrimary())
+        fab.backgroundTintList = ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary())
     }
 
     private fun saveColor(code: Int) {
-        prefs!!.appThemeColor = code
-        prefs!!.isUiChanged = true
+        prefs.appThemeColor = code
+        prefs.isUiChanged = true
     }
 
     override fun onBackPressed() {
@@ -66,29 +57,29 @@ class SelectThemeActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 updateNotification()
                 finish()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun updateNotification() {
-        if (prefs!!.isSbNotificationEnabled) {
+        if (prefs.isSbNotificationEnabled) {
             Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 
     private fun refreshUi() {
-        toolbar!!.setBackgroundColor(ViewUtils.getColor(this, themeUtil!!.colorPrimary()))
+        toolbar!!.setBackgroundColor(ViewUtils.getColor(this, themeUtil.colorPrimary()))
         if (Module.isLollipop) {
-            window.statusBarColor = ViewUtils.getColor(this, themeUtil!!.colorPrimaryDark())
+            window.statusBarColor = ViewUtils.getColor(this, themeUtil.colorPrimaryDark())
         }
-        mFab!!.backgroundTintList = ViewUtils.getFabState(this, themeUtil!!.colorAccent(), themeUtil!!.colorPrimary())
-        mFab!!.rippleColor = ViewUtils.getColor(this, themeUtil!!.colorPrimary())
+        fab.backgroundTintList = ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorPrimary())
+        fab.rippleColor = ViewUtils.getColor(this, themeUtil.colorPrimary())
     }
 
     override fun onColorSelect(code: Int) {

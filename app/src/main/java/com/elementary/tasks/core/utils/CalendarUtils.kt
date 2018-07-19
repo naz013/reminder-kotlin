@@ -111,7 +111,7 @@ object CalendarUtils {
      * @return List of CalendarItem's.
      */
     @SuppressLint("MissingPermission")
-    fun getCalendarsList(context: Context): List<CalendarItem>? {
+    fun getCalendarsList(context: Context): List<CalendarItem> {
         val ids = ArrayList<CalendarItem>()
         ids.clear()
         val uri = CalendarContract.Calendars.CONTENT_URI
@@ -136,7 +136,7 @@ object CalendarUtils {
         }
         c?.close()
         return if (ids.size == 0) {
-            null
+            listOf()
         } else {
             ids
         }
