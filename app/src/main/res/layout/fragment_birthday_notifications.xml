@@ -1,105 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/globalOptionPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/global_settings"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/globalOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/global_settings"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/vibrationOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/vibrate"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/vibrationOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/vibrate"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/infiniteVibrateOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/infinite_vibrate"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/infiniteVibrateOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/infinite_vibrate"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/soundOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/sound_in_silent_mode"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/soundOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/sound_in_silent_mode"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/infiniteSoundOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/infinite_sound"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/infiniteSoundOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/infinite_sound"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/wakeScreenOptionPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/turn_on_screen"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/wakeScreenOptionPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/turn_on_screen"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/chooseSoundPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/melody"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/chooseSoundPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/melody"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/ttsPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/voice_notification"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/ttsPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/voice_notification"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/localePrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/language"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/localePrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/language"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/ledPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/led_notification"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/ledPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/led_notification"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/chooseLedColorPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/led_color"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/chooseLedColorPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/led_color"
-                app:prefs_type="none" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

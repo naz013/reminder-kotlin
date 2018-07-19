@@ -54,14 +54,13 @@ class DeleteNoteFilesAsync(private val mContext: Context) : AsyncTask<String, Vo
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
                 Dropbox(mContext).deleteNote(exportFileName)
-                val google = Google.getInstance(mContext)
-                if (google != null && google.drive != null) {
+                val google = Google.getInstance()
+                if (google?.drive != null) {
                     try {
                         google.drive!!.deleteNoteFileByName(exportFileName)
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-
                 }
             }
         }

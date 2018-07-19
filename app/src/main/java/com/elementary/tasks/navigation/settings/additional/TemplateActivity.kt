@@ -6,19 +6,18 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplateViewModel
-import com.elementary.tasks.databinding.ActivityTemplateBinding
-
+import kotlinx.android.synthetic.main.activity_template.*
 import java.io.IOException
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,17 +39,15 @@ import androidx.lifecycle.ViewModelProviders
  */
 class TemplateActivity : ThemedActivity() {
 
-    private var binding: ActivityTemplateBinding? = null
-    private var viewModel: SmsTemplateViewModel? = null
+    private lateinit var viewModel: SmsTemplateViewModel
 
     private var mItem: SmsTemplate? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_template)
+        setContentView(R.layout.activity_template)
         initActionBar()
         initMessageField()
-
         loadTemplate()
     }
 
@@ -62,11 +59,11 @@ class TemplateActivity : ThemedActivity() {
             try {
                 val name = intent.data
                 val scheme = name!!.scheme
-                if (ContentResolver.SCHEME_CONTENT == scheme) {
+                mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    mItem = BackupTool.getInstance().getTemplate(cr, name)
+                    BackupTool.getInstance().getTemplate(cr, name)
                 } else {
-                    mItem = BackupTool.getInstance().getTemplate(name.path, null)
+                    BackupTool.getInstance().getTemplate(name.path, null)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -78,13 +75,14 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        viewModel = ViewModelProviders.of(this, SmsTemplateViewModel.Factory(application, id)).get(SmsTemplateViewModel::class.java)
-        viewModel!!.smsTemplate.observe(this, { smsTemplate ->
+        viewModel = ViewModelProviders.of(this, SmsTemplateViewModel.Factory(application, id))
+                .get(SmsTemplateViewModel::class.java)
+        viewModel.smsTemplate.observe(this, Observer{ smsTemplate ->
             if (smsTemplate != null) {
                 showTemplate(smsTemplate)
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> finish()
@@ -94,7 +92,7 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun initMessageField() {
-        binding!!.messageInput.addTextChangedListener(object : TextWatcher {
+        messageInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -108,29 +106,27 @@ class TemplateActivity : ThemedActivity() {
     }
 
     private fun updateLeftView(count: Int) {
-        binding!!.leftCharacters.text = String.format(getString(R.string.left_characters_x), (120 - count).toString() + "")
+        leftCharacters.text = String.format(getString(R.string.left_characters_x), (120 - count).toString() + "")
     }
 
-    private fun showTemplate(smsTemplate: SmsTemplate?) {
+    private fun showTemplate(smsTemplate: SmsTemplate) {
         this.mItem = smsTemplate
-        if (smsTemplate != null) {
-            binding!!.messageInput.setText(smsTemplate.title)
-            val title = smsTemplate.title
-            if (title != null) {
-                updateLeftView(title.length)
-            }
+        messageInput.setText(smsTemplate.title)
+        val title = smsTemplate.title
+        if (title != "") {
+            updateLeftView(title.length)
         }
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(false)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setHomeButtonEnabled(true)
             supportActionBar!!.setDisplayShowHomeEnabled(true)
         }
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -153,24 +149,25 @@ class TemplateActivity : ThemedActivity() {
 
     private fun deleteItem() {
         if (mItem != null) {
-            viewModel!!.deleteSmsTemplate(mItem!!)
+            viewModel.deleteSmsTemplate(mItem!!)
         }
     }
 
     private fun saveTemplate() {
-        val text = binding!!.messageInput.text!!.toString().trim { it <= ' ' }
-        if (text.length == 0) {
-            binding!!.messageInput.error = getString(R.string.must_be_not_empty)
+        val text = messageInput.text!!.toString().trim { it <= ' ' }
+        if (text.isEmpty()) {
+            messageInput.error = getString(R.string.must_be_not_empty)
             return
         }
         val date = TimeUtil.gmtDateTime
-        if (mItem != null) {
-            mItem!!.date = date
-            mItem!!.title = text
+        var item = mItem
+        if (item != null) {
+            item.date = date
+            item.title = text
         } else {
-            mItem = SmsTemplate(text, date)
+            item = SmsTemplate(text, date)
         }
-        viewModel!!.saveTemplate(mItem!!)
+        viewModel.saveTemplate(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -184,6 +181,6 @@ class TemplateActivity : ThemedActivity() {
 
     companion object {
 
-        private val MENU_ITEM_DELETE = 12
+        private const val MENU_ITEM_DELETE = 12
     }
 }

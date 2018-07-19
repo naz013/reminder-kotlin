@@ -3,6 +3,10 @@ package com.elementary.tasks.navigation.fragments
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
@@ -66,8 +70,15 @@ abstract class BaseFragment : Fragment() {
         ft.addToBackStack(title)
         ft.commit()
         if (callback != null) {
-            callback!!.onTitleChange(title)
-            callback!!.onFragmentSelect(fragment)
+            callback?.onTitleChange(title)
+            callback?.onFragmentSelect(fragment)
         }
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(layoutRes(), container, false)
+    }
+
+    @LayoutRes
+    open fun layoutRes(): Int = 0
 }

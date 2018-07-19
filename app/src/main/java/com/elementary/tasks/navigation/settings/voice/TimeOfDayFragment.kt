@@ -1,21 +1,17 @@
 package com.elementary.tasks.navigation.settings.voice
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.FragmentTimeOfDayBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-
+import kotlinx.android.synthetic.main.fragment_time_of_day.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,13 +31,8 @@ import java.util.Locale
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
 
-    private var nightTime: RoboTextView? = null
-    private var eveningTime: RoboTextView? = null
-    private var dayTime: RoboTextView? = null
-    private var morningTime: RoboTextView? = null
     private var morningHour: Int = 0
     private var morningMinute: Int = 0
     private var dayHour: Int = 0
@@ -54,27 +45,27 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
     private val format = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentTimeOfDayBinding.inflate(inflater, container, false)
-        nightTime = binding.nightTime
-        nightTime!!.setOnClickListener(this)
-        eveningTime = binding.eveningTime
-        eveningTime!!.setOnClickListener(this)
-        dayTime = binding.dayTime
-        dayTime!!.setOnClickListener(this)
-        morningTime = binding.morningTime
-        morningTime!!.setOnClickListener(this)
+        return inflater.inflate(R.layout.fragment_time_of_day, container, false)
+    }
 
-        is24 = prefs!!.is24HourFormatEnabled
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        nightTime.setOnClickListener(this)
+        eveningTime.setOnClickListener(this)
+        dayTime.setOnClickListener(this)
+        morningTime.setOnClickListener(this)
+
+        is24 = prefs.is24HourFormatEnabled
 
         initMorningTime()
         initNoonTime()
         initEveningTime()
         initNightTime()
-        return binding.root
     }
 
     private fun initNoonTime() {
-        val noonTime = prefs!!.noonTime
+        val noonTime = prefs.noonTime
         var date: Date? = null
         try {
             date = format.parse(noonTime)
@@ -86,11 +77,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         dayHour = calendar.get(Calendar.HOUR_OF_DAY)
         dayMinute = calendar.get(Calendar.MINUTE)
-        dayTime!!.text = TimeUtil.getTime(calendar.time, is24)
+        dayTime.text = TimeUtil.getTime(calendar.time, is24)
     }
 
     private fun initEveningTime() {
-        val evening = prefs!!.eveningTime
+        val evening = prefs.eveningTime
         var date: Date? = null
         try {
             date = format.parse(evening)
@@ -102,11 +93,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         eveningHour = calendar.get(Calendar.HOUR_OF_DAY)
         eveningMinute = calendar.get(Calendar.MINUTE)
-        eveningTime!!.text = TimeUtil.getTime(calendar.time, is24)
+        eveningTime.text = TimeUtil.getTime(calendar.time, is24)
     }
 
     private fun initNightTime() {
-        val night = prefs!!.nightTime
+        val night = prefs.nightTime
         var date: Date? = null
         try {
             date = format.parse(night)
@@ -119,11 +110,11 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         nightHour = calendar.get(Calendar.HOUR_OF_DAY)
         nightMinute = calendar.get(Calendar.MINUTE)
-        nightTime!!.text = TimeUtil.getTime(calendar.time, is24)
+        nightTime.text = TimeUtil.getTime(calendar.time, is24)
     }
 
     private fun initMorningTime() {
-        val morning = prefs!!.morningTime
+        val morning = prefs.morningTime
         var date: Date? = null
         try {
             date = format.parse(morning)
@@ -136,66 +127,66 @@ class TimeOfDayFragment : BaseSettingsFragment(), View.OnClickListener {
         if (date != null) calendar.time = date
         morningHour = calendar.get(Calendar.HOUR_OF_DAY)
         morningMinute = calendar.get(Calendar.MINUTE)
-        morningTime!!.text = TimeUtil.getTime(calendar.time, is24)
+        morningTime.text = TimeUtil.getTime(calendar.time, is24)
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.time))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.time))
+            callback?.onFragmentSelect(this)
         }
     }
 
     private fun morningDialog() {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             morningHour = hourOfDay
             morningMinute = minute
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
-            prefs!!.morningTime = time
-            morningTime!!.text = TimeUtil.getTime(calendar.time, is24)
+            prefs.morningTime = time
+            morningTime.text = TimeUtil.getTime(calendar.time, is24)
         }, morningHour, morningMinute)
     }
 
     private fun dayDialog() {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             dayHour = hourOfDay
             dayMinute = minute
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
-            prefs!!.noonTime = time
-            dayTime!!.text = TimeUtil.getTime(calendar.time, is24)
+            prefs.noonTime = time
+            dayTime.text = TimeUtil.getTime(calendar.time, is24)
         }, dayHour, dayMinute)
     }
 
     private fun nightDialog() {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             nightHour = hourOfDay
             nightMinute = minute
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
-            prefs!!.nightTime = time
-            nightTime!!.text = TimeUtil.getTime(calendar.time, is24)
+            prefs.nightTime = time
+            nightTime.text = TimeUtil.getTime(calendar.time, is24)
         }, nightHour, nightMinute)
     }
 
     private fun eveningDialog() {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             eveningHour = hourOfDay
             eveningMinute = minute
             val calendar = Calendar.getInstance()
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
             val time = format.format(calendar.time)
-            prefs!!.eveningTime = time
-            eveningTime!!.text = TimeUtil.getTime(calendar.time, is24)
+            prefs.eveningTime = time
+            eveningTime.text = TimeUtil.getTime(calendar.time, is24)
         }, eveningHour, eveningMinute)
     }
 

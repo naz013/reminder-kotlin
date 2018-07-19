@@ -20,20 +20,19 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class FragmentTodayColor : FragmentStyle() {
-    protected override val selectedColor: Int
-        get() = prefs!!.todayColor
+    override val selectedColor: Int
+        get() = prefs.todayColor
 
     override fun saveToPrefs(code: Int) {
-        prefs!!.todayColor = code
+        prefs.todayColor = code
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.today_color))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.today_color))
+            callback?.onFragmentSelect(this)
         }
     }
 }

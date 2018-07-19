@@ -4,24 +4,22 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
-import com.elementary.tasks.databinding.FragmentTemplatesListBinding
-import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.elementary.tasks.reminder.lists.filters.FilterCallback
+import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.interfaces.LCAMListener
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.SuperUtil
+import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
+import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import com.elementary.tasks.reminder.lists.filters.FilterCallback
+import kotlinx.android.synthetic.main.fragment_templates_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,9 +41,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
 
-    private var binding: FragmentTemplatesListBinding? = null
     private val adapter = TemplatesAdapter()
-    private var viewModel: SmsTemplatesViewModel? = null
+    private lateinit var viewModel: SmsTemplatesViewModel
 
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
@@ -54,15 +51,13 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
-            if (adapter != null) filterController.setSearchValue(query)
-            if (mSearchMenu != null) {
-                mSearchMenu!!.collapseActionView()
-            }
+            filterController.setSearchValue(query)
+            mSearchMenu?.collapseActionView()
             return false
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            if (adapter != null) filterController.setSearchValue(newText)
+            filterController.setSearchValue(newText)
             return false
         }
     }
@@ -77,41 +72,36 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         setHasOptionsMenu(true)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.templates_menu, menu)
+        inflater?.inflate(R.menu.templates_menu, menu)
         mSearchMenu = menu!!.findItem(R.id.action_search)
-        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
-            mSearchView = mSearchMenu!!.actionView as SearchView
+            mSearchView = mSearchMenu?.actionView as SearchView?
         }
         if (mSearchView != null) {
             if (searchManager != null) {
-                mSearchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
             }
-            mSearchView!!.setOnQueryTextListener(queryTextListener)
-            mSearchView!!.setOnCloseListener(mCloseListener)
+            mSearchView?.setOnQueryTextListener(queryTextListener)
+            mSearchView?.setOnCloseListener(mCloseListener)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentTemplatesListBinding.inflate(inflater, container, false)
-        initTemplateList()
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_templates_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initTemplateList()
         initViewModel()
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(SmsTemplatesViewModel::class.java)
-        viewModel!!.smsTemplates.observe(this, { smsTemplates ->
+        viewModel.smsTemplates.observe(this, Observer { smsTemplates ->
             if (smsTemplates != null) {
                 showTemplates(smsTemplates)
             }
@@ -123,24 +113,32 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     }
 
     private fun initTemplateList() {
-        binding!!.templatesList.setHasFixedSize(false)
-        binding!!.templatesList.layoutManager = LinearLayoutManager(context)
-        adapter.actionsListener = { view, position, smsTemplate, actions ->
-            when (actions) {
-                ListActions.MORE -> showMenu(position, smsTemplate)
-                ListActions.OPEN -> openTemplate(smsTemplate)
+        templatesList.setHasFixedSize(false)
+        templatesList.layoutManager = LinearLayoutManager(context)
+        adapter.actionsListener = object : ActionsListener<SmsTemplate> {
+            override fun onAction(view: View, position: Int, t: SmsTemplate?, actions: ListActions) {
+                when (actions) {
+                    ListActions.MORE -> if (t != null) {
+                        showMenu(position, t)
+                    }
+                    ListActions.OPEN -> if (t != null) {
+                        openTemplate(t)
+                    }
+                }
             }
         }
-        binding!!.templatesList.adapter = adapter
+        templatesList.adapter = adapter
         refreshView()
     }
 
     private fun showMenu(position: Int, smsTemplate: SmsTemplate) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        SuperUtil.showLCAM(context, { item ->
-            when (item) {
-                0 -> openTemplate(smsTemplate)
-                1 -> deleteTemplate(smsTemplate)
+        SuperUtil.showLCAM(context!!, object : LCAMListener {
+            override fun onAction(item: Int) {
+                when (item) {
+                    0 -> openTemplate(smsTemplate)
+                    1 -> deleteTemplate(smsTemplate)
+                }
             }
         }, *items)
     }
@@ -151,36 +149,36 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
     }
 
     private fun deleteTemplate(smsTemplate: SmsTemplate) {
-        viewModel!!.deleteSmsTemplate(smsTemplate)
+        viewModel.deleteSmsTemplate(smsTemplate)
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.messages))
-            callback!!.onFragmentSelect(this)
-            callback!!.setClick { view -> openCreateScreen() }
-            callback!!.onScrollChanged(binding!!.templatesList)
+            callback?.onTitleChange(getString(R.string.messages))
+            callback?.onFragmentSelect(this)
+            callback?.setClick(View.OnClickListener { openCreateScreen() })
+            callback?.onScrollChanged(templatesList)
         }
     }
 
-    private fun showTemplates(smsTemplates: List<SmsTemplate>?) {
+    private fun showTemplates(smsTemplates: List<SmsTemplate>) {
         filterController.original = smsTemplates
     }
 
     private fun refreshView() {
-        if (adapter == null || adapter.itemCount == 0) {
-            binding!!.emptyItem.visibility = View.VISIBLE
-            binding!!.templatesList.visibility = View.GONE
+        if (adapter.itemCount == 0) {
+            emptyItem.visibility = View.VISIBLE
+            templatesList.visibility = View.GONE
         } else {
-            binding!!.emptyItem.visibility = View.GONE
-            binding!!.templatesList.visibility = View.VISIBLE
+            emptyItem.visibility = View.GONE
+            templatesList.visibility = View.VISIBLE
         }
     }
 
     override fun onChanged(result: List<SmsTemplate>) {
         adapter.data = result
-        binding!!.templatesList.smoothScrollToPosition(0)
+        templatesList.smoothScrollToPosition(0)
         refreshView()
     }
 }

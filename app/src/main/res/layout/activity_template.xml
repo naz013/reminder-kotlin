@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary" />
-
-            <com.elementary.tasks.core.views.roboto.RoboEditText
-                android:id="@+id/messageInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="24dp"
-                android:layout_marginStart="36dp"
-                android:background="@android:color/transparent"
-                android:hint="@string/message"
-                android:maxLength="120"
-                android:maxLines="3"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
-                android:textColorHint="@color/whitePrimary"
-                android:textSize="18sp"
-                app:edit_font_style="roboto_light" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <com.elementary.tasks.core.views.roboto.RoboTextView
-            android:id="@+id/leftCharacters"
+        <com.elementary.tasks.core.views.roboto.RoboEditText
+            android:id="@+id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginEnd="24dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:gravity="end"
+            android:layout_marginStart="36dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/message"
+            android:maxLength="120"
+            android:maxLines="3"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            android:textColorHint="@color/whitePrimary"
             android:textSize="18sp"
-            app:font_style="roboto_light" />
+            app:edit_font_style="roboto_light" />
 
-    </LinearLayout>
-</layout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:id="@+id/leftCharacters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="end"
+        android:textSize="18sp"
+        app:font_style="roboto_light" />
+
+</LinearLayout>

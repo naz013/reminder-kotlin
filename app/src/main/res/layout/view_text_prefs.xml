@@ -1,139 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorAccent" />
+
+    <com.elementary.tasks.core.views.ThemedImageButton
+        android:id="@+id/prefsControl"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:background="?attr/selectableItemBackground"
+        app:tb_icon="@drawable/ic_expand_less_white_24dp"
+        app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
 
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.elementary.tasks.core.views.IconRadioButton
+            android:id="@+id/addButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:ir_checkable="false"
+            app:ir_icon="@drawable/ic_add_black_24dp"
+            app:ir_icon_light="@drawable/ic_add_white_24dp"
+            app:ir_text="@string/add_text"
+            app:ir_text_size="6sp" />
+
+        <com.elementary.tasks.core.views.IconRadioButton
+            android:id="@+id/fontButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:ir_checkable="false"
+            app:ir_icon="@drawable/ic_text_format_black_24dp"
+            app:ir_icon_light="@drawable/ic_text_format_white_24dp"
+            app:ir_text="@string/font_style"
+            app:ir_text_size="6sp" />
+
+    </LinearLayout>
+
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_size"
+        android:textColor="?attr/colorAccent" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?attr/colorAccent" />
-
-        <com.elementary.tasks.core.views.ThemedImageButton
-            android:id="@+id/prefsControl"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:background="?attr/selectableItemBackground"
-            app:tb_icon="@drawable/ic_expand_less_white_24dp"
-            app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.elementary.tasks.core.views.IconRadioButton
-                android:id="@+id/addButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:ir_checkable="false"
-                app:ir_icon="@drawable/ic_add_black_24dp"
-                app:ir_icon_light="@drawable/ic_add_white_24dp"
-                app:ir_text="@string/add_text"
-                app:ir_text_size="6sp" />
-
-            <com.elementary.tasks.core.views.IconRadioButton
-                android:id="@+id/fontButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                app:ir_checkable="false"
-                app:ir_icon="@drawable/ic_text_format_black_24dp"
-                app:ir_icon_light="@drawable/ic_text_format_white_24dp"
-                app:ir_text="@string/font_style"
-                app:ir_text_size="6sp" />
-
-        </LinearLayout>
+        android:layout_marginTop="4dp">
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/labelLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/text_size"
-            android:textColor="?attr/colorAccent" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/labelLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="1px" />
-
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/labelRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:text="70px" />
-
-            <androidx.appcompat.widget.AppCompatSeekBar
-                android:id="@+id/widthSeek"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/labelLeft"
-                android:layout_toLeftOf="@+id/labelRight"
-                android:layout_toRightOf="@+id/labelLeft"
-                android:layout_toStartOf="@+id/labelRight"
-                android:max="70" />
-
-        </RelativeLayout>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="1px" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/labelRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/opacity"
-            android:textColor="?attr/colorAccent" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="70px" />
 
-        <RelativeLayout
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/widthSeek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_toEndOf="@+id/labelLeft"
+            android:layout_toLeftOf="@+id/labelRight"
+            android:layout_toRightOf="@+id/labelLeft"
+            android:layout_toStartOf="@+id/labelRight"
+            android:max="70" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/labelLeftOpacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="0%" />
+    </RelativeLayout>
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
-                android:id="@+id/labelRightOpacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:text="100%" />
+    <com.elementary.tasks.core.views.roboto.RoboTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/opacity"
+        android:textColor="?attr/colorAccent" />
 
-            <androidx.appcompat.widget.AppCompatSeekBar
-                android:id="@+id/opacitySeek"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/labelLeftOpacity"
-                android:layout_toLeftOf="@+id/labelRightOpacity"
-                android:layout_toRightOf="@+id/labelLeftOpacity"
-                android:layout_toStartOf="@+id/labelRightOpacity"
-                android:max="255" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
-        </RelativeLayout>
-    </LinearLayout>
-</layout>
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/labelLeftOpacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="0%" />
+
+        <com.elementary.tasks.core.views.roboto.RoboTextView
+            android:id="@+id/labelRightOpacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="100%" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/opacitySeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/labelLeftOpacity"
+            android:layout_toLeftOf="@+id/labelRightOpacity"
+            android:layout_toRightOf="@+id/labelLeftOpacity"
+            android:layout_toStartOf="@+id/labelRightOpacity"
+            android:max="255" />
+
+    </RelativeLayout>
+</LinearLayout>

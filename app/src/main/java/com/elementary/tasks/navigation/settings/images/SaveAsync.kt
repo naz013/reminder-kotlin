@@ -30,7 +30,6 @@ import java.util.concurrent.ExecutionException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class SaveAsync(private val mContext: Context) : AsyncTask<String, Void, Void>() {
 
     override fun doInBackground(vararg strings: String): Void? {
@@ -41,14 +40,13 @@ class SaveAsync(private val mContext: Context) : AsyncTask<String, Void, Void>()
             fileName = path.substring(index)
         }
         val directory = MemoryUtil.imageCacheDir ?: return null
-        directory!!.mkdirs()
+        directory.mkdirs()
         val file = File(directory, "$fileName.jpg")
         try {
-            val bitmap: Bitmap
-            if (!path.contains("=")) {
-                bitmap = Glide.with(mContext).asBitmap().load(path).apply(RequestOptions.overrideOf(1280, 76)).submit().get()
+            val bitmap: Bitmap = if (!path.contains("=")) {
+                Glide.with(mContext).asBitmap().load(path).apply(RequestOptions.overrideOf(1280, 76)).submit().get()
             } else {
-                bitmap = Glide.with(mContext).asBitmap().load(path).submit().get()
+                Glide.with(mContext).asBitmap().load(path).submit().get()
             }
             try {
                 if (file.createNewFile()) {
@@ -59,13 +57,11 @@ class SaveAsync(private val mContext: Context) : AsyncTask<String, Void, Void>()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         } catch (e: InterruptedException) {
             e.printStackTrace()
         } catch (e: ExecutionException) {
             e.printStackTrace()
         }
-
         return null
     }
 }

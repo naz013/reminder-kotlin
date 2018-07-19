@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.views.ColorPickerView
-import com.elementary.tasks.databinding.FragmentCalendarStyleBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import kotlinx.android.synthetic.main.fragment_calendar_style.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -28,28 +28,27 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 abstract class FragmentStyle : BaseSettingsFragment(), ColorPickerView.OnColorListener {
-
-    private var binding: FragmentCalendarStyleBinding? = null
 
     protected abstract val selectedColor: Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentCalendarStyleBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_calendar_style, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initColorPicker()
-        return binding!!.root
     }
 
     private fun initColorPicker() {
-        val pickerView = binding!!.pickerView
         pickerView.setListener(this)
         pickerView.setSelectedColor(selectedColor)
     }
 
-    internal fun saveColor(code: Int) {
+    private fun saveColor(code: Int) {
         saveToPrefs(code)
-        UpdatesHelper.getInstance(context).updateCalendarWidget()
+        UpdatesHelper.getInstance(context!!).updateCalendarWidget()
     }
 
     protected abstract fun saveToPrefs(code: Int)

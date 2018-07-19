@@ -1,18 +1,14 @@
 package com.elementary.tasks.navigation.settings
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.SeekBar
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
-import com.elementary.tasks.databinding.FragmentSettingsNotesBinding
-
-import java.util.Locale
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import kotlinx.android.synthetic.main.fragment_settings_notes.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,86 +31,80 @@ import java.util.Locale
 
 class NoteSettingsFragment : BaseSettingsFragment() {
 
-    private var binding: FragmentSettingsNotesBinding? = null
-    private val mNoteReminderClick = { view -> changeNoteReminder() }
-    private val mNoteColorRememberClick = { view -> changeNoteColorRemembering() }
-    private val mNoteTimeClick = { view -> showTimePickerDialog() }
-    private val mNoteTextSizeClick = { view -> showTextSizePickerDialog() }
-    private val mNoteColorOpacityClick = { view -> showOpacityPickerDialog() }
+    override fun layoutRes(): Int = R.layout.fragment_settings_notes
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingsNotesBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initNoteReminderPrefs()
         initNoteTime()
         initTextSizePrefs()
         initNoteColorRememberPrefs()
         initColorOpacityPrefs()
-        return binding!!.root
     }
 
     private fun initNoteColorRememberPrefs() {
-        binding!!.noteColorRememberPrefs.setOnClickListener(mNoteColorRememberClick)
-        binding!!.noteColorRememberPrefs.isChecked = prefs!!.isNoteColorRememberingEnabled
+        noteColorRememberPrefs.onClick { changeNoteColorRemembering() }
+        noteColorRememberPrefs.isChecked = prefs.isNoteColorRememberingEnabled
     }
 
     private fun changeNoteColorRemembering() {
-        val isChecked = binding!!.noteColorRememberPrefs.isChecked
-        binding!!.noteColorRememberPrefs.isChecked = !isChecked
-        prefs!!.isNoteColorRememberingEnabled = !isChecked
+        val isChecked = noteColorRememberPrefs.isChecked
+        noteColorRememberPrefs.isChecked = !isChecked
+        prefs.isNoteColorRememberingEnabled = !isChecked
     }
 
     private fun initColorOpacityPrefs() {
-        binding!!.noteColorOpacity.setOnClickListener(mNoteColorOpacityClick)
+        noteColorOpacity.onClick { showOpacityPickerDialog() }
         showNoteColorSaturation()
     }
 
     private fun initTextSizePrefs() {
-        binding!!.textSize.setOnClickListener(mNoteTextSizeClick)
+        textSize.onClick { showTextSizePickerDialog() }
         showTextSize()
     }
 
     private fun showTextSize() {
-        binding!!.textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", prefs!!.noteTextSize + 12))
+        textSize.setDetailText(String.format(Locale.getDefault(), "%d pt", prefs.noteTextSize + 12))
     }
 
     private fun initNoteReminderPrefs() {
-        binding!!.noteReminderPrefs.setOnClickListener(mNoteReminderClick)
-        binding!!.noteReminderPrefs.isChecked = prefs!!.isNoteReminderEnabled
+        noteReminderPrefs.onClick { changeNoteReminder() }
+        noteReminderPrefs.isChecked = prefs.isNoteReminderEnabled
     }
 
     private fun initNoteTime() {
-        binding!!.noteReminderTime.setOnClickListener(mNoteTimeClick)
-        binding!!.noteReminderTime.setDependentView(binding!!.noteReminderPrefs)
+        noteReminderTime.onClick { showTimePickerDialog() }
+        noteReminderTime.setDependentView(noteReminderPrefs)
         showNoteTime()
     }
 
     private fun showNoteTime() {
-        binding!!.noteReminderTime.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                prefs!!.noteReminderTime.toString()))
+        noteReminderTime.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                prefs.noteReminderTime.toString()))
     }
 
     private fun showNoteColorSaturation() {
-        binding!!.noteColorOpacity.setDetailText(String.format(Locale.getDefault(), "%d%%", prefs!!.noteColorOpacity))
+        noteColorOpacity.setDetailText(String.format(Locale.getDefault(), "%d%%", prefs.noteColorOpacity))
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.notes))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.notes))
+            callback?.onFragmentSelect(this)
         }
     }
 
     private fun changeNoteReminder() {
-        val isChecked = binding!!.noteReminderPrefs.isChecked
-        binding!!.noteReminderPrefs.isChecked = !isChecked
-        prefs!!.isNoteReminderEnabled = !isChecked
+        val isChecked = noteReminderPrefs.isChecked
+        noteReminderPrefs.isChecked = !isChecked
+        prefs.isNoteReminderEnabled = !isChecked
     }
 
     private fun showTextSizePickerDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.text_size)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 18
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -129,23 +119,23 @@ class NoteSettingsFragment : BaseSettingsFragment() {
 
             }
         })
-        val textSize = prefs!!.noteTextSize
+        val textSize = prefs.noteTextSize
         b.seekBar.progress = textSize
         b.titleView.text = String.format(Locale.getDefault(), "%d pt", textSize + 12)
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
-            prefs!!.noteTextSize = b.seekBar.progress
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+            prefs.noteTextSize = b.seekBar.progress
             showTextSize()
             dialogInterface.dismiss()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 
     private fun showTimePickerDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.time)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 120
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -161,24 +151,24 @@ class NoteSettingsFragment : BaseSettingsFragment() {
 
             }
         })
-        val time = prefs!!.noteReminderTime
+        val time = prefs.noteReminderTime
         b.seekBar.progress = time
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes),
                 time.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
-            prefs!!.noteReminderTime = b.seekBar.progress
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+            prefs.noteReminderTime = b.seekBar.progress
             showNoteTime()
             dialogInterface.dismiss()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 
     private fun showOpacityPickerDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.color_saturation)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 100
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -193,16 +183,16 @@ class NoteSettingsFragment : BaseSettingsFragment() {
 
             }
         })
-        val opacity = prefs!!.noteColorOpacity
+        val opacity = prefs.noteColorOpacity
         b.seekBar.progress = opacity
         b.titleView.text = String.format(Locale.getDefault(), "%d%%", opacity)
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
-            prefs!!.noteColorOpacity = b.seekBar.progress
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
+            prefs.noteColorOpacity = b.seekBar.progress
             showNoteColorSaturation()
             dialogInterface.dismiss()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 }

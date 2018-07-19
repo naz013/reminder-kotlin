@@ -1,6 +1,5 @@
 package com.elementary.tasks.navigation.settings
 
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,23 +8,20 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import android.widget.SeekBar
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.services.AlarmReceiver
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
-import com.elementary.tasks.databinding.FragmentSettingsExportBinding
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
-
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import kotlinx.android.synthetic.main.fragment_settings_export.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,23 +43,19 @@ import java.util.Locale
  */
 class ExportSettingsFragment : BaseSettingsFragment() {
 
-    private var mDataList: List<CalendarUtils.CalendarItem>? = null
+    private var mDataList: MutableList<CalendarUtils.CalendarItem> = mutableListOf()
     private var mItemSelect: Int = 0
-
-    private var binding: FragmentSettingsExportBinding? = null
-    private val mCalendarClick = { view -> changeExportToCalendarPrefs() }
-
     private val intervalPosition: Int
         get() {
             val position: Int
-            val interval = prefs!!.autoBackupInterval
-            when (interval) {
-                1 -> position = 0
-                6 -> position = 1
-                12 -> position = 2
-                24 -> position = 3
-                48 -> position = 4
-                else -> position = 0
+            val interval = prefs.autoBackupInterval
+            position = when (interval) {
+                1 -> 0
+                6 -> 1
+                12 -> 2
+                24 -> 3
+                48 -> 4
+                else -> 0
             }
             mItemSelect = position
             return position
@@ -72,9 +64,9 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     private val currentPosition: Int
         get() {
             var position = 0
-            val id = prefs!!.calendarId
-            for (i in mDataList!!.indices) {
-                val item = mDataList!![i]
+            val id = prefs.calendarId
+            for (i in mDataList.indices) {
+                val item = mDataList[i]
                 if (item.id == id) {
                     position = i
                     break
@@ -83,8 +75,10 @@ class ExportSettingsFragment : BaseSettingsFragment() {
             return position
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentSettingsExportBinding.inflate(inflater, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_settings_export
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initExportToCalendarPrefs()
         initEventDurationPrefs()
         initSelectCalendarPrefs()
@@ -94,45 +88,42 @@ class ExportSettingsFragment : BaseSettingsFragment() {
         initAutoBackupIntervalPrefs()
         initClearDataPrefs()
         initCloudDrivesPrefs()
-        return binding!!.root
     }
 
     private fun initCloudDrivesPrefs() {
-        binding!!.cloudsPrefs.setOnClickListener { view -> replaceFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
+        cloudsPrefs.onClick { replaceFragment(FragmentCloudDrives(), getString(R.string.cloud_services)) }
     }
 
     private fun initClearDataPrefs() {
-        binding!!.cleanPrefs.setOnClickListener { view -> showCleanDialog() }
+        cleanPrefs.onClick { showCleanDialog() }
     }
 
     private fun showCleanDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.clean))
-        builder.setNeutralButton(R.string.local) { dialog, which ->
+        builder.setNeutralButton(R.string.local) { _, _ ->
             val dir = MemoryUtil.parent
             deleteRecursive(dir!!)
         }
-        builder.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.dismiss() }
-        builder.setPositiveButton(R.string.all) { dialog, which ->
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+        builder.setPositiveButton(R.string.all) { _, _ ->
             val dir = MemoryUtil.parent
             deleteRecursive(dir!!)
-            Thread {
-                val gdx = Google.getInstance(context!!)
-                val dbx = Dropbox(context)
+            launch(CommonPool) {
+                val gdx = Google.getInstance()
+                val dbx = Dropbox(context!!)
                 if (SuperUtil.isConnected(context!!)) {
-                    if (gdx != null && gdx.drive != null) {
+                    if (gdx?.drive != null) {
                         try {
                             gdx.drive!!.clean()
                         } catch (e: IOException) {
                             e.printStackTrace()
                         }
-
                     }
                     dbx.cleanFolder()
                 }
-            }.start()
-
+            }
         }
         val dialog = builder.create()
         dialog.show()
@@ -151,14 +142,14 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initAutoBackupIntervalPrefs() {
-        binding!!.syncIntervalPrefs.setOnClickListener { view -> showIntervalDialog() }
-        binding!!.syncIntervalPrefs.setDependentView(binding!!.autoBackupPrefs)
+        syncIntervalPrefs.onClick { showIntervalDialog() }
+        syncIntervalPrefs.setDependentView(autoBackupPrefs)
         showBackupInterval()
     }
 
     private fun showBackupInterval() {
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-        binding!!.syncIntervalPrefs.setDetailText(items[intervalPosition].toString())
+        syncIntervalPrefs.setDetailText(items[intervalPosition].toString())
     }
 
     private fun showIntervalDialog() {
@@ -166,91 +157,87 @@ class ExportSettingsFragment : BaseSettingsFragment() {
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.interval))
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
-        builder.setSingleChoiceItems(items, intervalPosition) { dialog, item -> mItemSelect = item }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+        builder.setSingleChoiceItems(items, intervalPosition) { _, item -> mItemSelect = item }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveIntervalPrefs()
             dialog.dismiss()
         }
         val dialog = builder.create()
-        dialog.setOnCancelListener { dialogInterface -> mItemSelect = 0 }
-        dialog.setOnDismissListener { dialogInterface -> mItemSelect = 0 }
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
         dialog.show()
     }
 
     private fun saveIntervalPrefs() {
-        if (mItemSelect == 0) {
-            prefs!!.autoBackupInterval = 1
-        } else if (mItemSelect == 1) {
-            prefs!!.autoBackupInterval = 6
-        } else if (mItemSelect == 2) {
-            prefs!!.autoBackupInterval = 12
-        } else if (mItemSelect == 3) {
-            prefs!!.autoBackupInterval = 24
-        } else if (mItemSelect == 4) {
-            prefs!!.autoBackupInterval = 48
+        when (mItemSelect) {
+            0 -> prefs.autoBackupInterval = 1
+            1 -> prefs.autoBackupInterval = 6
+            2 -> prefs.autoBackupInterval = 12
+            3 -> prefs.autoBackupInterval = 24
+            4 -> prefs.autoBackupInterval = 48
         }
-        AlarmReceiver().enableAutoSync(context)
+        AlarmReceiver().enableAutoSync(context!!)
         showBackupInterval()
     }
 
     private fun initAutoBackupPrefs() {
-        binding!!.autoBackupPrefs.isChecked = prefs!!.isAutoBackupEnabled
-        binding!!.autoBackupPrefs.setOnClickListener { view -> changeAutoBackupPrefs() }
+        autoBackupPrefs.isChecked = prefs.isAutoBackupEnabled
+        autoBackupPrefs.onClick { changeAutoBackupPrefs() }
     }
 
     private fun changeAutoBackupPrefs() {
-        val isChecked = binding!!.autoBackupPrefs.isChecked
-        binding!!.autoBackupPrefs.isChecked = !isChecked
-        prefs!!.isAutoBackupEnabled = !isChecked
-        if (binding!!.autoBackupPrefs.isChecked) {
-            AlarmReceiver().enableAutoSync(context)
+        val isChecked = autoBackupPrefs.isChecked
+        autoBackupPrefs.isChecked = !isChecked
+        prefs.isAutoBackupEnabled = !isChecked
+        if (autoBackupPrefs.isChecked) {
+            AlarmReceiver().enableAutoSync(context!!)
         } else {
-            AlarmReceiver().cancelAutoSync(context)
+            AlarmReceiver().cancelAutoSync(context!!)
         }
     }
 
     private fun initSettingsBackupPrefs() {
-        binding!!.syncSettingsPrefs.isChecked = prefs!!.isSettingsBackupEnabled
-        binding!!.syncSettingsPrefs.setOnClickListener { view -> changeSettingsBackupPrefs() }
+        syncSettingsPrefs.isChecked = prefs.isSettingsBackupEnabled
+        syncSettingsPrefs.onClick { changeSettingsBackupPrefs() }
     }
 
     private fun changeSettingsBackupPrefs() {
-        val isChecked = binding!!.syncSettingsPrefs.isChecked
-        binding!!.syncSettingsPrefs.isChecked = !isChecked
-        prefs!!.isSettingsBackupEnabled = !isChecked
+        val isChecked = syncSettingsPrefs.isChecked
+        syncSettingsPrefs.isChecked = !isChecked
+        prefs.isSettingsBackupEnabled = !isChecked
     }
 
     private fun initExportToStockPrefs() {
-        binding!!.exportToStockPrefs.isChecked = prefs!!.isStockCalendarEnabled
-        binding!!.exportToStockPrefs.setOnClickListener { view -> changeExportToStockPrefs() }
+        exportToStockPrefs.isChecked = prefs.isStockCalendarEnabled
+        exportToStockPrefs.onClick { changeExportToStockPrefs() }
     }
 
     private fun changeExportToStockPrefs() {
-        val isChecked = binding!!.exportToStockPrefs.isChecked
-        binding!!.exportToStockPrefs.isChecked = !isChecked
-        prefs!!.isStockCalendarEnabled = !isChecked
+        val isChecked = exportToStockPrefs.isChecked
+        exportToStockPrefs.isChecked = !isChecked
+        prefs.isStockCalendarEnabled = !isChecked
     }
 
     private fun initSelectCalendarPrefs() {
-        binding!!.selectCalendarPrefs.setOnClickListener { view -> showSelectCalendarDialog() }
-        binding!!.selectCalendarPrefs.setDependentView(binding!!.exportToCalendarPrefs)
+        selectCalendarPrefs.onClick { showSelectCalendarDialog() }
+        selectCalendarPrefs.setDependentView(exportToCalendarPrefs)
     }
 
     private fun initEventDurationPrefs() {
-        binding!!.eventDurationPrefs.setOnClickListener { view -> showEventDurationDialog() }
-        binding!!.eventDurationPrefs.setDependentView(binding!!.exportToCalendarPrefs)
+        eventDurationPrefs.onClick { showEventDurationDialog() }
+        eventDurationPrefs.setDependentView(exportToCalendarPrefs)
         showEventDuration()
     }
 
     private fun showEventDuration() {
-        binding!!.eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
-                prefs!!.calendarEventDuration.toString()))
+        eventDurationPrefs.setDetailText(String.format(Locale.getDefault(), getString(R.string.x_minutes),
+                prefs.calendarEventDuration.toString()))
     }
 
     private fun showEventDurationDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.event_duration)
-        val b = DialogWithSeekAndTitleBinding.inflate(LayoutInflater.from(context))
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 120
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -265,38 +252,38 @@ class ExportSettingsFragment : BaseSettingsFragment() {
 
             }
         })
-        val duration = prefs!!.calendarEventDuration
+        val duration = prefs.calendarEventDuration
         b.seekBar.progress = duration
         b.titleView.text = String.format(Locale.getDefault(), getString(R.string.x_minutes), duration.toString())
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
-            prefs!!.calendarEventDuration = b.seekBar.progress
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { _, _ ->
+            prefs.calendarEventDuration = b.seekBar.progress
             showEventDuration()
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 
     private fun changeExportToCalendarPrefs() {
-        if (!Permissions.checkPermission(activity, Permissions.READ_CALENDAR)) {
-            Permissions.requestPermission(activity, CALENDAR_CODE, Permissions.READ_CALENDAR)
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
+            Permissions.requestPermission(activity!!, CALENDAR_CODE, Permissions.READ_CALENDAR)
             return
         }
-        val isChecked = binding!!.exportToCalendarPrefs.isChecked
-        binding!!.exportToCalendarPrefs.isChecked = !isChecked
-        prefs!!.isCalendarEnabled = !isChecked
-        if (binding!!.exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
-            prefs!!.isCalendarEnabled = false
-            binding!!.exportToCalendarPrefs.isChecked = false
+        val isChecked = exportToCalendarPrefs.isChecked
+        exportToCalendarPrefs.isChecked = !isChecked
+        prefs.isCalendarEnabled = !isChecked
+        if (exportToCalendarPrefs.isChecked && !showSelectCalendarDialog()) {
+            prefs.isCalendarEnabled = false
+            exportToCalendarPrefs.isChecked = false
         }
     }
 
     private fun checkCalendarPerm(): Boolean {
-        if (Permissions.checkPermission(activity, Permissions.READ_CALENDAR)) {
-            return true
+        return if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR)) {
+            true
         } else {
-            Permissions.requestPermission(activity, CALENDAR_PERM, Permissions.READ_CALENDAR)
-            return false
+            Permissions.requestPermission(activity!!, CALENDAR_PERM, Permissions.READ_CALENDAR)
+            false
         }
     }
 
@@ -304,41 +291,43 @@ class ExportSettingsFragment : BaseSettingsFragment() {
         if (!checkCalendarPerm()) {
             return false
         }
-        mDataList = CalendarUtils.getCalendarsList(context)
-        if (mDataList == null || mDataList!!.isEmpty()) {
+        mDataList.clear()
+        mDataList.addAll(CalendarUtils.getCalendarsList(context!!))
+        if (mDataList.isEmpty()) {
             return false
         }
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.choose_calendar)
-        builder.setSingleChoiceItems(object : ArrayAdapter<CalendarUtils.CalendarItem>(context!!, android.R.layout.simple_list_item_single_choice) {
+        builder.setSingleChoiceItems(object : ArrayAdapter<CalendarUtils.CalendarItem>(context!!,
+                android.R.layout.simple_list_item_single_choice) {
             override fun getCount(): Int {
-                return mDataList!!.size
+                return mDataList.size
             }
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                var convertView = convertView
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_single_choice, parent, false)
+                var cView = convertView
+                if (cView == null) {
+                    cView = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_single_choice, parent, false)
                 }
-                val tvName = convertView!!.findViewById<CheckedTextView>(android.R.id.text1)
-                tvName.text = mDataList!![position].name
-                return convertView
+                val tvName = cView!!.findViewById<CheckedTextView>(android.R.id.text1)
+                tvName.text = mDataList[position].name
+                return cView
             }
         }, currentPosition) { dialogInterface, i ->
             dialogInterface.dismiss()
-            prefs!!.calendarId = mDataList!![i].id
+            prefs.calendarId = mDataList[i].id
         }
         builder.create().show()
         return true
     }
 
     private fun initExportToCalendarPrefs() {
-        binding!!.exportToCalendarPrefs.setOnClickListener(mCalendarClick)
-        binding!!.exportToCalendarPrefs.isChecked = prefs!!.isCalendarEnabled
+        exportToCalendarPrefs.onClick { changeExportToCalendarPrefs() }
+        exportToCalendarPrefs.isChecked = prefs.isCalendarEnabled
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             CALENDAR_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 changeExportToCalendarPrefs()
@@ -352,14 +341,14 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.export_and_sync))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.export_and_sync))
+            callback?.onFragmentSelect(this)
         }
     }
 
     companion object {
 
-        private val CALENDAR_CODE = 124
-        private val CALENDAR_PERM = 500
+        private const val CALENDAR_CODE = 124
+        private const val CALENDAR_PERM = 500
     }
 }

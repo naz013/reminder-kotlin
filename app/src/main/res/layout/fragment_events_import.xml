@@ -1,80 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button">
 
-        <androidx.core.widget.NestedScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <com.elementary.tasks.core.views.roboto.RoboTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/calendar"
+                android:textColor="?attr/colorAccent" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/eventCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:layout_weight="1" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/calendar"
-                    android:textColor="?attr/colorAccent" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/material_divider" />
 
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/eventCalendar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:layout_weight="1" />
+            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+                android:id="@+id/autoCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/check_automatically"
+                app:check_font_style="roboto_light" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/material_divider" />
+            <com.elementary.tasks.core.views.roboto.RoboButton
+                android:id="@+id/syncInterval"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_margin="16dp"
+                android:text="@string/interval"
+                android:textSize="16sp"
+                app:button_font_style="roboto_regular" />
 
-                <com.elementary.tasks.core.views.roboto.RoboCheckBox
-                    android:id="@+id/autoCheck"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/check_automatically"
-                    app:check_font_style="roboto_light" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/material_divider" />
 
-                <com.elementary.tasks.core.views.roboto.RoboButton
-                    android:id="@+id/syncInterval"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_margin="16dp"
-                    android:text="@string/interval"
-                    android:textSize="16sp"
-                    app:button_font_style="roboto_regular" />
+        </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/material_divider" />
+    </androidx.core.widget.NestedScrollView>
 
-            </LinearLayout>
+    <com.elementary.tasks.core.views.roboto.RoboButton
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:text="@string/import_string"
+        app:font_style="roboto_regular" />
 
-        </androidx.core.widget.NestedScrollView>
-
-        <com.elementary.tasks.core.views.roboto.RoboButton
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="0dp"
-            android:padding="0dp"
-            android:text="@string/import_string"
-            app:font_style="roboto_regular" />
-
-    </RelativeLayout>
-</layout>
+</RelativeLayout>

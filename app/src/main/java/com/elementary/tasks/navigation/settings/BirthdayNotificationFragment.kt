@@ -3,19 +3,15 @@ package com.elementary.tasks.navigation.settings
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.databinding.FragmentBirthdayNotificationsBinding
-
+import kotlinx.android.synthetic.main.fragment_birthday_notifications.*
 import java.io.File
 
 /**
@@ -39,16 +35,15 @@ import java.io.File
 
 class BirthdayNotificationFragment : BaseSettingsFragment() {
 
-    private var binding: FragmentBirthdayNotificationsBinding? = null
     private var mItemSelect: Int = 0
-
-
     private val localeAdapter: ArrayAdapter<String>
         get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice,
                 Language.getLocaleNames(context!!))
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentBirthdayNotificationsBinding.inflate(inflater, container, false)
+    override fun layoutRes(): Int = R.layout.fragment_birthday_notifications
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initGlobalPrefs()
         initVibratePrefs()
         initInfiniteVibratePrefs()
@@ -60,69 +55,68 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
         initMelodyPrefs()
         initLedPrefs()
         initLedColorPrefs()
-        return binding!!.root
     }
 
     private fun initLedColorPrefs() {
-        binding!!.chooseLedColorPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
-        binding!!.chooseLedColorPrefs.setDependentView(binding!!.ledPrefs)
-        binding!!.chooseLedColorPrefs.setOnClickListener { view -> showLedColorDialog() }
+        chooseLedColorPrefs.setReverseDependentView(globalOptionPrefs)
+        chooseLedColorPrefs.setDependentView(ledPrefs)
+        chooseLedColorPrefs.setOnClickListener { showLedColorDialog() }
         showLedColor()
     }
 
     private fun showLedColor() {
-        binding!!.chooseLedColorPrefs.setDetailText(LED.getTitle(context, prefs!!.birthdayLedColor))
+        chooseLedColorPrefs.setDetailText(LED.getTitle(context!!, prefs.birthdayLedColor))
     }
 
     private fun showLedColorDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.led_color))
-        val colors = LED.getAllNames(context)
+        val colors = LED.getAllNames(context!!)
         val adapter = ArrayAdapter(context!!,
                 android.R.layout.simple_list_item_single_choice, colors)
-        mItemSelect = prefs!!.birthdayLedColor
-        builder.setSingleChoiceItems(adapter, mItemSelect) { dialog, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-            prefs!!.birthdayLedColor = mItemSelect
+        mItemSelect = prefs.birthdayLedColor
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            prefs.birthdayLedColor = mItemSelect
             showLedColor()
             dialog.dismiss()
         }
         val dialog = builder.create()
-        dialog.setOnCancelListener { dialogInterface -> mItemSelect = 0 }
-        dialog.setOnDismissListener { dialogInterface -> mItemSelect = 0 }
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
         dialog.show()
     }
 
     private fun initLedPrefs() {
-        binding!!.ledPrefs.isChecked = prefs!!.isBirthdayLedEnabled
-        binding!!.ledPrefs.setOnClickListener { view -> changeLedPrefs() }
-        binding!!.ledPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
+        ledPrefs.isChecked = prefs.isBirthdayLedEnabled
+        ledPrefs.setOnClickListener { changeLedPrefs() }
+        ledPrefs.setReverseDependentView(globalOptionPrefs)
     }
 
     private fun changeLedPrefs() {
-        val isChecked = binding!!.ledPrefs.isChecked
-        binding!!.ledPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayLedEnabled = !isChecked
+        val isChecked = ledPrefs.isChecked
+        ledPrefs.isChecked = !isChecked
+        prefs.isBirthdayLedEnabled = !isChecked
     }
 
     private fun initMelodyPrefs() {
-        binding!!.chooseSoundPrefs.setOnClickListener { view -> showSoundDialog() }
-        binding!!.chooseSoundPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
+        chooseSoundPrefs.setOnClickListener { showSoundDialog() }
+        chooseSoundPrefs.setReverseDependentView(globalOptionPrefs)
         showMelody()
     }
 
     private fun showMelody() {
-        val filePath = prefs!!.birthdayMelody
-        if (filePath == null || filePath.matches(Constants.DEFAULT.toRegex())) {
-            binding!!.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
+        val filePath = prefs.birthdayMelody
+        if (filePath == "" || filePath.matches(Constants.DEFAULT.toRegex())) {
+            chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
         } else if (!filePath.matches("".toRegex())) {
             val sound = File(filePath)
             val fileName = sound.name
             val pos = fileName.lastIndexOf(".")
             val fileNameS = fileName.substring(0, pos)
-            binding!!.chooseSoundPrefs.setDetailText(fileNameS)
+            chooseSoundPrefs.setDetailText(fileNameS)
         } else {
-            binding!!.chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
+            chooseSoundPrefs.setDetailText(resources.getString(R.string.default_string))
         }
     }
 
@@ -133,15 +127,15 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
         val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
         val adapter = ArrayAdapter(context!!,
                 android.R.layout.simple_list_item_single_choice, types)
-        if (prefs!!.birthdayMelody == null || prefs!!.birthdayMelody!!.matches(Constants.DEFAULT.toRegex())) {
-            mItemSelect = 0
+        mItemSelect = if (prefs.birthdayMelody == "" || prefs.birthdayMelody.matches(Constants.DEFAULT.toRegex())) {
+            0
         } else {
-            mItemSelect = 1
+            1
         }
-        builder.setSingleChoiceItems(adapter, mItemSelect) { dialog, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+        builder.setSingleChoiceItems(adapter, mItemSelect) { _, which -> mItemSelect = which }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             if (mItemSelect == 0) {
-                prefs!!.birthdayMelody = Constants.DEFAULT
+                prefs.birthdayMelody = Constants.DEFAULT
                 showMelody()
             } else {
                 dialog.dismiss()
@@ -150,134 +144,134 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
             dialog.dismiss()
         }
         val dialog = builder.create()
-        dialog.setOnCancelListener { dialogInterface -> mItemSelect = 0 }
-        dialog.setOnDismissListener { dialogInterface -> mItemSelect = 0 }
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
         dialog.show()
     }
 
     private fun initTtsLocalePrefs() {
-        binding!!.localePrefs.setReverseDependentView(binding!!.globalOptionPrefs)
-        binding!!.localePrefs.setDependentView(binding!!.ttsPrefs)
-        binding!!.localePrefs.setOnClickListener { view -> showTtsLocaleDialog() }
+        localePrefs.setReverseDependentView(globalOptionPrefs)
+        localePrefs.setDependentView(ttsPrefs)
+        localePrefs.setOnClickListener { showTtsLocaleDialog() }
         showTtsLocale()
     }
 
     private fun showTtsLocale() {
-        val locale = prefs!!.birthdayTtsLocale
+        val locale = prefs.birthdayTtsLocale
         val i = Language.getLocalePosition(locale)
-        binding!!.localePrefs.setDetailText(Language.getLocaleNames(context!!)[i])
+        localePrefs.setDetailText(Language.getLocaleNames(context!!)[i])
     }
 
     private fun showTtsLocaleDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
-        val locale = prefs!!.birthdayTtsLocale
+        val locale = prefs.birthdayTtsLocale
         mItemSelect = Language.getLocalePosition(locale)
-        builder.setSingleChoiceItems(localeAdapter, mItemSelect) { dialog, which -> mItemSelect = which }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+        builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveTtsLocalePrefs()
             dialog.dismiss()
         }
         val dialog = builder.create()
-        dialog.setOnCancelListener { dialogInterface -> mItemSelect = 0 }
-        dialog.setOnDismissListener { dialogInterface -> mItemSelect = 0 }
+        dialog.setOnCancelListener { mItemSelect = 0 }
+        dialog.setOnDismissListener { mItemSelect = 0 }
         dialog.show()
     }
 
     private fun saveTtsLocalePrefs() {
-        prefs!!.birthdayTtsLocale = Language.getLocaleByPosition(mItemSelect)
+        prefs.birthdayTtsLocale = Language.getLocaleByPosition(mItemSelect)
         showTtsLocale()
     }
 
     private fun initTtsPrefs() {
-        binding!!.ttsPrefs.isChecked = prefs!!.isBirthdayTtsEnabled
-        binding!!.ttsPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
-        binding!!.ttsPrefs.setOnClickListener { view -> changeTtsPrefs() }
+        ttsPrefs.isChecked = prefs.isBirthdayTtsEnabled
+        ttsPrefs.setReverseDependentView(globalOptionPrefs)
+        ttsPrefs.setOnClickListener { changeTtsPrefs() }
     }
 
     private fun changeTtsPrefs() {
-        val isChecked = binding!!.ttsPrefs.isChecked
-        binding!!.ttsPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayTtsEnabled = !isChecked
+        val isChecked = ttsPrefs.isChecked
+        ttsPrefs.isChecked = !isChecked
+        prefs.isBirthdayTtsEnabled = !isChecked
     }
 
     private fun initWakePrefs() {
-        binding!!.wakeScreenOptionPrefs.isChecked = prefs!!.isBirthdayWakeEnabled
-        binding!!.wakeScreenOptionPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
-        binding!!.wakeScreenOptionPrefs.setOnClickListener { view -> changeWakePrefs() }
+        wakeScreenOptionPrefs.isChecked = prefs.isBirthdayWakeEnabled
+        wakeScreenOptionPrefs.setReverseDependentView(globalOptionPrefs)
+        wakeScreenOptionPrefs.setOnClickListener { changeWakePrefs() }
     }
 
     private fun changeWakePrefs() {
-        val isChecked = binding!!.wakeScreenOptionPrefs.isChecked
-        binding!!.wakeScreenOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayWakeEnabled = !isChecked
+        val isChecked = wakeScreenOptionPrefs.isChecked
+        wakeScreenOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdayWakeEnabled = !isChecked
     }
 
     private fun initInfiniteSoundPrefs() {
-        binding!!.infiniteSoundOptionPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
-        binding!!.infiniteSoundOptionPrefs.isChecked = prefs!!.isBirthdayInfiniteSoundEnabled
-        binding!!.infiniteSoundOptionPrefs.setOnClickListener { view -> changeInfiniteSoundPrefs() }
+        infiniteSoundOptionPrefs.setReverseDependentView(globalOptionPrefs)
+        infiniteSoundOptionPrefs.isChecked = prefs.isBirthdayInfiniteSoundEnabled
+        infiniteSoundOptionPrefs.setOnClickListener { changeInfiniteSoundPrefs() }
     }
 
     private fun changeInfiniteSoundPrefs() {
-        val isChecked = binding!!.infiniteSoundOptionPrefs.isChecked
-        binding!!.infiniteSoundOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayInfiniteSoundEnabled = !isChecked
+        val isChecked = infiniteSoundOptionPrefs.isChecked
+        infiniteSoundOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdayInfiniteSoundEnabled = !isChecked
     }
 
     private fun initSilentPrefs() {
-        binding!!.soundOptionPrefs.isChecked = prefs!!.isBirthdaySilentEnabled
-        binding!!.soundOptionPrefs.setOnClickListener { view -> changeSilentPrefs() }
-        binding!!.soundOptionPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
+        soundOptionPrefs.isChecked = prefs.isBirthdaySilentEnabled
+        soundOptionPrefs.setOnClickListener { changeSilentPrefs() }
+        soundOptionPrefs.setReverseDependentView(globalOptionPrefs)
     }
 
     private fun changeSilentPrefs() {
-        val isChecked = binding!!.soundOptionPrefs.isChecked
-        binding!!.soundOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdaySilentEnabled = !isChecked
+        val isChecked = soundOptionPrefs.isChecked
+        soundOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdaySilentEnabled = !isChecked
     }
 
     private fun initInfiniteVibratePrefs() {
-        binding!!.infiniteVibrateOptionPrefs.isChecked = prefs!!.isBirthdayInfiniteVibrationEnabled
-        binding!!.infiniteVibrateOptionPrefs.setOnClickListener { view -> changeInfiniteVibrationPrefs() }
-        binding!!.infiniteVibrateOptionPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
+        infiniteVibrateOptionPrefs.isChecked = prefs.isBirthdayInfiniteVibrationEnabled
+        infiniteVibrateOptionPrefs.setOnClickListener { changeInfiniteVibrationPrefs() }
+        infiniteVibrateOptionPrefs.setReverseDependentView(globalOptionPrefs)
     }
 
     private fun changeInfiniteVibrationPrefs() {
-        val isChecked = binding!!.infiniteVibrateOptionPrefs.isChecked
-        binding!!.infiniteVibrateOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayInfiniteVibrationEnabled = !isChecked
+        val isChecked = infiniteVibrateOptionPrefs.isChecked
+        infiniteVibrateOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdayInfiniteVibrationEnabled = !isChecked
     }
 
     private fun initVibratePrefs() {
-        binding!!.vibrationOptionPrefs.isChecked = prefs!!.isBirthdayVibrationEnabled
-        binding!!.vibrationOptionPrefs.setOnClickListener { view -> changeVibrationPrefs() }
-        binding!!.vibrationOptionPrefs.setReverseDependentView(binding!!.globalOptionPrefs)
+        vibrationOptionPrefs.isChecked = prefs.isBirthdayVibrationEnabled
+        vibrationOptionPrefs.setOnClickListener { changeVibrationPrefs() }
+        vibrationOptionPrefs.setReverseDependentView(globalOptionPrefs)
     }
 
     private fun changeVibrationPrefs() {
-        val isChecked = binding!!.vibrationOptionPrefs.isChecked
-        binding!!.vibrationOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayVibrationEnabled = !isChecked
+        val isChecked = vibrationOptionPrefs.isChecked
+        vibrationOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdayVibrationEnabled = !isChecked
     }
 
     private fun initGlobalPrefs() {
-        binding!!.globalOptionPrefs.isChecked = prefs!!.isBirthdayGlobalEnabled
-        binding!!.globalOptionPrefs.setOnClickListener { view -> changeGlobalPrefs() }
+        globalOptionPrefs.isChecked = prefs.isBirthdayGlobalEnabled
+        globalOptionPrefs.setOnClickListener { changeGlobalPrefs() }
     }
 
     private fun changeGlobalPrefs() {
-        val isChecked = binding!!.globalOptionPrefs.isChecked
-        binding!!.globalOptionPrefs.isChecked = !isChecked
-        prefs!!.isBirthdayGlobalEnabled = !isChecked
+        val isChecked = globalOptionPrefs.isChecked
+        globalOptionPrefs.isChecked = !isChecked
+        prefs.isBirthdayGlobalEnabled = !isChecked
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.birthday_notification))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.birthday_notification))
+            callback?.onFragmentSelect(this)
         }
     }
 
@@ -288,7 +282,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
                 if (filePath != null) {
                     val file = File(filePath)
                     if (file.exists()) {
-                        prefs!!.birthdayMelody = file.toString()
+                        prefs.birthdayMelody = file.toString()
                     }
                 }
                 showMelody()
@@ -298,6 +292,6 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     companion object {
 
-        private val MELODY_CODE = 126
+        private const val MELODY_CODE = 126
     }
 }

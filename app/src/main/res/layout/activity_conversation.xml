@@ -1,56 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/micLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/micLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
+            <com.haozhang.lib.AnimatedRecordingView
+                android:id="@+id/recordingView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="visible" />
 
-                <com.haozhang.lib.AnimatedRecordingView
-                    android:id="@+id/recordingView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible" />
+            <com.elementary.tasks.core.views.ThemedImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                app:tb_icon="@drawable/ic_settings"
+                app:tb_icon_light="@drawable/ic_settings_white"
+                app:tb_message="@string/action_settings" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
-                    android:id="@+id/settingsButton"
-                    android:layout_width="56dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:background="@null"
-                    app:tb_icon="@drawable/ic_settings"
-                    app:tb_icon_light="@drawable/ic_settings_white"
-                    app:tb_message="@string/action_settings" />
+            <com.elementary.tasks.core.views.ThemedImageButton
+                android:id="@+id/backButton"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                app:tb_icon="@drawable/ic_arrow_back_black_24dp"
+                app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
-                    android:id="@+id/backButton"
-                    android:layout_width="56dp"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    app:tb_icon="@drawable/ic_arrow_back_black_24dp"
-                    app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/conversationList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/micLayout"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
-    </RelativeLayout>
-</layout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/conversationList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/micLayout"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</RelativeLayout>

@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-
 import com.elementary.tasks.R
-import com.elementary.tasks.databinding.FragmentSettingsWebViewBinding
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
+import kotlinx.android.synthetic.main.fragment_settings_web_view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,10 +34,14 @@ import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 class ChangesFragment : BaseSettingsFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentSettingsWebViewBinding.inflate(inflater, container, false)
+        return inflater.inflate(R.layout.fragment_settings_web_view, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val url = "file:///android_asset/files/change_log.html"
-        binding.webView.loadUrl(url)
-        binding.webView.webViewClient = object : WebViewClient() {
+        web_view.loadUrl(url)
+        web_view.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 if (url.contains("craysoftware.wordpress.com")) {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -47,14 +50,13 @@ class ChangesFragment : BaseSettingsFragment() {
                 return false
             }
         }
-        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.changes))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.changes))
+            callback?.onFragmentSelect(this)
         }
     }
 }

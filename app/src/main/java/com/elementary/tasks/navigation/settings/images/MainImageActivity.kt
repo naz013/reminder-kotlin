@@ -8,33 +8,26 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.MainImage
 import com.elementary.tasks.core.network.Api
 import com.elementary.tasks.core.network.RetrofitBuilder
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.MemoryUtil
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.UriUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.mainImage.MainImagesViewModel
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
-import com.elementary.tasks.databinding.ActivityMainImageBinding
-
-import java.io.File
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_main_image.*
+import kotlinx.android.synthetic.main.view_item_empty.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -56,32 +49,29 @@ import retrofit2.Response
  */
 class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListener {
 
-    private var binding: ActivityMainImageBinding? = null
-    private var imagesList: RecyclerView? = null
-    private var mAdapter: ImagesRecyclerAdapter? = null
-
-    private var mPhotoList: List<MainImage>? = ArrayList()
+    private val mAdapter: ImagesRecyclerAdapter = ImagesRecyclerAdapter()
+    private val mPhotoList: MutableList<MainImage> = mutableListOf()
     private var mPointer: Int = 0
 
     private var position = -1
     private var mWidth: Int = 0
     private var mHeight: Int = 0
     private var mSelectedItem: MainImage? = null
-    private var viewModel: MainImagesViewModel? = null
+    private lateinit var viewModel: MainImagesViewModel
 
     private val mOnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val layoutManager = recyclerView.layoutManager as GridLayoutManager?
             val visiblePosition = layoutManager!!.findLastVisibleItemPosition()
-            val count = mAdapter!!.itemCount
-            if (visiblePosition >= count - 10 && mPointer < mPhotoList!!.size - 1 && mPointer < count + START_SIZE / 2 - 1) {
+            val count = mAdapter.itemCount
+            if (visiblePosition >= count - 10 && mPointer < mPhotoList.size - 1 && mPointer < count + START_SIZE / 2 - 1) {
                 var endPoint = mPointer + START_SIZE / 2
-                val last = endPoint >= mPhotoList!!.size
-                if (last) endPoint = mPhotoList!!.size - 1
-                val nextChunk = mPhotoList!!.subList(mPointer, endPoint)
+                val last = endPoint >= mPhotoList.size
+                if (last) endPoint = mPhotoList.size - 1
+                val nextChunk = mPhotoList.subList(mPointer, endPoint)
                 mPointer += START_SIZE / 2
-                if (last) mPointer = mPhotoList!!.size - 1
-                mAdapter!!.addItems(nextChunk)
+                if (last) mPointer = mPhotoList.size - 1
+                mAdapter.addItems(nextChunk)
             }
         }
     }
@@ -90,12 +80,14 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
         override fun onResponse(call: Call<List<MainImage>>, response: Response<List<MainImage>>) {
             LogUtil.d(TAG, "onResponse: " + response.code() + ", " + response.message())
             if (response.code() == Api.OK) {
-                if (mPhotoList!!.isEmpty() && response.body() != null) {
-                    mPhotoList = ArrayList(response.body()!!)
-                    saveToDb(response.body())
+                val resp = response.body()
+                if (mPhotoList.isEmpty() && resp != null) {
+                    mPhotoList.clear()
+                    mPhotoList.addAll(resp)
+                    saveToDb(resp)
                     loadDataToList()
-                } else {
-                    saveToDb(response.body())
+                } else if (resp != null) {
+                    saveToDb(resp)
                 }
             }
         }
@@ -108,7 +100,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     private val mListener = object : SelectListener {
         override fun onImageSelected(b: Boolean) {
             if (b) {
-                binding!!.selectGroup.clearCheck()
+                selectGroup.clearCheck()
             } else {
                 (findViewById<View>(R.id.defaultCheck) as RoboRadioButton).isChecked = true
             }
@@ -122,33 +114,36 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
             showImage(position)
         }
     }
-    private val mAnimationCallback = { code ->
-        if (code == 0) {
-            binding!!.fullImageView.setImageBitmap(null)
-            mSelectedItem = null
+    private val mAnimationCallback = object : ViewUtils.AnimationCallback {
+        override fun onAnimationFinish(code: Int) {
+            if (code == 0) {
+                fullImageView.setImageBitmap(null)
+                mSelectedItem = null
+            }
         }
     }
 
-    private fun saveToDb(body: List<MainImage>?) {
-        viewModel!!.saveImages(body)
+    private fun saveToDb(body: List<MainImage>) {
+        viewModel.saveImages(body)
     }
 
     private fun loadDataToList() {
         mPointer = START_SIZE - 1
-        mAdapter = ImagesRecyclerAdapter(this, mPhotoList!!.subList(0, mPointer), mListener)
-        mAdapter!!.setPrevSelected(position)
-        imagesList!!.adapter = mAdapter
-        binding!!.emptyLayout.emptyItem.visibility = View.GONE
-        imagesList!!.visibility = View.VISIBLE
+        mAdapter.mListener = mListener
+        mAdapter.setItems(mPhotoList.subList(0, mPointer))
+        mAdapter.setPrevSelected(position)
+        imagesList.adapter = mAdapter
+        emptyLayout.emptyItem.visibility = View.GONE
+        imagesList.visibility = View.VISIBLE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_image)
+        setContentView(R.layout.activity_main_image)
         initActionBar()
         initRadios()
-        binding!!.emptyLayout.emptyItem.visibility = View.VISIBLE
-        binding!!.emptyLayout.emptyText.setText(R.string.no_images)
+        emptyLayout.emptyItem.visibility = View.VISIBLE
+        emptyLayout.emptyText.setText(R.string.no_images)
         initRecyclerView()
         initImageContainer()
 
@@ -157,56 +152,57 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(MainImagesViewModel::class.java)
-        viewModel!!.images.observe(this, { mainImages ->
+        viewModel.images.observe(this, Observer{ mainImages ->
             if (mainImages != null) {
-                mPhotoList = mainImages
+                mPhotoList.clear()
+                mPhotoList.addAll(mainImages)
             }
             initData()
         })
     }
 
     private fun initData() {
-        if (!mPhotoList!!.isEmpty()) {
+        if (!mPhotoList.isEmpty()) {
             loadDataToList()
         }
         mCall = RetrofitBuilder.unsplashApi.allImages
-        mCall!!.enqueue(mPhotoCallback)
+        mCall?.enqueue(mPhotoCallback)
     }
 
     private fun initRadios() {
-        binding!!.defaultCheck.setOnCheckedChangeListener(this)
-        binding!!.noneCheck.setOnCheckedChangeListener(this)
-        position = prefs!!.imageId
-        val path = prefs!!.imagePath
-        if (path!!.matches(NONE_PHOTO.toRegex())) {
-            binding!!.noneCheck.isChecked = true
+        defaultCheck.setOnCheckedChangeListener(this)
+        noneCheck.setOnCheckedChangeListener(this)
+        position = prefs.imageId
+        val path = prefs.imagePath
+        if (path.matches(NONE_PHOTO.toRegex())) {
+            noneCheck.isChecked = true
         } else if (position == -1 || path.matches(DEFAULT_PHOTO.toRegex())) {
-            binding!!.defaultCheck.isChecked = true
+            defaultCheck.isChecked = true
         }
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.main_image)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.main_image)
     }
 
     private fun initImageContainer() {
-        binding!!.imageContainer.visibility = View.GONE
-        binding!!.fullContainer.visibility = View.GONE
-        binding!!.fullContainer.setOnTouchListener { view, motionEvent ->
+        imageContainer.visibility = View.GONE
+        fullContainer.visibility = View.GONE
+        fullContainer.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                 hideImage()
             }
             true
         }
-        binding!!.fullImageView.setOnTouchListener { view, motionEvent -> true }
-        binding!!.downloadButton.setOnClickListener { view -> showDownloadDialog() }
-        binding!!.setToMonthButton.setOnClickListener { view -> showMonthDialog() }
-        binding!!.setReminderButton.setOnClickListener { v -> setToReminder() }
-        if (!prefs!!.isCalendarImagesEnabled) {
-            binding!!.setToMonthButton.visibility = View.GONE
+        fullImageView.setOnTouchListener { _, _ -> true }
+        downloadButton.setOnClickListener { showDownloadDialog() }
+        setToMonthButton.setOnClickListener { showMonthDialog() }
+        setReminderButton.setOnClickListener { setToReminder() }
+        if (!prefs.isCalendarImagesEnabled) {
+            setToMonthButton.visibility = View.GONE
         }
     }
 
@@ -220,9 +216,9 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
             if (!folder.exists()) {
                 folder.mkdirs()
             }
-            val imageFile = File(folder, mSelectedItem!!.filename!!)
+            val imageFile = File(folder, mSelectedItem!!.filename)
             val destination = UriUtil.getUri(this, imageFile)
-            prefs!!.reminderImage = destination.toString()
+            prefs.reminderImage = destination.toString()
             DownloadAsync(this, mSelectedItem!!.filename, imageFile.toString(), 1080, 1920, mSelectedItem!!.id).execute()
         } else {
             Toast.makeText(this, R.string.no_sd_card, Toast.LENGTH_SHORT).show()
@@ -233,7 +229,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
 
     private fun showMonthDialog() {
         val builder = Dialogues.getDialog(this)
-        builder.setItems(R.array.month_list) { dialogInterface, i -> setImageForMonth(i) }
+        builder.setItems(R.array.month_list) { _, i -> setImageForMonth(i) }
         val dialog = builder.create()
         dialog.show()
     }
@@ -271,20 +267,20 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     }
 
     private fun showImage(position: Int) {
-        mSelectedItem = mPhotoList!![position]
+        mSelectedItem = mPhotoList[position]
         if (mSelectedItem != null) {
-            binding!!.photoInfoView.text = getString(R.string.number) + mSelectedItem!!.id + " " + mSelectedItem!!.author
-            Glide.with(binding!!.fullImageView)
+            photoInfoView.text = getString(R.string.number) + mSelectedItem!!.id + " " + mSelectedItem!!.author
+            Glide.with(fullImageView)
                     .load(RetrofitBuilder.getImageLink(mSelectedItem!!.id))
-                    .into(binding!!.fullImageView)
-            ViewUtils.showReveal(binding!!.fullContainer)
-            ViewUtils.show(this, binding!!.imageContainer, mAnimationCallback)
+                    .into(fullImageView)
+            ViewUtils.showReveal(fullContainer)
+            ViewUtils.show(this, imageContainer, mAnimationCallback)
         }
     }
 
     private fun hideImage() {
-        ViewUtils.hide(this, binding!!.imageContainer, mAnimationCallback)
-        ViewUtils.hideReveal(binding!!.fullContainer)
+        ViewUtils.hide(this, imageContainer, mAnimationCallback)
+        ViewUtils.hideReveal(fullContainer)
     }
 
     private fun downloadImage(width: Int, height: Int) {
@@ -299,7 +295,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
             if (!folder.exists()) {
                 folder.mkdirs()
             }
-            val imageFile = File(folder, mSelectedItem!!.filename!!)
+            val imageFile = File(folder, mSelectedItem!!.filename)
             DownloadAsync(this, mSelectedItem!!.filename, imageFile.toString(), width, height, mSelectedItem!!.id).execute()
         } else {
             Toast.makeText(this, R.string.no_sd_card, Toast.LENGTH_SHORT).show()
@@ -310,46 +306,45 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
 
     private fun setImageForMonth(month: Int) {
         if (mSelectedItem == null) return
-        val monthImage = prefs!!.calendarImages
+        val monthImage = prefs.calendarImages
         monthImage.setPhoto(month, mSelectedItem!!.id)
-        prefs!!.calendarImages = monthImage
+        prefs.calendarImages = monthImage
         hideImage()
     }
 
     private fun initRecyclerView() {
-        imagesList = binding!!.imagesList
         val gridLayoutManager = GridLayoutManager(this, 3)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                when (position % 6) {
-                    5 -> return 3
-                    3 -> return 2
-                    else -> return 1
+                return when (position % 6) {
+                    5 -> 3
+                    3 -> 2
+                    else -> 1
                 }
             }
         }
-        imagesList!!.layoutManager = gridLayoutManager
-        imagesList!!.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
-        imagesList!!.setHasFixedSize(true)
-        imagesList!!.itemAnimator = DefaultItemAnimator()
-        imagesList!!.addOnScrollListener(mOnScrollListener)
-        imagesList!!.visibility = View.GONE
+        imagesList.layoutManager = gridLayoutManager
+        imagesList.addItemDecoration(GridMarginDecoration(resources.getDimensionPixelSize(R.dimen.grid_item_spacing)))
+        imagesList.setHasFixedSize(true)
+        imagesList.itemAnimator = DefaultItemAnimator()
+        imagesList.addOnScrollListener(mOnScrollListener)
+        imagesList.visibility = View.GONE
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (mCall != null && !mCall!!.isExecuted) {
-            mCall!!.cancel()
+        if (mCall != null && !mCall?.isExecuted!!) {
+            mCall?.cancel()
         }
     }
 
@@ -361,13 +356,13 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     }
 
     private fun setImageUrl(imageUrl: String, id: Int) {
-        prefs!!.imagePath = imageUrl
-        prefs!!.imageId = id
-        if (mAdapter != null) mAdapter!!.deselectLast()
+        prefs.imagePath = imageUrl
+        prefs.imageId = id
+        mAdapter.deselectLast()
     }
 
     override fun onBackPressed() {
-        if (binding!!.fullContainer.visibility == View.VISIBLE) {
+        if (fullContainer.visibility == View.VISIBLE) {
             hideImage()
         } else {
             finish()
@@ -375,7 +370,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             REQUEST_DOWNLOAD -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 downloadImage(mWidth, mHeight)
@@ -388,11 +383,11 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
 
     companion object {
 
-        val DEFAULT_PHOTO = "https://unsplash.it/1280/768?image=33"
-        private val NONE_PHOTO = ""
-        private val TAG = "MainImageActivity"
-        private val START_SIZE = 50
-        private val REQUEST_DOWNLOAD = 112
-        private val REQUEST_REMINDER = 113
+        const val DEFAULT_PHOTO = "https://unsplash.it/1280/768?image=33"
+        private const val NONE_PHOTO = ""
+        private const val TAG = "MainImageActivity"
+        private const val START_SIZE = 50
+        private const val REQUEST_DOWNLOAD = 112
+        private const val REQUEST_REMINDER = 113
     }
 }

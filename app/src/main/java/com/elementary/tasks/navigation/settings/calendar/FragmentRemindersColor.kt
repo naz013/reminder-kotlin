@@ -20,20 +20,19 @@ import com.elementary.tasks.R
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class FragmentRemindersColor : FragmentStyle() {
-    protected override val selectedColor: Int
-        get() = prefs!!.reminderColor
+    override val selectedColor: Int
+        get() = prefs.reminderColor
 
     override fun saveToPrefs(code: Int) {
-        prefs!!.reminderColor = code
+        prefs.reminderColor = code
     }
 
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.reminders_color))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.reminders_color))
+            callback?.onFragmentSelect(this)
         }
     }
 }

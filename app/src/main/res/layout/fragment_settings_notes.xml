@@ -1,58 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteReminderPrefs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/quick_note_reminder"
+            app:prefs_secondary_text="@string/enable_creating_reminder_for_quick_note"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/noteReminderPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/quick_note_reminder"
-                app:prefs_secondary_text="@string/enable_creating_reminder_for_quick_note"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteReminderTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/time"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/noteReminderTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/time"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/textSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/text_size"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/textSize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/text_size"
-                app:prefs_type="none" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteColorRememberPrefs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/remember_last_used_note_color"
+            app:prefs_type="check_switch" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/noteColorRememberPrefs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/remember_last_used_note_color"
-                app:prefs_type="check_switch" />
+        <com.elementary.tasks.core.views.PrefsView
+            android:id="@+id/noteColorOpacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:prefs_divider_bottom="true"
+            app:prefs_primary_text="@string/color_saturation"
+            app:prefs_type="none" />
 
-            <com.elementary.tasks.core.views.PrefsView
-                android:id="@+id/noteColorOpacity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:prefs_divider_bottom="true"
-                app:prefs_primary_text="@string/color_saturation"
-                app:prefs_type="none" />
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</layout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
