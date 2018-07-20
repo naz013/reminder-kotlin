@@ -58,10 +58,10 @@ class IconRadioButton : AppCompatRadioButton {
                 val textSize = a.getDimension(R.styleable.IconRadioButton_ir_text_size, 16f)
                 isChecked = a.getBoolean(R.styleable.IconRadioButton_ir_checked, false)
                 isCheckable = a.getBoolean(R.styleable.IconRadioButton_ir_checkable, true)
-                if (isDark) {
-                    icon = a.getResourceId(R.styleable.IconRadioButton_ir_icon_light, 0)
+                icon = if (isDark) {
+                    a.getResourceId(R.styleable.IconRadioButton_ir_icon_light, 0)
                 } else {
-                    icon = a.getResourceId(R.styleable.IconRadioButton_ir_icon, 0)
+                    a.getResourceId(R.styleable.IconRadioButton_ir_icon, 0)
                 }
                 setTextSize(textSize)
             } catch (e: Exception) {

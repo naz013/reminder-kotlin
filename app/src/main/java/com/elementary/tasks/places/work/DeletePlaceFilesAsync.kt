@@ -30,7 +30,6 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class DeletePlaceFilesAsync(private val mContext: Context) : AsyncTask<String, Void, Void>() {
 
     override fun doInBackground(vararg params: String): Void? {
@@ -54,14 +53,13 @@ class DeletePlaceFilesAsync(private val mContext: Context) : AsyncTask<String, V
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
                 Dropbox(mContext).deletePlace(exportFileName)
-                val google = Google.getInstance(mContext)
-                if (google != null && google.drive != null) {
+                val google = Google.getInstance()
+                if (google?.drive != null) {
                     try {
                         google.drive!!.deletePlaceFileByName(exportFileName)
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
-
                 }
             }
         }

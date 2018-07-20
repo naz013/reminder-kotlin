@@ -46,7 +46,7 @@ class NoteFilterController(private val mCallback: FilterCallback<Note>?) {
             private var query: String? = null
 
             override fun filter(item: Note): Boolean {
-                return query == null || query!!.length == 0 || item.summary!!.toLowerCase().contains(query!!.toLowerCase())
+                return query == null || query!!.isEmpty() || item.summary.toLowerCase().contains(query!!.toLowerCase())
             }
 
             @Throws(Exception::class)

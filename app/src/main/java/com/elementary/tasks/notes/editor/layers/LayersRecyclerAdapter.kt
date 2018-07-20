@@ -1,22 +1,18 @@
 package com.elementary.tasks.notes.editor.layers
 
 import android.content.Context
-import androidx.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.drawing.Background
 import com.elementary.tasks.core.drawing.Drawing
 import com.elementary.tasks.core.drawing.Image
 import com.elementary.tasks.core.drawing.Text
 import com.elementary.tasks.core.interfaces.Observer
-import com.elementary.tasks.databinding.ListItemLayerBinding
-
-import java.util.Collections
-
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_layer.view.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,7 +32,11 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LayersRecyclerAdapter(private val mContext: Context, private val mDataList: MutableList<Drawing>, private val onStartDragListener: OnStartDragListener, private val mCallback: AdapterCallback?) : RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder>(), Observer {
+class LayersRecyclerAdapter(private val mContext: Context, private val mDataList: MutableList<Drawing>,
+                            private val onStartDragListener: OnStartDragListener,
+                            private val mCallback: AdapterCallback?) :
+        RecyclerView.Adapter<LayersRecyclerAdapter.ViewHolder>(), Observer {
+
     private var index: Int = 0
 
     fun setIndex(index: Int) {
@@ -71,14 +71,21 @@ class LayersRecyclerAdapter(private val mContext: Context, private val mDataList
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        internal var binding: ListItemLayerBinding? = null
+        fun bind(drawing: Drawing) {
+            itemView.layerName.text = getName(drawing)
+            itemView.layerView.drawing = drawing
+            if (adapterPosition == index) {
+                itemView.selectionView.setBackgroundResource(R.color.redPrimary)
+            } else {
+                itemView.selectionView.setBackgroundResource(android.R.color.transparent)
+            }
+        }
 
         init {
-            binding = DataBindingUtil.bind(v)
-            v.setOnClickListener { view ->
+            itemView.setOnClickListener {
                 mCallback?.onItemSelect(adapterPosition)
             }
-            v.setOnLongClickListener { view ->
+            itemView.setOnLongClickListener {
                 onStartDragListener.onStartDrag(this)
                 true
             }
@@ -86,29 +93,19 @@ class LayersRecyclerAdapter(private val mContext: Context, private val mDataList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LayersRecyclerAdapter.ViewHolder {
-        return ViewHolder(ListItemLayerBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_layer, parent, false))
     }
 
     override fun onBindViewHolder(holder: LayersRecyclerAdapter.ViewHolder, position: Int) {
-        val item = mDataList[position]
-        holder.binding!!.layerName.text = getName(item)
-        holder.binding!!.layerView.drawing = item
-        if (position == index) {
-            holder.binding!!.selectionView.setBackgroundResource(R.color.redPrimary)
-        } else {
-            holder.binding!!.selectionView.setBackgroundResource(android.R.color.transparent)
-        }
+        holder.bind(mDataList[position])
     }
 
     private fun getName(drawing: Drawing): String {
-        return if (drawing is Background) {
-            mContext.getString(R.string.background)
-        } else if (drawing is Image) {
-            mContext.getString(R.string.image)
-        } else if (drawing is Text) {
-            drawing.text
-        } else {
-            mContext.getString(R.string.figure)
+        return when (drawing) {
+            is Background -> mContext.getString(R.string.background)
+            is Image -> mContext.getString(R.string.image)
+            is Text -> drawing.text
+            else -> mContext.getString(R.string.figure)
         }
     }
 

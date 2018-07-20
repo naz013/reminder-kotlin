@@ -6,13 +6,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.AsyncTask
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.BitmapUtils
-
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,31 +30,33 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class DecodeImagesAsync internal constructor(private val mContext: Context, private val mCallback: DecodeListener?, private val max: Int) : AsyncTask<ClipData, Int, List<NoteImage>>() {
+class DecodeImagesAsync internal constructor(private val mContext: Context,
+                                             private val mCallback: ((List<NoteImage>) -> Unit)?,
+                                             private val max: Int) : AsyncTask<ClipData, Int, List<NoteImage>>() {
     private var mDialog: ProgressDialog? = null
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mDialog = ProgressDialog(mContext)
-        mDialog!!.setTitle(R.string.please_wait)
-        mDialog!!.setMessage(mContext.getString(R.string.decoding_images))
-        mDialog!!.setCancelable(false)
+        val mDialog = ProgressDialog(mContext)
+        mDialog.setTitle(R.string.please_wait)
+        mDialog.setMessage(mContext.getString(R.string.decoding_images))
+        mDialog.setCancelable(false)
         if (max > 1) {
-            mDialog!!.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-            mDialog!!.max = max
-            mDialog!!.isIndeterminate = false
-            mDialog!!.progress = 1
+            mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            mDialog.max = max
+            mDialog.isIndeterminate = false
+            mDialog.progress = 1
         } else {
-            mDialog!!.isIndeterminate = false
+            mDialog.isIndeterminate = false
         }
-        mDialog!!.show()
+        this.mDialog = mDialog
+        mDialog.show()
     }
 
-    protected override fun onProgressUpdate(vararg values: Int) {
+    override fun onProgressUpdate(vararg values: Int?) {
         super.onProgressUpdate(*values)
         if (mDialog != null && mDialog!!.isShowing) {
-            mDialog!!.progress = values[0]
+            mDialog!!.progress = values[0]!!
         }
     }
 
@@ -97,11 +97,6 @@ class DecodeImagesAsync internal constructor(private val mContext: Context, priv
             }
         } catch (ignored: IllegalArgumentException) {
         }
-
-        mCallback?.onDecode(noteImages)
-    }
-
-    interface DecodeListener {
-        fun onDecode(result: List<NoteImage>)
+        mCallback?.invoke(noteImages)
     }
 }

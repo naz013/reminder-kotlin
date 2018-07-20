@@ -1,24 +1,24 @@
 package com.elementary.tasks.notes.editor
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.notes.NoteViewModel
-import com.elementary.tasks.databinding.ActivityImageEditBinding
 import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.google.android.material.tabs.TabLayout
-
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.activity_image_edit.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -40,26 +40,27 @@ import androidx.lifecycle.ViewModelProviders
  */
 class ImageEditActivity : ThemedActivity() {
 
-    private var binding: ActivityImageEditBinding? = null
     private var fragment: BitmapFragment? = null
-    private var viewModel: NoteViewModel? = null
+    private lateinit var viewModel: NoteViewModel
     private var mNote: Note? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_image_edit)
+        setContentView(R.layout.activity_image_edit)
         initActionBar()
         initViewModel()
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, NoteViewModel.Factory(application, NotePreviewActivity.PREVIEW_IMAGES)).get(NoteViewModel::class.java)
-        viewModel!!.note.observe(this, { note ->
+        viewModel = ViewModelProviders.of(this,
+                NoteViewModel.Factory(application, NotePreviewActivity.PREVIEW_IMAGES))
+                .get(NoteViewModel::class.java)
+        viewModel.note.observe(this, Observer{ note ->
             if (note != null) {
-                showImage(note!!)
+                showImage(note)
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> closeOk()
@@ -70,7 +71,7 @@ class ImageEditActivity : ThemedActivity() {
 
     private fun closeOk() {
         ImageSingleton.getInstance().item = null
-        setResult(Activity.RESULT_OK)
+        setResult(RESULT_OK)
         finish()
     }
 
@@ -81,7 +82,7 @@ class ImageEditActivity : ThemedActivity() {
     }
 
     private fun initTabControl() {
-        binding!!.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 selectTab(tab.position)
             }
@@ -94,9 +95,7 @@ class ImageEditActivity : ThemedActivity() {
 
             }
         })
-        if (binding!!.tabLayout.getTabAt(0) != null) {
-            binding!!.tabLayout.getTabAt(0)!!.select()
-        }
+        tabLayout.getTabAt(0)?.select()
         openCropFragment()
     }
 
@@ -115,12 +114,12 @@ class ImageEditActivity : ThemedActivity() {
     private fun askDraw(position: Int) {
         val builder = Dialogues.getDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
-        builder.setPositiveButton(R.string.edited) { dialogInterface, i ->
+        builder.setPositiveButton(R.string.edited) { dialogInterface, _ ->
             dialogInterface.dismiss()
             ImageSingleton.getInstance().item = fragment!!.image
             switchTab(position)
         }
-        builder.setNegativeButton(R.string.original) { dialogInterface, i ->
+        builder.setNegativeButton(R.string.original) { dialogInterface, _ ->
             dialogInterface.dismiss()
             ImageSingleton.getInstance().item = fragment!!.originalImage
             switchTab(position)
@@ -131,12 +130,12 @@ class ImageEditActivity : ThemedActivity() {
     private fun askCrop(position: Int) {
         val builder = Dialogues.getDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
-        builder.setPositiveButton(R.string.cropped) { dialogInterface, i ->
+        builder.setPositiveButton(R.string.cropped) { dialogInterface, _ ->
             dialogInterface.dismiss()
             ImageSingleton.getInstance().item = fragment!!.image
             switchTab(position)
         }
-        builder.setNegativeButton(R.string.original) { dialogInterface, i ->
+        builder.setNegativeButton(R.string.original) { dialogInterface, _ ->
             dialogInterface.dismiss()
             ImageSingleton.getInstance().item = fragment!!.originalImage
             switchTab(position)
@@ -171,10 +170,10 @@ class ImageEditActivity : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.toolbar.title = getString(R.string.edit)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.title = getString(R.string.edit)
     }
 
     override fun onBackPressed() {
@@ -190,21 +189,17 @@ class ImageEditActivity : ThemedActivity() {
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        return super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 closeScreen()
-                return true
+                true
             }
             R.id.action_add -> {
                 saveImage()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -215,24 +210,26 @@ class ImageEditActivity : ThemedActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (fragment != null) fragment!!.onActivityResult(requestCode, resultCode, data)
+        if (fragment != null) fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Module.isMarshmallow && fragment != null)
-            fragment!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Module.isMarshmallow && fragment != null) {
+            fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     private fun saveImage() {
-        if (fragment!!.image != null && mNote != null) {
-            mNote!!.images = listOf<NoteImage>(fragment!!.image)
-            viewModel!!.saveNote(mNote!!)
+        val image = fragment?.image
+        val note = mNote
+        if (image != null && note != null) {
+            note.images = listOf(image)
+            viewModel.saveNote(note)
         }
     }
 
     companion object {
-
-        private val TAG = "ImageEditActivity"
+        private const val TAG = "ImageEditActivity"
     }
 }

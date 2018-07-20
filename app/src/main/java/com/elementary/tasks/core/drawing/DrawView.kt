@@ -28,7 +28,7 @@ class DrawView : View, Observable {
 
     private val observers = ArrayList<Observer>()
 
-    private val elements = ArrayList<Drawing>()
+    val elements = ArrayList<Drawing>()
 
     /**
      * This method is getter for canvas background color

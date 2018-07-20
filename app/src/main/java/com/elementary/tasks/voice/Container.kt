@@ -1,6 +1,6 @@
 package com.elementary.tasks.voice
 
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -20,10 +20,9 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class Container<V>(list: List<V>?) {
 
-internal class Container<V>(list: List<V>?) {
-
-    private var list: MutableList<V> = ArrayList()
+    var list: MutableList<V> = ArrayList()
     var type: V? = null
         private set
 
@@ -31,21 +30,12 @@ internal class Container<V>(list: List<V>?) {
         get() = list.isEmpty()
 
     init {
-        if (list == null) {
-            return
+        if (list != null) {
+            this.list.clear()
+            this.list.addAll(list)
+            if (!list.isEmpty()) {
+                this.type = list[0]
+            }
         }
-        this.list.clear()
-        this.list.addAll(list)
-        if (!list!!.isEmpty()) {
-            this.type = list[0]
-        }
-    }
-
-    fun getList(): List<V> {
-        return list
-    }
-
-    fun setList(list: MutableList<V>) {
-        this.list = list
     }
 }

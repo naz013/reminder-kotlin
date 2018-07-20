@@ -20,7 +20,6 @@ import com.elementary.tasks.notes.create.NoteImage
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 internal class ImageSingleton private constructor() {
 
     var item: NoteImage? = null
@@ -40,7 +39,7 @@ internal class ImageSingleton private constructor() {
             if (instance == null) {
                 instance = ImageSingleton()
             }
-            return instance
+            return instance!!
         }
     }
 }

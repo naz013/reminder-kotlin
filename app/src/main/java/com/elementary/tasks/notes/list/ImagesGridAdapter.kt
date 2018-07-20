@@ -1,22 +1,22 @@
 package com.elementary.tasks.notes.list
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.ListItemNoteImageBinding
+import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.notes.create.NoteImage
-
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.list_item_note_image.view.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,8 +40,7 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
 
     private val mDataList = ArrayList<NoteImage>()
     private var isEditable: Boolean = false
-    private var actionsListener: ActionsListener<NoteImage>? = null
-        set
+    var actionsListener: ActionsListener<NoteImage>? = null
 
     val data: List<NoteImage>
         get() = mDataList
@@ -55,37 +54,40 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
-        return PhotoViewHolder(ListItemNoteImageBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return PhotoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note_image, parent, false))
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        loadImage(holder.binding!!.photoView, mDataList[position])
+        holder.bind(mDataList[position])
     }
 
     override fun getItemCount(): Int {
-        return mDataList?.size ?: 0
+        return mDataList.size
     }
 
-    internal inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var binding: ListItemNoteImageBinding? = null
+    inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(noteImage: NoteImage) {
+            loadImage(itemView.photoView, noteImage)
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
+            itemView.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
             if (isEditable) {
-                binding!!.removeButton.visibility = View.VISIBLE
-                binding!!.removeButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
-                binding!!.removeButton.setOnClickListener { view -> removeImage(adapterPosition) }
+                itemView.removeButton.visibility = View.VISIBLE
+                itemView.removeButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
+                itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
                 if (actionsListener != null && Module.isPro) {
-                    binding!!.editButton.visibility = View.VISIBLE
-                    binding!!.editButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
-                    binding!!.editButton.setOnClickListener { view -> actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT) }
+                    itemView.editButton.visibility = View.VISIBLE
+                    itemView.editButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
+                    itemView.editButton.setOnClickListener { view ->
+                        actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
+                    }
                 } else {
-                    binding!!.editButton.visibility = View.GONE
+                    itemView.editButton.visibility = View.GONE
                 }
             } else {
-                binding!!.removeButton.visibility = View.GONE
-                binding!!.editButton.visibility = View.GONE
+                itemView.removeButton.visibility = View.GONE
+                itemView.editButton.visibility = View.GONE
             }
         }
     }
@@ -124,9 +126,10 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
     }
 
     fun loadImage(imageView: ImageView, image: NoteImage) {
-        Thread {
-            val bmp = BitmapFactory.decodeByteArray(image.image, 0, image.image!!.size)
-            imageView.post { imageView.setImageBitmap(bmp) }
-        }.start()
+        val imageData = image.image ?: return
+        launch(CommonPool) {
+            val bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+            withUIContext { imageView.setImageBitmap(bmp) }
+        }
     }
 }

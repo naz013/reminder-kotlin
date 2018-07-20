@@ -41,7 +41,7 @@ class SimpleDrawView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (this.drawing != null) {
-            this.drawing!!.draw(canvas, true)
+            this.drawing?.draw(canvas, true)
         }
     }
 }

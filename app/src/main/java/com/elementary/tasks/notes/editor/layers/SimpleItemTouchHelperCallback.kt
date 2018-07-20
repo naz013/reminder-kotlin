@@ -34,14 +34,14 @@ class SimpleItemTouchHelperCallback(private val mAdapter: LayersRecyclerAdapter)
     }
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        if (recyclerView.layoutManager is GridLayoutManager) {
+        return if (recyclerView.layoutManager is GridLayoutManager) {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             val swipeFlags = 0
-            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
+            ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
         } else {
             val dragFlags = ItemTouchHelper.START or ItemTouchHelper.END
             val swipeFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
+            ItemTouchHelper.Callback.makeMovementFlags(dragFlags, swipeFlags)
         }
     }
 
@@ -67,17 +67,12 @@ class SimpleItemTouchHelperCallback(private val mAdapter: LayersRecyclerAdapter)
         }
     }
 
-    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-        super.onSelectedChanged(viewHolder, actionState)
-    }
-
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
         viewHolder.itemView.alpha = ALPHA_FULL
     }
 
     companion object {
-
-        val ALPHA_FULL = 1.0f
+        const val ALPHA_FULL = 1.0f
     }
 }

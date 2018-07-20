@@ -11,7 +11,9 @@ import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.backdoor.engine.Action
 import com.backdoor.engine.ActionType
 import com.backdoor.engine.Model
@@ -23,22 +25,13 @@ import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.databinding.ActivityConversationBinding
 import com.elementary.tasks.reminder.create_edit.AddReminderActivity
-
+import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
-import java.util.Locale
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -61,7 +54,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 class ConversationActivity : ThemedActivity() {
 
     private var speech: SpeechRecognizer? = null
-    private var binding: ActivityConversationBinding? = null
 
     private val mAdapter = ConversationAdapter()
     private lateinit var viewModel: ConversationViewModel
@@ -71,7 +63,7 @@ class ConversationActivity : ThemedActivity() {
 
     private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
-            val result = tts!!.setLanguage(Locale(Language.getLanguage(prefs!!.voiceLocale)))
+            val result = tts!!.setLanguage(Locale(Language.getLanguage(prefs.voiceLocale)))
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 LogUtil.d(TAG, "This Language is not supported")
             } else {
@@ -99,7 +91,7 @@ class ConversationActivity : ThemedActivity() {
             if (v > 1) {
                 db = 20 * Math.log10(v.toDouble())
             }
-            binding!!.recordingView.setVolume(db.toFloat())
+            recordingView.setVolume(db.toFloat())
         }
 
         override fun onBufferReceived(bytes: ByteArray) {
@@ -117,7 +109,7 @@ class ConversationActivity : ThemedActivity() {
         }
 
         override fun onResults(bundle: Bundle?) {
-            binding!!.recordingView.loading()
+            recordingView.loading()
             if (bundle == null) {
                 showSilentMessage()
                 return
@@ -133,7 +125,6 @@ class ConversationActivity : ThemedActivity() {
             LogUtil.d(TAG, "onEvent: ")
         }
     }
-    private val mInsertCallback = ConversationAdapter.InsertCallback { binding!!.conversationList.scrollToPosition(0) }
 
     private fun showSilentMessage() {
         stopView()
@@ -145,7 +136,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun parseResults(list: List<String>?) {
-        LogUtil.d(TAG, "parseResults: " + list)
+        LogUtil.d(TAG, "parseResults: $list")
         if (list == null || list.isEmpty()) {
             showSilentMessage()
             return
@@ -154,7 +145,7 @@ class ConversationActivity : ThemedActivity() {
         var suggestion: String? = null
         for (s in list) {
             suggestion = s
-            model = viewModel!!.findSuggestion(s)
+            model = viewModel.findSuggestion(s)
             if (model != null) {
                 break
             }
@@ -173,16 +164,16 @@ class ConversationActivity : ThemedActivity() {
         if (mAskAction != null) {
             mAdapter.removeAsk()
             if (answer.action == Action.YES) {
-                mAskAction!!.onYes()
+                mAskAction?.onYes()
             } else if (answer.action == Action.NO) {
-                mAskAction!!.onNo()
+                mAskAction?.onNo()
             }
         }
     }
 
     private fun stopView() {
         releaseSpeech()
-        binding!!.recordingView.stop()
+        recordingView.stop()
     }
 
     private fun addObjectResponse(reply: Reply) {
@@ -197,56 +188,50 @@ class ConversationActivity : ThemedActivity() {
         mAdapter.addReply(Reply(Reply.REPLY, s.toLowerCase()))
         LogUtil.d(TAG, "performResult: $model")
         val actionType = model.type
-        if (actionType == ActionType.REMINDER) {
-            reminderAction(model)
-        } else if (actionType == ActionType.NOTE) {
-            noteAction(model)
-        } else if (actionType == ActionType.ACTION) {
-            val action = model.action
-            if (action == Action.BIRTHDAY) {
-                stopView()
-                startActivity(Intent(this, AddBirthdayActivity::class.java))
-            } else if (action == Action.REMINDER) {
-                stopView()
-                startActivity(Intent(this, AddReminderActivity::class.java))
-            } else if (action == Action.VOLUME) {
-                stopView()
-                startActivity(Intent(this, VolumeDialog::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
-            } else if (action == Action.TRASH) {
-                clearTrash()
-            } else if (action == Action.DISABLE) {
-                disableReminders()
-            } else {
-                showUnsupportedMessage()
+        when (actionType) {
+            ActionType.REMINDER -> reminderAction(model)
+            ActionType.NOTE -> noteAction(model)
+            ActionType.ACTION -> {
+                val action = model.action
+                when (action) {
+                    Action.BIRTHDAY -> {
+                        stopView()
+                        startActivity(Intent(this, AddBirthdayActivity::class.java))
+                    }
+                    Action.REMINDER -> {
+                        stopView()
+                        startActivity(Intent(this, AddReminderActivity::class.java))
+                    }
+                    Action.VOLUME -> {
+                        stopView()
+                        startActivity(Intent(this, VolumeDialog::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT))
+                    }
+                    Action.TRASH -> clearTrash()
+                    Action.DISABLE -> disableReminders()
+                    else -> showUnsupportedMessage()
+                }
             }
-        } else if (actionType == ActionType.GROUP) {
-            groupAction(model)
-        } else if (actionType == ActionType.ANSWER) {
-            performAnswer(model)
-        } else if (actionType == ActionType.SHOW) {
-            stopView()
-            LogUtil.d(TAG, "performResult: " + TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true, true))
-            val action = model.action
-            if (action == Action.REMINDERS) {
-                viewModel!!.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
-            } else if (action == Action.NOTES) {
-                viewModel!!.getNotes()
-            } else if (action == Action.GROUPS) {
-                showGroups()
-            } else if (action == Action.ACTIVE_REMINDERS) {
-                viewModel!!.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
-            } else if (action == Action.BIRTHDAYS) {
-                viewModel!!.getBirthdays(
-                        TimeUtil.getDateTimeFromGmt(model.dateTime),
-                        TimeUtil.getBirthdayTime(prefs!!.birthdayTime))
-            } else if (action == Action.SHOP_LISTS) {
-                viewModel!!.getShoppingReminders()
-            } else {
-                showUnsupportedMessage()
+            ActionType.GROUP -> groupAction(model)
+            ActionType.ANSWER -> performAnswer(model)
+            ActionType.SHOW -> {
+                stopView()
+                LogUtil.d(TAG, "performResult: " +
+                        TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(model.dateTime), true, true))
+                val action = model.action
+                when (action) {
+                    Action.REMINDERS -> viewModel.getReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
+                    Action.NOTES -> viewModel.getNotes()
+                    Action.GROUPS -> showGroups()
+                    Action.ACTIVE_REMINDERS -> viewModel.getEnabledReminders(TimeUtil.getDateTimeFromGmt(model.dateTime))
+                    Action.BIRTHDAYS -> viewModel.getBirthdays(
+                            TimeUtil.getDateTimeFromGmt(model.dateTime),
+                            TimeUtil.getBirthdayTime(prefs.birthdayTime))
+                    Action.SHOP_LISTS -> viewModel.getShoppingReminders()
+                    else -> showUnsupportedMessage()
+                }
             }
-        } else {
-            showUnsupportedMessage()
+            else -> showUnsupportedMessage()
         }
     }
 
@@ -303,7 +288,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun showGroups() {
-        val items = Container(viewModel!!.allGroups.value)
+        val items = Container(viewModel.allGroups.value)
         if (items.isEmpty) {
             addResponse(getLocalized(R.string.no_groups_found))
         } else {
@@ -361,7 +346,7 @@ class ConversationActivity : ThemedActivity() {
     private fun groupAction(model: Model) {
         stopView()
         addResponse(getLocalized(R.string.group_created))
-        val item = viewModel!!.createGroup(model)
+        val item = viewModel.createGroup(model)
         addObjectResponse(Reply(Reply.GROUP, item))
         Handler().postDelayed({ askGroupAction(item) }, 1000)
     }
@@ -376,11 +361,11 @@ class ConversationActivity : ThemedActivity() {
 
     private fun reminderAction(model: Model) {
         stopView()
-        val reminder = viewModel!!.createReminder(model)
+        val reminder = viewModel.createReminder(model)
         addObjectResponse(Reply(Reply.REMINDER, reminder))
-        if (prefs!!.isTellAboutEvent) {
+        if (prefs.isTellAboutEvent) {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
-                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs!!.is24HourFormatEnabled, prefs!!.voiceLocale) +
+                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
             Handler().postDelayed({ askReminderAction(reminder, false) }, 8000)
         } else {
@@ -393,7 +378,7 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.would_you_like_to_save_it))
         mAskAction = object : AskAction {
             override fun onYes() {
-                viewModel!!.saveGroup(group, false)
+                viewModel.saveGroup(group, false)
                 addResponse(getLocalized(R.string.group_saved))
                 mAskAction = null
             }
@@ -411,7 +396,7 @@ class ConversationActivity : ThemedActivity() {
         if (ask) addResponse(getLocalized(R.string.would_you_like_to_save_it))
         mAskAction = object : AskAction {
             override fun onYes() {
-                viewModel!!.saveAndStartReminder(reminder)
+                viewModel.saveAndStartReminder(reminder)
                 addResponse(getLocalized(R.string.reminder_saved))
                 mAskAction = null
             }
@@ -429,9 +414,9 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.would_you_like_to_save_it))
         mAskAction = object : AskAction {
             override fun onYes() {
-                viewModel!!.saveNote(note, false, false)
+                viewModel.saveNote(note, false, false)
                 addResponse(getLocalized(R.string.note_saved))
-                if (prefs!!.isNoteReminderEnabled) {
+                if (prefs.isNoteReminderEnabled) {
                     Handler().postDelayed({ askQuickReminder(note) }, 1500)
                 } else {
                     mAskAction = null
@@ -451,14 +436,14 @@ class ConversationActivity : ThemedActivity() {
         addResponse(getLocalized(R.string.would_you_like_to_add_reminder))
         mAskAction = object : AskAction {
             override fun onYes() {
-                val model = viewModel!!.findSuggestion(note.summary)
+                val model = viewModel.findSuggestion(note.summary)
                 addResponse(getLocalized(R.string.reminder_saved))
                 if (model != null && model.type == ActionType.REMINDER) {
-                    val reminder = viewModel!!.createReminder(model)
-                    viewModel!!.saveAndStartReminder(reminder)
+                    val reminder = viewModel.createReminder(model)
+                    viewModel.saveAndStartReminder(reminder)
                     addObjectResponse(Reply(Reply.REMINDER, reminder))
                 } else {
-                    val reminder = viewModel!!.saveQuickReminder(note.key, note.summary)
+                    val reminder = viewModel.saveQuickReminder(note.key, note.summary)
                     addObjectResponse(Reply(Reply.REMINDER, reminder))
                 }
                 mAskAction = null
@@ -474,40 +459,37 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun addAskReply() {
-        if (mAdapter != null && mAskAction != null)
+        if (mAskAction != null)
             mAdapter.addReply(Reply(Reply.ASK, createAsk(mAskAction!!)))
     }
 
     private fun addResponse(message: String) {
-        mAdapter?.addReply(Reply(Reply.RESPONSE, message))
+        mAdapter.addReply(Reply(Reply.RESPONSE, message))
         playTts(message)
     }
 
     private fun disableReminders() {
-        viewModel!!.disableAllReminders(false)
+        viewModel.disableAllReminders(false)
     }
 
     private fun clearTrash() {
-        viewModel!!.emptyTrash(false)
+        viewModel.emptyTrash(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_conversation)
-
-        binding!!.recordingView.setOnClickListener { view -> micClick() }
-        binding!!.settingsButton.setOnClickListener { v -> showSettingsPopup() }
-        binding!!.backButton.setOnClickListener { view -> onBackPressed() }
-
+        setContentView(R.layout.activity_conversation)
+        recordingView.setOnClickListener { micClick() }
+        settingsButton.setOnClickListener { showSettingsPopup() }
+        backButton.setOnClickListener { onBackPressed() }
         initList()
-
         checkTts()
         initViewModel()
     }
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.TRASH_CLEARED -> {
@@ -521,26 +503,26 @@ class ConversationActivity : ThemedActivity() {
                 }
             }
         })
-        viewModel!!.shoppingLists.observe(this, { reminders -> if (reminders != null) showShoppingLists(reminders) })
-        viewModel!!.notes.observe(this, { list -> if (list != null) showNotes(list) })
-        viewModel!!.activeReminders.observe(this, { list -> if (list != null) showActiveReminders(list) })
-        viewModel!!.enabledReminders.observe(this, { list -> if (list != null) showEnabledReminders(list) })
-        viewModel!!.birthdays.observe(this, Observer { birthdays -> if (birthdays != null) showBirthdays(birthdays) })
+        viewModel.shoppingLists.observe(this, Observer { reminders -> if (reminders != null) showShoppingLists(reminders) })
+        viewModel.notes.observe(this, Observer { list -> if (list != null) showNotes(list) })
+        viewModel.activeReminders.observe(this, Observer { list -> if (list != null) showActiveReminders(list) })
+        viewModel.enabledReminders.observe(this, Observer { list -> if (list != null) showEnabledReminders(list) })
+        viewModel.birthdays.observe(this, Observer { birthdays -> if (birthdays != null) showBirthdays(birthdays) })
     }
 
     private fun showSettingsPopup() {
-        val popupMenu = PopupMenu(this, binding!!.settingsButton)
+        val popupMenu = PopupMenu(this, settingsButton)
         popupMenu.inflate(R.menu.activity_conversation)
-        popupMenu.menu.getItem(1).isChecked = prefs!!.isTellAboutEvent
+        popupMenu.menu.getItem(1).isChecked = prefs.isTellAboutEvent
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_locale -> {
                     showLanguageDialog()
-                    return@popupMenu.setOnMenuItemClickListener true
+                    return@setOnMenuItemClickListener true
                 }
                 R.id.action_tell -> {
-                    prefs!!.isTellAboutEvent = !prefs!!.isTellAboutEvent
-                    return@popupMenu.setOnMenuItemClickListener true
+                    prefs.isTellAboutEvent = !prefs.isTellAboutEvent
+                    return@setOnMenuItemClickListener true
                 }
             }
             false
@@ -555,13 +537,13 @@ class ConversationActivity : ThemedActivity() {
         val locales = Language.getLanguages(this)
         val adapter = ArrayAdapter(this,
                 android.R.layout.simple_list_item_single_choice, locales)
-        val language = prefs!!.voiceLocale
-        builder.setSingleChoiceItems(adapter, language) { dialog, which ->
+        val language = prefs.voiceLocale
+        builder.setSingleChoiceItems(adapter, language) { _, which ->
             if (which != -1) {
-                prefs!!.voiceLocale = which
+                prefs.voiceLocale = which
             }
         }
-        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog.dismiss()
             recreate()
         }
@@ -572,9 +554,9 @@ class ConversationActivity : ThemedActivity() {
     private fun playTts(text: String) {
         if (!isTtsReady || tts == null) return
         if (Module.isLollipop) {
-            tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         } else {
-            tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null)
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null)
         }
     }
 
@@ -592,14 +574,14 @@ class ConversationActivity : ThemedActivity() {
     private fun initList() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.reverseLayout = true
-        binding!!.conversationList.layoutManager = layoutManager
-        mAdapter.setInsertListener(mInsertCallback)
-        binding!!.conversationList.adapter = mAdapter
+        conversationList.layoutManager = layoutManager
+        mAdapter.mCallback = { conversationList.scrollToPosition(0) }
+        conversationList.adapter = mAdapter
     }
 
     private fun initRecognizer() {
         val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(prefs!!.voiceLocale))
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(prefs.voiceLocale))
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
@@ -609,7 +591,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun micClick() {
-        if (binding!!.recordingView.isWorking) {
+        if (recordingView.isWorking) {
             if (speech != null) speech!!.stopListening()
             stopView()
             return
@@ -618,7 +600,7 @@ class ConversationActivity : ThemedActivity() {
             Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
             return
         }
-        binding!!.recordingView.start()
+        recordingView.start()
         initRecognizer()
     }
 
@@ -663,11 +645,11 @@ class ConversationActivity : ThemedActivity() {
     private fun showInstallTtsDialog() {
         val builder = Dialogues.getDialog(this)
         builder.setMessage(R.string.would_you_like_to_install_tts)
-        builder.setPositiveButton(R.string.install) { dialogInterface, i ->
+        builder.setPositiveButton(R.string.install) { dialogInterface, _ ->
             dialogInterface.dismiss()
             installTts()
         }
-        builder.setNegativeButton(R.string.cancel) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -683,7 +665,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (grantResults.size == 0) return
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             AUDIO_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 micClick()
@@ -707,8 +689,8 @@ class ConversationActivity : ThemedActivity() {
 
     companion object {
 
-        private val TAG = "ConversationActivity"
-        private val AUDIO_CODE = 255000
-        private val CHECK_CODE = 1651
+        private const val TAG = "ConversationActivity"
+        private const val AUDIO_CODE = 255000
+        private const val CHECK_CODE = 1651
     }
 }
