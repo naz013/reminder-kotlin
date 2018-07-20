@@ -33,18 +33,18 @@ class KeepLayoutManager(context: Context, spanCount: Int, private val mAdapter: 
         spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val size = mAdapter.itemCount
-                when (size % 3) {
-                    1 -> return if (position == 0) {
+                return when (size % 3) {
+                    1 -> if (position == 0) {
                         6
                     } else {
                         2
                     }
-                    2 -> return if (position < 2) {
+                    2 -> if (position < 2) {
                         3
                     } else {
                         2
                     }
-                    else -> return 2
+                    else -> 2
                 }
             }
         }

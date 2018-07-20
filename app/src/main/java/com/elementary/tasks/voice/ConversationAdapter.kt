@@ -17,9 +17,14 @@ import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
 import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.ShoppingHolder
+import kotlinx.android.synthetic.main.list_item_ask.view.*
+import kotlinx.android.synthetic.main.list_item_show_reply.view.*
+import kotlinx.android.synthetic.main.list_item_simple_reply.view.*
+import kotlinx.android.synthetic.main.list_item_simple_response.view.*
 import java.util.*
 import javax.inject.Inject
 
+@Suppress("UNCHECKED_CAST")
 /**
  * Copyright 2017 Nazar Suhovich
  *
@@ -41,48 +46,42 @@ import javax.inject.Inject
 class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val mData = ArrayList<Reply>()
-    private var mCallback: InsertCallback? = null
+    var mCallback: (() -> Unit)? = null
     @Inject
     var themeUtil: ThemeUtil? = null
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
     }
 
-    internal fun setInsertListener(callback: InsertCallback) {
-        this.mCallback = callback
-    }
 
-    internal fun addReply(reply: Reply?) {
+    fun addReply(reply: Reply?) {
         if (reply != null) {
             mData.add(0, reply)
             notifyItemInserted(0)
             notifyItemRangeChanged(0, mData.size)
-            if (mCallback != null) {
-                mCallback!!.onItemAdded()
-            }
+            mCallback?.invoke()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            Reply.REPLY -> VoiceHolder(ListItemSimpleReplyBinding.inflate(inflater, parent, false).root)
-            Reply.RESPONSE -> VoiceResponseHolder(ListItemSimpleResponseBinding.inflate(inflater, parent, false).root)
+            Reply.REPLY -> VoiceHolder(parent)
+            Reply.RESPONSE -> VoiceResponseHolder(parent)
             Reply.REMINDER -> ReminderHolder(parent, null, false)
-            Reply.NOTE -> NoteHolder(ListItemNoteBinding.inflate(inflater, parent, false).root, null)
+            Reply.NOTE -> NoteHolder(parent, null)
             Reply.GROUP -> GroupHolder(parent, null)
-            Reply.SHOW_MORE -> ShowMoreHolder(ListItemShowReplyBinding.inflate(inflater, parent, false).root)
+            Reply.SHOW_MORE -> ShowMoreHolder(parent)
             Reply.BIRTHDAY -> BirthdayHolder(parent, null)
             Reply.SHOPPING -> ShoppingHolder(parent, null)
-            else -> AskHolder(ListItemAskBinding.inflate(inflater, parent, false).root)
+            else -> AskHolder(parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is VoiceHolder -> holder.binding!!.replyText.text = mData[position].`object` as String
-            is VoiceResponseHolder -> holder.binding!!.replyText.text = mData[position].`object` as String
+            is VoiceHolder -> holder.bind(mData[position].`object` as String)
+            is VoiceResponseHolder -> holder.bind(mData[position].`object` as String)
             is ReminderHolder -> holder.setData(mData[position].`object` as Reminder)
             is NoteHolder -> holder.setData(mData[position].`object` as Note)
             is GroupHolder -> holder.setData(mData[position].`object` as Group)
@@ -115,29 +114,28 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    private inner class AskHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private inner class AskHolder(parent: ViewGroup) :
+            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_ask)) {
 
-        private val binding: ListItemAskBinding?
         private var askAction: AskAction? = null
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.replyYes.setOnClickListener { v ->
+            itemView.replyYes.setOnClickListener {
                 removeFirst()
                 if (askAction != null) {
                     askAction!!.onYes()
                 }
             }
-            binding.replyNo.setOnClickListener { v ->
+            itemView.replyNo.setOnClickListener {
                 removeFirst()
                 if (askAction != null) {
                     askAction!!.onNo()
                 }
             }
-            binding.replyNo.setBackgroundResource(themeUtil!!.rectangle)
-            binding.replyYes.setBackgroundResource(themeUtil!!.rectangle)
-            binding.replyNo.text = Language.getLocalized(itemView.context, R.string.no)
-            binding.replyYes.text = Language.getLocalized(itemView.context, R.string.yes)
+            itemView.replyNo.setBackgroundResource(themeUtil!!.rectangle)
+            itemView.replyYes.setBackgroundResource(themeUtil!!.rectangle)
+            itemView.replyNo.text = Language.getLocalized(itemView.context, R.string.no)
+            itemView.replyYes.text = Language.getLocalized(itemView.context, R.string.yes)
         }
 
         internal fun setAskAction(askAction: AskAction) {
@@ -151,82 +149,80 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeChanged(0, mData.size)
     }
 
-    private inner class VoiceHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        internal var binding: ListItemSimpleReplyBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
+    private inner class VoiceHolder(parent: ViewGroup) :
+            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_simple_reply)) {
+        fun bind(text: String) {
+            itemView.replyTextSimple.text = text
         }
     }
 
-    private inner class VoiceResponseHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        internal var binding: ListItemSimpleResponseBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
+    private inner class VoiceResponseHolder(parent: ViewGroup) :
+            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_simple_response)) {
+        fun bind(text: String) {
+            itemView.replyTextResponse.text = text
         }
     }
 
-    private inner class ShowMoreHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val binding: ListItemShowReplyBinding?
-
+    private inner class ShowMoreHolder(parent: ViewGroup) :
+            RecyclerView.ViewHolder(inflate(parent, R.layout.list_item_show_reply)) {
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.replyText.setOnClickListener { view -> addMoreItemsToList(adapterPosition) }
+            itemView.replyText.setOnClickListener { addMoreItemsToList(adapterPosition) }
         }
+    }
+
+    private fun inflate(parent: ViewGroup, res: Int): View {
+        return LayoutInflater.from(parent.context).inflate(res, parent, false)
     }
 
     private fun addMoreItemsToList(position: Int) {
         val reply = mData[position]
         val container = reply.`object` as Container<*>
-        if (container.type is Group) {
-            mData.removeAt(position)
-            notifyItemRemoved(position)
-
-            for (item in (container as Container<Group>).list) {
-                mData.add(0, Reply(Reply.GROUP, item))
-                notifyItemInserted(0)
+        when {
+            container.type is Group -> {
+                mData.removeAt(position)
+                notifyItemRemoved(position)
+                for (item in (container as Container<Group>).list) {
+                    mData.add(0, Reply(Reply.GROUP, item))
+                    notifyItemInserted(0)
+                }
+                notifyItemRangeChanged(0, mData.size)
+                mCallback?.invoke()
             }
-            notifyItemRangeChanged(0, mData.size)
-            if (mCallback != null) mCallback!!.onItemAdded()
-        } else if (container.type is Note) {
-            mData.removeAt(position)
-            notifyItemRemoved(position)
-
-            for (item in (container as Container<Note>).list) {
-                mData.add(0, Reply(Reply.NOTE, item))
-                notifyItemInserted(0)
+            container.type is Note -> {
+                mData.removeAt(position)
+                notifyItemRemoved(position)
+                for (item in (container as Container<Note>).list) {
+                    mData.add(0, Reply(Reply.NOTE, item))
+                    notifyItemInserted(0)
+                }
+                notifyItemRangeChanged(0, mData.size)
+                mCallback?.invoke()
             }
-            notifyItemRangeChanged(0, mData.size)
-            if (mCallback != null) mCallback!!.onItemAdded()
-        } else if (container.type is Reminder) {
-            mData.removeAt(position)
-            notifyItemRemoved(position)
-            addRemindersToList(container)
-            notifyItemRangeChanged(0, mData.size)
-            if (mCallback != null) mCallback!!.onItemAdded()
-        } else if (container.type is Birthday) {
-            mData.removeAt(position)
-            notifyItemRemoved(position)
-
-            val reversed = ArrayList((container as Container<Birthday>).list)
-            Collections.reverse(reversed)
-            for (item in reversed) {
-                mData.add(0, Reply(Reply.BIRTHDAY, item))
-                notifyItemInserted(0)
+            container.type is Reminder -> {
+                mData.removeAt(position)
+                notifyItemRemoved(position)
+                addRemindersToList(container)
+                notifyItemRangeChanged(0, mData.size)
+                mCallback?.invoke()
             }
-            notifyItemRangeChanged(0, mData.size)
-            if (mCallback != null) mCallback!!.onItemAdded()
+            container.type is Birthday -> {
+                mData.removeAt(position)
+                notifyItemRemoved(position)
+                val reversed = ArrayList((container as Container<Birthday>).list)
+                reversed.reverse()
+                for (item in reversed) {
+                    mData.add(0, Reply(Reply.BIRTHDAY, item))
+                    notifyItemInserted(0)
+                }
+                notifyItemRangeChanged(0, mData.size)
+                mCallback?.invoke()
+            }
         }
     }
 
     private fun addRemindersToList(container: Container<*>) {
-
         val reversed = ArrayList((container as Container<Reminder>).list)
-        Collections.reverse(reversed)
+        reversed.reverse()
         for (item in reversed) {
             if (item.viewType == Reminder.REMINDER) {
                 mData.add(0, Reply(Reply.REMINDER, item))
@@ -235,9 +231,5 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             notifyItemInserted(0)
         }
-    }
-
-    internal interface InsertCallback {
-        fun onItemAdded()
     }
 }

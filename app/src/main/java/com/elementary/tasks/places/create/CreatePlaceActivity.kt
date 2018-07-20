@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Place
@@ -14,14 +15,12 @@ import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlaceViewModel
-import com.elementary.tasks.databinding.ActivityCreatePlaceBinding
 import com.google.android.gms.maps.model.LatLng
-
+import kotlinx.android.synthetic.main.activity_create_place.*
 import java.io.IOException
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -43,22 +42,21 @@ import androidx.lifecycle.ViewModelProviders
  */
 class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
-    private var binding: ActivityCreatePlaceBinding? = null
-    private var viewModel: PlaceViewModel? = null
+    private lateinit var viewModel: PlaceViewModel
     private var mGoogleMap: AdvancedMapFragment? = null
     private var mItem: Place? = null
     private var place: LatLng? = null
-    private var placeTitle: String? = null
+    private var placeTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_place)
-        setSupportActionBar(binding!!.toolbar)
+        setContentView(R.layout.activity_create_place)
+        setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                prefs!!.markerStyle, themeUtil!!.isDark)
+                prefs.markerStyle, themeUtil!!.isDark)
         mGoogleMap!!.setListener(this)
         mGoogleMap!!.setCallback(this)
 
@@ -71,12 +69,12 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, PlaceViewModel.Factory(application, id)).get(PlaceViewModel::class.java)
-        viewModel!!.place.observe(this, { place ->
+        viewModel.place.observe(this, Observer{ place ->
             if (place != null) {
                 showPlace(place)
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED, Commands.DELETED -> finish()
@@ -93,11 +91,11 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
             try {
                 val name = intent.data
                 val scheme = name!!.scheme
-                if (ContentResolver.SCHEME_CONTENT == scheme) {
+                mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    mItem = BackupTool.getInstance().getPlace(cr, name)
+                    BackupTool.getInstance().getPlace(cr, name)
                 } else {
-                    mItem = BackupTool.getInstance().getPlace(name.path, null)
+                    BackupTool.getInstance().getPlace(name.path, null)
                 }
                 showPlace(mItem)
             } catch (e: IOException) {
@@ -105,7 +103,6 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -113,69 +110,70 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         this.mItem = place
         if (place != null) {
             mGoogleMap!!.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
-            binding!!.placeName.setText(place.name)
+            placeName.setText(place.name)
         }
     }
 
     private fun addPlace() {
-        if (place != null) {
-            var name: String? = binding!!.placeName.text!!.toString().trim { it <= ' ' }
-            if (name!!.matches("".toRegex())) {
+        val pl = place
+        if (pl != null) {
+            var name: String = placeName.text.toString().trim { it <= ' ' }
+            if (name.matches("".toRegex())) {
                 name = placeTitle
             }
-            if (name == null || name.matches("".toRegex())) {
-                binding!!.placeName.error = getString(R.string.must_be_not_empty)
+            if (name == "" || name.matches("".toRegex())) {
+                placeName.error = getString(R.string.must_be_not_empty)
                 return
             }
-            val latitude = place!!.latitude
-            val longitude = place!!.longitude
-            if (mItem != null) {
-                mItem!!.name = name
-                mItem!!.latitude = latitude
-                mItem!!.longitude = longitude
+            val latitude = pl.latitude
+            val longitude = pl.longitude
+            var item = mItem
+            if (item != null) {
+                item.name = name
+                item.latitude = latitude
+                item.longitude = longitude
             } else {
-                mItem = Place(prefs!!.radius, 0, latitude, longitude, name, "", ArrayList())
+                item = Place(prefs.radius, 0, latitude, longitude, name, "", ArrayList())
             }
-            viewModel!!.savePlace(mItem!!)
+            viewModel.savePlace(item)
         } else {
             Toast.makeText(this, getString(R.string.you_dont_select_place), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
             R.id.action_add -> {
                 addPlace()
-                return true
+                true
             }
             MENU_ITEM_DELETE -> {
                 deleteItem()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun deleteItem() {
         if (mItem != null) {
-            viewModel!!.deletePlace(mItem!!)
+            viewModel.deletePlace(mItem!!)
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (mItem != null && prefs!!.isAutoSaveEnabled) {
+        if (mItem != null && prefs.isAutoSaveEnabled) {
             addPlace()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_palce_edit, menu)
+        menuInflater.inflate(R.menu.menu_palce_edit, menu)
         if (mItem != null) {
             menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getString(R.string.delete))
         }
@@ -204,7 +202,6 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     }
 
     companion object {
-
-        private val MENU_ITEM_DELETE = 12
+        private const val MENU_ITEM_DELETE = 12
     }
 }

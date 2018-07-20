@@ -1,10 +1,8 @@
 package com.elementary.tasks.notes.editor
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.net.Uri
@@ -19,35 +17,29 @@ import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
-
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.drawing.DrawView
-import com.elementary.tasks.core.utils.AssetsUtil
-import com.elementary.tasks.core.utils.BitmapUtils
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.IconRadioButton
 import com.elementary.tasks.core.views.ThemedImageButton
 import com.elementary.tasks.core.views.roboto.RoboEditText
-import com.elementary.tasks.databinding.FragmentDrawImageBinding
-import com.elementary.tasks.databinding.ViewImagePrefsBinding
-import com.elementary.tasks.databinding.ViewLayersPrefsBinding
-import com.elementary.tasks.databinding.ViewStandardPrefsBinding
-import com.elementary.tasks.databinding.ViewTextPrefsBinding
 import com.elementary.tasks.notes.create.NoteImage
 import com.elementary.tasks.notes.editor.layers.LayersRecyclerAdapter
+import com.elementary.tasks.notes.editor.layers.OnStartDragListener
 import com.elementary.tasks.notes.editor.layers.SimpleItemTouchHelperCallback
-
+import kotlinx.android.synthetic.main.fragment_draw_image.*
+import kotlinx.android.synthetic.main.view_image_prefs.view.*
+import kotlinx.android.synthetic.main.view_layers_prefs.view.*
+import kotlinx.android.synthetic.main.view_standard_prefs.view.*
+import kotlinx.android.synthetic.main.view_text_prefs.view.*
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.ArrayList
-
-import androidx.annotation.ColorRes
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -69,10 +61,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class DrawFragment : BitmapFragment() {
 
-    private var binding: FragmentDrawImageBinding? = null
-    private var mView: DrawView? = null
-    private var mControlButton: ThemedImageButton? = null
-
     private var mItemTouchHelper: ItemTouchHelper? = null
     private var mAdapter: LayersRecyclerAdapter? = null
 
@@ -83,167 +71,162 @@ class DrawFragment : BitmapFragment() {
     @ColorRes
     private var fillColor: Int = 0
     private var isFillPicker: Boolean = false
+    private var mPrefsControl: ThemedImageButton? = null
 
-    private val mDrawCallback = {
-        checkRedo()
-        checkUndo()
+    private val mDrawCallback = object : DrawView.DrawCallback {
+        override fun onDrawEnd() {
+            checkRedo()
+            checkUndo()
+        }
     }
 
     private val isPrefsPanelExpanded: Boolean
-        get() = binding!!.prefsView.visibility == View.VISIBLE
+        get() = prefsView.visibility == View.VISIBLE
 
-    private val layersPanel: ViewLayersPrefsBinding
+    private val layersPanel: View
         get() {
             if (mAdapter != null) {
-                mView!!.removeObserver(mAdapter)
+                draw_view.removeObserver(mAdapter!!)
             }
-            val binding = ViewLayersPrefsBinding.inflate(LayoutInflater.from(context))
+            val binding = layoutInflater.inflate(R.layout.view_layers_prefs, null)
             binding.layersList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            mAdapter = LayersRecyclerAdapter(context, mView!!.elements,
-                    { viewHolder -> mItemTouchHelper!!.startDrag(viewHolder) },
-                    object : LayersRecyclerAdapter.AdapterCallback {
+            val mAdapter = LayersRecyclerAdapter(context!!, draw_view.elements,
+                    object : OnStartDragListener {
+                        override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+                            mItemTouchHelper?.startDrag(viewHolder)
+                        }
+                    }, object : LayersRecyclerAdapter.AdapterCallback {
                         override fun onChanged() {
-                            mView!!.invalidate()
+                            draw_view.invalidate()
                         }
 
                         override fun onItemSelect(position: Int) {
-                            mAdapter!!.index = position
-                            mView!!.historyPointer = position + 1
+                            if (mAdapter != null) mAdapter!!.setIndex(position)
+                            draw_view.setHistoryPointer(position + 1)
                         }
 
                         override fun onItemRemoved(position: Int) {
-                            mView!!.historyPointer = mView!!.historyPointer - 1
+                            draw_view.setHistoryPointer(draw_view.getHistoryPointer() - 1)
                         }
 
                         override fun onItemAdded() {
                             binding.layersList.scrollToPosition(mAdapter!!.itemCount - 1)
                         }
                     })
-            mAdapter!!.index = mView!!.historyPointer - 1
+            mAdapter.setIndex(draw_view.getHistoryPointer() - 1)
             val callback = SimpleItemTouchHelperCallback(mAdapter)
             mItemTouchHelper = ItemTouchHelper(callback)
-            mItemTouchHelper!!.attachToRecyclerView(binding.layersList)
+            mItemTouchHelper?.attachToRecyclerView(binding.layersList)
             binding.layersList.adapter = mAdapter
-            mControlButton = binding.prefsControl
-            binding.prefsControl.setOnClickListener { v -> togglePrefsPanel() }
-            mView!!.addObserver(mAdapter)
+            mPrefsControl = binding.prefsControl
+            binding.prefsControl.setOnClickListener { togglePrefsPanel() }
+            draw_view.addObserver(mAdapter)
             return binding
         }
 
-    private val imagePanel: ViewImagePrefsBinding
+
+    private val imagePanel: View
         get() {
-            val binding = ViewImagePrefsBinding.inflate(LayoutInflater.from(context))
-            binding.opacitySeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            val binding = layoutInflater.inflate(R.layout.view_image_prefs, null)
+            binding.opacitySeekImage.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    mView!!.setOpacity(i, DrawView.Mode.IMAGE)
+                    draw_view.setOpacity(i, DrawView.Mode.IMAGE)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.opacitySeek.progress = mView!!.opacity
+            binding.opacitySeekImage.progress = draw_view.getOpacity()
             binding.scaleSeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    mView!!.setScale(progress, DrawView.Mode.IMAGE)
+                    draw_view.setScale(progress, DrawView.Mode.IMAGE)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.scaleSeek.progress = mView!!.scale
-            mControlButton = binding.prefsControl
-            binding.prefsControl.setOnClickListener { v -> togglePrefsPanel() }
-            binding.imageButton.setOnClickListener { v -> showImagePickerDialog() }
+            binding.scaleSeek.progress = draw_view.scale
+            mPrefsControl = binding.prefsControlImage
+            binding.prefsControlImage.setOnClickListener { togglePrefsPanel() }
+            binding.imageButton.setOnClickListener { showImagePickerDialog() }
             return binding
         }
 
-    private val textPanel: ViewTextPrefsBinding
+    private val textPanel: View
         get() {
-            val binding = ViewTextPrefsBinding.inflate(LayoutInflater.from(context))
-            binding.opacitySeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            val binding = layoutInflater.inflate(R.layout.view_text_prefs, null)
+            binding.opacitySeekText.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    mView!!.setOpacity(i, DrawView.Mode.TEXT)
+                    draw_view.setOpacity(i, DrawView.Mode.TEXT)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.opacitySeek.progress = mView!!.opacity
+            binding.opacitySeekText.progress = draw_view.getOpacity()
             binding.widthSeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    mView!!.fontSize = i.toFloat()
+                    draw_view.setFontSize(i.toFloat())
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.widthSeek.progress = mView!!.fontSize.toInt()
-            binding.addButton.setOnClickListener { view -> showTextPickerDialog() }
-            mControlButton = binding.prefsControl
-            binding.prefsControl.setOnClickListener { v -> togglePrefsPanel() }
-            binding.fontButton.setOnClickListener { v -> showStyleDialog() }
+            binding.widthSeek.progress = draw_view.getFontSize().toInt()
+            binding.addButton.setOnClickListener { showTextPickerDialog() }
+            mPrefsControl = binding.prefsControlText
+            binding.prefsControlText.setOnClickListener { togglePrefsPanel() }
+            binding.fontButton.setOnClickListener { showStyleDialog() }
             return binding
         }
 
-    private val penPanel: ViewStandardPrefsBinding
+    private val penPanel: View
         get() {
-            val binding = ViewStandardPrefsBinding.inflate(LayoutInflater.from(context))
+            val binding = layoutInflater.inflate(R.layout.view_standard_prefs, null)
             binding.opacitySeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    mView!!.setOpacity(i, DrawView.Mode.DRAW)
+                    draw_view.setOpacity(i, DrawView.Mode.DRAW)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.opacitySeek.progress = mView!!.opacity
-            binding.widthSeek.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            binding.opacitySeek.progress = draw_view.getOpacity()
+            binding.widthSeekStandard.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                    mView!!.paintStrokeWidth = i.toFloat()
+                    draw_view.setPaintStrokeWidth(i.toFloat())
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
-
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-
                 }
             })
-            binding.widthSeek.progress = mView!!.paintStrokeWidth.toInt()
-            mControlButton = binding.prefsControl
-            binding.prefsControl.setOnClickListener { v -> togglePrefsPanel() }
+            binding.widthSeekStandard.progress = draw_view.getPaintStrokeWidth().toInt()
+            mPrefsControl = binding.prefsControlStandard
+            binding.prefsControlStandard.setOnClickListener { togglePrefsPanel() }
             return binding
         }
 
     override val image: NoteImage?
         get() {
-            ImageSingleton.getInstance().setImage(mView!!.getBitmapAsByteArray(Bitmap.CompressFormat.PNG, 100))
+            ImageSingleton.getInstance().setImage(draw_view.getBitmapAsByteArray(Bitmap.CompressFormat.PNG, 100))
             return ImageSingleton.getInstance().item
         }
 
@@ -251,15 +234,13 @@ class DrawFragment : BitmapFragment() {
         get() = ImageSingleton.getInstance().item
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentDrawImageBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_draw_image, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUiTheme()
-        mView = binding!!.drawView
-        mView!!.setCallback(mDrawCallback)
+        draw_view.setCallback(mDrawCallback)
         initDrawControl()
         initControls()
         initColorControls()
@@ -270,88 +251,88 @@ class DrawFragment : BitmapFragment() {
 
     private fun initColorControls() {
         setColor(R.color.blackPrimary)
-        setCurrentColor(binding!!.colorBlackButton)
+        setCurrentColor(colorBlackButton)
         isFillPicker = true
         setColor(R.color.whitePrimary)
-        setCurrentColor(binding!!.colorWhiteButton)
-        binding!!.colorGroup.setOnCheckedChangeListener { radioGroup, i ->
+        setCurrentColor(colorWhiteButton)
+        colorGroup.setOnCheckedChangeListener { _, i ->
             hideColorPanel()
             when (i) {
                 R.id.colorAmberButton -> {
                     setColor(R.color.amberPrimary)
-                    setCurrentColor(binding!!.colorAmberButton)
+                    setCurrentColor(colorAmberButton)
                 }
                 R.id.colorBlackButton -> {
                     setColor(R.color.blackPrimary)
-                    setCurrentColor(binding!!.colorBlackButton)
+                    setCurrentColor(colorBlackButton)
                 }
                 R.id.colorBlueButton -> {
                     setColor(R.color.bluePrimary)
-                    setCurrentColor(binding!!.colorBlueButton)
+                    setCurrentColor(colorBlueButton)
                 }
                 R.id.colorBlueLightButton -> {
                     setColor(R.color.blueLightPrimary)
-                    setCurrentColor(binding!!.colorBlueLightButton)
+                    setCurrentColor(colorBlueLightButton)
                 }
                 R.id.colorCyanButton -> {
                     setColor(R.color.cyanPrimary)
-                    setCurrentColor(binding!!.colorCyanButton)
+                    setCurrentColor(colorCyanButton)
                 }
                 R.id.colorDeepOrangeButton -> {
                     setColor(R.color.orangeDeepPrimary)
-                    setCurrentColor(binding!!.colorDeepOrangeButton)
+                    setCurrentColor(colorDeepOrangeButton)
                 }
                 R.id.colorDeepPurpleButton -> {
                     setColor(R.color.purpleDeepPrimary)
-                    setCurrentColor(binding!!.colorDeepPurpleButton)
+                    setCurrentColor(colorDeepPurpleButton)
                 }
                 R.id.colorGreenButton -> {
                     setColor(R.color.greenPrimary)
-                    setCurrentColor(binding!!.colorGreenButton)
+                    setCurrentColor(colorGreenButton)
                 }
                 R.id.colorGreenLightButton -> {
                     setColor(R.color.greenLightPrimary)
-                    setCurrentColor(binding!!.colorGreenLightButton)
+                    setCurrentColor(colorGreenLightButton)
                 }
                 R.id.colorGreyButton -> {
                     setColor(R.color.material_divider)
-                    setCurrentColor(binding!!.colorGreyButton)
+                    setCurrentColor(colorGreyButton)
                 }
                 R.id.colorIndigoButton -> {
                     setColor(R.color.indigoPrimary)
-                    setCurrentColor(binding!!.colorIndigoButton)
+                    setCurrentColor(colorIndigoButton)
                 }
                 R.id.colorLimeButton -> {
                     setColor(R.color.limePrimary)
-                    setCurrentColor(binding!!.colorLimeButton)
+                    setCurrentColor(colorLimeButton)
                 }
                 R.id.colorOrangeButton -> {
                     setColor(R.color.orangePrimary)
-                    setCurrentColor(binding!!.colorOrangeButton)
+                    setCurrentColor(colorOrangeButton)
                 }
                 R.id.colorPinkButton -> {
                     setColor(R.color.pinkPrimary)
-                    setCurrentColor(binding!!.colorPinkButton)
+                    setCurrentColor(colorPinkButton)
                 }
                 R.id.colorPurpleButton -> {
                     setColor(R.color.purplePrimary)
-                    setCurrentColor(binding!!.colorPurpleButton)
+                    setCurrentColor(colorPurpleButton)
                 }
                 R.id.colorRedButton -> {
                     setColor(R.color.redPrimary)
-                    setCurrentColor(binding!!.colorRedButton)
+                    setCurrentColor(colorRedButton)
                 }
                 R.id.colorTealButton -> {
                     setColor(R.color.tealPrimary)
-                    setCurrentColor(binding!!.colorTealButton)
+                    setCurrentColor(colorTealButton)
                 }
                 R.id.colorWhiteButton -> {
                     setColor(R.color.whitePrimary)
-                    setCurrentColor(binding!!.colorWhiteButton)
+                    setCurrentColor(colorWhiteButton)
                 }
                 R.id.colorYellowButton -> {
                     setColor(R.color.yellowPrimary)
-                    setCurrentColor(binding!!.colorYellowButton)
+                    setCurrentColor(colorYellowButton)
                 }
             }
         }
@@ -361,38 +342,38 @@ class DrawFragment : BitmapFragment() {
         if (color == 0) return
         if (isFillPicker) {
             fillColor = color
-            mView!!.paintFillColor = resources.getColor(color)
+            draw_view.paintFillColor = ContextCompat.getColor(context!!, color)
         } else {
             strokeColor = color
-            mView!!.paintStrokeColor = resources.getColor(color)
+            draw_view.paintStrokeColor = ContextCompat.getColor(context!!, color)
         }
     }
 
     private fun setUiTheme() {
-        val bgColor = ThemeUtil.getInstance(context).backgroundStyle
-        binding!!.background.setBackgroundColor(bgColor)
-        binding!!.drawTools.setBackgroundColor(bgColor)
-        binding!!.colorView.setBackgroundColor(bgColor)
-        binding!!.controlBox.setBackgroundColor(bgColor)
-        binding!!.prefsView.setBackgroundColor(bgColor)
+        val bgColor = ThemeUtil.getInstance(context!!).backgroundStyle
+        background.setBackgroundColor(bgColor)
+        draw_tools.setBackgroundColor(bgColor)
+        colorView.setBackgroundColor(bgColor)
+        controlBox.setBackgroundColor(bgColor)
+        prefsView.setBackgroundColor(bgColor)
     }
 
     private fun initControls() {
-        binding!!.undoButton.setOnClickListener { view -> undo() }
-        binding!!.redoButton.setOnClickListener { view -> redo() }
-        binding!!.clearButton.setOnClickListener { view -> mView!!.clear() }
-        binding!!.fillButton.setOnClickListener { view -> setBackground() }
-        binding!!.currentToolButton.setOnClickListener { view -> toggleToolPanel() }
-        binding!!.currentFillColorButton.setOnClickListener { view ->
+        undoButton.setOnClickListener { undo() }
+        redoButton.setOnClickListener { redo() }
+        clearButton.setOnClickListener { draw_view.clear() }
+        fillButton.setOnClickListener { setBackground() }
+        currentToolButton.setOnClickListener { toggleToolPanel() }
+        currentFillColorButton.setOnClickListener {
             isFillPicker = true
             toggleColorPanel()
         }
-        binding!!.currentStrokeColorButton.setOnClickListener { view ->
+        currentStrokeColorButton.setOnClickListener {
             isFillPicker = false
             toggleColorPanel()
         }
-        binding!!.showPrefsButton.setOnClickListener { v -> switchPrefsPanel(mView!!.mode) }
-        binding!!.layersButton.setOnClickListener { v -> showLayersPanel() }
+        showPrefsButton.setOnClickListener { switchPrefsPanel(draw_view.mode) }
+        layersButton.setOnClickListener { showLayersPanel() }
     }
 
     private fun showLayersPanel() {
@@ -412,7 +393,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun toggleColorPanel() {
-        if (binding!!.colorView.visibility == View.VISIBLE) {
+        if (colorView.visibility == View.VISIBLE) {
             hideColorPanel()
         } else {
             showColorPanel()
@@ -421,19 +402,19 @@ class DrawFragment : BitmapFragment() {
 
     private fun showColorPanel() {
         if (isFillPicker) {
-            binding!!.colorGroup.check(getId(fillColor))
+            colorGroup.check(getId(fillColor))
         } else {
-            binding!!.colorGroup.check(getId(strokeColor))
+            colorGroup.check(getId(strokeColor))
         }
-        ViewUtils.slideInDown(context, binding!!.colorView)
+        ViewUtils.slideInDown(context!!, colorView)
     }
 
     private fun hideColorPanel() {
-        ViewUtils.slideOutUp(context, binding!!.colorView)
+        ViewUtils.slideOutUp(context!!, colorView)
     }
 
     private fun toggleToolPanel() {
-        if (binding!!.drawTools.visibility == View.VISIBLE) {
+        if (draw_tools.visibility == View.VISIBLE) {
             hideToolPanel()
         } else {
             showToolPanel()
@@ -441,122 +422,110 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showToolPanel() {
-        ViewUtils.slideInDown(context, binding!!.drawTools)
+        ViewUtils.slideInDown(context!!, draw_tools)
     }
 
     private fun hideToolPanel() {
-        ViewUtils.slideOutUp(context, binding!!.drawTools)
+        ViewUtils.slideOutUp(context!!, draw_tools)
     }
 
     private fun setBackground() {
-        mView!!.baseColor = mView!!.paintFillColor
+        draw_view.baseColor = draw_view.paintFillColor
     }
 
     private fun redo() {
-        if (mView!!.canRedo()) {
-            mView!!.redo()
+        if (draw_view.canRedo()) {
+            draw_view.redo()
         }
         checkRedo()
     }
 
     private fun checkRedo() {
-        if (mView!!.canRedo()) {
-            binding!!.redoButton.isEnabled = true
-        } else {
-            binding!!.redoButton.isEnabled = false
-        }
+        redoButton.isEnabled = draw_view.canRedo()
     }
 
     private fun undo() {
-        if (mView!!.canUndo()) {
-            mView!!.undo()
+        if (draw_view.canUndo()) {
+            draw_view.undo()
         }
         checkUndo()
     }
 
     private fun checkUndo() {
-        if (mView!!.canUndo()) {
-            binding!!.undoButton.isEnabled = true
-        } else {
-            binding!!.undoButton.isEnabled = false
-        }
+        undoButton.isEnabled = draw_view.canUndo()
     }
 
     private fun initDrawControl() {
-        binding!!.toolsGroup.setOnCheckedChangeListener { radioGroup, i ->
+        tools_group.setOnCheckedChangeListener { _, i ->
             hideToolPanel()
             when (i) {
                 R.id.penButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.PEN)
-                    setCurrentTool(binding!!.penButton)
+                    setCurrentTool(penButton)
                 }
                 R.id.lineButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.LINE)
-                    setCurrentTool(binding!!.lineButton)
+                    setCurrentTool(lineButton)
                 }
                 R.id.cubicBezierButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.QUADRATIC_BEZIER)
-                    setCurrentTool(binding!!.cubicBezierButton)
+                    setCurrentTool(cubicBezierButton)
                 }
                 R.id.textButton -> {
                     setDrawMode(DrawView.Mode.TEXT, null)
-                    setCurrentTool(binding!!.textButton)
+                    setCurrentTool(textButton)
                 }
                 R.id.rectangleButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.RECTANGLE)
-                    setCurrentTool(binding!!.rectangleButton)
+                    setCurrentTool(rectangleButton)
                 }
                 R.id.ellipseButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.ELLIPSE)
-                    setCurrentTool(binding!!.ellipseButton)
+                    setCurrentTool(ellipseButton)
                 }
                 R.id.circleButton -> {
                     setDrawMode(DrawView.Mode.DRAW, DrawView.Drawer.CIRCLE)
-                    setCurrentTool(binding!!.circleButton)
+                    setCurrentTool(circleButton)
                 }
                 R.id.imageButton -> {
                     setDrawMode(DrawView.Mode.IMAGE, null)
-                    setCurrentTool(binding!!.imageButton)
+                    setCurrentTool(imageButton)
                 }
             }
         }
-        binding!!.currentFillColorButton.icon = binding!!.colorWhiteButton.icon
-        binding!!.currentStrokeColorButton.icon = binding!!.colorBlackButton.icon
-        switchPrefsPanel(mView!!.mode)
+        currentFillColorButton.setIcon(colorWhiteButton.getIcon())
+        currentStrokeColorButton.setIcon(colorBlackButton.getIcon())
+        switchPrefsPanel(draw_view.mode)
     }
 
     private fun switchPrefsPanel(mode: DrawView.Mode) {
         if (isPrefsPanelExpanded) {
             hidePrefsPanel()
         }
-        binding!!.prefsView.removeAllViewsInLayout()
-        if (mode == DrawView.Mode.DRAW) {
-            binding!!.prefsView.addView(penPanel.root)
-        } else if (mode == DrawView.Mode.TEXT) {
-            binding!!.prefsView.addView(textPanel.root)
-        } else if (mode == DrawView.Mode.IMAGE) {
-            binding!!.prefsView.addView(imagePanel.root)
-        } else if (mode == DrawView.Mode.LAYERS) {
-            binding!!.prefsView.addView(layersPanel.root)
+        prefsView.removeAllViewsInLayout()
+        when (mode) {
+            DrawView.Mode.DRAW -> prefsView.addView(penPanel)
+            DrawView.Mode.TEXT -> prefsView.addView(textPanel)
+            DrawView.Mode.IMAGE -> prefsView.addView(imagePanel)
+            DrawView.Mode.LAYERS -> prefsView.addView(layersPanel)
         }
         showPrefsPanel()
     }
 
     private fun showImagePickerDialog() {
-        if (!Permissions.checkPermission(activity, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            Permissions.requestPermission(activity, REQUEST_SD_CARD, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS)
+        if (!Permissions.checkPermission(activity!!, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            Permissions.requestPermission(activity!!, REQUEST_SD_CARD, Permissions.READ_EXTERNAL,
+                    Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS)
             return
         }
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.image))
-        builder.setItems(arrayOf<CharSequence>(getString(R.string.gallery), getString(R.string.take_a_shot))
-        ) { dialog, which ->
+        builder.setItems(arrayOf<CharSequence>(getString(R.string.gallery), getString(R.string.take_a_shot))) { _, which ->
             when (which) {
                 0 -> pickFromGallery()
                 1 -> pickFromCamera()
             }
         }
-
         builder.create().show()
     }
 
@@ -602,22 +571,22 @@ class DrawFragment : BitmapFragment() {
         val adapter = object : ArrayAdapter<String>(context!!,
                 android.R.layout.simple_list_item_single_choice, contacts) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                var convertView = convertView
-                if (convertView == null) {
-                    convertView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null)
+                var cView = convertView
+                if (cView == null) {
+                    cView = inflater.inflate(android.R.layout.simple_list_item_single_choice, null)
                 }
-                val textView = convertView!!.findViewById<TextView>(android.R.id.text1)
+                val textView = cView!!.findViewById<TextView>(android.R.id.text1)
                 textView.typeface = getTypeface(position)
                 textView.text = contacts[position]
-                return convertView
+                return cView
             }
 
             private fun getTypeface(position: Int): Typeface {
                 return AssetsUtil.getTypeface(context, position)
             }
         }
-        builder.setSingleChoiceItems(adapter, mView!!.fontFamily) { dialog, which ->
-            mView!!.fontFamily = which
+        builder.setSingleChoiceItems(adapter, draw_view.getFontFamily()) { dialog, which ->
+            draw_view.setFontFamily(which)
             dialog.dismiss()
         }
         val dialog = builder.create()
@@ -625,59 +594,59 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showPrefsPanel() {
-        ViewUtils.slideInUp(context, binding!!.prefsView)
-        if (mControlButton == null) {
+        ViewUtils.slideInUp(context!!, prefsView)
+        if (mPrefsControl == null) {
             return
         }
-        if (ThemeUtil.getInstance(context).isDark) {
-            mControlButton!!.setImageResource(R.drawable.ic_expand_more_white_24dp)
+        if (ThemeUtil.getInstance(context!!).isDark) {
+            mPrefsControl!!.setImageResource(R.drawable.ic_expand_more_white_24dp)
         } else {
-            mControlButton!!.setImageResource(R.drawable.ic_expand_more_black_24dp)
+            mPrefsControl!!.setImageResource(R.drawable.ic_expand_more_black_24dp)
         }
     }
 
     private fun hidePrefsPanel() {
-        ViewUtils.slideOutDown(context, binding!!.prefsView)
-        if (mControlButton == null) {
+        ViewUtils.slideOutDown(context!!, prefsView)
+        if (mPrefsControl == null) {
             return
         }
-        if (ThemeUtil.getInstance(context).isDark) {
-            mControlButton!!.setImageResource(R.drawable.ic_expand_less_white_24dp)
+        if (ThemeUtil.getInstance(context!!).isDark) {
+            mPrefsControl!!.setImageResource(R.drawable.ic_expand_less_white_24dp)
         } else {
-            mControlButton!!.setImageResource(R.drawable.ic_expand_less_black_24dp)
+            mPrefsControl!!.setImageResource(R.drawable.ic_expand_less_black_24dp)
         }
     }
 
     private fun setCurrentColor(button: IconRadioButton) {
         if (isFillPicker) {
-            binding!!.currentFillColorButton.icon = button.icon
+            currentFillColorButton.setIcon(button.getIcon())
         } else {
-            binding!!.currentStrokeColorButton.icon = button.icon
+            currentStrokeColorButton.setIcon(button.getIcon())
         }
     }
 
     private fun setCurrentTool(button: IconRadioButton) {
-        binding!!.currentToolButton.icon = button.icon
-        binding!!.currentToolButton.text = button.text
+        currentToolButton.setIcon(button.getIcon())
+        currentToolButton.text = button.text
     }
 
     private fun setDrawMode(mode: DrawView.Mode, drawer: DrawView.Drawer?) {
-        mView!!.mode = mode
-        if (drawer != null) mView!!.drawer = drawer
+        draw_view.mode = mode
+        if (drawer != null) draw_view.drawer = drawer
         switchPrefsPanel(mode)
     }
 
     private fun showTextPickerDialog() {
         val builder = Dialogues.getDialog(context!!)
-        val editText = RoboEditText(context)
+        val editText = RoboEditText(context!!)
         editText.setHint(R.string.text)
         builder.setView(editText)
-        builder.setPositiveButton(R.string.add_text) { dialogInterface, i ->
-            val text = editText.text!!.toString().trim { it <= ' ' }
+        builder.setPositiveButton(R.string.add_text) { dialogInterface, _ ->
+            val text = editText.text.toString().trim { it <= ' ' }
             dialogInterface.dismiss()
             setText(text)
         }
-        builder.setNegativeButton(R.string.cancel) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -686,15 +655,15 @@ class DrawFragment : BitmapFragment() {
             Toast.makeText(context, R.string.text_is_empty, Toast.LENGTH_SHORT).show()
             return
         }
-        mView!!.addText(text)
+        draw_view.addText(text)
     }
 
     private fun loadImage() {
-        val image = ImageSingleton.getInstance().item
+        val image = ImageSingleton.getInstance().item?.image
         if (image != null) {
-            mView!!.addBitmap(image.image)
+            draw_view.addBitmap(image)
         }
-        binding!!.imageButton.isChecked = true
+        imageButton.isChecked = true
     }
 
     private fun getId(@ColorRes color: Int): Int {
@@ -723,13 +692,12 @@ class DrawFragment : BitmapFragment() {
         return id
     }
 
-    fun getRealPathFromURI(contentUri: Uri?): String {
+    private fun getRealPathFromURI(contentUri: Uri?): String {
         val proj = arrayOf(MediaStore.Images.Media.DATA)
         val cursor = activity!!.managedQuery(contentUri, proj, null, null, null)
-        val column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
-        return cursor.getString(column_index)
+        return cursor.getString(columnIndex)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -751,7 +719,7 @@ class DrawFragment : BitmapFragment() {
         }
 
         if (bitmapImage != null) {
-            mView!!.addBitmap(bitmapImage)
+            draw_view.addBitmap(bitmapImage)
             switchPrefsPanel(DrawView.Mode.IMAGE)
         }
     }
@@ -774,9 +742,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     companion object {
-
-        private val TAG = "DrawFragment"
-        private val REQUEST_SD_CARD = 1112
+        private const val REQUEST_SD_CARD = 1112
 
         fun newInstance(): DrawFragment {
             return DrawFragment()

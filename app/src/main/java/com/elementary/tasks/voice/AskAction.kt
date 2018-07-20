@@ -19,7 +19,7 @@ package com.elementary.tasks.voice
  * limitations under the License.
  */
 
-internal interface AskAction {
+interface AskAction {
     fun onYes()
 
     fun onNo()

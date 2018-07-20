@@ -4,25 +4,23 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
-import com.elementary.tasks.databinding.FragmentPlacesBinding
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.places.create.CreatePlaceActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
-import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_places.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,8 +42,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
 
-    private var binding: FragmentPlacesBinding? = null
-    private var viewModel: PlacesViewModel? = null
+    private lateinit var viewModel: PlacesViewModel
 
     private val mAdapter = PlacesRecyclerAdapter()
     private var mSearchView: SearchView? = null
@@ -75,26 +72,25 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.archive_menu, menu)
+        inflater?.inflate(R.menu.archive_menu, menu)
         menu!!.findItem(R.id.action_delete_all).isVisible = false
         mSearchMenu = menu.findItem(R.id.action_search)
-        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
-            mSearchView = mSearchMenu!!.actionView as SearchView
+            mSearchView = mSearchMenu?.actionView as SearchView?
         }
         if (mSearchView != null) {
             if (searchManager != null) {
-                mSearchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
             }
-            mSearchView!!.setOnQueryTextListener(queryTextListener)
-            mSearchView!!.setOnCloseListener(mSearchCloseListener)
+            mSearchView?.setOnQueryTextListener(queryTextListener)
+            mSearchView?.setOnCloseListener(mSearchCloseListener)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentPlacesBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_places, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,12 +101,12 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(PlacesViewModel::class.java)
-        viewModel!!.places.observe(this, { places ->
+        viewModel.places.observe(this, Observer{ places ->
             if (places != null) {
                 filterController.original = places
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED -> {
@@ -123,23 +119,25 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.places))
-            callback!!.onFragmentSelect(this)
-            callback!!.setClick { view -> startActivity(Intent(context, CreatePlaceActivity::class.java)) }
-            callback!!.onScrollChanged(binding!!.recyclerView)
+            callback?.onTitleChange(getString(R.string.places))
+            callback?.onFragmentSelect(this)
+            callback?.setClick(View.OnClickListener { startActivity(Intent(context, CreatePlaceActivity::class.java)) })
+            callback?.onScrollChanged(recyclerView)
         }
     }
 
     private fun initList() {
-        binding!!.recyclerView.setHasFixedSize(false)
-        binding!!.recyclerView.layoutManager = LinearLayoutManager(context)
-        mAdapter.actionsListener = { view, position, place, actions ->
-            when (actions) {
-                ListActions.OPEN -> if (place != null) openPlace(place!!)
-                ListActions.MORE -> showMore(place)
+        recyclerView.setHasFixedSize(false)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        mAdapter.actionsListener = object : ActionsListener<Place> {
+            override fun onAction(view: View, position: Int, t: Place?, actions: ListActions) {
+                when (actions) {
+                    ListActions.OPEN -> if (t != null) openPlace(t)
+                    ListActions.MORE -> if (t != null) showMore(t)
+                }
             }
         }
-        binding!!.recyclerView.adapter = mAdapter
+        recyclerView.adapter = mAdapter
         refreshView()
     }
 
@@ -149,7 +147,7 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
             if (item == 0) {
                 openPlace(place!!)
             } else if (item == 1) {
-                viewModel!!.deletePlace(place!!)
+                viewModel.deletePlace(place!!)
             }
         }, *items)
     }
@@ -161,17 +159,17 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
 
     private fun refreshView() {
         if (mAdapter.itemCount == 0) {
-            binding!!.emptyItem.visibility = View.VISIBLE
-            binding!!.recyclerView.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         } else {
-            binding!!.emptyItem.visibility = View.GONE
-            binding!!.recyclerView.visibility = View.VISIBLE
+            emptyItem.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 
     override fun onChanged(result: List<Place>) {
         mAdapter.data = result
-        binding!!.recyclerView.smoothScrollToPosition(0)
+        recyclerView.smoothScrollToPosition(0)
         refreshView()
     }
 }

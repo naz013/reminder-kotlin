@@ -46,7 +46,7 @@ class PlaceFilterController(private val mCallback: FilterCallback<Place>?) {
             private var query: String? = null
 
             override fun filter(item: Place): Boolean {
-                return query == null || query!!.length == 0 || item.name!!.toLowerCase().contains(query!!.toLowerCase())
+                return query == null || query!!.isEmpty() || item.name.toLowerCase().contains(query!!.toLowerCase())
             }
 
             override fun accept(s: String) {

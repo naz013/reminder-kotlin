@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.databinding.FragmentCropImageBinding
 import com.elementary.tasks.notes.create.NoteImage
-
+import kotlinx.android.synthetic.main.fragment_crop_image.*
 import java.io.ByteArrayOutputStream
 
 /**
@@ -35,11 +34,9 @@ import java.io.ByteArrayOutputStream
  */
 class CropFragment : BitmapFragment() {
 
-    private var binding: FragmentCropImageBinding? = null
-
     override val image: NoteImage?
         get() {
-            val cropped = binding!!.cropImageView.croppedImage
+            val cropped = cropImageView.croppedImage
             val outputStream = ByteArrayOutputStream()
             cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             val item = ImageSingleton.getInstance().item
@@ -53,13 +50,12 @@ class CropFragment : BitmapFragment() {
         get() = ImageSingleton.getInstance().item
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentCropImageBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return inflater.inflate(R.layout.fragment_crop_image, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding!!.background.setBackgroundColor(ThemeUtil.getInstance(context).backgroundStyle)
+        background.setBackgroundColor(ThemeUtil.getInstance(context!!).backgroundStyle)
         initControls()
     }
 
@@ -70,7 +66,7 @@ class CropFragment : BitmapFragment() {
 
     override fun onPause() {
         super.onPause()
-        binding!!.cropImageView.clearImage()
+        cropImageView.clearImage()
     }
 
     override fun onBackPressed(): Boolean {
@@ -83,21 +79,20 @@ class CropFragment : BitmapFragment() {
             Glide.with(context!!)
                     .asBitmap()
                     .load(item.image)
-                    .into<>(object : SimpleTarget<Bitmap>() {
+                    .into(object : SimpleTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            binding!!.cropImageView.setImageBitmap(resource)
+                            cropImageView.setImageBitmap(resource)
                         }
                     })
         }
     }
 
     private fun initControls() {
-        binding!!.rotateLeftButton.setOnClickListener { view -> binding!!.cropImageView.rotateImage(-90) }
-        binding!!.rotateRightButton.setOnClickListener { view -> binding!!.cropImageView.rotateImage(90) }
+        rotateLeftButton.setOnClickListener { cropImageView.rotateImage(-90) }
+        rotateRightButton.setOnClickListener { cropImageView.rotateImage(90) }
     }
 
     companion object {
-
         fun newInstance(): CropFragment {
             return CropFragment()
         }

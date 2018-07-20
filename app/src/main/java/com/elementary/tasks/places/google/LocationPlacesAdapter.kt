@@ -3,16 +3,14 @@ package com.elementary.tasks.places.google
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.core.data.models.Place
+import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.databinding.ListItemLocationBinding
-
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.places.list.PlacesRecyclerAdapter
+import kotlinx.android.synthetic.main.list_item_location.view.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,38 +42,33 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        internal var binding: ListItemLocationBinding? = null
+        fun bind(item: Reminder) {
+            val place = item.places[0]
+            var name = place.name
+            if (item.places.size > 1) {
+                name = item.summary + " (" + item.places.size + ")"
+            }
+            itemView.textView.text = name
+            PlacesRecyclerAdapter.loadMarker(itemView.markerImage, place.marker)
+        }
 
         init {
-            binding = DataBindingUtil.bind(v)
-            v.setOnClickListener { view ->
-                if (actionsListener != null) {
-                    actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
-                }
+            itemView.setOnClickListener { view ->
+                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
-            v.setOnLongClickListener { view ->
-                if (actionsListener != null) {
-                    actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
-                }
+            itemView.setOnLongClickListener { view ->
+                actionsListener?.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.MORE)
                 true
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ListItemLocationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding.root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_location, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mDataList[position]
-        val place = item.places[0]
-        var name = place.name
-        if (item.places.size > 1) {
-            name = item.summary + " (" + item.places.size + ")"
-        }
-        holder.binding!!.item = place
-        holder.binding!!.name = name
+        holder.bind(mDataList[position])
     }
 
     fun getItem(position: Int): Reminder {

@@ -15,7 +15,7 @@
         android:background="?attr/colorAccent" />
 
     <com.elementary.tasks.core.views.ThemedImageButton
-        android:id="@+id/prefsControl"
+        android:id="@+id/prefsControlText"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:background="?attr/selectableItemBackground"
@@ -124,7 +124,7 @@
             android:text="100%" />
 
         <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/opacitySeek"
+            android:id="@+id/opacitySeekText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/labelLeftOpacity"
