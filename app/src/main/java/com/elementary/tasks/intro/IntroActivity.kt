@@ -23,11 +23,6 @@ class IntroActivity : ThemedActivity() {
 
         skip_button.setOnClickListener { moveToNextScreen() }
         next_button.setOnClickListener { moveForward() }
-        if (themeUtil.isDark) {
-            next_button.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp)
-        } else {
-            next_button.setImageResource(R.drawable.ic_keyboard_arrow_right_black_24dp)
-        }
     }
 
     private fun moveForward() {
@@ -65,11 +60,9 @@ class IntroActivity : ThemedActivity() {
     }
 
     private inner class SlidePagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-
         override fun getItem(position: Int): Fragment {
             return PageFragment.newInstance(position)
         }
-
         override fun getCount(): Int {
             return 5
         }

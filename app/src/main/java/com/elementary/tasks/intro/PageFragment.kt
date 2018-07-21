@@ -60,7 +60,7 @@ class PageFragment : Fragment() {
 
     companion object {
 
-        private val ARG_POSITION = "arg_position"
+        private const val ARG_POSITION = "arg_position"
 
         fun newInstance(position: Int): Fragment {
             val fragment = PageFragment()
