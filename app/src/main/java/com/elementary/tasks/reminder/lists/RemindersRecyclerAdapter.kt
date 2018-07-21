@@ -1,20 +1,14 @@
 package com.elementary.tasks.reminder.lists
 
 import android.app.AlarmManager
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.ListItemReminderBinding
-import com.elementary.tasks.databinding.ListItemShoppingBinding
-
-import java.util.ArrayList
-import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,9 +30,9 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mEventListener: RecyclerListener? = null
+    var actionsListener: ActionsListener<Reminder>? = null
     private var isEditable = true
-    private val mData = ArrayList<Reminder>()
+    private val mData = mutableListOf<Reminder>()
 
     var data: List<Reminder>
         get() = mData
@@ -56,8 +50,8 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         isEditable = editable
     }
 
-    fun getItem(position: Int): Reminder? {
-        return if (position >= 0 && position < mData.size) mData[position] else null
+    fun getItem(position: Int): Reminder {
+        return mData[position]
     }
 
     fun removeItem(position: Int) {
@@ -107,11 +101,14 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
         return if (viewType == Reminder.REMINDER) {
-            ReminderHolder(ListItemReminderBinding.inflate(inflater, parent, false).root, mEventListener, isEditable)
+            ReminderHolder(parent, { view, i, listActions ->
+                actionsListener?.onAction(view, i, getItem(i), listActions)
+            }, isEditable)
         } else {
-            ShoppingHolder(ListItemShoppingBinding.inflate(inflater, parent, false).root, mEventListener)
+            ShoppingHolder(parent) { view, i, listActions ->
+                actionsListener?.onAction(view, i, getItem(i), listActions)
+            }
         }
     }
 
@@ -138,9 +135,5 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     override fun getItemId(position: Int): Long {
         val item = getItem(position) ?: return 0
         return item.uniqueId.toLong()
-    }
-
-    fun setEventListener(eventListener: RecyclerListener) {
-        mEventListener = eventListener
     }
 }

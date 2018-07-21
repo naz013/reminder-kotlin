@@ -1,9 +1,7 @@
 package com.elementary.tasks.reminder.lists.filters
 
 import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.ArrayList
-import java.util.Collections
+import java.util.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -31,7 +29,11 @@ class ReminderFilterController(private val mCallback: FilterCallback<Reminder>?)
     private val statusValue = FilterValue<Int>()
     private val rangeValue = FilterValue<DateFilter.DateRange>()
 
-    private var original: MutableList<Reminder> = ArrayList()
+    var original: MutableList<Reminder> = ArrayList()
+        set(value) {
+            field = value
+            onChanged()
+        }
     private var mFilter: ObjectFilter<Reminder>? = null
 
     init {
@@ -97,15 +99,6 @@ class ReminderFilterController(private val mCallback: FilterCallback<Reminder>?)
             2 -> this.rangeValue.setValue(DateFilter.DateRange.TODAY)
             3 -> this.rangeValue.setValue(DateFilter.DateRange.TOMORROW)
         }
-        onChanged()
-    }
-
-    fun getOriginal(): List<Reminder> {
-        return original
-    }
-
-    fun setOriginal(original: MutableList<Reminder>) {
-        this.original = original
         onChanged()
     }
 

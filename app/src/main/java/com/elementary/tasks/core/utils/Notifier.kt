@@ -21,7 +21,7 @@ import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 
 import java.util.Calendar
 import androidx.core.app.NotificationCompat

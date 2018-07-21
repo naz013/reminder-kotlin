@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.core.utils.*

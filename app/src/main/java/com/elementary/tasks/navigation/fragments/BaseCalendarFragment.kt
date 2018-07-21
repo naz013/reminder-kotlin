@@ -15,7 +15,7 @@ import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.reminder.create_edit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.AddReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
 import java.util.*
 

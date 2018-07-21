@@ -16,6 +16,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
+import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_note.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
@@ -43,9 +44,7 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
 
     init {
-        itemView.noteClick.setOnClickListener { v12 ->
-            listener?.invoke(v12, adapterPosition, ListActions.OPEN)
-        }
+        itemView.noteClick.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.noteClick.setOnLongClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
             true

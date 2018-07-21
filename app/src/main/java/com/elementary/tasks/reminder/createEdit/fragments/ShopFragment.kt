@@ -1,6 +1,5 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -10,20 +9,16 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
-
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.databinding.FragmentReminderShopBinding
 import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.ShopItem
-
-import java.util.ArrayList
-
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_reminder_shop.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,40 +40,39 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class ShopFragment : TypeFragment() {
 
-    private var binding: FragmentReminderShopBinding? = null
-    private var mAdapter: ShopListRecyclerAdapter? = null
+    private val mAdapter = ShopListRecyclerAdapter()
     private var isReminder = false
     private var mSelectedPosition: Int = 0
     private val mActionListener = object : ShopListRecyclerAdapter.ActionListener {
         override fun onItemCheck(position: Int, isChecked: Boolean) {
-            val item = mAdapter!!.getItem(position)
+            val item = mAdapter.getItem(position)
             item.isChecked = !item.isChecked
-            mAdapter!!.updateData()
+            mAdapter.updateData()
         }
 
         override fun onItemDelete(position: Int) {
-            mAdapter!!.delete(position)
+            mAdapter.delete(position)
         }
     }
 
     override fun prepare(): Reminder? {
-        if (`interface` == null) return null
-        if (mAdapter!!.itemCount == 0) {
-            `interface`!!.showSnackbar(getString(R.string.shopping_list_is_empty))
+        val iFace = reminderInterface ?: return null
+        if (mAdapter.itemCount == 0) {
+            iFace.showSnackbar(getString(R.string.shopping_list_is_empty))
             return null
         }
-        var reminder: Reminder? = `interface`!!.reminder
+        var reminder = iFace.reminder
         val type = Reminder.BY_DATE_SHOP
         if (reminder == null) {
             reminder = Reminder()
         }
-        reminder.shoppings = mAdapter!!.data
-        reminder.target = null
+        reminder.shoppings = mAdapter.data
+        reminder.target = ""
         reminder.type = type
         reminder.repeatInterval = 0
-        reminder.setClear(`interface`)
+        reminder.setClear(iFace)
         if (isReminder) {
-            val startTime = binding!!.dateViewShopping.dateTime
+            val startTime = dateViewShopping.dateTime
             val time = TimeUtil.getGmtFromDateTime(startTime)
             LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
             if (!TimeCount.isCurrent(time)) {
@@ -88,56 +82,55 @@ class ShopFragment : TypeFragment() {
             reminder.startTime = time
             reminder.eventTime = time
         } else {
-            reminder.eventTime = null
-            reminder.startTime = null
+            reminder.eventTime = ""
+            reminder.startTime = ""
         }
         return reminder
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_reminder_shop, container, false)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentReminderShopBinding.inflate(inflater, container, false)
-        binding!!.dateViewShopping.setOnLongClickListener { view ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        dateViewShopping.setOnLongClickListener {
             selectDateDialog()
             true
         }
-        binding!!.todoList.layoutManager = LinearLayoutManager(context)
-        mAdapter = ShopListRecyclerAdapter(context, ArrayList(), mActionListener)
-        binding!!.todoList.adapter = mAdapter
-        binding!!.shopEdit.setOnEditorActionListener { textView, actionId, event ->
+        todoList.layoutManager = LinearLayoutManager(context)
+        mAdapter.listener = mActionListener
+        todoList.adapter = mAdapter
+        shopEdit.setOnEditorActionListener { _, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_NEXT) {
                 addNewItem()
-                return@binding.shopEdit.setOnEditorActionListener true
+                return@setOnEditorActionListener true
             }
             false
         }
-        binding!!.addButton.setOnClickListener { v -> addNewItem() }
+        addButton.setOnClickListener { addNewItem() }
         switchDate()
         editReminder()
-        return binding!!.root
     }
 
     private fun addNewItem() {
-        val task = binding!!.shopEdit.text!!.toString().trim { it <= ' ' }
+        val task = shopEdit.text.toString().trim { it <= ' ' }
         if (task.matches("".toRegex())) {
-            binding!!.shopEdit.error = getString(R.string.must_be_not_empty)
+            shopEdit.error = getString(R.string.must_be_not_empty)
             return
         }
-        mAdapter!!.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
-        binding!!.shopEdit.setText("")
+        mAdapter.addItem(ShopItem(task.replace("\n".toRegex(), " ")))
+        shopEdit.setText("")
     }
 
     private fun editReminder() {
-        if (`interface`!!.reminder == null) return
-        val reminder = `interface`!!.reminder
-        binding!!.dateViewShopping.setDateTime(reminder.eventTime)
-        mAdapter!!.data = reminder.shoppings
+        val iFace = reminderInterface ?: return
+        val reminder = iFace.reminder ?: return
+        dateViewShopping.setDateTime(reminder.eventTime)
+        mAdapter.data = reminder.shoppings
         if (!TextUtils.isEmpty(reminder.eventTime)) {
             isReminder = true
-            binding!!.dateViewShopping.setDateTime(reminder.eventTime)
+            dateViewShopping.setDateTime(reminder.eventTime)
         } else {
             isReminder = false
         }
@@ -150,14 +143,14 @@ class ShopFragment : TypeFragment() {
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
         var selection = 0
         if (isReminder) selection = 1
-        builder.setSingleChoiceItems(adapter, selection) { dialog, which -> mSelectedPosition = which }
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
+        builder.setSingleChoiceItems(adapter, selection) { _, which -> mSelectedPosition = which }
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ ->
             makeAction()
             dialogInterface.dismiss()
         }
         val dialog = builder.create()
-        dialog.setOnCancelListener { dialogInterface -> mSelectedPosition = 0 }
-        dialog.setOnDismissListener { dialogInterface -> mSelectedPosition = 0 }
+        dialog.setOnCancelListener { mSelectedPosition = 0 }
+        dialog.setOnDismissListener { mSelectedPosition = 0 }
         dialog.show()
     }
 
@@ -171,15 +164,15 @@ class ShopFragment : TypeFragment() {
 
     private fun switchDate() {
         if (isReminder) {
-            binding!!.dateViewShopping.setSingleText(null)
+            dateViewShopping.setSingleText(null)
         } else {
-            binding!!.dateViewShopping.setSingleText(getString(R.string.no_reminder))
+            dateViewShopping.setSingleText(getString(R.string.no_reminder))
         }
-        binding!!.dateViewShopping.setOnClickListener { v -> if (!isReminder) selectDateDialog() }
+        dateViewShopping.setOnClickListener { if (!isReminder) selectDateDialog() }
     }
 
     companion object {
 
-        private val TAG = "ShopFragment"
+        private const val TAG = "ShopFragment"
     }
 }

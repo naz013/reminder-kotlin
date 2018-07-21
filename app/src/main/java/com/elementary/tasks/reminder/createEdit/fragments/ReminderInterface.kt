@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.view.View
 
@@ -24,7 +24,7 @@ import com.elementary.tasks.core.data.models.Reminder
  */
 
 interface ReminderInterface {
-    val reminder: Reminder
+    val reminder: Reminder?
 
     val useGlobal: Boolean
 
@@ -66,9 +66,9 @@ interface ReminderInterface {
 
     fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener)
 
-    fun setExclusionAction(listener: View.OnClickListener)
+    fun setExclusionAction(listener: View.OnClickListener?)
 
-    fun setRepeatAction(listener: View.OnClickListener)
+    fun setRepeatAction(listener: View.OnClickListener?)
 
     fun setFullScreenMode(b: Boolean)
 

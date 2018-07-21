@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.app.Activity
 import android.content.Context
@@ -28,43 +28,32 @@ import androidx.fragment.app.Fragment
  */
 abstract class TypeFragment : Fragment() {
 
-    private var mContext: Context? = null
-    var `interface`: ReminderInterface? = null
+    var reminderInterface: ReminderInterface? = null
         private set
 
     abstract fun prepare(): Reminder?
 
-    override fun getContext(): Context? {
-        return mContext
-    }
-
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (mContext == null) {
-            mContext = context
-        }
-        if (`interface` == null) {
-            `interface` = context as ReminderInterface?
+        if (reminderInterface == null) {
+            reminderInterface = context as ReminderInterface?
             setDefault()
         }
     }
 
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
-        if (mContext == null) {
-            mContext = activity
-        }
-        if (`interface` == null) {
-            `interface` = activity as ReminderInterface?
+        if (reminderInterface == null) {
+            reminderInterface = activity as ReminderInterface?
             setDefault()
         }
     }
 
     private fun setDefault() {
-        `interface`!!.setExclusionAction(null)
-        `interface`!!.setRepeatAction(null)
-        `interface`!!.setEventHint(getString(R.string.remind_me))
-        `interface`!!.setHasAutoExtra(false, null)
+        reminderInterface?.setExclusionAction(null)
+        reminderInterface?.setRepeatAction(null)
+        reminderInterface?.setEventHint(getString(R.string.remind_me))
+        reminderInterface?.setHasAutoExtra(false, "")
     }
 
     open fun onBackPressed(): Boolean {

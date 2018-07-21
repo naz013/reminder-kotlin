@@ -18,7 +18,7 @@ import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import kotlinx.android.synthetic.main.fragment_events_list.*

@@ -28,7 +28,7 @@ import com.elementary.tasks.core.dialogs.VolumeDialog
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
-import com.elementary.tasks.reminder.create_edit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.AddReminderActivity
 import kotlinx.android.synthetic.main.activity_conversation.*
 import org.apache.commons.lang3.StringUtils
 import java.util.*

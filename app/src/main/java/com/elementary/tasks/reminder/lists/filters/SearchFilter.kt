@@ -25,7 +25,7 @@ class SearchFilter(filter: ObjectFilter<Reminder>?) : AbstractFilter<String, Rem
     private var query: String? = null
 
     override fun filter(reminder: Reminder): Boolean {
-        return super.filter(reminder) && (query == null || query!!.length == 0 || reminder.summary!!.toLowerCase().contains(query!!.toLowerCase()))
+        return super.filter(reminder) && (query == null || query!!.isEmpty() || reminder.summary.toLowerCase().contains(query!!.toLowerCase()))
     }
 
     @Throws(Exception::class)

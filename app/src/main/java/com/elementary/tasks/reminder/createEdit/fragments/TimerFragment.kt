@@ -1,31 +1,19 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.AlertDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import android.widget.ToggleButton
-
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.elementary.tasks.databinding.DialogExclusionPickerBinding
-import com.elementary.tasks.databinding.FragmentTimerBinding
 import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.ArrayList
-import java.util.Calendar
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.views.roboto.RoboTextView
+import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
+import kotlinx.android.synthetic.main.fragment_timer.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,33 +33,31 @@ import java.util.Calendar
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+@SuppressLint("SetTextI18n")
 class TimerFragment : RepeatableTypeFragment() {
 
-    private var binding: FragmentTimerBinding? = null
-
-    private var mHours: MutableList<Int>? = ArrayList()
-    private var mFrom: String? = null
-    private var mTo: String? = null
+    private var mHours: MutableList<Int> = mutableListOf()
+    private var mFrom: String = ""
+    private var mTo: String = ""
     private var fromHour: Int = 0
     private var fromMinute: Int = 0
     private var toHour: Int = 0
     private var toMinute: Int = 0
-    private var buttons: ArrayList<ToggleButton>? = null
+    private var buttons: MutableList<ToggleButton> = mutableListOf()
 
     private val selectedList: MutableList<Int>
         @SuppressLint("ResourceType")
         get() {
             val ids = ArrayList<Int>()
-            for (button in buttons!!) {
+            for (button in buttons) {
                 if (button.isChecked) ids.add(button.id - 100)
             }
             return ids
         }
 
-    private val customizationView: DialogExclusionPickerBinding
+    private val customizationView: View
         get() {
-            val binding = DialogExclusionPickerBinding.inflate(LayoutInflater.from(context))
+            val binding = LayoutInflater.from(context).inflate(R.layout.dialog_exclusion_picker, null)
             binding.selectInterval.isChecked = true
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
@@ -82,10 +68,10 @@ class TimerFragment : RepeatableTypeFragment() {
             toHour = calendar.get(Calendar.HOUR_OF_DAY)
             toMinute = calendar.get(Calendar.MINUTE)
             binding.to.text = getString(R.string.to) + " " + TimeUtil.getTime(calendar.time, true)
-            binding.from.setOnClickListener { v -> fromTime(binding.from) }
-            binding.to.setOnClickListener { v -> toTime(binding.to) }
+            binding.from.setOnClickListener { fromTime(binding.from) }
+            binding.to.setOnClickListener { toTime(binding.to) }
             initButtons(binding)
-            if (mFrom != null && mTo != null) {
+            if (mFrom != "" && mTo != "") {
                 calendar.time = TimeUtil.getDate(mFrom)
                 fromHour = calendar.get(Calendar.HOUR_OF_DAY)
                 fromMinute = calendar.get(Calendar.MINUTE)
@@ -94,36 +80,35 @@ class TimerFragment : RepeatableTypeFragment() {
                 toMinute = calendar.get(Calendar.MINUTE)
                 binding.selectInterval.isChecked = true
             }
-            if (mHours != null && mHours!!.size > 0) {
+            if (!mHours.isEmpty()) {
                 binding.selectHours.isChecked = true
             }
             return binding
         }
 
     override fun prepare(): Reminder? {
-        if (`interface` == null) return null
-        val after = binding!!.timerPickerView.timerValue
+        val iFace = reminderInterface ?: return null
+        val after = timerPickerView.timerValue
         if (after == 0L) {
             Toast.makeText(context, getString(R.string.you_dont_insert_timer_time), Toast.LENGTH_SHORT).show()
             return null
         }
-        var reminder: Reminder? = `interface`!!.reminder
+        var reminder = iFace.reminder
         if (reminder == null) {
             reminder = Reminder()
         }
-
         val type = Reminder.BY_TIME
         reminder.type = type
         reminder.after = after
-        val repeat = binding!!.repeatView.repeat
+        val repeat = repeatView.repeat
         reminder.repeatInterval = repeat
-        reminder.isExportToCalendar = binding!!.exportToCalendar.isChecked
-        reminder.isExportToTasks = binding!!.exportToTasks.isChecked
+        reminder.exportToCalendar = exportToCalendar.isChecked
+        reminder.exportToTasks = exportToTasks.isChecked
         reminder.from = mFrom
         reminder.to = mTo
         reminder.hours = mHours
-        reminder.setClear(`interface`)
-        val startTime = TimeCount.getInstance(context).generateNextTimer(reminder, true)
+        reminder.setClear(iFace)
+        val startTime = TimeCount.getInstance(context!!).generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
@@ -140,7 +125,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.fragment_date_menu, menu)
+        inflater?.inflate(R.menu.fragment_date_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -152,56 +137,64 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentTimerBinding.inflate(inflater, container, false)
-        binding!!.timerPickerView.setListener(binding!!.repeatView.timerListener)
-        `interface`!!.setExclusionAction { view -> openExclusionDialog() }
-        if (`interface`!!.isExportToCalendar) {
-            binding!!.exportToCalendar.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToCalendar.visibility = View.GONE
-        }
-        if (`interface`!!.isExportToTasks) {
-            binding!!.exportToTasks.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToTasks.visibility = View.GONE
-        }
+        return inflater.inflate(R.layout.fragment_timer, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        timerPickerView.setListener(repeatView.timerListener)
+        initScreenState()
         editReminder()
-        return binding!!.root
+    }
+
+    private fun initScreenState() {
+        val iFace = reminderInterface ?: return
+        iFace.setExclusionAction(View.OnClickListener { openExclusionDialog() })
+        if (iFace.isExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
+        } else {
+            exportToCalendar.visibility = View.GONE
+        }
+        if (iFace.isExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
+        }
     }
 
     private fun editReminder() {
-        if (`interface`!!.reminder == null) return
-        val reminder = `interface`!!.reminder
-        binding!!.exportToCalendar.isChecked = reminder.isExportToCalendar
-        binding!!.exportToTasks.isChecked = reminder.isExportToTasks
-        binding!!.repeatView.repeat = reminder.repeatInterval
-        binding!!.timerPickerView.timerValue = reminder.after
+        val iFace = reminderInterface ?: return
+        val reminder = iFace.reminder ?: return
+        exportToCalendar.isChecked = reminder.exportToCalendar
+        exportToTasks.isChecked = reminder.exportToTasks
+        repeatView.repeat = reminder.repeatInterval
+        timerPickerView.timerValue = reminder.after
         this.mFrom = reminder.from
         this.mTo = reminder.to
-        this.mHours = reminder.hours
+        this.mHours = reminder.hours.toMutableList()
     }
 
     private fun openExclusionDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setTitle(R.string.exclusion)
         val b = customizationView
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialog, which -> saveExclusion(b) }
-        builder.setNegativeButton(R.string.remove_exclusion) { dialogInterface, i -> clearExclusion() }
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { _, _ -> saveExclusion(b) }
+        builder.setNegativeButton(R.string.remove_exclusion) { _, _ -> clearExclusion() }
         builder.create().show()
     }
 
     private fun clearExclusion() {
-        mHours!!.clear()
-        mFrom = null
-        mTo = null
+        mHours.clear()
+        mFrom = ""
+        mTo = ""
     }
 
-    private fun saveExclusion(b: DialogExclusionPickerBinding) {
+    private fun saveExclusion(b: View) {
         clearExclusion()
         if (b.selectHours.isChecked) {
             mHours = selectedList
-            if (mHours!!.size == 0) {
+            if (mHours.isEmpty()) {
                 Toast.makeText(context, getString(R.string.you_dont_select_any_hours), Toast.LENGTH_SHORT).show()
             }
         } else if (b.selectInterval.isChecked) {
@@ -214,7 +207,7 @@ class TimerFragment : RepeatableTypeFragment() {
         return hour.toString() + ":" + minute
     }
 
-    private fun initButtons(b: DialogExclusionPickerBinding) {
+    private fun initButtons(b: View) {
         setId(b.zero, b.one, b.two, b.three, b.four, b.five, b.six, b.seven, b.eight, b.nine, b.ten,
                 b.eleven, b.twelve, b.thirteen, b.fourteen, b.fifteen, b.sixteen, b.seventeen,
                 b.eighteen, b.nineteen, b.twenty, b.twentyOne, b.twentyThree, b.twentyTwo)
@@ -222,20 +215,20 @@ class TimerFragment : RepeatableTypeFragment() {
 
     private fun setId(vararg buttons: ToggleButton) {
         var i = 100
-        val cs = ThemeUtil.getInstance(context)
-        this.buttons = ArrayList()
-        val selected = ArrayList(mHours!!)
+        val cs = ThemeUtil.getInstance(context!!)
+        this.buttons = mutableListOf()
+        val selected = ArrayList(mHours)
         for (button in buttons) {
             button.id = i
             button.setBackgroundDrawable(cs.toggleDrawable())
-            this.buttons!!.add(button)
+            this.buttons.add(button)
             if (selected.contains(i - 100)) button.isChecked = true
             i++
         }
     }
 
     private fun fromTime(textView: RoboTextView) {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             fromHour = hourOfDay
             fromMinute = minute
             val calendar = Calendar.getInstance()
@@ -247,7 +240,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun toTime(textView: RoboTextView) {
-        TimeUtil.showTimePicker(context, { view, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             toHour = hourOfDay
             toMinute = minute
             val calendar = Calendar.getInstance()
@@ -260,6 +253,6 @@ class TimerFragment : RepeatableTypeFragment() {
 
     companion object {
 
-        private val TAG = "TimerFragment"
+        private const val TAG = "TimerFragment"
     }
 }

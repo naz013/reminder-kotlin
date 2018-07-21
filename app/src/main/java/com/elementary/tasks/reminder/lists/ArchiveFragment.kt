@@ -4,33 +4,27 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
-import com.elementary.tasks.databinding.FragmentTrashBinding
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
-
-import java.util.ArrayList
-import java.util.LinkedHashSet
-import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_trash.*
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -52,10 +46,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
  */
 class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
-    private var binding: FragmentTrashBinding? = null
-    private var viewModel: ArchiveRemindersViewModel? = null
+    private lateinit var viewModel: ArchiveRemindersViewModel
 
-    private var mAdapter: RemindersRecyclerAdapter? = RemindersRecyclerAdapter()
+    private var mAdapter = RemindersRecyclerAdapter()
 
     private var mGroupsIds: MutableList<String> = ArrayList()
     private val filters = ArrayList<FilterView.Filter>()
@@ -66,15 +59,15 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
-            if (mAdapter != null) filterController.setSearchValue(query)
+            filterController.setSearchValue(query)
             if (mSearchMenu != null) {
-                mSearchMenu!!.collapseActionView()
+                mSearchMenu?.collapseActionView()
             }
             return false
         }
 
         override fun onQueryTextChange(newText: String): Boolean {
-            if (mAdapter != null) filterController.setSearchValue(newText)
+            filterController.setSearchValue(newText)
             if (!callback!!.isFiltersVisible) {
                 showRemindersFilter()
             }
@@ -85,22 +78,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         refreshFilters()
         false
     }
-    private val mEventListener = object : RecyclerListener {
-        override fun onItemSwitched(position: Int, view: View) {
-
-        }
-
-        override fun onItemClicked(position: Int, view: View) {
-            if (view.id == R.id.button_more) {
-                showActionDialog(position, view)
-            } else {
-                val reminder = mAdapter!!.getItem(position)
-                if (reminder != null) editReminder(reminder.uniqueId)
-            }
-        }
-
-        override fun onItemLongClicked(position: Int, view: View) {}
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -108,19 +85,19 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.archive_menu, menu)
+        inflater?.inflate(R.menu.archive_menu, menu)
         mSearchMenu = menu!!.findItem(R.id.action_search)
-        val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
-            mSearchView = mSearchMenu!!.actionView as SearchView
+            mSearchView = mSearchMenu?.actionView as SearchView?
         }
         if (mSearchView != null) {
             if (searchManager != null) {
-                mSearchView!!.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
             }
-            mSearchView!!.setOnQueryTextListener(queryTextListener)
-            mSearchView!!.setOnCloseListener(mSearchCloseListener)
-            mSearchView!!.setOnQueryTextFocusChangeListener { v, hasFocus ->
+            mSearchView?.setOnQueryTextListener(queryTextListener)
+            mSearchView?.setOnCloseListener(mSearchCloseListener)
+            mSearchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     if (!callback!!.isFiltersVisible) {
                         showRemindersFilter()
@@ -134,23 +111,20 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_delete_all -> {
-                viewModel!!.deleteAll(mAdapter!!.data)
+                viewModel.deleteAll(mAdapter.data)
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentTrashBinding.inflate(inflater, container, false)
-        initList()
-        return binding!!.root
-    }
+    override fun layoutRes(): Int = R.layout.fragment_trash
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initList()
         viewModel = ViewModelProviders.of(this).get(ArchiveRemindersViewModel::class.java)
-        viewModel!!.events.observe(this, { reminders ->
+        viewModel.events.observe(this, Observer{ reminders ->
             if (reminders != null) {
                 showData(reminders)
             }
@@ -166,34 +140,33 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun editReminder(id: Int) {
-        startActivity(Intent(context, CreateReminderActivity::class.java).putExtra(Constants.INTENT_ID, id))
+    private fun editReminder(reminder: Reminder) {
+        startActivity(Intent(context, CreateReminderActivity::class.java)
+                .putExtra(Constants.INTENT_ID, reminder.uniqueId))
     }
 
-    private fun showData(result: MutableList<Reminder>?) {
-        filterController.original = result!!
+    private fun showData(result: List<Reminder>) {
+        filterController.original = result.toMutableList()
         reloadView()
         refreshFilters()
     }
 
-    private fun showActionDialog(position: Int, view: View) {
+    private fun showActionDialog(reminder: Reminder, view: View) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
         Dialogues.showPopup(context!!, view, { item ->
-            val item1 = mAdapter!!.getItem(position)
-            if (item1 == null) return@Dialogues.showPopup
             if (item == 0) {
-                editReminder(item1!!.uniqueId)
+                editReminder(reminder)
             }
             if (item == 1) {
-                viewModel!!.deleteReminder(item1!!, true)
+                viewModel.deleteReminder(reminder, true)
             }
         }, *items)
     }
 
     private fun refreshFilters() {
         filters.clear()
-        if (viewModel!!.groups.value != null) {
-            addGroupFilter(viewModel!!.groups.value!!)
+        if (viewModel.groups.value != null) {
+            addGroupFilter(viewModel.groups.value!!)
             addTypeFilter(filters)
         }
         if (callback!!.isFiltersVisible) {
@@ -202,15 +175,21 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun initList() {
-        binding!!.recyclerView.layoutManager = LinearLayoutManager(context)
-        mAdapter = RemindersRecyclerAdapter()
-        mAdapter!!.setEventListener(mEventListener)
-        mAdapter!!.setEditable(false)
-        binding!!.recyclerView.adapter = mAdapter
+        mAdapter.setEditable(false)
+        mAdapter.actionsListener = object : ActionsListener<Reminder> {
+            override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
+                when (actions) {
+                    ListActions.MORE -> if (t != null) showActionDialog(t, view)
+                    ListActions.OPEN -> if (t != null) editReminder(t)
+                }
+            }
+        }
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = mAdapter
     }
 
     private fun showRemindersFilter() {
-        callback!!.addFilters(filters, true)
+        callback?.addFilters(filters, true)
     }
 
     private fun addTypeFilter(filters: MutableList<FilterView.Filter>) {
@@ -232,9 +211,9 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        val util = ThemeUtil.getInstance(context)
+        val util = ThemeUtil.getInstance(context!!)
         for (integer in types) {
-            filter.add(FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(context, integer), integer))
+            filter.add(FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(context!!, integer), integer))
         }
         if (filter.size != 0) {
             filters.add(filter)
@@ -253,13 +232,13 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
 
             override fun onMultipleSelected(view: View, ids: List<Int>) {
-                val groups = ArrayList<String>()
-                for (i in ids) groups.add(mGroupsIds[i - 1])
-                filterController.setGroupValues(groups)
+                val groupsList = ArrayList<String>()
+                for (i in ids) groupsList.add(mGroupsIds[i - 1])
+                filterController.setGroupValues(groupsList)
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        val util = ThemeUtil.getInstance(context)
+        val util = ThemeUtil.getInstance(context!!)
         for (i in groups.indices) {
             val item = groups[i]
             filter.add(FilterView.FilterElement(util.getCategoryIndicator(item.color), item.title, i + 1))
@@ -269,18 +248,18 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     private fun reloadView() {
-        if (mAdapter != null && mAdapter!!.itemCount > 0) {
-            binding!!.recyclerView.visibility = View.VISIBLE
-            binding!!.emptyItem.visibility = View.GONE
+        if (mAdapter.itemCount > 0) {
+            recyclerView.visibility = View.VISIBLE
+            emptyItem.visibility = View.GONE
         } else {
-            binding!!.recyclerView.visibility = View.GONE
-            binding!!.emptyItem.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            emptyItem.visibility = View.VISIBLE
         }
     }
 
     override fun onChanged(result: List<Reminder>) {
-        mAdapter!!.data = result
-        binding!!.recyclerView.smoothScrollToPosition(0)
+        mAdapter.data = result
+        recyclerView.smoothScrollToPosition(0)
         reloadView()
     }
 }

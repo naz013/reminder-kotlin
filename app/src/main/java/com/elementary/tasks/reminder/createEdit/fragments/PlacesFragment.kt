@@ -1,25 +1,18 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
+import android.view.*
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.databinding.FragmentReminderPlaceBinding
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.android.synthetic.main.fragment_reminder_place.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,59 +35,51 @@ import com.google.android.gms.maps.model.LatLng
 
 class PlacesFragment : RadiusTypeFragment() {
 
-    private var placesMap: PlacesMapFragment? = null
-
-    private val mCallback = MapCallback {
-        if (`interface`!!.reminder != null) {
-            val item = `interface`!!.reminder
-            placesMap!!.selectMarkers(item.places)
-        }
-    }
+    private var mPlacesMap: PlacesMapFragment? = null
     private val mListener = object : MapListener {
         override fun placeChanged(place: LatLng, address: String) {
-
         }
 
         override fun onZoomClick(isFull: Boolean) {
-            `interface`!!.setFullScreenMode(isFull)
+            reminderInterface?.setFullScreenMode(isFull)
         }
 
         override fun onBackClick() {
-            `interface`!!.setFullScreenMode(false)
+            reminderInterface?.setFullScreenMode(false)
         }
     }
 
     override fun recreateMarker() {
-        if (placesMap != null) {
-            placesMap!!.recreateMarker(radius)
+        if (mPlacesMap != null) {
+            mPlacesMap?.recreateMarker(radius)
         }
     }
 
     override fun prepare(): Reminder? {
-        if (super.prepare() == null) return null
-        if (`interface` == null) return null
-        var reminder: Reminder? = `interface`!!.reminder
+        if (super.prepare() == null || mPlacesMap == null) return null
+        val iFace = reminderInterface ?: return null
         val type = Reminder.BY_PLACES
-        if (TextUtils.isEmpty(`interface`!!.summary)) {
-            `interface`!!.showSnackbar(getString(R.string.task_summary_is_empty))
+        if (TextUtils.isEmpty(iFace.summary)) {
+            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
             return null
         }
-        val places = placesMap!!.places
-        if (places.size == 0) {
-            `interface`!!.showSnackbar(getString(R.string.you_dont_select_place))
+        val places = mPlacesMap!!.places
+        if (places.isEmpty()) {
+            iFace.showSnackbar(getString(R.string.you_dont_select_place))
             return null
         }
+        var reminder = iFace.reminder
         if (reminder == null) {
             reminder = Reminder()
         }
         reminder.places = places
-        reminder.target = null
+        reminder.target = ""
         reminder.type = type
-        reminder.isExportToCalendar = false
-        reminder.isExportToTasks = false
-        reminder.setClear(`interface`)
-        reminder.eventTime = null
-        reminder.startTime = null
+        reminder.exportToCalendar = false
+        reminder.exportToTasks = false
+        reminder.setClear(iFace)
+        reminder.eventTime = ""
+        reminder.startTime = ""
         LogUtil.d(TAG, "REC_TIME " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
         return reminder
     }
@@ -105,7 +90,7 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.fragment_location_menu, menu)
+        inflater?.inflate(R.menu.fragment_location_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -117,26 +102,37 @@ class PlacesFragment : RadiusTypeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentReminderPlaceBinding.inflate(inflater, container, false)
-        val prefs = Prefs.getInstance(activity)
-        placesMap = PlacesMapFragment()
-        placesMap!!.setListener(mListener)
-        placesMap!!.setCallback(mCallback)
-        placesMap!!.setRadius(prefs.radius)
-        placesMap!!.setMarkerStyle(prefs.markerStyle)
+        return inflater.inflate(R.layout.fragment_reminder_place, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val prefs = Prefs.getInstance(activity!!)
+        val placesMap = PlacesMapFragment()
+        placesMap.setListener(mListener)
+        placesMap.setCallback(object : MapCallback {
+            override fun onMapReady() {
+                val iFace = reminderInterface ?: return
+                val item = iFace.reminder
+                if (item != null) {
+                    mPlacesMap?.selectMarkers(item.places)
+                }
+            }
+        })
+        placesMap.setRadius(prefs.radius)
+        placesMap.setMarkerStyle(prefs.markerStyle)
         fragmentManager!!.beginTransaction()
-                .replace(binding.mapPlace.id, placesMap!!)
+                .replace(mapPlace.id, placesMap)
                 .addToBackStack(null)
                 .commit()
-        return binding.root
+        this.mPlacesMap = placesMap
     }
 
     override fun onBackPressed(): Boolean {
-        return placesMap == null || placesMap!!.onBackPressed()
+        return mPlacesMap == null || mPlacesMap!!.onBackPressed()
     }
 
     companion object {
-
-        private val TAG = "PlacesFragment"
+        private const val TAG = "PlacesFragment"
     }
 }

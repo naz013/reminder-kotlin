@@ -18,6 +18,6 @@ package com.elementary.tasks.reminder.lists.filters
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-interface ObjectFilter<V> {
-    fun filter(v: V): Boolean
+interface ObjectFilter<O> {
+    fun filter(o: O): Boolean
 }

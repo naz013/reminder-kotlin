@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create_edit
+package com.elementary.tasks.reminder.createEdit
 
 import android.app.Activity
 import android.content.Intent
@@ -9,23 +9,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.core.views.ActionView
-import com.elementary.tasks.databinding.ActivityAddReminderBinding
 import com.google.android.material.snackbar.Snackbar
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.activity_add_reminder.*
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -47,71 +42,69 @@ import androidx.lifecycle.ViewModelProviders
  */
 class AddReminderActivity : ThemedActivity() {
 
-    private var binding: ActivityAddReminderBinding? = null
-    private var viewModel: ReminderViewModel? = null
+    private lateinit var viewModel: ReminderViewModel
 
     private val mActionListener = object : ActionView.OnActionListener {
         override fun onActionChange(hasAction: Boolean) {
             if (!hasAction) {
-                binding!!.taskText.setText(getString(R.string.remind_me))
+                task_text.setText(getString(R.string.remind_me))
             }
         }
 
         override fun onTypeChange(isMessageType: Boolean) {
             if (isMessageType) {
-                binding!!.taskText.setText(getString(R.string.message))
+                task_text.setText(getString(R.string.message))
             } else {
-                binding!!.taskText.setText(getString(R.string.remind_me))
+                task_text.setText(getString(R.string.remind_me))
             }
         }
     }
 
     private val isExportToCalendar: Boolean
-        get() = prefs!!.isCalendarEnabled || prefs!!.isStockCalendarEnabled
+        get() = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_add_reminder, menu)
+        menuInflater.inflate(R.menu.menu_add_reminder, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_add -> {
                 save()
-                return true
+                true
             }
             android.R.id.home -> {
                 finish()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_reminder)
+        setContentView(R.layout.activity_add_reminder)
         initActionBar()
         val date = intent.getLongExtra(Constants.INTENT_DATE, 0)
-        binding!!.repeatView.enablePrediction(true)
-        binding!!.dateView.setEventListener(binding!!.repeatView.eventListener)
-        binding!!.actionView.setListener(mActionListener)
-        binding!!.actionView.setActivity(this)
-        binding!!.actionView.setContactClickListener { view -> selectContact() }
+        repeatView.enablePrediction(true)
+        dateView.setEventListener(repeatView.eventListener)
+        actionView.setListener(mActionListener)
+        actionView.setActivity(this)
+        actionView.setContactClickListener(View.OnClickListener { selectContact() })
         if (isExportToCalendar) {
-            binding!!.exportToCalendar.visibility = View.VISIBLE
+            exportToCalendar.visibility = View.VISIBLE
         } else {
-            binding!!.exportToCalendar.visibility = View.GONE
+            exportToCalendar.visibility = View.GONE
         }
-        if (Google.getInstance(this) != null) {
-            binding!!.exportToTasks.visibility = View.VISIBLE
+        if (Google.getInstance() != null) {
+            exportToTasks.visibility = View.VISIBLE
         } else {
-            binding!!.exportToTasks.visibility = View.GONE
+            exportToTasks.visibility = View.GONE
         }
 
         if (date != 0L) {
-            binding!!.dateView.dateTime = date
+            dateView.dateTime = date
         }
 
         initViewModel()
@@ -120,7 +113,7 @@ class AddReminderActivity : ThemedActivity() {
     private fun initViewModel() {
         val factory = ReminderViewModel.Factory(application, 0)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> {
@@ -133,34 +126,34 @@ class AddReminderActivity : ThemedActivity() {
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     private fun save() {
-        val summary = binding!!.taskText.text!!.toString()
+        val summary = task_text.text!!.toString()
         var type = Reminder.BY_DATE
-        val isAction = binding!!.actionView.hasAction()
+        val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(summary) && !isAction) {
-            Snackbar.make(binding!!.root, getString(R.string.task_summary_is_empty), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(rootView, getString(R.string.task_summary_is_empty), Snackbar.LENGTH_SHORT).show()
             return
         }
-        var number: String? = null
+        var number = ""
         if (isAction) {
-            number = binding!!.actionView.number
+            number = actionView.number
             if (TextUtils.isEmpty(number)) {
-                Snackbar.make(binding!!.root, getString(R.string.you_dont_insert_number), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(rootView, getString(R.string.you_dont_insert_number), Snackbar.LENGTH_SHORT).show()
                 return
             }
-            if (binding!!.actionView.type == ActionView.TYPE_CALL) {
-                type = Reminder.BY_DATE_CALL
+            type = if (actionView.type == ActionView.TYPE_CALL) {
+                Reminder.BY_DATE_CALL
             } else {
-                type = Reminder.BY_DATE_SMS
+                Reminder.BY_DATE_SMS
             }
         }
-        val startTime = binding!!.dateView.dateTime
-        val before = binding!!.beforeView.beforeValue
+        val startTime = dateView.dateTime
+        val before = before_view.beforeValue
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(this, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
             return
@@ -168,11 +161,11 @@ class AddReminderActivity : ThemedActivity() {
         val reminder = Reminder()
         reminder.target = number
         reminder.type = type
-        reminder.repeatInterval = binding!!.repeatView.repeat
-        reminder.isExportToCalendar = binding!!.exportToCalendar.isChecked
-        reminder.isExportToTasks = binding!!.exportToTasks.isChecked
+        reminder.repeatInterval = repeatView.repeat
+        reminder.exportToCalendar = exportToCalendar.isChecked
+        reminder.exportToTasks = exportToTasks.isChecked
         reminder.summary = summary
-        val item = viewModel!!.defaultGroup.value
+        val item = viewModel.defaultGroup.value
         if (item != null) {
             reminder.groupUuId = item.uuId
         }
@@ -185,7 +178,7 @@ class AddReminderActivity : ThemedActivity() {
             Toast.makeText(this, R.string.reminder_is_outdated, Toast.LENGTH_SHORT).show()
             return
         }
-        viewModel!!.saveAndStartReminder(reminder)
+        viewModel.saveAndStartReminder(reminder)
     }
 
     private fun selectContact() {
@@ -199,13 +192,13 @@ class AddReminderActivity : ThemedActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Constants.REQUEST_CODE_CONTACTS && resultCode == Activity.RESULT_OK) {
             val number = data!!.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
-            binding!!.actionView.number = number
+            actionView.number = number
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        binding!!.actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == 0) return
+        actionView.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             CONTACTS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 selectContact()
@@ -215,7 +208,7 @@ class AddReminderActivity : ThemedActivity() {
 
     companion object {
 
-        private val TAG = "AddReminderActivity"
-        private val CONTACTS = 112
+        private const val TAG = "AddReminderActivity"
+        private const val CONTACTS = 112
     }
 }

@@ -1,5 +1,6 @@
 package com.elementary.tasks.reminder.lists.filters
 
+import android.annotation.SuppressLint
 import io.reactivex.functions.Consumer
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -30,6 +31,7 @@ class FilterValue<V> {
         this.value.onNext(value)
     }
 
+    @SuppressLint("CheckResult")
     fun subscribe(consumer: Consumer<V>) {
         this.value.subscribe(consumer)
     }

@@ -27,27 +27,19 @@ import com.elementary.tasks.core.data.models.Reminder
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class UpdateFilesAsync(context: Context) : AsyncTask<Reminder, Void, Void>() {
 
-    private val isConnected: Boolean
-    private val dropbox: Dropbox
-    private val google: Google?
-
-    init {
-        isConnected = SuperUtil.isConnected(context)
-        dropbox = Dropbox(context)
-        google = Google.getInstance(context)
-    }
+    private val isConnected: Boolean = SuperUtil.isConnected(context)
+    private val dropbox: Dropbox = Dropbox(context)
+    private val google: Google? = Google.getInstance()
 
     override fun doInBackground(vararg params: Reminder): Void? {
         for (reminder in params) {
-            if (reminder == null) continue
             val path = BackupTool.getInstance().exportReminder(reminder)
             if (isConnected) {
                 dropbox.uploadReminderByFileName(path)
-                if (google != null && google.drive != null && path != null) {
-                    google.drive!!.saveReminderToDrive(path)
+                if (google?.drive != null && path != null) {
+                    google.drive?.saveReminderToDrive(path)
                 }
             }
         }
