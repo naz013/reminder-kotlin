@@ -4,7 +4,10 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -26,7 +29,6 @@ import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import kotlinx.android.synthetic.main.fragment_reminders.*
-import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 /**
@@ -200,7 +202,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     override fun onResume() {
         super.onResume()
-        EventBus.getDefault().register(this)
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.tasks))
             callback?.onFragmentSelect(this)
@@ -354,11 +355,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         }
         val alert = builder.create()
         alert.show()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        EventBus.getDefault().unregister(this)
     }
 
     override fun endExecution(b: Boolean) {}

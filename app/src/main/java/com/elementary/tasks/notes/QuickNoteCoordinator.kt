@@ -5,17 +5,16 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import androidx.fragment.app.FragmentActivity
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.core.viewModels.notes.NoteViewModel
-import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
-import kotlinx.android.synthetic.main.activity_main.view.*
+import com.elementary.tasks.core.viewModels.notes.NotesViewModel
+import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
+import com.elementary.tasks.navigation.MainActivity
 import kotlinx.android.synthetic.main.view_note_card.view.*
 import kotlinx.android.synthetic.main.view_note_reminder_card.view.*
 import kotlinx.android.synthetic.main.view_note_status_card.view.*
@@ -39,18 +38,18 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class QuickNoteCoordinator(private val mContext: FragmentActivity, private val binding: View, private val mCallback: Callback?) {
+class QuickNoteCoordinator(private val mContext: MainActivity, private val parent: ViewGroup,
+                           private val noteList: ViewGroup, private val mCallback: Callback?,
+                           private var reminderViewModel: ActiveRemindersViewModel,
+                           private var noteViewModel: NotesViewModel) {
+
     private val themeUtil: ThemeUtil = ThemeUtil.getInstance(mContext)
-    private var reminderViewModel: ReminderViewModel? = null
-    private var noteViewModel: NoteViewModel? = null
-
     private var mNote: Note? = null
-
     val isNoteVisible: Boolean
-        get() = binding.quickNoteContainer.visibility == View.VISIBLE
+        get() = parent.visibility == View.VISIBLE
 
     init {
-        this.binding.quickNoteContainer.setOnTouchListener { _, motionEvent ->
+        parent.setOnTouchListener { _, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (isNoteVisible) {
                     hideNoteView()
@@ -59,15 +58,14 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
             }
             false
         }
-        this.binding.quickNoteContainer.visibility = View.GONE
+        parent.visibility = View.GONE
 
         initReminderViewModel()
         initNoteViewModel()
     }
 
     private fun initNoteViewModel() {
-        noteViewModel = ViewModelProviders.of(mContext).get(NoteViewModel::class.java)
-        noteViewModel!!.result.observe(mContext, Observer{ commands ->
+        noteViewModel.result.observe(mContext, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> if (Prefs.getInstance(mContext).isNoteReminderEnabled) {
@@ -81,8 +79,7 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
     }
 
     private fun initReminderViewModel() {
-        reminderViewModel = ViewModelProviders.of(mContext).get(ReminderViewModel::class.java)
-        reminderViewModel!!.result.observe(mContext, Observer{ commands ->
+        reminderViewModel.result.observe(mContext, Observer{ commands ->
             if (commands != null && commands == Commands.SAVED) {
                 if (mNote != null) addNotificationCard(mNote!!)
             }
@@ -98,18 +95,18 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
     }
 
     fun hideNoteView() {
-        ViewUtils.hideReveal(binding.quickNoteContainer)
-        binding.quickNoteView.removeAllViewsInLayout()
+        ViewUtils.hideReveal(parent)
+        noteList.removeAllViewsInLayout()
         mCallback?.onClose()
     }
 
     private fun showNoteView() {
-        ViewUtils.showReveal(binding.quickNoteContainer)
+        ViewUtils.showReveal(parent)
         Handler().postDelayed({ this.addFirstCard() }, 250)
     }
 
     private fun addFirstCard() {
-        val binding = LayoutInflater.from(mContext).inflate(R.layout.view_note_card, this.binding.quickNoteView, false)
+        val binding = LayoutInflater.from(mContext).inflate(R.layout.view_note_card, noteList, false)
         binding.buttonSave.setOnClickListener { saveNote(binding) }
         binding.noteCard.visibility = View.GONE
         if (Module.isLollipop) {
@@ -117,13 +114,13 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
         }
         binding.noteCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
         binding.bgView.setBackgroundColor(themeUtil.backgroundStyle)
-        this.binding.quickNoteView.addView(binding)
+        noteList.addView(binding)
         ViewUtils.slideInUp(mContext, binding.noteCard)
         mCallback?.onOpen()
     }
 
     private fun saveNote(binding: View) {
-        val text = binding.quickNote.text!!.toString().trim { it <= ' ' }
+        val text = binding.quickNote.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(text)) {
             binding.quickNote.error = mContext.getString(R.string.must_be_not_empty)
             return
@@ -139,11 +136,11 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
             item.color = Random().nextInt(16)
         }
         mNote = item
-        noteViewModel!!.saveNote(item)
+        noteViewModel.saveNote(item)
     }
 
     private fun addReminderCard(item: Note) {
-        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_reminder_card, this.binding.quickNoteView, false)
+        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_reminder_card, noteList, false)
         if (Module.isLollipop) {
             cardBinding.noteReminderCard.elevation = Configs.CARD_ELEVATION
         }
@@ -160,7 +157,7 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
         cardBinding.noteReminderCard.visibility = View.GONE
         cardBinding.noteReminderCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
         cardBinding.bgViewReminder.setBackgroundColor(themeUtil.backgroundStyle)
-        this.binding.quickNoteView.addView(cardBinding)
+        noteList.addView(cardBinding)
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteReminderCard) }, 250)
     }
 
@@ -174,7 +171,7 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
         reminder.isActive = true
         reminder.isRemoved = false
         reminder.summary = item.summary
-        val def = reminderViewModel!!.defaultGroup.value
+        val def = reminderViewModel.defaultGroup.value
         if (def != null) {
             reminder.groupUuId = def.uuId
         }
@@ -182,11 +179,11 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
         val startTime = System.currentTimeMillis() + prefsTime
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
-        reminderViewModel!!.saveAndStartReminder(reminder)
+        reminderViewModel.saveAndStartReminder(reminder)
     }
 
     private fun addNotificationCard(item: Note) {
-        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_status_card, binding.quickNoteView, false)
+        val cardBinding = LayoutInflater.from(mContext).inflate(R.layout.view_note_status_card, noteList, false)
         if (Module.isLollipop) {
             cardBinding.noteStatusCard.elevation = Configs.CARD_ELEVATION
         }
@@ -199,7 +196,7 @@ class QuickNoteCoordinator(private val mContext: FragmentActivity, private val b
         cardBinding.noteStatusCard.visibility = View.GONE
         cardBinding.noteStatusCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.colorPrimary()))
         cardBinding.bgViewStatus.setBackgroundColor(themeUtil.backgroundStyle)
-        this.binding.quickNoteView.addView(cardBinding)
+        noteList.addView(cardBinding)
         Handler().postDelayed({ ViewUtils.slideInUp(mContext, cardBinding.noteStatusCard) }, 250)
     }
 

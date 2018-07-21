@@ -76,7 +76,12 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(layoutRes(), container, false)
+        val res = layoutRes()
+        return if (res != 0) {
+            inflater.inflate(layoutRes(), container, false)
+        } else {
+            super.onCreateView(inflater, container, savedInstanceState)
+        }
     }
 
     @LayoutRes
