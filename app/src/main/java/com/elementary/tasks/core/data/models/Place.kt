@@ -3,6 +3,8 @@ package com.elementary.tasks.core.data.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -26,6 +28,9 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
+@TypeConverters(
+        ListStringTypeConverter::class
+)
 class Place {
 
     @SerializedName("radius")
@@ -44,7 +49,7 @@ class Place {
     @SerializedName("address")
     var address: String = ""
     @SerializedName("tags")
-    var tags: MutableList<String> = mutableListOf()
+    var tags: List<String> = listOf()
 
     constructor()
 
@@ -57,7 +62,7 @@ class Place {
         this.name = name
         this.id = UUID.randomUUID().toString()
         this.address = address
-        this.tags.addAll(tags)
+        this.tags = tags
     }
 
     override fun toString(): String {

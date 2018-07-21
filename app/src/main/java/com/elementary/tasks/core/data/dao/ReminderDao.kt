@@ -30,8 +30,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface ReminderDao {
 
-    @get:Query("SELECT * FROM Reminder")
-    val all: List<Reminder>
+    @Query("SELECT * FROM Reminder")
+    fun all(): List<Reminder>
 
     @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
     fun loadById(id: Int): LiveData<Reminder>
@@ -64,10 +64,10 @@ interface ReminderDao {
     fun getAllTypesInRange(active: Boolean, removed: Boolean, fromTime: String, toTime: String): List<Reminder>
 
     @Insert(onConflict = REPLACE)
-    fun insert(reminder: Reminder): Int
+    fun insert(reminder: Reminder)
 
     @Insert(onConflict = REPLACE)
-    fun insertAll(reminders: List<Reminder>)
+    fun insertAll(reminders: Iterable<Reminder>)
 
     @Delete
     fun delete(reminder: Reminder)

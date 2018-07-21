@@ -133,7 +133,7 @@ class UserInfoAsync(private val mContext: Context, private val listener: ((List<
     }
 
     private fun addGoogleData(list: MutableList<UserItem>) {
-        val gdx = Google.getInstance(mContext)
+        val gdx = Google.getInstance()
         if (gdx != null && SuperUtil.isConnected(mContext)) {
             val drives = gdx.drive
             if (drives != null) {

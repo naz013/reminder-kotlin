@@ -68,7 +68,7 @@ class DeleteAsync(private val mContext: Context, private val listener: (() -> Un
                 dbx.cleanFolder()
             }
         } else if (type == UserInfoAsync.Info.Google) {
-            val gdx = Google.getInstance(mContext)
+            val gdx = Google.getInstance()
             val isLinked = gdx != null
             val isConnected = SuperUtil.isConnected(mContext)
             for (file in params) {

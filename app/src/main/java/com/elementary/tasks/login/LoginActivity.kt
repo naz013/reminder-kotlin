@@ -127,7 +127,7 @@ class LoginActivity : ThemedActivity() {
     private fun showLoginError() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(getString(R.string.failed_to_login))
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -164,7 +164,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun initGroups() {
-        if (AppDb.getAppDatabase(this).groupDao().all.isEmpty()) {
+        if (AppDb.getAppDatabase(this).groupDao().all().isEmpty()) {
             GroupsUtil.initDefault(this)
         }
     }

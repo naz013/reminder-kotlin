@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.di
 
 import android.app.Application
+import com.elementary.tasks.core.utils.Prefs
 
 import com.elementary.tasks.core.utils.ThemeUtil
 
@@ -28,11 +29,17 @@ import dagger.Provides
  * limitations under the License.
  */
 @Module
-class ThemeModule {
+class UtilModule {
 
     @Provides
     @Singleton
-    internal fun providesThemeUtil(application: Application): ThemeUtil {
+    fun providesThemeUtil(application: Application): ThemeUtil {
         return ThemeUtil.getInstance(application)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPrefs(application: Application): Prefs {
+        return Prefs.getInstance(application)
     }
 }

@@ -61,7 +61,7 @@ class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) 
                         taskList = GoogleTaskList(item, color)
                     }
                     appDb.googleTaskListsDao().insert(taskList)
-                    val listItem = appDb.googleTaskListsDao().all[0]
+                    val listItem = appDb.googleTaskListsDao().all()[0]
                     listItem.def = 1
                     listItem.systemDefault = 1
                     appDb.googleTaskListsDao().insert(listItem)

@@ -181,7 +181,7 @@ class WidgetDataProvider(private val mContext: Context) {
     }
 
     private fun loadBirthdays() {
-        val list = AppDb.getAppDatabase(mContext).birthdaysDao().all
+        val list = AppDb.getAppDatabase(mContext).birthdaysDao().all()
         for (item in list) {
             var date: Date? = null
             try {

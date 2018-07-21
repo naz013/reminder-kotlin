@@ -1,9 +1,8 @@
 package com.elementary.tasks.core.data.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
-import androidx.room.TypeConverters
+import androidx.room.*
+import com.elementary.tasks.core.data.converters.ListIntTypeConverter
+import com.elementary.tasks.core.data.converters.ListStringTypeConverter
 import com.elementary.tasks.core.data.converters.PlacesTypeConverter
 import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
@@ -32,7 +31,12 @@ import java.util.*
  * limitations under the License.
  */
 @Entity
-@TypeConverters(PlacesTypeConverter::class, ShopItemsTypeConverter::class)
+@TypeConverters(
+        PlacesTypeConverter::class,
+        ShopItemsTypeConverter::class,
+        ListStringTypeConverter::class,
+        ListIntTypeConverter::class
+)
 class Reminder : RecyclerInterface {
 
     @SerializedName("summary")
@@ -128,6 +132,7 @@ class Reminder : RecyclerInterface {
     var remindBefore: Long = 0
     @SerializedName("windowType")
     var windowType = 0
+    @Ignore
     @Relation(entity = Group::class, parentColumn = "groupUuId", entityColumn = "uuId")
     var group: Group? = null
 

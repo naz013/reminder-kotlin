@@ -81,7 +81,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
             return ArrayAdapter(this, android.R.layout.simple_list_item_1, spinnerArray)
         }
 
-    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         mCustomYear = year
         mCustomMonth = monthOfYear
         mCustomDay = dayOfMonth
@@ -94,7 +94,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         customDate.text = TimeUtil.DATE_FORMAT.format(c.time)
     }
 
-    private var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+    private var myCallBack: TimePickerDialog.OnTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
         mCustomHour = hourOfDay
         mCustomMinute = minute
 
@@ -113,7 +113,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mGoogleTasks = Google.getInstance(this)
+        mGoogleTasks = Google.getInstance()
         val i = intent
         val receivedDate = i.getLongExtra(Constants.SELECTED_TIME, 0)
         mNumber = i.getStringExtra(Constants.SELECTED_CONTACT_NUMBER)
@@ -152,6 +152,8 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
             if (commands != null) {
                 when (commands) {
                     Commands.SAVED -> closeWindow()
+                    else -> {
+                    }
                 }
             }
         })
@@ -170,12 +172,10 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         val c = Calendar.getInstance()
         c.timeInMillis = mCurrentTime
         val currDay = c.get(Calendar.DAY_OF_WEEK)
-        if (currDay == Calendar.FRIDAY) {
-            c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 3
-        } else if (currDay == Calendar.SATURDAY) {
-            c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 2
-        } else {
-            c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24
+        when (currDay) {
+            Calendar.FRIDAY -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 3
+            Calendar.SATURDAY -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24 * 2
+            else -> c.timeInMillis = mCurrentTime + 1000 * 60 * 60 * 24
         }
         mNextWorkTime = c.timeInMillis
         val nextWorkingTime = nextWorkingTime
@@ -231,10 +231,10 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     private fun initPrefs() {
-        mCalendar = prefs!!.isCalendarEnabled
-        mStock = prefs!!.isStockCalendarEnabled
+        mCalendar = prefs.isCalendarEnabled
+        mStock = prefs.isStockCalendarEnabled
         mTasks = mGoogleTasks != null
-        mIs24Hour = prefs!!.is24HourFormatEnabled
+        mIs24Hour = prefs.is24HourFormatEnabled
     }
 
     private fun initActionBar() {
@@ -264,11 +264,11 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         return mins
     }
 
-    protected fun dateDialog() {
+    private fun dateDialog() {
         TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay)
     }
 
-    protected fun timeDialog() {
+    private fun timeDialog() {
         TimeUtil.showTimePicker(this, myCallBack, mCustomHour, mCustomMinute)
     }
 
@@ -306,24 +306,25 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     private fun setUpTimes() {
-        if (timeNextWorking.isChecked) {
-            setUpNextBusiness()
-        } else if (timeTomorrow.isChecked) {
-            setUpTomorrow()
-        } else if (timeCustom.isChecked) {
-            mDay = mCustomDay
-            mHour = mCustomHour
-            mMinute = mCustomMinute
-            mMonth = mCustomMonth
-            mYear = mCustomYear
-        } else {
-            val c = Calendar.getInstance()
-            c.timeInMillis = mCurrentTime + 1000 * 60 * getAfterMins(afterTime.selectedItemPosition)
-            mHour = c.get(Calendar.HOUR_OF_DAY)
-            mMinute = c.get(Calendar.MINUTE)
-            mYear = c.get(Calendar.YEAR)
-            mMonth = c.get(Calendar.MONTH)
-            mDay = c.get(Calendar.DAY_OF_MONTH)
+        when {
+            timeNextWorking.isChecked -> setUpNextBusiness()
+            timeTomorrow.isChecked -> setUpTomorrow()
+            timeCustom.isChecked -> {
+                mDay = mCustomDay
+                mHour = mCustomHour
+                mMinute = mCustomMinute
+                mMonth = mCustomMonth
+                mYear = mCustomYear
+            }
+            else -> {
+                val c = Calendar.getInstance()
+                c.timeInMillis = mCurrentTime + 1000 * 60 * getAfterMins(afterTime.selectedItemPosition)
+                mHour = c.get(Calendar.HOUR_OF_DAY)
+                mMinute = c.get(Calendar.MINUTE)
+                mYear = c.get(Calendar.YEAR)
+                mMonth = c.get(Calendar.MONTH)
+                mDay = c.get(Calendar.DAY_OF_MONTH)
+            }
         }
     }
 

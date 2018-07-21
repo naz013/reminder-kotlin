@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 /**
@@ -40,6 +41,9 @@ class Group {
     @SerializedName("dateTime")
     var dateTime: String = ""
 
+    constructor()
+
+    @Ignore
     constructor(title: String, color: Int) {
         this.title = title
         this.uuId = UUID.randomUUID().toString()
@@ -47,6 +51,7 @@ class Group {
         this.dateTime = TimeUtil.gmtDateTime
     }
 
+    @Ignore
     constructor(title: String, uuId: String, color: Int, dateTime: String) {
         this.title = title
         this.uuId = uuId

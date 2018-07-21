@@ -242,7 +242,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             if (map.containsKey(EVENT_KEY)) {
                 val eventItems = CalendarUtils.getEvents(mContext, map[EVENT_KEY]!!)
                 if (!eventItems.isEmpty()) {
-                    val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds
+                    val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
                     for (item in eventItems) {
                         val itemId = item.id
                         if (!list.contains(itemId)) {
@@ -267,7 +267,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
                                 }
                             }
                             val summary = item.title
-                            val group = AppDb.getAppDatabase(mContext).groupDao().default
+                            val group = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
                             var categoryId = ""
                             if (group != null) {
                                 categoryId = group.uuId

@@ -1,9 +1,13 @@
-package com.elementary.tasks.core.interfaces
+package com.elementary.tasks.core.data.converters
 
-import android.view.View
+import com.elementary.tasks.core.data.models.ShopItem
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+import androidx.room.TypeConverter
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +24,15 @@ import android.view.View
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class ListStringTypeConverter {
 
-interface ClickListener {
-    fun onClick(v: View)
+    @TypeConverter
+    fun toJson(list: List<String>): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun toList(json: String): List<String> {
+        return Gson().fromJson<List<String>>(json, object : TypeToken<List<String>>() {}.type)
+    }
 }

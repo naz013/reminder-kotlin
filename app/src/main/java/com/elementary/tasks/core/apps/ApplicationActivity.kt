@@ -2,21 +2,20 @@ package com.elementary.tasks.core.apps
 
 import android.content.Context
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
-
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.fileExplorer.RecyclerClickListener
+import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.databinding.ActivityApplicationListBinding
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
-
-import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_application_list.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,86 +35,77 @@ import androidx.recyclerview.widget.LinearLayoutManager
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ApplicationActivity : ThemedActivity(), LoadListener, RecyclerClickListener, FilterCallback<ApplicationItem> {
+class ApplicationActivity : ThemedActivity(), FilterCallback<ApplicationItem> {
 
-    private var binding: ActivityApplicationListBinding? = null
-    private var mAdapter: AppsRecyclerAdapter? = null
+    private var mAdapter: AppsRecyclerAdapter = AppsRecyclerAdapter()
 
     private val filterController = AppFilterController(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_application_list)
+        setContentView(R.layout.activity_application_list)
         initActionBar()
         initSearchView()
         initRecyclerView()
-        AppsAsync(this, this).execute()
+        AppsAsync(this) {
+            filterController.original = it
+        }.execute()
     }
 
     private fun initRecyclerView() {
-        binding!!.contactsList.layoutManager = LinearLayoutManager(this)
-        binding!!.contactsList.setHasFixedSize(true)
-        mAdapter = AppsRecyclerAdapter(this)
-        binding!!.contactsList.adapter = mAdapter
+        mAdapter.actionsListener = object : ActionsListener<ApplicationItem> {
+            override fun onAction(view: View, position: Int, t: ApplicationItem?, actions: ListActions) {
+                if (t != null) {
+                    val intent = Intent()
+                    intent.putExtra(Constants.SELECTED_APPLICATION, t.packageName)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
+            }
+        }
+        contactsList.layoutManager = LinearLayoutManager(this)
+        contactsList.adapter = mAdapter
     }
 
     private fun initSearchView() {
-        binding!!.searchField.addTextChangedListener(object : TextWatcher {
+        searchField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (mAdapter != null) {
-                    filterController.setSearchValue(s.toString())
-                }
+                filterController.setSearchValue(s.toString())
             }
 
             override fun afterTextChanged(s: Editable) {
-
             }
         })
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        }
-        binding!!.toolbar.title = getString(R.string.choose_application)
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        toolbar.title = getString(R.string.choose_application)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
     }
 
     override fun onPause() {
         super.onPause()
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm?.hideSoftInputFromWindow(binding!!.searchField.windowToken, 0)
-    }
-
-    override fun onLoaded(list: List<ApplicationItem>) {
-        filterController.original = list
-    }
-
-    override fun onItemClick(position: Int) {
-        val intent = Intent()
-        val packageName = mAdapter!!.getItem(position).packageName
-        intent.putExtra(Constants.SELECTED_APPLICATION, packageName)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.hideSoftInputFromWindow(searchField.windowToken, 0)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             val intent = Intent()
-            setResult(Activity.RESULT_CANCELED, intent)
+            setResult(RESULT_CANCELED, intent)
             finish()
         }
         return true
     }
 
-    override fun onChanged(result: MutableList<ApplicationItem>) {
-        mAdapter!!.data = result
-        binding!!.contactsList.smoothScrollToPosition(0)
+    override fun onChanged(result: List<ApplicationItem>) {
+        mAdapter.data = result.toMutableList()
+        contactsList.smoothScrollToPosition(0)
     }
 }

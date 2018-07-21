@@ -13,20 +13,11 @@ import com.elementary.tasks.core.data.dao.NotesDao
 import com.elementary.tasks.core.data.dao.PlacesDao
 import com.elementary.tasks.core.data.dao.ReminderDao
 import com.elementary.tasks.core.data.dao.SmsTemplatesDao
-import com.elementary.tasks.core.data.models.CalendarEvent
-import com.elementary.tasks.core.data.models.GoogleTask
-import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Group
-import com.elementary.tasks.core.data.models.MissedCall
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.data.models.Place
-import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.data.models.SmsTemplate
-import com.elementary.tasks.core.data.models.MainImage
 
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.elementary.tasks.core.data.models.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -56,30 +47,21 @@ import androidx.room.RoomDatabase
     GoogleTaskList::class,
     GoogleTask::class,
     MainImage::class,
+    Birthday::class,
     SmsTemplate::class
 ], version = 1, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
-
     abstract fun groupDao(): GroupDao
-
     abstract fun missedCallsDao(): MissedCallsDao
-
     abstract fun smsTemplatesDao(): SmsTemplatesDao
-
     abstract fun placesDao(): PlacesDao
-
     abstract fun calendarEventsDao(): CalendarEventsDao
-
     abstract fun notesDao(): NotesDao
-
     abstract fun birthdaysDao(): BirthdaysDao
-
     abstract fun googleTaskListsDao(): GoogleTaskListsDao
-
     abstract fun googleTasksDao(): GoogleTasksDao
-
     abstract fun mainImagesDao(): MainImagesDao
 
     companion object {

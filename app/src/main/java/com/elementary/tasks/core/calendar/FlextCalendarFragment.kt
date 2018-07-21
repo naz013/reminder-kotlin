@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.views.MonthView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import hirondelle.date4j.DateTime
@@ -230,11 +229,7 @@ open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.
         val pageChangeListener = DatePageChangeListener()
         pageChangeListener.setCurrentDateTime(currentDateTime)
         months_infinite_pager.isEnabled = true
-        if (Module.isLollipop) {
-            months_infinite_pager.addOnPageChangeListener(pageChangeListener)
-        } else {
-            months_infinite_pager.setOnPageChangeListener(pageChangeListener)
-        }
+        months_infinite_pager.addOnPageChangeListener(pageChangeListener)
         return pageChangeListener
     }
 

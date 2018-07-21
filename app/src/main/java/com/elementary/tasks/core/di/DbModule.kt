@@ -32,7 +32,7 @@ class DbModule {
 
     @Provides
     @Singleton
-    internal fun providesAppDb(application: Application): AppDb {
+    fun providesAppDb(application: Application): AppDb {
         return AppDb.getAppDatabase(application)
     }
 }

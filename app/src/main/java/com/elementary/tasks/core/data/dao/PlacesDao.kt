@@ -31,8 +31,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface PlacesDao {
 
-    @get:Query("SELECT * FROM Place")
-    val all: List<Place>
+    @Query("SELECT * FROM Place")
+    fun all(): List<Place>
 
     @Query("SELECT * FROM Place")
     fun loadAll(): LiveData<List<Place>>

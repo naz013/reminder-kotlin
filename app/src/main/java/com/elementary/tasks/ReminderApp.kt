@@ -4,10 +4,6 @@ import android.content.Context
 
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
-import com.elementary.tasks.core.di.AppComponent
-import com.elementary.tasks.core.di.AppModule
-import com.elementary.tasks.core.di.DaggerAppComponent
-import com.elementary.tasks.core.di.DbModule
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
@@ -15,6 +11,7 @@ import com.evernote.android.job.JobManager
 
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.elementary.tasks.core.di.*
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
@@ -48,6 +45,7 @@ class ReminderApp : MultiDexApplication() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(AppModule(this))
                 .dbModule(DbModule())
+                .utilModule(UtilModule())
                 .build()
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
@@ -58,7 +56,6 @@ class ReminderApp : MultiDexApplication() {
     }
 
     companion object {
-
         lateinit var appComponent: AppComponent
             private set
     }

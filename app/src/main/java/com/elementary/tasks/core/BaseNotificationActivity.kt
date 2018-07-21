@@ -128,7 +128,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody)) {
                 return UriUtil.getUri(this, melody)
             } else {
-                val defMelody = prefs!!.melodyFile
+                val defMelody = prefs.melodyFile
                 if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                     val sound = File(defMelody)
                     if (sound.exists()) {
@@ -196,14 +196,14 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     protected fun colorify(vararg fab: FloatingActionButton) {
         for (button in fab) {
-            button.backgroundTintList = ViewUtils.getFabState(this, themeUtil!!.colorAccent(), themeUtil!!.colorAccent())
+            button.backgroundTintList = ViewUtils.getFabState(this, themeUtil.colorAccent(), themeUtil.colorAccent())
         }
     }
 
     protected fun loadImage(imageView: ImageView) {
         imageView.visibility = View.GONE
-        val imagePrefs = prefs!!.reminderImage
-        val blur = prefs!!.isBlurEnabled
+        val imagePrefs = prefs.reminderImage
+        val blur = prefs.isBlurEnabled
         LogUtil.d(TAG, "loadImage: $imagePrefs, blur $blur")
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
@@ -245,8 +245,8 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     }
 
     private fun setUpScreenOptions() {
-        var isFull = prefs!!.isDeviceUnlockEnabled
-        var isWake = prefs!!.isDeviceAwakeEnabled
+        var isFull = prefs.isDeviceUnlockEnabled
+        var isWake = prefs.isDeviceAwakeEnabled
         if (!isGlobal) {
             isFull = isUnlockDevice
             isWake = isAwakeDevice
@@ -273,8 +273,8 @@ abstract class BaseNotificationActivity : ThemedActivity() {
                 or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
 
         if (tts != null) {
-            tts!!.stop()
-            tts!!.shutdown()
+            tts?.stop()
+            tts?.shutdown()
         }
     }
 
@@ -314,7 +314,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     private fun hideProgressDialog() {
         if (mSendDialog != null && mSendDialog!!.isShowing) {
-            mSendDialog!!.dismiss()
+            mSendDialog?.dismiss()
         }
     }
 

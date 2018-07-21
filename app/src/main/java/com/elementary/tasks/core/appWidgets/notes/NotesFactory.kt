@@ -44,7 +44,7 @@ internal class NotesFactory(private val mContext: Context) : RemoteViewsService.
 
     override fun onDataSetChanged() {
         notes.clear()
-        notes.addAll(AppDb.getAppDatabase(mContext).notesDao().all)
+        notes.addAll(AppDb.getAppDatabase(mContext).notesDao().all())
     }
 
     override fun onDestroy() {

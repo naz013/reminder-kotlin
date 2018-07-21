@@ -37,7 +37,11 @@ import dagger.Component
  * limitations under the License.
  */
 @Singleton
-@Component(modules = [AppModule::class, DbModule::class, ThemeModule::class])
+@Component(modules = [
+    AppModule::class,
+    DbModule::class,
+    UtilModule::class
+])
 interface AppComponent {
     fun inject(viewModel: BaseDbViewModel)
 

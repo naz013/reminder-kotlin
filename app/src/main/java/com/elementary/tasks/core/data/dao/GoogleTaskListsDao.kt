@@ -30,11 +30,11 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface GoogleTaskListsDao {
 
-    @get:Query("SELECT * FROM GoogleTaskList")
-    val all: List<GoogleTaskList>
+    @Query("SELECT * FROM GoogleTaskList")
+    fun all(): List<GoogleTaskList>
 
-    @get:Query("SELECT * FROM GoogleTaskList WHERE def=1")
-    val default: GoogleTaskList?
+    @Query("SELECT * FROM GoogleTaskList WHERE def=1")
+    fun defaultGoogleTaskList(): GoogleTaskList?
 
     @Query("SELECT * FROM GoogleTaskList")
     fun loadAll(): LiveData<List<GoogleTaskList>>

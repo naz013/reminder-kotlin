@@ -54,7 +54,7 @@ class DeleteBirthdayFilesAsync(private val mContext: Context) : AsyncTask<String
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
                 Dropbox(mContext).deleteBirthday(exportFileName)
-                val google = Google.getInstance(mContext)
+                val google = Google.getInstance()
                 if (google?.drive != null) {
                     try {
                         google.drive!!.deleteBirthdayFileByName(exportFileName)

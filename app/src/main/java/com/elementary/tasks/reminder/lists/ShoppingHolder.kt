@@ -42,7 +42,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
 
     @Inject
-    var themeUtil: ThemeUtil? = null
+    lateinit var themeUtil: ThemeUtil
     val listHeader: RoboTextView = itemView.listHeader
 
     init {
@@ -59,7 +59,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadItems(shoppings: List<ShopItem>) {
-        val isDark = themeUtil!!.isDark
+        val isDark = themeUtil.isDark
         itemView.todoList.isFocusableInTouchMode = false
         itemView.todoList.isFocusable = false
         itemView.todoList.removeAllViewsInLayout()
@@ -110,9 +110,9 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     private fun loadCard(group: Group?) {
         if (group != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(group.color)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(group.color)))
         } else {
-            itemView.itemCard.setCardBackgroundColor(themeUtil!!.getColor(themeUtil!!.getCategoryColor(0)))
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }
     }
 }

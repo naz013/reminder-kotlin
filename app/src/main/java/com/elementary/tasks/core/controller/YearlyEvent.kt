@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.TimeUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class YearlyEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
 
     override val isActive: Boolean

@@ -35,7 +35,7 @@ import java.util.*
 
 class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
 
-    private lateinit var mContext: Context
+    private var mContext: Context
     private val birthdayFormats = arrayOf<DateFormat>(SimpleDateFormat("yyyy-MM-dd", Locale.US), SimpleDateFormat("yyyyMMdd", Locale.US), SimpleDateFormat("yyyy.MM.dd", Locale.US), SimpleDateFormat("yy.MM.dd", Locale.US), SimpleDateFormat("MMM dd, yyyy", Locale.US), SimpleDateFormat("yy/MM/dd", Locale.US))
 
     private var showDialog = false
@@ -51,8 +51,8 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
         this.showDialog = showDialog
         if (showDialog) {
             pd = ProgressDialog(context)
-            pd!!.setMessage(context.getString(R.string.please_wait))
-            pd!!.setCancelable(true)
+            pd?.setMessage(context.getString(R.string.please_wait))
+            pd?.setCancelable(true)
         }
     }
 
@@ -62,8 +62,8 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
         this.mCallback = callback
         if (showDialog) {
             pd = ProgressDialog(context)
-            pd!!.setMessage(context.getString(R.string.please_wait))
-            pd!!.setCancelable(true)
+            pd?.setMessage(context.getString(R.string.please_wait))
+            pd?.setCancelable(true)
         }
     }
 
@@ -91,7 +91,7 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
                     "' and " + ContactsContract.Data.CONTACT_ID + " = " + contactId
             val sortOrder = ContactsContract.Contacts.DISPLAY_NAME
             val dao = AppDb.getAppDatabase(mContext).birthdaysDao()
-            val contacts = dao.all
+            val contacts = dao.all()
             val birthdayCur = cr.query(ContactsContract.Data.CONTENT_URI, columns, where, null, sortOrder)
             if (birthdayCur != null && birthdayCur.count > 0) {
                 while (birthdayCur.moveToNext()) {
@@ -114,7 +114,7 @@ class CheckBirthdaysAsync : AsyncTask<Void, Void, Int> {
                             val month = calendar.get(Calendar.MONTH)
                             val birthdayItem = Birthday(name, DATE_FORMAT.format(calendar.time), number, 0, id, day, month)
                             if (!contacts.contains(birthdayItem)) {
-                                i = i + 1
+                                i += 1
                             }
                             dao.insert(birthdayItem)
                             break

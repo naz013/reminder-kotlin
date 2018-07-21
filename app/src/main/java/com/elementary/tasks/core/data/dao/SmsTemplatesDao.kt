@@ -30,8 +30,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface SmsTemplatesDao {
 
-    @get:Query("SELECT * FROM SmsTemplate")
-    val all: List<SmsTemplate>
+    @Query("SELECT * FROM SmsTemplate")
+    fun all(): List<SmsTemplate>
 
     @Query("SELECT * FROM SmsTemplate")
     fun loadAll(): LiveData<List<SmsTemplate>>
