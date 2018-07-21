@@ -45,7 +45,7 @@ class BackupTool private constructor() {
     }
 
     fun exportTemplates() {
-        for (item in AppDb.getAppDatabase(mContext).smsTemplatesDao().all) {
+        for (item in AppDb.getAppDatabase(mContext).smsTemplatesDao().all()) {
             exportTemplate(item)
         }
     }
@@ -107,7 +107,7 @@ class BackupTool private constructor() {
     }
 
     fun exportPlaces() {
-        for (item in AppDb.getAppDatabase(mContext).placesDao().all) {
+        for (item in AppDb.getAppDatabase(mContext).placesDao().all()) {
             exportPlace(item)
         }
     }
@@ -169,7 +169,7 @@ class BackupTool private constructor() {
     }
 
     fun exportBirthdays() {
-        for (item in AppDb.getAppDatabase(mContext).birthdaysDao().all) {
+        for (item in AppDb.getAppDatabase(mContext).birthdaysDao().all()) {
             exportBirthday(item)
         }
     }
@@ -231,7 +231,7 @@ class BackupTool private constructor() {
     }
 
     fun exportGroups() {
-        for (item in AppDb.getAppDatabase(mContext).groupDao().all) {
+        for (item in AppDb.getAppDatabase(mContext).groupDao().all()) {
             exportGroup(item)
         }
     }
@@ -261,7 +261,7 @@ class BackupTool private constructor() {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val groups = AppDb.getAppDatabase(mContext).groupDao().all.toMutableList()
+                val groups = AppDb.getAppDatabase(mContext).groupDao().all().toMutableList()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         val item = getGroup(file.toString(), null)
@@ -306,7 +306,7 @@ class BackupTool private constructor() {
     }
 
     fun exportReminders() {
-        for (reminder in AppDb.getAppDatabase(mContext).reminderDao().all) {
+        for (reminder in AppDb.getAppDatabase(mContext).reminderDao().all()) {
             exportReminder(reminder)
         }
     }
@@ -317,7 +317,7 @@ class BackupTool private constructor() {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val defaultGroup = AppDb.getAppDatabase(mContext).groupDao().default
+                val defaultGroup = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         val reminder = getReminder(file.toString(), null) ?: continue
@@ -417,7 +417,7 @@ class BackupTool private constructor() {
     }
 
     fun exportNotes() {
-        for (item in AppDb.getAppDatabase(mContext).notesDao().all) {
+        for (item in AppDb.getAppDatabase(mContext).notesDao().all()) {
             exportNote(item)
         }
     }

@@ -112,7 +112,7 @@ private constructor() {
                 if (!TextUtils.isEmpty(listId)) {
                     result = tasksService!!.tasks().insert(listId, task).execute()
                 } else {
-                    val googleTaskList = AppDb.getAppDatabase(mContext).googleTaskListsDao().default
+                    val googleTaskList = AppDb.getAppDatabase(mContext).googleTaskListsDao().defaultGoogleTaskList()
                     if (googleTaskList != null) {
                         item.listId = googleTaskList.listId
                         result = tasksService!!.tasks().insert(googleTaskList.listId, task).execute()
@@ -746,17 +746,17 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun deleteReminderFileByName(title: String?) {
-            var title = title
-            LogUtil.d(TAG, "deleteReminderFileByName: " + title!!)
-            if (title == "" || driveService == null) {
+            var titleStr = title
+            LogUtil.d(TAG, "deleteReminderFileByName: " + titleStr!!)
+            if (titleStr == "" || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -777,16 +777,16 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun deleteNoteFileByName(title: String?) {
-            var title = title
-            if (title == null || driveService == null) {
+            var titleStr = title
+            if (titleStr == null || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -807,16 +807,16 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun deleteGroupFileByName(title: String?) {
-            var title = title
-            if (title == null || driveService == null) {
+            var titleStr = title
+            if (titleStr == null || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -837,16 +837,16 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun deleteBirthdayFileByName(title: String?) {
-            var title = title
-            if (title == null || driveService == null) {
+            var titleStr = title
+            if (titleStr == null || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -867,16 +867,16 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun deletePlaceFileByName(title: String?) {
-            var title = title
-            if (title == null || driveService == null) {
+            var titleStr = title
+            if (titleStr == null || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>
@@ -892,16 +892,16 @@ private constructor() {
 
         @Throws(IOException::class)
         fun deleteTemplateFileByName(title: String?) {
-            var title = title
-            if (title == null || driveService == null) {
+            var titleStr = title
+            if (titleStr == null || driveService == null) {
                 return
             }
-            val strs = title.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val strs = titleStr.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (strs.isNotEmpty()) {
-                title = strs[0]
+                titleStr = strs[0]
             }
             val request = driveService!!.files().list()
-                    .setQ("mimeType = 'text/plain' and name contains '$title'") ?: return
+                    .setQ("mimeType = 'text/plain' and name contains '$titleStr'") ?: return
             do {
                 val files = request.execute()
                 val fileList = files.files as ArrayList<com.google.api.services.drive.model.File>

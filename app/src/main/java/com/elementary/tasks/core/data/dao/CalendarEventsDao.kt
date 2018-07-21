@@ -32,11 +32,11 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface CalendarEventsDao {
 
-    @get:Query("SELECT * FROM CalendarEvent")
-    val all: List<CalendarEvent>
+    @Query("SELECT * FROM CalendarEvent")
+    fun all(): List<CalendarEvent>
 
-    @get:Query("SELECT eventId FROM CalendarEvent")
-    val eventIds: List<Long>
+    @Query("SELECT eventId FROM CalendarEvent")
+    fun eventIds(): List<Long>
 
     @Query("SELECT * FROM CalendarEvent")
     fun loadAll(): LiveData<List<CalendarEvent>>

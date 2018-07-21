@@ -48,7 +48,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val mData = ArrayList<Reply>()
     var mCallback: (() -> Unit)? = null
     @Inject
-    var themeUtil: ThemeUtil? = null
+    lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -87,7 +87,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is GroupHolder -> holder.setData(mData[position].`object` as Group)
             is BirthdayHolder -> {
                 holder.setData(mData[position].`object` as Birthday)
-                holder.setColor(themeUtil!!.getColor(themeUtil!!.colorBirthdayCalendar()))
+                holder.setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()))
             }
             is ShoppingHolder -> holder.setData(mData[position].`object` as Reminder)
             is AskHolder -> holder.setAskAction(mData[position].`object` as AskAction)
@@ -132,8 +132,8 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     askAction!!.onNo()
                 }
             }
-            itemView.replyNo.setBackgroundResource(themeUtil!!.rectangle)
-            itemView.replyYes.setBackgroundResource(themeUtil!!.rectangle)
+            itemView.replyNo.setBackgroundResource(themeUtil.rectangle)
+            itemView.replyYes.setBackgroundResource(themeUtil.rectangle)
             itemView.replyNo.text = Language.getLocalized(itemView.context, R.string.no)
             itemView.replyYes.text = Language.getLocalized(itemView.context, R.string.yes)
         }

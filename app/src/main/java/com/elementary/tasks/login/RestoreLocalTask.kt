@@ -35,11 +35,10 @@ import java.io.IOException
  */
 class RestoreLocalTask internal constructor(context: Context, private val mListener: (() -> Unit)?) : AsyncTask<Void, String, Int>() {
 
-    private val mContext: ContextHolder
+    private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
 
     init {
-        this.mContext = ContextHolder(context)
         this.mDialog = ProgressDialog(context)
     }
 
@@ -73,10 +72,10 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
         } catch (ignored: IOException) {
         }
 
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all
-        if (list.size == 0) {
+        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
+        if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
-            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
+            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()
             val dao = AppDb.getAppDatabase(mContext.context).reminderDao()
             for (item in items) {
                 item.groupUuId = defUiID

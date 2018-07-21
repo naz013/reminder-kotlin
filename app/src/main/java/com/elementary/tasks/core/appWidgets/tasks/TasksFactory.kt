@@ -54,12 +54,12 @@ internal class TasksFactory(private val mContext: Context, intent: Intent) : Rem
 
     override fun onDataSetChanged() {
         map.clear()
-        val list = AppDb.getAppDatabase(mContext).googleTaskListsDao().all
+        val list = AppDb.getAppDatabase(mContext).googleTaskListsDao().all()
         for (item in list) {
             map[item.listId] = item.color
         }
         mData.clear()
-        mData.addAll(AppDb.getAppDatabase(mContext).googleTasksDao().all)
+        mData.addAll(AppDb.getAppDatabase(mContext).googleTasksDao().all())
     }
 
     override fun onDestroy() {

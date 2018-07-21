@@ -29,7 +29,6 @@ import com.elementary.tasks.groups.GroupsUtil
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?) : AsyncTask<Void, String, Void>() {
 
     private val mContext: ContextHolder = ContextHolder(context)
@@ -39,10 +38,10 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
         super.onPreExecute()
         try {
             mDialog = ProgressDialog(mContext.context)
-            mDialog!!.setTitle(mContext.context.getString(R.string.sync))
-            mDialog!!.setCancelable(false)
-            mDialog!!.setMessage(mContext.context.getString(R.string.please_wait))
-            mDialog!!.show()
+            mDialog?.setTitle(mContext.context.getString(R.string.sync))
+            mDialog?.setCancelable(false)
+            mDialog?.setMessage(mContext.context.getString(R.string.please_wait))
+            mDialog?.show()
         } catch (e: Exception) {
             mDialog = null
         }
@@ -62,10 +61,10 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         drive.downloadGroups(false)
 
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all
+        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
-            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
+            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()
             val dao = AppDb.getAppDatabase(mContext.context).reminderDao()
             for (item in items) {
                 item.groupUuId = defUiID

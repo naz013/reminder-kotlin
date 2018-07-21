@@ -1,11 +1,10 @@
 package com.elementary.tasks.core.di
 
 import android.app.Application
-
-import javax.inject.Singleton
-
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -30,7 +29,13 @@ class AppModule(private var mApplication: Application) {
 
     @Provides
     @Singleton
-    internal fun providesApplication(): Application {
+    fun providesApplication(): Application {
         return mApplication
+    }
+
+    @Provides
+    @Singleton
+    fun providesContext(): Context {
+        return mApplication.applicationContext
     }
 }

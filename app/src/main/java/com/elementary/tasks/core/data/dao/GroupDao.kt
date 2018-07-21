@@ -30,11 +30,11 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface GroupDao {
 
-    @get:Query("SELECT * FROM `Group` LIMIT 1")
-    val default: Group?
+    @Query("SELECT * FROM `Group` LIMIT 1")
+    fun defaultGroup(): Group?
 
-    @get:Query("SELECT * FROM `Group`")
-    val all: List<Group>
+    @Query("SELECT * FROM `Group`")
+    fun all(): List<Group>
 
     @Query("SELECT * FROM `Group`")
     fun loadAll(): LiveData<List<Group>>

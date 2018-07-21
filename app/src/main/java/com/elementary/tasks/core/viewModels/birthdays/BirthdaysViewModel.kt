@@ -41,7 +41,7 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
     fun deleteAllBirthdays() {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            val list = appDb.birthdaysDao().all
+            val list = appDb.birthdaysDao().all()
             val ids = ArrayList<String>()
             for (birthday in list) {
                 appDb.birthdaysDao().delete(birthday)

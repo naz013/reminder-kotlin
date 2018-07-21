@@ -161,7 +161,7 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
                 }
             }
         }
-        val list = AppDb.getAppDatabase(context).birthdaysDao().all
+        val list = AppDb.getAppDatabase(context).birthdaysDao().all()
         LogUtil.d(TAG, "Count BD" + list.size)
         for (item in list) {
             var date: Date? = null

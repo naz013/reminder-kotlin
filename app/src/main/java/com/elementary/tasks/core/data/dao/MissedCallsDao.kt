@@ -30,8 +30,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface MissedCallsDao {
 
-    @get:Query("SELECT * FROM MissedCall")
-    val all: List<MissedCall>
+    @Query("SELECT * FROM MissedCall")
+    fun all(): List<MissedCall>
 
     @Query("SELECT * FROM MissedCall")
     fun loadAll(): LiveData<List<MissedCall>>

@@ -182,7 +182,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
             val calID = Prefs.getInstance(mContext).eventsCalendar
             val eventItems = CalendarUtils.getEvents(mContext, calID)
             if (eventItems.isNotEmpty()) {
-                val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds
+                val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
                 for (item in eventItems) {
                     val itemId = item.id
                     if (!list.contains(itemId)) {
@@ -208,7 +208,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
 
                         }
                         val summary = item.title
-                        val def = AppDb.getAppDatabase(mContext).groupDao().default
+                        val def = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
                         var categoryId = ""
                         if (def != null) {
                             categoryId = def.uuId

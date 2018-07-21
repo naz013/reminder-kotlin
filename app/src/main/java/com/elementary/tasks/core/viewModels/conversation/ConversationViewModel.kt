@@ -77,7 +77,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     fun getNotes() {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            val list = LinkedList(appDb.notesDao().all)
+            val list = LinkedList(appDb.notesDao().all())
             withContext(UI) {
                 isInProgress.postValue(false)
                 notes.postValue(list)
@@ -128,7 +128,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     fun getBirthdays(dateTime: Long, time: Long) {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            val list = LinkedList(appDb.birthdaysDao().all)
+            val list = LinkedList(appDb.birthdaysDao().all())
             for (i in list.indices.reversed()) {
                 val itemTime = list[i].getDateTime(time)
                 if (itemTime < System.currentTimeMillis() || itemTime > dateTime) {

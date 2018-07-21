@@ -77,7 +77,7 @@ class EventJobService : Job() {
             cal.timeInMillis = System.currentTimeMillis()
             val mYear = cal.get(Calendar.YEAR)
             val mDate = birthFormat.format(cal.time)
-            for (item in AppDb.getAppDatabase(context).birthdaysDao().all) {
+            for (item in AppDb.getAppDatabase(context).birthdaysDao().all()) {
                 val year = item.showedYear
                 val birthValue = getBirthdayValue(item.month, item.day, daysBefore)
                 if (birthValue == mDate && year != mYear) {

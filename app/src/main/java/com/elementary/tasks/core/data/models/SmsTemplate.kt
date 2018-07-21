@@ -4,6 +4,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 
 import java.util.UUID
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 /**
@@ -32,12 +33,16 @@ class SmsTemplate {
     var date: String = ""
     var isSelected: Boolean = false
 
+    constructor()
+
+    @Ignore
     constructor(title: String, date: String) {
         this.title = title
         this.date = date
         this.key = UUID.randomUUID().toString()
     }
 
+    @Ignore
     constructor(title: String) {
         this.title = title
         this.date = TimeUtil.gmtDateTime

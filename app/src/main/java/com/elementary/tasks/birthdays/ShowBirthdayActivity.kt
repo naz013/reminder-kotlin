@@ -53,18 +53,18 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     private val isBirthdaySilentEnabled: Boolean
         get() {
-            var `is` = prefs!!.isSoundInSilentModeEnabled
+            var `is` = prefs.isSoundInSilentModeEnabled
             if (Module.isPro && !isGlobal) {
-                `is` = prefs!!.isBirthdaySilentEnabled
+                `is` = prefs.isBirthdaySilentEnabled
             }
             return `is`
         }
 
     private val isTtsEnabled: Boolean
         get() {
-            var `is` = prefs!!.isTtsEnabled
+            var `is` = prefs.isTtsEnabled
             if (Module.isPro && !isGlobal) {
-                `is` = prefs!!.isBirthdayTtsEnabled
+                `is` = prefs.isBirthdayTtsEnabled
             }
             return `is`
         }
@@ -80,34 +80,34 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override val melody: String
         get() = if (Module.isPro && !isGlobal) {
-            prefs!!.birthdayMelody
+            prefs.birthdayMelody
         } else {
-            prefs!!.melodyFile
+            prefs.melodyFile
         }
 
     override val isBirthdayInfiniteVibration: Boolean
         get() {
-            var vibrate = prefs!!.isInfiniteVibrateEnabled
+            var vibrate = prefs.isInfiniteVibrateEnabled
             if (Module.isPro && !isGlobal) {
-                vibrate = prefs!!.isBirthdayInfiniteVibrationEnabled
+                vibrate = prefs.isBirthdayInfiniteVibrationEnabled
             }
             return vibrate
         }
 
     override val isBirthdayInfiniteSound: Boolean
         get() {
-            var isLooping = prefs!!.isInfiniteSoundEnabled
+            var isLooping = prefs.isInfiniteSoundEnabled
             if (Module.isPro && !isGlobal) {
-                isLooping = prefs!!.isBirthdayInfiniteSoundEnabled
+                isLooping = prefs.isBirthdayInfiniteSoundEnabled
             }
             return isLooping
         }
 
     override val isVibrate: Boolean
         get() {
-            var vibrate = prefs!!.isVibrateEnabled
+            var vibrate = prefs.isVibrateEnabled
             if (Module.isPro && !isGlobal) {
-                vibrate = prefs!!.isBirthdayVibrationEnabled
+                vibrate = prefs.isBirthdayVibrationEnabled
             }
             return vibrate
         }
@@ -126,37 +126,37 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override val ledColor: Int
         get() {
-            var ledColor = LED.getLED(prefs!!.ledColor)
+            var ledColor = LED.getLED(prefs.ledColor)
             if (Module.isPro && !isGlobal) {
-                ledColor = LED.getLED(prefs!!.birthdayLedColor)
+                ledColor = LED.getLED(prefs.birthdayLedColor)
             }
             return ledColor
         }
 
     override val isAwakeDevice: Boolean
         get() {
-            var isWake = prefs!!.isDeviceAwakeEnabled
+            var isWake = prefs.isDeviceAwakeEnabled
             if (Module.isPro && !isGlobal) {
-                isWake = prefs!!.isBirthdayWakeEnabled
+                isWake = prefs.isBirthdayWakeEnabled
             }
             return isWake
         }
 
     override val maxVolume: Int
-        get() = prefs!!.loudness
+        get() = prefs.loudness
 
     override val isGlobal: Boolean
-        get() = prefs!!.isBirthdayGlobalEnabled
+        get() = prefs.isBirthdayGlobalEnabled
 
     override val isUnlockDevice: Boolean
-        get() = prefs!!.isDeviceUnlockEnabled
+        get() = prefs.isDeviceUnlockEnabled
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
         val key = intent.getIntExtra(Constants.INTENT_ID, 0)
         setContentView(R.layout.activity_show_birthday)
-        card.setCardBackgroundColor(themeUtil!!.cardStyle)
+        card.setCardBackgroundColor(themeUtil.cardStyle)
         if (Module.isLollipop) {
             card.cardElevation = Configs.CARD_ELEVATION
         }
@@ -171,7 +171,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp)
         buttonSend.setImageResource(R.drawable.ic_send_black_24dp)
 
-        contactPhoto.borderColor = themeUtil!!.getColor(themeUtil!!.colorPrimary())
+        contactPhoto.borderColor = themeUtil.getColor(themeUtil.colorPrimary())
         contactPhoto.visibility = View.GONE
 
         initViewModel(key)
@@ -256,7 +256,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         if (Module.isPro) {
             builder.setLights(ledColor, 500, 1000)
         }
-        val isWear = prefs!!.isWearEnabled
+        val isWear = prefs.isWearEnabled
         if (isWear && Module.isJellyMR2) {
             builder.setOnlyAlertOnce(true)
             builder.setGroup("GROUP")
@@ -272,7 +272,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     override fun onDestroy() {
         super.onDestroy()
         removeFlags()
-        if (prefs!!.isAutoBackupEnabled) {
+        if (prefs.isAutoBackupEnabled) {
             BackupTask(this).execute()
         }
         BackupBirthdaysTask(this).execute()
@@ -280,7 +280,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override fun onBackPressed() {
         discardMedia()
-        if (prefs!!.isFoldingEnabled) {
+        if (prefs.isFoldingEnabled) {
             removeFlags()
             finish()
         } else {

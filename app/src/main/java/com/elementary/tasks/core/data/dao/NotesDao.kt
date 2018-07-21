@@ -30,8 +30,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface NotesDao {
 
-    @get:Query("SELECT * FROM Note")
-    val all: List<Note>
+    @Query("SELECT * FROM Note")
+    fun all(): List<Note>
 
     @Query("SELECT * FROM Note")
     fun loadAll(): LiveData<List<Note>>

@@ -148,15 +148,15 @@ class CalendarThemeFragment : BaseNavigationFragment() {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
-            if (convertView == null) {
+            var cView = convertView
+            if (cView == null) {
                 inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                convertView = inflater!!.inflate(R.layout.list_item_weekday_grid, null)
+                cView = inflater!!.inflate(R.layout.list_item_weekday_grid, null)
             }
-            val textView = convertView!!.findViewById<TextView>(R.id.textView1)
+            val textView = cView!!.findViewById<TextView>(R.id.textView1)
             textView.text = weekdays[position]
             textView.setTextColor(textColor)
-            return convertView
+            return cView
         }
 
         override fun getViewTypeCount(): Int {
@@ -253,17 +253,17 @@ class CalendarThemeFragment : BaseNavigationFragment() {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
-            if (convertView == null) {
+            var cView = convertView
+            if (cView == null) {
                 inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                convertView = inflater.inflate(R.layout.view_month_grid, null)
+                cView = inflater.inflate(R.layout.view_month_grid, null)
             }
             val selDay = datetimeList[position].day!!
-            val background = convertView!!.findViewById<FrameLayout>(R.id.background)
-            val textView = convertView.findViewById<TextView>(R.id.textView)
-            val currentMark = convertView.findViewById<TextView>(R.id.currentMark)
-            val reminderMark = convertView.findViewById<TextView>(R.id.reminderMark)
-            val birthdayMark = convertView.findViewById<TextView>(R.id.birthdayMark)
+            val background = cView!!.findViewById<FrameLayout>(R.id.background)
+            val textView = cView.findViewById<TextView>(R.id.textView)
+            val currentMark = cView.findViewById<TextView>(R.id.currentMark)
+            val reminderMark = cView.findViewById<TextView>(R.id.reminderMark)
+            val birthdayMark = cView.findViewById<TextView>(R.id.birthdayMark)
 
             textView.text = selDay.toString()
             textView.setTextColor(textColor)
@@ -296,7 +296,7 @@ class CalendarThemeFragment : BaseNavigationFragment() {
                             .getColor(themeUtil!!.colorCurrentCalendar()))
                 }
             }
-            return convertView
+            return cView
         }
 
         override fun getViewTypeCount(): Int {

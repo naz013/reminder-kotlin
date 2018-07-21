@@ -30,8 +30,8 @@ import androidx.room.OnConflictStrategy.REPLACE
 @Dao
 interface BirthdaysDao {
 
-    @get:Query("SELECT * FROM Birthday")
-    val all: List<Birthday>
+    @Query("SELECT * FROM Birthday")
+    fun all(): List<Birthday>
 
     @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
     fun loadById(id: Int): LiveData<Birthday>
@@ -46,7 +46,7 @@ interface BirthdaysDao {
     fun getAll(dayMonth: String): List<Birthday>
 
     @Insert(onConflict = REPLACE)
-    fun insert(birthday: Birthday): Int
+    fun insert(birthday: Birthday)
 
     @Insert(onConflict = REPLACE)
     fun insertAll(vararg birthdays: Birthday)

@@ -34,14 +34,14 @@ abstract class EventManager(val reminder: Reminder) : EventControl {
     @Inject
     lateinit var context: Context
     @Inject
-    protected var db: AppDb? = null
+    lateinit var db: AppDb
 
     init {
         ReminderApp.appComponent.inject(this)
     }
 
     protected fun save() {
-        db!!.reminderDao().insert(reminder)
+        db.reminderDao().insert(reminder)
         UpdatesHelper.getInstance(context).updateWidget()
         if (Prefs.getInstance(context).isSbNotificationEnabled) {
             Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)

@@ -1,11 +1,11 @@
-package com.elementary.tasks.reminder.lists
+package com.elementary.tasks.core.data.converters
 
-import android.view.View
-
-import com.elementary.tasks.core.interfaces.SimpleListener
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 /**
- * Copyright 2016 Nazar Suhovich
+ * Copyright 2018 Nazar Suhovich
  *
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,15 @@ import com.elementary.tasks.core.interfaces.SimpleListener
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class ListIntTypeConverter {
 
-interface RecyclerListener : SimpleListener {
-    fun onItemSwitched(position: Int, view: View)
+    @TypeConverter
+    fun toJson(list: List<Int>): String {
+        return Gson().toJson(list)
+    }
+
+    @TypeConverter
+    fun toList(json: String): List<Int> {
+        return Gson().fromJson<List<Int>>(json, object : TypeToken<List<Int>>() {}.type)
+    }
 }

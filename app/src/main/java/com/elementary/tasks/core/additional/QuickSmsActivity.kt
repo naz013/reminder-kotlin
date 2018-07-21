@@ -87,7 +87,7 @@ class QuickSmsActivity : ThemedActivity() {
         val position = mAdapter.selectedPosition
         val item = mAdapter.getItem(position)
         if (item != null) {
-            LogUtil.d("TAG", "startSending: " + item.title!!)
+            LogUtil.d("TAG", "startSending: " + item.title)
             sendSMS(number, item.title)
         }
         removeFlags()
@@ -102,10 +102,10 @@ class QuickSmsActivity : ThemedActivity() {
     }
 
     private fun sendSMS(number: String?, message: String?) {
-        val SENT = "SMS_SENT"
-        val DELIVERED = "SMS_DELIVERED"
-        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(SENT), 0)
-        val deliveredPI = PendingIntent.getBroadcast(this, 0, Intent(DELIVERED), 0)
+        val action = "SMS_SENT"
+        val s = "SMS_DELIVERED"
+        val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
+        val deliveredPI = PendingIntent.getBroadcast(this, 0, Intent(s), 0)
         val sms = SmsManager.getDefault()
         sms.sendTextMessage(number, null, message, sentPI, deliveredPI)
     }

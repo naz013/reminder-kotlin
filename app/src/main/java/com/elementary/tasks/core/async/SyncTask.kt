@@ -76,10 +76,10 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
         val ioHelper = IoHelper(mContext!!.context)
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         ioHelper.restoreGroup(true)
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all
+        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
-            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all
+            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()
             for (item in items) {
                 item.groupUuId = defUiID
             }

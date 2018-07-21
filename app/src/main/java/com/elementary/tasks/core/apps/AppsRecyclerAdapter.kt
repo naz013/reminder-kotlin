@@ -1,19 +1,16 @@
 package com.elementary.tasks.core.apps
 
-import androidx.databinding.BindingAdapter
-import androidx.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-
-import com.elementary.tasks.core.fileExplorer.RecyclerClickListener
-import com.elementary.tasks.databinding.ListItemApplicationBinding
-
-import java.util.ArrayList
-
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
+import com.elementary.tasks.core.interfaces.ActionsListener
+import com.elementary.tasks.core.utils.ListActions
+import com.mcxiaoke.koi.ext.onClick
+import kotlinx.android.synthetic.main.list_item_application.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,58 +30,53 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AppsRecyclerAdapter internal constructor(private val mListener: RecyclerClickListener?) : RecyclerView.Adapter<AppsRecyclerAdapter.ApplicationViewHolder>() {
-    private var mData: MutableList<ApplicationItem> = ArrayList()
-
-    var data: MutableList<ApplicationItem>
-        get() = mData
+class AppsRecyclerAdapter : RecyclerView.Adapter<AppsRecyclerAdapter.ApplicationViewHolder>() {
+    var actionsListener: ActionsListener<ApplicationItem>? = null
+    var data: MutableList<ApplicationItem> = mutableListOf()
         set(list) {
-            this.mData = list
+            field.clear()
+            field.addAll(list)
             notifyDataSetChanged()
         }
 
     override fun getItemCount(): Int {
-        return mData.size
+        return data.size
     }
 
     fun getItem(position: Int): ApplicationItem {
-        return mData[position]
+        return data[position]
     }
 
     fun removeItem(position: Int) {
-        if (position < mData.size) {
-            mData.removeAt(position)
+        if (position < data.size) {
+            data.removeAt(position)
             notifyItemRemoved(position)
-            notifyItemRangeChanged(0, mData.size)
+            notifyItemRangeChanged(0, data.size)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApplicationViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return ApplicationViewHolder(ListItemApplicationBinding.inflate(inflater, parent, false).root)
+        return ApplicationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_application, parent, false))
     }
 
     override fun onBindViewHolder(holder: ApplicationViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.binding!!.item = item
+        holder.bind(getItem(position))
     }
 
-    internal inner class ApplicationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var binding: ListItemApplicationBinding? = null
+    inner class ApplicationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: ApplicationItem) {
+            itemView.itemName.text = item.name
+            loadImage(itemView.itemImage, item.drawable)
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.setClick { view ->
-                mListener?.onItemClick(adapterPosition)
+            itemView.onClick {
+                actionsListener?.onAction(it, adapterPosition, getItem(adapterPosition), ListActions.OPEN)
             }
         }
     }
 
-    companion object {
-
-        @BindingAdapter("loadImage")
-        fun loadImage(imageView: ImageView, v: Drawable) {
-            imageView.setImageDrawable(v)
-        }
+    fun loadImage(imageView: ImageView, v: Drawable?) {
+        imageView.setImageDrawable(v)
     }
 }

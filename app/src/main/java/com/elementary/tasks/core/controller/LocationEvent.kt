@@ -57,7 +57,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     private fun stopTracking(isPaused: Boolean) {
-        val list = db!!.reminderDao().getAllTypes(true, false, Reminder.gpsTypes())
+        val list = db.reminderDao().getAllTypes(true, false, Reminder.gpsTypes())
         if (list.isEmpty()) {
             SuperUtil.stopService(context, GeolocationService::class.java)
         }

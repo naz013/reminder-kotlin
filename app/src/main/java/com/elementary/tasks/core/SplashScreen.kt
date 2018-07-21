@@ -56,7 +56,7 @@ class SplashScreen : ThemedActivity() {
     }
 
     private fun initGroups() {
-        if (AppDb.getAppDatabase(this).groupDao().all.isEmpty()) {
+        if (AppDb.getAppDatabase(this).groupDao().all().isEmpty()) {
             GroupsUtil.initDefault(this)
         }
     }
