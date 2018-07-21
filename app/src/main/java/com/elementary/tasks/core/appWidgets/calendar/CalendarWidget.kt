@@ -16,7 +16,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.navigation.MainActivity
 
 import java.util.Calendar

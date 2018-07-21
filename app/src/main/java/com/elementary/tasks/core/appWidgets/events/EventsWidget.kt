@@ -11,7 +11,7 @@ import android.widget.RemoteViews
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
-import com.elementary.tasks.reminder.create_edit.AddReminderActivity
+import com.elementary.tasks.reminder.createEdit.AddReminderActivity
 
 import java.text.SimpleDateFormat
 import java.util.GregorianCalendar

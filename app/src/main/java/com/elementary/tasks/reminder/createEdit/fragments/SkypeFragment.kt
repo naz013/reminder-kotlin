@@ -1,24 +1,13 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
-
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.databinding.FragmentReminderSkypeBinding
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.*
+import kotlinx.android.synthetic.main.fragment_reminder_skype.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,30 +27,27 @@ import com.elementary.tasks.core.data.models.Reminder
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class SkypeFragment : RepeatableTypeFragment() {
 
-    private var binding: FragmentReminderSkypeBinding? = null
-
     override fun prepare(): Reminder? {
-        if (`interface` == null) return null
+        val iFace = reminderInterface ?: return null
         if (!SuperUtil.isSkypeClientInstalled(context!!)) {
             showInstallSkypeDialog()
             return null
         }
-        if (TextUtils.isEmpty(`interface`!!.summary)) {
-            `interface`!!.showSnackbar(getString(R.string.task_summary_is_empty))
+        if (TextUtils.isEmpty(iFace.summary)) {
+            iFace.showSnackbar(getString(R.string.task_summary_is_empty))
             return null
         }
-        val number = binding!!.skypeContact.text!!.toString().trim { it <= ' ' }
+        val number = skypeContact.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(number)) {
-            `interface`!!.showSnackbar(getString(R.string.you_dont_insert_number))
+            iFace.showSnackbar(getString(R.string.you_dont_insert_number))
             return null
         }
-        var reminder: Reminder? = `interface`!!.reminder
-        val type = getType(binding!!.skypeGroup.checkedRadioButtonId)
-        val startTime = binding!!.dateView.dateTime
-        val before = binding!!.beforeView.beforeValue
+        var reminder = iFace.reminder
+        val type = getType(skypeGroup.checkedRadioButtonId)
+        val startTime = dateView.dateTime
+        val before = before_view.beforeValue
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(context, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
             return null
@@ -71,11 +57,11 @@ class SkypeFragment : RepeatableTypeFragment() {
         }
         reminder.target = number
         reminder.type = type
-        val repeat = binding!!.repeatView.repeat
+        val repeat = repeatView.repeat
         reminder.repeatInterval = repeat
-        reminder.isExportToCalendar = binding!!.exportToCalendar.isChecked
-        reminder.isExportToTasks = binding!!.exportToTasks.isChecked
-        reminder.setClear(`interface`)
+        reminder.exportToCalendar = exportToCalendar.isChecked
+        reminder.exportToTasks = exportToTasks.isChecked
+        reminder.setClear(iFace)
         reminder.remindBefore = before
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -90,11 +76,11 @@ class SkypeFragment : RepeatableTypeFragment() {
     private fun showInstallSkypeDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setMessage(R.string.skype_is_not_installed)
-        builder.setPositiveButton(R.string.yes) { dialogInterface, i ->
+        builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
             dialogInterface.dismiss()
             SuperUtil.installSkype(context!!)
         }
-        builder.setNegativeButton(R.string.cancel) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -104,7 +90,7 @@ class SkypeFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.fragment_date_menu, menu)
+        inflater?.inflate(R.menu.fragment_date_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -116,28 +102,36 @@ class SkypeFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentReminderSkypeBinding.inflate(inflater, container, false)
-        binding!!.repeatView.enablePrediction(true)
-        binding!!.dateView.setEventListener(binding!!.repeatView.eventListener)
-        binding!!.skypeChat.setOnCheckedChangeListener { compoundButton, b ->
+        return inflater.inflate(R.layout.fragment_reminder_skype, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        repeatView.enablePrediction(true)
+        dateView.setEventListener(repeatView.eventListener)
+        skypeChat.setOnCheckedChangeListener { _, b ->
             if (b) {
-                `interface`!!.setEventHint(getString(R.string.message))
+                reminderInterface?.setEventHint(getString(R.string.message))
             } else {
-                `interface`!!.setEventHint(getString(R.string.remind_me))
+                reminderInterface?.setEventHint(getString(R.string.remind_me))
             }
         }
-        if (`interface`!!.isExportToCalendar) {
-            binding!!.exportToCalendar.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToCalendar.visibility = View.GONE
-        }
-        if (`interface`!!.isExportToTasks) {
-            binding!!.exportToTasks.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToTasks.visibility = View.GONE
-        }
+        initScreenState()
         editReminder()
-        return binding!!.root
+    }
+
+    private fun initScreenState() {
+        val iFace = reminderInterface ?: return
+        if (iFace.isExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
+        } else {
+            exportToCalendar.visibility = View.GONE
+        }
+        if (iFace.isExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
+        }
     }
 
     private fun getType(checkedId: Int): Int {
@@ -151,27 +145,27 @@ class SkypeFragment : RepeatableTypeFragment() {
     }
 
     private fun editReminder() {
-        if (`interface`!!.reminder == null) return
-        val reminder = `interface`!!.reminder
-        binding!!.exportToCalendar.isChecked = reminder.isExportToCalendar
-        binding!!.exportToTasks.isChecked = reminder.isExportToTasks
-        binding!!.dateView.setDateTime(reminder.eventTime)
-        binding!!.repeatView.setDateTime(reminder.eventTime)
-        binding!!.repeatView.repeat = reminder.repeatInterval
-        binding!!.beforeView.setBefore(reminder.remindBefore)
+        val iFace = reminderInterface ?: return
+        val reminder = iFace.reminder ?: return
+        exportToCalendar.isChecked = reminder.exportToCalendar
+        exportToTasks.isChecked = reminder.exportToTasks
+        dateView.setDateTime(reminder.eventTime)
+        repeatView.setDateTime(reminder.eventTime)
+        repeatView.repeat = reminder.repeatInterval
+        before_view.setBefore(reminder.remindBefore)
         val type = reminder.type
-        if (type == Reminder.BY_SKYPE_CALL)
-            binding!!.skypeCall.isChecked = true
-        else if (type == Reminder.BY_SKYPE_VIDEO)
-            binding!!.skypeVideo.isChecked = true
-        else if (type == Reminder.BY_SKYPE) binding!!.skypeChat.isChecked = true
-        if (reminder.target != null) {
-            binding!!.skypeContact.setText(reminder.target)
+        when (type) {
+            Reminder.BY_SKYPE_CALL -> skypeCall.isChecked = true
+            Reminder.BY_SKYPE_VIDEO -> skypeVideo.isChecked = true
+            Reminder.BY_SKYPE -> skypeChat.isChecked = true
+        }
+        if (reminder.target != "") {
+            skypeContact.setText(reminder.target)
         }
     }
 
     companion object {
 
-        private val TAG = "DateFragment"
+        private const val TAG = "DateFragment"
     }
 }

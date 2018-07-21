@@ -59,7 +59,7 @@
         tools:replace="android:label">
         <activity android:name=".navigation.MainActivity" />
         <activity
-            android:name=".reminder.create_edit.CreateReminderActivity"
+            android:name=".reminder.createEdit.CreateReminderActivity"
             android:configChanges="keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -243,7 +243,7 @@
                 <data android:pathPattern=".*\\.bi2" />
             </intent-filter>
         </activity>
-        <activity android:name=".reminder.create_edit.AddReminderActivity" />
+        <activity android:name=".reminder.createEdit.AddReminderActivity" />
         <activity android:name=".notes.editor.ImageEditActivity" />
         <activity android:name=".voice.ConversationActivity" />
         <activity

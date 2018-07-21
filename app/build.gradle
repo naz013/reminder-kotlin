@@ -14,7 +14,7 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 27
         versionCode 199
         versionName '6.3.8'

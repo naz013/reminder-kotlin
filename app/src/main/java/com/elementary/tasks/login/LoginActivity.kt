@@ -33,7 +33,7 @@ import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.notes.create.CreateNoteActivity
-import com.elementary.tasks.reminder.create_edit.CreateReminderActivity
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*

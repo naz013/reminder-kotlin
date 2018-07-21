@@ -14,6 +14,7 @@ import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_shopping.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
@@ -42,9 +43,10 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     @Inject
     var themeUtil: ThemeUtil? = null
+    val listHeader: RoboTextView = itemView.listHeader
 
     init {
-        ReminderApp.appComponent!!.inject(this)
+        ReminderApp.appComponent.inject(this)
         itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
     }

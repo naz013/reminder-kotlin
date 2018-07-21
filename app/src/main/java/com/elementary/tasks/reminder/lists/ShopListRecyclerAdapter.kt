@@ -1,21 +1,14 @@
 package com.elementary.tasks.reminder.lists
 
-import android.content.Context
-import androidx.databinding.DataBindingUtil
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ViewUtils
-import com.elementary.tasks.databinding.ListItemTaskItemCardBinding
-import com.elementary.tasks.core.data.models.ShopItem
-
-import java.util.ArrayList
-import java.util.Collections
-
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.ShopItem
+import com.elementary.tasks.core.utils.ViewUtils
+import kotlinx.android.synthetic.main.list_item_task_item_card.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,22 +28,20 @@ import androidx.recyclerview.widget.RecyclerView
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ShopListRecyclerAdapter(private val mContext: Context, list: List<ShopItem>, private val listener: ActionListener?) : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
-    private var mDataList: MutableList<ShopItem> = ArrayList()
+class ShopListRecyclerAdapter : RecyclerView.Adapter<ShopListRecyclerAdapter.ViewHolder>() {
+    private var mDataList: MutableList<ShopItem> = mutableListOf()
     private var onBind: Boolean = false
+    var listener: ActionListener? = null
 
     var data: List<ShopItem>
         get() = mDataList
         set(list) {
-            this.mDataList = ArrayList(list)
+            this.mDataList.clear()
+            this.mDataList.addAll(list)
+            mDataList.sortWith(Comparator { item, t1 -> t1.createTime.compareTo(item.createTime) })
+            sort(mDataList)
             notifyDataSetChanged()
         }
-
-    init {
-        this.mDataList.addAll(list)
-        Collections.sort(mDataList) { item, t1 -> t1.createTime!!.compareTo(item.createTime!!) }
-        sort(mDataList)
-    }
 
     fun delete(position: Int) {
         mDataList.removeAt(position)
@@ -65,7 +56,7 @@ class ShopListRecyclerAdapter(private val mContext: Context, list: List<ShopItem
     }
 
     fun updateData() {
-        Collections.sort(mDataList) { item, t1 -> t1.createTime!!.compareTo(item.createTime!!) }
+        mDataList.sortWith(Comparator { item, t1 -> t1.createTime.compareTo(item.createTime) })
         sort(mDataList)
         notifyDataSetChanged()
     }
@@ -86,44 +77,45 @@ class ShopListRecyclerAdapter(private val mContext: Context, list: List<ShopItem
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var binding: ListItemTaskItemCardBinding? = null
+        fun bind(item: ShopItem) {
+            val title = item.summary
+            if (item.isChecked) {
+                itemView.shopText.paintFlags = itemView.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                itemView.shopText.paintFlags = itemView.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+            itemView.itemCheck.isChecked = item.isChecked
+            itemView.shopText.text = title
+            if (listener == null) {
+                itemView.clearButton.visibility = View.GONE
+                itemView.itemCheck.isEnabled = false
+                itemView.shopText.setTextColor(ViewUtils.getColor(itemView.context, R.color.blackPrimary))
+            } else {
+                itemView.itemCheck.visibility = View.VISIBLE
+                itemView.clearButton.visibility = View.VISIBLE
+            }
+        }
 
         init {
-            binding = DataBindingUtil.bind(itemView)
-            binding!!.clearButton.setOnClickListener { v ->
+            itemView.clearButton.setOnClickListener {
                 listener?.onItemDelete(adapterPosition)
             }
-            binding!!.itemCheck.setOnCheckedChangeListener { buttonView, isChecked1 ->
+            itemView.itemCheck.setOnCheckedChangeListener { _, isChecked1 ->
                 if (!onBind && listener != null) {
-                    listener.onItemCheck(adapterPosition, isChecked1)
+                    listener?.onItemCheck(adapterPosition, isChecked1)
                 }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ListItemTaskItemCardBinding.inflate(LayoutInflater.from(parent.context), parent, false).root)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task_item_card, parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         onBind = true
         val item = mDataList[position]
-        val title = item.summary
-        if (item.isChecked) {
-            holder.binding!!.shopText.paintFlags = holder.binding!!.shopText.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        } else {
-            holder.binding!!.shopText.paintFlags = holder.binding!!.shopText.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-        }
-        holder.binding!!.itemCheck.isChecked = item.isChecked
-        holder.binding!!.shopText.text = title
-        if (listener == null) {
-            holder.binding!!.clearButton.visibility = View.GONE
-            holder.binding!!.itemCheck.isEnabled = false
-            holder.binding!!.shopText.setTextColor(ViewUtils.getColor(mContext, R.color.blackPrimary))
-        } else {
-            holder.binding!!.itemCheck.visibility = View.VISIBLE
-            holder.binding!!.clearButton.visibility = View.VISIBLE
-        }
+        holder.bind(item)
         onBind = false
     }
 

@@ -1,21 +1,15 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
-
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.databinding.FragmentReminderEmailBinding
-import com.elementary.tasks.core.data.models.Reminder
+import kotlinx.android.synthetic.main.fragment_reminder_email.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,43 +29,40 @@ import com.elementary.tasks.core.data.models.Reminder
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class EmailFragment : RepeatableTypeFragment() {
 
-    private var binding: FragmentReminderEmailBinding? = null
-
     override fun prepare(): Reminder? {
-        if (`interface` == null) return null
-        var reminder: Reminder? = `interface`!!.reminder
+        val iFace = reminderInterface ?: return null
         val type = Reminder.BY_DATE_EMAIL
-        val email = binding!!.mail.text.toString().trim { it <= ' ' }
+        val email = mail.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(email) || !email.matches(".*@.*..*".toRegex())) {
-            `interface`!!.showSnackbar(getString(R.string.email_is_incorrect))
+            iFace.showSnackbar(getString(R.string.email_is_incorrect))
             return null
         }
-        val subjectString = binding!!.subject.text!!.toString().trim { it <= ' ' }
+        val subjectString = subject.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(subjectString)) {
-            `interface`!!.showSnackbar(getString(R.string.you_dont_insert_any_message))
+            iFace.showSnackbar(getString(R.string.you_dont_insert_any_message))
             return null
         }
-        val startTime = binding!!.dateView.dateTime
-        val before = binding!!.beforeView.beforeValue
+        val startTime = dateView.dateTime
+        val before = before_view.beforeValue
         if (before > 0 && startTime - before < System.currentTimeMillis()) {
             Toast.makeText(context, R.string.invalid_remind_before_parameter, Toast.LENGTH_SHORT).show()
             return null
         }
+        var reminder = iFace.reminder
         if (reminder == null) {
             reminder = Reminder()
         }
         reminder.subject = subjectString
-        reminder.summary = `interface`!!.summary
+        reminder.summary = reminderInterface!!.summary
         reminder.target = email
         reminder.type = type
-        val repeat = binding!!.repeatView.repeat
+        val repeat = repeatView.repeat
         reminder.repeatInterval = repeat
-        reminder.isExportToCalendar = binding!!.exportToCalendar.isChecked
-        reminder.isExportToTasks = binding!!.exportToTasks.isChecked
-        reminder.setClear(`interface`)
+        reminder.exportToCalendar = exportToCalendar.isChecked
+        reminder.exportToTasks = exportToTasks.isChecked
+        reminder.setClear(iFace)
         reminder.remindBefore = before
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -89,7 +80,7 @@ class EmailFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.fragment_date_menu, menu)
+        inflater?.inflate(R.menu.fragment_date_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -101,40 +92,48 @@ class EmailFragment : RepeatableTypeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentReminderEmailBinding.inflate(inflater, container, false)
-        binding!!.repeatView.enablePrediction(true)
-        binding!!.dateView.setEventListener(binding!!.repeatView.eventListener)
-        `interface`!!.setEventHint(getString(R.string.message))
-        `interface`!!.setHasAutoExtra(true, getString(R.string.enable_sending_email_automatically))
-        if (`interface`!!.isExportToCalendar) {
-            binding!!.exportToCalendar.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToCalendar.visibility = View.GONE
-        }
-        if (`interface`!!.isExportToTasks) {
-            binding!!.exportToTasks.visibility = View.VISIBLE
-        } else {
-            binding!!.exportToTasks.visibility = View.GONE
-        }
+        return inflater.inflate(R.layout.fragment_reminder_email, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        repeatView.enablePrediction(true)
+        dateView.setEventListener(repeatView.eventListener)
+        initScreenState()
         editReminder()
-        return binding!!.root
+    }
+
+    private fun initScreenState() {
+        val iFace = reminderInterface ?: return
+        iFace.setEventHint(getString(R.string.message))
+        iFace.setHasAutoExtra(true, getString(R.string.enable_sending_email_automatically))
+        if (iFace.isExportToCalendar) {
+            exportToCalendar.visibility = View.VISIBLE
+        } else {
+            exportToCalendar.visibility = View.GONE
+        }
+        if (iFace.isExportToTasks) {
+            exportToTasks.visibility = View.VISIBLE
+        } else {
+            exportToTasks.visibility = View.GONE
+        }
     }
 
     private fun editReminder() {
-        if (`interface`!!.reminder == null) return
-        val reminder = `interface`!!.reminder
-        binding!!.exportToCalendar.isChecked = reminder.isExportToCalendar
-        binding!!.exportToTasks.isChecked = reminder.isExportToTasks
-        binding!!.dateView.setDateTime(reminder.eventTime)
-        binding!!.repeatView.setDateTime(reminder.eventTime)
-        binding!!.repeatView.repeat = reminder.repeatInterval
-        binding!!.mail.setText(reminder.target)
-        binding!!.subject.setText(reminder.subject)
-        binding!!.beforeView.setBefore(reminder.remindBefore)
+        val iFace = reminderInterface ?: return
+        val reminder = iFace.reminder ?: return
+        exportToCalendar.isChecked = reminder.exportToCalendar
+        exportToTasks.isChecked = reminder.exportToTasks
+        dateView.setDateTime(reminder.eventTime)
+        repeatView.setDateTime(reminder.eventTime)
+        repeatView.repeat = reminder.repeatInterval
+        mail.setText(reminder.target)
+        subject.setText(reminder.subject)
+        before_view.setBefore(reminder.remindBefore)
     }
 
     companion object {
 
-        private val TAG = "DateFragment"
+        private const val TAG = "DateFragment"
     }
 }

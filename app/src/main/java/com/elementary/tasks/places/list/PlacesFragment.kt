@@ -89,9 +89,7 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_places, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_places
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

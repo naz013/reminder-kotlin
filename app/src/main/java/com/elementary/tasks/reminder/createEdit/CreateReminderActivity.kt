@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.create_edit
+package com.elementary.tasks.reminder.createEdit
 
 import android.app.Activity
 import android.content.ContentResolver
@@ -12,13 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
-import android.widget.RelativeLayout
-import android.widget.SeekBar
-import android.widget.Toast
-
+import android.widget.*
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
@@ -26,53 +23,27 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ViewUtils
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.core.views.TextViewWithIcon
-import com.elementary.tasks.databinding.ActivityCreateReminderBinding
-import com.elementary.tasks.databinding.DialogSelectExtraBinding
-import com.elementary.tasks.databinding.DialogWithSeekAndTitleBinding
 import com.elementary.tasks.groups.Position
-import com.elementary.tasks.reminder.create_edit.fragments.ApplicationFragment
-import com.elementary.tasks.reminder.create_edit.fragments.DateFragment
-import com.elementary.tasks.reminder.create_edit.fragments.EmailFragment
-import com.elementary.tasks.reminder.create_edit.fragments.LocationFragment
-import com.elementary.tasks.reminder.create_edit.fragments.LocationOutFragment
-import com.elementary.tasks.reminder.create_edit.fragments.MonthFragment
-import com.elementary.tasks.reminder.create_edit.fragments.PlacesFragment
-import com.elementary.tasks.reminder.create_edit.fragments.ReminderInterface
-import com.elementary.tasks.reminder.create_edit.fragments.ShopFragment
-import com.elementary.tasks.reminder.create_edit.fragments.SkypeFragment
-import com.elementary.tasks.reminder.create_edit.fragments.TimerFragment
-import com.elementary.tasks.reminder.create_edit.fragments.TypeFragment
-import com.elementary.tasks.reminder.create_edit.fragments.WeekFragment
-import com.elementary.tasks.reminder.create_edit.fragments.YearFragment
+import com.elementary.tasks.reminder.createEdit.fragments.*
 import com.google.android.material.snackbar.Snackbar
-
+import kotlinx.android.synthetic.main.activity_create_reminder.*
+import kotlinx.android.synthetic.main.dialog_select_extra.view.*
+import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import org.apache.commons.lang3.StringUtils
-
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
-import java.util.ArrayList
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
-import timber.log.Timber
+import java.util.*
 
 class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongClickListener {
 
-    private var binding: ActivityCreateReminderBinding? = null
-    private var viewModel: ReminderViewModel? = null
-    private var conversationViewModel: ConversationViewModel? = null
+    private lateinit var viewModel: ReminderViewModel
+    private lateinit var conversationViewModel: ConversationViewModel
 
     private var fragment: TypeFragment? = null
 
@@ -96,15 +67,15 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     override var repeatLimit = -1
     override var volume = -1
         private set
-    override var group: String? = null
+    override var group: String = ""
         private set
-    override var melodyPath: String? = null
+    override var melodyPath: String = ""
         private set
     private var autoLabel: String? = null
     override var ledColor = -1
         private set
     private var isEditing: Boolean = false
-    override var attachment: String? = null
+    override var attachment: String = ""
         private set
 
     override var reminder: Reminder? = null
@@ -112,7 +83,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-            prefs!!.lastUsedReminder = position
+            prefs.lastUsedReminder = position
             when (position) {
                 DATE -> replaceFragment(DateFragment())
                 TIMER -> replaceFragment(TimerFragment())
@@ -120,7 +91,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 GPS -> if (hasGpsPermission(GPS)) {
                     replaceFragment(LocationFragment())
                 } else {
-                    binding!!.navSpinner.setSelection(DATE)
+                    navSpinner.setSelection(DATE)
                 }
                 SKYPE -> replaceFragment(SkypeFragment())
                 APP -> replaceFragment(ApplicationFragment())
@@ -128,7 +99,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 GPS_OUT -> if (hasGpsPermission(GPS_OUT)) {
                     replaceFragment(LocationOutFragment())
                 } else {
-                    binding!!.navSpinner.setSelection(DATE)
+                    navSpinner.setSelection(DATE)
                 }
                 SHOP -> replaceFragment(ShopFragment())
                 EMAIL -> if (Permissions.checkPermission(this@CreateReminderActivity, Permissions.READ_CONTACTS)) {
@@ -139,7 +110,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 GPS_PLACE -> if (hasGpsPermission(GPS_PLACE)) {
                     replaceFragment(PlacesFragment())
                 } else {
-                    binding!!.navSpinner.setSelection(DATE)
+                    navSpinner.setSelection(DATE)
                 }
                 YEAR -> replaceFragment(YearFragment())
             }
@@ -150,10 +121,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
     }
 
-    private val customizationView: DialogSelectExtraBinding
+    private val customizationView: View
         get() {
-            val binding = DialogSelectExtraBinding.inflate(layoutInflater)
-            binding.extraSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            val binding = layoutInflater.inflate(R.layout.dialog_select_extra, null)
+            binding.extraSwitch.setOnCheckedChangeListener { _, isChecked ->
                 binding.autoCheck.isEnabled = !isChecked
                 binding.repeatCheck.isEnabled = !isChecked
                 binding.unlockCheck.isEnabled = !isChecked
@@ -184,13 +155,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
 
     override val summary: String
-        get() = binding!!.taskSummary.text!!.toString().trim { it <= ' ' }
+        get() = taskSummary.text!!.toString().trim { it <= ' ' }
 
     override val windowType: Int
-        get() = if (binding!!.windowTypeSwitch.isChecked) 1 else 0
+        get() = if (window_type_switch.isChecked) 1 else 0
 
     override val isExportToCalendar: Boolean
-        get() = prefs!!.isCalendarEnabled || prefs!!.isStockCalendarEnabled
+        get() = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
 
     private fun hasGpsPermission(code: Int): Boolean {
         if (!Permissions.checkPermission(this@CreateReminderActivity, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
@@ -202,8 +173,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_reminder)
-        isExportToTasks = Google.getInstance(this) != null
+        setContentView(R.layout.activity_create_reminder)
+        isExportToTasks = Google.getInstance() != null
         initActionBar()
         initNavigation()
         initLongClick()
@@ -215,33 +186,33 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
-        viewModel!!.reminder.observe(this, { reminder ->
+        viewModel.reminder.observe(this, Observer{ reminder ->
             if (reminder != null) {
                 editReminder(reminder)
             }
         })
-        viewModel!!.result.observe(this, { commands ->
+        viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> finish()
                 }
             }
         })
-        viewModel!!.defaultGroup.observe(this, { group ->
+        viewModel.defaultGroup.observe(this, Observer{ group ->
             if (group != null) {
-                binding!!.groupButton.setText(group!!.title)
-                this.group = group!!.uuId
+                groupButton.text = group.title
+                this.group = group.uuId
             }
         })
     }
 
     private fun initLongClick() {
-        binding!!.customButton.setOnLongClickListener(this)
-        binding!!.groupButton.setOnLongClickListener(this)
-        binding!!.voiceButton.setOnLongClickListener(this)
-        binding!!.exclusionButton.setOnLongClickListener(this)
-        binding!!.melodyButton.setOnLongClickListener(this)
-        binding!!.repeatButton.setOnLongClickListener(this)
+        customButton.setOnLongClickListener(this)
+        groupButton.setOnLongClickListener(this)
+        voiceButton.setOnLongClickListener(this)
+        exclusionButton.setOnLongClickListener(this)
+        melodyButton.setOnLongClickListener(this)
+        repeatButton.setOnLongClickListener(this)
     }
 
     private fun loadReminder() {
@@ -254,142 +225,136 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
             try {
                 val name = intent.data
                 val scheme = name!!.scheme
-                if (ContentResolver.SCHEME_CONTENT == scheme) {
+                reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    reminder = BackupTool.getInstance().getReminder(cr, name)
+                    BackupTool.getInstance().getReminder(cr, name)
                 } else {
-                    reminder = BackupTool.getInstance().getReminder(name.path, null)
+                    BackupTool.getInstance().getReminder(name.path, null)
                 }
             } catch (e: IOException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
             } catch (e: IllegalStateException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
             }
-
         }
     }
 
-    private fun editReminder(reminder: Reminder?) {
+    private fun editReminder(reminder: Reminder) {
         this.reminder = reminder
-        if (reminder == null) return
-        viewModel!!.pauseReminder(reminder)
-        binding!!.taskSummary.setText(reminder.summary)
+        viewModel.pauseReminder(reminder)
+        taskSummary.setText(reminder.summary)
         showGroup(reminder.group)
         attachment = reminder.attachmentFile
         if (!TextUtils.isEmpty(attachment)) {
-            binding!!.attachmentButton.visibility = View.VISIBLE
+            attachmentButton.visibility = View.VISIBLE
         }
-        binding!!.windowTypeSwitch.isChecked = reminder.windowType == 1
-        initParams()
+        window_type_switch.isChecked = reminder.windowType == 1
+        initParams(reminder)
         when (reminder.type) {
-            Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> binding!!.navSpinner.setSelection(DATE)
-            Reminder.BY_TIME -> binding!!.navSpinner.setSelection(TIMER)
-            Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> binding!!.navSpinner.setSelection(WEEK)
-            Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS -> binding!!.navSpinner.setSelection(GPS)
-            Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> binding!!.navSpinner.setSelection(SKYPE)
-            Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> binding!!.navSpinner.setSelection(APP)
-            Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> binding!!.navSpinner.setSelection(MONTH)
-            Reminder.BY_OUT, Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL -> binding!!.navSpinner.setSelection(GPS_OUT)
-            Reminder.BY_DATE_SHOP -> binding!!.navSpinner.setSelection(SHOP)
-            Reminder.BY_DATE_EMAIL -> binding!!.navSpinner.setSelection(EMAIL)
-            Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> binding!!.navSpinner.setSelection(YEAR)
+            Reminder.BY_DATE, Reminder.BY_DATE_CALL, Reminder.BY_DATE_SMS -> navSpinner.setSelection(DATE)
+            Reminder.BY_TIME -> navSpinner.setSelection(TIMER)
+            Reminder.BY_WEEK, Reminder.BY_WEEK_CALL, Reminder.BY_WEEK_SMS -> navSpinner.setSelection(WEEK)
+            Reminder.BY_LOCATION, Reminder.BY_LOCATION_CALL, Reminder.BY_LOCATION_SMS -> navSpinner.setSelection(GPS)
+            Reminder.BY_SKYPE, Reminder.BY_SKYPE_CALL, Reminder.BY_SKYPE_VIDEO -> navSpinner.setSelection(SKYPE)
+            Reminder.BY_DATE_APP, Reminder.BY_DATE_LINK -> navSpinner.setSelection(APP)
+            Reminder.BY_MONTH, Reminder.BY_MONTH_CALL, Reminder.BY_MONTH_SMS -> navSpinner.setSelection(MONTH)
+            Reminder.BY_OUT, Reminder.BY_OUT_SMS, Reminder.BY_OUT_CALL -> navSpinner.setSelection(GPS_OUT)
+            Reminder.BY_DATE_SHOP -> navSpinner.setSelection(SHOP)
+            Reminder.BY_DATE_EMAIL -> navSpinner.setSelection(EMAIL)
+            Reminder.BY_DAY_OF_YEAR, Reminder.BY_DAY_OF_YEAR_CALL, Reminder.BY_DAY_OF_YEAR_SMS -> navSpinner.setSelection(YEAR)
             else -> if (Module.isPro) {
                 when (reminder.type) {
-                    Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> binding!!.navSpinner.setSelection(GPS_PLACE)
+                    Reminder.BY_PLACES, Reminder.BY_PLACES_SMS, Reminder.BY_PLACES_CALL -> navSpinner.setSelection(GPS_PLACE)
                 }
             }
         }
     }
 
-    private fun initParams() {
-        if (reminder != null) {
-            useGlobal = reminder!!.isUseGlobal
-            auto = reminder!!.isAuto
-            wake = reminder!!.isAwake
-            unlock = reminder!!.isUnlock
-            notificationRepeat = reminder!!.isRepeatNotification
-            voice = reminder!!.isNotifyByVoice
-            vibration = reminder!!.isVibrate
-            volume = reminder!!.volume
-            repeatLimit = reminder!!.repeatLimit
-            melodyPath = reminder!!.melodyPath
-            ledColor = reminder!!.color
-            updateMelodyIndicator()
-        }
+    private fun initParams(reminder: Reminder) {
+        useGlobal = reminder.useGlobal
+        auto = reminder.auto
+        wake = reminder.awake
+        unlock = reminder.unlock
+        notificationRepeat = reminder.repeatNotification
+        voice = reminder.notifyByVoice
+        vibration = reminder.vibrate
+        volume = reminder.volume
+        repeatLimit = reminder.repeatLimit
+        melodyPath = reminder.melodyPath
+        ledColor = reminder.color
+        updateMelodyIndicator()
     }
 
     private fun updateMelodyIndicator() {
-        if (melodyPath != null) {
-            binding!!.melodyButton.visibility = View.VISIBLE
+        if (melodyPath != "") {
+            melodyButton.visibility = View.VISIBLE
         } else {
-            binding!!.melodyButton.visibility = View.GONE
+            melodyButton.visibility = View.GONE
         }
     }
 
     private fun initNavigation() {
-        val navSpinner = ArrayList<SpinnerItem>()
-        if (themeUtil!!.isDark) {
-            navSpinner.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines_white))
-            navSpinner.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white))
-            navSpinner.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white))
-            navSpinner.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map_white))
-            navSpinner.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white))
-            navSpinner.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software_white))
-            navSpinner.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar_white))
-            navSpinner.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white))
-            navSpinner.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp))
-            navSpinner.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart_white))
-            navSpinner.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_white))
+        val arrayAdapter = ArrayList<SpinnerItem>()
+        if (themeUtil.isDark) {
+            arrayAdapter.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp))
+            arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_white))
             if (Module.isPro)
-                navSpinner.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker_white))
+                arrayAdapter.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker_white))
         } else {
-            navSpinner.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines))
-            navSpinner.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer))
-            navSpinner.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm))
-            navSpinner.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map))
-            navSpinner.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype))
-            navSpinner.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software))
-            navSpinner.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar))
-            navSpinner.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_black))
-            navSpinner.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_black_24dp))
-            navSpinner.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart))
-            navSpinner.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email))
+            arrayAdapter.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines))
+            arrayAdapter.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer))
+            arrayAdapter.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm))
+            arrayAdapter.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map))
+            arrayAdapter.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype))
+            arrayAdapter.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software))
+            arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar))
+            arrayAdapter.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_black))
+            arrayAdapter.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_black_24dp))
+            arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart))
+            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email))
             if (Module.isPro)
-                navSpinner.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker))
+                arrayAdapter.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker))
         }
-        val adapter = TitleNavigationAdapter(applicationContext, navSpinner)
-        binding!!.navSpinner.adapter = adapter
-        binding!!.navSpinner.onItemSelectedListener = mOnTypeSelectListener
-        var lastPos = prefs!!.lastUsedReminder
-        if (lastPos >= navSpinner.size) lastPos = 0
-        binding!!.navSpinner.setSelection(lastPos)
+        val adapter = TitleNavigationAdapter(applicationContext, arrayAdapter)
+        navSpinner.adapter = adapter
+        navSpinner.onItemSelectedListener = mOnTypeSelectListener
+        var lastPos = prefs.lastUsedReminder
+        if (lastPos >= arrayAdapter.size) lastPos = 0
+        navSpinner.setSelection(lastPos)
     }
 
     private fun initActionBar() {
-        setSupportActionBar(binding!!.toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-        }
-        binding!!.toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        binding!!.voiceButton.setOnClickListener { v -> openRecognizer() }
-        binding!!.customButton.setOnClickListener { v -> openCustomizationDialog() }
-        binding!!.groupButton.setOnClickListener { v -> changeGroup() }
-        binding!!.melodyButton.setOnClickListener { view -> showCurrentMelody() }
-        binding!!.attachmentButton.setOnClickListener { view -> showAttachmentSnack() }
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        voiceButton.setOnClickListener { openRecognizer() }
+        customButton.setOnClickListener { openCustomizationDialog() }
+        groupButton.setOnClickListener { changeGroup() }
+        melodyButton.setOnClickListener { showCurrentMelody() }
+        attachmentButton.setOnClickListener { showAttachmentSnack() }
     }
 
     private fun changeGroup() {
         val position = Position()
-        val categories = viewModel!!.allGroupsNames
+        val categories = viewModel.allGroupsNames
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
                 android.R.layout.simple_list_item_single_choice, categories), position.i) { dialog, which ->
             dialog.dismiss()
-            val groups = viewModel!!.allGroups.value
+            val groups = viewModel.allGroups.value
             if (groups != null) showGroup(groups[which])
         }
         val alert = builder.create()
@@ -398,7 +363,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun showGroup(item: Group?) {
         if (item == null) return
-        binding!!.groupButton.text = item.title
+        groupButton.text = item.title
         group = item.uuId
     }
 
@@ -406,12 +371,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.personalization)
         val b = customizationView
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialog, which -> saveExtraResults(b) }
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { _, _ -> saveExtraResults(b) }
         builder.create().show()
     }
 
-    private fun saveExtraResults(b: DialogSelectExtraBinding) {
+    private fun saveExtraResults(b: View) {
         useGlobal = b.extraSwitch.isChecked
         auto = b.autoCheck.isChecked
         wake = b.wakeCheck.isChecked
@@ -482,15 +447,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun closeScreen() {
-        if (reminder != null && prefs!!.isAutoSaveEnabled) {
-            if (!reminder!!.isActive) {
+        val rem = reminder
+        if (rem != null && prefs.isAutoSaveEnabled) {
+            if (!rem.isActive) {
                 askAboutEnabling()
             } else {
                 save()
             }
-        } else if (isEditing && reminder != null) {
-            if (!reminder!!.isActive) {
-                viewModel!!.resumeReminder(reminder!!)
+        } else if (isEditing && rem != null) {
+            if (!rem.isActive) {
+                viewModel.resumeReminder(rem)
             }
             finish()
         } else {
@@ -499,11 +465,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun deleteReminder() {
-        if (reminder != null) {
-            if (reminder!!.isRemoved) {
-                viewModel!!.deleteReminder(reminder!!, true)
+        val rem = reminder
+        if (rem != null) {
+            if (rem.isRemoved) {
+                viewModel.deleteReminder(rem, true)
             } else {
-                viewModel!!.moveToTrash(reminder!!)
+                viewModel.moveToTrash(rem)
             }
         }
     }
@@ -511,7 +478,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     private fun selectVolume() {
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.loudness)
-        val b = DialogWithSeekAndTitleBinding.inflate(layoutInflater)
+        val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 26
         b.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -528,13 +495,13 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         })
         b.seekBar.progress = volume + 1
         b.titleView.text = getVolumeTitle(b.seekBar.progress)
-        builder.setView(b.root)
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i ->
+        builder.setView(b)
+        builder.setPositiveButton(R.string.ok) { _, _ ->
             volume = b.seekBar.progress - 1
             val str = String.format(getString(R.string.selected_loudness_x_for_reminder), getVolumeTitle(b.seekBar.progress))
-            showSnackbar(str, getString(R.string.cancel)) { v -> volume = -1 }
+            showSnackbar(str, getString(R.string.cancel), View.OnClickListener { volume = -1 })
         }
-        builder.setNegativeButton(R.string.cancel) { dialog, which -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         builder.create().show()
     }
 
@@ -561,12 +528,12 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 ledColor = which
                 val selColor = LED.getTitle(this, which)
                 val str = String.format(getString(R.string.led_color_x), selColor)
-                showSnackbar(str, getString(R.string.cancel)) { v -> ledColor = -1 }
+                showSnackbar(str, getString(R.string.cancel), View.OnClickListener { ledColor = -1 })
                 dialog.dismiss()
             }
         }
-        builder.setPositiveButton(R.string.ok) { dialog, which -> dialog.dismiss() }
-        builder.setNegativeButton(R.string.disable) { dialog, which ->
+        builder.setPositiveButton(R.string.ok) { dialog, _ -> dialog.dismiss() }
+        builder.setNegativeButton(R.string.disable) { dialog, _ ->
             ledColor = -1
             dialog.dismiss()
         }
@@ -577,11 +544,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         val builder = Dialogues.getDialog(this)
         builder.setTitle(R.string.this_reminder_is_disabled)
         builder.setMessage(R.string.would_you_like_to_enable_it)
-        builder.setPositiveButton(R.string.yes) { dialog, which ->
+        builder.setPositiveButton(R.string.yes) { dialog, _ ->
             dialog.dismiss()
             save()
         }
-        builder.setNegativeButton(R.string.no) { dialog, which ->
+        builder.setNegativeButton(R.string.no) { dialog, _ ->
             dialog.dismiss()
             finish()
         }
@@ -590,10 +557,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun save() {
         if (fragment != null) {
-            val reminder = fragment!!.prepare()
+            val reminder = fragment?.prepare()
             if (reminder != null) {
                 Timber.d("save: %s", reminder)
-                viewModel!!.saveAndStartReminder(reminder)
+                viewModel.saveAndStartReminder(reminder)
             }
         }
     }
@@ -607,20 +574,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        return super.onPrepareOptionsMenu(menu)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (matches != null) {
-                val model = conversationViewModel!!.findResults(matches)
+                val model = conversationViewModel.findResults(matches)
                 if (model != null) {
                     processModel(model)
                 } else {
                     val text = matches[0].toString()
-                    binding!!.taskSummary.setText(StringUtils.capitalize(text))
+                    taskSummary.setText(StringUtils.capitalize(text))
                 }
             }
         }
@@ -631,8 +594,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
         if (requestCode == FILE_REQUEST && resultCode == Activity.RESULT_OK) {
             attachment = data!!.getStringExtra(Constants.FILE_PICKED)
-            if (attachment != null) {
-                binding!!.attachmentButton.visibility = View.VISIBLE
+            if (attachment != "") {
+                attachmentButton.visibility = View.VISIBLE
                 showAttachmentSnack()
             }
         }
@@ -642,24 +605,24 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun showAttachmentSnack() {
-        val file = File(attachment!!)
+        val file = File(attachment)
         showSnackbar(String.format(getString(R.string.file_x_attached), file.name),
-                getString(R.string.cancel)) { v ->
-            attachment = null
-            binding!!.attachmentButton.visibility = View.GONE
-        }
+                getString(R.string.cancel), View.OnClickListener {
+            attachment = ""
+            attachmentButton.visibility = View.GONE
+        })
     }
 
     private fun showCurrentMelody() {
-        if (melodyPath != null) {
-            val musicFile = File(melodyPath!!)
+        if (melodyPath != "") {
+            val musicFile = File(melodyPath)
             showSnackbar(String.format(getString(R.string.melody_x), musicFile.name),
-                    getString(R.string.delete)) { view -> removeMelody() }
+                    getString(R.string.delete), View.OnClickListener { removeMelody() })
         }
     }
 
     private fun removeMelody() {
-        melodyPath = null
+        melodyPath = ""
         updateMelodyIndicator()
     }
 
@@ -669,30 +632,29 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        if (Module.isMarshmallow && fragment != null) {
-            fragment!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-        if (grantResults.size == 0) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
         when (requestCode) {
             CONTACTS_REQUEST_E -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding!!.navSpinner.setSelection(EMAIL)
+                navSpinner.setSelection(EMAIL)
             } else {
-                binding!!.navSpinner.setSelection(DATE)
+                navSpinner.setSelection(DATE)
             }
             GPS_PLACE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding!!.navSpinner.setSelection(GPS_PLACE)
+                navSpinner.setSelection(GPS_PLACE)
             } else {
-                binding!!.navSpinner.setSelection(DATE)
+                navSpinner.setSelection(DATE)
             }
             GPS_OUT -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding!!.navSpinner.setSelection(GPS_OUT)
+                navSpinner.setSelection(GPS_OUT)
             } else {
-                binding!!.navSpinner.setSelection(DATE)
+                navSpinner.setSelection(DATE)
             }
             GPS -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding!!.navSpinner.setSelection(GPS)
+                navSpinner.setSelection(GPS)
             } else {
-                binding!!.navSpinner.setSelection(DATE)
+                navSpinner.setSelection(DATE)
             }
             331 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startActivityForResult(Intent(this, FileExplorerActivity::class.java)
@@ -706,9 +668,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         showShowcase()
     }
 
-    fun showShowcase() {
-        if (!prefs!!.isShowcase(SHOWCASE)) {
-            prefs!!.setShowcase(SHOWCASE, true)
+    private fun showShowcase() {
+        if (!prefs.isShowcase(SHOWCASE)) {
+            prefs.setShowcase(SHOWCASE, true)
             //            ShowcaseConfig config = new ShowcaseConfig();
             //            config.setDelay(350);
             //            config.setMaskColor(getThemeUtil().getColor(getThemeUtil().colorAccent()));
@@ -733,42 +695,40 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     override fun showSnackbar(title: String, actionName: String, listener: View.OnClickListener) {
-        Snackbar.make(binding!!.mainContainer, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
+        Snackbar.make(main_container, title, Snackbar.LENGTH_SHORT).setAction(actionName, listener).show()
     }
 
     override fun showSnackbar(title: String) {
-        Snackbar.make(binding!!.mainContainer, title, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(main_container, title, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun setEventHint(hint: String) {
-        if (binding != null) binding!!.taskSummary.hint = hint
+        taskSummary.hint = hint
     }
 
     override fun setExclusionAction(listener: View.OnClickListener?) {
-        if (binding == null) return
         if (listener == null) {
-            binding!!.exclusionButton.visibility = View.GONE
+            exclusionButton.visibility = View.GONE
         } else {
-            binding!!.exclusionButton.visibility = View.VISIBLE
-            binding!!.exclusionButton.setOnClickListener(listener)
+            exclusionButton.visibility = View.VISIBLE
+            exclusionButton.setOnClickListener(listener)
         }
     }
 
     override fun setRepeatAction(listener: View.OnClickListener?) {
-        if (binding == null) return
         if (listener == null) {
-            binding!!.repeatButton.visibility = View.GONE
+            repeatButton.visibility = View.GONE
         } else {
-            binding!!.repeatButton.visibility = View.VISIBLE
-            binding!!.repeatButton.setOnClickListener(listener)
+            repeatButton.visibility = View.VISIBLE
+            repeatButton.setOnClickListener(listener)
         }
     }
 
     override fun setFullScreenMode(b: Boolean) {
         if (b) {
-            ViewUtils.collapse(binding!!.toolbar)
+            ViewUtils.collapse(toolbar)
         } else {
-            ViewUtils.expand(binding!!.toolbar)
+            ViewUtils.expand(toolbar)
         }
     }
 
@@ -803,7 +763,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private class SpinnerItem internal constructor(val title: String, val icon: Int)
 
-    private inner class TitleNavigationAdapter internal constructor(private val context: Context, private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
+    private inner class TitleNavigationAdapter(private val context: Context,
+                                               private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
 
         private var txtTitle: TextViewWithIcon? = null
 
@@ -820,57 +781,57 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
-            if (convertView == null) {
-                convertView = layoutInflater.inflate(R.layout.list_item_navigation, null)
+            var cView = convertView
+            if (cView == null) {
+                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)
             }
-            txtTitle = convertView!!.findViewById(R.id.txtTitle)
-            txtTitle!!.setIcon(0)
+            txtTitle = cView!!.findViewById(R.id.txtTitle)
+            txtTitle?.setIcon(0)
             txtTitle!!.text = spinnerNavItem[position].title
-            txtTitle!!.setTextColor(context.resources.getColor(R.color.whitePrimary))
-            return convertView
+            txtTitle?.setTextColor(context.resources.getColor(R.color.whitePrimary))
+            return cView
         }
 
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var convertView = convertView
-            if (convertView == null) {
-                convertView = layoutInflater.inflate(R.layout.list_item_navigation, null)
+            var cView = convertView
+            if (cView == null) {
+                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)
             }
-            val itemBg = convertView!!.findViewById<RelativeLayout>(R.id.itemBg)
-            itemBg.setBackgroundColor(themeUtil!!.spinnerStyle)
-            txtTitle = convertView.findViewById(R.id.txtTitle)
-            txtTitle!!.setIcon(spinnerNavItem[position].icon)
-            if (themeUtil!!.isDark) {
-                txtTitle!!.setTextColor(themeUtil!!.getColor(R.color.whitePrimary))
+            val itemBg = cView!!.findViewById<RelativeLayout>(R.id.itemBg)
+            itemBg.setBackgroundColor(themeUtil.spinnerStyle)
+            txtTitle = cView.findViewById(R.id.txtTitle)
+            txtTitle?.setIcon(spinnerNavItem[position].icon)
+            if (themeUtil.isDark) {
+                txtTitle?.setTextColor(themeUtil.getColor(R.color.whitePrimary))
             } else {
-                txtTitle!!.setTextColor(themeUtil!!.getColor(R.color.blackPrimary))
+                txtTitle?.setTextColor(themeUtil.getColor(R.color.blackPrimary))
             }
             txtTitle!!.text = spinnerNavItem[position].title
-            return convertView
+            return cView
         }
     }
 
     companion object {
 
-        private val DATE = 0
-        private val TIMER = 1
-        private val WEEK = 2
-        private val GPS = 3
-        private val SKYPE = 4
-        private val APP = 5
-        private val MONTH = 6
-        private val YEAR = 7
-        private val GPS_OUT = 8
-        private val SHOP = 9
-        private val EMAIL = 10
-        private val GPS_PLACE = 11
+        private const val DATE = 0
+        private const val TIMER = 1
+        private const val WEEK = 2
+        private const val GPS = 3
+        private const val SKYPE = 4
+        private const val APP = 5
+        private const val MONTH = 6
+        private const val YEAR = 7
+        private const val GPS_OUT = 8
+        private const val SHOP = 9
+        private const val EMAIL = 10
+        private const val GPS_PLACE = 11
 
-        private val VOICE_RECOGNITION_REQUEST_CODE = 109
-        private val MENU_ITEM_DELETE = 12
-        private val CONTACTS_REQUEST_E = 501
-        private val FILE_REQUEST = 323
-        private val TAG = "CreateReminderActivity"
-        private val SHOWCASE = "reminder_showcase"
+        private const val VOICE_RECOGNITION_REQUEST_CODE = 109
+        private const val MENU_ITEM_DELETE = 12
+        private const val CONTACTS_REQUEST_E = 501
+        private const val FILE_REQUEST = 323
+        private const val TAG = "CreateReminderActivity"
+        private const val SHOWCASE = "reminder_showcase"
     }
 }

@@ -163,7 +163,7 @@ class ActionView : LinearLayout {
         this.listener = listener
     }
 
-    private fun hasAction(): Boolean {
+    fun hasAction(): Boolean {
         return actionCheck!!.isChecked
     }
 

@@ -35,10 +35,10 @@ class DateFilter internal constructor(filter: ObjectFilter<Reminder>?) : Abstrac
             true
         else {
             when (range) {
-                DateFilter.DateRange.PERMANENT -> reminder.eventTime == null
+                DateFilter.DateRange.PERMANENT -> reminder.eventTime == ""
                 DateFilter.DateRange.TODAY -> compareToday(reminder.eventTime)
                 DateFilter.DateRange.TOMORROW -> compareTomorrow(reminder.eventTime)
-                else -> reminder.eventTime == null
+                else -> reminder.eventTime == ""
             }
         }
     }

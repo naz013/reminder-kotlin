@@ -9,7 +9,7 @@ import com.elementary.tasks.core.data.converters.ShopItemsTypeConverter
 import com.elementary.tasks.core.interfaces.RecyclerInterface
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.reminder.create_edit.fragments.ReminderInterface
+import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface
 import com.google.gson.annotations.SerializedName
 import java.util.*
 

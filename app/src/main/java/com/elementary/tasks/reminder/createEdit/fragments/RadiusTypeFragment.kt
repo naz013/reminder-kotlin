@@ -1,12 +1,11 @@
-package com.elementary.tasks.reminder.create_edit.fragments
+package com.elementary.tasks.reminder.createEdit.fragments
 
 import com.elementary.tasks.R
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,19 +25,19 @@ import java.util.Locale
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal abstract class RadiusTypeFragment : TypeFragment() {
+abstract class RadiusTypeFragment : TypeFragment() {
 
-    protected var radius = Prefs.getInstance(context).radius
+    protected var radius = Prefs.getInstance(context!!).radius
 
     protected fun showRadiusPickerDialog() {
         Dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
-            override fun onSelected(integer: Int?) {
-                radius = integer!! - 1
+            override fun onSelected(t: Int) {
+                radius = t - 1
                 recreateMarker()
             }
 
-            override fun getTitle(integer: Int?): String {
-                return getTitleString(integer!!)
+            override fun getTitle(t: Int): String {
+                return getTitleString(t)
             }
         })
     }
@@ -55,7 +54,7 @@ internal abstract class RadiusTypeFragment : TypeFragment() {
 
     override fun prepare(): Reminder? {
         if (!SuperUtil.checkLocationEnable(context!!)) {
-            SuperUtil.showLocationAlert(context!!, `interface`!!)
+            SuperUtil.showLocationAlert(context!!, reminderInterface!!)
             return null
         }
         return Reminder()

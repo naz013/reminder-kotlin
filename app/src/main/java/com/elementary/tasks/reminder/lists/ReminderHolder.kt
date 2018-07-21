@@ -11,6 +11,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import java.util.*
@@ -39,6 +40,8 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     @Inject
     lateinit var themeUtil: ThemeUtil
+
+    val listHeader: RoboTextView = itemView.listHeader
 
     init {
         ReminderApp.appComponent.inject(this)

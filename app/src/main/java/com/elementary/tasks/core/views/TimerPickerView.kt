@@ -41,7 +41,7 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
 
     private var mListener: TimerListener? = null
 
-    private var timerValue: Long
+    var timerValue: Long
         get() = SuperUtil.getAfterTime(timeString)
         set(mills) {
             timeString = TimeUtil.generateAfterString(mills)
