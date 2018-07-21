@@ -62,15 +62,15 @@ class Dropbox(private val mContext: Context) {
      * Start connection to Dropbox.
      */
     fun startSession() {
-        var token = Prefs.getInstance(mContext).dropboxToken
+        var token: String? = Prefs.getInstance(mContext).dropboxToken
         if (token == "") {
             token = Auth.getOAuth2Token()
-            Prefs.getInstance(mContext).dropboxToken = token
         }
         if (token == null) {
             Prefs.getInstance(mContext).dropboxToken = ""
             return
         }
+        Prefs.getInstance(mContext).dropboxToken = token
         val requestConfig = DbxRequestConfig.newBuilder("Just Reminder")
                 .withHttpRequestor(OkHttp3Requestor(OkHttpClient()))
                 .build()

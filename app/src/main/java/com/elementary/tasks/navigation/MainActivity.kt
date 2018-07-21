@@ -41,7 +41,7 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.list_item_message.*
-import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.io.File
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
@@ -218,17 +218,17 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             val file = File(MemoryUtil.imageCacheDir, "$fileName.jpg")
             val readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             if (readPerm && file.exists()) {
-                Glide.with(this).load(file).into(headerImage)
-                headerImage.visibility = View.VISIBLE
+                Glide.with(this).load(file).into(nav_view.headerImage)
+                nav_view.headerImage.visibility = View.VISIBLE
             } else {
-                Glide.with(this).load(path).into(headerImage)
-                headerImage.visibility = View.VISIBLE
+                Glide.with(this).load(path).into(nav_view.headerImage)
+                nav_view.headerImage.visibility = View.VISIBLE
                 if (readPerm) {
                     SaveAsync(this).execute(path)
                 }
             }
         } else {
-            headerImage.visibility = View.GONE
+            nav_view.headerImage.visibility = View.GONE
         }
     }
 
@@ -331,9 +331,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private fun initNavigation() {
         nav_view.setNavigationItemSelectedListener(this)
         val view = nav_view.getHeaderView(0)
-        sale_badge.visibility = View.INVISIBLE
-        update_badge.visibility = View.INVISIBLE
-        headerImage.setOnClickListener { openImageScreen() }
+        nav_view.sale_badge.visibility = View.INVISIBLE
+        nav_view.update_badge.visibility = View.INVISIBLE
+        nav_view.headerImage.setOnClickListener { openImageScreen() }
         view.findViewById<View>(R.id.headerItem).setOnClickListener { openImageScreen() }
         val nameView = view.findViewById<RoboTextView>(R.id.appNameBanner)
         var appName = getString(R.string.app_name)
@@ -492,25 +492,25 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(this, expiryDate)
         if (TextUtils.isEmpty(expiry)) {
-            sale_badge.visibility = View.INVISIBLE
+            nav_view.sale_badge.visibility = View.INVISIBLE
         } else {
-            sale_badge.visibility = View.VISIBLE
-            sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+            nav_view.sale_badge.visibility = View.VISIBLE
+            nav_view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
         }
     }
 
     override fun noSale() {
-        sale_badge.visibility = View.INVISIBLE
+        nav_view.sale_badge.visibility = View.INVISIBLE
     }
 
     override fun onUpdate(version: String) {
-        update_badge.visibility = View.VISIBLE
-        update_badge.text = getString(R.string.update_available) + ": " + version
-        update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
+        nav_view.update_badge.visibility = View.VISIBLE
+        nav_view.update_badge.text = getString(R.string.update_available) + ": " + version
+        nav_view.update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
-        update_badge.visibility = View.INVISIBLE
+        nav_view.update_badge.visibility = View.INVISIBLE
     }
 
     companion object {
