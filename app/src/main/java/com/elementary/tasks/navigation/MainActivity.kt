@@ -24,6 +24,8 @@ import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
+import com.elementary.tasks.core.viewModels.notes.NotesViewModel
+import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.elementary.tasks.google_tasks.GoogleTasksFragment
@@ -40,7 +42,6 @@ import com.elementary.tasks.reminder.lists.ArchiveFragment
 import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.list_item_message.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import java.io.File
 
@@ -87,7 +88,15 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
         initActionBar()
         initNavigation()
-        mNoteView = QuickNoteCoordinator(this, view, mQuickCallback)
+        initViewModel()
+        initQuickNote(savedInstanceState)
+    }
+
+    private fun initQuickNote(savedInstanceState: Bundle?) {
+        val noteViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
+        val reminderViewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
+        mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
+                mQuickCallback, reminderViewModel, noteViewModel)
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
@@ -97,8 +106,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             }
             else -> initStartFragment()
         }
-
-        initViewModel()
     }
 
     private fun initViewModel() {
@@ -209,6 +216,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun showMainImage() {
         val path = prefs.imagePath
+        val view = nav_view.getHeaderView(0)
         if (!path.isEmpty() && !path.contains("{")) {
             var fileName: String = path
             if (path.contains("=")) {
@@ -218,17 +226,17 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             val file = File(MemoryUtil.imageCacheDir, "$fileName.jpg")
             val readPerm = Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
             if (readPerm && file.exists()) {
-                Glide.with(this).load(file).into(nav_view.headerImage)
-                nav_view.headerImage.visibility = View.VISIBLE
+                Glide.with(this).load(file).into(view.headerImage)
+                view.headerImage.visibility = View.VISIBLE
             } else {
-                Glide.with(this).load(path).into(nav_view.headerImage)
-                nav_view.headerImage.visibility = View.VISIBLE
+                Glide.with(this).load(path).into(view.headerImage)
+                view.headerImage.visibility = View.VISIBLE
                 if (readPerm) {
                     SaveAsync(this).execute(path)
                 }
             }
         } else {
-            nav_view.headerImage.visibility = View.GONE
+            view.headerImage.visibility = View.GONE
         }
     }
 
@@ -259,9 +267,11 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         } else {
             showFab()
             fab.setOnClickListener { view ->
-                if (mNoteView!!.isNoteVisible) {
-                    mNoteView!!.hideNoteView()
-                    return@setOnClickListener
+                if (mNoteView != null) {
+                    if (mNoteView!!.isNoteVisible) {
+                        mNoteView?.hideNoteView()
+                        return@setOnClickListener
+                    }
                 }
                 listener.onClick(view)
             }
@@ -331,9 +341,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private fun initNavigation() {
         nav_view.setNavigationItemSelectedListener(this)
         val view = nav_view.getHeaderView(0)
-        nav_view.sale_badge.visibility = View.INVISIBLE
-        nav_view.update_badge.visibility = View.INVISIBLE
-        nav_view.headerImage.setOnClickListener { openImageScreen() }
+        view.sale_badge.visibility = View.INVISIBLE
+        view.update_badge.visibility = View.INVISIBLE
+        view.headerImage.setOnClickListener { openImageScreen() }
         view.findViewById<View>(R.id.headerItem).setOnClickListener { openImageScreen() }
         val nameView = view.findViewById<RoboTextView>(R.id.appNameBanner)
         var appName = getString(R.string.app_name)
@@ -360,7 +370,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         } else if (isFiltersVisible) {
             addFilters(listOf(), true)
         } else if (mNoteView!!.isNoteVisible) {
-            mNoteView!!.hideNoteView()
+            mNoteView?.hideNoteView()
         } else {
             if (isBackPressed) {
                 if (System.currentTimeMillis() - pressedTime < PRESS_AGAIN_TIME) {
@@ -407,12 +417,10 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-            val matches = data!!.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: return
             viewModel.parseResults(matches, false)
         }
-        if (fragment != null) {
-            fragment!!.onActivityResult(requestCode, resultCode, data)
-        }
+        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -491,26 +499,30 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onSale(discount: String, expiryDate: String) {
         val expiry = TimeUtil.getFireFormatted(this, expiryDate)
+        val view = nav_view.getHeaderView(0)
         if (TextUtils.isEmpty(expiry)) {
-            nav_view.sale_badge.visibility = View.INVISIBLE
+            view.sale_badge.visibility = View.INVISIBLE
         } else {
-            nav_view.sale_badge.visibility = View.VISIBLE
-            nav_view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
+            view.sale_badge.visibility = View.VISIBLE
+            view.sale_badge.text = "SALE" + " " + getString(R.string.app_name_pro) + " -" + discount + getString(R.string.p_until) + " " + expiry
         }
     }
 
     override fun noSale() {
-        nav_view.sale_badge.visibility = View.INVISIBLE
+        val view = nav_view.getHeaderView(0)
+        view.sale_badge.visibility = View.INVISIBLE
     }
 
     override fun onUpdate(version: String) {
-        nav_view.update_badge.visibility = View.VISIBLE
-        nav_view.update_badge.text = getString(R.string.update_available) + ": " + version
-        nav_view.update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
+        val view = nav_view.getHeaderView(0)
+        view.update_badge.visibility = View.VISIBLE
+        view.update_badge.text = getString(R.string.update_available) + ": " + version
+        view.update_badge.setOnClickListener { SuperUtil.launchMarket(this@MainActivity) }
     }
 
     override fun noUpdate() {
-        nav_view.update_badge.visibility = View.INVISIBLE
+        val view = nav_view.getHeaderView(0)
+        view.update_badge.visibility = View.INVISIBLE
     }
 
     companion object {

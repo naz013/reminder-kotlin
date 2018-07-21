@@ -11,9 +11,7 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.reminder.ReminderUpdateEvent
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
-import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 
 /**
@@ -47,7 +45,6 @@ class ReminderActionService : BroadcastReceiver() {
     private fun hidePermanent(context: Context, id: Int) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         EventControlFactory.getController(reminder).next()
-        EventBus.getDefault().post(ReminderUpdateEvent())
         endService(context, reminder.uniqueId)
     }
 
