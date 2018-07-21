@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_white_24dp"
+        android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/action_list"
-        android:icon="@drawable/ic_view_quilt_white_24dp"
+        android:icon="@drawable/ic_view_quilt_black_24dp"
         android:title="@string/grid_view"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_sync"
-        android:icon="@drawable/ic_cached_white_24dp"
+        android:icon="@drawable/ic_cached_black_24dp"
         android:title="@string/sync"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_order"
-        android:icon="@drawable/ic_sort_white_24dp"
+        android:icon="@drawable/ic_sort_black_24dp"
         android:title="@string/order"
         app:showAsAction="ifRoom" />
 </menu>

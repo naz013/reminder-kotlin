@@ -219,7 +219,7 @@
                 android:textSize="18sp"
                 app:font_style="roboto_regular"
                 app:tv_icon="@drawable/ic_refresh"
-                app:tv_icon_light="@drawable/ic_refresh_white"
+                app:tv_icon_light="@drawable/ic_refresh_black"
                 app:tv_tint="true" />
 
             <com.elementary.tasks.core.views.TextViewWithIcon

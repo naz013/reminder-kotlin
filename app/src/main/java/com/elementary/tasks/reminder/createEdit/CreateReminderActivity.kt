@@ -306,7 +306,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
             arrayAdapter.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white))
             arrayAdapter.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp))
             arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_white))
+            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_black))
             if (Module.isPro)
                 arrayAdapter.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker_white))
         } else {

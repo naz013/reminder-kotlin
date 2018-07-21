@@ -89,7 +89,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         inflater?.inflate(R.menu.notes_menu, menu)
         val item = menu?.findItem(R.id.action_list)
         if (item != null) {
-            item.setIcon(if (!enableGrid) R.drawable.ic_view_quilt_white_24dp else R.drawable.ic_view_list_white_24dp)
+            item.setIcon(if (!enableGrid) R.drawable.ic_view_quilt_black_24dp else R.drawable.ic_view_list_white_24dp)
             item.title = if (!enableGrid) getString(R.string.grid_view) else getString(R.string.list_view)
         }
         if (viewModel.notes.value != null && viewModel.notes.value!!.isNotEmpty()) {
