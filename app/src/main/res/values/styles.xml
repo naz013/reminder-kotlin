@@ -2,9 +2,23 @@
     <style name="SplashTheme" parent="HomeDark">
     </style>
 
+    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/blackPrimary</item>
+    </style>
+
+    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">@color/blackPrimary</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
     <style name="HomeWhite" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
         <item name="windowActionBar">false</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
     </style>
 
     <style name="HomeWhite.Blue" parent="HomeWhite">
@@ -108,6 +122,8 @@
         <item name="colorPrimary">@color/bluePrimary</item>
         <item name="colorAccent">@color/yellowAccent</item>
         <item name="windowActionBar">false</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
     </style>
 
     <style name="HomeDark.Blue" parent="HomeDark">
@@ -212,6 +228,9 @@
         <item name="colorAccent">@color/yellowAccent</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@color/blackPrimary</item>
+        <item name="android:colorBackground">@color/blackPrimary</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
     </style>
 
     <style name="HomeBlack.Blue" parent="HomeBlack">

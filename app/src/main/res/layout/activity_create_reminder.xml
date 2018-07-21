@@ -129,7 +129,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/repeat_limit"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_refresh_white" />
+                        app:srcCompat="@drawable/ic_refresh_black" />
 
                     <ToggleButton
                         android:id="@+id/window_type_switch"

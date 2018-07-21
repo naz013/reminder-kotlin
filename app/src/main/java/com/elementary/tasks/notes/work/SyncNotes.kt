@@ -44,7 +44,7 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
         builder.setContentTitle(mContext.getString(R.string.notes))
         builder.setContentText(mContext.getString(R.string.syncing_notes))
         if (Module.isLollipop) {
-            builder.setSmallIcon(R.drawable.ic_cached_white_24dp)
+            builder.setSmallIcon(R.drawable.ic_cached_black_24dp)
         } else {
             builder.setSmallIcon(R.drawable.ic_cached_nv_white)
         }

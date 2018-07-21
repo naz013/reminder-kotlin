@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_scan"
-        android:icon="@drawable/ic_cached_white_24dp"
+        android:icon="@drawable/ic_cached_black_24dp"
         android:title="@string/scan"
         app:showAsAction="ifRoom" />
 

@@ -54,7 +54,7 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
                 mContext!!.context.getString(R.string.app_name))
             builder.setContentText(mContext.context.getString(R.string.sync))
             if (Module.isLollipop) {
-                builder.setSmallIcon(R.drawable.ic_cached_white_24dp)
+                builder.setSmallIcon(R.drawable.ic_cached_black_24dp)
             } else {
                 builder.setSmallIcon(R.drawable.ic_cached_nv_white)
             }

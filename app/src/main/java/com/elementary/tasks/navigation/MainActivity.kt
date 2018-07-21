@@ -83,7 +83,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         fab.setOnLongClickListener {
-            mNoteView!!.switchQuickNote()
+            mNoteView?.switchQuickNote()
             true
         }
         initActionBar()
@@ -125,11 +125,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
-        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
         toolbar.setNavigationOnClickListener { onDrawerClick() }
     }
 
@@ -255,9 +253,9 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onFragmentSelect(fragment: Fragment) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
+            toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
         }
     }
 
@@ -369,7 +367,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             drawer_layout.closeDrawer(GravityCompat.START)
         } else if (isFiltersVisible) {
             addFilters(listOf(), true)
-        } else if (mNoteView!!.isNoteVisible) {
+        } else if (mNoteView != null && mNoteView!!.isNoteVisible) {
             mNoteView?.hideNoteView()
         } else {
             if (isBackPressed) {
@@ -425,8 +423,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (Module.isMarshmallow && fragment != null) {
-            fragment!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Module.isMarshmallow) {
+            fragment?.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
