@@ -37,28 +37,26 @@ import java.util.*
  */
 class PrefsView : RelativeLayout {
 
-    private var checkBox: CheckBox? = null
-    private var switchView: SwitchCompat? = null
-    private var title: TextView? = null
-    private var detail: TextView? = null
-    private var prefsValue: TextView? = null
-    private var dividerTop: View? = null
-    private var dividerBottom: View? = null
-    private var prefsView: View? = null
+    private lateinit var checkBox: CheckBox
+    private lateinit var switchView: SwitchCompat
+    private lateinit var title: TextView
+    private lateinit var detail: TextView
+    private lateinit var prefsValue: TextView
+    private lateinit var dividerTop: View
+    private lateinit var dividerBottom: View
+    private lateinit var prefsView: View
 
     var isChecked: Boolean = false
         set(checked) {
             field = checked
-            if (viewType == CHECK)
-                checkBox!!.isChecked = checked
-            else if (viewType == SWITCH) switchView!!.isChecked = checked
+            if (viewType == CHECK) checkBox.isChecked = checked
+            else if (viewType == SWITCH) switchView.isChecked = checked
             for (listener in mOnCheckedListeners) {
                 listener.onCheckedChange(checked)
             }
         }
     private var isForPro: Boolean = false
     private var viewType = CHECK
-
     private val mDependencyViews = ArrayList<PrefsView>()
     private val mReverseDependencyViews = ArrayList<PrefsView>()
     private val mOnCheckedListeners = ArrayList<OnCheckedListener>()
@@ -96,9 +94,9 @@ class PrefsView : RelativeLayout {
             var divBottom = false
             var res = 0
             try {
-                titleText = a.getString(R.styleable.PrefsView_prefs_primary_text)
-                detailText = a.getString(R.styleable.PrefsView_prefs_secondary_text)
-                valueText = a.getString(R.styleable.PrefsView_prefs_value_text)
+                titleText = a.getString(R.styleable.PrefsView_prefs_primary_text) ?: ""
+                detailText = a.getString(R.styleable.PrefsView_prefs_secondary_text) ?: ""
+                valueText = a.getString(R.styleable.PrefsView_prefs_value_text) ?: ""
                 divTop = a.getBoolean(R.styleable.PrefsView_prefs_divider_top, false)
                 divBottom = a.getBoolean(R.styleable.PrefsView_prefs_divider_bottom, false)
                 isForPro = a.getBoolean(R.styleable.PrefsView_prefs_pro, false)
@@ -130,15 +128,13 @@ class PrefsView : RelativeLayout {
         setVisible()
     }
 
-    fun setDependentView(view: PrefsView?) {
-        if (view != null) {
-            mDependencyViews.add(view)
-            view.setOnCheckedListener(object : OnCheckedListener {
-                override fun onCheckedChange(checked: Boolean) {
-                    checkDependency()
-                }
-            })
-        }
+    fun setDependentView(view: PrefsView) {
+        mDependencyViews.add(view)
+        view.setOnCheckedListener(object : OnCheckedListener {
+            override fun onCheckedChange(checked: Boolean) {
+                checkDependency()
+            }
+        })
         checkDependency()
     }
 
@@ -153,15 +149,13 @@ class PrefsView : RelativeLayout {
         isEnabled = enable
     }
 
-    fun setReverseDependentView(view: PrefsView?) {
-        if (view != null) {
-            mReverseDependencyViews.add(view)
-            view.setOnCheckedListener(object : OnCheckedListener {
-                override fun onCheckedChange(checked: Boolean) {
-                    checkReverseDependency()
-                }
-            })
-        }
+    fun setReverseDependentView(view: PrefsView) {
+        mReverseDependencyViews.add(view)
+        view.setOnCheckedListener(object : OnCheckedListener {
+            override fun onCheckedChange(checked: Boolean) {
+                checkReverseDependency()
+            }
+        })
         checkReverseDependency()
     }
 
@@ -191,76 +185,75 @@ class PrefsView : RelativeLayout {
     private fun setView() {
         hideAll()
         when (viewType) {
-            CHECK -> checkBox!!.visibility = View.VISIBLE
-            SWITCH -> switchView!!.visibility = View.VISIBLE
-            TEXT -> prefsValue!!.visibility = View.VISIBLE
-            VIEW -> prefsView!!.visibility = View.VISIBLE
+            CHECK -> checkBox.visibility = View.VISIBLE
+            SWITCH -> switchView.visibility = View.VISIBLE
+            TEXT -> prefsValue.visibility = View.VISIBLE
+            VIEW -> prefsView.visibility = View.VISIBLE
         }
     }
 
     private fun hideAll() {
-        checkBox!!.visibility = View.GONE
-        switchView!!.visibility = View.GONE
-        prefsValue!!.visibility = View.GONE
-        prefsView!!.visibility = View.GONE
+        checkBox.visibility = View.GONE
+        switchView.visibility = View.GONE
+        prefsValue.visibility = View.GONE
+        prefsView.visibility = View.GONE
     }
 
-    fun setTitleText(text: String) {
-        title!!.text = text
+    private fun setTitleText(text: String) {
+        title.text = text
     }
 
-    fun setDetailText(text: String?) {
-        if (text == null) {
-            detail!!.visibility = View.GONE
+    fun setDetailText(text: String) {
+        if (text == "") {
+            detail.visibility = View.GONE
             return
         }
-        detail!!.text = text
-        detail!!.visibility = View.VISIBLE
+        detail.text = text
+        detail.visibility = View.VISIBLE
     }
 
     fun setValue(value: Int) {
-        prefsValue!!.text = value.toString()
+        prefsValue.text = value.toString()
     }
 
     fun setValueText(text: String) {
-        prefsValue!!.text = text
+        prefsValue.text = text
     }
 
     fun setViewResource(@DrawableRes resource: Int) {
         if (resource != 0) {
-            val drawableTop: Drawable?
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawableTop = context.getDrawable(resource)
+            val drawableTop: Drawable? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                context.getDrawable(resource)
             } else {
-                drawableTop = AppCompatResources.getDrawable(context, resource)
+                AppCompatResources.getDrawable(context, resource)
             }
-            prefsView!!.background = drawableTop
+            prefsView.background = drawableTop
         }
     }
 
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        switchView!!.isEnabled = enabled
-        checkBox!!.isEnabled = enabled
-        prefsView!!.isEnabled = enabled
-        prefsValue!!.isEnabled = enabled
-        detail!!.isEnabled = enabled
-        title!!.isEnabled = enabled
+        switchView.isEnabled = enabled
+        checkBox.isEnabled = enabled
+        prefsView.isEnabled = enabled
+        prefsValue.isEnabled = enabled
+        detail.isEnabled = enabled
+        title.isEnabled = enabled
     }
 
-    fun setDividerTop(divider: Boolean) {
+    private fun setDividerTop(divider: Boolean) {
         if (divider) {
-            dividerTop!!.visibility = View.VISIBLE
+            dividerTop.visibility = View.VISIBLE
         } else {
-            dividerTop!!.visibility = View.GONE
+            dividerTop.visibility = View.GONE
         }
     }
 
-    fun setDividerBottom(divider: Boolean) {
+    private fun setDividerBottom(divider: Boolean) {
         if (divider) {
-            dividerBottom!!.visibility = View.VISIBLE
+            dividerBottom.visibility = View.VISIBLE
         } else {
-            dividerBottom!!.visibility = View.GONE
+            dividerBottom.visibility = View.GONE
         }
     }
 
