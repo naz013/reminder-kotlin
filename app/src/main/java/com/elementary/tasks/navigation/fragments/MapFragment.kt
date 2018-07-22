@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +19,6 @@ import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewMode
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_layout.view.*
 import kotlinx.android.synthetic.main.fragment_events_map.*
 
@@ -57,15 +55,6 @@ class MapFragment : BaseNavigationFragment() {
         override fun onMapReady() {
             mGoogleMap?.setSearchEnabled(false)
             showData()
-        }
-    }
-    private val mSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
-        override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-        }
-
-        override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
         }
     }
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
@@ -122,7 +111,6 @@ class MapFragment : BaseNavigationFragment() {
 
     private fun initViews() {
         bottomSheet.recyclerView.layoutManager = LinearLayoutManager(context)
-
         mAdapter.actionsListener = object : ActionsListener<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
@@ -132,10 +120,7 @@ class MapFragment : BaseNavigationFragment() {
 
         }
         bottomSheet.recyclerView.adapter = mAdapter
-
         sheetLayout.setBackgroundColor(ThemeUtil.getInstance(context!!).cardStyle)
-        val mBottomSheetBehavior = BottomSheetBehavior.from<NestedScrollView>(sheetLayout)
-        mBottomSheetBehavior.setBottomSheetCallback(mSheetCallback)
     }
 
     override fun onResume() {
