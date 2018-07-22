@@ -5,17 +5,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.text.TextUtils
-
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
-
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -67,12 +62,12 @@ object TimeUtil {
             }
         }
 
-    fun getFireFormatted(context: Context, gmt: String?): String? {
+    fun getFireFormatted(prefs: Prefs, gmt: String?): String? {
         if (TextUtils.isEmpty(gmt)) return null
         try {
             FIRE_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
             val date = FIRE_DATE_FORMAT.parse(gmt)
-            return if (Prefs.getInstance(context).is24HourFormatEnabled) {
+            return if (prefs.is24HourFormatEnabled) {
                 FORMAT_24.format(date)
             } else {
                 FORMAT_12.format(date)
@@ -88,27 +83,26 @@ object TimeUtil {
         return null
     }
 
-    fun showTimePicker(context: Context, listener: TimePickerDialog.OnTimeSetListener,
+    fun showTimePicker(context: Context, is24: Boolean, listener: TimePickerDialog.OnTimeSetListener,
                        hour: Int, minute: Int): TimePickerDialog {
-        val is24 = Prefs.getInstance(context).is24HourFormatEnabled
         val dialog = TimePickerDialog(context, listener, hour, minute, is24)
         dialog.show()
         return dialog
     }
 
-    fun showDatePicker(context: Context, listener: DatePickerDialog.OnDateSetListener,
+    fun showDatePicker(context: Context, prefs: Prefs, listener: DatePickerDialog.OnDateSetListener,
                        year: Int, month: Int, dayOfMonth: Int): DatePickerDialog {
         val dialog = DatePickerDialog(context, listener, year, month, dayOfMonth)
         if (Module.isLollipop) {
-            dialog.datePicker.firstDayOfWeek = Prefs.getInstance(context).startDay + 1
+            dialog.datePicker.firstDayOfWeek = prefs.startDay + 1
         }
         dialog.show()
         return dialog
     }
 
-    fun getFutureBirthdayDate(context: Context, fullDate: String): DateItem? {
+    fun getFutureBirthdayDate(prefs: Prefs, fullDate: String): DateItem? {
         var date: Date? = null
-        val dateTime = Prefs.getInstance(context).birthdayTime
+        val dateTime = prefs.birthdayTime
         try {
             date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate)
         } catch (e: ParseException) {

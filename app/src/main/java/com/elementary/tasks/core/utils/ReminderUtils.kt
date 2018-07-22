@@ -14,6 +14,8 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.BirthdayActionService
 import com.elementary.tasks.core.services.ReminderActionService
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,16 +35,14 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-object ReminderUtils {
+@Singleton
+class ReminderUtils @Inject constructor(private val context: Context, private val prefs: Prefs) {
 
-    const val DAY_CHECKED = 1
-    private const val TAG = "ReminderUtils"
-
-    private fun getSoundUri(melody: String?, context: Context): Uri {
+    private fun getSoundUri(melody: String?): Uri {
         return if (!TextUtils.isEmpty(melody) && !Sound.isDefaultMelody(melody!!)) {
             UriUtil.getUri(context, melody)
         } else {
-            val defMelody = Prefs.getInstance(context).melodyFile
+            val defMelody = prefs.melodyFile
             if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 UriUtil.getUri(context, defMelody)
             } else {
@@ -51,7 +51,7 @@ object ReminderUtils {
         }
     }
 
-    fun showSimpleBirthday(context: Context, id: Int) {
+    fun showSimpleBirthday(id: Int) {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {
@@ -67,24 +67,24 @@ object ReminderUtils {
         builder.priority = NotificationCompat.PRIORITY_HIGH
         builder.setContentTitle(birthday.name)
         if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context)
-                && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
-            val melodyPath: String? = if (Module.isPro && !isGlobal(context)) {
-                Prefs.getInstance(context).birthdayMelody
+                && prefs.isSoundInSilentModeEnabled) {
+            val melodyPath: String? = if (Module.isPro && !isGlobal()) {
+                prefs.birthdayMelody
             } else {
-                Prefs.getInstance(context).melodyFile
+                prefs.melodyFile
             }
-            val uri = getSoundUri(melodyPath, context)
+            val uri = getSoundUri(melodyPath)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             builder.setSound(uri)
         }
-        var vibrate = Prefs.getInstance(context).isVibrateEnabled
-        if (Module.isPro && !isGlobal(context)) {
-            vibrate = Prefs.getInstance(context).isBirthdayVibrationEnabled
+        var vibrate = prefs.isVibrateEnabled
+        if (Module.isPro && !isGlobal()) {
+            vibrate = prefs.isBirthdayVibrationEnabled
         }
         if (vibrate) {
-            vibrate = Prefs.getInstance(context).isInfiniteVibrateEnabled
-            if (Module.isPro && !isGlobal(context)) {
-                vibrate = Prefs.getInstance(context).isBirthdayInfiniteVibrationEnabled
+            vibrate = prefs.isInfiniteVibrateEnabled
+            if (Module.isPro && !isGlobal()) {
+                vibrate = prefs.isBirthdayInfiniteVibrationEnabled
             }
             val pattern: LongArray = if (vibrate) {
                 longArrayOf(150, 86400000)
@@ -93,10 +93,10 @@ object ReminderUtils {
             }
             builder.setVibrate(pattern)
         }
-        if (Module.isPro && Prefs.getInstance(context).isLedEnabled) {
-            var ledColor = LED.getLED(Prefs.getInstance(context).ledColor)
-            if (Module.isPro && !isGlobal(context)) {
-                ledColor = LED.getLED(Prefs.getInstance(context).birthdayLedColor)
+        if (Module.isPro && prefs.isLedEnabled) {
+            var ledColor = LED.getLED(prefs.ledColor)
+            if (Module.isPro && !isGlobal()) {
+                ledColor = LED.getLED(prefs.birthdayLedColor)
             }
             builder.setLights(ledColor, 500, 1000)
         }
@@ -132,11 +132,11 @@ object ReminderUtils {
         mNotifyMgr.notify(birthday.uniqueId, builder.build())
     }
 
-    private fun isGlobal(context: Context): Boolean {
-        return Prefs.getInstance(context).isBirthdayGlobalEnabled
+    private fun isGlobal(): Boolean {
+        return prefs.isBirthdayGlobalEnabled
     }
 
-    fun showSimpleReminder(context: Context, id: Int) {
+    fun showSimpleReminder(id: Int) {
         LogUtil.d(TAG, "showSimpleReminder: ")
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         val dismissIntent = Intent(context, ReminderActionService::class.java)
@@ -163,24 +163,24 @@ object ReminderUtils {
         } else {
             context.getString(R.string.app_name)
         }
-        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
-            val uri = getSoundUri(reminder.melodyPath, context)
+        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
+            val uri = getSoundUri(reminder.melodyPath)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             builder.setSound(uri)
         }
-        if (Prefs.getInstance(context).isVibrateEnabled) {
-            val pattern: LongArray = if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
+        if (prefs.isVibrateEnabled) {
+            val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
                 longArrayOf(150, 86400000)
             } else {
                 longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }
-        if (Module.isPro && Prefs.getInstance(context).isLedEnabled) {
+        if (Module.isPro && prefs.isLedEnabled) {
             if (reminder.color != -1) {
                 builder.setLights(reminder.color, 500, 1000)
             } else {
-                builder.setLights(LED.getLED(Prefs.getInstance(context).ledColor), 500, 1000)
+                builder.setLights(LED.getLED(prefs.ledColor), 500, 1000)
             }
         }
         builder.setContentText(appName)
@@ -199,9 +199,9 @@ object ReminderUtils {
         return calendar.timeInMillis + after
     }
 
-    fun getRepeatString(context: Context, repCode: List<Int>): String {
+    fun getRepeatString(repCode: List<Int>): String {
         val sb = StringBuilder()
-        val first = Prefs.getInstance(context).startDay
+        val first = prefs.startDay
         if (first == 0 && repCode[0] == DAY_CHECKED) {
             sb.append(" ")
             sb.append(context.getString(R.string.sun))
@@ -252,48 +252,48 @@ object ReminderUtils {
         return `is`
     }
 
-    fun getTypeString(context: Context, type: Int): String {
+    fun getTypeString(type: Int): String {
         val res: String
         when {
             Reminder.isKind(type, Reminder.Kind.CALL) -> {
                 val init = context.getString(R.string.make_call)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isKind(type, Reminder.Kind.SMS) -> {
                 val init = context.getString(R.string.message)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_SKYPE_CALL) -> {
                 val init = context.getString(R.string.skype_call)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_SKYPE) -> {
                 val init = context.getString(R.string.skype_chat)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_SKYPE_VIDEO) -> {
                 val init = context.getString(R.string.video_call)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_DATE_APP) -> {
                 val init = context.getString(R.string.application)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_DATE_LINK) -> {
                 val init = context.getString(R.string.open_link)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
             Reminder.isSame(type, Reminder.BY_DATE_SHOP) -> res = context.getString(R.string.shopping_list)
             Reminder.isSame(type, Reminder.BY_DATE_EMAIL) -> res = context.getString(R.string.e_mail)
             else -> {
                 val init = context.getString(R.string.reminder)
-                res = init + " (" + getType(context, type) + ")"
+                res = init + " (" + getType(type) + ")"
             }
         }
         return res
     }
 
-    fun getType(context: Context, type: Int): String {
+    fun getType(type: Int): String {
         return when {
             Reminder.isBase(type, Reminder.BY_MONTH) -> context.getString(R.string.day_of_month)
             Reminder.isBase(type, Reminder.BY_WEEK) -> context.getString(R.string.alarm)
@@ -307,5 +307,10 @@ object ReminderUtils {
             Reminder.isBase(type, Reminder.BY_DAY_OF_YEAR) -> context.getString(R.string.yearly)
             else -> context.getString(R.string.by_date)
         }
+    }
+
+    companion object {
+        const val DAY_CHECKED = 1
+        private const val TAG = "ReminderUtils"
     }
 }

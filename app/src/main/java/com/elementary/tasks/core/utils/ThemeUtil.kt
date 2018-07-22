@@ -2,18 +2,13 @@ package com.elementary.tasks.core.utils
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
+import androidx.annotation.*
 import androidx.annotation.IntRange
-import androidx.annotation.RawRes
-import androidx.annotation.StringRes
-import androidx.annotation.StyleRes
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-
-import java.util.Calendar
+import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,17 +28,11 @@ import java.util.Calendar
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class ThemeUtil {
-
-    private lateinit var holder: ContextHolder
-
-    private val context: Context
-        get() = holder.context
+@Singleton
+class ThemeUtil @Inject constructor(private val context: Context, private val prefs: Prefs) {
 
     val isDark: Boolean
         get() {
-            val prefs = Prefs.getInstance(context)
             val appTheme = prefs.appTheme
             val isDark = appTheme == THEME_DARK || appTheme == THEME_AMOLED
             if (appTheme == THEME_AUTO) {
@@ -64,9 +53,9 @@ class ThemeUtil {
         @StyleRes
         get() {
             val id: Int
-            val loadedColor = Prefs.getInstance(context).appThemeColor
+            val loadedColor = prefs.appThemeColor
             if (isDark) {
-                if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_AMOLED) {
                     when (loadedColor) {
                         Color.RED -> id = R.style.HomeBlack_Red
                         Color.PURPLE -> id = R.style.HomeBlack_Purple
@@ -151,13 +140,13 @@ class ThemeUtil {
 
     val indicator: Int
         @DrawableRes
-        get() = getIndicator(Prefs.getInstance(context).appThemeColor)
+        get() = getIndicator(prefs.appThemeColor)
 
     val spinnerStyle: Int
         @ColorInt
         get() {
             val color: Int = if (isDark) {
-                if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_AMOLED) {
                     R.color.blackPrimary
                 } else {
                     R.color.material_grey
@@ -172,9 +161,9 @@ class ThemeUtil {
         @StyleRes
         get() {
             val id: Int
-            val loadedColor = Prefs.getInstance(context).appThemeColor
+            val loadedColor = prefs.appThemeColor
             if (isDark) {
-                if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_AMOLED) {
                     when (loadedColor) {
                         Color.RED -> id = R.style.HomeBlackDialog_Red
                         Color.PURPLE -> id = R.style.HomeBlackDialog_Purple
@@ -261,7 +250,7 @@ class ThemeUtil {
         @ColorInt
         get() {
             return if (isDark) {
-                if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_AMOLED) {
                     getColor(R.color.blackPrimary)
                 } else {
                     getColor(R.color.material_grey)
@@ -275,7 +264,7 @@ class ThemeUtil {
         @ColorInt
         get() {
             return if (isDark) {
-                if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
+                if (prefs.appTheme == THEME_AMOLED) {
                     getColor(R.color.blackPrimary)
                 } else {
                     getColor(R.color.grey_x)
@@ -289,7 +278,7 @@ class ThemeUtil {
         @DrawableRes
         get() {
             return if (Module.isPro) {
-                val loaded = Prefs.getInstance(context).markerStyle
+                val loaded = prefs.markerStyle
                 getMarkerStyle(loaded)
             } else {
                 R.drawable.ic_location_pointer_blue
@@ -299,7 +288,7 @@ class ThemeUtil {
     val rectangle: Int
         @DrawableRes
         get() {
-            val code = Prefs.getInstance(context).appThemeColor
+            val code = prefs.appThemeColor
             val color: Int
             when (code) {
                 Color.RED -> color = R.drawable.rectangle_stroke_red
@@ -332,7 +321,7 @@ class ThemeUtil {
     val styleName: Int
         @StringRes
         get() {
-            val style = Prefs.getInstance(context).mapStyle
+            val style = prefs.mapStyle
             when (style) {
                 0 -> return R.string.day
                 1 -> return R.string.retro
@@ -348,7 +337,7 @@ class ThemeUtil {
     val mapStyleJson: Int
         @RawRes
         get() {
-            val style = Prefs.getInstance(context).mapStyle
+            val style = prefs.mapStyle
             when (style) {
                 0 -> return R.raw.map_terrain_day
                 1 -> return R.raw.map_terrain_retro
@@ -369,7 +358,7 @@ class ThemeUtil {
     val mapStylePreview: Int
         @DrawableRes
         get() {
-            val style = Prefs.getInstance(context).mapStyle
+            val style = prefs.mapStyle
             when (style) {
                 0 -> return R.drawable.preview_map_day
                 1 -> return R.drawable.preview_map_retro
@@ -387,12 +376,6 @@ class ThemeUtil {
             return R.drawable.preview_map_day
         }
 
-    private constructor()
-
-    private constructor(context: Context) {
-        this.holder = ContextHolder(context)
-    }
-
     @ColorInt
     fun getColor(@ColorRes color: Int): Int {
         return ViewUtils.getColor(context, color)
@@ -400,7 +383,7 @@ class ThemeUtil {
 
     @ColorRes
     @JvmOverloads
-    fun colorAccent(code: Int = Prefs.getInstance(context).appThemeColor): Int {
+    fun colorAccent(code: Int = prefs.appThemeColor): Int {
         val color: Int
         if (isDark) {
             when (code) {
@@ -460,12 +443,12 @@ class ThemeUtil {
 
     @ColorRes
     fun colorBirthdayCalendar(): Int {
-        return colorPrimary(Prefs.getInstance(context).birthdayColor)
+        return colorPrimary(prefs.birthdayColor)
     }
 
     @ColorRes
     @JvmOverloads
-    fun colorPrimary(code: Int = Prefs.getInstance(context).appThemeColor): Int {
+    fun colorPrimary(code: Int = prefs.appThemeColor): Int {
         val color: Int
         when (code) {
             Color.RED -> color = R.color.redPrimary
@@ -497,12 +480,12 @@ class ThemeUtil {
 
     @ColorRes
     fun colorReminderCalendar(): Int {
-        return colorPrimary(Prefs.getInstance(context).reminderColor)
+        return colorPrimary(prefs.reminderColor)
     }
 
     @ColorRes
     fun colorCurrentCalendar(): Int {
-        return colorPrimary(Prefs.getInstance(context).todayColor)
+        return colorPrimary(prefs.todayColor)
     }
 
     @DrawableRes
@@ -541,7 +524,7 @@ class ThemeUtil {
     }
 
     fun toggleDrawable(): Drawable {
-        val loadedColor = Prefs.getInstance(context).appThemeColor
+        val loadedColor = prefs.appThemeColor
         val color: Int
         when (loadedColor) {
             Color.RED -> color = R.drawable.toggle_red
@@ -604,7 +587,7 @@ class ThemeUtil {
 
     @ColorRes
     fun colorPrimaryDark(): Int {
-        val loadedColor = Prefs.getInstance(context).appThemeColor
+        val loadedColor = prefs.appThemeColor
         return colorPrimaryDark(loadedColor)
     }
 
@@ -791,7 +774,7 @@ class ThemeUtil {
                 R.color.blueAccent
             }
         }
-        val alpha = Prefs.getInstance(holder.context).noteColorOpacity
+        val alpha = prefs.noteColorOpacity
         return adjustAlpha(getColor(color), alpha)
     }
 
@@ -846,23 +829,10 @@ class ThemeUtil {
                                       val strokeColor: Int)
 
     companion object {
-
         const val THEME_AUTO = 0
         const val THEME_WHITE = 1
         private const val THEME_DARK = 2
         const val THEME_AMOLED = 3
         const val NUM_OF_MARKERS = 16
-        private var instance: ThemeUtil? = null
-
-        fun getInstance(context: Context): ThemeUtil {
-            if (instance == null) {
-                synchronized(ThemeUtil::class.java) {
-                    if (instance == null) {
-                        instance = ThemeUtil(context.applicationContext)
-                    }
-                }
-            }
-            return instance!!
-        }
     }
 }

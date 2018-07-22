@@ -3,6 +3,8 @@ package com.elementary.tasks.core.utils
 import android.content.Context
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -22,12 +24,12 @@ import com.elementary.tasks.core.cloud.Google
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Singleton
+class IoHelper @Inject constructor(private val context: Context, private val prefs: Prefs) {
 
-class IoHelper(private val mContext: Context) {
-
-    private val isConnected: Boolean = SuperUtil.isConnected(mContext)
+    private val isConnected: Boolean = SuperUtil.isConnected(context)
     private val mDrive: Google? = Google.getInstance()
-    private val mDropbox: Dropbox = Dropbox(mContext)
+    private val mDropbox: Dropbox = Dropbox(context)
 
     /**
      * Create backup files for reminders, groups, birthdays and notes.
@@ -43,7 +45,7 @@ class IoHelper(private val mContext: Context) {
     }
 
     fun backupSettings() {
-        Prefs.getInstance(mContext).savePrefsBackup()
+        prefs.savePrefsBackup()
         if (isConnected) {
             mDropbox.uploadSettings()
             try {
@@ -114,7 +116,7 @@ class IoHelper(private val mContext: Context) {
      */
     fun restoreReminder(delete: Boolean) {
         try {
-            BackupTool.getInstance().importReminders(mContext)
+            BackupTool.getInstance().importReminders(context)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -122,7 +124,7 @@ class IoHelper(private val mContext: Context) {
             mDropbox.downloadReminders(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive?.downloadReminders(mContext, delete)
+                    mDrive.drive?.downloadReminders(context, delete)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

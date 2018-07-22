@@ -1,11 +1,14 @@
 package com.elementary.tasks.core.di
 
+import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
 import com.elementary.tasks.core.services.CallReceiver
+import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.BackupTool
+import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.navigation.settings.images.ImagesRecyclerAdapter
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -44,25 +47,19 @@ import dagger.Component
 ])
 interface AppComponent {
     fun inject(viewModel: BaseDbViewModel)
-
     fun inject(adapter: RemindersRecyclerAdapter)
-
     fun inject(eventManager: EventManager)
-
     fun inject(callReceiver: CallReceiver)
-
     fun inject(conversationAdapter: ConversationAdapter)
-
     fun inject(reminderHolder: ReminderHolder)
-
     fun inject(shoppingHolder: ShoppingHolder)
-
     fun inject(google: Google)
-
     fun inject(backupTool: BackupTool)
-
     fun inject(adapter: SelectableTemplatesAdapter)
     fun inject(baseDialog: BaseDialog)
     fun inject(googlePlacesAdapter: GooglePlacesAdapter)
     fun inject(adapter: ImagesRecyclerAdapter)
+    fun inject(themedActivity: ThemedActivity)
+    fun inject(repeatNotificationReceiver: RepeatNotificationReceiver)
+    fun inject(reminderUtils: ReminderUtils)
 }

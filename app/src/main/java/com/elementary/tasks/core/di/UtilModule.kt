@@ -1,14 +1,12 @@
 package com.elementary.tasks.core.di
 
 import android.app.Application
-import com.elementary.tasks.core.utils.Prefs
-
-import com.elementary.tasks.core.utils.ThemeUtil
-
-import javax.inject.Singleton
-
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.*
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -33,13 +31,79 @@ class UtilModule {
 
     @Provides
     @Singleton
-    fun providesThemeUtil(application: Application): ThemeUtil {
-        return ThemeUtil.getInstance(application)
+    fun providesPrefs(application: Application): Prefs {
+        return Prefs(application)
     }
 
     @Provides
     @Singleton
-    fun providesPrefs(application: Application): Prefs {
-        return Prefs.getInstance(application)
+    fun providesRemotePrefs(application: Application): RemotePrefs {
+        return RemotePrefs(application)
+    }
+
+    @Provides
+    @Singleton
+    fun providesUpdatesHelper(application: Application): UpdatesHelper {
+        return UpdatesHelper(application)
+    }
+
+    @Provides
+    @Singleton
+    fun providesTimeCount(application: Application, prefs: Prefs): TimeCount {
+        return TimeCount(application, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesSoundStack(application: Application, prefs: Prefs): SoundStackHolder {
+        return SoundStackHolder(application, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesThemeUtil(application: Application, prefs: Prefs): ThemeUtil {
+        return ThemeUtil(application, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesIoHelper(application: Application, prefs: Prefs): IoHelper {
+        return IoHelper(application, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesReminderUtils(application: Application, prefs: Prefs): ReminderUtils {
+        return ReminderUtils(application, prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesBackupTool(appDb: AppDb): BackupTool {
+        return BackupTool(appDb)
+    }
+
+    @Provides
+    @Singleton
+    fun providesDialogues(themeUtil: ThemeUtil): Dialogues {
+        return Dialogues(themeUtil)
+    }
+
+    @Provides
+    @Singleton
+    fun providesLanguage(prefs: Prefs): Language {
+        return Language(prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotifier(application: Application, prefs: Prefs, themeUtil: ThemeUtil): Notifier {
+        return Notifier(application, prefs, themeUtil)
+    }
+
+    @Provides
+    @Singleton
+    fun providesCalendarUtils(application: Application, prefs: Prefs, appDb: AppDb): CalendarUtils {
+        return CalendarUtils(application, prefs, appDb)
     }
 }

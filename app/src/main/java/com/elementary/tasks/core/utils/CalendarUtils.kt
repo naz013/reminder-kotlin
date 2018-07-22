@@ -15,6 +15,8 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,14 +36,14 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-object CalendarUtils {
+@Singleton
+class CalendarUtils @Inject constructor(private val context: Context, private val prefs: Prefs, private val appDb: AppDb){
 
     /**
      * Add event to calendar.
      */
-    fun addEvent(context: Context, reminder: Reminder) {
-        val mId = Prefs.getInstance(context).calendarId
+    fun addEvent(reminder: Reminder) {
+        val mId = prefs.calendarId
         if (mId != 0) {
             val tz = TimeZone.getDefault()
             val timeZone = tz.displayName
@@ -49,7 +51,7 @@ object CalendarUtils {
             val values = ContentValues()
             val startTime = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
             values.put(CalendarContract.Events.DTSTART, startTime)
-            values.put(CalendarContract.Events.DTEND, startTime + 60 * 1000 * Prefs.getInstance(context).calendarEventDuration)
+            values.put(CalendarContract.Events.DTEND, startTime + 60 * 1000 * prefs.calendarEventDuration)
             if (!TextUtils.isEmpty(reminder.summary)) {
                 values.put(CalendarContract.Events.TITLE, reminder.summary)
             }
@@ -64,7 +66,7 @@ object CalendarUtils {
                 event = cr.insert(lEventUri, values)
                 if (event != null) {
                     val eventID = java.lang.Long.parseLong(event.lastPathSegment)
-                    AppDb.getAppDatabase(context).calendarEventsDao().insert(CalendarEvent(reminder.uniqueId, event.toString(), eventID))
+                    appDb.calendarEventsDao().insert(CalendarEvent(reminder.uniqueId, event.toString(), eventID))
                 }
             } catch (ignored: Exception) {
             }
@@ -73,14 +75,14 @@ object CalendarUtils {
     }
 
     @SuppressLint("MissingPermission")
-    fun deleteEvents(context: Context, id: Int) {
-        val events = AppDb.getAppDatabase(context).calendarEventsDao().getByReminder(id).toMutableList()
+    fun deleteEvents(id: Int) {
+        val events = appDb.calendarEventsDao().getByReminder(id).toMutableList()
         val cr = context.contentResolver
         for (i in events.indices.reversed()) {
             val event = events.removeAt(i)
             cr.delete(CalendarContract.Events.CONTENT_URI,
                     CalendarContract.Events._ID + "='" + event.eventId + "'", null)
-            AppDb.getAppDatabase(context).calendarEventsDao().delete(event)
+            appDb.calendarEventsDao().delete(event)
         }
     }
 
@@ -90,12 +92,12 @@ object CalendarUtils {
      * @param summary   summary.
      * @param startTime event start time in milliseconds.
      */
-    fun addEventToStock(context: Context, summary: String, startTime: Long) {
+    fun addEventToStock(summary: String, startTime: Long) {
         val intent = Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime + 60 * 1000 * Prefs.getInstance(context).calendarEventDuration)
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime + 60 * 1000 * prefs.calendarEventDuration)
                 .putExtra(CalendarContract.Events.TITLE, summary)
                 .putExtra(CalendarContract.Events.DESCRIPTION, context.getString(R.string.from_reminder))
         try {
@@ -111,7 +113,7 @@ object CalendarUtils {
      * @return List of CalendarItem's.
      */
     @SuppressLint("MissingPermission")
-    fun getCalendarsList(context: Context): List<CalendarItem> {
+    fun getCalendarsList(): List<CalendarItem> {
         val ids = ArrayList<CalendarItem>()
         ids.clear()
         val uri = CalendarContract.Calendars.CONTENT_URI
@@ -149,7 +151,7 @@ object CalendarUtils {
      * @return List of EventItem's.
      */
     @Throws(SecurityException::class)
-    fun getEvents(context: Context, id: Int): List<EventItem> {
+    fun getEvents(id: Int): List<EventItem> {
         val list = ArrayList<EventItem>()
         if (!Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
             return list

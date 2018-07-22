@@ -11,11 +11,13 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.legacy.content.WakefulBroadcastReceiver
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,17 +42,25 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
 
     private var alarmMgr: AlarmManager? = null
     private var alarmIntent: PendingIntent? = null
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var appDb: AppDb
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getIntExtra(Constants.INTENT_ID, 0)
-        val item = AppDb.getAppDatabase(context).reminderDao().getById(id)
+        val item = appDb.reminderDao().getById(id)
         if (item != null) {
             showNotification(context, item)
         }
     }
 
     fun setAlarm(context: Context, id: Int) {
-        val repeat = Prefs.getInstance(context).notificationRepeatTime
+        val repeat = prefs.notificationRepeatTime
         val minutes = repeat * 1000 * 60
         val intent = Intent(context, RepeatNotificationReceiver::class.java)
         intent.putExtra(Constants.INTENT_ID, id)
@@ -78,7 +88,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         return if (!TextUtils.isEmpty(melody)) {
             UriUtil.getUri(context, melody!!)
         } else {
-            val defMelody = Prefs.getInstance(context).melodyFile
+            val defMelody = prefs.melodyFile
             if (!TextUtils.isEmpty(defMelody) && !Sound.isDefaultMelody(defMelody)) {
                 UriUtil.getUri(context, defMelody)
             } else {
@@ -92,7 +102,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         builder.setContentTitle(reminder.summary)
         builder.setAutoCancel(false)
         builder.priority = NotificationCompat.PRIORITY_MAX
-        if (Prefs.getInstance(context).isFoldingEnabled && !Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
+        if (prefs.isFoldingEnabled && !Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
             val intent = PendingIntent.getActivity(context, reminder.uniqueId,
                     ReminderDialogActivity.getLaunchIntent(context, reminder.uniqueId), PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setContentIntent(intent)
@@ -107,24 +117,24 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         } else {
             builder.setSmallIcon(R.drawable.ic_notification_nv_white)
         }
-        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && Prefs.getInstance(context).isSoundInSilentModeEnabled) {
+        if (!SuperUtil.isDoNotDisturbEnabled(context) || SuperUtil.checkNotificationPermission(context) && prefs.isSoundInSilentModeEnabled) {
             val uri = getSoundUri(reminder.melodyPath, context)
             context.grantUriPermission("com.android.systemui", uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             builder.setSound(uri)
         }
-        if (Prefs.getInstance(context).isVibrateEnabled) {
-            val pattern: LongArray = if (Prefs.getInstance(context).isInfiniteVibrateEnabled) {
+        if (prefs.isVibrateEnabled) {
+            val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
                 longArrayOf(150, 86400000)
             } else {
                 longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }
-        if (Module.isPro && Prefs.getInstance(context).isLedEnabled) {
+        if (Module.isPro && prefs.isLedEnabled) {
             if (reminder.color != 0) {
                 builder.setLights(reminder.color, 500, 1000)
             } else {
-                builder.setLights(LED.getLED(Prefs.getInstance(context).ledColor), 500, 1000)
+                builder.setLights(LED.getLED(prefs.ledColor), 500, 1000)
             }
         }
         val mNotifyMgr = NotificationManagerCompat.from(context)

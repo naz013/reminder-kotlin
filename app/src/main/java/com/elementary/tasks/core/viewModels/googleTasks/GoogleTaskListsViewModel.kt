@@ -2,7 +2,6 @@ package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -78,7 +77,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         withContext(UI) {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
-                            UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
+                            updatesHelper.updateTasksWidget()
                         }
                     } else {
                         val googleTasks = ArrayList<GoogleTask>()
@@ -96,7 +95,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                         withContext(UI) {
                             isInProgress.postValue(false)
                             result.postValue(Commands.UPDATED)
-                            UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
+                            updatesHelper.updateTasksWidget()
                         }
                     }
                 }
@@ -125,7 +124,7 @@ class GoogleTaskListsViewModel(application: Application) : BaseTaskListsViewMode
                 withContext(UI) {
                     isInProgress.postValue(false)
                     result.postValue(Commands.UPDATED)
-                    UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
+                    updatesHelper.updateTasksWidget()
                 }
             }
         }
