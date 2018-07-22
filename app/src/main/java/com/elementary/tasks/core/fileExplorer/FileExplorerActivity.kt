@@ -146,11 +146,11 @@ class FileExplorerActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mSound = Sound(this)
+        mSound = Sound(this, prefs)
         setContentView(R.layout.activity_file_explorer)
         filType = intent.getStringExtra(Constants.FILE_TYPE)
         if (filType == "") filType = TYPE_MUSIC
-        isDark = themeUtil!!.isDark
+        isDark = themeUtil.isDark
         initActionBar()
         initRecyclerView()
         initPlayer()

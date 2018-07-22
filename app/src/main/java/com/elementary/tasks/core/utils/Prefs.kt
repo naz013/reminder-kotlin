@@ -6,6 +6,8 @@ import com.elementary.tasks.navigation.settings.images.MonthImage
 import com.google.gson.Gson
 import java.io.File
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -25,8 +27,8 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class Prefs private constructor(context: Context) : SharedPrefs(context) {
+@Singleton
+class Prefs @Inject constructor(private val context: Context) : SharedPrefs(context) {
 
     var appLanguage: Int
         get() = getInt(PrefsConstants.APP_LANGUAGE)
@@ -515,13 +517,10 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
             uiEd.putInt(PrefsConstants.NOTE_TEXT_SIZE, 4)
             uiEd.putInt(PrefsConstants.VOLUME, 25)
             val localeCheck = Locale.getDefault().toString().toLowerCase()
-            val locale: Int
-            if (localeCheck.startsWith("uk")) {
-                locale = 2
-            } else if (localeCheck.startsWith("ru")) {
-                locale = 1
-            } else {
-                locale = 0
+            val locale = when {
+                localeCheck.startsWith("uk") -> 2
+                localeCheck.startsWith("ru") -> 1
+                else -> 0
             }
             uiEd.putInt(PrefsConstants.VOICE_LOCALE, locale)
             uiEd.putString(PrefsConstants.TIME_MORNING, "7:0")
@@ -841,27 +840,6 @@ class Prefs private constructor(context: Context) : SharedPrefs(context) {
     }
 
     companion object {
-
         const val DRIVE_USER_NONE = "none"
-
-        private var instance: Prefs? = null
-
-        fun getInstance(): Prefs {
-            if (instance != null) {
-                return instance!!
-            }
-            throw IllegalArgumentException("Use Prefs(Context context) constructor!")
-        }
-
-        fun getInstance(context: Context): Prefs {
-            if (instance == null) {
-                synchronized(Prefs::class.java) {
-                    if (instance == null) {
-                        instance = Prefs(context.applicationContext)
-                    }
-                }
-            }
-            return instance!!
-        }
     }
 }

@@ -5,13 +5,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
-
-import com.elementary.tasks.R
-
 import androidx.appcompat.widget.PopupMenu
-import com.elementary.tasks.core.utils.ThemeUtil.Companion.THEME_AMOLED
-
+import com.elementary.tasks.R
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,13 +29,11 @@ import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-object Dialogues {
-
-    private const val MAX_RADIUS = 100000
-    private const val MAX_DEF_RADIUS = 5000
+@Singleton
+class Dialogues @Inject constructor(private val themeUtil: ThemeUtil) {
 
     fun showRadiusDialog(context: Context, current: Int, listener: OnValueSelectedListener<Int>) {
-        val builder = Dialogues.getDialog(context)
+        val builder = getDialog(context)
         builder.setTitle(R.string.radius)
         val b = LayoutInflater.from(context).inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = MAX_DEF_RADIUS
@@ -79,11 +75,7 @@ object Dialogues {
     }
 
     fun getDialog(context: Context): AlertDialog.Builder {
-        return if (Prefs.getInstance(context).appTheme == THEME_AMOLED) {
-            AlertDialog.Builder(context, ThemeUtil.getInstance(context).dialogStyle)
-        } else {
-            AlertDialog.Builder(context)
-        }
+        return AlertDialog.Builder(context, themeUtil.dialogStyle)
     }
 
     fun showLCAM(context: Context, listener: ((Int) -> Unit)?, vararg actions: String) {
@@ -112,5 +104,10 @@ object Dialogues {
     interface OnValueSelectedListener<T> {
         fun onSelected(t: T)
         fun getTitle(t: T): String
+    }
+
+    companion object {
+        private const val MAX_RADIUS = 100000
+        private const val MAX_DEF_RADIUS = 5000
     }
 }

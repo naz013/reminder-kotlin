@@ -22,12 +22,14 @@ import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.TextDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -51,6 +53,8 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     private var tts: TextToSpeech? = null
     private var mSendDialog: ProgressDialog? = null
+    @Inject
+    lateinit var soundStackHolder: SoundStackHolder
 
     private var mTextToSpeechListener: TextToSpeech.OnInitListener = TextToSpeech.OnInitListener { status ->
         LogUtil.d(TAG, "onInit: ")
@@ -109,7 +113,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     protected abstract val maxVolume: Int
 
     protected open val sound: Sound?
-        get() = SoundStackHolder.getInstance().sound
+        get() = soundStackHolder.sound
 
     protected open val isBirthdayInfiniteVibration: Boolean
         get() = true
@@ -139,6 +143,10 @@ abstract class BaseNotificationActivity : ThemedActivity() {
             return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         }
 
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     protected abstract fun call()
 
     protected abstract fun delay()
@@ -153,14 +161,13 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SoundStackHolder.getInstance().init(this)
         val current = instanceCount.incrementAndGet()
         LogUtil.d(TAG, "onCreate: " + current + ", " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
     }
 
     protected fun init() {
         setUpScreenOptions()
-        SoundStackHolder.getInstance().setMaxVolume(maxVolume)
+        soundStackHolder.setMaxVolume(maxVolume)
     }
 
     override fun onDestroy() {
@@ -171,7 +178,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
 
     override fun onPause() {
         super.onPause()
-        SoundStackHolder.getInstance().cancelIncreaseSound()
+        soundStackHolder.cancelIncreaseSound()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -325,7 +332,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     }
 
     protected fun discardMedia() {
-        if (sound != null) sound!!.stop(true)
+        sound?.stop(true)
     }
 
     protected fun showWearNotification(secondaryText: String) {

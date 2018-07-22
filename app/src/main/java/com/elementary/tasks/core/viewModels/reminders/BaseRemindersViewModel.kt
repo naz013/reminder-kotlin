@@ -7,7 +7,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
@@ -173,7 +172,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 result.postValue(Commands.DELETED)
                 if (showMessage) Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
-            CalendarUtils.deleteEvents(getApplication(), reminder.uniqueId)
+            calendarUtils.deleteEvents(reminder.uniqueId)
             DeleteFilesAsync(getApplication()).execute(reminder.uuId)
         }
     }

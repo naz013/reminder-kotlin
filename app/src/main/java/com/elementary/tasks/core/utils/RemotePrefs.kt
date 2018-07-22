@@ -6,6 +6,8 @@ import com.elementary.tasks.R
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -25,8 +27,8 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class RemotePrefs private constructor(context: Context) {
+@Singleton
+class RemotePrefs @Inject constructor(private val context: Context) {
 
     private val mFirebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
@@ -146,22 +148,5 @@ class RemotePrefs private constructor(context: Context) {
         private const val VERSION_NAME = "version_name"
 
         private const val TAG = "RemotePrefs"
-
-        private var instance: RemotePrefs? = null
-
-        fun getInstance(context: Context): RemotePrefs? {
-            if (instance == null) {
-                synchronized(RemotePrefs::class.java) {
-                    if (instance == null) {
-                        instance = try {
-                            RemotePrefs(context.applicationContext)
-                        } catch (e: Exception) {
-                            null
-                        }
-                    }
-                }
-            }
-            return instance
-        }
     }
 }

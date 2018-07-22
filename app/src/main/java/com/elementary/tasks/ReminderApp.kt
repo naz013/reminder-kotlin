@@ -1,17 +1,13 @@
 package com.elementary.tasks
 
 import android.content.Context
-
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
-import com.elementary.tasks.core.services.EventJobService
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
-import com.evernote.android.job.JobManager
-
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
 import com.elementary.tasks.core.di.*
+import com.elementary.tasks.core.services.EventJobService
+import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
@@ -49,9 +45,7 @@ class ReminderApp : MultiDexApplication() {
                 .build()
 
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        Notifier.createChannels(this)
         Fabric.with(this, Crashlytics(), Answers())
-        Prefs.getInstance(this)
         JobManager.create(this).addJobCreator { EventJobService() }
     }
 

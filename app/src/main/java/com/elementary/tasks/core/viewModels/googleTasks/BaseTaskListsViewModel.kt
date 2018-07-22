@@ -1,8 +1,6 @@
 package com.elementary.tasks.core.viewModels.googleTasks
 
 import android.app.Application
-
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
@@ -13,7 +11,6 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-
 import java.io.IOException
 
 /**
@@ -87,7 +84,7 @@ abstract class BaseTaskListsViewModel(application: Application) : BaseDbViewMode
                     withContext(UI) {
                         isInProgress.postValue(false)
                         result.postValue(Commands.UPDATED)
-                        UpdatesHelper.getInstance(getApplication()).updateTasksWidget()
+                        updatesHelper.updateTasksWidget()
                     }
                 } catch (e: IOException) {
                     withContext(UI) {

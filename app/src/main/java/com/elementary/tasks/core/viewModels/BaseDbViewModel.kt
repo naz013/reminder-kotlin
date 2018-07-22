@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
+import com.elementary.tasks.core.utils.CalendarUtils
 import javax.inject.Inject
 
 /**
@@ -35,6 +37,10 @@ open class BaseDbViewModel(application: Application) : AndroidViewModel(applicat
 
     @Inject
     lateinit var appDb: AppDb
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
     protected val handler = Handler(Looper.getMainLooper())
 
     init {

@@ -31,7 +31,7 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class Sound(private val mContext: Context) {
+class Sound(private val mContext: Context, private val prefs: Prefs) {
     private var mMediaPlayer: MediaPlayer? = null
     var isPaused: Boolean = false
         private set
@@ -69,8 +69,8 @@ class Sound(private val mContext: Context) {
     fun stop(notify: Boolean) {
         if (mMediaPlayer != null) {
             try {
-                mMediaPlayer!!.stop()
-                mMediaPlayer!!.release()
+                mMediaPlayer?.stop()
+                mMediaPlayer?.release()
             } catch (ignored: IllegalStateException) {
             }
 
@@ -79,7 +79,7 @@ class Sound(private val mContext: Context) {
         if (mRingtone != null) {
             mRingtoneHandler.removeCallbacks(mRingtoneRunnable)
             try {
-                mRingtone!!.stop()
+                mRingtone?.stop()
             } catch (ignored: Exception) {
             }
 
@@ -90,7 +90,7 @@ class Sound(private val mContext: Context) {
     fun pause() {
         if (mMediaPlayer != null) {
             try {
-                mMediaPlayer!!.pause()
+                mMediaPlayer?.pause()
             } catch (ignored: IllegalStateException) {
             }
 
@@ -101,7 +101,7 @@ class Sound(private val mContext: Context) {
     fun resume() {
         if (mMediaPlayer != null) {
             try {
-                mMediaPlayer!!.start()
+                mMediaPlayer?.start()
             } catch (ignored: IllegalStateException) {
             }
 
@@ -120,7 +120,7 @@ class Sound(private val mContext: Context) {
         mMediaPlayer = MediaPlayer()
         try {
             val file = File(path)
-            mMediaPlayer!!.setDataSource(mContext, Uri.fromFile(file))
+            mMediaPlayer?.setDataSource(mContext, Uri.fromFile(file))
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -129,22 +129,22 @@ class Sound(private val mContext: Context) {
             val attributes = AudioAttributes.Builder()
                     .setLegacyStreamType(AudioManager.STREAM_MUSIC)
                     .build()
-            mMediaPlayer!!.setAudioAttributes(attributes)
+            mMediaPlayer?.setAudioAttributes(attributes)
         } else {
-            mMediaPlayer!!.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            mMediaPlayer?.setAudioStreamType(AudioManager.STREAM_MUSIC)
         }
-        mMediaPlayer!!.isLooping = false
-        mMediaPlayer!!.setOnPreparedListener { mp ->
+        mMediaPlayer?.isLooping = false
+        mMediaPlayer?.setOnPreparedListener { mp ->
             notifyStart()
             mp.start()
         }
-        mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
-        mMediaPlayer!!.setOnErrorListener { _, _, _ ->
+        mMediaPlayer?.setOnCompletionListener { notifyFinish() }
+        mMediaPlayer?.setOnErrorListener { _, _, _ ->
             notifyFinish()
             false
         }
         try {
-            mMediaPlayer!!.prepareAsync()
+            mMediaPlayer?.prepareAsync()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -153,9 +153,7 @@ class Sound(private val mContext: Context) {
 
     private fun notifyFinish() {
         isDone = true
-        if (mCallback != null) {
-            mCallback!!.onFinish()
-        }
+        mCallback?.onFinish()
     }
 
     fun playAlarm(path: Uri, looping: Boolean) {
@@ -165,8 +163,7 @@ class Sound(private val mContext: Context) {
         stop(false)
         mMediaPlayer = MediaPlayer()
         try {
-            mMediaPlayer!!.setDataSource(mContext, path)
-            val prefs = Prefs.getInstance(mContext)
+            mMediaPlayer?.setDataSource(mContext, path)
             var stream = AudioManager.STREAM_MUSIC
             if (prefs.isSystemLoudnessEnabled) {
                 stream = prefs.soundStream
@@ -175,22 +172,22 @@ class Sound(private val mContext: Context) {
                 val attributes = AudioAttributes.Builder()
                         .setLegacyStreamType(stream)
                         .build()
-                mMediaPlayer!!.setAudioAttributes(attributes)
+                mMediaPlayer?.setAudioAttributes(attributes)
             } else {
-                mMediaPlayer!!.setAudioStreamType(stream)
+                mMediaPlayer?.setAudioStreamType(stream)
             }
-            mMediaPlayer!!.isLooping = looping
-            mMediaPlayer!!.setOnPreparedListener { mp ->
+            mMediaPlayer?.isLooping = looping
+            mMediaPlayer?.setOnPreparedListener { mp ->
                 notifyStart()
                 mp.start()
             }
-            mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
-            mMediaPlayer!!.setOnErrorListener { _, _, _ ->
+            mMediaPlayer?.setOnCompletionListener { notifyFinish() }
+            mMediaPlayer?.setOnErrorListener { _, _, _ ->
                 notifyFinish()
                 false
             }
             try {
-                mMediaPlayer!!.prepareAsync()
+                mMediaPlayer?.prepareAsync()
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
@@ -204,7 +201,7 @@ class Sound(private val mContext: Context) {
     private fun playRingtone(path: Uri) {
         notifyStart()
         mRingtone = RingtoneManager.getRingtone(mContext, path)
-        mRingtone!!.play()
+        mRingtone?.play()
         mRingtoneHandler.postDelayed(mRingtoneRunnable, 100)
     }
 
@@ -216,12 +213,11 @@ class Sound(private val mContext: Context) {
         }
         mMediaPlayer = MediaPlayer()
         try {
-            mMediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+            mMediaPlayer?.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
-        val prefs = Prefs.getInstance(mContext)
         var stream = AudioManager.STREAM_MUSIC
         if (prefs.isSystemLoudnessEnabled) {
             stream = prefs.soundStream
@@ -230,22 +226,22 @@ class Sound(private val mContext: Context) {
             val attributes = AudioAttributes.Builder()
                     .setLegacyStreamType(stream)
                     .build()
-            mMediaPlayer!!.setAudioAttributes(attributes)
+            mMediaPlayer?.setAudioAttributes(attributes)
         } else {
-            mMediaPlayer!!.setAudioStreamType(stream)
+            mMediaPlayer?.setAudioStreamType(stream)
         }
-        mMediaPlayer!!.isLooping = false
-        mMediaPlayer!!.setOnPreparedListener { mp ->
+        mMediaPlayer?.isLooping = false
+        mMediaPlayer?.setOnPreparedListener { mp ->
             notifyStart()
             mp.start()
         }
-        mMediaPlayer!!.setOnCompletionListener { notifyFinish() }
-        mMediaPlayer!!.setOnErrorListener { _, _, _ ->
+        mMediaPlayer?.setOnCompletionListener { notifyFinish() }
+        mMediaPlayer?.setOnErrorListener { _, _, _ ->
             notifyFinish()
             false
         }
         try {
-            mMediaPlayer!!.prepareAsync()
+            mMediaPlayer?.prepareAsync()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
@@ -253,9 +249,7 @@ class Sound(private val mContext: Context) {
     }
 
     private fun notifyStart() {
-        if (mCallback != null) {
-            mCallback!!.onStart()
-        }
+        mCallback?.onStart()
     }
 
     interface PlaybackCallback {

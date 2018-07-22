@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.backdoor.engine.*
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note
@@ -29,6 +29,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -56,12 +57,18 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     var notes = MutableLiveData<List<Note>>()
     var birthdays = MutableLiveData<List<Birthday>>()
 
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var language: Language
+    @Inject
+    lateinit var timeCount: TimeCount
+
     private val recognizer: Recognizer
 
     init {
-
-        val prefs = Prefs.getInstance(application)
-        val language = Language.getLanguage(prefs.voiceLocale)
+        ReminderApp.appComponent.inject(this)
+        val language = language.getLanguage(prefs.voiceLocale)
         val morning = prefs.morningTime
         val day = prefs.noonTime
         val evening = prefs.eveningTime
@@ -236,7 +243,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
             val archived = appDb.reminderDao().getAll(false, true)
             for (reminder in archived) {
                 deleteReminder(reminder, false)
-                CalendarUtils.deleteEvents(getApplication(), reminder.uniqueId)
+                calendarUtils.deleteEvents(reminder.uniqueId)
             }
             withContext(UI) {
                 isInProgress.postValue(false)
@@ -260,7 +267,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         var typeT = Reminder.BY_DATE
         if (action == Action.WEEK || action == Action.WEEK_CALL || action == Action.WEEK_SMS) {
             typeT = Reminder.BY_WEEK
-            eventTime = TimeCount.getInstance(getApplication()).getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0)
+            eventTime = timeCount.getNextWeekdayTime(TimeUtil.getDateTimeFromGmt(startTime), weekdays, 0)
             if (!TextUtils.isEmpty(number)) {
                 typeT = if (action == Action.WEEK_CALL)
                     Reminder.BY_WEEK_CALL
@@ -279,7 +286,6 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         if (item != null) {
             categoryId = item.uuId
         }
-        val prefs = Prefs.getInstance(getApplication())
         val isCal = prefs.getBoolean(PrefsConstants.EXPORT_TO_CALENDAR)
         val isStock = prefs.getBoolean(PrefsConstants.EXPORT_TO_STOCK)
         val reminder = Reminder()
@@ -305,21 +311,20 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     }
 
     fun saveNote(note: Note, showToast: Boolean, addQuickNote: Boolean) {
-        val prefs = Prefs.getInstance(getApplication())
         if (addQuickNote && prefs.getBoolean(PrefsConstants.QUICK_NOTE_REMINDER)) {
             saveQuickReminder(note.key, note.summary)
         }
         launch(CommonPool) {
             appDb.notesDao().insert(note)
         }
-        UpdatesHelper.getInstance(getApplication()).updateNotesWidget()
+        updatesHelper.updateNotesWidget()
         if (showToast) {
             Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()
         }
     }
 
     fun saveQuickReminder(key: String, summary: String): Reminder {
-        val after = (Prefs.getInstance(getApplication()).getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME) * 1000 * 60).toLong()
+        val after = (prefs.getInt(PrefsConstants.QUICK_NOTE_REMINDER_TIME) * 1000 * 60).toLong()
         val due = System.currentTimeMillis() + after
         val mReminder = Reminder()
         mReminder.type = Reminder.BY_DATE

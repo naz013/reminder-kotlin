@@ -7,6 +7,8 @@ import androidx.annotation.StringRes
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -26,12 +28,8 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class TimeCount private constructor(context: Context) {
-
-    private val holder: ContextHolder = ContextHolder(context)
-
-    private val context: Context
-        get() = holder.context
+@Singleton
+class TimeCount @Inject constructor(private val context: Context, private val prefs: Prefs) {
 
     fun generateNextTimer(reminder: Reminder, isNew: Boolean): Long {
         val hours = reminder.hours
@@ -277,7 +275,7 @@ class TimeCount private constructor(context: Context) {
             cl.timeInMillis = timeLong
             val mTime = cl.time
             date = TimeUtil.DATE_FORMAT.format(mTime)
-            time = TimeUtil.getTime(mTime, Prefs.getInstance(context).getBoolean(PrefsConstants.IS_24_TIME_FORMAT))
+            time = TimeUtil.getTime(mTime, prefs.getBoolean(PrefsConstants.IS_24_TIME_FORMAT))
         }
         return arrayOf(date, time)
     }
@@ -307,14 +305,6 @@ class TimeCount private constructor(context: Context) {
         const val HOUR = MINUTE * 60
         private const val HALF_DAY = HOUR * 12
         const val DAY = HALF_DAY * 2
-        private var instance: TimeCount? = null
-
-        fun getInstance(context: Context): TimeCount {
-            if (instance == null) {
-                instance = TimeCount(context.applicationContext)
-            }
-            return instance!!
-        }
 
         fun isCurrent(eventTime: String?): Boolean {
             return TimeUtil.getDateTimeFromGmt(eventTime) > System.currentTimeMillis()

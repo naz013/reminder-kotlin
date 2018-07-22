@@ -5,6 +5,8 @@ import android.media.AudioManager
 import android.os.Handler
 
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -24,7 +26,8 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class SoundStackHolder private constructor() : Sound.PlaybackCallback {
+@Singleton
+class SoundStackHolder @Inject constructor(private val context: Context, private val prefs: Prefs) : Sound.PlaybackCallback {
     var sound: Sound? = null
         private set
 
@@ -60,23 +63,24 @@ class SoundStackHolder private constructor() : Sound.PlaybackCallback {
         }
     }
 
-    fun init(context: Context) {
+    init {
         isHeadset = SuperUtil.isHeadsetUsing(context)
         hasVolumePermission = SuperUtil.hasVolumePermission(context)
-        isSystemLoudnessEnabled = Prefs.getInstance(context).isSystemLoudnessEnabled
-        isIncreasingLoudnessEnabled = Prefs.getInstance(context).isIncreasingLoudnessEnabled
-        if (isSystemLoudnessEnabled) mSystemStream = Prefs.getInstance(context).soundStream
-        if (mAudioManager != null) return
+        isSystemLoudnessEnabled = prefs.isSystemLoudnessEnabled
+        isIncreasingLoudnessEnabled = prefs.isIncreasingLoudnessEnabled
+        if (isSystemLoudnessEnabled) mSystemStream = prefs.soundStream
+        if (mAudioManager == null) {
+            if (sound != null)
+                sound?.stop(true)
+            else
+                sound = Sound(context, prefs)
 
-        if (sound != null)
-            sound!!.stop(true)
-        else
-            sound = Sound(context)
-
-        sound!!.setCallback(this)
-        mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH)) mAudioManager!!.mode = AudioManager.MODE_NORMAL
-        isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
+            sound?.setCallback(this)
+            mAudioManager = context.applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            if (mAudioManager != null && Permissions.checkPermission(context, Permissions.BLUETOOTH))
+                mAudioManager?.mode = AudioManager.MODE_NORMAL
+            isDoNotDisturbEnabled = SuperUtil.isDoNotDisturbEnabled(context)
+        }
     }
 
     fun setMaxVolume(maxVolume: Int) {
@@ -148,21 +152,5 @@ class SoundStackHolder private constructor() : Sound.PlaybackCallback {
 
     fun cancelIncreaseSound() {
         mHandler.removeCallbacks(mVolumeIncrease)
-    }
-
-    companion object {
-
-        private var instance: SoundStackHolder? = null
-
-        fun getInstance(): SoundStackHolder {
-            if (instance == null) {
-                synchronized(SoundStackHolder::class.java) {
-                    if (instance == null) {
-                        instance = SoundStackHolder()
-                    }
-                }
-            }
-            return instance!!
-        }
     }
 }

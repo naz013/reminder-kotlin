@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import java.io.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,17 +36,15 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class BackupTool private constructor() {
-    @Inject
-    lateinit var mContext: Context
+@Singleton
+class BackupTool @Inject constructor(private val appDb: AppDb) {
 
     init {
         ReminderApp.appComponent.inject(this)
     }
 
     fun exportTemplates() {
-        for (item in AppDb.getAppDatabase(mContext).smsTemplatesDao().all()) {
+        for (item in appDb.smsTemplatesDao().all()) {
             exportTemplate(item)
         }
     }
@@ -63,7 +62,7 @@ class BackupTool private constructor() {
                                 || TextUtils.isEmpty(item.key)) {
                             continue
                         }
-                        AppDb.getAppDatabase(mContext).smsTemplatesDao().insert(item)
+                        appDb.smsTemplatesDao().insert(item)
                     }
                 }
             }
@@ -107,7 +106,7 @@ class BackupTool private constructor() {
     }
 
     fun exportPlaces() {
-        for (item in AppDb.getAppDatabase(mContext).placesDao().all()) {
+        for (item in appDb.placesDao().all()) {
             exportPlace(item)
         }
     }
@@ -125,7 +124,7 @@ class BackupTool private constructor() {
                                 TextUtils.isEmpty(item.id)) {
                             continue
                         }
-                        AppDb.getAppDatabase(mContext).placesDao().insert(item)
+                        appDb.placesDao().insert(item)
                     }
                 }
             }
@@ -169,7 +168,7 @@ class BackupTool private constructor() {
     }
 
     fun exportBirthdays() {
-        for (item in AppDb.getAppDatabase(mContext).birthdaysDao().all()) {
+        for (item in appDb.birthdaysDao().all()) {
             exportBirthday(item)
         }
     }
@@ -187,7 +186,7 @@ class BackupTool private constructor() {
                                 || TextUtils.isEmpty(item.uuId)) {
                             continue
                         }
-                        AppDb.getAppDatabase(mContext).birthdaysDao().insert(item)
+                        appDb.birthdaysDao().insert(item)
                     }
                 }
             }
@@ -231,7 +230,7 @@ class BackupTool private constructor() {
     }
 
     fun exportGroups() {
-        for (item in AppDb.getAppDatabase(mContext).groupDao().all()) {
+        for (item in appDb.groupDao().all()) {
             exportGroup(item)
         }
     }
@@ -261,13 +260,13 @@ class BackupTool private constructor() {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val groups = AppDb.getAppDatabase(mContext).groupDao().all().toMutableList()
+                val groups = appDb.groupDao().all().toMutableList()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         val item = getGroup(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.uuId)) continue
                         if (!TextUtils.isEmpty(item.title) && !hasGroup(groups, item.title)) {
-                            AppDb.getAppDatabase(mContext).groupDao().insert(item)
+                            appDb.groupDao().insert(item)
                             groups.add(item)
                         }
                     }
@@ -306,7 +305,7 @@ class BackupTool private constructor() {
     }
 
     fun exportReminders() {
-        for (reminder in AppDb.getAppDatabase(mContext).reminderDao().all()) {
+        for (reminder in appDb.reminderDao().all()) {
             exportReminder(reminder)
         }
     }
@@ -417,7 +416,7 @@ class BackupTool private constructor() {
     }
 
     fun exportNotes() {
-        for (item in AppDb.getAppDatabase(mContext).notesDao().all()) {
+        for (item in appDb.notesDao().all()) {
             exportNote(item)
         }
     }
@@ -434,7 +433,7 @@ class BackupTool private constructor() {
                         if (item == null || TextUtils.isEmpty(item.key)) {
                             continue
                         }
-                        AppDb.getAppDatabase(mContext).notesDao().insert(item)
+                        appDb.notesDao().insert(item)
                     }
                 }
             }
@@ -587,19 +586,6 @@ class BackupTool private constructor() {
     }
 
     companion object {
-
-        private val TAG = "BackupTool"
-        private var instance: BackupTool? = null
-
-        fun getInstance(): BackupTool {
-            if (instance == null) {
-                synchronized(BackupTool::class.java) {
-                    if (instance == null) {
-                        instance = BackupTool()
-                    }
-                }
-            }
-            return instance!!
-        }
+        private const val TAG = "BackupTool"
     }
 }
