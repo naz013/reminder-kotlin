@@ -32,20 +32,18 @@ class HelpFragment : BaseWebViewFragment() {
             val isDark = ThemeUtil.getInstance(context!!).isDark
             val localeCheck = Locale.getDefault().toString().toLowerCase()
             val url: String
-            if (localeCheck.startsWith("uk")) {
-                url = if (isDark) {
+            when {
+                localeCheck.startsWith("uk") -> url = if (isDark) {
                     Constants.WEB_URL + "app_help/index.html"
                 } else {
                     Constants.WEB_URL + "app_help/index_light.html"
                 }
-            } else if (localeCheck.startsWith("ru")) {
-                url = if (isDark) {
+                localeCheck.startsWith("ru") -> url = if (isDark) {
                     Constants.WEB_URL + "app_help/index_ru.html"
                 } else {
                     Constants.WEB_URL + "app_help/index_light_ru.html"
                 }
-            } else {
-                url = if (isDark) {
+                else -> url = if (isDark) {
                     Constants.WEB_URL + "app_help/index_en.html"
                 } else {
                     Constants.WEB_URL + "app_help/index_light_en.html"

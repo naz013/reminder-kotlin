@@ -3,7 +3,6 @@ package com.elementary.tasks.core.appWidgets.events
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -19,11 +18,7 @@ import java.util.ArrayList
 import java.util.Calendar
 import java.util.HashMap
 import java.util.Locale
-import kotlin.Boolean
 import kotlin.Comparator
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -139,7 +134,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
                         e.printStackTrace()
                     }
 
-                    data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.uuId, birthday, "", eventTime, 1, item))
+                    data.add(CalendarItem(CalendarItem.Type.BIRTHDAY, mContext.getString(R.string.birthday), name, item.key, birthday, "", eventTime, 1, item))
                 }
                 calendar.timeInMillis = calendar.timeInMillis + 1000 * 60 * 60 * 24
                 n++
@@ -209,19 +204,11 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             rView.setTextViewText(R.id.taskText, task)
             rView.setTextColor(R.id.taskText, itemTextColor)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                rView.setTextViewTextSize(R.id.taskNumber, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                rView.setTextViewTextSize(R.id.taskDate, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                rView.setTextViewTextSize(R.id.taskTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                rView.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            } else {
-                rView.setFloat(R.id.taskTime, "setTextSize", itemTextSize)
-                rView.setFloat(R.id.taskDate, "setTextSize", itemTextSize)
-                rView.setFloat(R.id.taskNumber, "setTextSize", itemTextSize)
-                rView.setFloat(R.id.taskText, "setTextSize", itemTextSize)
-                rView.setFloat(R.id.leftTime, "setTextSize", itemTextSize)
-            }
+            rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rView.setTextViewTextSize(R.id.taskNumber, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rView.setTextViewTextSize(R.id.taskDate, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rView.setTextViewTextSize(R.id.taskTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
+            rView.setTextViewTextSize(R.id.leftTime, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
             val number = item.number
             if (number != null && !number.matches("".toRegex())) {
@@ -261,11 +248,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             val task = item.name
             rView.setTextViewText(R.id.taskText, task)
             rView.setTextColor(R.id.taskText, itemTextColor)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-            } else {
-                rView.setFloat(R.id.taskText, "setTextSize", itemTextSize)
-            }
+            rView.setTextViewTextSize(R.id.taskText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
             var count = 0
             val lists = map[item.id]?.shoppings
@@ -289,11 +272,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
                     }
 
                     view.setTextColor(R.id.shopText, itemTextColor)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
-                    } else {
-                        view.setFloat(R.id.shopText, "setTextSize", itemTextSize)
-                    }
+                    view.setTextViewTextSize(R.id.shopText, TypedValue.COMPLEX_UNIT_SP, itemTextSize)
 
                     count++
                     if (count == 9) {

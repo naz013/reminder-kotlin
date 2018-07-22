@@ -127,13 +127,17 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
     }
 
     private fun addReminder() {
-        activity!!.startActivityForResult(Intent(context, AddReminderActivity::class.java)
-                .putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE)
+        if (isAdded && activity != null) {
+            activity?.startActivityForResult(Intent(context, AddReminderActivity::class.java)
+                    .putExtra(Constants.INTENT_DATE, dateMills), REMINDER_CODE)
+        }
     }
 
     private fun addBirthday() {
-        activity!!.startActivityForResult(Intent(context, AddBirthdayActivity::class.java)
-                .putExtra(Constants.INTENT_DATE, dateMills), BD_CODE)
+        if (isAdded && activity != null) {
+            activity?.startActivityForResult(Intent(context, AddBirthdayActivity::class.java)
+                    .putExtra(Constants.INTENT_DATE, dateMills), BD_CODE)
+        }
     }
 
     companion object {

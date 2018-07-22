@@ -1,10 +1,8 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-
 import com.elementary.tasks.R
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -57,24 +55,29 @@ object IntervalUtil {
         return false
     }
 
-    fun getInterval(mContext: Context, code: Long): String {
-        var code = code
-        val minute = (1000 * 60).toLong()
-        val day = minute * 60 * 24
-        val tmp = code / minute
+    fun getInterval(mContext: Context, mills: Long): String {
+        var code = mills
+        val tmp = mills / TimeCount.MINUTE
         val interval: String
-        if (tmp > 1000) {
-            code /= day
-            interval = when (code) {
-                REPEAT_CODE_ONCE.toLong() -> "0"
-                INTERVAL_WEEK.toLong() -> String.format(mContext.getString(R.string.xW), 1.toString())
-                INTERVAL_TWO_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 2.toString())
-                INTERVAL_THREE_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 3.toString())
-                INTERVAL_FOUR_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 4.toString())
-                else -> String.format(mContext.getString(R.string.xD), code.toString())
+        when {
+            tmp > 1000 -> {
+                code /= TimeCount.DAY
+                interval = when (code) {
+                    REPEAT_CODE_ONCE.toLong() -> "0"
+                    INTERVAL_WEEK.toLong() -> String.format(mContext.getString(R.string.xW), 1.toString())
+                    INTERVAL_TWO_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 2.toString())
+                    INTERVAL_THREE_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 3.toString())
+                    INTERVAL_FOUR_WEEKS.toLong() -> String.format(mContext.getString(R.string.xW), 4.toString())
+                    else -> String.format(mContext.getString(R.string.xD), code.toString())
+                }
             }
-        } else {
-            return if (tmp == 0L) {
+            tmp > 100 -> return if (code % TimeCount.HOUR == 0L) {
+                code /= TimeCount.HOUR
+                String.format(mContext.getString(R.string.x_hours), mills.toString())
+            } else {
+                String.format(mContext.getString(R.string.x_min), tmp.toString())
+            }
+            else -> return if (tmp == 0L) {
                 "0"
             } else {
                 String.format(mContext.getString(R.string.x_min), tmp.toString())

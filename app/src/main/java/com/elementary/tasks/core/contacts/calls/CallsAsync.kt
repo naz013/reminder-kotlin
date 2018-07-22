@@ -24,11 +24,11 @@ import com.elementary.tasks.core.utils.Permissions
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CallsAsync(private val mContext: Context, private val mListener: ((List<CallsItem>) -> Unit)?) : AsyncTask<Void, Void, Void>() {
+class CallsAsync(private val mContext: Context, private val mListener: ((List<CallsItem>) -> Unit)?) :
+        AsyncTask<Void, Void, List<CallsItem>>() {
 
-    private val mList: MutableList<CallsItem> = mutableListOf()
-
-    override fun doInBackground(vararg params: Void): Void? {
+    override fun doInBackground(vararg params: Void): List<CallsItem> {
+        val mList = mutableListOf<CallsItem>()
         if (Permissions.checkPermission(mContext, Permissions.READ_CALLS)) {
             val c = mContext.contentResolver.query(CallLog.Calls.CONTENT_URI, null, null, null, null)
             mList.clear()
@@ -52,7 +52,7 @@ class CallsAsync(private val mContext: Context, private val mListener: ((List<Ca
                     }
 
                     val data = CallsItem(name, phoneNumber, photo, java.lang.Long.valueOf(callDate), id, Integer.parseInt(callType))
-                    val pos = getPosition(data.date)
+                    val pos = getPosition(data.date, mList)
                     if (pos == -1) {
                         mList.add(data)
                     } else {
@@ -62,25 +62,25 @@ class CallsAsync(private val mContext: Context, private val mListener: ((List<Ca
                 c.close()
             }
         }
-        return null
+        return mList
     }
 
-    private fun getPosition(date: Long): Int {
-        if (mList.size == 0) {
+    private fun getPosition(date: Long, list: List<CallsItem>): Int {
+        if (list.isEmpty()) {
             return 0
         }
         var position = -1
-        for (data in mList) {
+        for (data in list) {
             if (date > data.date) {
-                position = mList.indexOf(data)
+                position = list.indexOf(data)
                 break
             }
         }
         return position
     }
 
-    override fun onPostExecute(aVoid: Void) {
-        super.onPostExecute(aVoid)
-        mListener?.invoke(mList.toList())
+    override fun onPostExecute(list: List<CallsItem>) {
+        super.onPostExecute(list)
+        mListener?.invoke(list)
     }
 }

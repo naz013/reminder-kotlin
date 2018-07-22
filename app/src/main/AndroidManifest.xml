@@ -208,7 +208,7 @@
         <activity android:name=".core.apps.ApplicationActivity" />
         <activity android:name=".reminder.preview.ReminderPreviewActivity" />
         <activity android:name=".reminder.preview.ShoppingPreviewActivity" />
-        <activity android:name=".missed_calls.MissedCallDialogActivity" />
+        <activity android:name=".missedCalls.MissedCallDialogActivity" />
         <activity android:name=".birthdays.ShowBirthdayActivity" />
         <activity
             android:name=".core.dialogs.VoiceHelpDialog"

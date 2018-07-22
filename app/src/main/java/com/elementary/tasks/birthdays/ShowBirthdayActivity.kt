@@ -351,6 +351,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

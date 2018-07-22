@@ -64,7 +64,7 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     private fun hideDialog() {
         try {
             if (mDialog != null && mDialog!!.isShowing) {
-                mDialog!!.dismiss()
+                mDialog?.dismiss()
             }
         } catch (e: Exception) {
         }

@@ -149,15 +149,19 @@ class RemotePrefs private constructor(context: Context) {
 
         private var instance: RemotePrefs? = null
 
-        fun getInstance(context: Context): RemotePrefs {
+        fun getInstance(context: Context): RemotePrefs? {
             if (instance == null) {
                 synchronized(RemotePrefs::class.java) {
                     if (instance == null) {
-                        instance = RemotePrefs(context.applicationContext)
+                        instance = try {
+                            RemotePrefs(context.applicationContext)
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
                 }
             }
-            return instance!!
+            return instance
         }
     }
 }

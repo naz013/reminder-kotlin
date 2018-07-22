@@ -166,6 +166,7 @@ class BackupsFragment : BaseNavigationFragment() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             SD_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -163,18 +163,18 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             showRateDialog()
         }
         showMainImage()
-        RemotePrefs.getInstance(this).addUpdateObserver(this)
+        RemotePrefs.getInstance(this)?.addUpdateObserver(this)
         if (!Module.isPro) {
-            RemotePrefs.getInstance(this).addSaleObserver(this)
+            RemotePrefs.getInstance(this)?.addSaleObserver(this)
         }
     }
 
     override fun onPause() {
         super.onPause()
         if (!Module.isPro) {
-            RemotePrefs.getInstance(this).removeSaleObserver(this)
+            RemotePrefs.getInstance(this)?.removeSaleObserver(this)
         }
-        RemotePrefs.getInstance(this).removeUpdateObserver(this)
+        RemotePrefs.getInstance(this)?.removeUpdateObserver(this)
     }
 
     private fun showRateDialog() {

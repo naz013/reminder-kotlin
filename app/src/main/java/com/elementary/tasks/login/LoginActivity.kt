@@ -1,6 +1,7 @@
 package com.elementary.tasks.login
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import android.graphics.drawable.Drawable
@@ -121,7 +122,7 @@ class LoginActivity : ThemedActivity() {
     }
 
     private fun loadDataFromDropbox() {
-        RestoreDropboxTask(this) { this.openApplication() }.execute()
+        RestoreDropboxTask(this) { openApplication() }.execute()
     }
 
     private fun showLoginError() {
@@ -171,7 +172,7 @@ class LoginActivity : ThemedActivity() {
 
     private fun loginToDropbox() {
         if (Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
-            dropboxLogin!!.login()
+            dropboxLogin?.login()
         } else {
             Permissions.requestPermission(this, PERM_DROPBOX, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
         }
@@ -217,14 +218,16 @@ class LoginActivity : ThemedActivity() {
                     .setShortLabel(getString(R.string.add_reminder_menu))
                     .setLongLabel(getString(R.string.add_reminder_menu))
                     .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
-                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java), Intent(Intent.ACTION_VIEW).setClass(this, CreateReminderActivity::class.java)))
+                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                            Intent(Intent.ACTION_VIEW).setClass(this, CreateReminderActivity::class.java)))
                     .build()
 
             val shortcut2 = ShortcutInfo.Builder(this, "id.note")
                     .setShortLabel(getString(R.string.add_note))
                     .setLongLabel(getString(R.string.add_note))
                     .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
-                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java), Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)))
+                    .setIntents(arrayOf(Intent(Intent.ACTION_MAIN).setClass(this, MainActivity::class.java),
+                            Intent(Intent.ACTION_VIEW).setClass(this, CreateNoteActivity::class.java)))
                     .build()
             if (shortcutManager != null) {
                 shortcutManager.dynamicShortcuts = Arrays.asList(shortcut, shortcut2)
@@ -235,7 +238,7 @@ class LoginActivity : ThemedActivity() {
     private fun googleLoginClick() {
         if (Permissions.checkPermission(this, Permissions.GET_ACCOUNTS, Permissions.READ_EXTERNAL,
                         Permissions.WRITE_EXTERNAL)) {
-            googleLogin!!.login()
+            googleLogin?.login()
         } else {
             Permissions.requestPermission(this, PERM, Permissions.GET_ACCOUNTS,
                     Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
@@ -292,16 +295,16 @@ class LoginActivity : ThemedActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        googleLogin!!.onActivityResult(requestCode, resultCode, data)
+        googleLogin?.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            PERM -> googleLoginClick()
-            PERM_DROPBOX -> loginToDropbox()
-            PERM_LOCAL -> restoreLocalData()
-            PERM_BIRTH -> importBirthdays()
+            PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) googleLoginClick()
+            PERM_DROPBOX -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) loginToDropbox()
+            PERM_LOCAL -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) restoreLocalData()
+            PERM_BIRTH -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) importBirthdays()
         }
     }
 

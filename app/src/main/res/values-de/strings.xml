@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">"Mahnung"</string>
-    <string name="app_name_pro">"Mahnung PRO"</string>
+    <string name="app_name">"Erinnerung"</string>
+    <string name="app_name_pro">"Erinnerung PRO"</string>
     <string name="action_settings">"Einstellungen"</string>
     <string name="copyright">\"2017© Nazar Suhovich\"</string>
 
@@ -46,7 +46,7 @@
     <string name="notes">"Aufzeichnungen"</string>
     <string name="task">"Aufgabe"</string>
     <string name="note">"Notiz"</string>
-    <string name="save">"Sparen"</string>
+    <string name="save">"Speichern"</string>
     <string name="show_in_status_bar">"Zeigen Sie in der Statusleiste?"</string>
     <string name="yes">"Ja"</string>
     <string name="no">"Nein"</string>
@@ -88,7 +88,7 @@
     <string name="exclusion">"Ausschluss"</string>
     <string name="hours">"Stunden"</string>
     <string name="ok">"OK"</string>
-    <string name="cancel">"Absagen"</string>
+    <string name="cancel">"Abbrechen"</string>
     <string name="type">"Art"</string>
     <string name="message">"Nachricht"</string>
     <string name="date_and_time">"Datum und Uhrzeit"</string>
@@ -173,7 +173,7 @@
     <string name="style_of_marker">"Stil Marker"</string>
     <string name="tracking_settings">"Tracking-Einstellungen"</string>
     <string name="enable_creating_reminder_for_quick_note">"Erstellen Erinnerung für kurze Notiz"</string>
-    <string name="quick_note_reminder">"Mahnung"</string>
+    <string name="quick_note_reminder">"Erinnerung"</string>
     <string name="appearance">"Aussehen"</string>
     <string name="status_bar">"Statusleiste"</string>
     <string name="manual_remove">"Entfernen Sie manuell"</string>
@@ -191,7 +191,7 @@
     <string name="snooze_time">"Snooze-Zeit"</string>
     <string name="repeat_notification">"Die Wiederholung der Mitteilung"</string>
     <string name="personalization">"Personalisierung"</string>
-    <string name="allow_customizing_notification">"Lassen Sie Mitteilung Anpassung für jede Mahnung"</string>
+    <string name="allow_customizing_notification">"Lassen Sie Mitteilung Anpassung für jede Erinnerung"</string>
     <string name="permissions">"Berechtigungen"</string>
     <string name="allow_permission">"In Erlaubnis"</string>
     <string name="about">"Etwa"</string>
@@ -289,7 +289,7 @@
     <string name="buy">"Kaufen"</string>
     <string name="different_settings_for_birthdays">"- Verschiedene Einstellungen für Geburtstage;"</string>
     <string name="_led_notification_">"- LED-Benachrichtigung;"</string>
-    <string name="led_color_for_each_reminder">"- LED-Farbe für jede Mahnung;"</string>
+    <string name="led_color_for_each_reminder">"- LED-Farbe für jede Erinnerung;"</string>
     <string name="styles_for_marker">"- 16 Arten für Marker;"</string>
     <string name="option_for_image_blurring">"- Option für Bildunschärfe;"</string>
     <string name="additional_app_themes">"- 4 zusätzliche App Themen."</string>
@@ -373,7 +373,7 @@
     <string name="everyday">"Jeden Tag"</string>
     <string name="skype_call">"Skype-Anruf"</string>
     <string name="skype_chat">"Skype-Chat"</string>
-    <string name="reminder">"Mahnung"</string>
+    <string name="reminder">"Erinnerung"</string>
     <string name="export_and_sync">"Export &amp; Sync"</string>
     <string name="additional">"Zusätzlich"</string>
     <string name="other">"Andere"</string>
@@ -422,7 +422,7 @@
     <string name="up">Oben</string>
     <string name="move_forward">Schritt vorwärts</string>
     <string name="refresh">Erfrischen</string>
-    <string name="app_title">"Mahnung"</string>
+    <string name="app_title">"Erinnerung"</string>
     <string name="you_dont_select_any_hours">Sie wählen keine Stunden!</string>
     <string name="could_not_launch_market">Konnte nicht Markt bringen</string>
     <string name="call_history">Anrufsverlauf</string>
@@ -460,7 +460,7 @@
     <string name="times">mal</string>
     <string name="no_groups">Keine gruppen</string>
     <string name="retrieving_tasks">Aufgaben abrufen...</string>
-    <string name="saving">Sparen...</string>
+    <string name="saving">Speichern...</string>
     <string name="moving_task">Bewegliche Aufgabe...</string>
     <string name="deleting_task">Aufgabe löschen...</string>
     <string name="deleting_list">Liste löschen...</string>
@@ -525,7 +525,7 @@
     <string name="text_is_empty">Text ist leer</string>
     <string name="click_to_preview">Klicken Sie auf Vorschau</string>
     <string name="enable_saving_item_automatically">Aktivieren Sie das Speichern von Element automatisch, wenn Sie den Editor schließen</string>
-    <string name="save_on_exit">Sparen Sie bei Ausfahrt</string>
+    <string name="save_on_exit">Speichern Sie bei Ausfahrt</string>
     <string name="this_reminder_is_disabled">Diese Erinnerung ist deaktiviert</string>
     <string name="would_you_like_to_enable_it">Möchten Sie es aktivieren?</string>
     <string name="error">Fehler</string>

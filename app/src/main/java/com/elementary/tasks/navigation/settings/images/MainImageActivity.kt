@@ -370,6 +370,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             REQUEST_DOWNLOAD -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -383,7 +384,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
 
     companion object {
 
-        const val DEFAULT_PHOTO = "https://unsplash.it/1280/768?image=33"
+        const val DEFAULT_PHOTO = "https://picsum.photos/1280/768?image=33"
         private const val NONE_PHOTO = ""
         private const val TAG = "MainImageActivity"
         private const val START_SIZE = 50

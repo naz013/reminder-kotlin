@@ -30,10 +30,10 @@ import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 class EventEditService : IntentService("EventEditService") {
 
     override fun onHandleIntent(intent: Intent?) {
-        val id = intent!!.getStringExtra(Constants.INTENT_ID)
-        val isReminder = intent.getBooleanExtra(TYPE, true)
+        val id = intent?.getIntExtra(Constants.INTENT_ID, 0) ?: 0
+        val isReminder = intent?.getBooleanExtra(TYPE, true) ?: true
         LogUtil.d(TAG, "onHandleIntent: $id isReminder $isReminder")
-        if (id != null) {
+        if (id != 0) {
             if (isReminder) {
                 startActivity(Intent(applicationContext, CreateReminderActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -642,5 +642,6 @@
     <string name="retro">Retro</string>
     <string name="silver">Silver</string>
     <string name="aubergine">Aubergine</string>
+    <string name="app_not_found">Application not found</string>
 
 </resources>

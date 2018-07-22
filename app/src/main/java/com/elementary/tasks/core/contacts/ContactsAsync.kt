@@ -23,11 +23,11 @@ import com.elementary.tasks.core.utils.Contacts
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ContactsAsync(private val mContext: Context, private val mListener: ((List<ContactItem>) -> Unit)?) : AsyncTask<Void, Void, Void>() {
+class ContactsAsync(private val mContext: Context, private val mListener: ((List<ContactItem>) -> Unit)?) :
+        AsyncTask<Void, Void, List<ContactItem>>() {
 
-    private var mList: MutableList<ContactItem> = mutableListOf()
-
-    override fun doInBackground(vararg params: Void): Void? {
+    override fun doInBackground(vararg params: Void): List<ContactItem> {
+        val mList = mutableListOf<ContactItem>()
         val cursor = mContext.contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC")
         mList.clear()
         if (cursor != null) {
@@ -47,7 +47,7 @@ class ContactsAsync(private val mContext: Context, private val mListener: ((List
                 }
                 if (name != null && java.lang.Boolean.parseBoolean(hasPhone)) {
                     val data = ContactItem(name, photo, id)
-                    val pos = getPosition(name)
+                    val pos = getPosition(name, mList)
                     if (pos == -1) {
                         mList.add(data)
                     } else {
@@ -57,26 +57,26 @@ class ContactsAsync(private val mContext: Context, private val mListener: ((List
             }
             cursor.close()
         }
-        return null
+        return mList
     }
 
-    private fun getPosition(name: String): Int {
-        if (mList.size == 0) {
+    private fun getPosition(name: String, list: List<ContactItem>): Int {
+        if (list.isEmpty()) {
             return 0
         }
         var position = -1
-        for (data in mList) {
+        for (data in list) {
             val comp = name.compareTo(data.name)
             if (comp <= 0) {
-                position = mList.indexOf(data)
+                position = list.indexOf(data)
                 break
             }
         }
         return position
     }
 
-    override fun onPostExecute(aVoid: Void) {
-        super.onPostExecute(aVoid)
-        mListener?.invoke(mList)
+    override fun onPostExecute(list: List<ContactItem>) {
+        super.onPostExecute(list)
+        mListener?.invoke(list)
     }
 }

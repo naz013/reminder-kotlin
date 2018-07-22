@@ -567,7 +567,11 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         val sentPI = PendingIntent.getBroadcast(this, 0, Intent(action), 0)
         registerReceiver(SendReceiver(mSendListener), IntentFilter(action))
         val sms = SmsManager.getDefault()
-        sms.sendTextMessage(reminder.target, null, summary, sentPI, null)
+        try {
+            sms.sendTextMessage(reminder.target, null, summary, sentPI, null)
+        } catch (e: SecurityException) {
+            Toast.makeText(this, R.string.error_sending, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showReminder() {
@@ -740,7 +744,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     private fun showReminderNotification(activity: Activity) {
         LogUtil.d(TAG, "showReminderNotification: ")
         val notificationIntent = Intent(this, activity.javaClass)
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
+        notificationIntent.putExtra(Constants.INTENT_ID, id)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
@@ -803,7 +807,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         val builder = NotificationCompat.Builder(this, Notifier.CHANNEL_REMINDER)
         builder.setContentTitle(summary)
         val notificationIntent = Intent(this, activityClass.javaClass)
-        notificationIntent.putExtra(Constants.INTENT_ID, uuId)
+        notificationIntent.putExtra(Constants.INTENT_ID, id)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
         val intent = PendingIntent.getActivity(this, id, notificationIntent, 0)
@@ -869,6 +873,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

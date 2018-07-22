@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import android.widget.Toast
+import com.elementary.tasks.R
 
 import java.io.File
 
@@ -50,7 +52,11 @@ object TelephonyUtil {
         val uri = UriUtil.getUri(context, file)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-        context.startActivity(Intent.createChooser(intent, "Send email..."))
+        try {
+            context.startActivity(Intent.createChooser(intent, "Send email..."))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun sendMail(context: Context, email: String, subject: String,
@@ -65,7 +71,11 @@ object TelephonyUtil {
             intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
-        context.startActivity(Intent.createChooser(intent, "Send email..."))
+        try {
+            context.startActivity(Intent.createChooser(intent, "Send email..."))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun sendSms(number: String, context: Context) {
@@ -74,7 +84,11 @@ object TelephonyUtil {
         }
         val smsIntent = Intent(Intent.ACTION_VIEW)
         smsIntent.data = Uri.parse("sms:$number")
-        context.startActivity(smsIntent)
+        try {
+            context.startActivity(smsIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -84,7 +98,11 @@ object TelephonyUtil {
         }
         val callIntent = Intent(Intent.ACTION_CALL)
         callIntent.data = Uri.parse("tel:$number")
-        context.startActivity(callIntent)
+        try {
+            context.startActivity(callIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun openApp(appPackage: String, context: Context) {
@@ -92,6 +110,7 @@ object TelephonyUtil {
         try {
             context.startActivity(launchIntent)
         } catch (ignored: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -100,6 +119,7 @@ object TelephonyUtil {
         try {
             context.startActivity(browserIntent)
         } catch (ignored: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -107,20 +127,32 @@ object TelephonyUtil {
         val uri = "skype:$number?call"
         val sky = Intent("android.intent.action.VIEW")
         sky.data = Uri.parse(uri)
-        context.startActivity(sky)
+        try {
+            context.startActivity(sky)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun skypeVideoCall(number: String, context: Context) {
         val uri = "skype:$number?call&video=true"
         val sky = Intent("android.intent.action.VIEW")
         sky.data = Uri.parse(uri)
-        context.startActivity(sky)
+        try {
+            context.startActivity(sky)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun skypeChat(number: String, context: Context) {
         val uri = "skype:$number?chat"
         val sky = Intent("android.intent.action.VIEW")
         sky.data = Uri.parse(uri)
-        context.startActivity(sky)
+        try {
+            context.startActivity(sky)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -568,7 +568,6 @@ class ConversationActivity : ThemedActivity() {
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     private fun initList() {
@@ -586,18 +585,18 @@ class ConversationActivity : ThemedActivity() {
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         speech = SpeechRecognizer.createSpeechRecognizer(this)
-        speech!!.setRecognitionListener(mRecognitionListener)
-        speech!!.startListening(recognizerIntent)
+        speech?.setRecognitionListener(mRecognitionListener)
+        speech?.startListening(recognizerIntent)
     }
 
     private fun micClick() {
-        if (recordingView.isWorking) {
-            if (speech != null) speech!!.stopListening()
-            stopView()
-            return
-        }
         if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
             Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
+            return
+        }
+        if (recordingView.isWorking) {
+            speech?.stopListening()
+            stopView()
             return
         }
         recordingView.start()
@@ -606,8 +605,8 @@ class ConversationActivity : ThemedActivity() {
 
     private fun releaseTts() {
         if (tts != null) {
-            tts!!.stop()
-            tts!!.shutdown()
+            tts?.stop()
+            tts?.shutdown()
             tts = null
         }
     }
@@ -621,15 +620,13 @@ class ConversationActivity : ThemedActivity() {
     private fun releaseSpeech() {
         try {
             if (speech != null) {
-                speech!!.stopListening()
-                speech!!.cancel()
-                speech!!.destroy()
+                speech?.stopListening()
+                speech?.cancel()
+                speech?.destroy()
                 speech = null
             }
         } catch (ignored: IllegalArgumentException) {
-
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -665,6 +662,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             AUDIO_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {

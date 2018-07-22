@@ -65,13 +65,15 @@ object Permissions {
     }
 
     fun requestPermission(a: Activity, requestCode: Int, vararg permission: String) {
-        val size = permission.size
-        if (size == 1) {
-            a.requestPermissions(permission, requestCode)
-        } else {
-            val array = arrayOfNulls<String>(size)
-            System.arraycopy(permission, 0, array, 0, size)
-            a.requestPermissions(array, requestCode)
+        if (Module.isMarshmallow) {
+            val size = permission.size
+            if (size == 1) {
+                a.requestPermissions(permission, requestCode)
+            } else {
+                val array = arrayOfNulls<String>(size)
+                System.arraycopy(permission, 0, array, 0, size)
+                a.requestPermissions(array, requestCode)
+            }
         }
     }
 }

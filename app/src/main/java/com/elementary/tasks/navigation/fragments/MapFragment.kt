@@ -58,7 +58,7 @@ class MapFragment : BaseNavigationFragment() {
         }
     }
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
-        mGoogleMap!!.moveCamera(marker.position, 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
+        mGoogleMap?.moveCamera(marker.position, 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
         false
     }
 
@@ -75,7 +75,7 @@ class MapFragment : BaseNavigationFragment() {
         }
         clickedPosition = position
         val place = reminder.places[pointer]
-        mGoogleMap!!.moveCamera(LatLng(place.latitude, place.longitude), 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
+        mGoogleMap?.moveCamera(LatLng(place.latitude, place.longitude), 0, 0, 0, MeasureUtils.dp2px(context!!, 192))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,8 +101,8 @@ class MapFragment : BaseNavigationFragment() {
     private fun initMap() {
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, false, false,
                 ThemeUtil.getInstance(context!!).isDark)
-        mGoogleMap!!.setCallback(mReadyCallback)
-        mGoogleMap!!.setOnMarkerClick(mOnMarkerClick)
+        mGoogleMap?.setCallback(mReadyCallback)
+        mGoogleMap?.setOnMarkerClick(mOnMarkerClick)
         fragmentManager!!.beginTransaction()
                 .replace(R.id.fragment_container, mGoogleMap!!)
                 .addToBackStack(null)
