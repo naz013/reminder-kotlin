@@ -43,6 +43,7 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import timber.log.Timber
 import java.io.File
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
@@ -260,6 +261,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun setClick(listener: View.OnClickListener?) {
+        Timber.d("setClick: $listener")
         if (listener == null) {
             hideFab()
         } else {
@@ -407,7 +409,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun hideFab() {
-        if (fab.visibility != View.GONE) {
+        if (fab.visibility == View.VISIBLE) {
             fab.hide()
         }
     }

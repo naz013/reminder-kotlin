@@ -56,9 +56,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
 
         mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false,
-                prefs.markerStyle, themeUtil!!.isDark)
-        mGoogleMap!!.setListener(this)
-        mGoogleMap!!.setCallback(this)
+                prefs.markerStyle, themeUtil.isDark)
+        mGoogleMap?.setListener(this)
+        mGoogleMap?.setCallback(this)
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, mGoogleMap!!)
@@ -85,7 +85,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
 
     private fun loadPlace() {
         val intent = intent
-        val id = intent.getStringExtra(Constants.INTENT_ID)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
             try {
@@ -109,7 +109,7 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     private fun showPlace(place: Place?) {
         this.mItem = place
         if (place != null) {
-            mGoogleMap!!.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
+            mGoogleMap?.addMarker(LatLng(place.latitude, place.longitude), place.name, true, true, -1)
             placeName.setText(place.name)
         }
     }

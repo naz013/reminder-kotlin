@@ -79,18 +79,16 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
 
     private val mMapCallback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
-        mMap!!.uiSettings.isMyLocationButtonEnabled = false
-        mMap!!.uiSettings.isCompassEnabled = true
-        setStyle(mMap!!)
+        googleMap.uiSettings.isMyLocationButtonEnabled = false
+        googleMap.uiSettings.isCompassEnabled = true
+        setStyle(googleMap)
         setMyLocation()
-        mMap!!.setOnMapClickListener(onMapClickListener)
+        googleMap.setOnMapClickListener(onMapClickListener)
         setOnMarkerClick(onMarkerClickListener)
         if (lastPos != null) {
             addMarker(lastPos, lastPos!!.toString(), true, false, markerRadius)
         }
-        if (mCallback != null) {
-            mCallback!!.onMapReady()
-        }
+        mCallback?.onMapReady()
     }
 
     private val isMarkersVisible: Boolean
@@ -130,22 +128,22 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
 
     fun addMarker(pos: LatLng?, title: String?, clear: Boolean, animate: Boolean, radius: Int) {
         var title = title
-        if (mMap != null) {
+        if (mMap != null && pos != null) {
             markerRadius = radius
             if (markerRadius == -1)
                 markerRadius = prefs.radius
-            if (clear) mMap!!.clear()
-            if (title == null || title.matches("".toRegex())) title = pos!!.toString()
+            if (clear) mMap?.clear()
+            if (title == null || title.matches("".toRegex())) title = pos.toString()
             if (!Module.isPro) markerStyle = 5
             lastPos = pos
-            if (mListener != null) mListener!!.placeChanged(pos!!, title)
-            mMap!!.addMarker(MarkerOptions()
-                    .position(pos!!)
+            mListener?.placeChanged(pos, title)
+            mMap?.addMarker(MarkerOptions()
+                    .position(pos)
                     .title(title)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
-            mMap!!.addCircle(CircleOptions()
+            mMap?.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
@@ -165,17 +163,17 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             }
             if (!Module.isPro) markerStyle = 5
             this.markerStyle = markerStyle
-            if (clear) mMap!!.clear()
+            if (clear) mMap?.clear()
             if (title == null || title.matches("".toRegex())) title = pos.toString()
             lastPos = pos
-            if (mListener != null) mListener!!.placeChanged(pos, title)
-            mMap!!.addMarker(MarkerOptions()
+            mListener?.placeChanged(pos, title)
+            mMap?.addMarker(MarkerOptions()
                     .position(pos)
                     .title(title)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(clear))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
-            mMap!!.addCircle(CircleOptions()
+            mMap?.addCircle(CircleOptions()
                     .center(pos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
@@ -194,18 +192,18 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (markerRadius == -1)
             markerRadius = prefs.radius
         if (mMap != null && lastPos != null) {
-            mMap!!.clear()
+            mMap?.clear()
             if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
-            if (mListener != null) mListener!!.placeChanged(lastPos!!, markerTitle)
+            mListener?.placeChanged(lastPos!!, markerTitle)
             if (!Module.isPro) markerStyle = 5
-            mMap!!.addMarker(MarkerOptions()
+            mMap?.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
                     .draggable(true))
             val marker = themeUtil.getMarkerRadiusStyle(markerStyle)
-            mMap!!.addCircle(CircleOptions()
+            mMap?.addCircle(CircleOptions()
                     .center(lastPos)
                     .radius(markerRadius.toDouble())
                     .strokeWidth(strokeWidth)
@@ -218,12 +216,12 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     private fun recreateStyle(style: Int) {
         markerStyle = style
         if (mMap != null && lastPos != null) {
-            mMap!!.clear()
+            mMap?.clear()
             if (markerTitle == "" || markerTitle.matches("".toRegex()))
                 markerTitle = lastPos!!.toString()
-            if (mListener != null) mListener!!.placeChanged(lastPos!!, markerTitle)
+            mListener?.placeChanged(lastPos!!, markerTitle)
             if (!Module.isPro) markerStyle = 5
-            mMap!!.addMarker(MarkerOptions()
+            mMap?.addMarker(MarkerOptions()
                     .position(lastPos!!)
                     .title(markerTitle)
                     .icon(getDescriptor(themeUtil.getMarkerStyle(markerStyle)))
@@ -233,7 +231,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
                 if (markerRadius == -1) {
                     markerRadius = prefs.radius
                 }
-                mMap!!.addCircle(CircleOptions()
+                mMap?.addCircle(CircleOptions()
                         .center(lastPos)
                         .radius(markerRadius.toDouble())
                         .strokeWidth(strokeWidth)
@@ -247,13 +245,13 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     fun moveCamera(pos: LatLng, i1: Int, i2: Int, i3: Int, i4: Int) {
         if (mMap != null) {
             animate(pos)
-            mMap!!.setPadding(i1, i2, i3, i4)
+            mMap?.setPadding(i1, i2, i3, i4)
         }
     }
 
     private fun animate(latLng: LatLng) {
         val update = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
-        if (mMap != null) mMap!!.animateCamera(update)
+        mMap?.animateCamera(update)
     }
 
     private fun moveToMyLocation() {
@@ -362,9 +360,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
             val lon = sel.longitude
             val pos = LatLng(lat, lon)
             addMarker(pos, markerTitle, true, true, markerRadius)
-            if (mListener != null) {
-                mListener!!.placeChanged(pos, getFormattedAddress(sel))
-            }
+            mListener?.placeChanged(pos, getFormattedAddress(sel))
         }
         initPlacesViewModel()
     }
@@ -380,12 +376,12 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
 
     fun setOnMarkerClick(onMarkerClickListener: GoogleMap.OnMarkerClickListener?) {
         this.onMarkerClickListener = onMarkerClickListener
-        if (mMap != null) mMap!!.setOnMarkerClickListener(onMarkerClickListener)
+        mMap?.setOnMarkerClickListener(onMarkerClickListener)
     }
 
     fun setOnMapClickListener(onMapClickListener: GoogleMap.OnMapClickListener) {
         this.onMapClickListener = onMapClickListener
-        if (mMap != null) mMap!!.setOnMapClickListener(onMapClickListener)
+        mMap?.setOnMapClickListener(onMapClickListener)
     }
 
     private fun getFormattedAddress(address: Address): String {
@@ -498,7 +494,7 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (!Permissions.checkPermission(context!!, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
             Permissions.requestPermission(activity!!, 205, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)
         } else {
-            mMap!!.isMyLocationEnabled = true
+            mMap?.isMyLocationEnabled = true
         }
     }
 
@@ -520,9 +516,9 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
         if (places.isEmpty()) {
             placesCard.visibility = View.GONE
             placesList.visibility = View.GONE
-            emptyItem!!.visibility = View.VISIBLE
+            emptyItem?.visibility = View.VISIBLE
         } else {
-            emptyItem!!.visibility = View.GONE
+            emptyItem?.visibility = View.GONE
             placesCard.visibility = View.VISIBLE
             placesList.visibility = View.VISIBLE
             addMarkers(places)
@@ -612,28 +608,28 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
     }
 
     override fun onResume() {
-        mapView.onResume()
+        mapView?.onResume()
         super.onResume()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        mapView?.onLowMemory()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        mapView?.onDestroy()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        mapView?.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
+        mapView?.onStop()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -664,17 +660,15 @@ class AdvancedMapFragment : BaseMapFragment(), View.OnClickListener {
                 hideLayers()
                 moveToMyLocation()
             }
-            R.id.typeNormal -> setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
-            R.id.typeHybrid -> setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
-            R.id.typeSatellite -> setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
-            R.id.typeTerrain -> setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
+            R.id.typeNormal -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_NORMAL) { this.hideLayers() }
+            R.id.typeHybrid -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_HYBRID) { this.hideLayers() }
+            R.id.typeSatellite -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_SATELLITE) { this.hideLayers() }
+            R.id.typeTerrain -> if (mMap != null) setMapType(mMap!!, GoogleMap.MAP_TYPE_TERRAIN) { this.hideLayers() }
             R.id.places -> togglePlaces()
             R.id.markers -> toggleMarkers()
             R.id.backButton -> {
                 restoreScaleButton()
-                if (mListener != null) {
-                    mListener!!.onBackClick()
-                }
+                mListener?.onBackClick()
             }
         }
     }
