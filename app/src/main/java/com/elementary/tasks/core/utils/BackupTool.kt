@@ -461,7 +461,7 @@ class BackupTool private constructor() {
     fun createNote(item: Note?, callback: CreateCallback?) {
         if (item == null) return
         val jsonData = WeakReference(Gson().toJson(item))
-        var file: File? = null
+        val file: File
         val dir = MemoryUtil.mailDir
         if (dir != null) {
             val exportFileName = item.key + FileConfig.FILE_NAME_NOTE
@@ -469,14 +469,13 @@ class BackupTool private constructor() {
             try {
                 writeFile(file, jsonData.get())
                 jsonData.clear()
-            } catch (e: IOException) {
+                callback?.onReady(file)
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         } else {
             LogUtil.i(TAG, "Couldn't find external storage!")
         }
-        callback?.onReady(file)
     }
 
     @Throws(IOException::class)
@@ -485,6 +484,8 @@ class BackupTool private constructor() {
         try {
             inputStream = cr.openInputStream(name)
         } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: SecurityException) {
             e.printStackTrace()
         }
 
@@ -513,24 +514,28 @@ class BackupTool private constructor() {
 
     @Throws(IOException::class)
     private fun readFileToJson(path: String): String {
-        val inputStream = FileInputStream(path)
-        val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
-        val r = BufferedReader(InputStreamReader(output64))
-        val total = StringBuilder()
-        var line: String?
-        do {
-            line = r.readLine()
-            if (line != null) {
-                total.append(line)
+        try {
+            val inputStream = FileInputStream(path)
+            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+            val r = BufferedReader(InputStreamReader(output64))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            output64.close()
+            inputStream.close()
+            val res = total.toString()
+            return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
+                res
+            else {
+                throw IOException("Bad JSON")
             }
-        } while (line != null)
-        output64.close()
-        inputStream.close()
-        val res = total.toString()
-        return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
-            res
-        else {
-            throw IOException("Bad JSON")
+        } catch (e: Exception) {
+            throw IOException("No write permission")
         }
     }
 
@@ -545,31 +550,35 @@ class BackupTool private constructor() {
     @Throws(IOException::class)
     private fun writeFile(file: File, data: String?): String? {
         if (data == null) return null
-        val inputStream = ByteArrayInputStream(data.toByteArray())
-        val buffer = ByteArray(8192)
-        var bytesRead: Int
-        val output = ByteArrayOutputStream()
-        val output64 = Base64OutputStream(output, Base64.DEFAULT)
         try {
-            do {
-                bytesRead = inputStream.read(buffer)
-                if (bytesRead != -1) {
-                    output64.write(buffer, 0, bytesRead)
-                }
-            } while (bytesRead != -1)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+            val inputStream = ByteArrayInputStream(data.toByteArray())
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            val output = ByteArrayOutputStream()
+            val output64 = Base64OutputStream(output, Base64.DEFAULT)
+            try {
+                do {
+                    bytesRead = inputStream.read(buffer)
+                    if (bytesRead != -1) {
+                        output64.write(buffer, 0, bytesRead)
+                    }
+                } while (bytesRead != -1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
 
-        output64.close()
+            output64.close()
 
-        if (file.exists()) {
-            file.delete()
+            if (file.exists()) {
+                file.delete()
+            }
+            val fw = FileWriter(file)
+            fw.write(output.toString())
+            fw.close()
+            output.close()
+        } catch (e: SecurityException) {
+            return null
         }
-        val fw = FileWriter(file)
-        fw.write(output.toString())
-        fw.close()
-        output.close()
         return file.toString()
     }
 

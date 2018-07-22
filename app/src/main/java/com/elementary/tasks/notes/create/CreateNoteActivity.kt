@@ -130,7 +130,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             if (res != null && res.size > 0) {
                 setText(StringUtils.capitalize(res[0].toString().toLowerCase()))
             }
-            LogUtil.d(TAG, "onResults: " + res!!)
+            LogUtil.d(TAG, "onResults: $res")
             releaseSpeech()
         }
 
@@ -139,7 +139,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             if (res != null && res.size > 0) {
                 setText(res[0].toString().toLowerCase())
             }
-            LogUtil.d(TAG, "onPartialResults: " + res!!)
+            LogUtil.d(TAG, "onPartialResults: $res")
         }
 
         override fun onEvent(i: Int, bundle: Bundle) {
@@ -237,13 +237,13 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun micClick() {
+        if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
+            Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
+            return
+        }
         if (speech != null) {
             hideRecording()
             releaseSpeech()
-            return
-        }
-        if (!Permissions.checkPermission(this, Permissions.RECORD_AUDIO)) {
-            Permissions.requestPermission(this, AUDIO_CODE, Permissions.RECORD_AUDIO)
             return
         }
         initRecognizer()
@@ -345,11 +345,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         setSupportActionBar(toolbar)
         task_message.textSize = (prefs.noteTextSize + 12).toFloat()
         if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(false)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayShowHomeEnabled(true)
-            supportActionBar!!.elevation = 0f
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setHomeButtonEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            supportActionBar?.elevation = 0f
         }
         appBar.visibility = View.VISIBLE
     }
@@ -435,7 +435,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun hideProgress() {
         if (mProgress != null && mProgress!!.isShowing) {
-            mProgress!!.dismiss()
+            mProgress?.dismiss()
         }
     }
 
@@ -444,6 +444,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun shareNote() {
+        if (!Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            Permissions.requestPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+            return
+        }
         createObject()
         showProgress()
         val callback = object : BackupTool.CreateCallback {
@@ -456,6 +460,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private fun sendNote(file: File) {
         hideProgress()
+        if (isFinishing) return
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
             return
@@ -481,7 +486,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun createObject(): Boolean {
-        val note = task_message.text!!.toString().trim { it <= ' ' }
+        val note = task_message.text.toString().trim { it <= ' ' }
         val images = mAdapter.data
         if (TextUtils.isEmpty(note) && images.isEmpty()) {
             task_message.error = getString(R.string.must_be_not_empty)
@@ -490,11 +495,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         if (mItem == null) {
             mItem = Note()
         }
-        mItem!!.summary = note
-        mItem!!.date = TimeUtil.gmtDateTime
-        mItem!!.images = images
-        mItem!!.color = mColor
-        mItem!!.style = mFontStyle
+        mItem?.summary = note
+        mItem?.date = TimeUtil.gmtDateTime
+        mItem?.images = images
+        mItem?.color = mColor
+        mItem?.style = mFontStyle
         return true
     }
 
@@ -504,14 +509,17 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         }
         val hasReminder = isReminderAttached
         if (!hasReminder && mItem != null) removeNoteFromReminder()
-        viewModel.saveNote(mItem!!)
-        if (hasReminder) {
-            val calendar = Calendar.getInstance()
-            calendar.set(mYear, mMonth, mDay, mHour, mMinute)
-            createReminder(mItem!!.key, calendar)
+        val note = mItem
+        if (note != null) {
+            viewModel.saveNote(note)
+            if (hasReminder) {
+                val calendar = Calendar.getInstance()
+                calendar.set(mYear, mMonth, mDay, mHour, mMinute)
+                createReminder(note.key, calendar)
+            }
+            UpdatesHelper.getInstance(this).updateNotesWidget()
+            finish()
         }
-        UpdatesHelper.getInstance(this).updateNotesWidget()
-        finish()
     }
 
     private fun createReminder(key: String, calendar: Calendar) {
@@ -736,6 +744,9 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             AUDIO_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 micClick()
             }
+            SEND_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                shareNote()
+            }
         }
     }
 
@@ -757,5 +768,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         const val MENU_ITEM_DELETE = 12
         private const val EDIT_CODE = 11223
         private const val AUDIO_CODE = 255000
+        private const val SEND_CODE = 25501
     }
 }

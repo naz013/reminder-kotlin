@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.Spinner
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
@@ -17,8 +16,7 @@ import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboEditText
 import com.elementary.tasks.core.views.roboto.RoboTextView
-
-import java.util.Calendar
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,9 +44,10 @@ class RepeatView : LinearLayout, TextWatcher {
     private val days = 3
     private val weeks = 4
 
-    private var mPredictionView: LinearLayout? = null
-    private var mEventView: RoboTextView? = null
-    private var mRepeatInput: RoboEditText? = null
+    private lateinit var mPredictionView: LinearLayout
+    private lateinit var mEventView: RoboTextView
+    private lateinit var mRepeatInput: RoboEditText
+    private lateinit var mRepeatType: Spinner
     private var mRepeatListener: OnRepeatListener? = null
     private var mImm: InputMethodManager? = null
 
@@ -83,23 +82,19 @@ class RepeatView : LinearLayout, TextWatcher {
 
     private val multiplier: Long
         get() {
-            if (mState == seconds)
-                return TimeCount.SECOND
-            else if (mState == minutes)
-                return TimeCount.MINUTE
-            else if (mState == hours)
-                return TimeCount.HOUR
-            else if (mState == days)
-                return TimeCount.DAY
-            else if (mState == weeks) return TimeCount.DAY * 7
-            return TimeCount.DAY
+            return when (mState) {
+                seconds -> TimeCount.SECOND
+                minutes -> TimeCount.MINUTE
+                hours -> TimeCount.HOUR
+                days -> TimeCount.DAY
+                weeks -> TimeCount.DAY * 7
+                else -> TimeCount.DAY
+            }
         }
 
     var repeat: Long
         get() {
-            val rep = mRepeatValue * multiplier
-            LogUtil.d(TAG, "getRepeat: $rep")
-            return rep
+            return mRepeatValue * multiplier
         }
         set(mills) {
             if (mills == 0L) {
@@ -107,33 +102,37 @@ class RepeatView : LinearLayout, TextWatcher {
                 return
             }
             when {
-                mills % (TimeCount.DAY * 7) == 0L -> {
+                fitInterval(mills, TimeCount.DAY * 7) -> {
                     val progress = mills / (TimeCount.DAY * 7)
                     setProgress(progress.toInt())
-                    setState(weeks)
+                    mRepeatType.setSelection(weeks)
                 }
-                mills % TimeCount.DAY == 0L -> {
+                fitInterval(mills, TimeCount.DAY) -> {
                     val progress = mills / TimeCount.DAY
                     setProgress(progress.toInt())
-                    setState(days)
+                    mRepeatType.setSelection(days)
                 }
-                mills % TimeCount.HOUR == 0L -> {
+                fitInterval(mills, TimeCount.HOUR) -> {
                     val progress = mills / TimeCount.HOUR
                     setProgress(progress.toInt())
-                    setState(hours)
+                    mRepeatType.setSelection(hours)
                 }
-                mills % TimeCount.MINUTE == 0L -> {
+                fitInterval(mills, TimeCount.MINUTE) -> {
                     val progress = mills / TimeCount.MINUTE
                     setProgress(progress.toInt())
-                    setState(minutes)
+                    mRepeatType.setSelection(minutes)
                 }
-                mills % TimeCount.SECOND == 0L -> {
+                fitInterval(mills, TimeCount.SECOND) -> {
                     val progress = mills / TimeCount.SECOND
                     setProgress(progress.toInt())
-                    setState(seconds)
+                    mRepeatType.setSelection(seconds)
                 }
             }
         }
+
+    private fun fitInterval(interval: Long, matcher: Long): Boolean {
+        return interval > matcher && (interval % matcher == 0L)
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -154,7 +153,7 @@ class RepeatView : LinearLayout, TextWatcher {
         mRepeatInput = findViewById(R.id.repeatTitle)
         mEventView = findViewById(R.id.eventView)
         mPredictionView = findViewById(R.id.predictionView)
-        val mRepeatType = findViewById<Spinner>(R.id.repeatType)
+        mRepeatType = findViewById(R.id.repeatType)
         mRepeatType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 setState(i)
@@ -164,23 +163,23 @@ class RepeatView : LinearLayout, TextWatcher {
 
             }
         }
-        mRepeatInput!!.addTextChangedListener(this)
-        mRepeatInput!!.setOnFocusChangeListener { _, hasFocus ->
+        mRepeatInput.addTextChangedListener(this)
+        mRepeatInput.setOnFocusChangeListener { _, hasFocus ->
             if (mImm == null) return@setOnFocusChangeListener
             if (!hasFocus) {
-                mImm!!.hideSoftInputFromWindow(mRepeatInput!!.windowToken, 0)
+                mImm?.hideSoftInputFromWindow(mRepeatInput.windowToken, 0)
             } else {
-                mImm!!.showSoftInput(mRepeatInput, 0)
+                mImm?.showSoftInput(mRepeatInput, 0)
             }
         }
-        mRepeatInput!!.setOnClickListener {
+        mRepeatInput.setOnClickListener {
             if (mImm == null) return@setOnClickListener
             if (!mImm!!.isActive(mRepeatInput)) {
-                mImm!!.showSoftInput(mRepeatInput, 0)
+                mImm?.showSoftInput(mRepeatInput, 0)
             }
         }
         mRepeatValue = 0
-        mRepeatInput!!.setText(mRepeatValue.toString())
+        mRepeatInput.setText(mRepeatValue.toString())
         if (attrs != null) {
             val a = context.theme.obtainStyledAttributes(attrs, R.styleable.RepeatView, 0, 0)
             try {
@@ -215,23 +214,24 @@ class RepeatView : LinearLayout, TextWatcher {
         calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0)
         val is24 = Prefs.getInstance(context).is24HourFormatEnabled
         if (showPrediction) {
-            mPredictionView!!.visibility = View.VISIBLE
-            mEventView!!.text = TimeUtil.getFullDateTime(calendar.timeInMillis + progress * multiplier, is24, false)
+            mPredictionView.visibility = View.VISIBLE
+            mEventView.text = TimeUtil.getFullDateTime(calendar.timeInMillis + progress * multiplier, is24, false)
         } else {
-            mPredictionView!!.visibility = View.INVISIBLE
+            mPredictionView.visibility = View.INVISIBLE
         }
     }
 
     fun enablePrediction(enable: Boolean) {
         if (enable) {
-            mPredictionView!!.visibility = View.VISIBLE
+            mPredictionView.visibility = View.VISIBLE
         } else {
-            mPredictionView!!.visibility = View.INVISIBLE
+            mPredictionView.visibility = View.INVISIBLE
         }
         this.showPrediction = enable
     }
 
     private fun setState(state: Int) {
+        if (mState == state) return
         this.mState = state
         updatePrediction(mRepeatValue)
     }
@@ -241,12 +241,12 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     private fun updateEditField() {
-        mRepeatInput!!.setSelection(mRepeatInput!!.text!!.length)
+        mRepeatInput.setSelection(mRepeatInput.text.toString().length)
     }
 
     private fun setProgress(i: Int) {
         mRepeatValue = i
-        mRepeatInput!!.setText(i.toString())
+        mRepeatInput.setText(i.toString())
         updateEditField()
     }
 
@@ -257,15 +257,13 @@ class RepeatView : LinearLayout, TextWatcher {
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         try {
             mRepeatValue = Integer.parseInt(s.toString())
-            if (mRepeatListener != null) mRepeatListener!!.onProgress(mRepeatValue)
+            mRepeatListener?.onProgress(mRepeatValue)
         } catch (e: NumberFormatException) {
-            mRepeatInput!!.setText("0")
+            mRepeatInput.setText("0")
         }
-
     }
 
     override fun afterTextChanged(s: Editable) {
-
     }
 
     interface OnRepeatListener {
@@ -273,7 +271,6 @@ class RepeatView : LinearLayout, TextWatcher {
     }
 
     companion object {
-
         private const val TAG = "RepeatView"
     }
 }

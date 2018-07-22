@@ -2,6 +2,7 @@ package com.elementary.tasks.notes.preview
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -217,6 +218,10 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun shareNote() {
+        if (!Permissions.checkPermission(this, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)) {
+            Permissions.requestPermission(this, SEND_CODE, Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL)
+            return
+        }
         showProgress()
         Thread { BackupTool.getInstance().createNote(mNote, object : BackupTool.CreateCallback {
             override fun onReady(file: File?) {
@@ -227,6 +232,7 @@ class NotePreviewActivity : ThemedActivity() {
 
     private fun sendNote(file: File) {
         hideProgress()
+        if (isFinishing) return
         if (!file.exists() || !file.canRead()) {
             Toast.makeText(this, getString(R.string.error_sending), Toast.LENGTH_SHORT).show()
             return
@@ -305,8 +311,19 @@ class NotePreviewActivity : ThemedActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (grantResults.isEmpty()) return
+        when (requestCode) {
+            SEND_CODE -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                shareNote()
+            }
+        }
+    }
+
     companion object {
 
         const val PREVIEW_IMAGES = "preview_image_key"
+        private const val SEND_CODE = 25501
     }
 }

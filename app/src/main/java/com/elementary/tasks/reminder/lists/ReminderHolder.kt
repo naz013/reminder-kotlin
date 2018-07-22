@@ -114,8 +114,8 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         itemView.taskDate.text = TimeUtil.getRealDateTime(model.eventTime, model.delay, is24)
     }
 
-    private fun loadCheck(item: Reminder) {
-        if (item.isRemoved) {
+    private fun loadCheck(item: Reminder?) {
+        if (item == null || item.isRemoved) {
             itemView.itemCheck.visibility = View.GONE
             return
         }

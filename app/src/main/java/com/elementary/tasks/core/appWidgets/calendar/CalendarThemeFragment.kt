@@ -2,6 +2,7 @@ package com.elementary.tasks.core.appWidgets.calendar
 
 import android.content.Context
 import android.graphics.Color
+import android.os.BadParcelableException
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -48,9 +49,12 @@ class CalendarThemeFragment : BaseNavigationFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val intent = arguments
-        pageNumber = intent!!.getInt(ARGUMENT_PAGE_NUMBER)
-        val list = intent.getParcelableArrayList<CalendarTheme>(ARGUMENT_DATA)
-        if (list != null) this.list = list
+        try {
+            pageNumber = intent!!.getInt(ARGUMENT_PAGE_NUMBER)
+            val list = intent.getParcelableArrayList<CalendarTheme>(ARGUMENT_DATA)
+            if (list != null) this.list = list
+        } catch (e: BadParcelableException) {
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

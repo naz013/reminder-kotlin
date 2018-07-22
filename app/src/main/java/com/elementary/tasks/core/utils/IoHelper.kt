@@ -1,11 +1,8 @@
 package com.elementary.tasks.core.utils
 
 import android.content.Context
-
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
-
-import java.io.IOException
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -51,12 +48,11 @@ class IoHelper(private val mContext: Context) {
             mDropbox.uploadSettings()
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.saveSettingsToDrive()
+                    mDrive.drive?.saveSettingsToDrive()
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -68,7 +64,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadGroups()
             if (mDrive?.drive != null) {
-                mDrive.drive!!.saveGroupsToDrive()
+                try {
+                    mDrive.drive?.saveGroupsToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -79,22 +78,18 @@ class IoHelper(private val mContext: Context) {
     fun restoreGroup(delete: Boolean) {
         try {
             BackupTool.getInstance().importGroups()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadGroups(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadGroups(delete)
+                    mDrive.drive?.downloadGroups(delete)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -106,7 +101,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadReminderByFileName(null)
             if (mDrive?.drive != null) {
-                mDrive.drive!!.saveRemindersToDrive()
+                try {
+                    mDrive.drive?.saveRemindersToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -117,24 +115,18 @@ class IoHelper(private val mContext: Context) {
     fun restoreReminder(delete: Boolean) {
         try {
             BackupTool.getInstance().importReminders(mContext)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadReminders(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadReminders(mContext, delete)
+                    mDrive.drive?.downloadReminders(mContext, delete)
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: IllegalStateException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -146,7 +138,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadNotes()
             if (mDrive?.drive != null) {
-                mDrive.drive!!.saveNotesToDrive()
+                try {
+                    mDrive.drive?.saveNotesToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -157,22 +152,18 @@ class IoHelper(private val mContext: Context) {
     fun restoreNote(delete: Boolean) {
         try {
             BackupTool.getInstance().importNotes()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadNotes(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadNotes(delete)
+                    mDrive.drive?.downloadNotes(delete)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -184,7 +175,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadBirthdays()
             if (mDrive?.drive != null) {
-                mDrive.drive!!.saveBirthdaysToDrive()
+                try {
+                    mDrive.drive?.saveBirthdaysToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -195,22 +189,18 @@ class IoHelper(private val mContext: Context) {
     fun restoreBirthday(delete: Boolean) {
         try {
             BackupTool.getInstance().importBirthdays()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadBirthdays(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadBirthdays(delete)
+                    mDrive.drive?.downloadBirthdays(delete)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -222,7 +212,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadPlaces()
             if (mDrive?.drive != null) {
-                mDrive.drive!!.savePlacesToDrive()
+                try {
+                    mDrive.drive?.savePlacesToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -233,22 +226,18 @@ class IoHelper(private val mContext: Context) {
     fun restorePlaces(delete: Boolean) {
         try {
             BackupTool.getInstance().importPlaces()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadPlaces(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadPlaces(delete)
+                    mDrive.drive?.downloadPlaces(delete)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -260,7 +249,10 @@ class IoHelper(private val mContext: Context) {
         if (isConnected) {
             mDropbox.uploadTemplates()
             if (mDrive?.drive != null) {
-                mDrive.drive!!.saveTemplatesToDrive()
+                try {
+                    mDrive.drive?.saveTemplatesToDrive()
+                } catch (e: Exception) {
+                }
             }
         }
     }
@@ -271,22 +263,18 @@ class IoHelper(private val mContext: Context) {
     fun restoreTemplates(delete: Boolean) {
         try {
             BackupTool.getInstance().importTemplates()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-
         if (isConnected) {
             mDropbox.downloadTemplates(delete)
             try {
                 if (mDrive?.drive != null) {
-                    mDrive.drive!!.downloadTemplates(delete)
+                    mDrive.drive?.downloadTemplates(delete)
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
     }
 }

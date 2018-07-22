@@ -2,6 +2,7 @@ package com.elementary.tasks.core.utils
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ContentValues
 import android.content.Intent
@@ -70,7 +71,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
         val chooser = Intent.createChooser(intent, activity.getString(R.string.gallery))
-        activity.startActivityForResult(chooser, PICK_FROM_GALLERY)
+        try {
+            activity.startActivityForResult(chooser, PICK_FROM_GALLERY)
+        } catch (e: ActivityNotFoundException) {
+            checkSdPermission(REQUEST_SD_CARD)
+        }
     }
 
     private fun checkSdPermission(code: Int): Boolean {
@@ -115,7 +120,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
                 val photoFile = createImageFile()
                 imageUri = UriUtil.getUri(activity, photoFile)
                 pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-                activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
+                try {
+                    activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
+                } catch (e: ActivityNotFoundException) {
+                    checkCameraPermission(REQUEST_CAMERA)
+                }
             }
         } else {
             val values = ContentValues()
@@ -123,8 +132,11 @@ class PhotoSelectionUtil(private val activity: Activity, private val mCallback: 
             values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera")
             imageUri = activity.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-            activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
-
+            try {
+                activity.startActivityForResult(pictureIntent, PICK_FROM_CAMERA)
+            } catch (e: ActivityNotFoundException) {
+                checkCameraPermission(REQUEST_CAMERA)
+            }
         }
     }
 

@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
@@ -68,9 +66,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             return position
         }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_events_import, container, false)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_events_import
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -118,7 +114,19 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
         AlarmReceiver().enableEventCheck(context!!)
     }
 
+    private fun checkWriteCalendarPerm(): Boolean {
+        if (Permissions.checkPermission(activity!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
+            return true
+        } else {
+            Permissions.requestPermission(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR);
+            return false
+        }
+    }
+
     private fun loadCalendars() {
+        if (!checkCalendarPerm()) {
+            return
+        }
         list = CalendarUtils.getCalendarsList(context!!)
         if (list.isEmpty()) {
             Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
@@ -136,9 +144,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
 
     override fun onResume() {
         super.onResume()
-        if (checkCalendarPerm()) {
-            loadCalendars()
-        }
+        loadCalendars()
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.import_events))
             callback?.onFragmentSelect(this)
@@ -156,15 +162,12 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.button -> if (Permissions.checkPermission(context!!, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-                importEvents()
-            } else {
-                Permissions.requestPermission(activity!!, 102, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)
-            }
+            R.id.button -> importEvents()
         }
     }
 
     private fun importEvents() {
+        if (!checkWriteCalendarPerm()) return
         if (list.isEmpty()) {
             Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
             return

@@ -60,7 +60,11 @@ object TimeUtil {
     val gmtDateTime: String
         get() {
             GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-            return GMT_DATE_FORMAT.format(Date())
+            return try {
+                GMT_DATE_FORMAT.format(Date())
+            } catch (e: Exception) {
+                ""
+            }
         }
 
     fun getFireFormatted(context: Context, gmt: String?): String? {
@@ -203,7 +207,11 @@ object TimeUtil {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = date
         GMT_DATE_FORMAT.timeZone = TimeZone.getTimeZone(GMT)
-        return GMT_DATE_FORMAT.format(calendar.time)
+        return try {
+            GMT_DATE_FORMAT.format(calendar.time)
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     fun getDateTimeFromGmt(dateTime: String?): Long {
@@ -433,10 +441,10 @@ object TimeUtil {
         val minutes = (time - hours * h) / m
         val seconds = (time - hours * h - minutes * m) / s
         val hourStr: String
-        if (hours < 10) {
-            hourStr = "0$hours"
+        hourStr = if (hours < 10) {
+            "0$hours"
         } else {
-            hourStr = hours.toString()
+            hours.toString()
         }
         val minuteStr: String
         minuteStr = if (minutes < 10) {

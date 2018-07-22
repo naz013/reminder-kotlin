@@ -38,10 +38,12 @@ class CropFragment : BitmapFragment() {
         get() {
             val cropped = cropImageView.croppedImage
             val outputStream = ByteArrayOutputStream()
-            cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             val item = ImageSingleton.getInstance().item
-            if (item != null) {
-                item.image = outputStream.toByteArray()
+            if (cropped != null) {
+                cropped.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                if (item != null) {
+                    item.image = outputStream.toByteArray()
+                }
             }
             return item
         }

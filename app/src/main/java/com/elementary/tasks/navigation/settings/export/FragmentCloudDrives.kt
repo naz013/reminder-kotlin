@@ -70,7 +70,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     private fun showErrorDialog() {
         val builder = Dialogues.getDialog(context!!)
         builder.setMessage(getString(R.string.failed_to_login))
-        builder.setPositiveButton(R.string.ok) { dialogInterface, i -> dialogInterface.dismiss() }
+        builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
     }
 
@@ -129,6 +129,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             103 -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -174,8 +175,8 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun finishSync() {
-        if (mDialog != null && mDialog!!.isShowing) mDialog!!.dismiss()
+        if (mDialog != null && mDialog!!.isShowing) mDialog?.dismiss()
         checkGoogleStatus()
-        if (callback != null) callback!!.refreshMenu()
+        if (callback != null) callback?.refreshMenu()
     }
 }

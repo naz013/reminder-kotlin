@@ -1,4 +1,4 @@
-package com.elementary.tasks.missed_calls
+package com.elementary.tasks.missedCalls
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -225,6 +225,7 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isEmpty()) return
         when (requestCode) {
             CALL_PERM -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -261,16 +262,16 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
         if (Module.isLollipop) {
             builder.color = ViewUtils.getColor(this, R.color.bluePrimary)
         }
-        if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this) || SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)) {
+        if (sound != null && !isScreenResumed && (!SuperUtil.isDoNotDisturbEnabled(this)
+                        || SuperUtil.checkNotificationPermission(this) && prefs.isSoundInSilentModeEnabled)) {
             val soundUri = soundUri
-            sound!!.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
+            sound?.playAlarm(soundUri, prefs.isInfiniteSoundEnabled)
         }
         if (isVibrate) {
-            val pattern: LongArray
-            if (prefs.isInfiniteVibrateEnabled) {
-                pattern = longArrayOf(150, 86400000)
+            val pattern: LongArray = if (prefs.isInfiniteVibrateEnabled) {
+                longArrayOf(150, 86400000)
             } else {
-                pattern = longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
+                longArrayOf(150, 400, 100, 450, 200, 500, 300, 500)
             }
             builder.setVibrate(pattern)
         }

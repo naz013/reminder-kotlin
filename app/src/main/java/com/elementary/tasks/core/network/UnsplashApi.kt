@@ -30,6 +30,6 @@ interface UnsplashApi {
 
     companion object {
 
-        const val BASE_URL = "https://unsplash.it"
+        const val BASE_URL = "https://picsum.photos"
     }
 }
