@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.async.BackupSettingTask
 import com.elementary.tasks.core.cloud.Google
@@ -43,11 +44,27 @@ import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedListener, FragmentCallback,
-        RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver {
+        RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
+    override fun invoke(view: View, action: GlobalButtonObservable.Action) {
+        if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
+            if (mNoteView != null) {
+                if (mNoteView!!.isNoteVisible) {
+                    mNoteView?.hideNoteView()
+                }
+            }
+        } else if (action == GlobalButtonObservable.Action.VOICE) {
+            SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false)
+        }
+    }
+
+    @Inject
+    lateinit var remotePrefs: RemotePrefs
+    @Inject
+    lateinit var buttonObservable: GlobalButtonObservable
 
     private var fragment: Fragment? = null
     private var mNoteView: QuickNoteCoordinator? = null
@@ -79,6 +96,10 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override val isFiltersVisible: Boolean
         get() = filterView.visibility == View.VISIBLE
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,6 +173,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     override fun onResume() {
         super.onResume()
+        buttonObservable.addObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
+        buttonObservable.addObserver(GlobalButtonObservable.Action.VOICE, this)
         if (prefs.isUiChanged) {
             prefs.isUiChanged = false
             recreate()
@@ -163,22 +186,24 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             showRateDialog()
         }
         showMainImage()
-        RemotePrefs.getInstance(this)?.addUpdateObserver(this)
+        remotePrefs.addUpdateObserver(this)
         if (!Module.isPro) {
-            RemotePrefs.getInstance(this)?.addSaleObserver(this)
+            remotePrefs.addSaleObserver(this)
         }
     }
 
     override fun onPause() {
         super.onPause()
+        buttonObservable.removeObserver(GlobalButtonObservable.Action.QUICK_NOTE, this)
+        buttonObservable.removeObserver(GlobalButtonObservable.Action.VOICE, this)
         if (!Module.isPro) {
-            RemotePrefs.getInstance(this)?.removeSaleObserver(this)
+            remotePrefs.removeSaleObserver(this)
         }
-        RemotePrefs.getInstance(this)?.removeUpdateObserver(this)
+        remotePrefs.removeUpdateObserver(this)
     }
 
     private fun showRateDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.rate)
         builder.setMessage(R.string.can_you_rate_this_application)
         builder.setPositiveButton(R.string.rate) { dialogInterface, _ ->
@@ -206,7 +231,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (!appVersion.contains("beta")) {
             return
         }
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle("Beta")
         builder.setMessage("This version of application may work unstable!")
         builder.setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.dismiss() }
@@ -239,6 +264,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         }
     }
 
+
+
     override fun onDestroy() {
         super.onDestroy()
         if (prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
@@ -257,24 +284,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
-        }
-    }
-
-    override fun setClick(listener: View.OnClickListener?) {
-        Timber.d("setClick: $listener")
-        if (listener == null) {
-            hideFab()
-        } else {
-            showFab()
-            fab.setOnClickListener { view ->
-                if (mNoteView != null) {
-                    if (mNoteView!!.isNoteVisible) {
-                        mNoteView?.hideNoteView()
-                        return@setOnClickListener
-                    }
-                }
-                listener.onClick(view)
-            }
         }
     }
 
@@ -327,10 +336,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         if (isFiltersVisible) {
             ViewUtils.collapse(filterView)
         }
-    }
-
-    override fun onVoiceAction() {
-        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false)
     }
 
     override fun onMenuSelect(menu: Int) {
@@ -402,18 +407,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         Toast.makeText(this, getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
     }
 
-    private fun showFab() {
-        if (fab.visibility != View.VISIBLE) {
-            fab.show()
-        }
-    }
-
-    private fun hideFab() {
-        if (fab.visibility == View.VISIBLE) {
-            fab.hide()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -478,7 +471,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     private fun showProDialog() {
-        Dialogues.getDialog(this)
+        dialogues.getDialog(this)
                 .setTitle(getString(R.string.buy_pro))
                 .setMessage(getString(R.string.pro_advantages) + "\n" +
                         getString(R.string.different_settings_for_birthdays) + "\n" +
@@ -498,7 +491,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onSale(discount: String, expiryDate: String) {
-        val expiry = TimeUtil.getFireFormatted(this, expiryDate)
+        val expiry = TimeUtil.getFireFormatted(prefs, expiryDate)
         val view = nav_view.getHeaderView(0)
         if (TextUtils.isEmpty(expiry)) {
             view.sale_badge.visibility = View.INVISIBLE

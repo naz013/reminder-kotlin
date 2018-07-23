@@ -34,13 +34,9 @@ interface FragmentCallback {
 
     fun onFragmentSelect(fragment: Fragment)
 
-    fun setClick(listener: View.OnClickListener?)
-
     fun onThemeChange(primary: Int, primaryDark: Int, accent: Int)
 
     fun refreshMenu()
-
-    fun onVoiceAction()
 
     fun onMenuSelect(menu: Int)
 

@@ -124,7 +124,7 @@ abstract class BaseNotificationActivity : ThemedActivity() {
     protected open val ttsLocale: Locale?
         get() {
             LogUtil.d(TAG, "getTtsLocale: ")
-            return Language().getLocale(this, false)
+            return language.getLocale(false)
         }
 
     protected open val soundUri: Uri

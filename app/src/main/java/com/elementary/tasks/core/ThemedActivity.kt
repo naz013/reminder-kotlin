@@ -2,14 +2,9 @@ package com.elementary.tasks.core
 
 import android.content.Context
 import android.os.Bundle
-
-import com.elementary.tasks.core.utils.Language
-import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
-
 import androidx.appcompat.app.AppCompatActivity
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.utils.*
 import javax.inject.Inject
 
 abstract class ThemedActivity : AppCompatActivity() {
@@ -18,6 +13,12 @@ abstract class ThemedActivity : AppCompatActivity() {
     lateinit var themeUtil: ThemeUtil
     @Inject
     lateinit var prefs: Prefs
+    @Inject
+    lateinit var language: Language
+    @Inject
+    lateinit var dialogues: Dialogues
+    @Inject
+    lateinit var notifier: Notifier
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -32,6 +33,6 @@ abstract class ThemedActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(Language.onAttach(newBase))
+        super.attachBaseContext(language.onAttach(newBase))
     }
 }
