@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Birthday
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.list_item_events.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -34,7 +36,10 @@ import kotlinx.android.synthetic.main.list_item_events.view.*
 class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
         RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_events, parent, false)) {
 
+    @Inject lateinit var prefs: Prefs
+
     init {
+        ReminderApp.appComponent.inject(this)
         if (Module.isLollipop) {
             itemView.itemCard.cardElevation = Configs.CARD_ELEVATION
         }
@@ -56,8 +61,8 @@ class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadBirthday(textView: RoboTextView, fullDate: String) {
-        val is24 = Prefs.getInstance(textView.context).is24HourFormatEnabled
-        val dateItem = TimeUtil.getFutureBirthdayDate(textView.context, fullDate)
+        val is24 = prefs.is24HourFormatEnabled
+        val dateItem = TimeUtil.getFutureBirthdayDate(prefs, fullDate)
         if (dateItem != null) {
             textView.text = SuperUtil.appendString(TimeUtil.getFullDateTime(dateItem.calendar.timeInMillis, is24, false),
                     "\n", TimeUtil.getAgeFormatted(textView.context, dateItem.year))

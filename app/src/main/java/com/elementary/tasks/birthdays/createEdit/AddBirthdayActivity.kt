@@ -11,26 +11,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
-
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.utils.BackupTool
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Contacts
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
-
+import kotlinx.android.synthetic.main.activity_add_birthday.*
 import java.io.IOException
 import java.text.ParseException
-import java.util.Calendar
-import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.core.viewModels.Commands
-import kotlinx.android.synthetic.main.activity_add_birthday.*
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -61,6 +56,8 @@ class AddBirthdayActivity : ThemedActivity() {
     private var mBirthday: Birthday? = null
     private var date: Long = 0
 
+    @Inject lateinit var backupTool: BackupTool
+
     private var myDateCallBack: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         myYear = year
         myMonth = monthOfYear
@@ -74,6 +71,10 @@ class AddBirthdayActivity : ThemedActivity() {
         } else
             myDay.toString()
         birthDate.text = SuperUtil.appendString(myYear.toString(), "-", monthStr, "-", dayStr)
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,9 +136,9 @@ class AddBirthdayActivity : ThemedActivity() {
                 val scheme = name!!.scheme
                 mBirthday = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getBirthday(cr, name)
+                    backupTool.getBirthday(cr, name)
                 } else {
-                    BackupTool.getInstance().getBirthday(name.path, null)
+                    backupTool.getBirthday(name.path, null)
                 }
                 showBirthday(mBirthday)
             } catch (e: IOException) {
@@ -256,7 +257,7 @@ class AddBirthdayActivity : ThemedActivity() {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, myDateCallBack, myYear, myMonth, myDay)
+        TimeUtil.showDatePicker(this, prefs, myDateCallBack, myYear, myMonth, myDay)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

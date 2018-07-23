@@ -71,9 +71,9 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
 
     override val ttsLocale: Locale?
         get() {
-            var locale = Language().getLocale(this, false)
+            var locale = language.getLocale(false)
             if (Module.isPro && !isGlobal) {
-                locale = Language().getLocale(this, true)
+                locale = language.getLocale(true)
             }
             return locale
         }

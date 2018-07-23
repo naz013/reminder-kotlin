@@ -10,8 +10,11 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.navigation.FragmentCallback
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,8 +38,12 @@ abstract class BaseFragment : Fragment() {
 
     var callback: FragmentCallback? = null
         private set
-    lateinit var prefs: Prefs
-        private set
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var dialogues: Dialogues
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -56,11 +63,6 @@ abstract class BaseFragment : Fragment() {
             } catch (e: ClassCastException) {
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        prefs = Prefs.getInstance(context!!)
     }
 
     protected fun replaceFragment(fragment: Fragment, title: String) {

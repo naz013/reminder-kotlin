@@ -6,8 +6,6 @@ import android.os.Bundle
 import com.elementary.tasks.core.async.EnableThread
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.groups.GroupsUtil
 import com.elementary.tasks.intro.IntroActivity
 import com.elementary.tasks.navigation.MainActivity
@@ -17,16 +15,16 @@ class SplashScreen : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initPrefs()
-        if (Prefs.getInstance(this).isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW)
+        if (prefs.isSbNotificationEnabled) {
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 
     private fun checkIfAppUpdated() {
         try {
             val info = packageManager.getPackageInfo(packageName, 0)
-            if (!Prefs.getInstance(this).getVersion(info.versionName)) {
-                Prefs.getInstance(this).saveVersionBoolean(info.versionName)
+            if (!prefs.getVersion(info.versionName)) {
+                prefs.saveVersionBoolean(info.versionName)
                 EnableThread(this).start()
             }
         } catch (e: PackageManager.NameNotFoundException) {
@@ -42,7 +40,7 @@ class SplashScreen : ThemedActivity() {
 
     private fun gotoApp() {
         checkIfAppUpdated()
-        if (!Prefs.getInstance(this).isUserLogged) {
+        if (!prefs.isUserLogged) {
             openIntroScreen()
         } else {
             initGroups()
@@ -62,7 +60,6 @@ class SplashScreen : ThemedActivity() {
     }
 
     private fun initPrefs() {
-        val prefs = Prefs.getInstance(this)
         prefs.initPrefs(this)
         prefs.checkPrefs()
     }

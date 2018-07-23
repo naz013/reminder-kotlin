@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.di
 
+import com.elementary.tasks.birthdays.BirthdayHolder
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
 import com.elementary.tasks.core.cloud.Google
@@ -10,6 +11,7 @@ import com.elementary.tasks.core.services.RepeatNotificationReceiver
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
+import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.images.ImagesRecyclerAdapter
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.reminder.lists.ReminderHolder
@@ -62,4 +64,6 @@ interface AppComponent {
     fun inject(themedActivity: ThemedActivity)
     fun inject(repeatNotificationReceiver: RepeatNotificationReceiver)
     fun inject(reminderUtils: ReminderUtils)
+    fun inject(birthdayHolder: BirthdayHolder)
+    fun inject(baseFragment: BaseFragment)
 }

@@ -13,6 +13,7 @@ import android.widget.SpinnerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.Reminder
@@ -21,6 +22,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import kotlinx.android.synthetic.main.activity_follow.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -64,6 +66,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     private var mTasks = true
     private var mNumber: String = ""
     private var mGoogleTasks: Google? = null
+    @Inject lateinit var reminderUtils: ReminderUtils
 
     private val adapter: SpinnerAdapter
         get() {
@@ -110,6 +113,10 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
             Reminder.BY_DATE_CALL
         else
             Reminder.BY_DATE_SMS
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -265,11 +272,11 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, myCallBack, mCustomHour, mCustomMinute)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myCallBack, mCustomHour, mCustomMinute)
     }
 
     private fun saveDateTask() {
@@ -280,7 +287,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         }
         val type = type
         setUpTimes()
-        val due = ReminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
+        val due = reminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
         val reminder = Reminder()
         val def = viewModel!!.defaultGroup.value
         if (def != null) {

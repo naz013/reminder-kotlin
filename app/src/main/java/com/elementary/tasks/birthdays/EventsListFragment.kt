@@ -14,7 +14,6 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.dayVew.DayViewViewModel
 import com.elementary.tasks.navigation.fragments.BaseFragment
@@ -119,7 +118,7 @@ class EventsListFragment : BaseFragment() {
 
     private fun showBirthdayLcam(birthday: Birthday) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        Dialogues.showLCAM(context!!, { item ->
+        dialogues.showLCAM(context!!, { item ->
             when (item) {
                 0 -> editBirthday(birthday)
                 1 -> viewModel.deleteBirthday(birthday)
@@ -148,7 +147,7 @@ class EventsListFragment : BaseFragment() {
 
     private fun showActionDialog(reminder: Reminder, view: View) {
         val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.move_to_trash))
-        Dialogues.showPopup(context!!, view, { item ->
+        dialogues.showPopup(context!!, view, { item ->
             when (item) {
                 0 -> showReminder(reminder)
                 1 -> editReminder(reminder.uuId)

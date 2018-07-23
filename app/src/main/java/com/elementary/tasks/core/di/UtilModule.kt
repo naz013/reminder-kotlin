@@ -31,6 +31,12 @@ class UtilModule {
 
     @Provides
     @Singleton
+    fun providesButtonObservable(): GlobalButtonObservable {
+        return GlobalButtonObservable()
+    }
+
+    @Provides
+    @Singleton
     fun providesPrefs(application: Application): Prefs {
         return Prefs(application)
     }

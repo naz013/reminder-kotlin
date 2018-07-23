@@ -242,13 +242,13 @@ object TimeUtil {
         }
     }
 
-    fun getVoiceDateTime(date: String?, is24: Boolean, locale: Int): String? {
+    fun getVoiceDateTime(date: String?, is24: Boolean, locale: Int, language: Language): String? {
         if (TextUtils.isEmpty(date)) {
             return null
         }
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = getDateTimeFromGmt(date)
-        val loc = Locale(Language.getTextLanguage(locale))
+        val loc = Locale(language.getTextLanguage(locale))
         var format: DateFormat = SimpleDateFormat("EEEE, MMMM dd yyyy K:mm a", loc)
         if (locale == 0) {
             if (is24) {
