@@ -60,13 +60,14 @@ private constructor() {
         private set
     var drive: Drives? = null
         private set
-    @Inject
-    lateinit var mContext: Context
+    @Inject lateinit var mContext: Context
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var backupTool: BackupTool
 
     init {
         ReminderApp.appComponent.inject(this)
 
-        val user = Prefs.getInstance(mContext).driveUser
+        val user = prefs.driveUser
         if (user.matches(".*@.*".toRegex())) {
             val credential = GoogleAccountCredential.usingOAuth2(mContext, Arrays.asList(DriveScopes.DRIVE, TasksScopes.TASKS))
             credential.selectedAccountName = user
@@ -83,7 +84,7 @@ private constructor() {
     }
 
     internal fun logOut() {
-        Prefs.getInstance().driveUser = Prefs.DRIVE_USER_NONE
+        prefs.driveUser = Prefs.DRIVE_USER_NONE
         instance = null
     }
 
@@ -400,7 +401,7 @@ private constructor() {
                         if (deleteFile) {
                             driveService!!.files().delete(f.id).execute()
                         }
-                        Prefs.getInstance(context).loadPrefsFromFile()
+                        prefs.loadPrefsFromFile()
                         break
                     }
                 }
@@ -607,7 +608,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadTemplates(deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.googleRemindersDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {
@@ -629,7 +629,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadReminders(context: Context, deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.googleRemindersDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {
@@ -658,7 +657,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadPlaces(deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.googlePlacesDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {
@@ -680,7 +678,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadNotes(deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.googleNotesDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {
@@ -702,7 +699,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadGroups(deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.googleGroupsDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {
@@ -724,7 +720,6 @@ private constructor() {
          */
         @Throws(IOException::class)
         fun downloadBirthdays(deleteBackup: Boolean) {
-            val backupTool = BackupTool.getInstance()
             download(deleteBackup, Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.googleBirthdaysDir, null, object : Action {
                 override fun onSave(file: java.io.File) {
                     try {

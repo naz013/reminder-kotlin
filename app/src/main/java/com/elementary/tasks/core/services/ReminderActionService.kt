@@ -1,6 +1,5 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
@@ -9,8 +8,6 @@ import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.reminder.preview.ReminderDialogActivity
 import timber.log.Timber
 
@@ -32,7 +29,7 @@ import timber.log.Timber
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ReminderActionService : BroadcastReceiver() {
+class ReminderActionService : BaseBroadcast() {
 
     private fun showReminder(context: Context, id: Int) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
@@ -62,8 +59,8 @@ class ReminderActionService : BroadcastReceiver() {
                     hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
                 } else if (action.matches(ACTION_RUN.toRegex())) {
                     val id = intent.getIntExtra(Constants.INTENT_ID, 0)
-                    var windowType = Prefs.getInstance(context).reminderType
-                    val ignore = Prefs.getInstance(context).isIgnoreWindowType
+                    var windowType = prefs.reminderType
+                    val ignore = prefs.isIgnoreWindowType
                     val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id)
                     if (!ignore) {
                         if (reminder != null) {
@@ -74,7 +71,7 @@ class ReminderActionService : BroadcastReceiver() {
                     if (windowType == 0) {
                         context.startActivity(ReminderDialogActivity.getLaunchIntent(context, id))
                     } else {
-                        ReminderUtils.showSimpleReminder(context, id)
+                        reminderUtils.showSimpleReminder(id)
                     }
                 } else {
                     showReminder(context, intent.getIntExtra(Constants.INTENT_ID, 0))

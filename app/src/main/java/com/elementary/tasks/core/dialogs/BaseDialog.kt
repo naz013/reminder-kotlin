@@ -3,7 +3,7 @@ package com.elementary.tasks.core.dialogs
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.*
 import javax.inject.Inject
 
 /**
@@ -27,8 +27,11 @@ import javax.inject.Inject
 
 abstract class BaseDialog : FragmentActivity() {
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
+    @Inject lateinit var themeUtil: ThemeUtil
+    @Inject lateinit var dialogues: Dialogues
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var timeCount: TimeCount
+    @Inject lateinit var reminderUtils: ReminderUtils
 
     init {
         ReminderApp.appComponent.inject(this)

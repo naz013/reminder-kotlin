@@ -493,7 +493,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         }
         removeFlags()
         if (prefs.isAutoBackupEnabled) {
-            BackupTask(this).execute()
+            BackupTask().execute()
         }
         BackupReminderTask(this).execute()
     }

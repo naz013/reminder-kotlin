@@ -73,12 +73,6 @@ class UtilModule {
 
     @Provides
     @Singleton
-    fun providesIoHelper(application: Application, prefs: Prefs): IoHelper {
-        return IoHelper(application, prefs)
-    }
-
-    @Provides
-    @Singleton
     fun providesReminderUtils(application: Application, prefs: Prefs): ReminderUtils {
         return ReminderUtils(application, prefs)
     }
@@ -87,6 +81,12 @@ class UtilModule {
     @Singleton
     fun providesBackupTool(appDb: AppDb): BackupTool {
         return BackupTool(appDb)
+    }
+
+    @Provides
+    @Singleton
+    fun providesIoHelper(application: Application, prefs: Prefs, backupTool: BackupTool): IoHelper {
+        return IoHelper(application, prefs, backupTool)
     }
 
     @Provides

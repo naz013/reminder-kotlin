@@ -119,7 +119,7 @@ class UserInfoAsync(private val mContext: Context, private val listener: ((List<
     }
 
     private fun addDropboxData(list: MutableList<UserItem>) {
-        val dbx = Dropbox(mContext)
+        val dbx = Dropbox()
         dbx.startSession()
         if (dbx.isLinked && SuperUtil.isConnected(mContext)) {
             val quota = dbx.userQuota()

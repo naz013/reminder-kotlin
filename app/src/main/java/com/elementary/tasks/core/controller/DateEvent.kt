@@ -80,6 +80,6 @@ class DateEvent(reminder: Reminder) : RepeatableEventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return TimeCount.getInstance(context).generateDateTime(reminder.eventTime, reminder.repeatInterval)
+        return timeCount.generateDateTime(reminder.eventTime, reminder.repeatInterval)
     }
 }

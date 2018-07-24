@@ -53,7 +53,7 @@ class DeleteTemplateFilesAsync(private val mContext: Context) : AsyncTask<String
             }
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
-                Dropbox(mContext).deleteTemplate(exportFileName)
+                Dropbox().deleteTemplate(exportFileName)
                 val google = Google.getInstance()
                 if (google?.drive != null) {
                     try {

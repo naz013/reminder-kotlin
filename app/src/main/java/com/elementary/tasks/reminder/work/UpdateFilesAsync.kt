@@ -30,7 +30,7 @@ import com.elementary.tasks.core.data.models.Reminder
 class UpdateFilesAsync(context: Context) : AsyncTask<Reminder, Void, Void>() {
 
     private val isConnected: Boolean = SuperUtil.isConnected(context)
-    private val dropbox: Dropbox = Dropbox(context)
+    private val dropbox: Dropbox = Dropbox()
     private val google: Google? = Google.getInstance()
 
     override fun doInBackground(vararg params: Reminder): Void? {

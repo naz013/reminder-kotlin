@@ -7,8 +7,10 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.PermanentReminderReceiver
+import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.TimeCount
 
 import javax.inject.Inject
 
@@ -31,10 +33,13 @@ import javax.inject.Inject
  * limitations under the License.
  */
 abstract class EventManager(val reminder: Reminder) : EventControl {
-    @Inject
-    lateinit var context: Context
-    @Inject
-    lateinit var db: AppDb
+    @Inject lateinit var context: Context
+    @Inject lateinit var db: AppDb
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var timeCount: TimeCount
+    @Inject lateinit var updatesHelper: UpdatesHelper
+    @Inject lateinit var notifier: Notifier
+    @Inject lateinit var calendarUtils: CalendarUtils
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -42,9 +47,9 @@ abstract class EventManager(val reminder: Reminder) : EventControl {
 
     protected fun save() {
         db.reminderDao().insert(reminder)
-        UpdatesHelper.getInstance(context).updateWidget()
-        if (Prefs.getInstance(context).isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+        updatesHelper.updateWidget()
+        if (prefs.isSbNotificationEnabled) {
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 }

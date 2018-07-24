@@ -273,7 +273,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         super.onDestroy()
         removeFlags()
         if (prefs.isAutoBackupEnabled) {
-            BackupTask(this).execute()
+            BackupTask().execute()
         }
         BackupBirthdaysTask(this).execute()
     }

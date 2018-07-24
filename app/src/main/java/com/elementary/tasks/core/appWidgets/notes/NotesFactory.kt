@@ -6,14 +6,14 @@ import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
-
-import java.util.ArrayList
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -33,10 +33,14 @@ import java.util.ArrayList
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+class NotesFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
 
     private val notes = ArrayList<Note>()
-    private val themeUtil: ThemeUtil = ThemeUtil.getInstance(mContext)
+    @Inject lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate() {
         notes.clear()

@@ -99,7 +99,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showCleanDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.clean))
         builder.setNeutralButton(R.string.local) { _, _ ->
@@ -112,7 +112,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
             deleteRecursive(dir!!)
             launch(CommonPool) {
                 val gdx = Google.getInstance()
-                val dbx = Dropbox(context!!)
+                val dbx = Dropbox()
                 if (SuperUtil.isConnected(context!!)) {
                     if (gdx?.drive != null) {
                         try {
@@ -153,7 +153,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showIntervalDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.interval))
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
@@ -235,7 +235,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showEventDurationDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.event_duration)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 120
@@ -296,7 +296,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
         if (mDataList.isEmpty()) {
             return false
         }
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.choose_calendar)
         builder.setSingleChoiceItems(object : ArrayAdapter<CalendarUtils.CalendarItem>(context!!,
                 android.R.layout.simple_list_item_single_choice) {

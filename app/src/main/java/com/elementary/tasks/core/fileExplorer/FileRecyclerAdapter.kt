@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_file.view.*
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,6 +40,13 @@ class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactView
     private val mDataList: MutableList<FileDataItem> = mutableListOf()
     var filterCallback: ((Int) -> Unit)? = null
     var clickListener: ((Int) -> Unit)? = null
+
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     fun setData(list: List<FileDataItem>) {
         this.mDataList.clear()
@@ -155,76 +164,76 @@ class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactView
         }
     }
 
+    fun loadImage(imageView: ImageView, item: FileDataItem) {
+        val isDark = themeUtil.isDark
+        if (item.filePath != "" && isPicture(item.filePath)) {
+            Glide.with(imageView.context)
+                    .load(File(item.filePath))
+                    .apply(RequestOptions.centerCropTransform())
+                    .apply(RequestOptions.overrideOf(100, 100))
+                    .into(imageView)
+        } else {
+            imageView.setImageResource(getFileIcon(item.fileName, isDark))
+        }
+    }
+
+    private fun getFileIcon(file: String, isDark: Boolean): Int {
+        LogUtil.d(TAG, "getFileIcon: $file")
+        if (isMelody(file)) {
+            LogUtil.d(TAG, "getFileIcon: isMelody")
+            return if (isDark) R.drawable.ic_music_note_white_24dp else R.drawable.ic_music_note_black_24dp
+        } else if (isPicture(file)) {
+            LogUtil.d(TAG, "getFileIcon: isPicture")
+            return if (isDark) R.drawable.ic_image_white_24dp else R.drawable.ic_image_black_24dp
+        } else if (isMovie(file)) {
+            LogUtil.d(TAG, "getFileIcon: isMovie")
+            return if (isDark) R.drawable.ic_movie_white_24dp else R.drawable.ic_movie_black_24dp
+        } else if (isGif(file)) {
+            LogUtil.d(TAG, "getFileIcon: isGif")
+            return if (isDark) R.drawable.ic_gif_white_24dp else R.drawable.ic_gif_black_24dp
+        } else if (isArchive(file)) {
+            LogUtil.d(TAG, "getFileIcon: isArchive")
+            return if (isDark) R.drawable.ic_storage_white_24dp else R.drawable.ic_storage_black_24dp
+        } else if (isAndroid(file)) {
+            LogUtil.d(TAG, "getFileIcon: isAndroid")
+            return if (isDark) R.drawable.ic_android_white_24dp else R.drawable.ic_android_black_24dp
+        } else if (!file.contains(".")) {
+            LogUtil.d(TAG, "getFileIcon: folder")
+            return if (isDark) R.drawable.ic_folder_white_24dp else R.drawable.ic_folder_black_24dp
+        } else {
+            LogUtil.d(TAG, "getFileIcon: else")
+            return if (isDark) R.drawable.ic_insert_drive_file_white_24dp else R.drawable.ic_insert_drive_file_black_24dp
+        }
+    }
+
+    private fun isPicture(file: String): Boolean {
+        return file.contains(".jpg") || file.contains(".jpeg") || file.contains(".png")
+    }
+
+    private fun isArchive(file: String): Boolean {
+        return file.contains(".zip") || file.contains(".rar") || file.contains(".tar.gz")
+    }
+
+    private fun isMovie(file: String): Boolean {
+        return file.contains(".mov") || file.contains(".3gp") || file.contains(".avi") ||
+                file.contains(".mkv") || file.contains(".vob") || file.contains(".divx") ||
+                file.contains(".mp4") || file.contains(".flv")
+    }
+
+    private fun isGif(file: String): Boolean {
+        return file.contains(".gif")
+    }
+
+    private fun isAndroid(file: String): Boolean {
+        return file.contains(".apk")
+    }
+
+    private fun isMelody(file: String): Boolean {
+        return file.contains(".mp3") || file.contains(".ogg") || file.contains(".m4a") || file.contains(".flac")
+    }
+
     companion object {
 
         private const val TAG = "FileRecyclerAdapter"
-
-        fun loadImage(imageView: ImageView, item: FileDataItem) {
-            val isDark = ThemeUtil.getInstance(imageView.context).isDark
-            if (item.filePath != "" && isPicture(item.filePath)) {
-                Glide.with(imageView.context)
-                        .load(File(item.filePath))
-                        .apply(RequestOptions.centerCropTransform())
-                        .apply(RequestOptions.overrideOf(100, 100))
-                        .into(imageView)
-            } else {
-                imageView.setImageResource(getFileIcon(item.fileName, isDark))
-            }
-        }
-
-        private fun getFileIcon(file: String, isDark: Boolean): Int {
-            LogUtil.d(TAG, "getFileIcon: $file")
-            if (isMelody(file)) {
-                LogUtil.d(TAG, "getFileIcon: isMelody")
-                return if (isDark) R.drawable.ic_music_note_white_24dp else R.drawable.ic_music_note_black_24dp
-            } else if (isPicture(file)) {
-                LogUtil.d(TAG, "getFileIcon: isPicture")
-                return if (isDark) R.drawable.ic_image_white_24dp else R.drawable.ic_image_black_24dp
-            } else if (isMovie(file)) {
-                LogUtil.d(TAG, "getFileIcon: isMovie")
-                return if (isDark) R.drawable.ic_movie_white_24dp else R.drawable.ic_movie_black_24dp
-            } else if (isGif(file)) {
-                LogUtil.d(TAG, "getFileIcon: isGif")
-                return if (isDark) R.drawable.ic_gif_white_24dp else R.drawable.ic_gif_black_24dp
-            } else if (isArchive(file)) {
-                LogUtil.d(TAG, "getFileIcon: isArchive")
-                return if (isDark) R.drawable.ic_storage_white_24dp else R.drawable.ic_storage_black_24dp
-            } else if (isAndroid(file)) {
-                LogUtil.d(TAG, "getFileIcon: isAndroid")
-                return if (isDark) R.drawable.ic_android_white_24dp else R.drawable.ic_android_black_24dp
-            } else if (!file.contains(".")) {
-                LogUtil.d(TAG, "getFileIcon: folder")
-                return if (isDark) R.drawable.ic_folder_white_24dp else R.drawable.ic_folder_black_24dp
-            } else {
-                LogUtil.d(TAG, "getFileIcon: else")
-                return if (isDark) R.drawable.ic_insert_drive_file_white_24dp else R.drawable.ic_insert_drive_file_black_24dp
-            }
-        }
-
-        private fun isPicture(file: String): Boolean {
-            return file.contains(".jpg") || file.contains(".jpeg") || file.contains(".png")
-        }
-
-        private fun isArchive(file: String): Boolean {
-            return file.contains(".zip") || file.contains(".rar") || file.contains(".tar.gz")
-        }
-
-        private fun isMovie(file: String): Boolean {
-            return file.contains(".mov") || file.contains(".3gp") || file.contains(".avi") ||
-                    file.contains(".mkv") || file.contains(".vob") || file.contains(".divx") ||
-                    file.contains(".mp4") || file.contains(".flv")
-        }
-
-        private fun isGif(file: String): Boolean {
-            return file.contains(".gif")
-        }
-
-        private fun isAndroid(file: String): Boolean {
-            return file.contains(".apk")
-        }
-
-        private fun isMelody(file: String): Boolean {
-            return file.contains(".mp3") || file.contains(".ogg") || file.contains(".m4a") || file.contains(".flac")
-        }
     }
 }

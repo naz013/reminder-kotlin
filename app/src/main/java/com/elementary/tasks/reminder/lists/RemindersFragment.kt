@@ -118,7 +118,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_refresh -> SyncTask(context!!, this, false).execute()
+            R.id.action_refresh -> SyncTask(this, false).execute()
             R.id.action_voice -> if (callback != null) {
                 callback?.onVoiceAction()
             }
@@ -168,7 +168,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     private fun showActionDialog(reminder: Reminder, view: View) {
         val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.change_group), getString(R.string.move_to_trash))
-        Dialogues.showPopup(context!!, view, { item ->
+        dialogues.showPopup(context!!, view, { item ->
             when (item) {
                 0 -> previewReminder(reminder.uniqueId, reminder.type)
                 1 -> editReminder(reminder.uniqueId)
@@ -205,7 +205,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.tasks))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener { startActivity(Intent(context, CreateReminderActivity::class.java)) })
             callback?.onScrollChanged(recyclerView)
         }
     }
@@ -342,7 +341,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
                 mGroupsIds.add(item.uuId)
             }
         }
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.choose_group))
         builder.setAdapter(arrayAdapter) { dialog, which ->
             dialog.dismiss()

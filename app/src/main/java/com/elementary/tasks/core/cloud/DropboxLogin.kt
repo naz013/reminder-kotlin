@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -30,7 +31,8 @@ import com.elementary.tasks.core.utils.Module
  * limitations under the License.
  */
 class DropboxLogin(private val mContext: Activity, private val mCallback: DropboxLogin.LoginCallback) {
-    private val mDropbox: Dropbox = Dropbox(mContext)
+
+    private val mDropbox: Dropbox = Dropbox()
 
     init {
         this.mDropbox.startSession()
@@ -42,17 +44,17 @@ class DropboxLogin(private val mContext: Activity, private val mCallback: Dropbo
         if (isIn) {
             checkDialog().show()
         } else {
-            performDropboxLinking()
+            performDropboxLinking(mContext)
         }
     }
 
-    private fun performDropboxLinking() {
+    private fun performDropboxLinking(context: Context) {
         if (mDropbox.isLinked) {
             if (mDropbox.unlink()) {
                 mCallback.onSuccess(false)
             }
         } else {
-            mDropbox.startLink()
+            mDropbox.startLink(context)
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.calendar.FlextHelper
@@ -13,6 +14,7 @@ import com.elementary.tasks.core.utils.*
 import hirondelle.date4j.DateTime
 import java.text.ParseException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,10 +42,14 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
     private val map = mutableMapOf<DateTime, Events>()
     private val mHandler = Handler(Looper.getMainLooper())
 
+    @Inject lateinit var themeUtil: ThemeUtil
+    @Inject lateinit var timeCount: TimeCount
+
     val events: Map<DateTime, Events>
         get() = map
 
     init {
+        ReminderApp.appComponent.inject(this)
         this.isReady = false
         Thread { loadEvents(context) }.start()
     }
@@ -84,11 +90,9 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
 
     private fun loadEvents(context: Context) {
         map.clear()
-        val cs = ThemeUtil.getInstance(context)
-        val bColor = cs.getColor(cs.colorBirthdayCalendar())
-        val timeCount = TimeCount.getInstance(context)
+        val bColor = themeUtil.getColor(themeUtil.colorBirthdayCalendar())
         if (isReminder) {
-            val rColor = cs.getColor(cs.colorReminderCalendar())
+            val rColor = themeUtil.getColor(themeUtil.colorReminderCalendar())
             val reminders = AppDb.getAppDatabase(context).reminderDao().getAll(true, false)
             for (item in reminders) {
                 val mType = item.type

@@ -49,7 +49,7 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
             builder.setSmallIcon(R.drawable.ic_cached_nv_white)
         }
         mNotifyMgr = NotificationManagerCompat.from(mContext)
-        mNotifyMgr!!.notify(2, builder.build())
+        mNotifyMgr?.notify(2, builder.build())
     }
 
     override fun doInBackground(vararg params: Void): Boolean {
@@ -64,8 +64,8 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
         BackupTool.getInstance().exportNotes()
 
         if (SuperUtil.isConnected(mContext)) {
-            Dropbox(mContext).downloadNotes(true)
-            Dropbox(mContext).uploadNotes()
+            Dropbox().downloadNotes(true)
+            Dropbox().uploadNotes()
             val google = Google.getInstance()
             if (google != null) {
                 val drives = google.drive
@@ -97,7 +97,7 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
             builder.setContentText(mContext.getString(R.string.app_name))
         }
         builder.setWhen(System.currentTimeMillis())
-        mNotifyMgr!!.notify(2, builder.build())
+        mNotifyMgr?.notify(2, builder.build())
         mListener?.invoke(aVoid)
         UpdatesHelper.getInstance(mContext).updateNotesWidget()
     }

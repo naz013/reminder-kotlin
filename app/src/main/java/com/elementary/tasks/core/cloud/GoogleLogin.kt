@@ -39,8 +39,7 @@ import java.io.IOException
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class GoogleLogin(private val activity: Activity, private val mCallback: LoginCallback?) {
+class GoogleLogin(private val activity: Activity, private val prefs: Prefs, private val mCallback: LoginCallback?) {
 
     private var mGoogle: Google? = Google.getInstance()
     private var mAccountName: String? = null
@@ -52,7 +51,7 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
         get() = mGoogle != null
 
     fun logOut() {
-        Prefs.getInstance(activity).driveUser = Prefs.DRIVE_USER_NONE
+        prefs.driveUser = Prefs.DRIVE_USER_NONE
         mGoogle!!.logOut()
         mGoogle = null
     }
@@ -150,7 +149,7 @@ class GoogleLogin(private val activity: Activity, private val mCallback: LoginCa
     }
 
     private fun finishLogin(account: String) {
-        Prefs.getInstance(activity).driveUser = account
+        prefs.driveUser = account
         mGoogle = Google.getInstance()
     }
 

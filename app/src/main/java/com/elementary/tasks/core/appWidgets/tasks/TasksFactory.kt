@@ -6,18 +6,16 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.google_tasks.create.TasksConstants
-
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.Locale
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -37,19 +35,22 @@ import java.util.Locale
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-internal class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class TasksFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val widgetID: Int = intent.getIntExtra(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID)
-    private var cs: ThemeUtil? = null
+    @Inject lateinit var themeUtil: ThemeUtil
     private val mData = ArrayList<GoogleTask>()
     private val map = HashMap<String, Int>()
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate() {
         mData.clear()
         map.clear()
-        cs = ThemeUtil.getInstance(mContext)
     }
 
     override fun onDataSetChanged() {
@@ -90,7 +91,7 @@ internal class TasksFactory(private val mContext: Context, intent: Intent) : Rem
         rView.setTextColor(R.id.taskDate, itemTextColor)
         rView.setViewVisibility(R.id.checkDone, View.GONE)
         if (map.containsKey(mData[i].listId)) {
-            rView.setInt(R.id.listColor, "setBackgroundColor", cs!!.getNoteColor(map[mData[i].listId]!!))
+            rView.setInt(R.id.listColor, "setBackgroundColor", themeUtil.getNoteColor(map[mData[i].listId]!!))
         }
         val name = mData[i].title
         rView.setTextViewText(R.id.task, name)

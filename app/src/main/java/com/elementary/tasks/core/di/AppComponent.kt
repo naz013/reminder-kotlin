@@ -1,13 +1,30 @@
 package com.elementary.tasks.core.di
 
 import com.elementary.tasks.birthdays.BirthdayHolder
+import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
+import com.elementary.tasks.core.appWidgets.WidgetDataProvider
+import com.elementary.tasks.core.appWidgets.calendar.CalendarMonthFactory
+import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateMinusService
+import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateService
+import com.elementary.tasks.core.appWidgets.calendar.CalendarWeekdayFactory
+import com.elementary.tasks.core.appWidgets.notes.NotesFactory
+import com.elementary.tasks.core.appWidgets.tasks.TasksFactory
+import com.elementary.tasks.core.async.BackupSettingTask
+import com.elementary.tasks.core.async.BackupTask
+import com.elementary.tasks.core.async.SyncTask
+import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.contacts.ContactsFragment
+import com.elementary.tasks.core.contacts.ContactsRecyclerAdapter
+import com.elementary.tasks.core.contacts.calls.CallsRecyclerAdapter
 import com.elementary.tasks.core.controller.EventManager
 import com.elementary.tasks.core.dialogs.BaseDialog
-import com.elementary.tasks.core.services.CallReceiver
-import com.elementary.tasks.core.services.RepeatNotificationReceiver
+import com.elementary.tasks.core.fileExplorer.FileRecyclerAdapter
+import com.elementary.tasks.core.fragments.BaseMapFragment
+import com.elementary.tasks.core.location.LocationTracker
+import com.elementary.tasks.core.services.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
@@ -66,4 +83,25 @@ interface AppComponent {
     fun inject(reminderUtils: ReminderUtils)
     fun inject(birthdayHolder: BirthdayHolder)
     fun inject(baseFragment: BaseFragment)
+    fun inject(calendarMonthFactory: CalendarMonthFactory)
+    fun inject(eventsDataProvider: EventsDataProvider)
+    fun inject(widgetDataProvider: WidgetDataProvider)
+    fun inject(calendarUpdateMinusService: CalendarUpdateMinusService)
+    fun inject(calendarUpdateService: CalendarUpdateService)
+    fun inject(calendarWeekdayFactory: CalendarWeekdayFactory)
+    fun inject(syncTask: SyncTask)
+    fun inject(backupSettingTask: BackupSettingTask)
+    fun inject(backupTask: BackupTask)
+    fun inject(notesFactory: NotesFactory)
+    fun inject(tasksFactory: TasksFactory)
+    fun inject(dropbox: Dropbox)
+    fun inject(contactsRecyclerAdapter: ContactsRecyclerAdapter)
+    fun inject(callsRecyclerAdapter: CallsRecyclerAdapter)
+    fun inject(contactsFragment: ContactsFragment)
+    fun inject(locationTracker: LocationTracker)
+    fun inject(baseMapFragment: BaseMapFragment)
+    fun inject(fileRecyclerAdapter: FileRecyclerAdapter)
+    fun inject(baseBroadcast: BaseBroadcast)
+    fun inject(geolocationService: GeolocationService)
+    fun inject(eventJobService: EventJobService)
 }

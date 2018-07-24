@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.utils.Dialogues
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.widget_current_tasks_config.*
 
@@ -37,9 +36,7 @@ class EventsWidgetConfig : ThemedActivity() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
-
     private var textSize: Int = 0
-
     private var mThemes: List<EventsTheme>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +56,7 @@ class EventsWidgetConfig : ThemedActivity() {
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         toolbar.title = getString(R.string.active_reminders)
     }
@@ -75,7 +72,7 @@ class EventsWidgetConfig : ThemedActivity() {
             finish()
         }
         resultValue = Intent()
-        resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+        resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
         setResult(RESULT_CANCELED, resultValue)
     }
 
@@ -86,8 +83,7 @@ class EventsWidgetConfig : ThemedActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.widget_menu, menu)
+        menuInflater.inflate(R.menu.widget_menu, menu)
         return true
     }
 
@@ -103,7 +99,7 @@ class EventsWidgetConfig : ThemedActivity() {
     }
 
     private fun showTextSizeDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.text_size)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = 13

@@ -7,14 +7,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.Observer
-
+import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.Contacts
+import com.elementary.tasks.core.utils.IntervalUtil
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-
-import androidx.lifecycle.ViewModelProviders
-import com.elementary.tasks.core.utils.*
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import java.util.*
 
@@ -53,7 +54,7 @@ class VoiceResultDialog : BaseDialog() {
     }
 
     private fun showReminder(reminder: Reminder) {
-        val alert = Dialogues.getDialog(this)
+        val alert = dialogues.getDialog(this)
         alert.setTitle(getString(R.string.saved))
 
         val binding = LayoutInflater.from(this).inflate(R.layout.list_item_reminder, null, false)
@@ -85,7 +86,7 @@ class VoiceResultDialog : BaseDialog() {
         } else {
             binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }
-        val is24 = Prefs.getInstance(binding.taskDate.context).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         if (Reminder.isGpsType(reminder.type)) {
             val place = reminder.places[0]
             binding.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, reminder.places.size)
@@ -99,13 +100,13 @@ class VoiceResultDialog : BaseDialog() {
         }
         loadContact(reminder, binding)
         if (reminder.isActive && !reminder.isRemoved) {
-            binding.remainingTime.text = TimeCount.getInstance(binding.remainingTime.context).getRemaining(reminder.eventTime, reminder.delay)
+            binding.remainingTime.text = timeCount.getRemaining(reminder.eventTime, reminder.delay)
         } else {
             binding.remainingTime.text = ""
         }
         when {
             Reminder.isBase(reminder.type, Reminder.BY_MONTH) -> binding.repeatInterval.text = String.format(binding.repeatInterval.context.getString(R.string.xM), 1.toString())
-            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = ReminderUtils.getRepeatString(binding.repeatInterval.context, reminder.weekdays)
+            Reminder.isBase(reminder.type, Reminder.BY_WEEK) -> binding.repeatInterval.text = reminderUtils.getRepeatString(reminder.weekdays)
             Reminder.isBase(reminder.type, Reminder.BY_DAY_OF_YEAR) -> binding.repeatInterval.text = binding.repeatInterval.context.getString(R.string.yearly)
             else -> binding.repeatInterval.text = IntervalUtil.getInterval(binding.repeatInterval.context, reminder.repeatInterval)
         }
@@ -116,7 +117,7 @@ class VoiceResultDialog : BaseDialog() {
         } else {
             binding.endContainer.visibility = View.VISIBLE
         }
-        binding.reminder_type.text = ReminderUtils.getTypeString(binding.reminder_type.context, reminder.type)
+        binding.reminder_type.text = reminderUtils.getTypeString(reminder.type)
     }
 
     private fun loadContact(model: Reminder, itemView: View) {

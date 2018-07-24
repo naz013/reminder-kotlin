@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
-import androidx.legacy.content.WakefulBroadcastReceiver
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -17,6 +17,7 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,27 +38,35 @@ import java.util.*
  * limitations under the License.
  */
 
-class AlarmReceiver : WakefulBroadcastReceiver() {
+class AlarmReceiver : BaseBroadcast() {
+
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
-        LogUtil.d(TAG, "onReceive: Action - " + action + ", time - " + TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
+        LogUtil.d(TAG, "onReceive: Action - " + action + ", time - " +
+                TimeUtil.getFullDateTime(System.currentTimeMillis(), true, true))
         if (action == null) return
         val service = Intent(context, AlarmReceiver::class.java)
         context.startService(service)
         when (action) {
-            ACTION_SYNC_AUTO -> BackupTask(context).execute()
+            ACTION_SYNC_AUTO -> BackupTask().execute()
             ACTION_EVENTS_CHECK -> checkEvents(context)
             ACTION_BIRTHDAY_AUTO -> CheckBirthdaysAsync(context).execute()
-            ACTION_BIRTHDAY_PERMANENT -> if (Prefs.getInstance(context).isBirthdayPermanentEnabled) {
-                Notifier.showBirthdayPermanent(context)
+            ACTION_BIRTHDAY_PERMANENT -> if (prefs.isBirthdayPermanentEnabled) {
+                notifier.showBirthdayPermanent()
             }
         }
     }
 
     private fun checkEvents(context: Context) {
         if (Permissions.checkPermission(context, Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR)) {
-            CheckEventsAsync(context).execute()
+            CheckEventsAsync(context, prefs, calendarUtils).execute()
         }
     }
 
@@ -132,7 +141,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        val interval = Prefs.getInstance(context).autoCheckInterval
+        val interval = prefs.autoCheckInterval
         if (Module.isMarshmallow) {
             alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
                     AlarmManager.INTERVAL_HOUR * interval, alarmIntent)
@@ -156,7 +165,7 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         val alarmIntent = PendingIntent.getBroadcast(context, AUTO_SYNC_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
         val calendar = Calendar.getInstance()
-        val interval = Prefs.getInstance(context).autoBackupInterval
+        val interval = prefs.autoBackupInterval
         calendar.timeInMillis = System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR * interval
         if (Module.isMarshmallow) {
             alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
@@ -175,12 +184,12 @@ class AlarmReceiver : WakefulBroadcastReceiver() {
         alarmMgr?.cancel(alarmIntent)
     }
 
-    private class CheckEventsAsync internal constructor(private val mContext: Context) : AsyncTask<Void, Void, Void>() {
+    private class CheckEventsAsync constructor(private val mContext: Context, val prefs: Prefs, val calendarUtils: CalendarUtils) : AsyncTask<Void, Void, Void>() {
 
         override fun doInBackground(vararg params: Void): Void? {
             val currTime = System.currentTimeMillis()
-            val calID = Prefs.getInstance(mContext).eventsCalendar
-            val eventItems = CalendarUtils.getEvents(mContext, calID)
+            val calID = prefs.eventsCalendar
+            val eventItems = calendarUtils.getEvents(calID)
             if (eventItems.isNotEmpty()) {
                 val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
                 for (item in eventItems) {

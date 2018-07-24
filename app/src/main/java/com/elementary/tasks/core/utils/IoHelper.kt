@@ -25,11 +25,12 @@ import javax.inject.Singleton
  * limitations under the License.
  */
 @Singleton
-class IoHelper @Inject constructor(private val context: Context, private val prefs: Prefs) {
+class IoHelper @Inject constructor(private val context: Context, private val prefs: Prefs,
+                                   private val backupTool: BackupTool) {
 
     private val isConnected: Boolean = SuperUtil.isConnected(context)
     private val mDrive: Google? = Google.getInstance()
-    private val mDropbox: Dropbox = Dropbox(context)
+    private val mDropbox: Dropbox = Dropbox()
 
     /**
      * Create backup files for reminders, groups, birthdays and notes.
@@ -62,7 +63,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for groups.
      */
     fun backupGroup() {
-        BackupTool.getInstance().exportGroups()
+        backupTool.exportGroups()
         if (isConnected) {
             mDropbox.uploadGroups()
             if (mDrive?.drive != null) {
@@ -79,7 +80,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restoreGroup(delete: Boolean) {
         try {
-            BackupTool.getInstance().importGroups()
+            backupTool.importGroups()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -99,7 +100,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for reminder.
      */
     fun backupReminder() {
-        BackupTool.getInstance().exportReminders()
+        backupTool.exportReminders()
         if (isConnected) {
             mDropbox.uploadReminderByFileName(null)
             if (mDrive?.drive != null) {
@@ -116,7 +117,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restoreReminder(delete: Boolean) {
         try {
-            BackupTool.getInstance().importReminders(context)
+            backupTool.importReminders(context)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -136,7 +137,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for notes.
      */
     fun backupNote() {
-        BackupTool.getInstance().exportNotes()
+        backupTool.exportNotes()
         if (isConnected) {
             mDropbox.uploadNotes()
             if (mDrive?.drive != null) {
@@ -153,7 +154,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restoreNote(delete: Boolean) {
         try {
-            BackupTool.getInstance().importNotes()
+            backupTool.importNotes()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -173,7 +174,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for birthdays.
      */
     fun backupBirthday() {
-        BackupTool.getInstance().exportBirthdays()
+        backupTool.exportBirthdays()
         if (isConnected) {
             mDropbox.uploadBirthdays()
             if (mDrive?.drive != null) {
@@ -190,7 +191,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restoreBirthday(delete: Boolean) {
         try {
-            BackupTool.getInstance().importBirthdays()
+            backupTool.importBirthdays()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -210,7 +211,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for places.
      */
     fun backupPlaces() {
-        BackupTool.getInstance().exportPlaces()
+        backupTool.exportPlaces()
         if (isConnected) {
             mDropbox.uploadPlaces()
             if (mDrive?.drive != null) {
@@ -227,7 +228,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restorePlaces(delete: Boolean) {
         try {
-            BackupTool.getInstance().importPlaces()
+            backupTool.importPlaces()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -247,7 +248,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      * Create backup files for places.
      */
     fun backupTemplates() {
-        BackupTool.getInstance().exportTemplates()
+        backupTool.exportTemplates()
         if (isConnected) {
             mDropbox.uploadTemplates()
             if (mDrive?.drive != null) {
@@ -264,7 +265,7 @@ class IoHelper @Inject constructor(private val context: Context, private val pre
      */
     fun restoreTemplates(delete: Boolean) {
         try {
-            BackupTool.getInstance().importTemplates()
+            backupTool.importTemplates()
         } catch (e: Exception) {
             e.printStackTrace()
         }

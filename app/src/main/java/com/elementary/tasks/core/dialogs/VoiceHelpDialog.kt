@@ -5,7 +5,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import java.util.*
 
 /**
@@ -30,7 +29,7 @@ class VoiceHelpDialog : BaseDialog() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val alert = Dialogues.getDialog(this)
+        val alert = dialogues.getDialog(this)
         alert.setTitle(getString(R.string.help))
         val wv = WebView(this)
         wv.setBackgroundColor(themeUtil.backgroundStyle)

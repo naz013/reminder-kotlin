@@ -10,6 +10,7 @@ import com.dropbox.core.v2.DbxClientV2
 import com.dropbox.core.v2.files.WriteMode
 import com.dropbox.core.v2.users.FullAccount
 import com.dropbox.core.v2.users.SpaceUsage
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
@@ -18,6 +19,7 @@ import com.elementary.tasks.core.utils.MemoryUtil
 import com.elementary.tasks.core.utils.Prefs
 import okhttp3.OkHttpClient
 import java.io.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,7 +40,7 @@ import java.io.*
  * limitations under the License.
  */
 
-class Dropbox(private val mContext: Context) {
+class Dropbox {
 
     private val dbxFolder = "/Reminders/"
     private val dbxNoteFolder = "/Notes/"
@@ -49,6 +51,13 @@ class Dropbox(private val mContext: Context) {
     private val dbxSettingsFolder = "/Settings/"
 
     private var mDBApi: DbxClientV2? = null
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var backupTool: BackupTool
+    @Inject lateinit var appDb: AppDb
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     /**
      * Check if user has already connected to Dropbox from this application.
@@ -56,21 +65,21 @@ class Dropbox(private val mContext: Context) {
      * @return Boolean
      */
     val isLinked: Boolean
-        get() = mDBApi != null && Prefs.getInstance(mContext).dropboxToken != ""
+        get() = mDBApi != null && prefs.dropboxToken != ""
 
     /**
      * Start connection to Dropbox.
      */
     fun startSession() {
-        var token: String? = Prefs.getInstance(mContext).dropboxToken
+        var token: String? = prefs.dropboxToken
         if (token == "") {
             token = Auth.getOAuth2Token()
         }
         if (token == null) {
-            Prefs.getInstance(mContext).dropboxToken = ""
+            prefs.dropboxToken = ""
             return
         }
-        Prefs.getInstance(mContext).dropboxToken = token
+        prefs.dropboxToken = token
         val requestConfig = DbxRequestConfig.newBuilder("Just Reminder")
                 .withHttpRequestor(OkHttp3Requestor(OkHttpClient()))
                 .build()
@@ -84,9 +93,10 @@ class Dropbox(private val mContext: Context) {
      * @return String user name
      */
     fun userName(): String {
+        val api = mDBApi ?: return ""
         var account: FullAccount? = null
         try {
-            account = mDBApi!!.users().currentAccount
+            account = api.users().currentAccount
         } catch (e: DbxException) {
             e.printStackTrace()
         }
@@ -100,9 +110,10 @@ class Dropbox(private val mContext: Context) {
      * @return Long - user quota
      */
     fun userQuota(): Long {
+        val api = mDBApi ?: return 0
         var account: SpaceUsage? = null
         try {
-            account = mDBApi!!.users().spaceUsage
+            account = api.users().spaceUsage
         } catch (e: DbxException) {
             LogUtil.e(TAG, "userQuota: ", e)
         }
@@ -111,9 +122,10 @@ class Dropbox(private val mContext: Context) {
     }
 
     fun userQuotaNormal(): Long {
+        val api = mDBApi ?: return 0
         var account: SpaceUsage? = null
         try {
-            account = mDBApi!!.users().spaceUsage
+            account = api.users().spaceUsage
         } catch (e: DbxException) {
             LogUtil.e(TAG, "userQuotaNormal: ", e)
         }
@@ -121,8 +133,8 @@ class Dropbox(private val mContext: Context) {
         return account?.used ?: 0
     }
 
-    fun startLink() {
-        Auth.startOAuth2Authentication(mContext, APP_KEY)
+    fun startLink(context: Context) {
+        Auth.startOAuth2Authentication(context, APP_KEY)
     }
 
     fun unlink(): Boolean {
@@ -139,8 +151,8 @@ class Dropbox(private val mContext: Context) {
     }
 
     private fun clearKeys() {
-        Prefs.getInstance(mContext).dropboxToken = ""
-        Prefs.getInstance(mContext).dropboxUid = ""
+        prefs.dropboxToken = ""
+        prefs.dropboxUid = ""
     }
 
     /**
@@ -160,6 +172,7 @@ class Dropbox(private val mContext: Context) {
         if (files == null) {
             return
         }
+        val api = mDBApi ?: return
         for (file in files) {
             val fileLoopName = file.name
             val tmpFile = File(fileLoc, fileLoopName)
@@ -181,7 +194,7 @@ class Dropbox(private val mContext: Context) {
             if (fis == null) return
             try {
                 val filePath = folder + fileLoopName
-                mDBApi!!.files().uploadBuilder(filePath)
+                api.files().uploadBuilder(filePath)
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
@@ -204,6 +217,7 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         if (fileName != null) {
             val tmpFile = File(dir.toString(), fileName)
             var fis: FileInputStream? = null
@@ -215,7 +229,7 @@ class Dropbox(private val mContext: Context) {
 
             if (fis == null) return
             try {
-                mDBApi!!.files().uploadBuilder(dbxFolder + fileName)
+                api.files().uploadBuilder(dbxFolder + fileName)
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
@@ -225,7 +239,6 @@ class Dropbox(private val mContext: Context) {
             } catch (e: NullPointerException) {
                 LogUtil.e(TAG, "Something went wrong while uploading.", e)
             }
-
         } else {
             upload(MemoryUtil.DIR_SD)
         }
@@ -289,12 +302,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxFolder + name)
+            api.files().deleteV2(dbxFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteReminder: ", e)
         }
-
     }
 
     /**
@@ -307,12 +320,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxNoteFolder + name)
+            api.files().deleteV2(dbxNoteFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteNote: ", e)
         }
-
     }
 
     /**
@@ -325,12 +338,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxGroupFolder + name)
+            api.files().deleteV2(dbxGroupFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteGroup: $name", e)
         }
-
     }
 
     /**
@@ -343,12 +356,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxBirthFolder + name)
+            api.files().deleteV2(dbxBirthFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteBirthday: ", e)
         }
-
     }
 
     /**
@@ -361,12 +374,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxPlacesFolder + name)
+            api.files().deleteV2(dbxPlacesFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deletePlace: ", e)
         }
-
     }
 
     /**
@@ -379,12 +392,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxTemplatesFolder + name)
+            api.files().deleteV2(dbxTemplatesFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteTemplate: ", e)
         }
-
     }
 
     /**
@@ -397,12 +410,12 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(dbxSettingsFolder + name)
+            api.files().deleteV2(dbxSettingsFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteSettings: ", e)
         }
-
     }
 
     /**
@@ -423,12 +436,12 @@ class Dropbox(private val mContext: Context) {
     }
 
     private fun deleteFolder(folder: String) {
+        val api = mDBApi ?: return
         try {
-            mDBApi!!.files().delete(folder)
+            api.files().deleteV2(folder)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteFolder: ", e)
         }
-
     }
 
     /**
@@ -440,10 +453,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxTemplatesFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).smsTemplatesDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxTemplatesFolder) ?: return
+            val dao = appDb.smsTemplatesDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -455,7 +468,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().deleteV2(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -465,7 +478,6 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadTemplates: ", e)
         }
-
     }
 
     /**
@@ -477,10 +489,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).reminderDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxFolder) ?: return
+            val dao = appDb.reminderDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -501,7 +513,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().delete(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -511,22 +523,21 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadReminders: ", e)
         }
-
     }
 
     private fun downloadFile(localFile: File, cloudFile: String) {
+        val api = mDBApi ?: return
         try {
             if (!localFile.exists()) {
                 localFile.createNewFile()
             }
             val outputStream = FileOutputStream(localFile)
-            mDBApi!!.files().download(cloudFile).download(outputStream)
+            api.files().download(cloudFile).download(outputStream)
         } catch (e1: DbxException) {
             LogUtil.e(TAG, "downloadFile: ", e1)
         } catch (e1: IOException) {
             LogUtil.e(TAG, "downloadFile: ", e1)
         }
-
     }
 
     /**
@@ -538,10 +549,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxNoteFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).notesDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxNoteFolder) ?: return
+            val dao = appDb.notesDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -555,7 +566,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().delete(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -565,7 +576,6 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadNotes: ", e)
         }
-
     }
 
     /**
@@ -577,10 +587,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxGroupFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).groupDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxGroupFolder) ?: return
+            val dao = appDb.groupDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -594,7 +604,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().delete(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -604,7 +614,6 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadGroups: ", e)
         }
-
     }
 
     /**
@@ -616,10 +625,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxBirthFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).birthdaysDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxBirthFolder) ?: return
+            val dao = appDb.birthdaysDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -633,7 +642,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().delete(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -643,7 +652,6 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadBirthdays: ", e)
         }
-
     }
 
     /**
@@ -655,10 +663,10 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxPlacesFolder) ?: return
-            val dao = AppDb.getAppDatabase(mContext).placesDao()
-            val backupTool = BackupTool.getInstance()
+            val result = api.files().listFolder(dbxPlacesFolder) ?: return
+            val dao = appDb.placesDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")
@@ -672,7 +680,7 @@ class Dropbox(private val mContext: Context) {
                     if (localFile.exists()) {
                         localFile.delete()
                     }
-                    mDBApi!!.files().delete(e.pathLower)
+                    api.files().deleteV2(e.pathLower)
                 }
             }
         } catch (e: DbxException) {
@@ -682,7 +690,6 @@ class Dropbox(private val mContext: Context) {
         } catch (e: IllegalStateException) {
             LogUtil.e(TAG, "downloadPlaces: ", e)
         }
-
     }
 
     fun uploadSettings() {
@@ -691,6 +698,7 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         val files = dir.listFiles() ?: return
         for (file in files) {
             if (!file.toString().endsWith(FileConfig.FILE_NAME_SETTINGS)) {
@@ -705,7 +713,7 @@ class Dropbox(private val mContext: Context) {
 
             if (fis == null) return
             try {
-                mDBApi!!.files().uploadBuilder(dbxSettingsFolder + file.name)
+                api.files().uploadBuilder(dbxSettingsFolder + file.name)
                         .withMode(WriteMode.OVERWRITE)
                         .uploadAndFinish(fis)
             } catch (e: DbxException) {
@@ -713,7 +721,6 @@ class Dropbox(private val mContext: Context) {
             } catch (e: IOException) {
                 LogUtil.e(TAG, "Something went wrong while uploading.", e)
             }
-
             break
         }
     }
@@ -724,15 +731,16 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return
         }
+        val api = mDBApi ?: return
         try {
-            val result = mDBApi!!.files().listFolder(dbxSettingsFolder) ?: return
+            val result = api.files().listFolder(dbxSettingsFolder) ?: return
             for (e in result.entries) {
                 val fileName = e.name
                 if (fileName.contains(FileConfig.FILE_NAME_SETTINGS)) {
                     val localFile = File("$dir/$fileName")
                     val cloudFile = dbxPlacesFolder + fileName
                     downloadFile(localFile, cloudFile)
-                    Prefs.getInstance(mContext).loadPrefsFromFile()
+                    prefs.loadPrefsFromFile()
                     break
                 }
             }
@@ -753,8 +761,9 @@ class Dropbox(private val mContext: Context) {
         if (!isLinked) {
             return 0
         }
+        val api = mDBApi ?: return 0
         try {
-            val result = mDBApi!!.files().listFolder("/") ?: return 0
+            val result = api.files().listFolder("/") ?: return 0
             count = result.entries.size
         } catch (e: DbxException) {
             LogUtil.e(TAG, "countFiles: ", e)

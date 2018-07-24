@@ -4,8 +4,10 @@ import android.app.IntentService
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import com.elementary.tasks.ReminderApp
 
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
+import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -28,10 +30,16 @@ import com.elementary.tasks.core.appWidgets.UpdatesHelper
 
 class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
 
+    @Inject lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onHandleIntent(intent: Intent?) {
-        val action = intent!!.getIntExtra("actionMinus", 0)
-        val widgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID)
+        val action = intent?.getIntExtra("actionMinus", 0) ?: ""
+        val widgetId = intent?.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID) ?: 0
         val sp = getSharedPreferences(CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
         var month = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + widgetId, 0)
         var year = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, 0)
@@ -48,7 +56,7 @@ class CalendarUpdateMinusService : IntentService("CalendarUpdateService") {
             }
             editor.putInt(CalendarWidgetConfig.CALENDAR_WIDGET_YEAR + widgetId, year)
             editor.apply()
-            UpdatesHelper.getInstance(applicationContext).updateCalendarWidget()
+            updatesHelper.updateCalendarWidget()
             stopSelf()
         } else {
             stopSelf()

@@ -49,11 +49,9 @@ class CalendarWidget : AppWidgetProvider() {
                 CalendarWidgetConfig.CALENDAR_WIDGET_PREF, Context.MODE_PRIVATE)
         for (i in appWidgetIds) {
             updateWidget(context, appWidgetManager, sp, i)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                val options = appWidgetManager.getAppWidgetOptions(i)
-                onAppWidgetOptionsChanged(context, appWidgetManager, i,
-                        options)
-            }
+            val options = appWidgetManager.getAppWidgetOptions(i)
+            onAppWidgetOptionsChanged(context, appWidgetManager, i,
+                    options)
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }

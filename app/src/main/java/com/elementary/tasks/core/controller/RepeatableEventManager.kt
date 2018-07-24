@@ -6,9 +6,6 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.RepeatNotificationReceiver
-import com.elementary.tasks.core.utils.CalendarUtils
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 
 /**
@@ -49,11 +46,11 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
             // TODO: 23.06.2018 Add export to Google Tasks work via WorkManager
         }
         if (reminder.exportToCalendar) {
-            if (Prefs.getInstance(context).isStockCalendarEnabled) {
-                CalendarUtils.addEventToStock(context, reminder.summary, TimeUtil.getDateTimeFromGmt(reminder.eventTime))
+            if (prefs.isStockCalendarEnabled) {
+                calendarUtils.addEventToStock(reminder.summary, TimeUtil.getDateTimeFromGmt(reminder.eventTime))
             }
-            if (Prefs.getInstance(context).isCalendarEnabled) {
-                CalendarUtils.addEvent(context, reminder)
+            if (prefs.isCalendarEnabled) {
+                calendarUtils.addEvent(reminder)
             }
         }
     }
@@ -66,7 +63,7 @@ abstract class RepeatableEventManager(reminder: Reminder) : EventManager(reminde
     }
 
     override fun pause(): Boolean {
-        Notifier.hideNotification(context, reminder.uniqueId)
+        notifier.hideNotification(reminder.uniqueId)
         EventJobService.cancelReminder(reminder.uniqueId.toString())
         RepeatNotificationReceiver().cancelAlarm(context, reminder.uniqueId)
         return true

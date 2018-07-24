@@ -108,7 +108,7 @@ class FileExplorerActivity : ThemedActivity() {
     }
 
     private fun showFullImage() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(mFileName)
         val imageView = ImageView(this)
         val layoutParams = LinearLayout.LayoutParams(
@@ -269,7 +269,7 @@ class FileExplorerActivity : ThemedActivity() {
             (sel.isFile || sel.isDirectory) && !sel.isHidden
         }
 
-        var list = try {
+        val list = try {
             Arrays.asList(*path.list(filter))
         } catch (e: NullPointerException) {
             arrayListOf<String>()
