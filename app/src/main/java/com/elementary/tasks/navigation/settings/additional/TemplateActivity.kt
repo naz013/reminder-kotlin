@@ -9,6 +9,7 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.BackupTool
@@ -18,6 +19,7 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplateViewModel
 import kotlinx.android.synthetic.main.activity_template.*
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,8 +42,14 @@ import java.io.IOException
 class TemplateActivity : ThemedActivity() {
 
     private lateinit var viewModel: SmsTemplateViewModel
-
     private var mItem: SmsTemplate? = null
+
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +69,9 @@ class TemplateActivity : ThemedActivity() {
                 val scheme = name!!.scheme
                 mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getTemplate(cr, name)
+                    backupTool.getTemplate(cr, name)
                 } else {
-                    BackupTool.getInstance().getTemplate(name.path, null)
+                    backupTool.getTemplate(name.path, null)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()

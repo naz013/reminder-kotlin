@@ -4,14 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.aech.BaseHolder
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.views.roboto.RoboCheckBox
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
@@ -35,7 +34,7 @@ import java.util.*
  * limitations under the License.
  */
 class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_task, parent, false)) {
 
     fun bind(googleTask: GoogleTask) {
         itemView.task.text = googleTask.title
@@ -51,24 +50,24 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
         itemView.checkDone.onClick { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
-    fun loadMarker(view: View, listId: String) {
+    private fun loadMarker(view: View, listId: String) {
 //            if (listId != "" && colors != null && colors.containsKey(listId)) {
 //                view.setBackgroundColor(ThemeUtil.getInstance(view.context).getNoteColor(colors.get(listId)))
 //            }
     }
 
-    fun loadTaskCard(cardView: CardView, i: Int) {
-        cardView.setCardBackgroundColor(ThemeUtil.getInstance(cardView.context).cardStyle)
+    private fun loadTaskCard(cardView: CardView, i: Int) {
+        cardView.setCardBackgroundColor(themeUtil.cardStyle)
         if (Module.isLollipop) {
             cardView.cardElevation = Configs.CARD_ELEVATION
         }
     }
 
-    fun loadCheck(checkBox: RoboCheckBox, item: GoogleTask) {
+    private fun loadCheck(checkBox: RoboCheckBox, item: GoogleTask) {
         checkBox.isChecked = item.status.matches(Google.TASKS_COMPLETE.toRegex())
     }
 
-    fun loadDue(view: RoboTextView, due: Long) {
+    private fun loadDue(view: RoboTextView, due: Long) {
         val full24Format = SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault())
         val calendar = Calendar.getInstance()
         if (due != 0L) {

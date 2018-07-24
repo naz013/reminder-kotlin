@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
-
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.CalendarUtils
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
@@ -66,7 +64,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 isInProgress.postValue(false)
                 result.postValue(Commands.UPDATED)
             }
-            CalendarUtils.deleteEvents(getApplication(), reminder.uniqueId)
+            calendarUtils.deleteEvents(reminder.uniqueId)
             DeleteFilesAsync(getApplication()).execute(reminder.uuId)
         }
     }

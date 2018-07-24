@@ -228,7 +228,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
     }
 
     private fun showMonthDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setItems(R.array.month_list) { _, i -> setImageForMonth(i) }
         val dialog = builder.create()
         dialog.show()
@@ -240,7 +240,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
             return
         }
         if (mSelectedItem == null) return
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         val maxSize = mSelectedItem!!.height.toString() + "x" + mSelectedItem!!.width
         builder.setItems(arrayOf<CharSequence>(maxSize, "1080x1920", "768x1280", "480x800")) { dialogInterface, i ->
             var width = mSelectedItem!!.width

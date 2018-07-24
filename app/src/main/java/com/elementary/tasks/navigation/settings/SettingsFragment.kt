@@ -48,7 +48,6 @@ class SettingsFragment : BaseSettingsFragment() {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.action_settings))
             callback?.onFragmentSelect(this)
-            callback?.setClick(null)
         }
     }
 }

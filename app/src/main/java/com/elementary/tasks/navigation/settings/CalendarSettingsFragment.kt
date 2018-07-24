@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
 import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor
@@ -58,7 +56,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showFirstDayDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.first_day))
         val items = arrayOf(getString(R.string.sunday), getString(R.string.monday))
@@ -80,7 +78,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     private fun initRemindersColorPrefs() {
         reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
         reminderColorPrefs.onClick { replaceFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
-        reminderColorPrefs.setViewResource(ThemeUtil.getInstance(context!!).getIndicator(prefs.reminderColor))
+        reminderColorPrefs.setViewResource(themeUtil.getIndicator(prefs.reminderColor))
     }
 
     private fun initRemindersPrefs() {
@@ -129,11 +127,11 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private fun initBirthdaysColorPrefs() {
         selectedColorPrefs.onClick { replaceFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
-        selectedColorPrefs.setViewResource(ThemeUtil.getInstance(context!!).getIndicator(prefs.birthdayColor))
+        selectedColorPrefs.setViewResource(themeUtil.getIndicator(prefs.birthdayColor))
     }
 
     private fun initTodayColorPrefs() {
         themeColorPrefs.onClick { replaceFragment(FragmentTodayColor(), getString(R.string.today_color)) }
-        themeColorPrefs.setViewResource(ThemeUtil.getInstance(context!!).getIndicator(prefs.todayColor))
+        themeColorPrefs.setViewResource(themeUtil.getIndicator(prefs.todayColor))
     }
 }

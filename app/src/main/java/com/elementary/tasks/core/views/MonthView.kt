@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.IntRange
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.utils.AssetsUtil
 import com.elementary.tasks.core.utils.LogUtil
@@ -18,6 +19,7 @@ import com.elementary.tasks.core.utils.ThemeUtil
 import hirondelle.date4j.DateTime
 import java.lang.ref.WeakReference
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -74,6 +76,15 @@ class MonthView : View, View.OnTouchListener {
         }
     }
 
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var prefs: Prefs
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     constructor(context: Context) : super(context) {
         init(context)
     }
@@ -89,16 +100,15 @@ class MonthView : View, View.OnTouchListener {
     private fun init(context: Context) {
         this.mContext = context
         this.paint = Paint()
-        this.paint!!.isAntiAlias = true
+        this.paint?.isAntiAlias = true
         this.circlePaint = Paint()
-        this.circlePaint!!.isAntiAlias = true
-        val themeUtil = ThemeUtil.getInstance(context)
-        if (themeUtil.isDark) {
-            mDefaultColor = Color.WHITE
+        this.circlePaint?.isAntiAlias = true
+        mDefaultColor = if (themeUtil.isDark) {
+            Color.WHITE
         } else {
-            mDefaultColor = Color.BLACK
+            Color.BLACK
         }
-        mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(Prefs.getInstance(context).todayColor))
+        mTodayColor = themeUtil.getColor(themeUtil.colorPrimary(prefs.todayColor))
         paint!!.typeface = AssetsUtil.getTypeface(context, 7)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
@@ -123,13 +133,13 @@ class MonthView : View, View.OnTouchListener {
 
     fun setDate(year: Int, @IntRange(from = 1, to = 12) month: Int) {
         mDateTimeList = ArrayList()
-        mDateTimeList!!.clear()
+        mDateTimeList?.clear()
         mMonth = month
         mYear = year
         val firstDateOfMonth = DateTime(mYear, mMonth, 1, 0, 0, 0, 0)
         val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
         var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
-        val startDayOfWeek = Prefs.getInstance(mContext!!).startDay + 1
+        val startDayOfWeek = prefs.startDay + 1
         if (weekdayOfFirstDate < startDayOfWeek) {
             weekdayOfFirstDate += 7
         }

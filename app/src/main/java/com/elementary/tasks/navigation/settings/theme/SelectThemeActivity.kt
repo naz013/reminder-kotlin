@@ -6,7 +6,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.ViewUtils
 import com.elementary.tasks.core.views.ColorPickerView
 import kotlinx.android.synthetic.main.activity_select_theme.*
@@ -69,7 +68,7 @@ class SelectThemeActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun updateNotification() {
         if (prefs.isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(this, PermanentReminderReceiver.ACTION_SHOW)
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         }
     }
 

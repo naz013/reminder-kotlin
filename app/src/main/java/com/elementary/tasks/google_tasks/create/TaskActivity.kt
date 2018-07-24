@@ -11,17 +11,22 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.LogUtil
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskViewModel
 import kotlinx.android.synthetic.main.activity_create_google_task.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -76,10 +81,17 @@ open class TaskActivity : ThemedActivity() {
         timeField.text = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
     }
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     private fun hideDialog() {
         if (mDialog != null && mDialog!!.isShowing) {
             try {
-                mDialog!!.dismiss()
+                mDialog?.dismiss()
             } catch (e: IllegalArgumentException) {
                 LogUtil.d(TAG, "hideDialog: " + e.localizedMessage)
             }
@@ -226,7 +238,7 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun selectDateAction(type: Int) {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         var types = arrayOf(getString(R.string.no_date), getString(R.string.select_date))
         if (type == 2) {
             types = arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
@@ -307,7 +319,7 @@ open class TaskActivity : ThemedActivity() {
                 position = i
             }
         }
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_list)
         val finalList = list
         builder.setSingleChoiceItems(ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, names),
@@ -390,7 +402,7 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun deleteDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_task))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
@@ -447,16 +459,16 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myCallBack, mHour, mMinute)
     }
 
     override fun onDestroy() {
-        UpdatesHelper.getInstance(this).updateTasksWidget()
         super.onDestroy()
+        updatesHelper.updateTasksWidget()
     }
 
     companion object {

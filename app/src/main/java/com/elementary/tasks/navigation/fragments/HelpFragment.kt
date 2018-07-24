@@ -2,9 +2,7 @@ package com.elementary.tasks.navigation.fragments
 
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeUtil
-
-import java.util.Locale
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -29,7 +27,7 @@ class HelpFragment : BaseWebViewFragment() {
 
     override val url: String
         get() {
-            val isDark = ThemeUtil.getInstance(context!!).isDark
+            val isDark = themeUtil.isDark
             val localeCheck = Locale.getDefault().toString().toLowerCase()
             val url: String
             when {

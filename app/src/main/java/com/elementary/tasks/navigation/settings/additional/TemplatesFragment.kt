@@ -157,7 +157,6 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.messages))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener { openCreateScreen() })
             callback?.onScrollChanged(templatesList)
         }
     }

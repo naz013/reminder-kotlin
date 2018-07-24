@@ -10,9 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListsViewModel
 import com.elementary.tasks.google_tasks.create.TaskActivity
 import com.elementary.tasks.google_tasks.create.TaskListActivity
@@ -52,14 +50,14 @@ class GoogleTasksFragment : BaseNavigationFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.tasks_menu, menu)
+        inflater?.inflate(R.menu.tasks_menu, menu)
         if (currentPos != 0) {
-            menu!!.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
+            menu?.add(Menu.NONE, MENU_ITEM_EDIT, 100, R.string.edit_list)
             val listItem = googleTaskLists[currentPos]
             if (listItem.def != 1) {
-                menu.add(Menu.NONE, MENU_ITEM_DELETE, 100, getStr(R.string.delete_list))
+                menu?.add(Menu.NONE, MENU_ITEM_DELETE, 100, getStr(R.string.delete_list))
             }
-            menu.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
+            menu?.add(Menu.NONE, MENU_ITEM_CLEAR, 100, R.string.delete_completed_tasks)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -157,7 +155,6 @@ class GoogleTasksFragment : BaseNavigationFragment() {
         if (callback != null) {
             callback?.onTitleChange(getStr(R.string.google_tasks))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener { addNewTask() })
         }
     }
 
@@ -169,7 +166,7 @@ class GoogleTasksFragment : BaseNavigationFragment() {
 
     private fun showDialog() {
         val items = arrayOf(getStr(R.string.default_string), getStr(R.string.by_date_az), getStr(R.string.by_date_za), getStr(R.string.active_first), getStr(R.string.completed_first))
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getStr(R.string.order))
         builder.setItems(items) { dialog, which ->
             when (which) {
@@ -187,7 +184,7 @@ class GoogleTasksFragment : BaseNavigationFragment() {
     }
 
     private fun deleteDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setMessage(getStr(R.string.delete_this_list))
         builder.setNegativeButton(getStr(R.string.no)) { dialog, _ -> dialog.dismiss() }
@@ -205,19 +202,18 @@ class GoogleTasksFragment : BaseNavigationFragment() {
 
     private fun updateScreen(pos: Int) {
         if (callback != null) {
-            val mColor = ThemeUtil.getInstance(context!!)
             if (pos == 0) {
-                callback!!.onTitleChange(getStr(R.string.all))
-                callback!!.onThemeChange(mColor.getColor(mColor.colorPrimary()),
-                        mColor.getColor(mColor.colorPrimaryDark()),
-                        mColor.getColor(mColor.colorAccent()))
+                callback?.onTitleChange(getStr(R.string.all))
+                callback?.onThemeChange(themeUtil.getColor(themeUtil.colorPrimary()),
+                        themeUtil.getColor(themeUtil.colorPrimaryDark()),
+                        themeUtil.getColor(themeUtil.colorAccent()))
             } else {
                 val taskList = googleTaskLists[pos]
-                callback!!.onTitleChange(taskList.title)
+                callback?.onTitleChange(taskList.title)
                 val tmp = taskList.color
-                callback!!.onThemeChange(mColor.getColor(mColor.colorPrimary(tmp)),
-                        mColor.getColor(mColor.colorPrimaryDark(tmp)),
-                        mColor.getColor(mColor.colorAccent(tmp)))
+                callback?.onThemeChange(themeUtil.getColor(themeUtil.colorPrimary(tmp)),
+                        themeUtil.getColor(themeUtil.colorPrimaryDark(tmp)),
+                        themeUtil.getColor(themeUtil.colorAccent(tmp)))
             }
         }
     }

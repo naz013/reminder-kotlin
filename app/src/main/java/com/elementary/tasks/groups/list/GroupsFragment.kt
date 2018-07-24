@@ -12,7 +12,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.groups.GroupsViewModel
 import com.elementary.tasks.groups.CreateGroupActivity
@@ -53,7 +52,7 @@ class GroupsFragment : BaseNavigationFragment() {
             if (mAdapter.itemCount == 1) {
                 items = arrayOf(getString(R.string.change_color), getString(R.string.edit))
             }
-            Dialogues.showLCAM(context!!, { item ->
+            dialogues.showLCAM(context!!, { item ->
                 when (item) {
                     0 -> changeColor(mAdapter.getItem(position))
                     1 -> startActivity(Intent(context, CreateGroupActivity::class.java)
@@ -93,7 +92,7 @@ class GroupsFragment : BaseNavigationFragment() {
         if (Module.isPro) {
             items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
         }
-        Dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(group, item) }, *items)
+        dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(group, item) }, *items)
     }
 
     private fun initGroupsList() {
@@ -109,7 +108,6 @@ class GroupsFragment : BaseNavigationFragment() {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.groups))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener{ startActivity(Intent(context, CreateGroupActivity::class.java)) })
             callback?.onScrollChanged(recyclerView)
         }
     }

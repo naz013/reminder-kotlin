@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notes.*
@@ -102,7 +101,7 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showTextSizePickerDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.text_size)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 18
@@ -133,7 +132,7 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showTimePickerDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.time)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 120
@@ -166,7 +165,7 @@ class NoteSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showOpacityPickerDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.color_saturation)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 100

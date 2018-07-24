@@ -7,16 +7,17 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.googleTasks.GoogleTaskListViewModel
 import com.elementary.tasks.core.views.ColorPickerView
 import kotlinx.android.synthetic.main.activity_create_task_list.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,6 +45,13 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     private var color: Int = 0
 
     private var mDialog: ProgressDialog? = null
+
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -165,7 +173,7 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     }
 
     private fun deleteDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_list))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
@@ -202,7 +210,7 @@ class TaskListActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        UpdatesHelper.getInstance(this).updateTasksWidget()
+        updatesHelper.updateTasksWidget()
     }
 
 

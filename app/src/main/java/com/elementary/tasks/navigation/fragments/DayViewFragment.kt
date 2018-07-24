@@ -56,7 +56,6 @@ class DayViewFragment : BaseCalendarFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_voice -> {
-                callback?.onVoiceAction()
                 return true
             }
         }
@@ -74,7 +73,7 @@ class DayViewFragment : BaseCalendarFragment() {
             calendar.timeInMillis = dateMills
         }
         val dayString = TimeUtil.getDate(calendar.timeInMillis)
-        if (callback != null) callback!!.onTitleChange(dayString)
+        if (callback != null) callback?.onTitleChange(dayString)
     }
 
     override fun onResume() {
@@ -83,7 +82,6 @@ class DayViewFragment : BaseCalendarFragment() {
             callback?.onTitleChange(getString(R.string.calendar))
             callback?.onFragmentSelect(this)
             callback?.onMenuSelect(R.id.nav_day_view)
-            callback?.setClick(View.OnClickListener { showActionDialog(false) })
         }
         loadData()
     }

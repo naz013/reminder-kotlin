@@ -13,7 +13,6 @@ import com.elementary.tasks.birthdays.EventsDataSingleton
 import com.elementary.tasks.birthdays.EventsItem
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.reminder.createEdit.AddReminderActivity
 import kotlinx.android.synthetic.main.dialog_action_picker.view.*
@@ -44,7 +43,7 @@ abstract class BaseCalendarFragment : BaseNavigationFragment() {
     private var mDialog: AlertDialog? = null
 
     protected fun showActionDialog(showEvents: Boolean) {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         val binding = LayoutInflater.from(context).inflate(R.layout.dialog_action_picker, null)
         binding.addBirth.setOnClickListener {
             mDialog!!.dismiss()

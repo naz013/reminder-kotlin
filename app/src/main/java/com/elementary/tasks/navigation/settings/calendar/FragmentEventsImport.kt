@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -26,6 +27,7 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,6 +51,17 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
 
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
+
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+    @Inject
+    lateinit var notifier: Notifier
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     private val intervalPosition: Int
         get() {
@@ -80,7 +93,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
     }
 
     private fun showIntervalDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.interval))
         val items = arrayOf<CharSequence>(getString(R.string.one_hour), getString(R.string.six_hours), getString(R.string.twelve_hours), getString(R.string.one_day), getString(R.string.two_days))
@@ -127,7 +140,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
         if (!checkCalendarPerm()) {
             return
         }
-        list = CalendarUtils.getCalendarsList(context!!)
+        list = calendarUtils.getCalendarsList()
         if (list.isEmpty()) {
             Toast.makeText(context, getString(R.string.no_calendars_found), Toast.LENGTH_SHORT).show()
         }
@@ -229,7 +242,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             alarm.cancelEventCheck(context!!)
     }
 
-    private inner class Import internal constructor(private val mContext: Context) : AsyncTask<HashMap<String, Int>, Void, Int>() {
+    private inner class Import constructor(private val mContext: Context) : AsyncTask<HashMap<String, Int>, Void, Int>() {
         private var dialog: ProgressDialog? = null
 
         override fun onPreExecute() {
@@ -243,7 +256,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             var eventsCount = 0
             val map = params[0]
             if (map.containsKey(EVENT_KEY)) {
-                val eventItems = CalendarUtils.getEvents(mContext, map[EVENT_KEY]!!)
+                val eventItems = calendarUtils.getEvents(map[EVENT_KEY]!!)
                 if (!eventItems.isEmpty()) {
                     val list = AppDb.getAppDatabase(mContext).calendarEventsDao().eventIds()
                     for (item in eventItems) {
@@ -318,8 +331,8 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             if (result == 0) Toast.makeText(mContext, getString(R.string.no_events_found), Toast.LENGTH_SHORT).show()
             if (result > 0) {
                 Toast.makeText(mContext, result.toString() + " " + getString(R.string.events_found), Toast.LENGTH_SHORT).show()
-                UpdatesHelper.getInstance(mContext).updateCalendarWidget()
-                Notifier.updateReminderPermanent(mContext, PermanentReminderReceiver.ACTION_SHOW)
+                updatesHelper.updateCalendarWidget()
+                notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
             }
         }
     }

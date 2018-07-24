@@ -10,12 +10,12 @@ import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
@@ -23,6 +23,7 @@ import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_birthdays_settings.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,6 +47,13 @@ import java.util.*
 class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
+
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun layoutRes(): Int = R.layout.fragment_birthdays_settings
 
@@ -138,7 +146,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         val calendar = TimeUtil.getBirthdayCalendar(prefs.birthdayTime)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        TimeUtil.showTimePicker(context!!, this, hour, minute)
+        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, this, hour, minute)
     }
 
     private fun initDaysToPrefs() {
@@ -148,7 +156,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
     }
 
     private fun showDaysToDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.days_to_birthday)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 5
@@ -209,8 +217,8 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         val isChecked = widgetShowPrefs.isChecked
         widgetShowPrefs.isChecked = !isChecked
         prefs.isBirthdayInWidgetEnabled = !isChecked
-        UpdatesHelper.getInstance(context!!).updateCalendarWidget()
-        UpdatesHelper.getInstance(context!!).updateWidget()
+        updatesHelper.updateCalendarWidget()
+        updatesHelper.updateWidget()
     }
 
     private fun initBirthdayReminderPrefs() {
@@ -223,7 +231,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         birthReminderPrefs.isChecked = !isChecked
         prefs.isBirthdayReminderEnabled = !isChecked
         if (!isChecked) {
-            EventJobService.enableBirthdayAlarm(context!!)
+            EventJobService.enableBirthdayAlarm(prefs)
         } else {
             cleanBirthdays()
             EventJobService.cancelBirthdayAlarm()
@@ -246,7 +254,7 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         prefs.birthdayTime = TimeUtil.getBirthdayTime(i, i1)
         initBirthdayTimePrefs()
         if (prefs.isBirthdayReminderEnabled) {
-            EventJobService.enableBirthdayAlarm(context!!)
+            EventJobService.enableBirthdayAlarm(prefs)
         }
     }
 

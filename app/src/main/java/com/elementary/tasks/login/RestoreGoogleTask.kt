@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.AppDb
@@ -13,6 +14,7 @@ import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.groups.GroupsUtil
 
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -36,6 +38,13 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
     private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onPreExecute() {
         super.onPreExecute()
         try {
@@ -53,8 +62,8 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
     override fun onProgressUpdate(vararg values: String) {
         super.onProgressUpdate(*values)
         if (mDialog != null) {
-            mDialog!!.setMessage(values[0])
-            mDialog!!.show()
+            mDialog?.setMessage(values[0])
+            mDialog?.show()
         }
     }
 
@@ -63,7 +72,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
         if (drive?.drive != null) {
             publishProgress(mContext.context.getString(R.string.syncing_groups))
             try {
-                drive.drive!!.downloadGroups(false)
+                drive.drive?.downloadGroups(false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -83,7 +92,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
 
             publishProgress(mContext.context.getString(R.string.syncing_reminders))
             try {
-                drive.drive!!.downloadReminders(mContext.context, false)
+                drive.drive?.downloadReminders(mContext.context, false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -93,7 +102,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
             //export & import notes
             publishProgress(mContext.context.getString(R.string.syncing_notes))
             try {
-                drive.drive!!.downloadNotes(false)
+                drive.drive?.downloadNotes(false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -103,7 +112,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
             //export & import birthdays
             publishProgress(mContext.context.getString(R.string.syncing_birthdays))
             try {
-                drive.drive!!.downloadBirthdays(false)
+                drive.drive?.downloadBirthdays(false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -113,7 +122,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
             //export & import places
             publishProgress(mContext.context.getString(R.string.syncing_places))
             try {
-                drive.drive!!.downloadPlaces(false)
+                drive.drive?.downloadPlaces(false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -123,7 +132,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
             //export & import templates
             publishProgress(mContext.context.getString(R.string.syncing_templates))
             try {
-                drive.drive!!.downloadTemplates(false)
+                drive.drive?.downloadTemplates(false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -131,7 +140,7 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
             }
 
             try {
-                drive.drive!!.downloadSettings(mContext.context, false)
+                drive.drive?.downloadSettings(mContext.context, false)
             } catch (e: IOException) {
                 e.printStackTrace()
             } catch (e: IllegalStateException) {
@@ -146,14 +155,14 @@ class RestoreGoogleTask(context: Context, private val mListener: (() -> Unit)?) 
         super.onPostExecute(aVoid)
         if (mDialog != null && mDialog!!.isShowing) {
             try {
-                mDialog!!.dismiss()
+                mDialog?.dismiss()
             } catch (e: IllegalArgumentException) {
                 LogUtil.d(TAG, "onPostExecute: " + e.localizedMessage)
             }
 
         }
-        UpdatesHelper.getInstance(mContext.context).updateWidget()
-        UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
+        updatesHelper.updateWidget()
+        updatesHelper.updateNotesWidget()
         mListener?.invoke()
     }
     companion object {

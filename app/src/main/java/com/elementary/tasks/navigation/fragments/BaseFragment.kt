@@ -13,6 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
 
@@ -40,6 +41,7 @@ abstract class BaseFragment : Fragment() {
         private set
     @Inject lateinit var prefs: Prefs
     @Inject lateinit var dialogues: Dialogues
+    @Inject lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)

@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LED
 import com.elementary.tasks.core.utils.Language
 import kotlinx.android.synthetic.main.fragment_birthday_notifications.*
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,7 +39,14 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
     private var mItemSelect: Int = 0
     private val localeAdapter: ArrayAdapter<String>
         get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice,
-                Language.getLocaleNames(context!!))
+                language.getLocaleNames(context!!))
+
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun layoutRes(): Int = R.layout.fragment_birthday_notifications
 
@@ -69,7 +77,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
     }
 
     private fun showLedColorDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.led_color))
         val colors = LED.getAllNames(context!!)
         val adapter = ArrayAdapter(context!!,
@@ -121,7 +129,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
     }
 
     private fun showSoundDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.melody))
         val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
@@ -158,16 +166,16 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
 
     private fun showTtsLocale() {
         val locale = prefs.birthdayTtsLocale
-        val i = Language.getLocalePosition(locale)
-        localePrefs.setDetailText(Language.getLocaleNames(context!!)[i])
+        val i = language.getLocalePosition(locale)
+        localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
     }
 
     private fun showTtsLocaleDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locale = prefs.birthdayTtsLocale
-        mItemSelect = Language.getLocalePosition(locale)
+        mItemSelect = language.getLocalePosition(locale)
         builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveTtsLocalePrefs()
@@ -180,7 +188,7 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
     }
 
     private fun saveTtsLocalePrefs() {
-        prefs.birthdayTtsLocale = Language.getLocaleByPosition(mItemSelect)
+        prefs.birthdayTtsLocale = language.getLocaleByPosition(mItemSelect)
         showTtsLocale()
     }
 
