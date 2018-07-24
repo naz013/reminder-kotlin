@@ -1,21 +1,16 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
 import com.elementary.tasks.Actions
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.ShowBirthdayActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.TelephonyUtil
-
-import java.util.Calendar
+import com.elementary.tasks.core.utils.*
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -35,7 +30,14 @@ import java.util.Calendar
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdayActionService : BroadcastReceiver() {
+class BirthdayActionService : BaseBroadcast() {
+
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     private fun updateBirthday(context: Context, item: Birthday) {
         val calendar = Calendar.getInstance()
@@ -50,7 +52,7 @@ class BirthdayActionService : BroadcastReceiver() {
         if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
             TelephonyUtil.sendSms(item.number, context)
             updateBirthday(context, item)
-            finish(context, item.uniqueId)
+            finish(notifier, updatesHelper, item.uniqueId)
         } else {
             hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
         }
@@ -61,7 +63,7 @@ class BirthdayActionService : BroadcastReceiver() {
         if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(item.number, context)
             updateBirthday(context, item)
-            finish(context, item.uniqueId)
+            finish(notifier, updatesHelper, item.uniqueId)
         } else {
             hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
         }
@@ -74,7 +76,7 @@ class BirthdayActionService : BroadcastReceiver() {
                     intent.getIntExtra(Constants.INTENT_ID, 0))
             notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
             context.startActivity(notificationIntent)
-            Notifier.hideNotification(context, PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
+            notifier.hideNotification(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)
         }
     }
 
@@ -83,7 +85,7 @@ class BirthdayActionService : BroadcastReceiver() {
         val item = AppDb.getAppDatabase(context).birthdaysDao().getById(id)
         if (item != null) {
             updateBirthday(context, item)
-            finish(context, item.uniqueId)
+            finish(notifier, updatesHelper, item.uniqueId)
         }
     }
 
@@ -131,10 +133,10 @@ class BirthdayActionService : BroadcastReceiver() {
             return intent
         }
 
-        private fun finish(context: Context, id: Int) {
-            Notifier.hideNotification(context, id)
-            UpdatesHelper.getInstance(context).updateWidget()
-            UpdatesHelper.getInstance(context).updateCalendarWidget()
+        private fun finish(notifier: Notifier, updatesHelper: UpdatesHelper, id: Int) {
+            notifier.hideNotification( id)
+            updatesHelper.updateWidget()
+            updatesHelper.updateCalendarWidget()
         }
     }
 }

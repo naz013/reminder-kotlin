@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.controller
 
 import android.text.TextUtils
-
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.GeolocationService
-import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeCount
 
@@ -51,7 +49,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
         EventJobService.cancelReminder(reminder.uniqueId.toString())
         reminder.isActive = false
         super.save()
-        Notifier.hideNotification(context, reminder.uniqueId)
+        notifier.hideNotification(reminder.uniqueId)
         stopTracking(false)
         return true
     }
@@ -132,6 +130,6 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     }
 
     override fun calculateTime(isNew: Boolean): Long {
-        return TimeCount.getInstance(context).generateDateTime(reminder.eventTime, reminder.repeatInterval)
+        return timeCount.generateDateTime(reminder.eventTime, reminder.repeatInterval)
     }
 }

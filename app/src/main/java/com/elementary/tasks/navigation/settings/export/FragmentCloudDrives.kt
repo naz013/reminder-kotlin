@@ -12,7 +12,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.withUIContext
@@ -68,7 +67,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     }
 
     private fun showErrorDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setMessage(getString(R.string.failed_to_login))
         builder.setPositiveButton(R.string.ok) { dialogInterface, _ -> dialogInterface.dismiss() }
         builder.create().show()
@@ -81,7 +80,7 @@ class FragmentCloudDrives : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mDropbox = DropboxLogin(activity!!, mDropboxCallback)
-        mGoogleLogin = GoogleLogin(activity!!, mLoginCallback)
+        mGoogleLogin = GoogleLogin(activity!!, prefs, mLoginCallback)
         initDropboxButton()
         initGoogleDriveButton()
         checkGoogleStatus()

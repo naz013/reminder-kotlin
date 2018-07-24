@@ -1,12 +1,8 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
 import com.elementary.tasks.Actions
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,21 +22,21 @@ import com.elementary.tasks.core.utils.Prefs
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PermanentReminderReceiver : BroadcastReceiver() {
+class PermanentReminderReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        if (!Prefs.getInstance(context).isSbNotificationEnabled) {
-            Notifier.hideNotification(context, PERM_ID)
+        if (!prefs.isSbNotificationEnabled) {
+            notifier.hideNotification(PERM_ID)
         }
         if (intent != null) {
             val action = intent.action
             if (action != null && action.matches(ACTION_SHOW.toRegex())) {
-                Notifier.showReminderPermanent(context)
+                notifier.showReminderPermanent()
             } else {
-                Notifier.hideNotification(context, PERM_ID)
+                notifier.hideNotification(PERM_ID)
             }
         } else {
-            Notifier.hideNotification(context, PERM_ID)
+            notifier.hideNotification(PERM_ID)
         }
     }
 

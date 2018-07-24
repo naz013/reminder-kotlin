@@ -18,6 +18,7 @@ import java.util.ArrayList
 import java.util.Calendar
 import java.util.HashMap
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.Comparator
 
 /**
@@ -39,11 +40,13 @@ import kotlin.Comparator
  * limitations under the License.
  */
 
-class EventsFactory internal constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class EventsFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val data = ArrayList<CalendarItem>()
     private val map = HashMap<String, Reminder>()
-    private val mCount: TimeCount = TimeCount.getInstance(mContext)
+    @Inject lateinit var mCount: TimeCount
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var reminderUtils: ReminderUtils
     private val widgetID: Int = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
@@ -55,7 +58,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
     override fun onDataSetChanged() {
         data.clear()
         map.clear()
-        val is24 = Prefs.getInstance(mContext).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         val reminderItems = AppDb.getAppDatabase(mContext).reminderDao().getAll(true, false)
         for (item in reminderItems) {
             if (item.viewType == Reminder.SHOPPING) {
@@ -78,7 +81,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
                 Reminder.isBase(type, Reminder.BY_WEEK) -> {
                     val calendar = Calendar.getInstance()
                     calendar.timeInMillis = eventTime
-                    date = ReminderUtils.getRepeatString(mContext, item.weekdays)
+                    date = reminderUtils.getRepeatString(item.weekdays)
                     time = TimeUtil.getTime(calendar.time, is24)
                 }
                 Reminder.isBase(type, Reminder.BY_MONTH) -> {
@@ -100,7 +103,6 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             data.add(CalendarItem(CalendarItem.Type.REMINDER, summary, item.target, id, time, date, eventTime, viewType, item))
         }
 
-        val prefs = Prefs.getInstance(mContext)
         if (prefs.isBirthdayInWidgetEnabled) {
             var mDay: Int
             var mMonth: Int
@@ -145,7 +147,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             var time2: Long = 0
             if (eventsItem.item is Birthday) {
                 val item = eventsItem.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.date)
+                val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                 if (dateItem != null) {
                     val calendar = dateItem.calendar
                     time1 = calendar.timeInMillis
@@ -156,7 +158,7 @@ class EventsFactory internal constructor(private val mContext: Context, intent: 
             }
             if (o2.item is Birthday) {
                 val item = o2.item as Birthday
-                val dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.date)
+                val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                 if (dateItem != null) {
                     val calendar = dateItem.calendar
                     time2 = calendar.timeInMillis

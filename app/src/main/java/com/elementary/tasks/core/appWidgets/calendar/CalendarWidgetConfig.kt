@@ -35,7 +35,6 @@ class CalendarWidgetConfig : ThemedActivity() {
 
     private var widgetID = AppWidgetManager.INVALID_APPWIDGET_ID
     private var resultValue: Intent? = null
-
     private var mThemes: List<CalendarTheme>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +50,7 @@ class CalendarWidgetConfig : ThemedActivity() {
 
     private fun initActionBar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         toolbar.title = getString(R.string.calendar)
     }
@@ -67,7 +66,7 @@ class CalendarWidgetConfig : ThemedActivity() {
             finish()
         }
         resultValue = Intent()
-        resultValue!!.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
+        resultValue?.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetID)
         setResult(RESULT_CANCELED, resultValue)
     }
 
@@ -78,8 +77,7 @@ class CalendarWidgetConfig : ThemedActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.widget_menu, menu)
+        menuInflater.inflate(R.menu.widget_menu, menu)
         return true
     }
 

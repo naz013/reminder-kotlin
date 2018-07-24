@@ -1,11 +1,9 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
-
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.additional.FollowReminderActivity
 import com.elementary.tasks.core.additional.QuickSmsActivity
@@ -13,8 +11,6 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
-
 import javax.inject.Inject
 
 /**
@@ -36,7 +32,7 @@ import javax.inject.Inject
  * limitations under the License.
  */
 
-class CallReceiver : BroadcastReceiver() {
+class CallReceiver : BaseBroadcast() {
 
     private lateinit var mContext: Context
     private var mIncomingNumber: String? = null
@@ -62,7 +58,6 @@ class CallReceiver : BroadcastReceiver() {
     inner class CustomPhoneStateListener : PhoneStateListener() {
 
         override fun onCallStateChanged(state: Int, incomingNumber: String?) {
-            val prefs = Prefs.getInstance(mContext)
             LogUtil.d(TAG, "onCallStateChanged: $incomingNumber")
             if (incomingNumber != null && incomingNumber.isNotEmpty()) {
                 mIncomingNumber = incomingNumber
@@ -102,7 +97,7 @@ class CallReceiver : BroadcastReceiver() {
                                 missedCall.dateTime = currTime
                                 missedCall.number = number
                                 appDb.missedCallsDao().insert(missedCall)
-                                EventJobService.enableMissedCall(mContext, missedCall.number)
+                                EventJobService.enableMissedCall(prefs, missedCall.number)
                             }
                         } else {
                             LogUtil.d(TAG, "onCallStateChanged: is quickSms " + mIncomingNumber!!)

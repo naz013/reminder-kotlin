@@ -7,18 +7,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
+import androidx.core.content.ContextCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
-
-import java.util.ArrayList
-import java.util.Calendar
-
 import hirondelle.date4j.DateTime
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -38,7 +37,7 @@ import hirondelle.date4j.DateTime
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class CalendarMonthFactory internal constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+class CalendarMonthFactory constructor(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private val mDateTimeList = ArrayList<DateTime>()
     private val mPagerData = ArrayList<WidgetItem>()
@@ -46,6 +45,13 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
     private var mDay: Int = 0
     private var mMonth: Int = 0
     private var mYear: Int = 0
+
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate() {
         mDateTimeList.clear()
@@ -69,7 +75,7 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
         val lastDateOfMonth = firstDateOfMonth.plusDays(firstDateOfMonth.numDaysInMonth - 1)
 
         var weekdayOfFirstDate = firstDateOfMonth.weekDay!!
-        val startDayOfWeek = Prefs.getInstance(mContext).startDay + 1
+        val startDayOfWeek = prefs.startDay + 1
 
         if (weekdayOfFirstDate < startDayOfWeek) {
             weekdayOfFirstDate += 7
@@ -113,12 +119,11 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
 
     private fun showEvents() {
         val calendar = Calendar.getInstance()
-        val sPrefs = Prefs.getInstance(mContext)
-        calendar.timeInMillis = TimeUtil.getBirthdayTime(sPrefs.birthdayTime)
+        calendar.timeInMillis = TimeUtil.getBirthdayTime(prefs.birthdayTime)
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        val isFeature = sPrefs.isFutureEventEnabled
-        val isRemindersEnabled = sPrefs.isRemindersInCalendarEnabled
+        val isFeature = prefs.isFutureEventEnabled
+        val isRemindersEnabled = prefs.isRemindersInCalendarEnabled
 
         val provider = WidgetDataProvider(mContext)
         provider.setTime(hour, minute)
@@ -168,8 +173,6 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
         val prefsMonth = sp.getInt(CalendarWidgetConfig.CALENDAR_WIDGET_MONTH + mWidgetId, 0)
         val rView = RemoteViews(mContext.packageName, R.layout.view_month_grid)
 
-        val cs = ThemeUtil.getInstance(mContext)
-
         val selDay = mDateTimeList[i].day!!
         val selMonth = mDateTimeList[i].month!!
         val selYear = mDateTimeList[i].year!!
@@ -202,7 +205,7 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
                             rView.setInt(R.id.reminderMark, "setBackgroundResource", reminderM)
                         } else {
                             rView.setInt(R.id.reminderMark, "setBackgroundColor",
-                                    mContext.resources.getColor(cs.colorReminderCalendar()))
+                                    ContextCompat.getColor(mContext, themeUtil.colorReminderCalendar()))
                         }
                     } else {
                         rView.setInt(R.id.reminderMark, "setBackgroundColor", Color.TRANSPARENT)
@@ -212,7 +215,7 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
                             rView.setInt(R.id.birthdayMark, "setBackgroundResource", birthdayM)
                         } else {
                             rView.setInt(R.id.birthdayMark, "setBackgroundColor",
-                                    mContext.resources.getColor(cs.colorBirthdayCalendar()))
+                                    ContextCompat.getColor(mContext, themeUtil.colorBirthdayCalendar()))
                         }
                     } else {
                         rView.setInt(R.id.birthdayMark, "setBackgroundColor", Color.TRANSPARENT)
@@ -228,7 +231,7 @@ class CalendarMonthFactory internal constructor(private val mContext: Context, i
                 rView.setInt(R.id.currentMark, "setBackgroundResource", currentM)
             } else {
                 rView.setInt(R.id.currentMark, "setBackgroundColor",
-                        mContext.resources.getColor(cs.colorCurrentCalendar()))
+                        ContextCompat.getColor(mContext, themeUtil.colorCurrentCalendar()))
             }
         } else {
             rView.setInt(R.id.currentMark, "setBackgroundColor", Color.TRANSPARENT)

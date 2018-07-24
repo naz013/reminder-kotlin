@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_contact.view.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,6 +39,12 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
     private val mDataList: MutableList<ContactItem> = mutableListOf()
     var filterCallback: ((Int) -> Unit)? = null
     var clickListener: ((Int) -> Unit)? = null
+
+    @Inject lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_contact, parent, false))
@@ -157,7 +165,7 @@ class ContactsRecyclerAdapter : RecyclerView.Adapter<ContactsRecyclerAdapter.Con
     }
 
     fun loadImage(imageView: ImageView, v: String?) {
-        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        val isDark = themeUtil.isDark
         if (v == null) {
             imageView.setImageResource(if (isDark) R.drawable.ic_perm_identity_white_24dp else R.drawable.ic_perm_identity_black_24dp)
             return

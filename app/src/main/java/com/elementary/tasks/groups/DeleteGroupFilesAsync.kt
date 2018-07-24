@@ -53,7 +53,7 @@ class DeleteGroupFilesAsync(private val mContext: Context) : AsyncTask<String, V
             }
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
-                Dropbox(mContext).deleteGroup(exportFileName)
+                Dropbox().deleteGroup(exportFileName)
                 val google = Google.getInstance()
                 if (google?.drive != null) {
                     try {

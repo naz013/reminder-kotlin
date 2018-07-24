@@ -28,7 +28,6 @@ import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.Permissions
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.google_tasks.work.GetTaskListAsync
 import com.elementary.tasks.google_tasks.work.TasksCallback
 import com.elementary.tasks.groups.GroupsUtil
@@ -65,7 +64,7 @@ class LoginActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        googleLogin = GoogleLogin(this, object : GoogleLogin.LoginCallback {
+        googleLogin = GoogleLogin(this, prefs, object : GoogleLogin.LoginCallback {
 
             override fun onSuccess() {
                 loadDataFromGoogle()
@@ -159,8 +158,8 @@ class LoginActivity : ThemedActivity() {
             Permissions.requestPermission(this, PERM_BIRTH, Permissions.READ_CONTACTS)
             return
         }
-        Prefs.getInstance(this).isContactBirthdaysEnabled = true
-        Prefs.getInstance(this).isBirthdayReminderEnabled = true
+        prefs.isContactBirthdaysEnabled = true
+        prefs.isBirthdayReminderEnabled = true
         CheckBirthdaysAsync(this, true) { openApplication() }.execute()
     }
 
@@ -205,7 +204,7 @@ class LoginActivity : ThemedActivity() {
     private fun openApplication() {
         enableShortcuts()
         initGroups()
-        Prefs.getInstance(this).isUserLogged = true
+        prefs.isUserLogged = true
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

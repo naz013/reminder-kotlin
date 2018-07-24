@@ -123,7 +123,6 @@ class BackupsFragment : BaseNavigationFragment() {
         if (callback != null) {
             callback!!.onTitleChange(getString(R.string.backup_files))
             callback!!.onFragmentSelect(this)
-            callback!!.setClick(null)
         }
     }
 
@@ -142,7 +141,7 @@ class BackupsFragment : BaseNavigationFragment() {
         }
         val list = ArrayList<UserInfoAsync.Info>()
         list.add(UserInfoAsync.Info.Local)
-        val dbx = Dropbox(context!!)
+        val dbx = Dropbox()
         dbx.startSession()
         if (dbx.isLinked) {
             list.add(UserInfoAsync.Info.Dropbox)

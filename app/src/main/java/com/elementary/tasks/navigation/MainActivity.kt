@@ -270,7 +270,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         super.onDestroy()
         if (prefs.isAutoBackupEnabled && prefs.isSettingsBackupEnabled
                 && Permissions.checkPermission(this, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL)) {
-            BackupSettingTask(this).execute()
+            BackupSettingTask().execute()
         }
     }
 

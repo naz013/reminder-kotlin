@@ -5,16 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.FlextHelper
 import com.elementary.tasks.core.utils.Prefs
-
-import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Locale
-
 import hirondelle.date4j.DateTime
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -41,6 +39,12 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
     private val SUNDAY = 1
     private val startDayOfWeek = SUNDAY
 
+    @Inject lateinit var prefs: Prefs
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onCreate() {
         mWeekdaysList.clear()
     }
@@ -51,7 +55,7 @@ class CalendarWeekdayFactory(private val mContext: Context, intent: Intent) : Re
 
         val sunday = DateTime(2013, 2, 17, 0, 0, 0, 0)
         var nextDay = sunday.plusDays(startDayOfWeek - SUNDAY)
-        if (Prefs.getInstance(mContext).startDay == 1) {
+        if (prefs.startDay == 1) {
             nextDay = nextDay.plusDays(1)
         }
         for (i in 0..6) {

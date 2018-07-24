@@ -53,7 +53,7 @@ class DeleteFilesAsync(private val mContext: Context) : AsyncTask<String, Void, 
             }
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
-                Dropbox(mContext).deleteReminder(exportFileName)
+                Dropbox().deleteReminder(exportFileName)
                 val google = Google.getInstance()
                 if (google?.drive != null) {
                     try {

@@ -3,28 +3,21 @@ package com.elementary.tasks.core.services
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.ShowBirthdayActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ReminderUtils
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.TimeUtil.birthFormat
 import com.elementary.tasks.missedCalls.MissedCallDialogActivity
 import com.evernote.android.job.Job
 import com.evernote.android.job.JobManager
 import com.evernote.android.job.JobRequest
 import com.evernote.android.job.util.support.PersistableBundleCompat
-
-import java.util.Calendar
 import timber.log.Timber
-
-import com.elementary.tasks.core.utils.TimeUtil.birthFormat
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -46,6 +39,15 @@ import com.elementary.tasks.core.utils.TimeUtil.birthFormat
  */
 class EventJobService : Job() {
 
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onRunJob(params: Job.Params): Job.Result {
         Timber.d("onRunJob: %s, tag -> %s", TimeUtil.getGmtFromDateTime(System.currentTimeMillis()), params.tag)
         when (params.tag) {
@@ -55,7 +57,7 @@ class EventJobService : Job() {
                 when {
                     bundle.getBoolean(ARG_MISSED, false) -> {
                         openMissedScreen(params.tag)
-                        enableMissedCall(context, params.tag)
+                        enableMissedCall(prefs, params.tag)
                     }
                     bundle.getBoolean(ARG_LOCATION, false) -> SuperUtil.startGpsTracking(context)
                     else -> try {
@@ -70,9 +72,9 @@ class EventJobService : Job() {
 
     private fun birthdayAction(context: Context) {
         cancelBirthdayAlarm()
-        enableBirthdayAlarm(context)
+        enableBirthdayAlarm(prefs)
         Thread {
-            val daysBefore = Prefs.getInstance(context).daysToBirthday
+            val daysBefore = prefs.daysToBirthday
             val cal = Calendar.getInstance()
             cal.timeInMillis = System.currentTimeMillis()
             val mYear = cal.get(Calendar.YEAR)
@@ -97,10 +99,10 @@ class EventJobService : Job() {
     }
 
     private fun showBirthday(context: Context, item: Birthday) {
-        if (Prefs.getInstance(context).reminderType == 0) {
+        if (prefs.reminderType == 0) {
             context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uniqueId))
         } else {
-            ReminderUtils.showSimpleBirthday(context, item.uniqueId)
+            reminderUtils.showSimpleBirthday(item.uniqueId)
         }
     }
 
@@ -130,8 +132,8 @@ class EventJobService : Job() {
             cancelReminder(EVENT_BIRTHDAY)
         }
 
-        fun enableBirthdayAlarm(context: Context) {
-            val time = Prefs.getInstance(context).birthdayTime
+        fun enableBirthdayAlarm(prefs: Prefs) {
+            val time = prefs.birthdayTime
             val mills = TimeUtil.getBirthdayTime(time) - System.currentTimeMillis()
             if (mills <= 0) return
             JobRequest.Builder(EVENT_BIRTHDAY)
@@ -143,9 +145,9 @@ class EventJobService : Job() {
                     .schedule()
         }
 
-        internal fun enableMissedCall(context: Context, number: String?) {
+        internal fun enableMissedCall(prefs: Prefs, number: String?) {
             if (number == null) return
-            val time = Prefs.getInstance(context).missedReminderTime
+            val time = prefs.missedReminderTime
             val mills = (time * (1000 * 60)).toLong()
             val bundle = PersistableBundleCompat()
             bundle.putBoolean(ARG_MISSED, true)

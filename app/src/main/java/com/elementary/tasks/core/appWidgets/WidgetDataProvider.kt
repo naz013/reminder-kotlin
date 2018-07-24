@@ -2,19 +2,16 @@ package com.elementary.tasks.core.appWidgets
 
 import android.app.AlarmManager
 import android.content.Context
-
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.ArrayList
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -37,11 +34,13 @@ import java.util.Locale
 
 class WidgetDataProvider(private val mContext: Context) {
 
-    private val data: MutableList<Item>
+    private val data: MutableList<Item> = ArrayList()
     private val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private var hour: Int = 0
     private var minute: Int = 0
     private var isFeature: Boolean = false
+
+    @Inject lateinit var timeCount: TimeCount
 
     enum class WidgetType {
         BIRTHDAY,
@@ -49,7 +48,7 @@ class WidgetDataProvider(private val mContext: Context) {
     }
 
     init {
-        data = ArrayList()
+        ReminderApp.appComponent.inject(this)
     }
 
     fun setTime(hour: Int, minute: Int) {
@@ -149,7 +148,7 @@ class WidgetDataProvider(private val mContext: Context) {
                         }
                         do {
                             item.eventTime = TimeUtil.getGmtFromDateTime(eventTime)
-                            eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item)
+                            eventTime = timeCount.getNextMonthDayTime(item)
                             calendar1.timeInMillis = eventTime
                             days++
                             val sDay = calendar1.get(Calendar.DAY_OF_MONTH)

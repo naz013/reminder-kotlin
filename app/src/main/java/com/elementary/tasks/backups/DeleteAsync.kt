@@ -44,7 +44,7 @@ class DeleteAsync(private val mContext: Context, private val listener: (() -> Un
     override fun doInBackground(vararg params: File): Int? {
         var res = 0
         if (type == UserInfoAsync.Info.Dropbox) {
-            val dbx = Dropbox(mContext)
+            val dbx = Dropbox()
             dbx.startSession()
             val isLinked = dbx.isLinked
             val isConnected = SuperUtil.isConnected(mContext)

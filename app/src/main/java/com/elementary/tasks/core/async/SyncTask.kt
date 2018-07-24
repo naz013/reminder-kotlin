@@ -2,18 +2,17 @@ package com.elementary.tasks.core.async
 
 import android.content.Context
 import android.os.AsyncTask
-
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.utils.ContextHolder
 import com.elementary.tasks.core.utils.IoHelper
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.groups.GroupsUtil
-
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -34,14 +33,16 @@ import androidx.core.app.NotificationManagerCompat
  * limitations under the License.
  */
 
-class SyncTask(context: Context, private val mListener: SyncListener?, private val quiet: Boolean) : AsyncTask<Void, String, Boolean>() {
+class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean) : AsyncTask<Void, String, Boolean>() {
 
-    private val mContext: ContextHolder?
+    @Inject lateinit var context: Context
+    @Inject lateinit var ioHelper: IoHelper
+    @Inject lateinit var updatesHelper: UpdatesHelper
     private var mNotifyMgr: NotificationManagerCompat? = null
     private val builder: NotificationCompat.Builder
 
     init {
-        this.mContext = ContextHolder(context)
+        ReminderApp.appComponent.inject(this)
         builder = NotificationCompat.Builder(context, Notifier.CHANNEL_SYSTEM)
     }
 
@@ -49,17 +50,17 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
         super.onPreExecute()
         if (!quiet) {
             builder.setContentTitle(if (Module.isPro)
-                mContext!!.context.getString(R.string.app_name_pro)
+                context.getString(R.string.app_name_pro)
             else
-                mContext!!.context.getString(R.string.app_name))
-            builder.setContentText(mContext.context.getString(R.string.sync))
+                context.getString(R.string.app_name))
+            builder.setContentText(context.getString(R.string.sync))
             if (Module.isLollipop) {
                 builder.setSmallIcon(R.drawable.ic_cached_black_24dp)
             } else {
                 builder.setSmallIcon(R.drawable.ic_cached_nv_white)
             }
-            mNotifyMgr = NotificationManagerCompat.from(mContext.context)
-            mNotifyMgr!!.notify(2, builder.build())
+            mNotifyMgr = NotificationManagerCompat.from(context)
+            mNotifyMgr?.notify(2, builder.build())
         }
     }
 
@@ -68,47 +69,46 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
         if (!quiet) {
             builder.setContentTitle(values[0])
             builder.setWhen(System.currentTimeMillis())
-            mNotifyMgr!!.notify(2, builder.build())
+            mNotifyMgr?.notify(2, builder.build())
         }
     }
 
     override fun doInBackground(vararg params: Void): Boolean? {
-        val ioHelper = IoHelper(mContext!!.context)
-        publishProgress(mContext.context.getString(R.string.syncing_groups))
+        publishProgress(context.getString(R.string.syncing_groups))
         ioHelper.restoreGroup(true)
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
+        val list = AppDb.getAppDatabase(context).groupDao().all()
         if (list.isEmpty()) {
-            val defUiID = GroupsUtil.initDefault(mContext.context)
-            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()
+            val defUiID = GroupsUtil.initDefault(context)
+            val items = AppDb.getAppDatabase(context).reminderDao().all()
             for (item in items) {
                 item.groupUuId = defUiID
             }
-            AppDb.getAppDatabase(mContext.context).reminderDao().insertAll(items)
+            AppDb.getAppDatabase(context).reminderDao().insertAll(items)
         }
         ioHelper.backupGroup()
 
         //export & import reminders
-        publishProgress(mContext.context.getString(R.string.syncing_reminders))
+        publishProgress(context.getString(R.string.syncing_reminders))
         ioHelper.restoreReminder(true)
         ioHelper.backupReminder()
 
         //export & import notes
-        publishProgress(mContext.context.getString(R.string.syncing_notes))
+        publishProgress(context.getString(R.string.syncing_notes))
         ioHelper.restoreNote(true)
         ioHelper.backupNote()
 
         //export & import birthdays
-        publishProgress(mContext.context.getString(R.string.syncing_birthdays))
+        publishProgress(context.getString(R.string.syncing_birthdays))
         ioHelper.restoreBirthday(true)
         ioHelper.backupBirthday()
 
         //export & import places
-        publishProgress(mContext.context.getString(R.string.syncing_places))
+        publishProgress(context.getString(R.string.syncing_places))
         ioHelper.restorePlaces(true)
         ioHelper.backupPlaces()
 
         //export & import templates
-        publishProgress(mContext.context.getString(R.string.syncing_templates))
+        publishProgress(context.getString(R.string.syncing_templates))
         ioHelper.restoreTemplates(true)
         ioHelper.backupTemplates()
         ioHelper.backupSettings()
@@ -118,25 +118,23 @@ class SyncTask(context: Context, private val mListener: SyncListener?, private v
     override fun onPostExecute(aVoid: Boolean?) {
         super.onPostExecute(aVoid)
         if (!quiet) {
-            builder.setContentTitle(mContext!!.context.getString(R.string.done))
+            builder.setContentTitle(context.getString(R.string.done))
             if (Module.isLollipop) {
                 builder.setSmallIcon(R.drawable.ic_done_white_24dp)
             } else {
                 builder.setSmallIcon(R.drawable.ic_done_nv_white)
             }
             if (Module.isPro) {
-                builder.setContentText(mContext.context.getString(R.string.app_name_pro))
+                builder.setContentText(context.getString(R.string.app_name_pro))
             } else {
-                builder.setContentText(mContext.context.getString(R.string.app_name))
+                builder.setContentText(context.getString(R.string.app_name))
             }
             builder.setWhen(System.currentTimeMillis())
-            mNotifyMgr!!.notify(2, builder.build())
+            mNotifyMgr?.notify(2, builder.build())
             mListener?.endExecution(aVoid!!)
         }
-        if (mContext != null) {
-            UpdatesHelper.getInstance(mContext.context).updateWidget()
-            UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
-        }
+        updatesHelper.updateWidget()
+        updatesHelper.updateNotesWidget()
     }
 
     interface SyncListener {

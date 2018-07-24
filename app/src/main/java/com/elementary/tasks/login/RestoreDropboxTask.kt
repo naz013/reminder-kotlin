@@ -57,7 +57,7 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
     }
 
     override fun doInBackground(vararg params: Void): Void? {
-        val drive = Dropbox(mContext.context)
+        val drive = Dropbox()
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         drive.downloadGroups(false)
 

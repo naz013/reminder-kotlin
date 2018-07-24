@@ -52,7 +52,7 @@ class DeletePlaceFilesAsync(private val mContext: Context) : AsyncTask<String, V
             }
             val isConnected = SuperUtil.isConnected(mContext)
             if (isConnected) {
-                Dropbox(mContext).deletePlace(exportFileName)
+                Dropbox().deletePlace(exportFileName)
                 val google = Google.getInstance()
                 if (google?.drive != null) {
                     try {

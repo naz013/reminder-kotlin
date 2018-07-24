@@ -1,12 +1,8 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
 import com.elementary.tasks.Actions
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -26,22 +22,22 @@ import com.elementary.tasks.core.utils.Prefs
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class PermanentBirthdayReceiver : BroadcastReceiver() {
+class PermanentBirthdayReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        if (!Prefs.getInstance(context).isBirthdayPermanentEnabled) {
-            Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
+        if (!prefs.isBirthdayPermanentEnabled) {
+            notifier.hideNotification(BIRTHDAY_PERM_ID)
             return
         }
         if (intent != null) {
             val action = intent.action
             if (action != null && action.matches(ACTION_SHOW.toRegex())) {
-                Notifier.showBirthdayPermanent(context)
+                notifier.showBirthdayPermanent()
             } else {
-                Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
+                notifier.hideNotification(BIRTHDAY_PERM_ID)
             }
         } else {
-            Notifier.hideNotification(context, BIRTHDAY_PERM_ID)
+            notifier.hideNotification(BIRTHDAY_PERM_ID)
         }
     }
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.WidgetUtils
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Prefs
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MapStyleOptions
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -36,10 +38,16 @@ import com.google.android.gms.maps.model.MapStyleOptions
  */
 abstract class BaseMapFragment : Fragment() {
 
+    @Inject
     lateinit var themeUtil: ThemeUtil
+    @Inject
     lateinit var prefs: Prefs
 
     private var mMapType = GoogleMap.MAP_TYPE_TERRAIN
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     @JvmOverloads
     protected fun setStyle(map: GoogleMap, mapType: Int = mMapType) {
@@ -64,8 +72,6 @@ abstract class BaseMapFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        themeUtil = ThemeUtil.getInstance(context!!)
-        prefs = Prefs.getInstance(context!!)
         mMapType = prefs.mapType
     }
 

@@ -268,8 +268,7 @@ open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.calendar))
-            callback!!.setClick(CalendarSingleton.getInstance().fabClick)
+            callback?.onTitleChange(getString(R.string.calendar))
         }
         loadData()
     }

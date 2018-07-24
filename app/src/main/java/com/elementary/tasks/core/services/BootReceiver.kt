@@ -1,13 +1,9 @@
 package com.elementary.tasks.core.services
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
 import com.elementary.tasks.core.async.EnableThread
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.Prefs
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -27,20 +23,18 @@ import com.elementary.tasks.core.utils.Prefs
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-class BootReceiver : BroadcastReceiver() {
+class BootReceiver : BaseBroadcast() {
 
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.d(TAG, "onReceive: ")
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             EnableThread(context).start()
             val alarmReceiver = AlarmReceiver()
-            val prefs = Prefs.getInstance(context)
             if (prefs.isBirthdayReminderEnabled) {
-                EventJobService.enableBirthdayAlarm(context)
+                EventJobService.enableBirthdayAlarm(prefs)
             }
             if (prefs.isSbNotificationEnabled) {
-                Notifier.updateReminderPermanent(context, PermanentReminderReceiver.ACTION_SHOW)
+                notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
             }
             if (prefs.isContactAutoCheckEnabled) {
                 alarmReceiver.enableBirthdayCheckAlarm(context)
@@ -53,13 +47,12 @@ class BootReceiver : BroadcastReceiver() {
             }
             if (prefs.isBirthdayPermanentEnabled) {
                 alarmReceiver.enableBirthdayPermanentAlarm(context)
-                Notifier.showBirthdayPermanent(context)
+                notifier.showBirthdayPermanent()
             }
         }
     }
 
     companion object {
-
         private const val TAG = "BootReceiver"
     }
 }

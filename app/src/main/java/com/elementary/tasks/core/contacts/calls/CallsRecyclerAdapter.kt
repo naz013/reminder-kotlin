@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_call.view.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,6 +43,13 @@ class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRe
     private val mDataList: MutableList<CallsItem> = mutableListOf()
     var filterCallback: ((Int) -> Unit)? = null
     var clickListener: ((Int) -> Unit)? = null
+
+    @Inject lateinit var prefs: Prefs
+    @Inject lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         return ContactViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_call, parent, false))
@@ -163,7 +172,7 @@ class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRe
     }
 
     fun loadImage(imageView: ImageView, v: String?) {
-        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        val isDark = themeUtil.isDark
         if (v == null) {
             imageView.setImageResource(if (isDark) R.drawable.ic_perm_identity_white_24dp else R.drawable.ic_perm_identity_black_24dp)
             return
@@ -176,7 +185,7 @@ class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRe
     }
 
     fun loadIcon(imageView: ImageView, type: Int) {
-        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        val isDark = themeUtil.isDark
         when (type) {
             CallLog.Calls.INCOMING_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_received_white_24dp else R.drawable.ic_call_received_black_24dp)
             CallLog.Calls.MISSED_TYPE -> imageView.setImageResource(if (isDark) R.drawable.ic_call_missed_white_24dp else R.drawable.ic_call_missed_black_24dp)
@@ -185,7 +194,7 @@ class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRe
     }
 
     fun loadDate(textView: AppCompatTextView, date: Long) {
-        val is24 = Prefs.getInstance(textView.context).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         textView.text = TimeUtil.getSimpleDateTime(date, is24)
     }
 

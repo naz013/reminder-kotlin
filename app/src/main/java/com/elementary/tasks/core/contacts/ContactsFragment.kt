@@ -13,8 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Dialogues
 import kotlinx.android.synthetic.main.fragment_contacts.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,6 +43,12 @@ class ContactsFragment : Fragment() {
     private val mDataList: MutableList<ContactItem> = mutableListOf()
     private val mAdapter: ContactsRecyclerAdapter = ContactsRecyclerAdapter()
     private var name: String = ""
+
+    @Inject lateinit var dialogues: Dialogues
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -138,7 +146,7 @@ class ContactsFragment : Fragment() {
                     numbers[i++] = number
                     c.moveToNext()
                 }
-                val builder = Dialogues.getDialog(context!!)
+                val builder = dialogues.getDialog(context!!)
                 builder.setItems(numbers) { dialog, which ->
                     dialog.dismiss()
                     var number = numbers[which] as String

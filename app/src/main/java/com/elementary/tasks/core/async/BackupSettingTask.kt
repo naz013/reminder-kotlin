@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.async
 
-import android.content.Context
 import android.os.AsyncTask
-
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.IoHelper
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -23,11 +23,17 @@ import com.elementary.tasks.core.utils.IoHelper
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+class BackupSettingTask : AsyncTask<Void, Void, Void>() {
 
-class BackupSettingTask(private val mContext: Context) : AsyncTask<Void, Void, Void>() {
+    @Inject
+    lateinit var ioHelper: IoHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun doInBackground(vararg voids: Void): Void? {
-        IoHelper(mContext).backupSettings()
+        ioHelper.backupSettings()
         return null
     }
 }

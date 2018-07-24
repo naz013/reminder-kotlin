@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
 /**
@@ -30,7 +28,7 @@ class VolumeDialog : BaseDialog() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.loudness)
         val b = LayoutInflater.from(this).inflate(R.layout.dialog_with_seek_and_title, null, false)
         b.seekBar.max = 25
@@ -47,11 +45,11 @@ class VolumeDialog : BaseDialog() {
 
             }
         })
-        val loudness = Prefs.getInstance(this).loudness
+        val loudness = prefs.loudness
         b.seekBar.progress = loudness
         b.titleView.text = loudness.toString()
         builder.setView(b)
-        builder.setPositiveButton(R.string.ok) { _, _ -> Prefs.getInstance(this).loudness = b.seekBar.progress }
+        builder.setPositiveButton(R.string.ok) { _, _ -> prefs.loudness = b.seekBar.progress }
         builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
         val alertDialog = builder.create()
         alertDialog.setOnCancelListener { finish() }
