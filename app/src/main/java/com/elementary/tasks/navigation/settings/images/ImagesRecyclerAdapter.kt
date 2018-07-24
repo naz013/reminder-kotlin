@@ -40,6 +40,8 @@ class ImagesRecyclerAdapter : RecyclerView.Adapter<ImagesRecyclerAdapter.PhotoVi
     private var prevSelected = -1
     @Inject
     lateinit var mPrefs: Prefs
+    @Inject
+    lateinit var themeUtil: ThemeUtil
     var mListener: SelectListener? = null
 
     init {
@@ -136,7 +138,7 @@ class ImagesRecyclerAdapter : RecyclerView.Adapter<ImagesRecyclerAdapter.PhotoVi
     }
 
     private fun loadPhoto(imageView: ImageView, id: Long) {
-        val isDark = ThemeUtil.getInstance(imageView.context).isDark
+        val isDark = themeUtil.isDark
         val url = RetrofitBuilder.getImageLink(id, 800, 480)
         Glide.with(imageView).load(url).into(imageView)
     }

@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notification.*
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,7 +40,16 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private var mItemSelect: Int = 0
     private val localeAdapter: ArrayAdapter<String>
-        get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, Language.getLocaleNames(context!!))
+        get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, language.getLocaleNames(context!!))
+
+    @Inject
+    lateinit var language: Language
+    @Inject
+    lateinit var notifier: Notifier
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_notification
 
@@ -89,7 +100,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showRepeatTimeDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.interval)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 60
@@ -145,7 +156,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showLedColorDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.led_color))
         val colors = LED.getAllNames(context!!)
@@ -197,7 +208,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showSnoozeDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.snooze_time)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 60
@@ -285,11 +296,11 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showTtsLocaleDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
         val locale = prefs.ttsLocale
-        mItemSelect = Language.getLocalePosition(locale)
+        mItemSelect = language.getLocalePosition(locale)
         builder.setSingleChoiceItems(localeAdapter, mItemSelect) { _, which -> mItemSelect = which }
         builder.setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             saveTtsLocalePrefs()
@@ -303,12 +314,12 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
 
     private fun showTtsLocale() {
         val locale = prefs.ttsLocale
-        val i = Language.getLocalePosition(locale)
-        localePrefs.setDetailText(Language.getLocaleNames(context!!)[i])
+        val i = language.getLocalePosition(locale)
+        localePrefs.setDetailText(language.getLocaleNames(context!!)[i])
     }
 
     private fun saveTtsLocalePrefs() {
-        prefs.ttsLocale = Language.getLocaleByPosition(mItemSelect)
+        prefs.ttsLocale = language.getLocaleByPosition(mItemSelect)
         showTtsLocale()
     }
 
@@ -361,7 +372,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
             openNotificationsSettings()
             return
         }
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.loudness)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 25
@@ -401,7 +412,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showStreamDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.sound_stream))
         val types = arrayOf(getString(R.string.music), getString(R.string.alarm), getString(R.string.notification))
@@ -431,7 +442,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showReminderTypeDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(R.string.notification_type)
         val types = arrayOf(getString(R.string.full_screen), getString(R.string.simple))
@@ -506,7 +517,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showSoundDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.melody))
         val types = arrayOf(getString(R.string.default_string), getString(R.string.choose_file))
@@ -588,7 +599,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         val isChecked = statusIconPrefs.isChecked
         statusIconPrefs.isChecked = !isChecked
         prefs.isSbIconEnabled = !isChecked
-        Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
+        notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
     }
 
     private fun initSbIconPrefs() {
@@ -602,9 +613,9 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         permanentNotificationPrefs.isChecked = !isChecked
         prefs.isSbNotificationEnabled = !isChecked
         if (prefs.isSbNotificationEnabled) {
-            Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_SHOW)
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
         } else {
-            Notifier.updateReminderPermanent(context!!, PermanentReminderReceiver.ACTION_HIDE)
+            notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_HIDE)
         }
     }
 
@@ -636,7 +647,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showImageDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.background))
         val types = arrayOf(getString(R.string.none), getString(R.string.default_string), getString(R.string.choose_file))

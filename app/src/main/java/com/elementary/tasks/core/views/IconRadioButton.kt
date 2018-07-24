@@ -1,20 +1,18 @@
 package com.elementary.tasks.core.views
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
-
+import android.view.Gravity.CENTER_HORIZONTAL
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.AppCompatRadioButton
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.ThemeUtil
-
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.AppCompatRadioButton
-
-import android.view.Gravity.CENTER_HORIZONTAL
+import javax.inject.Inject
 
 class IconRadioButton : AppCompatRadioButton {
 
@@ -22,6 +20,13 @@ class IconRadioButton : AppCompatRadioButton {
     private var isCheckable = false
     private var selectedBg: Int = 0
     private var icon: Int = 0
+
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -36,7 +41,6 @@ class IconRadioButton : AppCompatRadioButton {
     }
 
     private fun init(context: Context, attrs: AttributeSet?) {
-        val themeUtil = ThemeUtil.getInstance(context)
         isDark = themeUtil.isDark
         selectedBg = resources.getColor(themeUtil.colorAccent())
         if (Module.isMarshmallow) {

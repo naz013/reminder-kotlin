@@ -10,11 +10,13 @@ import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.TimePicker
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import java.text.DateFormat
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -48,6 +50,13 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private var mDateFormat: DateFormat = TimeUtil.FULL_DATE_FORMAT
 
     private val mDateClick = View.OnClickListener{ selectDate() }
+
+    @Inject
+    lateinit var prefs: Prefs
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     var dateTime: Long
         get() {
@@ -146,16 +155,16 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     private fun updateTime(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        mTimeView!!.text = TimeUtil.getTime(cal.time, Prefs.getInstance(context).is24HourFormatEnabled)
+        mTimeView!!.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled)
         if (mListener != null) mListener!!.onTimeSelect(mills, mHour, mMinute)
     }
 
     private fun selectDate() {
-        TimeUtil.showDatePicker(context, this, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(context, prefs, this, mYear, mMonth, mDay)
     }
 
     private fun selectTime() {
-        TimeUtil.showTimePicker(context, this, mHour, mMinute)
+        TimeUtil.showTimePicker(context, prefs.is24HourFormatEnabled, this, mHour, mMinute)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {

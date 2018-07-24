@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.Spinner
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeCount
@@ -17,6 +18,7 @@ import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboEditText
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -78,6 +80,13 @@ class RepeatView : LinearLayout, TextWatcher {
         override fun onTimerChange(time: Long) {
             initDateTime(System.currentTimeMillis() + time)
         }
+    }
+
+    @Inject
+    lateinit var prefs: Prefs
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     private val multiplier: Long
@@ -212,7 +221,7 @@ class RepeatView : LinearLayout, TextWatcher {
     private fun updatePrediction(progress: Int) {
         val calendar = Calendar.getInstance()
         calendar.set(mYear, mMonth, mDay, mHour, mMinute, 0)
-        val is24 = Prefs.getInstance(context).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         if (showPrediction) {
             mPredictionView.visibility = View.VISIBLE
             mEventView.text = TimeUtil.getFullDateTime(calendar.timeInMillis + progress * multiplier, is24, false)

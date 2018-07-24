@@ -3,11 +3,10 @@ package com.elementary.tasks.groups.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.aech.BaseHolder
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.interfaces.SimpleListener
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.mcxiaoke.koi.ext.onClick
 import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.list_item_group.view.*
@@ -30,9 +29,8 @@ import kotlinx.android.synthetic.main.list_item_group.view.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_group, parent, false)) {
 
     init {
         itemView.onClick { view ->
@@ -50,6 +48,6 @@ class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?
     }
 
     private fun loadIndicator(view: View, color: Int) {
-        view.setBackgroundResource(ThemeUtil.getInstance(view.context).getCategoryIndicator(color))
+        view.setBackgroundResource(themeUtil.getCategoryIndicator(color))
     }
 }

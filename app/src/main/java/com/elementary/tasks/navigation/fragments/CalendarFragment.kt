@@ -13,7 +13,6 @@ import com.elementary.tasks.core.calendar.CalendarSingleton
 import com.elementary.tasks.core.calendar.FlextCalendarFragment
 import com.elementary.tasks.core.calendar.FlextListener
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.ThemeUtil
 import java.util.*
 
 /**
@@ -62,16 +61,14 @@ class CalendarFragment : BaseCalendarFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.day_view_menu, menu)
+        inflater?.inflate(R.menu.day_view_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.action_voice -> {
-                if (callback != null) {
-                    callback!!.onVoiceAction()
-                }
+
                 return true
             }
         }
@@ -81,20 +78,18 @@ class CalendarFragment : BaseCalendarFragment() {
     override fun onResume() {
         super.onResume()
         if (callback != null) {
-            callback!!.onTitleChange(getString(R.string.calendar))
-            callback!!.onFragmentSelect(this)
+            callback?.onTitleChange(getString(R.string.calendar))
+            callback?.onFragmentSelect(this)
             CalendarSingleton.getInstance().fabClick = View.OnClickListener {
                 dateMills = System.currentTimeMillis()
                 showActionDialog(false)
             }
-            callback!!.setClick(CalendarSingleton.getInstance().fabClick)
         }
         showCalendar()
         LogUtil.d(TAG, "onResume: ")
     }
 
     private fun showCalendar() {
-        val themeUtil = ThemeUtil.getInstance(context!!)
         val calendarView = FlextCalendarFragment()
         val args = Bundle()
         val cal = Calendar.getInstance()

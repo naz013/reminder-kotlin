@@ -14,7 +14,6 @@ import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.MeasureUtils
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.viewModels.reminders.ActiveGpsRemindersViewModel
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.google.android.gms.maps.GoogleMap
@@ -99,8 +98,8 @@ class MapFragment : BaseNavigationFragment() {
     }
 
     private fun initMap() {
-        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false, false, false, false,
-                ThemeUtil.getInstance(context!!).isDark)
+        mGoogleMap = AdvancedMapFragment.newInstance(false, false, false,
+                false, false, false, themeUtil.isDark)
         mGoogleMap?.setCallback(mReadyCallback)
         mGoogleMap?.setOnMarkerClick(mOnMarkerClick)
         fragmentManager!!.beginTransaction()
@@ -120,7 +119,7 @@ class MapFragment : BaseNavigationFragment() {
 
         }
         bottomSheet.recyclerView.adapter = mAdapter
-        sheetLayout.setBackgroundColor(ThemeUtil.getInstance(context!!).cardStyle)
+        sheetLayout.setBackgroundColor(themeUtil.cardStyle)
     }
 
     override fun onResume() {

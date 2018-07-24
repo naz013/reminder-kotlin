@@ -2,6 +2,7 @@ package com.elementary.tasks.google_tasks.work
 
 import android.content.Context
 import android.os.AsyncTask
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.AppDb
@@ -9,8 +10,8 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
 import com.google.api.services.tasks.model.TaskLists
 import java.io.IOException
-import java.lang.ref.WeakReference
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -33,11 +34,12 @@ import java.util.*
 
 class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) : AsyncTask<Void, Void, Boolean>() {
     private val mGoogle: Google? = Google.getInstance()
-    private val mHelper: WeakReference<UpdatesHelper>?
     private val appDb: AppDb = AppDb.getAppDatabase(context)
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
 
     init {
-        this.mHelper = WeakReference(UpdatesHelper.getInstance(context))
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun doInBackground(vararg params: Void): Boolean {
@@ -86,10 +88,7 @@ class GetTaskListAsync(context: Context, private val mListener: TasksCallback?) 
 
     override fun onPostExecute(aVoid: Boolean?) {
         super.onPostExecute(aVoid)
-        if (mHelper != null) {
-            val helper = mHelper.get()
-            helper?.updateTasksWidget()
-        }
+        updatesHelper.updateTasksWidget()
         if (mListener != null) {
             if (aVoid!!) {
                 mListener.onComplete()

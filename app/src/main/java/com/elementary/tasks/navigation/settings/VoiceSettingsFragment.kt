@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.settings.voice.HelpFragment
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_voice.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,6 +33,13 @@ import kotlinx.android.synthetic.main.fragment_settings_voice.*
 
 class VoiceSettingsFragment : BaseSettingsFragment() {
 
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun layoutRes(): Int = R.layout.fragment_settings_voice
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +56,7 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showLanguage() {
-        languagePrefs.setDetailText(Language.getLanguages(context!!)[prefs.voiceLocale])
+        languagePrefs.setDetailText(language.getLanguages(context!!)[prefs.voiceLocale])
     }
 
     private fun initConversationPrefs() {
@@ -71,10 +79,10 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showLanguageDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
-        val locales = Language.getLanguages(context!!)
+        val locales = language.getLanguages(context!!)
         val adapter = ArrayAdapter(context!!,
                 android.R.layout.simple_list_item_single_choice, locales)
         val language = prefs.voiceLocale

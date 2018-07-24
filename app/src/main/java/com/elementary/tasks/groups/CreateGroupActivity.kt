@@ -8,11 +8,11 @@ import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.groups.GroupViewModel
@@ -20,6 +20,7 @@ import com.elementary.tasks.core.views.ColorPickerView
 import kotlinx.android.synthetic.main.activity_create_group.*
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -45,6 +46,13 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private var color = 0
     private var mItem: Group? = null
+
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +87,9 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
                 val scheme = name?.scheme
                 mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getGroup(cr, name)
+                    backupTool.getGroup(cr, name)
                 } else {
-                    BackupTool.getInstance().getGroup(name.path, null)
+                    backupTool.getGroup(name.path, null)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -173,10 +181,9 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun setColor(i: Int) {
         color = i
-        val cs = ThemeUtil.getInstance(this)
-        appBar.setBackgroundColor(cs.getColor(cs.getCategoryColor(i)))
+        appBar.setBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(i)))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = cs.getNoteDarkColor(i)
+            window.statusBarColor = themeUtil.getNoteDarkColor(i)
         }
     }
 

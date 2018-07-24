@@ -5,14 +5,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.settings.images.MainImageActivity
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_general.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,6 +47,13 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
             }
         }
 
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun layoutRes(): Int = R.layout.fragment_settings_general
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,11 +74,11 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showLanguage() {
-        language_prefs.setDetailText(Language.getScreenLocaleName(context!!))
+        language_prefs.setDetailText(language.getScreenLocaleName(context!!))
     }
 
     private fun showLanguageDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.application_language))
         val adapter = ArrayAdapter(context!!,
@@ -125,7 +133,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showThemeDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.theme))
         val colors = arrayOf(getString(R.string.auto), getString(R.string.light), getString(R.string.dark), getString(R.string.amoled))
@@ -159,7 +167,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initThemeColor() {
-        themePrefs.setViewResource(ThemeUtil.getInstance(context!!).getIndicator(prefs.appThemeColor))
+        themePrefs.setViewResource(themeUtil.getIndicator(prefs.appThemeColor))
         themePrefs.onClick { selectTheme() }
     }
 

@@ -7,10 +7,12 @@ import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.MeasureUtils
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -32,6 +34,13 @@ import com.elementary.tasks.core.views.roboto.RoboTextView
  */
 
 class TextViewWithIcon : RoboTextView {
+
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -65,7 +74,6 @@ class TextViewWithIcon : RoboTextView {
             val a = context.theme.obtainStyledAttributes(attrs, R.styleable.TextViewWithIcon, 0, 0)
             try {
                 var drawableLeft: Drawable? = null
-                val themeUtil = ThemeUtil.getInstance(context)
                 val isDark = themeUtil.isDark
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     drawableLeft = if (isDark) {

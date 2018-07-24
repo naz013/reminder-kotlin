@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.BackupTool
@@ -14,6 +15,7 @@ import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.groups.GroupsUtil
 
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -38,7 +40,15 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
     private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var backupTool: BackupTool
+    @Inject
+    lateinit var prefs: Prefs
+
     init {
+        ReminderApp.appComponent.inject(this)
         this.mDialog = ProgressDialog(context)
     }
 
@@ -60,15 +70,15 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
 
     override fun onProgressUpdate(vararg values: String) {
         super.onProgressUpdate(*values)
-        mDialog!!.setMessage(values[0])
-        mDialog!!.setCancelable(false)
-        mDialog!!.show()
+        mDialog?.setMessage(values[0])
+        mDialog?.setCancelable(false)
+        mDialog?.show()
     }
 
     override fun doInBackground(vararg p0: Void): Int {
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         try {
-            BackupTool.getInstance().importGroups()
+            backupTool.importGroups()
         } catch (ignored: IOException) {
         }
 
@@ -85,35 +95,35 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
 
         this.publishProgress(mContext.context.getString(R.string.syncing_reminders))
         try {
-            BackupTool.getInstance().importReminders(this.mContext.context)
+            backupTool.importReminders(this.mContext.context)
         } catch (ignored: IOException) {
         }
 
         this.publishProgress(mContext.context.getString(R.string.syncing_notes))
         try {
-            BackupTool.getInstance().importNotes()
+            backupTool.importNotes()
         } catch (ignored: IOException) {
         }
 
         this.publishProgress(mContext.context.getString(R.string.syncing_birthdays))
         try {
-            BackupTool.getInstance().importBirthdays()
+            backupTool.importBirthdays()
         } catch (ignored: IOException) {
         }
 
         publishProgress(mContext.context.getString(R.string.syncing_places))
         try {
-            BackupTool.getInstance().importPlaces()
+            backupTool.importPlaces()
         } catch (ignored: IOException) {
         }
 
         publishProgress(mContext.context.getString(R.string.syncing_templates))
         try {
-            BackupTool.getInstance().importTemplates()
+            backupTool.importTemplates()
         } catch (ignored: IOException) {
         }
 
-        Prefs.getInstance(this.mContext.context).loadPrefsFromFile()
+        prefs.loadPrefsFromFile()
         return 1
     }
 
@@ -125,8 +135,8 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
             LogUtil.d("RestoreLocalTask", "onPostExecute: " + e.localizedMessage)
         }
 
-        UpdatesHelper.getInstance(mContext.context).updateWidget()
-        UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
+        updatesHelper.updateWidget()
+        updatesHelper.updateNotesWidget()
         mListener?.invoke()
     }
 }

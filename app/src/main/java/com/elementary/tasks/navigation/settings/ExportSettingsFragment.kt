@@ -9,10 +9,14 @@ import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import android.widget.SeekBar
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.services.AlarmReceiver
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.MemoryUtil
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.navigation.settings.export.FragmentCloudDrives
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
@@ -22,6 +26,7 @@ import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -74,6 +79,13 @@ class ExportSettingsFragment : BaseSettingsFragment() {
             }
             return position
         }
+
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_export
 
@@ -292,7 +304,7 @@ class ExportSettingsFragment : BaseSettingsFragment() {
             return false
         }
         mDataList.clear()
-        mDataList.addAll(CalendarUtils.getCalendarsList(context!!))
+        mDataList.addAll(calendarUtils.getCalendarsList())
         if (mDataList.isEmpty()) {
             return false
         }

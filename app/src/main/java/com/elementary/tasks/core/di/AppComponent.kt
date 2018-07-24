@@ -4,6 +4,7 @@ import com.elementary.tasks.birthdays.BirthdayHolder
 import com.elementary.tasks.birthdays.EventsDataProvider
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
+import com.elementary.tasks.core.aech.BaseHolder
 import com.elementary.tasks.core.appWidgets.WidgetDataProvider
 import com.elementary.tasks.core.appWidgets.calendar.CalendarMonthFactory
 import com.elementary.tasks.core.appWidgets.calendar.CalendarUpdateMinusService
@@ -28,6 +29,11 @@ import com.elementary.tasks.core.services.*
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
+import com.elementary.tasks.core.views.*
+import com.elementary.tasks.google_tasks.work.GetTaskListAsync
+import com.elementary.tasks.login.RestoreDropboxTask
+import com.elementary.tasks.login.RestoreGoogleTask
+import com.elementary.tasks.login.RestoreLocalTask
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.images.ImagesRecyclerAdapter
 import com.elementary.tasks.places.google.GooglePlacesAdapter
@@ -104,4 +110,15 @@ interface AppComponent {
     fun inject(baseBroadcast: BaseBroadcast)
     fun inject(geolocationService: GeolocationService)
     fun inject(eventJobService: EventJobService)
+    fun inject(themedImageButton: ThemedImageButton)
+    fun inject(textViewWithIcon: TextViewWithIcon)
+    fun inject(repeatView: RepeatView)
+    fun inject(iconRadioButton: IconRadioButton)
+    fun inject(monthView: MonthView)
+    fun inject(dateTimeView: DateTimeView)
+    fun inject(getTaskListAsync: GetTaskListAsync)
+    fun inject(baseHolder: BaseHolder)
+    fun inject(restoreDropboxTask: RestoreDropboxTask)
+    fun inject(restoreGoogleTask: RestoreGoogleTask)
+    fun inject(restoreLocalTask: RestoreLocalTask)
 }

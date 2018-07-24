@@ -5,11 +5,13 @@ import android.content.Context
 import android.os.AsyncTask
 
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.ContextHolder
 import com.elementary.tasks.groups.GroupsUtil
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -34,6 +36,13 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
     private val mContext: ContextHolder = ContextHolder(context)
     private var mDialog: ProgressDialog? = null
 
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onPreExecute() {
         super.onPreExecute()
         try {
@@ -51,8 +60,8 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
     override fun onProgressUpdate(vararg values: String) {
         super.onProgressUpdate(*values)
         if (mDialog != null) {
-            mDialog!!.setMessage(values[0])
-            mDialog!!.show()
+            mDialog?.setMessage(values[0])
+            mDialog?.show()
         }
     }
 
@@ -64,8 +73,8 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
         val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
-            val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()
             val dao = AppDb.getAppDatabase(mContext.context).reminderDao()
+            val items = dao.all()
             for (item in items) {
                 item.groupUuId = defUiID
                 dao.insert(item)
@@ -98,13 +107,12 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
         super.onPostExecute(aVoid)
         if (mDialog != null && mDialog!!.isShowing) {
             try {
-                mDialog!!.dismiss()
+                mDialog?.dismiss()
             } catch (ignored: IllegalArgumentException) {
             }
-
         }
-        UpdatesHelper.getInstance(mContext.context).updateWidget()
-        UpdatesHelper.getInstance(mContext.context).updateNotesWidget()
+        updatesHelper.updateWidget()
+        updatesHelper.updateNotesWidget()
         mListener?.invoke()
     }
 }

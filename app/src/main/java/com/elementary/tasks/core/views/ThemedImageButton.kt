@@ -5,8 +5,10 @@ import android.util.AttributeSet
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ThemeUtil
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -30,6 +32,13 @@ class ThemedImageButton : AppCompatImageButton {
 
     private var mAttrs: AttributeSet? = null
 
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     constructor(context: Context) : super(context) {
         init(null)
     }
@@ -51,7 +60,7 @@ class ThemedImageButton : AppCompatImageButton {
         if (mAttrs != null) {
             val a = context.theme.obtainStyledAttributes(mAttrs, R.styleable.ThemedImageButton, 0, 0)
             try {
-                val icon: Int = if (ThemeUtil.getInstance(context).isDark) {
+                val icon: Int = if (themeUtil.isDark) {
                     a.getResourceId(R.styleable.ThemedImageButton_tb_icon_light, 0)
                 } else {
                     a.getResourceId(R.styleable.ThemedImageButton_tb_icon, 0)

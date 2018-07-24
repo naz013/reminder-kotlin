@@ -11,7 +11,6 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.SuperUtil
@@ -151,7 +150,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
 
     private fun showPermissionDialog() {
         if (!loadDataToList()) return
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.allow_permission)
         builder.setSingleChoiceItems(object : ArrayAdapter<Item>(context!!, android.R.layout.simple_list_item_1) {
             override fun getCount(): Int {
@@ -175,7 +174,7 @@ class OtherSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showAboutDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         val binding = LayoutInflater.from(context).inflate(R.layout.dialog_about_layout, null)
         val name: String = if (Module.isPro) getString(R.string.app_name_pro) else getString(R.string.app_name)
         binding.appName.text = name.toUpperCase()

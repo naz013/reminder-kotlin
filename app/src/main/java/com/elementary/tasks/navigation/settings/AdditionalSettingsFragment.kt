@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.navigation.settings.additional.TemplatesFragment
 import com.mcxiaoke.koi.ext.onClick
@@ -105,7 +104,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showTimePickerDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.interval)
         val b = LayoutInflater.from(context).inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 60
