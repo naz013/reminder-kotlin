@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
@@ -138,7 +137,7 @@ class ShopFragment : TypeFragment() {
     }
 
     private fun selectDateDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         val types = arrayOf(getString(R.string.no_reminder), getString(R.string.select_time))
         val adapter = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, types)
         var selection = 0

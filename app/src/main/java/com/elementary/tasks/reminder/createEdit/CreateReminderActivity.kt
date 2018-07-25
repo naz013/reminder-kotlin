@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
@@ -39,6 +40,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongClickListener {
 
@@ -80,6 +82,11 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     override var reminder: Reminder? = null
         private set
+
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var backupTool: BackupTool
 
     private val mOnTypeSelectListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
@@ -155,13 +162,17 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         }
 
     override val summary: String
-        get() = taskSummary.text!!.toString().trim { it <= ' ' }
+        get() = taskSummary.text.toString().trim { it <= ' ' }
 
     override val windowType: Int
         get() = if (window_type_switch.isChecked) 1 else 0
 
     override val isExportToCalendar: Boolean
         get() = prefs.isCalendarEnabled || prefs.isStockCalendarEnabled
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     private fun hasGpsPermission(code: Int): Boolean {
         if (!Permissions.checkPermission(this@CreateReminderActivity, Permissions.ACCESS_COARSE_LOCATION, Permissions.ACCESS_FINE_LOCATION)) {
@@ -227,9 +238,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
                 val scheme = name!!.scheme
                 reminder = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getReminder(cr, name)
+                    backupTool.getReminder(cr, name)
                 } else {
-                    BackupTool.getInstance().getReminder(name.path, null)
+                    backupTool.getReminder(name.path, null)
                 }
             } catch (e: IOException) {
                 LogUtil.d(TAG, "loadReminder: " + e.localizedMessage)
@@ -349,7 +360,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     private fun changeGroup() {
         val position = Position()
         val categories = viewModel.allGroupsNames
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
                 android.R.layout.simple_list_item_single_choice, categories), position.i) { dialog, which ->
@@ -368,7 +379,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun openCustomizationDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.personalization)
         val b = customizationView
         builder.setView(b)
@@ -387,7 +398,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun openRecognizer() {
-        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true)
+        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, true, prefs, language)
     }
 
     fun replaceFragment(fragment: TypeFragment) {
@@ -476,7 +487,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun selectVolume() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.loudness)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 26
@@ -514,7 +525,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun chooseLedColor() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.led_color))
         val colors = arrayOfNulls<String>(LED.NUM_OF_LEDS)
@@ -541,7 +552,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun askAboutEnabling() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.this_reminder_is_disabled)
         builder.setMessage(R.string.would_you_like_to_enable_it)
         builder.setPositiveButton(R.string.yes) { dialog, _ ->
@@ -739,8 +750,8 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     override fun onDestroy() {
         super.onDestroy()
-        UpdatesHelper.getInstance(this).updateWidget()
-        UpdatesHelper.getInstance(this).updateCalendarWidget()
+        updatesHelper.updateWidget()
+        updatesHelper.updateCalendarWidget()
     }
 
     override fun onBackPressed() {

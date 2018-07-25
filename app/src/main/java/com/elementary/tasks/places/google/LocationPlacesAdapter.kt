@@ -3,14 +3,17 @@ package com.elementary.tasks.places.google
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.places.list.PlacesRecyclerAdapter
+import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_location.view.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -35,6 +38,13 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
     private val mDataList = ArrayList<Reminder>()
     var actionsListener: ActionsListener<Reminder>? = null
 
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     fun setData(list: List<Reminder>) {
         this.mDataList.clear()
         this.mDataList.addAll(list)
@@ -49,7 +59,7 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
                 name = item.summary + " (" + item.places.size + ")"
             }
             itemView.textView.text = name
-            PlacesRecyclerAdapter.loadMarker(itemView.markerImage, place.marker)
+            loadMarker(itemView.markerImage, place.marker)
         }
 
         init {
@@ -61,6 +71,10 @@ class LocationPlacesAdapter : RecyclerView.Adapter<LocationPlacesAdapter.ViewHol
                 true
             }
         }
+    }
+
+    fun loadMarker(view: ImageView, color: Int) {
+        view.setImageResource(themeUtil.getMarkerStyle(color))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

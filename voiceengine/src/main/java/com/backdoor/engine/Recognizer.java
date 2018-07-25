@@ -382,6 +382,10 @@ public class Recognizer {
         return model;
     }
 
+    public void setContactHelper(ContactsInterface contactsInterface) {
+        this.contactsInterface = contactsInterface;
+    }
+
     public static class Builder {
 
         public Builder() {

@@ -12,16 +12,13 @@ import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.calendar.FlextHelper
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import hirondelle.date4j.DateTime
 import kotlinx.android.synthetic.main.fragment_calendar_widget_preview.*
 import kotlinx.android.synthetic.main.widget_calendar.view.*
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2015 Nazar Suhovich
@@ -44,12 +41,6 @@ import javax.inject.Inject
 class CalendarThemeFragment : BaseNavigationFragment() {
     private var pageNumber: Int = 0
     private var list: List<CalendarTheme> = ArrayList()
-
-    @Inject lateinit var themeUtil: ThemeUtil
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,9 +5,9 @@ import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
@@ -36,10 +36,12 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?, val editable: Boolean) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_reminder, parent, false)) {
 
     @Inject
-    lateinit var themeUtil: ThemeUtil
+    lateinit var timeCount: TimeCount
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
 
     val listHeader: RoboTextView = itemView.listHeader
 
@@ -68,12 +70,12 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadType(type: Int) {
-        itemView.reminder_type.text = ReminderUtils.getTypeString(itemView.reminder_type.context, type)
+        itemView.reminder_type.text = reminderUtils.getTypeString(type)
     }
 
     private fun loadLeft(item: Reminder) {
         if (item.isActive && !item.isRemoved) {
-            itemView.remainingTime.text = TimeCount.getInstance(itemView.remainingTime.context).getRemaining(item.eventTime, item.delay)
+            itemView.remainingTime.text = timeCount.getRemaining(item.eventTime, item.delay)
         } else {
             itemView.remainingTime.text = ""
         }
@@ -82,7 +84,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     private fun loadRepeat(model: Reminder) {
         when {
             Reminder.isBase(model.type, Reminder.BY_MONTH) -> itemView.repeatInterval.text = String.format(itemView.repeatInterval.context.getString(R.string.xM), 1.toString())
-            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = ReminderUtils.getRepeatString(itemView.repeatInterval.context, model.weekdays)
+            Reminder.isBase(model.type, Reminder.BY_WEEK) -> itemView.repeatInterval.text = reminderUtils.getRepeatString(model.weekdays)
             Reminder.isBase(model.type, Reminder.BY_DAY_OF_YEAR) -> itemView.repeatInterval.text = itemView.repeatInterval.context.getString(R.string.yearly)
             else -> itemView.repeatInterval.text = IntervalUtil.getInterval(itemView.repeatInterval.context, model.repeatInterval)
         }
@@ -105,7 +107,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadDate(model: Reminder) {
-        val is24 = Prefs.getInstance(itemView.taskDate.context).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         if (Reminder.isGpsType(model.type)) {
             val place = model.places[0]
             itemView.taskDate.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, model.places.size)

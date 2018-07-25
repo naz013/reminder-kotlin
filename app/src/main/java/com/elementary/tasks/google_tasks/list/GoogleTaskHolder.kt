@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.aech.BaseHolder
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Configs

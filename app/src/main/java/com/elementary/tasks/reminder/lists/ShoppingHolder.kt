@@ -4,21 +4,17 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_shopping.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
-import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -39,14 +35,11 @@ import javax.inject.Inject
  * limitations under the License.
  */
 class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
 
-    @Inject
-    lateinit var themeUtil: ThemeUtil
     val listHeader: RoboTextView = itemView.listHeader
 
     init {
-        ReminderApp.appComponent.inject(this)
         itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
         itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
     }
@@ -98,7 +91,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadShoppingDate(eventTime: String?) {
-        val is24 = Prefs.getInstance(itemView.shoppingTime.context).is24HourFormatEnabled
+        val is24 = prefs.is24HourFormatEnabled
         val due = TimeUtil.getDateTimeFromGmt(eventTime)
         if (due > 0) {
             itemView.shoppingTime.text = TimeUtil.getFullDateTime(due, is24, false)

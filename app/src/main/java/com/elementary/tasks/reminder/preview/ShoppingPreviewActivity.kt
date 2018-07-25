@@ -12,17 +12,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_shopping_preview.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -49,6 +50,13 @@ class ShoppingPreviewActivity : ThemedActivity() {
     private var shoppingAdapter = ShopListRecyclerAdapter()
     private var mReminder: Reminder? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
+
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +99,7 @@ class ShoppingPreviewActivity : ThemedActivity() {
         }
         window_type_view.text = getWindowType(reminder.windowType)
         taskText.text = reminder.summary
-        type.text = ReminderUtils.getTypeString(this, reminder.type)
+        type.text = reminderUtils.getTypeString(reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
         var catColor = 0
         if (reminder.group != null) {
@@ -106,8 +114,8 @@ class ShoppingPreviewActivity : ThemedActivity() {
     }
 
     private fun getWindowType(reminderWType: Int): String {
-        var windowType = Prefs.getInstance(this).reminderType
-        val ignore = Prefs.getInstance(this).isIgnoreWindowType
+        var windowType = prefs.reminderType
+        val ignore = prefs.isIgnoreWindowType
         if (!ignore) {
             windowType = reminderWType
         }

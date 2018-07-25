@@ -15,11 +15,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
+import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -30,6 +33,7 @@ import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -62,6 +66,9 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -86,6 +93,10 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     private val filterAllElement: FilterView.FilterElement
         get() = FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true)
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -120,7 +131,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         when (item!!.itemId) {
             R.id.action_refresh -> SyncTask(this, false).execute()
             R.id.action_voice -> if (callback != null) {
-                callback?.onVoiceAction()
+
             }
             R.id.action_filter -> if (callback!!.isFiltersVisible) {
                 callback?.hideFilters()
@@ -294,9 +305,8 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
             }
         })
         filter.add(filterAllElement)
-        val util = ThemeUtil.getInstance(context!!)
         for (integer in types) {
-            filter.add(FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(context!!, integer), integer))
+            filter.add(FilterView.FilterElement(themeUtil.getReminderIllustration(integer), reminderUtils.getType(integer), integer))
         }
         if (filter.size != 0) {
             filters.add(filter)
@@ -321,10 +331,9 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        val util = ThemeUtil.getInstance(context!!)
         for (i in groups.indices) {
             val item = groups[i]
-            filter.add(FilterView.FilterElement(util.getCategoryIndicator(item.color), item.title, i + 1))
+            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
             mGroupsIds.add(item.uuId)
         }
         filters.add(filter)

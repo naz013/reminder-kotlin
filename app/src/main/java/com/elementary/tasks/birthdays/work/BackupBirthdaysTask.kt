@@ -2,8 +2,10 @@ package com.elementary.tasks.birthdays.work
 
 import android.content.Context
 import android.os.AsyncTask
+import com.elementary.tasks.ReminderApp
 
 import com.elementary.tasks.core.utils.IoHelper
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -24,10 +26,17 @@ import com.elementary.tasks.core.utils.IoHelper
  * limitations under the License.
  */
 
-class BackupBirthdaysTask(private val mContext: Context) : AsyncTask<Void, Void, Void>() {
+class BackupBirthdaysTask : AsyncTask<Void, Void, Void>() {
+
+    @Inject
+    lateinit var ioHelper: IoHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun doInBackground(vararg voids: Void): Void? {
-        IoHelper(mContext).backupBirthday()
+        ioHelper.backupBirthday()
         return null
     }
 }

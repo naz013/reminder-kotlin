@@ -6,6 +6,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
@@ -15,6 +16,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.SuperUtil
 
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -39,6 +41,15 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
     private var mNotifyMgr: NotificationManagerCompat? = null
     private val builder: NotificationCompat.Builder = NotificationCompat.Builder(mContext, Notifier.CHANNEL_SYSTEM)
 
+    @Inject
+    lateinit var backupTool: BackupTool
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun onPreExecute() {
         super.onPreExecute()
         builder.setContentTitle(mContext.getString(R.string.notes))
@@ -54,14 +65,14 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
 
     override fun doInBackground(vararg params: Void): Boolean {
         try {
-            BackupTool.getInstance().importNotes()
+            backupTool.importNotes()
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
 
-        BackupTool.getInstance().exportNotes()
+        backupTool.exportNotes()
 
         if (SuperUtil.isConnected(mContext)) {
             Dropbox().downloadNotes(true)
@@ -99,6 +110,6 @@ class SyncNotes(private val mContext: Context, private val mListener: ((Boolean)
         builder.setWhen(System.currentTimeMillis())
         mNotifyMgr?.notify(2, builder.build())
         mListener?.invoke(aVoid)
-        UpdatesHelper.getInstance(mContext).updateNotesWidget()
+        updatesHelper.updateNotesWidget()
     }
 }

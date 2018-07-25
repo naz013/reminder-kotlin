@@ -68,7 +68,7 @@ class MonthFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, Prefs.getInstance(activity!!).is24HourFormatEnabled)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
         timeField.text = formattedTime
     }
     private val mDateSelect = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -128,7 +128,7 @@ class MonthFragment : RepeatableTypeFragment() {
         reminder.setClear(iFace)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.remindBefore = before_view.beforeValue
-        val startTime = TimeCount.getInstance(context!!).getNextMonthDayTime(reminder)
+        val startTime = timeCount.getNextMonthDayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
@@ -162,10 +162,10 @@ class MonthFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        monthDayField.onClick { TimeUtil.showDatePicker(activity!!, mDateSelect, mYear, mMonth, mDay) }
-        timeField.onClick { TimeUtil.showTimePicker(activity!!, mTimeSelect, mHour, mMinute) }
+        monthDayField.onClick { TimeUtil.showDatePicker(activity!!, prefs, mDateSelect, mYear, mMonth, mDay) }
+        timeField.onClick { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                Prefs.getInstance(activity!!).is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled)
         actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
@@ -227,7 +227,7 @@ class MonthFragment : RepeatableTypeFragment() {
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                Prefs.getInstance(activity!!).is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled)
         if (reminder.dayOfMonth == 0) {
             lastCheck.isChecked = true
         } else {

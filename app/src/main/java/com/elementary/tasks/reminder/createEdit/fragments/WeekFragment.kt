@@ -62,7 +62,7 @@ class WeekFragment : RepeatableTypeFragment() {
         val c = Calendar.getInstance()
         c.set(Calendar.HOUR_OF_DAY, hourOfDay)
         c.set(Calendar.MINUTE, minute)
-        val formattedTime = TimeUtil.getTime(c.time, Prefs.getInstance(activity!!).is24HourFormatEnabled)
+        val formattedTime = TimeUtil.getTime(c.time, prefs.is24HourFormatEnabled)
         timeField.text = formattedTime
     }
 
@@ -122,7 +122,7 @@ class WeekFragment : RepeatableTypeFragment() {
         reminder.setClear(iFace)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.remindBefore = before_view.beforeValue
-        val startTime = TimeCount.getInstance(context!!).getNextWeekdayTime(reminder)
+        val startTime = timeCount.getNextWeekdayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
@@ -156,9 +156,9 @@ class WeekFragment : RepeatableTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, mTimeSelect, mHour, mMinute) }
+        timeField.setOnClickListener { TimeUtil.showTimePicker(activity!!, prefs.is24HourFormatEnabled, mTimeSelect, mHour, mMinute) }
         timeField.text = TimeUtil.getTime(updateTime(System.currentTimeMillis()),
-                Prefs.getInstance(activity!!).is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled)
         actionView.setListener(mActionListener)
         actionView.setActivity(activity!!)
         actionView.setContactClickListener(View.OnClickListener { selectContact() })
@@ -183,14 +183,13 @@ class WeekFragment : RepeatableTypeFragment() {
 
     @Suppress("DEPRECATION")
     private fun setToggleTheme() {
-        val cs = ThemeUtil.getInstance(context!!)
-        mondayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        tuesdayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        wednesdayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        thursdayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        fridayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        saturdayCheck.setBackgroundDrawable(cs.toggleDrawable())
-        sundayCheck.setBackgroundDrawable(cs.toggleDrawable())
+        mondayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        tuesdayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        wednesdayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        thursdayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        fridayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        saturdayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
+        sundayCheck.setBackgroundDrawable(themeUtil.toggleDrawable())
     }
 
     private fun updateTime(millis: Long): Date {
@@ -217,7 +216,7 @@ class WeekFragment : RepeatableTypeFragment() {
         exportToCalendar.isChecked = reminder.exportToCalendar
         exportToTasks.isChecked = reminder.exportToTasks
         timeField.text = TimeUtil.getTime(updateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime)),
-                Prefs.getInstance(activity!!).is24HourFormatEnabled)
+                prefs.is24HourFormatEnabled)
         before_view.setBefore(reminder.remindBefore)
         if (reminder.weekdays.isNotEmpty()) {
             setCheckForDays(reminder.weekdays)

@@ -60,25 +60,12 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     @Inject
     lateinit var prefs: Prefs
     @Inject
-    lateinit var language: Language
-    @Inject
     lateinit var timeCount: TimeCount
-
-    private val recognizer: Recognizer
+    @Inject
+    lateinit var recognizer: Recognizer
 
     init {
         ReminderApp.appComponent.inject(this)
-        val language = language.getLanguage(prefs.voiceLocale)
-        val morning = prefs.morningTime
-        val day = prefs.noonTime
-        val evening = prefs.eveningTime
-        val night = prefs.nightTime
-        val times = arrayOf(morning, day, evening, night)
-        recognizer = Recognizer.Builder()
-                .setLocale(language)
-                .setTimes(times)
-                .setContactsInterface(ContactHelper())
-                .build()
     }
 
     fun getNotes() {
@@ -150,10 +137,12 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
     }
 
     fun findSuggestion(suggestion: String): Model? {
+        recognizer.setContactHelper(ContactHelper())
         return recognizer.parse(suggestion)
     }
 
     fun findResults(matches: ArrayList<*>): Reminder? {
+        recognizer.setContactHelper(ContactHelper())
         for (i in matches.indices) {
             val key = matches[i]
             val keyStr = key.toString()

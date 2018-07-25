@@ -25,7 +25,10 @@ import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.dialogs.VolumeDialog
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.LogUtil
+import com.elementary.tasks.core.utils.Module
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.reminder.createEdit.AddReminderActivity
@@ -63,7 +66,7 @@ class ConversationActivity : ThemedActivity() {
 
     private val mTextToSpeechListener = TextToSpeech.OnInitListener { status ->
         if (status == TextToSpeech.SUCCESS && tts != null) {
-            val result = tts!!.setLanguage(Locale(Language.getLanguage(prefs.voiceLocale)))
+            val result = tts!!.setLanguage(Locale(language.getLanguage(prefs.voiceLocale)))
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 LogUtil.d(TAG, "This Language is not supported")
             } else {
@@ -132,7 +135,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun getLocalized(id: Int): String {
-        return Language.getLocalized(this, id)
+        return language.getLocalized(this, id)
     }
 
     private fun parseResults(list: List<String>?) {
@@ -365,7 +368,7 @@ class ConversationActivity : ThemedActivity() {
         addObjectResponse(Reply(Reply.REMINDER, reminder))
         if (prefs.isTellAboutEvent) {
             addResponse(getLocalized(R.string.reminder_created_on) + " " +
-                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale) +
+                    TimeUtil.getVoiceDateTime(reminder.eventTime, prefs.is24HourFormatEnabled, prefs.voiceLocale, language) +
                     ". " + getLocalized(R.string.would_you_like_to_save_it))
             Handler().postDelayed({ askReminderAction(reminder, false) }, 8000)
         } else {
@@ -531,10 +534,10 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun showLanguageDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setCancelable(false)
         builder.setTitle(getString(R.string.language))
-        val locales = Language.getLanguages(this)
+        val locales = language.getLanguages(this)
         val adapter = ArrayAdapter(this,
                 android.R.layout.simple_list_item_single_choice, locales)
         val language = prefs.voiceLocale
@@ -580,7 +583,7 @@ class ConversationActivity : ThemedActivity() {
 
     private fun initRecognizer() {
         val recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(prefs.voiceLocale))
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.packageName)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
@@ -640,7 +643,7 @@ class ConversationActivity : ThemedActivity() {
     }
 
     private fun showInstallTtsDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(R.string.would_you_like_to_install_tts)
         builder.setPositiveButton(R.string.install) { dialogInterface, _ ->
             dialogInterface.dismiss()

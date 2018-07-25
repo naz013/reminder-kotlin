@@ -41,9 +41,11 @@ import java.util.*
 class QuickNoteCoordinator(private val mContext: MainActivity, private val parent: ViewGroup,
                            private val noteList: ViewGroup, private val mCallback: Callback?,
                            private var reminderViewModel: ActiveRemindersViewModel,
-                           private var noteViewModel: NotesViewModel) {
+                           private var noteViewModel: NotesViewModel,
+                           private val themeUtil: ThemeUtil,
+                           private val prefs: Prefs,
+                           private val notifier: Notifier) {
 
-    private val themeUtil: ThemeUtil = ThemeUtil.getInstance(mContext)
     private var mNote: Note? = null
     val isNoteVisible: Boolean
         get() = parent.visibility == View.VISIBLE
@@ -68,7 +70,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         noteViewModel.result.observe(mContext, Observer{ commands ->
             if (commands != null) {
                 when (commands) {
-                    Commands.SAVED -> if (Prefs.getInstance(mContext).isNoteReminderEnabled) {
+                    Commands.SAVED -> if (prefs.isNoteReminderEnabled) {
                         if (mNote != null) addReminderCard(mNote!!)
                     } else {
                         if (mNote != null) addNotificationCard(mNote!!)
@@ -130,8 +132,8 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         val item = Note()
         item.summary = text
         item.date = TimeUtil.gmtDateTime
-        if (Prefs.getInstance(mContext).isNoteColorRememberingEnabled) {
-            item.color = Prefs.getInstance(mContext).lastNoteColor
+        if (prefs.isNoteColorRememberingEnabled) {
+            item.color = prefs.lastNoteColor
         } else {
             item.color = Random().nextInt(16)
         }
@@ -175,7 +177,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         if (def != null) {
             reminder.groupUuId = def.uuId
         }
-        val prefsTime = Prefs.getInstance(mContext).noteReminderTime * TimeCount.MINUTE
+        val prefsTime = prefs.noteReminderTime * TimeCount.MINUTE
         val startTime = System.currentTimeMillis() + prefsTime
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
@@ -201,7 +203,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
     }
 
     private fun showInStatusBar(item: Note) {
-        Notifier(mContext).showNoteNotification(item)
+        notifier.showNoteNotification(item)
         hideNoteView()
     }
 

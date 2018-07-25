@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.di
 
 import android.app.Application
+import com.backdoor.engine.Recognizer
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.utils.*
@@ -105,6 +106,21 @@ class UtilModule {
     @Singleton
     fun providesNotifier(application: Application, prefs: Prefs, themeUtil: ThemeUtil): Notifier {
         return Notifier(application, prefs, themeUtil)
+    }
+
+    @Provides
+    @Singleton
+    fun providesRecognizer(prefs: Prefs, language: Language): Recognizer {
+        val lang = language.getLanguage(prefs.voiceLocale)
+        val morning = prefs.morningTime
+        val day = prefs.noonTime
+        val evening = prefs.eveningTime
+        val night = prefs.nightTime
+        val times = arrayOf(morning, day, evening, night)
+        return Recognizer.Builder()
+                .setLocale(lang)
+                .setTimes(times)
+                .build()
     }
 
     @Provides

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.list_item_note_image.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -44,6 +46,13 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
 
     val data: List<NoteImage>
         get() = mDataList
+
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     fun setEditable(editable: Boolean) {
         isEditable = editable
@@ -74,11 +83,11 @@ class ImagesGridAdapter : RecyclerView.Adapter<ImagesGridAdapter.PhotoViewHolder
             itemView.photoView.setOnClickListener { view -> performClick(view, adapterPosition) }
             if (isEditable) {
                 itemView.removeButton.visibility = View.VISIBLE
-                itemView.removeButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
+                itemView.removeButton.setBackgroundResource(themeUtil.indicator)
                 itemView.removeButton.setOnClickListener { removeImage(adapterPosition) }
                 if (actionsListener != null && Module.isPro) {
                     itemView.editButton.visibility = View.VISIBLE
-                    itemView.editButton.setBackgroundResource(ThemeUtil.getInstance(itemView.context).indicator)
+                    itemView.editButton.setBackgroundResource(themeUtil.indicator)
                     itemView.editButton.setOnClickListener { view ->
                         actionsListener!!.onAction(view, adapterPosition, getItem(adapterPosition), ListActions.EDIT)
                     }

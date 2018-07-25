@@ -11,8 +11,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.notes.preview.ImagePreviewActivity
@@ -41,7 +41,7 @@ import java.lang.ref.WeakReference
  * limitations under the License.
  */
 class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)?) :
-        RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
+        BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_note, parent, false)) {
 
     init {
         itemView.noteClick.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
@@ -70,11 +70,11 @@ class NoteHolder(parent: ViewGroup, listener: ((View, Int, ListActions) -> Unit)
         }
         textView.text = title
         textView.typeface = AssetsUtil.getTypeface(context, note.style)
-        textView.textSize = (Prefs.getInstance(context).noteTextSize + 12).toFloat()
+        textView.textSize = (prefs.noteTextSize + 12).toFloat()
     }
 
     private fun loadNoteCard(cardView: CardView, color: Int) {
-        cardView.setCardBackgroundColor(ThemeUtil.getInstance(cardView.context).getNoteLightColor(color))
+        cardView.setCardBackgroundColor(themeUtil.getNoteLightColor(color))
         if (Module.isLollipop) {
             cardView.cardElevation = Configs.CARD_ELEVATION
         }

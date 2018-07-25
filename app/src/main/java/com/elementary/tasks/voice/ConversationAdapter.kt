@@ -47,13 +47,15 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val mData = ArrayList<Reply>()
     var mCallback: (() -> Unit)? = null
+
+    @Inject
+    lateinit var language: Language
     @Inject
     lateinit var themeUtil: ThemeUtil
 
     init {
         ReminderApp.appComponent.inject(this)
     }
-
 
     fun addReply(reply: Reply?) {
         if (reply != null) {
@@ -134,8 +136,8 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             itemView.replyNo.setBackgroundResource(themeUtil.rectangle)
             itemView.replyYes.setBackgroundResource(themeUtil.rectangle)
-            itemView.replyNo.text = Language.getLocalized(itemView.context, R.string.no)
-            itemView.replyYes.text = Language.getLocalized(itemView.context, R.string.yes)
+            itemView.replyNo.text = language.getLocalized(itemView.context, R.string.no)
+            itemView.replyYes.text = language.getLocalized(itemView.context, R.string.yes)
         }
 
         internal fun setAskAction(askAction: AskAction) {

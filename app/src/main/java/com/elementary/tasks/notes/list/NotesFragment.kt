@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -28,6 +29,7 @@ import com.elementary.tasks.notes.work.SyncNotes
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -60,6 +62,11 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
+    @Inject
+    lateinit var backupTool: BackupTool
+    @Inject
+    lateinit var notifier: Notifier
+
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -78,6 +85,10 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     private val mCloseListener = {
         filterController.setSearchValue("")
         true
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,7 +123,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     private fun shareNote(note: Note) {
         showProgress()
-        Thread { BackupTool.getInstance().createNote(note, object : BackupTool.CreateCallback {
+        Thread { backupTool.createNote(note, object : BackupTool.CreateCallback {
             override fun onReady(file: File?) {
                 if (file != null) sendNote(note, file)
             }
@@ -130,7 +141,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     private fun hideProgress() {
         if (mProgress != null && mProgress!!.isShowing) {
-            mProgress!!.dismiss()
+            mProgress?.dismiss()
         }
     }
 
@@ -147,7 +158,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
                 enableGrid = !enableGrid
                 prefs.isNotesGridEnabled = enableGrid
                 mAdapter.notifyDataSetChanged()
-                activity!!.invalidateOptionsMenu()
+                activity?.invalidateOptionsMenu()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -197,7 +208,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         var showIn = getString(R.string.show_in_status_bar)
         showIn = showIn.substring(0, showIn.length - 1)
         val items = arrayOf(getString(R.string.open), getString(R.string.share), showIn, getString(R.string.change_color), getString(R.string.edit), getString(R.string.delete))
-        Dialogues.showLCAM(context!!, { item ->
+        dialogues.showLCAM(context!!, { item ->
             when (item) {
                 0 -> previewNote(note.key, view)
                 1 -> shareNote(note)
@@ -212,7 +223,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     private fun showDialog() {
         val items = arrayOf<CharSequence>(getString(R.string.by_date_az), getString(R.string.by_date_za), getString(R.string.name_az), getString(R.string.name_za))
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.order))
         builder.setItems(items) { dialog, which ->
             var value = ""
@@ -235,13 +246,12 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.notes))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener { startActivity(Intent(context, CreateNoteActivity::class.java)) })
             callback?.onScrollChanged(recyclerView)
         }
     }
 
     private fun deleteDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setMessage(R.string.delete_all_notes)
         builder.setNegativeButton(getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
@@ -266,16 +276,16 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
             intent.putExtra(Constants.INTENT_ID, id)
             val transitionName = "image"
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!, view, transitionName)
-            context!!.startActivity(intent, options.toBundle())
+            startActivity(intent, options.toBundle())
         } else {
-            context!!.startActivity(Intent(context, NotePreviewActivity::class.java)
+            startActivity(Intent(context, NotePreviewActivity::class.java)
                     .putExtra(Constants.INTENT_ID, id))
         }
     }
 
     private fun showInStatusBar(note: Note?) {
         if (note != null) {
-            Notifier(context!!).showNoteNotification(note)
+            notifier.showNoteNotification(note)
         }
     }
 
@@ -284,7 +294,7 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
         if (Module.isPro) {
             items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
         }
-        Dialogues.showLCAM(context!!, { item ->
+        dialogues.showLCAM(context!!, { item ->
             note.color = item
             viewModel.saveNote(note)
         }, *items)

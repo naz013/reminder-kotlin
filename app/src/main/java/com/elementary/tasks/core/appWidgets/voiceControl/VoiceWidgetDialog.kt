@@ -6,10 +6,9 @@ import android.os.Bundle
 import android.speech.RecognizerIntent
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.Notifier
-import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import javax.inject.Inject
 
@@ -34,8 +33,18 @@ import javax.inject.Inject
 class VoiceWidgetDialog : FragmentActivity() {
 
     private lateinit var viewModel: ConversationViewModel
-    @Inject lateinit var themeUtil: ThemeUtil
-    @Inject lateinit var notifier: Notifier
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var notifier: Notifier
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var language: Language
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,13 +54,14 @@ class VoiceWidgetDialog : FragmentActivity() {
     }
 
     private fun startVoiceRecognitionActivity() {
-        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false)
+        SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS) ?: ArrayList()
+            val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    ?: ArrayList()
             viewModel.parseResults(matches, true)
         }
         notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)

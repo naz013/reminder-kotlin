@@ -275,7 +275,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         if (prefs.isAutoBackupEnabled) {
             BackupTask().execute()
         }
-        BackupBirthdaysTask(this).execute()
+        BackupBirthdaysTask().execute()
     }
 
     override fun onBackPressed() {

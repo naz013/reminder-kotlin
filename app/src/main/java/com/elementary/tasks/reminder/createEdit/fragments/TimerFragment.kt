@@ -9,7 +9,9 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.LogUtil
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
 import kotlinx.android.synthetic.main.fragment_timer.*
@@ -108,7 +110,7 @@ class TimerFragment : RepeatableTypeFragment() {
         reminder.to = mTo
         reminder.hours = mHours
         reminder.setClear(iFace)
-        val startTime = TimeCount.getInstance(context!!).generateNextTimer(reminder, true)
+        val startTime = timeCount.generateNextTimer(reminder, true)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))
@@ -175,7 +177,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun openExclusionDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.exclusion)
         val b = customizationView
         builder.setView(b)
@@ -215,12 +217,11 @@ class TimerFragment : RepeatableTypeFragment() {
 
     private fun setId(vararg buttons: ToggleButton) {
         var i = 100
-        val cs = ThemeUtil.getInstance(context!!)
         this.buttons = mutableListOf()
         val selected = ArrayList(mHours)
         for (button in buttons) {
             button.id = i
-            button.setBackgroundDrawable(cs.toggleDrawable())
+            button.setBackgroundDrawable(themeUtil.toggleDrawable())
             this.buttons.add(button)
             if (selected.contains(i - 100)) button.isChecked = true
             i++
@@ -228,7 +229,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun fromTime(textView: RoboTextView) {
-        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             fromHour = hourOfDay
             fromMinute = minute
             val calendar = Calendar.getInstance()
@@ -240,7 +241,7 @@ class TimerFragment : RepeatableTypeFragment() {
     }
 
     private fun toTime(textView: RoboTextView) {
-        TimeUtil.showTimePicker(context!!, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             toHour = hourOfDay
             toMinute = minute
             val calendar = Calendar.getInstance()
