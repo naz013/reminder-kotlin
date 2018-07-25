@@ -132,7 +132,7 @@ class AddReminderActivity : ThemedActivity() {
     }
 
     private fun save() {
-        val summary = task_text.text!!.toString()
+        val summary = task_text.text.toString().trim()
         var type = Reminder.BY_DATE
         val isAction = actionView.hasAction()
         if (TextUtils.isEmpty(summary) && !isAction) {

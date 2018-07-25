@@ -107,7 +107,7 @@ class YearFragment : RepeatableTypeFragment() {
         reminder.setClear(iFace)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(time)
         reminder.remindBefore = before_view.beforeValue
-        val startTime = TimeCount.getInstance(context!!).getNextYearDayTime(reminder)
+        val startTime = timeCount.getNextYearDayTime(reminder)
         reminder.startTime = TimeUtil.getGmtFromDateTime(startTime)
         reminder.eventTime = TimeUtil.getGmtFromDateTime(startTime)
         LogUtil.d(TAG, "EVENT_TIME " + TimeUtil.getFullDateTime(startTime, true, true))

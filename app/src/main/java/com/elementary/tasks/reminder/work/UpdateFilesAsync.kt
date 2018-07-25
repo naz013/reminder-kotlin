@@ -2,12 +2,13 @@ package com.elementary.tasks.reminder.work
 
 import android.content.Context
 import android.os.AsyncTask
-
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
+import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.SuperUtil
-import com.elementary.tasks.core.data.models.Reminder
+import javax.inject.Inject
 
 /**
  * Copyright 2017 Nazar Suhovich
@@ -33,9 +34,16 @@ class UpdateFilesAsync(context: Context) : AsyncTask<Reminder, Void, Void>() {
     private val dropbox: Dropbox = Dropbox()
     private val google: Google? = Google.getInstance()
 
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     override fun doInBackground(vararg params: Reminder): Void? {
         for (reminder in params) {
-            val path = BackupTool.getInstance().exportReminder(reminder)
+            val path = backupTool.exportReminder(reminder)
             if (isConnected) {
                 dropbox.uploadReminderByFileName(path)
                 if (google?.drive != null && path != null) {

@@ -21,7 +21,6 @@ import com.backdoor.engine.ObjectUtil
 import com.elementary.tasks.R
 import com.elementary.tasks.core.appWidgets.voiceControl.VoiceWidgetDialog
 import com.elementary.tasks.core.contacts.ContactsActivity
-import com.elementary.tasks.core.interfaces.LCAMListener
 import com.elementary.tasks.core.services.GeolocationService
 import com.elementary.tasks.reminder.createEdit.fragments.ReminderInterface
 import com.elementary.tasks.voice.ConversationActivity
@@ -109,9 +108,9 @@ object SuperUtil {
         return !(Module.isMarshmallow && !notificationManager.isNotificationPolicyAccessGranted)
     }
 
-    fun askNotificationPermission(activity: Activity) {
+    fun askNotificationPermission(activity: Activity, dialogues: Dialogues) {
         if (Module.isMarshmallow) {
-            val builder = Dialogues.getDialog(activity)
+            val builder = dialogues.getDialog(activity)
             builder.setMessage(R.string.for_correct_work_of_application)
             builder.setPositiveButton(R.string.grant) { dialog, which ->
                 dialog.dismiss()
@@ -179,16 +178,6 @@ object SuperUtil {
         return netInfo != null && netInfo.isConnectedOrConnecting
     }
 
-    fun showLCAM(context: Context, listener: LCAMListener?, vararg actions: String) {
-        val builder = Dialogues.getDialog(context)
-        builder.setItems(actions) { dialog, item ->
-            dialog.dismiss()
-            listener?.onAction(item)
-        }
-        val alert = builder.create()
-        alert.show()
-    }
-
     fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -223,18 +212,18 @@ object SuperUtil {
             0
     }
 
-    fun startVoiceRecognitionActivity(activity: Activity, requestCode: Int, isLive: Boolean) {
+    fun startVoiceRecognitionActivity(activity: Activity, requestCode: Int, isLive: Boolean, prefs: Prefs, language: Language) {
         val intent: Intent
         if (isLive) {
             intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
-        } else if (Prefs.getInstance(activity).isLiveEnabled) {
+        } else if (prefs.isLiveEnabled) {
             (activity as? VoiceWidgetDialog)?.finish()
             intent = Intent(activity, ConversationActivity::class.java)
         } else {
             intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Language.getLanguage(Prefs.getInstance(activity).voiceLocale))
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.getLanguage(prefs.voiceLocale))
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, activity.getString(R.string.say_something))
         }
         try {

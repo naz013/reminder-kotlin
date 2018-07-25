@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -25,6 +26,7 @@ import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import kotlinx.android.synthetic.main.fragment_trash.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -57,6 +59,9 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -77,6 +82,10 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mSearchCloseListener = {
         refreshFilters()
         false
+    }
+
+    init {
+        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -136,7 +145,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         if (callback != null) {
             callback!!.onTitleChange(getString(R.string.trash))
             callback!!.onFragmentSelect(this)
-            callback!!.setClick(null)
         }
     }
 
@@ -153,7 +161,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun showActionDialog(reminder: Reminder, view: View) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        Dialogues.showPopup(context!!, view, { item ->
+        dialogues.showPopup(context!!, view, { item ->
             if (item == 0) {
                 editReminder(reminder)
             }
@@ -211,9 +219,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        val util = ThemeUtil.getInstance(context!!)
         for (integer in types) {
-            filter.add(FilterView.FilterElement(util.getReminderIllustration(integer), ReminderUtils.getType(context!!, integer), integer))
+            filter.add(FilterView.FilterElement(themeUtil.getReminderIllustration(integer), reminderUtils.getType(integer), integer))
         }
         if (filter.size != 0) {
             filters.add(filter)
@@ -238,10 +245,9 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        val util = ThemeUtil.getInstance(context!!)
         for (i in groups.indices) {
             val item = groups[i]
-            filter.add(FilterView.FilterElement(util.getCategoryIndicator(item.color), item.title, i + 1))
+            filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
             mGroupsIds.add(item.uuId)
         }
         filters.add(filter)

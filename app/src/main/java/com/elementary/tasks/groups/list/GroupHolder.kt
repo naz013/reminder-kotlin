@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
-import com.elementary.tasks.core.aech.BaseHolder
+import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.mcxiaoke.koi.ext.onClick

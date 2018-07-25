@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.views.roboto.RoboTextView
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
@@ -27,7 +26,7 @@ import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 abstract class RepeatableTypeFragment : TypeFragment() {
 
     protected fun changeLimit() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.repeat_limit)
         val b = layoutInflater.inflate(R.layout.dialog_with_seek_and_title, null)
         b.seekBar.max = 366

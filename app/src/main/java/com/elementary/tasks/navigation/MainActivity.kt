@@ -57,7 +57,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
                 }
             }
         } else if (action == GlobalButtonObservable.Action.VOICE) {
-            SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false)
+            SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
         }
     }
 
@@ -118,7 +118,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val noteViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         val reminderViewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
-                mQuickCallback, reminderViewModel, noteViewModel)
+                mQuickCallback, reminderViewModel, noteViewModel, themeUtil, prefs, notifier)
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {

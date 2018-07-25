@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
@@ -29,6 +30,7 @@ import com.elementary.tasks.notes.list.KeepLayoutManager
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import kotlinx.android.synthetic.main.activity_note_preview.*
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -60,6 +62,13 @@ class NotePreviewActivity : ThemedActivity() {
 
     private var mProgress: ProgressDialog? = null
     private val mUiHandler = Handler(Looper.getMainLooper())
+
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,13 +169,13 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun editNote() {
-        startActivity(Intent(this@NotePreviewActivity, CreateNoteActivity::class.java)
+        startActivity(Intent(this, CreateNoteActivity::class.java)
                 .putExtra(Constants.INTENT_ID, mNote?.key))
     }
 
     private fun moveToStatus() {
         if (mNote != null) {
-            Notifier(this).showNoteNotification(mNote!!)
+            notifier.showNoteNotification(mNote!!)
         }
     }
 
@@ -223,7 +232,7 @@ class NotePreviewActivity : ThemedActivity() {
             return
         }
         showProgress()
-        Thread { BackupTool.getInstance().createNote(mNote, object : BackupTool.CreateCallback {
+        Thread { backupTool.createNote(mNote, object : BackupTool.CreateCallback {
             override fun onReady(file: File?) {
                 if (file != null) sendNote(file)
             }
@@ -281,7 +290,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun showDeleteDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_note))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
@@ -293,7 +302,7 @@ class NotePreviewActivity : ThemedActivity() {
     }
 
     private fun showReminderDeleteDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(R.string.delete_this_reminder)
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()

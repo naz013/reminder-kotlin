@@ -350,7 +350,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun setUiTheme() {
-        val bgColor = ThemeUtil.getInstance(context!!).backgroundStyle
+        val bgColor = themeUtil.backgroundStyle
         background.setBackgroundColor(bgColor)
         draw_tools.setBackgroundColor(bgColor)
         colorView.setBackgroundColor(bgColor)
@@ -518,7 +518,7 @@ class DrawFragment : BitmapFragment() {
                     Permissions.WRITE_EXTERNAL, Permissions.MANAGE_DOCUMENTS)
             return
         }
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.image))
         builder.setItems(arrayOf<CharSequence>(getString(R.string.gallery), getString(R.string.take_a_shot))) { _, which ->
             when (which) {
@@ -551,7 +551,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showStyleDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(getString(R.string.font_style))
         val contacts = ArrayList<String>()
         contacts.clear()
@@ -598,10 +598,10 @@ class DrawFragment : BitmapFragment() {
         if (mPrefsControl == null) {
             return
         }
-        if (ThemeUtil.getInstance(context!!).isDark) {
-            mPrefsControl!!.setImageResource(R.drawable.ic_expand_more_white_24dp)
+        if (themeUtil.isDark) {
+            mPrefsControl?.setImageResource(R.drawable.ic_expand_more_white_24dp)
         } else {
-            mPrefsControl!!.setImageResource(R.drawable.ic_expand_more_black_24dp)
+            mPrefsControl?.setImageResource(R.drawable.ic_expand_more_black_24dp)
         }
     }
 
@@ -610,10 +610,10 @@ class DrawFragment : BitmapFragment() {
         if (mPrefsControl == null) {
             return
         }
-        if (ThemeUtil.getInstance(context!!).isDark) {
-            mPrefsControl!!.setImageResource(R.drawable.ic_expand_less_white_24dp)
+        if (themeUtil.isDark) {
+            mPrefsControl?.setImageResource(R.drawable.ic_expand_less_white_24dp)
         } else {
-            mPrefsControl!!.setImageResource(R.drawable.ic_expand_less_black_24dp)
+            mPrefsControl?.setImageResource(R.drawable.ic_expand_less_black_24dp)
         }
     }
 
@@ -637,7 +637,7 @@ class DrawFragment : BitmapFragment() {
     }
 
     private fun showTextPickerDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         val editText = RoboEditText(context!!)
         editText.setHint(R.string.text)
         builder.setView(editText)

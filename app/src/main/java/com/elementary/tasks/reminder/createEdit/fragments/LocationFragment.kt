@@ -178,7 +178,7 @@ class LocationFragment : RadiusTypeFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val advancedMapFragment = AdvancedMapFragment.newInstance(true, true, true, true,
-                Prefs.getInstance(context!!).markerStyle, ThemeUtil.getInstance(context!!).isDark)
+                prefs.markerStyle, themeUtil.isDark)
         advancedMapFragment.setListener(mListener)
         advancedMapFragment.setCallback(object : MapCallback {
             override fun onMapReady() {

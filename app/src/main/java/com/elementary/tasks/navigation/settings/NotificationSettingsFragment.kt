@@ -561,7 +561,7 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
         soundOptionPrefs.isChecked = !isChecked
         prefs.isSoundInSilentModeEnabled = !isChecked
         if (!SuperUtil.checkNotificationPermission(activity!!)) {
-            SuperUtil.askNotificationPermission(activity!!)
+            SuperUtil.askNotificationPermission(activity!!, dialogues)
         } else if (!Permissions.checkPermission(context!!, Permissions.BLUETOOTH)) {
             Permissions.requestPermission(activity!!, PERM_BT, Permissions.BLUETOOTH)
         }

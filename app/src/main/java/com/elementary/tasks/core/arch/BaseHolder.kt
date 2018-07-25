@@ -1,4 +1,4 @@
-package com.elementary.tasks.core.aech
+package com.elementary.tasks.core.arch
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

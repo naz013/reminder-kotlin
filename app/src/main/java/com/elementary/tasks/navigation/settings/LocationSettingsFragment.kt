@@ -7,8 +7,6 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.settings.location.MapStyleFragment
 import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment
 import com.mcxiaoke.koi.ext.onClick
@@ -34,7 +32,6 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 class LocationSettingsFragment : BaseSettingsFragment() {
 
     private var mItemSelect: Int = 0
@@ -53,9 +50,9 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     private fun initMapStylePrefs() {
         mapStylePrefs.onClick { openMapStylesFragment() }
-        mapStylePrefs.setDetailText(getString(ThemeUtil.getInstance(context!!).styleName))
-        mapStylePrefs.setViewResource(ThemeUtil.getInstance(context!!).mapStylePreview)
-        mapStylePrefs.isEnabled = Prefs.getInstance(context!!).mapType == 3
+        mapStylePrefs.setDetailText(getString(themeUtil.styleName))
+        mapStylePrefs.setViewResource(themeUtil.mapStylePreview)
+        mapStylePrefs.isEnabled = prefs.mapType == 3
     }
 
     private fun openMapStylesFragment() {
@@ -70,7 +67,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showMarkerStyle() {
-        markerStylePrefs.setViewResource(ThemeUtil.getInstance(context!!).markerStyle)
+        markerStylePrefs.setViewResource(themeUtil.markerStyle)
     }
 
     private fun initMapTypePrefs() {
@@ -99,7 +96,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showTrackerOptionsDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setTitle(R.string.tracking_settings)
         val b = layoutInflater.inflate(R.layout.dialog_tracking_settings_layout, null)
         b.distanceBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -144,7 +141,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun showMapTypeDialog() {
-        val builder = Dialogues.getDialog(context!!)
+        val builder = dialogues.getDialog(context!!)
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.map_type))
         val types = arrayOf(getString(R.string.normal), getString(R.string.satellite), getString(R.string.terrain), getString(R.string.hybrid))
@@ -186,7 +183,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     private fun showRadiusPickerDialog() {
         val radius = prefs.radius
-        Dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
+        dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
             override fun onSelected(integer: Int) {
                 prefs.radius = integer
                 showRadius()

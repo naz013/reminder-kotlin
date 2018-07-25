@@ -13,6 +13,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
@@ -35,6 +36,7 @@ import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -65,8 +67,15 @@ class ReminderPreviewActivity : ThemedActivity() {
     private val mUiHandler = Handler(Looper.getMainLooper())
     private var reminder: Reminder? = null
 
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
+
     private val mOnMarkerClick = GoogleMap.OnMarkerClickListener { marker ->
-        mGoogleMap!!.moveCamera(marker.position, 0, 0, 0, 0)
+        mGoogleMap?.moveCamera(marker.position, 0, 0, 0, 0)
         false
     }
 
@@ -128,7 +137,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         mapContainer.visibility = View.VISIBLE
         location.visibility = View.VISIBLE
         location.text = String.format(Locale.getDefault(), "%.5f %.5f (%d)", place.latitude, place.longitude, reminder.places.size)
-        mGoogleMap!!.addMarker(LatLng(lat, lon), reminder.summary, true, true, place.radius)
+        mGoogleMap?.addMarker(LatLng(lat, lon), reminder.summary, true, true, place.radius)
     }
 
     private val mReadyCallback = object : ReadyListener {
@@ -154,14 +163,14 @@ class ReminderPreviewActivity : ThemedActivity() {
         }
         window_type_view.text = getWindowType(reminder.windowType)
         taskText.text = reminder.summary
-        type.text = ReminderUtils.getTypeString(this, reminder.type)
+        type.text = reminderUtils.getTypeString(reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
         val due = TimeUtil.getDateTimeFromGmt(reminder.eventTime)
         if (due > 0) {
             time.text = TimeUtil.getFullDateTime(due, prefs.is24HourFormatEnabled, false)
             var repeatStr: String? = IntervalUtil.getInterval(this, reminder.repeatInterval)
             if (Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
-                repeatStr = ReminderUtils.getRepeatString(this, reminder.weekdays)
+                repeatStr = reminderUtils.getRepeatString(reminder.weekdays)
             }
             if (repeatStr != null) {
                 repeat.text = repeatStr
@@ -218,8 +227,8 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun getWindowType(reminderWType: Int): String {
-        var windowType = Prefs.getInstance(this).reminderType
-        val ignore = Prefs.getInstance(this).isIgnoreWindowType
+        var windowType = prefs.reminderType
+        val ignore = prefs.isIgnoreWindowType
         if (!ignore) {
             windowType = reminderWType
         }
@@ -319,7 +328,7 @@ class ReminderPreviewActivity : ThemedActivity() {
                 calendar.timeInMillis = tmp + AlarmManager.INTERVAL_HALF_HOUR
             }
         } while (hour != -1)
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_time)
         builder.setItems(time.toTypedArray()) { dialog, which ->
             dialog.dismiss()

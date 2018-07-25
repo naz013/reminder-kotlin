@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.interfaces.LCAMListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
@@ -133,12 +131,10 @@ class TemplatesFragment : BaseSettingsFragment(), FilterCallback<SmsTemplate> {
 
     private fun showMenu(position: Int, smsTemplate: SmsTemplate) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        SuperUtil.showLCAM(context!!, object : LCAMListener {
-            override fun onAction(item: Int) {
-                when (item) {
-                    0 -> openTemplate(smsTemplate)
-                    1 -> deleteTemplate(smsTemplate)
-                }
+        dialogues.showLCAM(context!!, {
+            when (it) {
+                0 -> openTemplate(smsTemplate)
+                1 -> deleteTemplate(smsTemplate)
             }
         }, *items)
     }

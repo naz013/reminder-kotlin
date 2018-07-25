@@ -3,7 +3,6 @@ package com.elementary.tasks.reminder.createEdit.fragments
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.SuperUtil
 import java.util.*
 
@@ -27,10 +26,10 @@ import java.util.*
  */
 abstract class RadiusTypeFragment : TypeFragment() {
 
-    protected var radius = Prefs.getInstance(context!!).radius
+    protected var radius = prefs.radius
 
     protected fun showRadiusPickerDialog() {
-        Dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
+        dialogues.showRadiusDialog(context!!, radius, object : Dialogues.OnValueSelectedListener<Int> {
             override fun onSelected(t: Int) {
                 radius = t - 1
                 recreateMarker()

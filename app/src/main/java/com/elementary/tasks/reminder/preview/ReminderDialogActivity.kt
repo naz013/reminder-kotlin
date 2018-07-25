@@ -252,7 +252,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
         if (!TextUtils.isEmpty(reminder.eventTime) && Reminder.isGpsType(reminder.type)) {
             reminder_time.text = TimeUtil.getFullDateTime(TimeUtil.getDateTimeFromGmt(reminder.eventTime),
-                    Prefs.getInstance(this).is24HourFormatEnabled, false)
+                    prefs.is24HourFormatEnabled, false)
             reminder_time.visibility = View.VISIBLE
         } else {
             reminder_time.visibility = View.GONE
@@ -527,7 +527,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
 
     private fun showDialog() {
         val items = arrayOf<CharSequence>(String.format(getString(R.string.x_minutes), 5.toString()), String.format(getString(R.string.x_minutes), 10.toString()), String.format(getString(R.string.x_minutes), 15.toString()), String.format(getString(R.string.x_minutes), 30.toString()), String.format(getString(R.string.x_minutes), 45.toString()), String.format(getString(R.string.x_minutes), 60.toString()), String.format(getString(R.string.x_minutes), 90.toString()), String.format(getString(R.string.x_hours), 2.toString()), String.format(getString(R.string.x_hours), 6.toString()), String.format(getString(R.string.x_hours), 24.toString()), String.format(getString(R.string.x_days), 2.toString()), String.format(getString(R.string.x_days), 7.toString()))
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(getString(R.string.choose_time))
         builder.setItems(items) { dialog, item1 ->
             var x = 0
@@ -645,7 +645,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     }
 
     private fun showInstallSkypeDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(R.string.skype_is_not_installed)
         builder.setPositiveButton(R.string.yes) { dialogInterface, _ ->
             dialogInterface.dismiss()

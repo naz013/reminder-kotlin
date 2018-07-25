@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.activity_create_place.*
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,6 +49,13 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
     private var mItem: Place? = null
     private var place: LatLng? = null
     private var placeTitle: String = ""
+
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,9 +102,9 @@ class CreatePlaceActivity : ThemedActivity(), MapListener, MapCallback {
                 val scheme = name!!.scheme
                 mItem = if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getPlace(cr, name)
+                    backupTool.getPlace(cr, name)
                 } else {
-                    BackupTool.getInstance().getPlace(name.path, null)
+                    backupTool.getPlace(name.path, null)
                 }
                 showPlace(mItem)
             } catch (e: IOException) {

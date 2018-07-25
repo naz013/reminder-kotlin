@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.notes.create.NoteImage
 import kotlinx.android.synthetic.main.fragment_crop_image.*
 import java.io.ByteArrayOutputStream
@@ -57,7 +56,7 @@ class CropFragment : BitmapFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        background.setBackgroundColor(ThemeUtil.getInstance(context!!).backgroundStyle)
+        background.setBackgroundColor(themeUtil.backgroundStyle)
         initControls()
     }
 

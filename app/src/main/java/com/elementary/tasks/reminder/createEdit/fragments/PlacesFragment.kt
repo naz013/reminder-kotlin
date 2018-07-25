@@ -9,7 +9,6 @@ import com.elementary.tasks.core.fragments.PlacesMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.interfaces.MapListener
 import com.elementary.tasks.core.utils.LogUtil
-import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_reminder_place.*
@@ -107,7 +106,6 @@ class PlacesFragment : RadiusTypeFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val prefs = Prefs.getInstance(activity!!)
         val placesMap = PlacesMapFragment()
         placesMap.setListener(mListener)
         placesMap.setCallback(object : MapCallback {

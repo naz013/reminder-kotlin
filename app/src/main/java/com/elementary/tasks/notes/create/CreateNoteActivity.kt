@@ -48,6 +48,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -89,6 +90,10 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
 
     private var speech: SpeechRecognizer? = null
     private lateinit var photoSelectionUtil: PhotoSelectionUtil
+    @Inject
+    lateinit var backupTool: BackupTool
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
 
     private val mRecognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(bundle: Bundle) {
@@ -344,13 +349,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     private fun initActionBar() {
         setSupportActionBar(toolbar)
         task_message.textSize = (prefs.noteTextSize + 12).toFloat()
-        if (supportActionBar != null) {
-            supportActionBar?.setDisplayShowTitleEnabled(false)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeButtonEnabled(true)
-            supportActionBar?.setDisplayShowHomeEnabled(true)
-            supportActionBar?.elevation = 0f
-        }
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.elevation = 0f
         appBar.visibility = View.VISIBLE
     }
 
@@ -360,12 +363,12 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 val scheme = name.scheme
                 if (ContentResolver.SCHEME_CONTENT == scheme) {
                     val cr = contentResolver
-                    BackupTool.getInstance().getNote(cr, name)
+                    backupTool.getNote(cr, name)
                 } else {
-                    BackupTool.getInstance().getNote(name.path, null)
+                    backupTool.getNote(name.path, null)
                 }
             } else {
-                BackupTool.getInstance().getNote(filePath, null)
+                backupTool.getNote(filePath, null)
             }
             showNote(mItem)
         } catch (e: IOException) {
@@ -373,7 +376,6 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 
     private fun showNote(note: Note?) {
@@ -455,7 +457,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 if (file != null) sendNote(file)
             }
         }
-        Thread { BackupTool.getInstance().createNote(mItem, callback) }.start()
+        Thread { backupTool.createNote(mItem, callback) }.start()
     }
 
     private fun sendNote(file: File) {
@@ -517,7 +519,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
                 calendar.set(mYear, mMonth, mDay, mHour, mMinute)
                 createReminder(note.key, calendar)
             }
-            UpdatesHelper.getInstance(this).updateNotesWidget()
+            updatesHelper.updateNotesWidget()
             finish()
         }
     }
@@ -588,7 +590,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun showColorDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(getString(R.string.change_color))
         val binding = layoutInflater.inflate(R.layout.dialog_color_picker_layout, null)
         val view = binding.pickerView
@@ -609,7 +611,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun deleteDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(getString(R.string.delete_this_note))
         builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
             dialog.dismiss()
@@ -678,7 +680,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun showStyleDialog() {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setTitle(getString(R.string.font_style))
         val contacts = ArrayList<String>()
         contacts.clear()
@@ -722,11 +724,11 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
     }
 
     private fun dateDialog() {
-        TimeUtil.showDatePicker(this, myDateCallBack, mYear, mMonth, mDay)
+        TimeUtil.showDatePicker(this, prefs, myDateCallBack, mYear, mMonth, mDay)
     }
 
     private fun timeDialog() {
-        TimeUtil.showTimePicker(this, myCallBack, mHour, mMinute)
+        TimeUtil.showTimePicker(this, prefs.is24HourFormatEnabled, myCallBack, mHour, mMinute)
     }
 
     override fun onDestroy() {

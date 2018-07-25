@@ -4,26 +4,20 @@ import android.app.AlarmManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
-import com.elementary.tasks.core.utils.Configs
-import com.elementary.tasks.core.utils.ThemeUtil
-import com.elementary.tasks.core.utils.TimeCount
-import com.elementary.tasks.core.utils.TimeUtil
+import com.elementary.tasks.core.utils.*
 import timber.log.Timber
 import java.text.ParseException
 import java.util.ArrayList
 import java.util.Calendar
 import java.util.Date
 import java.util.HashMap
-import kotlin.Boolean
+import javax.inject.Inject
 import kotlin.Comparator
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
-import kotlin.apply
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -63,7 +57,15 @@ class DayViewProvider(private val mContext: Context) {
     private val map = HashMap<Callback, CancelableRunnable>()
     private val observers = ArrayList<InitCallback>()
 
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var timeCount: TimeCount
+
     init {
+        ReminderApp.appComponent.inject(this)
         this.isDataChanged = true
     }
 
@@ -143,8 +145,7 @@ class DayViewProvider(private val mContext: Context) {
 
     private fun loadBirthdays() {
         val list = AppDb.getAppDatabase(mContext).birthdaysDao().all()
-        val cs = ThemeUtil.getInstance(mContext)
-        val color = cs.getColor(cs.colorBirthdayCalendar())
+        val color = themeUtil.getColor(themeUtil.colorBirthdayCalendar())
         for (item in list) {
             var date: Date? = null
             try {
@@ -235,7 +236,7 @@ class DayViewProvider(private val mContext: Context) {
                         }
                         val baseTime = item.dateTime
                         do {
-                            eventTime = TimeCount.getInstance(mContext).getNextMonthDayTime(item)
+                            eventTime = timeCount.getNextMonthDayTime(item)
                             calendar1.timeInMillis = eventTime
                             if (eventTime == baseTime) {
                                 continue
@@ -343,7 +344,7 @@ class DayViewProvider(private val mContext: Context) {
                 var time2: Long = 0
                 if (eventsItem.`object` is Birthday) {
                     val item = eventsItem.`object` as Birthday
-                    val dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.date)
+                    val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                     if (dateItem != null) {
                         val calendar = dateItem.calendar
                         time1 = calendar.timeInMillis
@@ -354,7 +355,7 @@ class DayViewProvider(private val mContext: Context) {
                 }
                 if (t1.`object` is Birthday) {
                     val item = t1.`object` as Birthday
-                    val dateItem = TimeUtil.getFutureBirthdayDate(mContext, item.date)
+                    val dateItem = TimeUtil.getFutureBirthdayDate(prefs, item.date)
                     if (dateItem != null) {
                         val calendar = dateItem.calendar
                         time2 = calendar.timeInMillis

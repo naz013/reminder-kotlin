@@ -4,7 +4,10 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,7 +16,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.places.PlacesViewModel
@@ -119,7 +121,6 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
         if (callback != null) {
             callback?.onTitleChange(getString(R.string.places))
             callback?.onFragmentSelect(this)
-            callback?.setClick(View.OnClickListener { startActivity(Intent(context, CreatePlaceActivity::class.java)) })
             callback?.onScrollChanged(recyclerView)
         }
     }
@@ -141,7 +142,7 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
 
     private fun showMore(place: Place?) {
         val items = arrayOf(getString(R.string.edit), getString(R.string.delete))
-        Dialogues.showLCAM(context!!, { item ->
+        dialogues.showLCAM(context!!, { item ->
             if (item == 0) {
                 openPlace(place!!)
             } else if (item == 1) {

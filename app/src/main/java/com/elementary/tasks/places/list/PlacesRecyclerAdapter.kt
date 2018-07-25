@@ -6,11 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
+import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.ThemeUtil
 import kotlinx.android.synthetic.main.list_item_place.view.*
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -42,6 +44,13 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
             this.mData.addAll(list)
             notifyDataSetChanged()
         }
+
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     override fun getItemCount(): Int {
         return mData.size
@@ -80,9 +89,7 @@ class PlacesRecyclerAdapter : RecyclerView.Adapter<PlacesRecyclerAdapter.ViewHol
         holder.bind(getItem(position))
     }
 
-    companion object {
-        fun loadMarker(view: ImageView, color: Int) {
-            view.setImageResource(ThemeUtil.getInstance(view.context).getMarkerStyle(color))
-        }
+    fun loadMarker(view: ImageView, color: Int) {
+        view.setImageResource(themeUtil.getMarkerStyle(color))
     }
 }

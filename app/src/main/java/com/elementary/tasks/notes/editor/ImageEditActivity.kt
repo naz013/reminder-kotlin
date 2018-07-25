@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Module
 import com.elementary.tasks.core.viewModels.Commands
@@ -112,7 +111,7 @@ class ImageEditActivity : ThemedActivity() {
     }
 
     private fun askDraw(position: Int) {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.edited) { dialogInterface, _ ->
             dialogInterface.dismiss()
@@ -128,7 +127,7 @@ class ImageEditActivity : ThemedActivity() {
     }
 
     private fun askCrop(position: Int) {
-        val builder = Dialogues.getDialog(this)
+        val builder = dialogues.getDialog(this)
         builder.setMessage(R.string.which_image_you_want_to_use)
         builder.setPositiveButton(R.string.cropped) { dialogInterface, _ ->
             dialogInterface.dismiss()

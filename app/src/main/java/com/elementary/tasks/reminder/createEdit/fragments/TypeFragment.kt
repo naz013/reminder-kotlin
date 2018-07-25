@@ -7,6 +7,12 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 
 import androidx.fragment.app.Fragment
+import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.utils.Dialogues
+import com.elementary.tasks.core.utils.Prefs
+import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.TimeCount
+import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -30,6 +36,19 @@ abstract class TypeFragment : Fragment() {
 
     var reminderInterface: ReminderInterface? = null
         private set
+
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var dialogues: Dialogues
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var timeCount: TimeCount
+
+    init {
+        ReminderApp.appComponent.inject(this)
+    }
 
     abstract fun prepare(): Reminder?
 
