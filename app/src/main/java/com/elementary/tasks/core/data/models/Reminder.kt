@@ -132,6 +132,8 @@ class Reminder : RecyclerInterface {
     var remindBefore: Long = 0
     @SerializedName("windowType")
     var windowType = 0
+    @SerializedName("priority")
+    var priority = 0
     @Ignore
     @Relation(entity = Group::class, parentColumn = "groupUuId", entityColumn = "uuId")
     var group: Group? = null
@@ -211,6 +213,7 @@ class Reminder : RecyclerInterface {
         this.monthOfYear = item.monthOfYear
         this.remindBefore = item.remindBefore
         this.windowType = item.windowType
+        this.priority = item.priority
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId
