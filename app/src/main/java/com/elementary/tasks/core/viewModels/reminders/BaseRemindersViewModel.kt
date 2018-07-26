@@ -45,7 +45,9 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             val list = ArrayList<String>()
             val groups = allGroups.value
             if (groups != null) {
-                list.addAll(groups.map { it.title }.toList())
+                for (g in groups) {
+                    list.add(g.title)
+                }
             }
             return list
         }

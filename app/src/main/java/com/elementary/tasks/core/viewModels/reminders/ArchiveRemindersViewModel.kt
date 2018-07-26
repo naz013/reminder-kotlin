@@ -37,7 +37,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
     var groups: LiveData<List<Group>>
 
     init {
-        events = appDb.reminderDao().loadType(false, false)
+        events = appDb.reminderDao().loadByRemoved(false)
         groups = appDb.groupDao().loadAll()
     }
 
