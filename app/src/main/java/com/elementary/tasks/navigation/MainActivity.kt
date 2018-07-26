@@ -51,11 +51,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         RemotePrefs.SaleObserver, RemotePrefs.UpdateObserver, (View, GlobalButtonObservable.Action) -> Unit {
     override fun invoke(view: View, action: GlobalButtonObservable.Action) {
         if (action == GlobalButtonObservable.Action.QUICK_NOTE) {
-            if (mNoteView != null) {
-                if (mNoteView!!.isNoteVisible) {
-                    mNoteView?.hideNoteView()
-                }
-            }
+            mNoteView?.switchQuickNote()
         } else if (action == GlobalButtonObservable.Action.VOICE) {
             SuperUtil.startVoiceRecognitionActivity(this, VOICE_RECOGNITION_REQUEST_CODE, false, prefs, language)
         }
@@ -76,16 +72,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     private var isBackPressed: Boolean = false
     private var pressedTime: Long = 0
 
-    private val mQuickCallback = object : QuickNoteCoordinator.Callback {
-        override fun onOpen() {
-            fab.setImageResource(R.drawable.ic_clear_white_24dp)
-        }
-
-        override fun onClose() {
-            fab.setImageResource(R.drawable.ic_add_white_24dp)
-        }
-    }
-
     private val isRateDialogShowed: Boolean
         get() {
             var count = prefs.rateCount
@@ -104,10 +90,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        fab.setOnLongClickListener {
-            mNoteView?.switchQuickNote()
-            true
-        }
         initActionBar()
         initNavigation()
         initViewModel()
@@ -118,7 +100,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         val noteViewModel = ViewModelProviders.of(this).get(NotesViewModel::class.java)
         val reminderViewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         mNoteView = QuickNoteCoordinator(this, quickNoteContainer, quickNoteView,
-                mQuickCallback, reminderViewModel, noteViewModel, themeUtil, prefs, notifier)
+                reminderViewModel, noteViewModel, themeUtil, prefs, notifier)
         when {
             savedInstanceState != null -> openScreen(savedInstanceState.getInt(CURRENT_SCREEN, R.id.nav_current))
             intent.getIntExtra(Constants.INTENT_POSITION, 0) != 0 -> {
@@ -290,21 +272,16 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onThemeChange(@ColorInt primary: Int, @ColorInt primaryDark: Int, @ColorInt accent: Int) {
         var primary = primary
         var primaryDark = primaryDark
-        var accent = accent
         if (primary == 0) {
             primary = themeUtil.getColor(themeUtil.colorPrimary())
         }
         if (primaryDark == 0) {
             primaryDark = themeUtil.getColor(themeUtil.colorPrimaryDark())
         }
-        if (accent == 0) {
-            accent = themeUtil.getColor(themeUtil.colorAccent())
-        }
         toolbar.setBackgroundColor(primary)
         if (Module.isLollipop) {
             window.statusBarColor = primaryDark
         }
-        fab.backgroundTintList = ViewUtils.getFabState(accent, accent)
     }
 
     override fun refreshMenu() {

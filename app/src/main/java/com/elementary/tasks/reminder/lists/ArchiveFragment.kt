@@ -13,11 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -26,7 +26,6 @@ import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import kotlinx.android.synthetic.main.fragment_trash.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -59,9 +58,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
-
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -82,10 +78,6 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     private val mSearchCloseListener = {
         refreshFilters()
         false
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

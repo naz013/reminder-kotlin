@@ -46,6 +46,7 @@ import com.elementary.tasks.notes.work.SyncNotes
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
+import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.createEdit.fragments.TypeFragment
 import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter
@@ -143,4 +144,5 @@ interface AppComponent {
     fun inject(backupBirthdaysTask: BackupBirthdaysTask)
     fun inject(dayViewProvider: DayViewProvider)
     fun inject(mainActivity: MainActivity)
+    fun inject(createReminderActivity: CreateReminderActivity)
 }
