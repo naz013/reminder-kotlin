@@ -39,7 +39,7 @@ import java.util.*
  * limitations under the License.
  */
 class QuickNoteCoordinator(private val mContext: MainActivity, private val parent: ViewGroup,
-                           private val noteList: ViewGroup, private val mCallback: Callback?,
+                           private val noteList: ViewGroup,
                            private var reminderViewModel: ActiveRemindersViewModel,
                            private var noteViewModel: NotesViewModel,
                            private val themeUtil: ThemeUtil,
@@ -99,7 +99,6 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
     fun hideNoteView() {
         ViewUtils.hideReveal(parent)
         noteList.removeAllViewsInLayout()
-        mCallback?.onClose()
     }
 
     private fun showNoteView() {
@@ -118,7 +117,6 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         binding.bgView.setBackgroundColor(themeUtil.backgroundStyle)
         noteList.addView(binding)
         ViewUtils.slideInUp(mContext, binding.noteCard)
-        mCallback?.onOpen()
     }
 
     private fun saveNote(binding: View) {
@@ -205,11 +203,5 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
     private fun showInStatusBar(item: Note) {
         notifier.showNoteNotification(item)
         hideNoteView()
-    }
-
-    interface Callback {
-        fun onOpen()
-
-        fun onClose()
     }
 }

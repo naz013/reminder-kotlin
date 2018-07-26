@@ -47,6 +47,7 @@ class Reminder : RecyclerInterface {
     var reminderType: Int = 0
     @SerializedName("groupUuId")
     var groupUuId: String = ""
+    @PrimaryKey
     @SerializedName("uuId")
     var uuId: String = ""
     @SerializedName("eventTime")
@@ -116,7 +117,6 @@ class Reminder : RecyclerInterface {
     @SerializedName("shoppings")
     var shoppings: List<ShopItem> = ArrayList()
     @SerializedName("uniqueId")
-    @PrimaryKey(autoGenerate = true)
     var uniqueId: Int = 0
     @SerializedName("isActive")
     var isActive: Boolean = false

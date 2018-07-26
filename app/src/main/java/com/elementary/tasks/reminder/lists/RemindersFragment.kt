@@ -15,14 +15,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.core.utils.GlobalButtonObservable
 import com.elementary.tasks.core.utils.ListActions
-import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
@@ -31,9 +30,10 @@ import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.preview.ShoppingPreviewActivity
+import com.mcxiaoke.koi.ext.onClick
+import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.fragment_reminders.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -66,9 +66,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
-    @Inject
-    lateinit var reminderUtils: ReminderUtils
-
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -93,10 +90,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     private val filterAllElement: FilterView.FilterElement
         get() = FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true)
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -149,6 +142,11 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fab.onClick { startActivity(Intent(activity!!, CreateReminderActivity::class.java)) }
+        fab.onLongClick {
+            buttonObservable.fireAction(it, GlobalButtonObservable.Action.QUICK_NOTE)
+            true
+        }
         initList()
         viewModel = ViewModelProviders.of(this).get(ActiveRemindersViewModel::class.java)
         viewModel.events.observe(this, Observer{ reminders ->
@@ -222,10 +220,10 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     private fun previewReminder(id: Int, type: Int) {
         if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
-            context!!.startActivity(Intent(context, ShoppingPreviewActivity::class.java)
+            startActivity(Intent(context, ShoppingPreviewActivity::class.java)
                     .putExtra(Constants.INTENT_ID, id))
         } else {
-            context!!.startActivity(Intent(context, ReminderPreviewActivity::class.java)
+            startActivity(Intent(context, ReminderPreviewActivity::class.java)
                     .putExtra(Constants.INTENT_ID, id))
         }
     }
@@ -339,7 +337,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         filters.add(filter)
     }
 
-    private fun changeGroup(reminder: Reminder?) {
+    private fun changeGroup(reminder: Reminder) {
         mGroupsIds.clear()
         val arrayAdapter = ArrayAdapter<String>(
                 context!!, android.R.layout.select_dialog_item)
@@ -355,7 +353,7 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         builder.setAdapter(arrayAdapter) { dialog, which ->
             dialog.dismiss()
             val catId = mGroupsIds[which]
-            if (reminder!!.groupUuId.matches(catId.toRegex())) {
+            if (reminder.groupUuId.matches(catId.toRegex())) {
                 Toast.makeText(context, getString(R.string.same_group), Toast.LENGTH_SHORT).show()
                 return@setAdapter
             }

@@ -11,9 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.utils.Dialogues
-import com.elementary.tasks.core.utils.Prefs
-import com.elementary.tasks.core.utils.ThemeUtil
+import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
 
@@ -39,9 +37,16 @@ abstract class BaseFragment : Fragment() {
 
     var callback: FragmentCallback? = null
         private set
-    @Inject lateinit var prefs: Prefs
-    @Inject lateinit var dialogues: Dialogues
-    @Inject lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var prefs: Prefs
+    @Inject
+    lateinit var dialogues: Dialogues
+    @Inject
+    lateinit var themeUtil: ThemeUtil
+    @Inject
+    lateinit var reminderUtils: ReminderUtils
+    @Inject
+    lateinit var buttonObservable: GlobalButtonObservable
 
     init {
         ReminderApp.appComponent.inject(this)

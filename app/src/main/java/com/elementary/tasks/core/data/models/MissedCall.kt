@@ -1,13 +1,10 @@
 package com.elementary.tasks.core.data.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.elementary.tasks.core.utils.SuperUtil
 import com.google.gson.annotations.SerializedName
-
-import java.util.Random
-
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -38,14 +35,7 @@ class MissedCall {
     @SerializedName("uniqueId")
     var uniqueId: Int = 0
 
-    constructor() {
-        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
-    }
-
-    @Ignore
-    constructor(number: String, dateTime: Long) {
-        this.number = number
-        this.dateTime = dateTime
+    init {
         this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
     }
 

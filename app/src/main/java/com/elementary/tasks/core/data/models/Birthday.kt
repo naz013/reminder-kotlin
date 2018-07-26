@@ -47,20 +47,24 @@ class Birthday : RecyclerInterface {
     @SerializedName("month")
     var month: Int = 0
     @SerializedName("uniqueId")
-    @PrimaryKey(autoGenerate = true)
     var uniqueId: Int = 0
     @SerializedName("dayMonth")
     var dayMonth: String = ""
+    @PrimaryKey
     @SerializedName("uuId")
     var uuId: String = ""
 
     override val viewType: Int
         get() = 2
 
-    constructor()
+    constructor() {
+        this.uuId = UUID.randomUUID().toString()
+        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
+    }
 
     @Ignore
     constructor(name: String, date: String, number: String, showedYear: Int, contactId: Int, day: Int, month: Int) {
+        this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
         this.name = name
         this.date = date
         this.number = number
