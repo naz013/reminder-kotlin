@@ -349,7 +349,6 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
         voiceButton.setOnClickListener { openRecognizer() }
         customButton.setOnClickListener { openCustomizationDialog() }
         groupButton.setOnClickListener { changeGroup() }
@@ -799,7 +798,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
             txtTitle = cView!!.findViewById(R.id.txtTitle)
             txtTitle?.setIcon(0)
             txtTitle!!.text = spinnerNavItem[position].title
-            txtTitle?.setTextColor(context.resources.getColor(R.color.whitePrimary))
+            txtTitle?.setTextColor(context.resources.getColor(R.color.blackPrimary))
             return cView
         }
 

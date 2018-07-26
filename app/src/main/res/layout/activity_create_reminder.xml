@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,12 +13,14 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary">
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="@drawable/ic_arrow_back_black_24dp">
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/navSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/blackPrimary" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -36,8 +37,9 @@
                 android:layout_marginRight="16dp"
                 android:hint="@string/remind_me"
                 android:maxLines="3"
-                android:textColor="@color/material_white"
-                android:textColorHint="@color/material_white" />
+                android:textColor="@color/blackPrimary"
+                android:textColorHint="@color/blackPrimary"
+                app:backgroundTint="@color/blackPrimary" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -54,45 +56,45 @@
                         android:id="@+id/customButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/acc_customize_reminder"
-                        app:srcCompat="@drawable/ic_tune_white_24dp" />
+                        app:srcCompat="@drawable/ic_tune_black_24dp" />
 
                     <com.elementary.tasks.core.views.TextViewWithIcon
                         android:id="@+id/groupButton"
                         android:layout_width="wrap_content"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:drawablePadding="8dp"
                         android:gravity="center"
                         android:maxLength="15"
                         android:maxLines="1"
                         android:text="@string/general"
-                        android:textColor="@color/material_white"
+                        android:textColor="@color/blackPrimary"
                         android:textSize="18sp"
-                        app:tv_icon="@drawable/ic_local_offer_white_24dp"
-                        app:tv_icon_light="@drawable/ic_local_offer_white_24dp" />
+                        app:tv_icon="@drawable/ic_local_offer_black_24dp"
+                        app:tv_icon_light="@drawable/ic_local_offer_black_24dp" />
 
                     <ImageButton
                         android:id="@+id/voiceButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/acc_type_by_voice"
-                        app:srcCompat="@drawable/ic_microphone_white" />
+                        app:srcCompat="@drawable/ic_microphone_black" />
 
                     <ImageButton
                         android:id="@+id/exclusionButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/acc_customize_exclusions"
                         android:visibility="gone"
@@ -102,30 +104,30 @@
                         android:id="@+id/melodyButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/melody"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_music_note_white_24dp" />
+                        app:srcCompat="@drawable/ic_music_note_black_24dp" />
 
                     <ImageButton
                         android:id="@+id/attachmentButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/attach_file"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_attach_file_white_24dp" />
+                        app:srcCompat="@drawable/ic_attach_file_black_24dp" />
 
                     <ImageButton
                         android:id="@+id/repeatButton"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/repeat_limit"
                         android:visibility="gone"
@@ -135,11 +137,12 @@
                         android:id="@+id/window_type_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="44dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
-                        android:textOn="@string/simple"
-                        android:textOff="@string/full_screen"
+                        android:layout_marginLeft="8dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
+                        android:textColor="@color/blackPrimary"
+                        android:textOff="@string/full_screen"
+                        android:textOn="@string/simple"
                         android:visibility="visible" />
 
                 </LinearLayout>

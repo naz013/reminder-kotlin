@@ -45,6 +45,9 @@ interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
     fun getById(id: Int): Reminder?
 
+    @Query("SELECT * FROM Reminder WHERE isRemoved=:removed")
+    fun loadByRemoved(removed: Boolean): LiveData<List<Reminder>>
+
     @Query("SELECT * FROM Reminder WHERE isActive=:active AND isRemoved=:removed")
     fun loadType(active: Boolean, removed: Boolean): LiveData<List<Reminder>>
 

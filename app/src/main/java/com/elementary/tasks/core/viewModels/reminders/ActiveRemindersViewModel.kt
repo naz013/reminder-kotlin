@@ -29,6 +29,6 @@ class ActiveRemindersViewModel(application: Application) : BaseRemindersViewMode
     var events: LiveData<List<Reminder>>
 
     init {
-        events = appDb.reminderDao().loadType(true, false)
+        events = appDb.reminderDao().loadByRemoved(false)
     }
 }
