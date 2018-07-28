@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -13,106 +14,89 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/deleteButton"
             android:layout_toStartOf="@+id/deleteButton"
             android:gravity="center">
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/hoursView"
+                style="?textAppearanceHeadline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/hours"
                 android:layout_toStartOf="@+id/hours"
                 android:gravity="center|bottom"
-                android:text="42"
-                android:textColor="?attr/colorAccent"
-                android:textSize="40sp"
-                app:font_style="roboto_medium" />
+                tools:text="42" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/hours"
+                style="?textAppearanceBody1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/minutesView"
                 android:layout_toStartOf="@+id/minutesView"
                 android:gravity="center|top"
-                android:text="@string/h"
-                android:textSize="20sp"
-                app:font_style="roboto_light" />
+                android:text="@string/h" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/minutesView"
+                style="?textAppearanceHeadline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/minutes"
                 android:layout_toStartOf="@+id/minutes"
                 android:gravity="center|bottom"
-                android:text="42"
-                android:textColor="?attr/colorAccent"
-                android:textSize="40sp"
-                app:font_style="roboto_medium" />
+                tools:text="42" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/minutes"
+                style="?textAppearanceBody1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/secondsView"
                 android:layout_toStartOf="@+id/secondsView"
                 android:gravity="center|bottom"
-                android:text="@string/m"
-                android:textSize="20sp"
-                app:font_style="roboto_light" />
+                android:text="@string/m" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/secondsView"
+                style="?textAppearanceHeadline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/seconds"
                 android:layout_toStartOf="@+id/seconds"
                 android:gravity="center|bottom"
-                android:text="55"
-                android:textColor="?attr/colorAccent"
-                android:textSize="40sp"
-                app:font_style="roboto_medium" />
+                tools:text="55" />
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/seconds"
+                style="?textAppearanceBody1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:gravity="center|bottom"
-                android:text="@string/c"
-                android:textSize="20sp"
-                app:font_style="roboto_light" />
+                android:text="@string/c" />
 
         </RelativeLayout>
 
-        <com.elementary.tasks.core.views.ThemedImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/deleteButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_backspace" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_backspace"
+            app:tint="?android:textColorPrimary" />
 
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/colorAccent" />
+        android:background="?colorSecondary" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -120,35 +104,35 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b1"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="1"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="1" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b2"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="2"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="2" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b3"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="3"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="3" />
 
     </LinearLayout>
 
@@ -158,35 +142,35 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b4"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="4"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="4" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b5"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="5"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="5" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b6"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="6"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="6" />
 
     </LinearLayout>
 
@@ -196,35 +180,35 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b7"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="7"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="7" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b8"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="8"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="8" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b9"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="9"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="9" />
 
     </LinearLayout>
 
@@ -234,33 +218,34 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:text="0"
-            android:visibility="invisible"
-            app:button_font_style="roboto_light" />
+            android:visibility="invisible" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/b0"
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:text="0"
-            android:textSize="25sp"
-            app:button_font_style="roboto_light" />
+            android:gravity="center"
+            android:text="0" />
 
-        <com.elementary.tasks.core.views.roboto.RoboButton
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceHeadline4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:text="0"
-            android:visibility="invisible"
-            app:button_font_style="roboto_light" />
+            android:visibility="invisible" />
     </LinearLayout>
-
 </merge>

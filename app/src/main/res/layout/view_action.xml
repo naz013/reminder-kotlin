@@ -36,7 +36,7 @@
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/callAction"
-                        style="?textAppearanceBody1"
+                        style="?textAppearanceCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="@dimen/checkbox_padding"
@@ -45,7 +45,7 @@
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/messageAction"
-                        style="?textAppearanceBody1"
+                        style="?textAppearanceCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -75,7 +75,7 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/numberView"
-                    style="?textAppearanceBody1"
+                    style="?textAppearanceHeadline6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

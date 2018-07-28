@@ -14,32 +14,31 @@
             android:id="@+id/dateView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
 
-        <com.elementary.tasks.core.views.roboto.RoboEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/skypeContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="@string/contact"
             android:inputType="textAutoComplete"
             android:maxLines="1"
-            android:textSize="@dimen/create_text_size_normal"
-            app:edit_font_style="roboto_light" />
+            style="?textAppearanceHeadline6" />
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:overScrollMode="never"
             android:scrollbars="none">
 
@@ -49,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/skypeCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,32 +56,27 @@
                     android:paddingEnd="@dimen/checkbox_padding"
                     android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/skype_call"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:radio_font_style="roboto_light" />
+                    style="?textAppearanceCaption" />
 
-                <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/skypeVideo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:paddingEnd="@dimen/checkbox_padding"
                     android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/video_call"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:radio_font_style="roboto_light" />
+                    style="?textAppearanceCaption" />
 
-                <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/skypeChat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
                     android:paddingEnd="@dimen/checkbox_padding"
                     android:paddingStart="@dimen/checkbox_padding"
                     android:text="@string/skype_chat"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:radio_font_style="roboto_light" />
+                    style="?textAppearanceCaption" />
             </RadioGroup>
         </HorizontalScrollView>
 
@@ -90,28 +84,28 @@
             android:id="@+id/before_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:before_type="minutes" />
 
         <com.elementary.tasks.core.views.RepeatView
             android:id="@+id/repeatView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:repeat_type="days" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/exportToCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:paddingEnd="@dimen/checkbox_padding"
             android:paddingStart="@dimen/checkbox_padding"
             android:text="@string/add_to_calendar"
@@ -119,14 +113,14 @@
             android:visibility="visible"
             app:check_font_style="roboto_light" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/exportToTasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:paddingEnd="@dimen/checkbox_padding"
             android:paddingStart="@dimen/checkbox_padding"
             android:text="@string/google_tasks"
