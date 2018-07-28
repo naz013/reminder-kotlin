@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -16,26 +15,26 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.elementary.tasks.core.views.roboto.RoboCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/attackDelay"
+                style="?textAppearanceBody1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:paddingEnd="@dimen/checkbox_padding"
+                android:layout_marginEnd="16dp"
                 android:paddingStart="@dimen/checkbox_padding"
+                android:paddingEnd="@dimen/checkbox_padding"
                 android:text="@string/delay_tracking"
-                android:textSize="@dimen/checkbox_text_size"
                 app:check_font_style="roboto_light" />
 
             <LinearLayout
                 android:id="@+id/delayLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:orientation="horizontal">
 
                 <com.elementary.tasks.core.views.DateTimeView
@@ -48,40 +47,39 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp">
 
                 <com.elementary.tasks.core.views.AddressAutoCompleteView
                     android:id="@+id/searchField"
+                    style="?textAppearanceHeadline6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/clearButton"
                     android:layout_toStartOf="@+id/clearButton"
                     android:hint="@string/address"
-                    android:maxLines="1"
-                    android:textSize="@dimen/create_text_size_normal" />
+                    android:maxLines="1" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/clearButton"
                     android:layout_width="@dimen/create_imagebutton_size"
                     android:layout_height="@dimen/create_imagebutton_size"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:layout_toLeftOf="@+id/mapButton"
                     android:layout_toStartOf="@+id/mapButton"
-                    app:srcCompat="@drawable/ic_clear_black_24dp" />
+                    android:scaleType="centerInside"
+                    android:tint="?android:textColorPrimary"
+                    app:srcCompat="@drawable/ic_backspace" />
 
-                <com.elementary.tasks.core.views.ThemedImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/mapButton"
                     android:layout_width="@dimen/create_imagebutton_size"
                     android:layout_height="@dimen/create_imagebutton_size"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
+                    android:scaleType="centerInside"
+                    android:tint="?android:textColorPrimary"
                     app:srcCompat="@drawable/ic_map" />
 
             </RelativeLayout>
@@ -90,9 +88,9 @@
                 android:id="@+id/actionView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp" />
 
         </LinearLayout>
     </ScrollView>

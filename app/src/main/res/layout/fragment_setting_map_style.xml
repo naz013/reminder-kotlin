@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,8 +7,8 @@
         android:id="@+id/styleGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -19,8 +18,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleAuto"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -45,8 +45,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleDay"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -66,8 +67,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleRetro"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -87,8 +89,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleSilver"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -108,8 +111,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleNight"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -129,8 +133,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleDark"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -150,8 +155,9 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/styleAubergine"
+                style="?textAppearanceCaption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

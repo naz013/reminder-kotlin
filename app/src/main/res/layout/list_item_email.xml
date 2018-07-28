@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:orientation="vertical">
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp">
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/nameView"
+        style="?textAppearanceBody1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <com.elementary.tasks.core.views.roboto.RoboTextView
-        android:id="@+id/emailView"
-        android:layout_width="match_parent"
-        android:layout_marginTop="8dp"
         android:layout_height="wrap_content"
-        app:font_style="roboto_medium"/>
+        tools:text="Name" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/emailView"
+        style="?textAppearanceBody2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text="email@com.c" />
 
 </LinearLayout>

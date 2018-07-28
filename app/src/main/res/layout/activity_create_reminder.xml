@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
+                style="?textAppearanceHeadline5"
                 android:layout_marginEnd="16dp"
                 android:hint="@string/remind_me"
                 android:maxLines="3" />
@@ -60,7 +61,7 @@
                         app:srcCompat="@drawable/ic_tune_black_24dp"
                         app:tint="?android:textColorPrimary" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/groupButton"
                         android:layout_width="wrap_content"
                         android:layout_height="44dp"

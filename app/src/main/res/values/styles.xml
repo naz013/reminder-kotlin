@@ -326,12 +326,19 @@
 
     <style name="HomeWhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorSecondary">@color/bluePrimary</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="HomeDarkDialog" parent="Theme.MaterialComponents.Dialog">
         <item name="colorSecondary">@color/bluePrimary</item>
         <item name="colorBackgroundFloating">@color/darkPrimary</item>
         <item name="scrimBackground">@color/darkPrimary</item>
+        <item name="android:colorBackground">@color/darkPrimary</item>
+        <item name="android:popupBackground">@color/darkPrimary</item>
+        <item name="android:windowBackground">@color/darkPrimary</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="HomeDarkDialog.Blue" parent="HomeDarkDialog">

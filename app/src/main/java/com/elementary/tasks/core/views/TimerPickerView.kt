@@ -4,12 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboButton
-import com.elementary.tasks.core.views.roboto.RoboTextView
+import kotlinx.android.synthetic.main.view_timer_picker.view.*
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -31,11 +29,6 @@ import com.elementary.tasks.core.views.roboto.RoboTextView
  */
 
 class TimerPickerView : LinearLayout, View.OnClickListener {
-
-    private var hoursView: RoboTextView? = null
-    private var minutesView: RoboTextView? = null
-    private var secondsView: RoboTextView? = null
-    private var deleteButton: ThemedImageButton? = null
 
     private var timeString = "000000"
 
@@ -63,16 +56,12 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     private fun init(context: Context, attrs: AttributeSet?) {
         orientation = LinearLayout.VERTICAL
         View.inflate(context, R.layout.view_timer_picker, this)
-        hoursView = findViewById(R.id.hoursView)
-        minutesView = findViewById(R.id.minutesView)
-        secondsView = findViewById(R.id.secondsView)
-        deleteButton = findViewById(R.id.deleteButton)
-        deleteButton!!.setOnClickListener {
+        deleteButton.setOnClickListener {
             timeString = timeString.substring(0, timeString.length - 1)
             timeString = "0$timeString"
             updateTimeView()
         }
-        deleteButton!!.setOnLongClickListener {
+        deleteButton.setOnLongClickListener {
             timeString = "000000"
             updateTimeView()
             true
@@ -82,16 +71,6 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
 
     private fun initButtons() {
-        val b1 = findViewById<RoboButton>(R.id.b1)
-        val b2 = findViewById<RoboButton>(R.id.b2)
-        val b3 = findViewById<RoboButton>(R.id.b3)
-        val b4 = findViewById<RoboButton>(R.id.b4)
-        val b5 = findViewById<RoboButton>(R.id.b5)
-        val b6 = findViewById<RoboButton>(R.id.b6)
-        val b7 = findViewById<RoboButton>(R.id.b7)
-        val b8 = findViewById<RoboButton>(R.id.b8)
-        val b9 = findViewById<RoboButton>(R.id.b9)
-        val b0 = findViewById<RoboButton>(R.id.b0)
         if (b1 != null) {
             b1.id = Integer.valueOf(101)!!
             b2.id = Integer.valueOf(102)!!
@@ -121,15 +100,15 @@ class TimerPickerView : LinearLayout, View.OnClickListener {
     }
 
     private fun updateTimeView() {
-        deleteButton!!.isEnabled = !timeString.matches("000000".toRegex())
+        deleteButton.isEnabled = !timeString.matches("000000".toRegex())
         if (timeString.length == 6) {
             val hours = timeString.substring(0, 2)
             val minutes = timeString.substring(2, 4)
             val seconds = timeString.substring(4, 6)
-            hoursView!!.text = hours
-            minutesView!!.text = minutes
-            secondsView!!.text = seconds
-            if (mListener != null) mListener!!.onTimerChange(timerValue)
+            hoursView.text = hours
+            minutesView.text = minutes
+            secondsView.text = seconds
+            mListener?.onTimerChange(timerValue)
         }
     }
 

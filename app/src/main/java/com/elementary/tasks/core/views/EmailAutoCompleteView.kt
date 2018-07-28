@@ -120,16 +120,16 @@ class EmailAutoCompleteView : AppCompatAutoCompleteTextView {
         }
 
         override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
-            var view = view
-            if (view == null) {
-                view = LayoutInflater.from(mContext).inflate(R.layout.list_item_email, viewGroup, false)
+            var v = view
+            if (v == null) {
+                v = LayoutInflater.from(mContext).inflate(R.layout.list_item_email, viewGroup, false)
             }
-            if (view != null) {
+            if (v != null) {
                 val item = items[i]
-                view.nameView.text = item.name
-                view.emailView.text = item.email
+                v.nameView.text = item.name
+                v.emailView.text = item.email
             }
-            return view
+            return v
         }
 
         override fun getFilter(): Filter {

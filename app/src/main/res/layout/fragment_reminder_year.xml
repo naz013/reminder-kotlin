@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -15,56 +14,52 @@
             android:id="@+id/dateView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
 
         <com.elementary.tasks.core.views.BeforePickerView
             android:id="@+id/before_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:before_type="minutes" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/exportToCalendar"
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:paddingEnd="@dimen/checkbox_padding"
+            android:layout_marginEnd="16dp"
             android:paddingStart="@dimen/checkbox_padding"
-            android:text="@string/add_to_calendar"
-            android:textSize="16sp"
-            android:visibility="visible"
-            app:check_font_style="roboto_light" />
+            android:paddingEnd="@dimen/checkbox_padding"
+            android:text="@string/add_to_calendar" />
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/exportToTasks"
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/checkbox_padding"
-            android:paddingStart="@dimen/checkbox_padding"
             android:layout_gravity="center"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="@string/google_tasks"
-            android:textSize="16sp"
-            android:visibility="visible"
-            app:check_font_style="roboto_light" />
+            android:layout_marginEnd="16dp"
+            android:paddingStart="@dimen/checkbox_padding"
+            android:paddingEnd="@dimen/checkbox_padding"
+            android:text="@string/google_tasks" />
 
         <com.elementary.tasks.core.views.ActionView
             android:id="@+id/actionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp" />
 
     </LinearLayout>
 </ScrollView>

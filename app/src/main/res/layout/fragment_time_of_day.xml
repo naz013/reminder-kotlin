@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -13,28 +13,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/morningTime"
             android:layout_toStartOf="@+id/morningTime"
-            android:text="@string/morning"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:font_style="roboto_light" />
+            android:text="@string/morning" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/morningTime"
+            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="5dp"
-            android:text="07:00"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@dimen/create_text_size_primary"
-            app:font_style="roboto_bold" />
+            tools:text="07:00" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,28 +36,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/dayTime"
             android:layout_toStartOf="@+id/dayTime"
-            android:text="@string/day"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:font_style="roboto_light" />
+            android:text="@string/day" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dayTime"
+            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="5dp"
-            android:text="12:00"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@dimen/create_text_size_primary"
-            app:font_style="roboto_bold" />
+            tools:text="12:00" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -71,28 +59,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/eveningTime"
             android:layout_toStartOf="@+id/eveningTime"
-            android:text="@string/evening"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:font_style="roboto_light" />
+            android:text="@string/evening" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/eveningTime"
+            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="5dp"
-            android:text="18:00"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@dimen/create_text_size_primary"
-            app:font_style="roboto_bold" />
+            tools:text="18:00" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -100,27 +82,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/nightTime"
             android:layout_toStartOf="@+id/nightTime"
-            android:text="@string/night"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="@dimen/create_text_size_secondary"
-            app:font_style="roboto_light" />
+            android:text="@string/night" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/nightTime"
+            style="?textAppearanceHeadline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="5dp"
-            android:text="23:00"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="@dimen/create_text_size_primary"
-            app:font_style="roboto_bold" />
+            tools:text="23:00" />
     </RelativeLayout>
 </LinearLayout>
