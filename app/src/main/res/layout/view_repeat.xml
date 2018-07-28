@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,18 +10,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.elementary.tasks.core.views.ThemedImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/viewIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="7dp"
-            android:background="@null"
-            app:srcCompat="@drawable/ic_refresh" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_refresh"
+            app:tint="?android:textColorPrimary" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:orientation="vertical">
 
@@ -29,34 +30,29 @@
                 android:layout_height="wrap_content"
                 android:gravity="start|center">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/text1"
+                    style="?textAppearanceCaption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:gravity="center|start"
-                    android:text="@string/every"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:font_style="roboto_light" />
+                    android:text="@string/every" />
 
-                <com.elementary.tasks.core.views.roboto.RoboEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/repeatTitle"
+                    style="?textAppearanceBody1"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginLeft="@dimen/create_margin"
-                    android:layout_marginRight="10dp"
                     android:layout_marginStart="@dimen/create_margin"
+                    android:layout_marginEnd="10dp"
                     android:layout_toEndOf="@+id/text1"
-                    android:layout_toRightOf="@+id/text1"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="3"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:edit_font_style="roboto_medium" />
+                    tools:text="10" />
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/repeatType"
@@ -64,7 +60,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/repeatTitle"
-                    android:layout_toRightOf="@+id/repeatTitle"
                     android:entries="@array/repeat_times"
                     android:gravity="center|start" />
 
@@ -76,22 +71,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/next_event"
-                    android:textColor="?attr/colorAccent"
+                    android:textColor="?colorSecondary"
                     app:font_style="roboto_light" />
 
-                <com.elementary.tasks.core.views.roboto.RoboTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/eventView"
+                    style="?textAppearanceHeadline6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/next_event"
-                    android:textSize="18sp"
-                    app:font_style="roboto_medium" />
+                    android:text="@string/next_event" />
 
             </LinearLayout>
         </LinearLayout>
