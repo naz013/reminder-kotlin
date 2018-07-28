@@ -58,8 +58,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:tb_icon="@drawable/ic_note"
-                        app:tb_icon_light="@drawable/ic_note_white" />
+                        app:srcCompat="@drawable/ic_note" />
 
                     <com.elementary.tasks.core.views.roboto.RoboEditText
                         android:id="@+id/noteField"
@@ -91,8 +90,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:tb_icon="@drawable/ic_access_time_black_24dp"
-                        app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
+                        app:srcCompat="@drawable/ic_access_time_black_24dp" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/dateField"
@@ -121,8 +119,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:tb_icon="@drawable/ic_alarm"
-                        app:tb_icon_light="@drawable/ic_alarm_white" />
+                        app:srcCompat="@drawable/ic_alarm" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/timeField"
@@ -151,8 +148,7 @@
                         android:layout_marginRight="15dp"
                         android:background="@null"
                         android:scaleType="center"
-                        app:tb_icon="@drawable/ic_view_list_black_24dp"
-                        app:tb_icon_light="@drawable/ic_view_list_white_24dp" />
+                        app:srcCompat="@drawable/ic_view_list_black_24dp" />
 
                     <com.elementary.tasks.core.views.roboto.RoboTextView
                         android:id="@+id/listText"

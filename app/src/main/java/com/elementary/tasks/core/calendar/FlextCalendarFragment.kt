@@ -58,7 +58,6 @@ open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.
     protected var year = -1
 
     private var enableImage = true
-    protected var isDark = true
 
     /**
      * Declare views
@@ -183,7 +182,6 @@ open class FlextCalendarFragment : BaseNavigationFragment(), EventsDataProvider.
                 startDayOfWeek %= 7
             }
             enableImage = args.getBoolean(ENABLE_IMAGES, true)
-            isDark = args.getBoolean(DARK_THEME, true)
             val photos = args.getLongArray(MONTH_IMAGES)
             if (photos != null) {
                 for (i in photos.indices) {

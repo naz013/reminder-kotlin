@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.services.PermanentReminderReceiver
 import com.elementary.tasks.core.utils.*
@@ -16,7 +15,6 @@ import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_notification.*
 import java.io.File
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -41,15 +39,6 @@ class NotificationSettingsFragment : BaseSettingsFragment() {
     private var mItemSelect: Int = 0
     private val localeAdapter: ArrayAdapter<String>
         get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice, language.getLocaleNames(context!!))
-
-    @Inject
-    lateinit var language: Language
-    @Inject
-    lateinit var notifier: Notifier
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_notification
 

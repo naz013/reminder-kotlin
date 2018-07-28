@@ -25,8 +25,7 @@
                 android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/acc_rotate_left"
-                app:tb_icon="@drawable/ic_rotate_left_black_24dp"
-                app:tb_icon_light="@drawable/ic_rotate_left_white_24dp" />
+                app:srcCompat="@drawable/ic_rotate_left_black_24dp"/>
 
             <com.elementary.tasks.core.views.ThemedImageButton
                 android:id="@+id/rotateRightButton"
@@ -36,8 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/acc_rotate_right"
-                app:tb_icon="@drawable/ic_rotate_right_black_24dp"
-                app:tb_icon_light="@drawable/ic_rotate_right_white_24dp" />
+                app:srcCompat="@drawable/ic_rotate_right_black_24dp" />
 
         </LinearLayout>
     </HorizontalScrollView>

@@ -19,14 +19,13 @@
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary">
+                android:background="?attr/colorPrimary"
+                app:elevation="0dp">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:titleTextAppearance="@style/Toolbar.TitleText"
-                    app:titleTextColor="@color/blackPrimary"
                     tools:title="Test" />
 
                 <com.elementary.tasks.core.views.FilterView
@@ -54,7 +53,6 @@
             android:background="@color/whitePrimary30"
             android:overScrollMode="never"
             android:paddingEnd="88dp"
-            android:paddingRight="88dp"
             android:scrollbars="none"
             android:visibility="gone">
 

@@ -27,8 +27,7 @@
         android:layout_height="44dp"
         android:layout_alignParentBottom="true"
         android:background="?attr/selectableItemBackground"
-        app:tb_icon="@drawable/ic_expand_less_black_24dp"
-        app:tb_icon_light="@drawable/ic_expand_less_white_24dp" />
+        app:srcCompat="@drawable/ic_expand_less_black_24dp" />
 
     <LinearLayout
         android:id="@+id/prefsView"

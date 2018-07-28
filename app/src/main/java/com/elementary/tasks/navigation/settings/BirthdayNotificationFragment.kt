@@ -6,14 +6,11 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.LED
-import com.elementary.tasks.core.utils.Language
 import kotlinx.android.synthetic.main.fragment_birthday_notifications.*
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -40,13 +37,6 @@ class BirthdayNotificationFragment : BaseSettingsFragment() {
     private val localeAdapter: ArrayAdapter<String>
         get() = ArrayAdapter(context!!, android.R.layout.simple_list_item_single_choice,
                 language.getLocaleNames(context!!))
-
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_birthday_notifications
 

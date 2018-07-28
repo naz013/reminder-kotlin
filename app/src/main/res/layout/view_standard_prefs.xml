@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackground"
-            app:tb_icon="@drawable/ic_expand_less_white_24dp"
-            app:tb_icon_light="@drawable/ic_expand_less_black_24dp" />
+            app:srcCompat="@drawable/ic_expand_less_white_24dp" />
 
         <com.elementary.tasks.core.views.roboto.RoboTextView
             android:layout_width="wrap_content"

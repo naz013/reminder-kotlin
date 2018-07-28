@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
@@ -60,12 +62,11 @@ class ThemedImageButton : AppCompatImageButton {
         if (mAttrs != null) {
             val a = context.theme.obtainStyledAttributes(mAttrs, R.styleable.ThemedImageButton, 0, 0)
             try {
-                val icon: Int = if (themeUtil.isDark) {
-                    a.getResourceId(R.styleable.ThemedImageButton_tb_icon_light, 0)
+                if (themeUtil.isDark) {
+                    DrawableCompat.setTint(drawable, ContextCompat.getColor(context!!, R.color.whitePrimary))
                 } else {
-                    a.getResourceId(R.styleable.ThemedImageButton_tb_icon, 0)
+                    DrawableCompat.setTint(drawable, ContextCompat.getColor(context!!, R.color.blackPrimary))
                 }
-                setImageResource(icon)
                 val message = a.getString(R.styleable.ThemedImageButton_tb_message)
                 if (message != null) {
                     setOnLongClickListener { showMessage(message) }

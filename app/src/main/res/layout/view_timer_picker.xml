@@ -105,8 +105,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tb_icon="@drawable/ic_backspace"
-            app:tb_icon_light="@drawable/ic_backspace_white" />
+            app:srcCompat="@drawable/ic_backspace" />
 
     </RelativeLayout>
 

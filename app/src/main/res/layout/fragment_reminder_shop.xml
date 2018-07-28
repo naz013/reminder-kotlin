@@ -71,8 +71,7 @@
                     android:layout_alignParentRight="true"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/acc_add"
-                    app:tb_icon="@drawable/ic_add_black_24dp"
-                    app:tb_icon_light="@drawable/ic_add_white_24dp" />
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
 
             </RelativeLayout>
         </LinearLayout>

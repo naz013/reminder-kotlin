@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.*
@@ -29,7 +28,6 @@ import com.elementary.tasks.notes.work.SyncNotes
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.io.File
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -62,11 +60,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     private var mSearchView: SearchView? = null
     private var mSearchMenu: MenuItem? = null
 
-    @Inject
-    lateinit var backupTool: BackupTool
-    @Inject
-    lateinit var notifier: Notifier
-
     private val queryTextListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String): Boolean {
             filterController.setSearchValue(query)
@@ -85,10 +78,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
     private val mCloseListener = {
         filterController.setSearchValue("")
         true
-    }
-
-    init {
-        ReminderApp.appComponent.inject(this)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -71,8 +71,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_toLeftOf="@+id/mapButton"
                     android:layout_toStartOf="@+id/mapButton"
-                    app:tb_icon="@drawable/ic_clear_black_24dp"
-                    app:tb_icon_light="@drawable/ic_clear_white_24dp" />
+                    app:srcCompat="@drawable/ic_clear_black_24dp" />
 
                 <com.elementary.tasks.core.views.ThemedImageButton
                     android:id="@+id/mapButton"
@@ -83,8 +82,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    app:tb_icon="@drawable/ic_map"
-                    app:tb_icon_light="@drawable/ic_map_white" />
+                    app:srcCompat="@drawable/ic_map" />
 
             </RelativeLayout>
 

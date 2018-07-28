@@ -121,8 +121,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
                         android:layout_marginStart="5dp"
-                        app:tb_icon="@drawable/ic_map"
-                        app:tb_icon_light="@drawable/ic_map_white" />
+                        app:srcCompat="@drawable/ic_map" />
 
                 </RelativeLayout>
 

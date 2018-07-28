@@ -27,8 +27,7 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:clickable="false"
-                app:tb_icon="@drawable/ic_access_time_black_24dp"
-                app:tb_icon_light="@drawable/ic_access_time_white_24dp" />
+                app:srcCompat="@drawable/ic_access_time_black_24dp" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/timeField"

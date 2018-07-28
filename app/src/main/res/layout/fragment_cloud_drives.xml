@@ -29,8 +29,7 @@
                 android:text="@string/dropbox"
                 android:textSize="@dimen/clouds_text_size"
                 app:font_style="roboto_regular"
-                app:tv_icon="@drawable/ic_dropbox"
-                app:tv_icon_light="@drawable/ic_dropbox_white" />
+                app:tv_icon="@drawable/ic_dropbox" />
 
             <com.elementary.tasks.core.views.roboto.RoboButton
                 android:id="@+id/linkDropbox"
@@ -58,8 +57,7 @@
                 android:text="@string/google"
                 android:textSize="@dimen/clouds_text_size"
                 app:font_style="roboto_regular"
-                app:tv_icon="@drawable/ic_google"
-                app:tv_icon_light="@drawable/ic_google_white" />
+                app:tv_icon="@drawable/ic_google" />
 
             <com.elementary.tasks.core.views.roboto.RoboButton
                 android:id="@+id/linkGDrive"

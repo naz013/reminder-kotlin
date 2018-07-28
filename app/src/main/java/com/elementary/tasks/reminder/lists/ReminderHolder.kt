@@ -5,13 +5,13 @@ import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import java.util.*
@@ -43,7 +43,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     @Inject
     lateinit var reminderUtils: ReminderUtils
 
-    val listHeader: RoboTextView = itemView.listHeader
+    val listHeader: TextView = itemView.listHeader
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -99,11 +99,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     }
 
     private fun loadCard(group: Group?) {
-        if (group != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(group.color)))
-        } else {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
-        }
+
     }
 
     private fun loadDate(model: Reminder) {

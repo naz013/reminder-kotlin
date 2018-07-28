@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="lightPrimary">#FFFFFF</color>
+    <color name="lightPrimaryDark">#cccccc</color>
+
+    <color name="darkPrimary">#333333</color>
+    <color name="darkPrimaryDark">#0c0c0c</color>
+
     <color name="whitePrimary">#FFFFFF</color>
     <color name="whitePrimary30">#4DFFFFFF</color>
     <color name="blackPrimary">#000000</color>
