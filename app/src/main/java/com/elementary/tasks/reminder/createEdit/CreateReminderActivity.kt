@@ -2,7 +2,6 @@ package com.elementary.tasks.reminder.createEdit
 
 import android.app.Activity
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -28,13 +27,13 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
-import com.elementary.tasks.core.views.TextViewWithIcon
 import com.elementary.tasks.groups.Position
 import com.elementary.tasks.reminder.createEdit.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_reminder.*
 import kotlinx.android.synthetic.main.dialog_select_extra.view.*
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
+import kotlinx.android.synthetic.main.list_item_navigation.view.*
 import org.apache.commons.lang3.StringUtils
 import timber.log.Timber
 import java.io.File
@@ -306,36 +305,21 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun initNavigation() {
         val arrayAdapter = ArrayList<SpinnerItem>()
-        if (themeUtil.isDark) {
-            arrayAdapter.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_white_24dp))
-            arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart_white))
-            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email_black))
-            if (Module.isPro)
-                arrayAdapter.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker_white))
-        } else {
-            arrayAdapter.add(SpinnerItem(getString(R.string.by_date), R.drawable.ic_meeting_deadlines))
-            arrayAdapter.add(SpinnerItem(getString(R.string.timer), R.drawable.ic_timer))
-            arrayAdapter.add(SpinnerItem(getString(R.string.alarm), R.drawable.ic_alarm))
-            arrayAdapter.add(SpinnerItem(getString(R.string.location), R.drawable.ic_map))
-            arrayAdapter.add(SpinnerItem(getString(R.string.skype), R.drawable.ic_skype))
-            arrayAdapter.add(SpinnerItem(getString(R.string.launch_application), R.drawable.ic_software))
-            arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month), R.drawable.ic_calendar))
-            arrayAdapter.add(SpinnerItem(getString(R.string.yearly), R.drawable.ic_confetti_black))
-            arrayAdapter.add(SpinnerItem(getString(R.string.place_out), R.drawable.ic_beenhere_black_24dp))
-            arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list), R.drawable.ic_cart))
-            arrayAdapter.add(SpinnerItem(getString(R.string.e_mail), R.drawable.ic_email))
-            if (Module.isPro)
-                arrayAdapter.add(SpinnerItem(getString(R.string.places), R.drawable.ic_map_marker))
+        arrayAdapter.add(SpinnerItem(getString(R.string.by_date)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.timer)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.alarm)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.location)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.skype)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.launch_application)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.day_of_month)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.yearly)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.place_out)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.shopping_list)))
+        arrayAdapter.add(SpinnerItem(getString(R.string.e_mail)))
+        if (Module.isPro) {
+            arrayAdapter.add(SpinnerItem(getString(R.string.places)))
         }
-        val adapter = TitleNavigationAdapter(applicationContext, arrayAdapter)
+        val adapter = TitleNavigationAdapter(arrayAdapter)
         navSpinner.adapter = adapter
         navSpinner.onItemSelectedListener = mOnTypeSelectListener
         var lastPos = prefs.lastUsedReminder
@@ -771,12 +755,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         return true
     }
 
-    private class SpinnerItem internal constructor(val title: String, val icon: Int)
+    private class SpinnerItem internal constructor(val title: String)
 
-    private inner class TitleNavigationAdapter(private val context: Context,
-                                               private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
-
-        private var txtTitle: TextViewWithIcon? = null
+    private inner class TitleNavigationAdapter(private val spinnerNavItem: ArrayList<SpinnerItem>) : BaseAdapter() {
 
         override fun getCount(): Int {
             return spinnerNavItem.size
@@ -793,31 +774,18 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             var cView = convertView
             if (cView == null) {
-                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)
+                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
             }
-            txtTitle = cView!!.findViewById(R.id.txtTitle)
-            txtTitle?.setIcon(0)
-            txtTitle!!.text = spinnerNavItem[position].title
-            txtTitle?.setTextColor(context.resources.getColor(R.color.blackPrimary))
+            cView.txtTitle.text = spinnerNavItem[position].title
             return cView
         }
-
 
         override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
             var cView = convertView
             if (cView == null) {
-                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)
+                cView = layoutInflater.inflate(R.layout.list_item_navigation, null)!!
             }
-            val itemBg = cView!!.findViewById<RelativeLayout>(R.id.itemBg)
-            itemBg.setBackgroundColor(themeUtil.spinnerStyle)
-            txtTitle = cView.findViewById(R.id.txtTitle)
-            txtTitle?.setIcon(spinnerNavItem[position].icon)
-            if (themeUtil.isDark) {
-                txtTitle?.setTextColor(themeUtil.getColor(R.color.whitePrimary))
-            } else {
-                txtTitle?.setTextColor(themeUtil.getColor(R.color.blackPrimary))
-            }
-            txtTitle!!.text = spinnerNavItem[position].title
+            cView.txtTitle.text = spinnerNavItem[position].title
             return cView
         }
     }

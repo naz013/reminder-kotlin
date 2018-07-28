@@ -7,16 +7,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.roboto.RoboCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/actionCheck"
+            style="?textAppearanceBody1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingStart="@dimen/checkbox_padding"
             android:paddingEnd="@dimen/checkbox_padding"
-            android:text="@string/action"
-            android:textSize="@dimen/checkbox_text_size"
-            app:check_font_style="roboto_light" />
+            android:text="@string/action" />
 
         <LinearLayout
             android:id="@+id/actionBlock"
@@ -35,27 +34,24 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                    <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/callAction"
+                        style="?textAppearanceBody1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/make_call"
-                        android:textSize="@dimen/create_text_size_normal"
-                        app:radio_font_style="roboto_regular" />
+                        android:text="@string/make_call" />
 
-                    <com.elementary.tasks.core.views.roboto.RoboRadioButton
+                    <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/messageAction"
+                        style="?textAppearanceBody1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginStart="16dp"
                         android:paddingStart="@dimen/checkbox_padding"
                         android:paddingEnd="@dimen/checkbox_padding"
-                        android:text="@string/sms"
-                        android:textSize="@dimen/create_text_size_normal"
-                        app:radio_font_style="roboto_regular" />
+                        android:text="@string/sms" />
                 </RadioGroup>
 
             </HorizontalScrollView>
@@ -66,28 +62,28 @@
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
-                <com.elementary.tasks.core.views.ThemedImageButton
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/selectNumber"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_gravity="center_vertical"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_number_from_contacts"
-                    app:srcCompat="@drawable/ic_contacts" />
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/ic_contacts"
+                    app:tint="?android:textColorPrimary" />
 
-                <com.elementary.tasks.core.views.roboto.RoboEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/numberView"
+                    style="?textAppearanceBody1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
                     android:ems="10"
                     android:hint="@string/phone"
                     android:inputType="text|phone"
-                    android:maxLines="1"
-                    android:textSize="@dimen/create_text_size_normal"
-                    app:edit_font_style="roboto_light" />
+                    android:maxLines="1" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

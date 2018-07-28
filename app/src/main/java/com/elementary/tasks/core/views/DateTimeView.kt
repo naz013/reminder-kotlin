@@ -13,7 +13,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
+import kotlinx.android.synthetic.main.view_date_time.view.*
 import java.text.DateFormat
 import java.util.*
 import javax.inject.Inject
@@ -38,8 +38,6 @@ import javax.inject.Inject
  */
 class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private var mDateView: RoboTextView? = null
-    private var mTimeView: RoboTextView? = null
     private var mHour: Int = 0
     private var mMinute: Int = 0
     private var mYear: Int = 0
@@ -90,10 +88,9 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
         val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams = params
-        mDateView = findViewById(R.id.dateField)
-        mTimeView = findViewById(R.id.timeField)
-        mDateView?.setOnClickListener(mDateClick)
-        mTimeView?.setOnClickListener { selectTime() }
+
+        dateField.setOnClickListener(mDateClick)
+        timeField.setOnClickListener { selectTime() }
         updateDateTime(0)
     }
 
@@ -103,24 +100,24 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     override fun setOnClickListener(l: View.OnClickListener?) {
-        if (isSingleMode) mDateView!!.setOnClickListener(l)
+        if (isSingleMode) dateField.setOnClickListener(l)
     }
 
     override fun setOnLongClickListener(l: View.OnLongClickListener?) {
-        mDateView!!.setOnLongClickListener(l)
-        mTimeView!!.setOnLongClickListener(l)
+        dateField.setOnLongClickListener(l)
+        timeField.setOnLongClickListener(l)
     }
 
     fun setSingleText(text: String?) {
         isSingleMode = text != null
         if (!isSingleMode) {
-            mTimeView!!.visibility = View.VISIBLE
-            mDateView!!.setOnClickListener(mDateClick)
+            timeField.visibility = View.VISIBLE
+            dateField.setOnClickListener(mDateClick)
             updateDateTime(0)
         } else {
-            mDateView!!.text = text
-            mDateView!!.setOnClickListener(null)
-            mTimeView!!.visibility = View.GONE
+            dateField.text = text
+            dateField.setOnClickListener(null)
+            timeField.visibility = View.GONE
         }
     }
 
@@ -130,33 +127,33 @@ class DateTimeView : LinearLayout, DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun updateDateTime(mills: Long) {
-        var mills = mills
-        if (mills == 0L) {
-            mills = System.currentTimeMillis()
+        var milliseconds = mills
+        if (milliseconds == 0L) {
+            milliseconds = System.currentTimeMillis()
         }
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = mills
+        calendar.timeInMillis = milliseconds
         mYear = calendar.get(Calendar.YEAR)
         mMonth = calendar.get(Calendar.MONTH)
         mDay = calendar.get(Calendar.DAY_OF_MONTH)
         mHour = calendar.get(Calendar.HOUR_OF_DAY)
         mMinute = calendar.get(Calendar.MINUTE)
-        updateTime(mills)
-        updateDate(mills)
+        updateTime(milliseconds)
+        updateDate(milliseconds)
     }
 
     private fun updateDate(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        mDateView!!.text = TimeUtil.getDate(cal.time, mDateFormat)
-        if (mListener != null) mListener!!.onDateSelect(mills, mDay, mMonth, mYear)
+        dateField.text = TimeUtil.getDate(cal.time, mDateFormat)
+        mListener?.onDateSelect(mills, mDay, mMonth, mYear)
     }
 
     private fun updateTime(mills: Long) {
         val cal = Calendar.getInstance()
         cal.timeInMillis = mills
-        mTimeView!!.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled)
-        if (mListener != null) mListener!!.onTimeSelect(mills, mHour, mMinute)
+        timeField.text = TimeUtil.getTime(cal.time, prefs.is24HourFormatEnabled)
+        mListener?.onTimeSelect(mills, mHour, mMinute)
     }
 
     private fun selectDate() {

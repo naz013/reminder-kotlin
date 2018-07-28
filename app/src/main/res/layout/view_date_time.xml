@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,39 +12,34 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <com.elementary.tasks.core.views.ThemedImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
-            android:background="@null"
-            android:clickable="false"
             android:contentDescription="@string/date_and_time"
-            app:srcCompat="@drawable/ic_access_time_black_24dp" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_access_time_black_24dp"
+            app:tint="?android:textColorPrimary" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/dateField"
+            style="?textAppearanceHeadline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="16dp"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
             android:layout_weight="1.2"
-            android:text="Tue, 5 Nov 2015"
-            android:textSize="@dimen/create_text_size_normal"
-            app:font_style="roboto_medium" />
+            tools:text="Tue, 5 Nov 2015" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/timeField"
+            style="?textAppearanceHeadline6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             android:layout_weight="0.8"
             android:gravity="end"
-            android:text="14:05"
-            android:textSize="@dimen/create_text_size_normal"
-            app:font_style="roboto_medium" />
+            tools:text="14:05" />
 
     </LinearLayout>
 </merge>

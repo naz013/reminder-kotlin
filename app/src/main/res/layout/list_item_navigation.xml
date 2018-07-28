@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/itemBg"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:selectableItemBackground"
-    android:padding="6dp">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
-    <com.elementary.tasks.core.views.TextViewWithIcon
+    <TextView
         android:id="@+id/txtTitle"
-        android:layout_width="wrap_content"
+        style="?textAppearanceBody1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:maxLines="1"
-        android:textColor="@color/blackPrimary" />
+        tools:text="@string/yearly" />
 
-</RelativeLayout>
+</LinearLayout>

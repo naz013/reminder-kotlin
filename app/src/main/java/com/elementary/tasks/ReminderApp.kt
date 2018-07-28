@@ -1,6 +1,10 @@
 package com.elementary.tasks
 
 import android.content.Context
+import androidx.annotation.Nullable
+import androidx.core.provider.FontRequest
+import androidx.emoji.text.EmojiCompat
+import androidx.emoji.text.FontRequestEmojiCompatConfig
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
@@ -10,6 +14,7 @@ import com.elementary.tasks.core.services.EventJobService
 import com.evernote.android.job.JobManager
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
+
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,6 +52,24 @@ class ReminderApp : MultiDexApplication() {
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         Fabric.with(this, Crashlytics(), Answers())
         JobManager.create(this).addJobCreator { EventJobService() }
+
+        val fontRequest = FontRequest(
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                "Noto Color Emoji Compat",
+                R.array.com_google_android_gms_fonts_certs)
+        val config = FontRequestEmojiCompatConfig(applicationContext, fontRequest)
+                .setReplaceAll(true)
+                .registerInitCallback(object : EmojiCompat.InitCallback() {
+                    override fun onInitialized() {
+                        Timber.d("onInitialized: EmojiCompat initialized")
+                    }
+
+                    override fun onFailed(@Nullable throwable: Throwable?) {
+                        Timber.d("onFailed: ")
+                    }
+                })
+        EmojiCompat.init(config)
     }
 
     companion object {
