@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.navigation.FragmentCallback
 import javax.inject.Inject
@@ -47,6 +48,19 @@ abstract class BaseFragment : Fragment() {
     lateinit var reminderUtils: ReminderUtils
     @Inject
     lateinit var buttonObservable: GlobalButtonObservable
+    @Inject
+    lateinit var language: Language
+    @Inject
+    lateinit var notifier: Notifier
+    @Inject
+    lateinit var calendarUtils: CalendarUtils
+    @Inject
+    lateinit var updatesHelper: UpdatesHelper
+    @Inject
+    lateinit var backupTool: BackupTool
+
+    var isDark = false
+        private set
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -85,6 +99,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        isDark = themeUtil.isDark
         val res = layoutRes()
         return if (res != 0) {
             inflater.inflate(layoutRes(), container, false)

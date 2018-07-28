@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import android.widget.SeekBar
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.Dropbox
 import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.services.AlarmReceiver
@@ -26,7 +25,6 @@ import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -79,13 +77,6 @@ class ExportSettingsFragment : BaseSettingsFragment() {
             }
             return position
         }
-
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_export
 

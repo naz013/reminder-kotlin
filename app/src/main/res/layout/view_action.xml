@@ -73,8 +73,7 @@
                     android:layout_gravity="center_vertical"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/acc_select_number_from_contacts"
-                    app:tb_icon="@drawable/ic_contacts"
-                    app:tb_icon_light="@drawable/ic_contacts_white" />
+                    app:srcCompat="@drawable/ic_contacts" />
 
                 <com.elementary.tasks.core.views.roboto.RoboEditText
                     android:id="@+id/numberView"

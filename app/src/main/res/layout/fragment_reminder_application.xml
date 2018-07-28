@@ -66,8 +66,7 @@
                 android:layout_height="32dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/acc_select_application"
-                app:tb_icon="@drawable/ic_launch_black_24dp"
-                app:tb_icon_light="@drawable/ic_launch_white_24dp" />
+                app:srcCompat="@drawable/ic_launch_black_24dp" />
 
             <com.elementary.tasks.core.views.roboto.RoboTextView
                 android:id="@+id/applicationName"

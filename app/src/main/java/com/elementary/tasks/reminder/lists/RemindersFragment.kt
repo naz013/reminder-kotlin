@@ -1,7 +1,5 @@
 package com.elementary.tasks.reminder.lists
 
-import android.app.SearchManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -10,12 +8,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.async.SyncTask
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
@@ -53,7 +51,7 @@ import java.util.*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, FilterCallback<Reminder> {
+class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private lateinit var viewModel: ActiveRemindersViewModel
 
@@ -62,31 +60,6 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
     private var mGroupsIds = ArrayList<String>()
     private val filters = ArrayList<FilterView.Filter>()
     private val filterController = ReminderFilterController(this)
-
-    private var mSearchView: SearchView? = null
-    private var mSearchMenu: MenuItem? = null
-
-    private val queryTextListener = object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String): Boolean {
-            filterController.setSearchValue(query)
-            if (mSearchMenu != null) {
-                mSearchMenu?.collapseActionView()
-            }
-            return false
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            filterController.setSearchValue(newText)
-            if (!callback!!.isFiltersVisible) {
-                showRemindersFilter()
-            }
-            return false
-        }
-    }
-    private val mSearchCloseListener = {
-        refreshFilters()
-        false
-    }
 
     private val filterAllElement: FilterView.FilterElement
         get() = FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true)
@@ -98,40 +71,30 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.fragment_active_menu, menu)
-        mSearchMenu = menu!!.findItem(R.id.action_search)
-        val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
-        if (mSearchMenu != null) {
-            mSearchView = mSearchMenu?.actionView as SearchView?
+        val micIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_microphone_black)
+        val filterIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_filter_list_black_24dp)
+        if (isDark) {
+            DrawableCompat.setTint(micIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
+            DrawableCompat.setTint(filterIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
+        } else {
+            DrawableCompat.setTint(micIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
+            DrawableCompat.setTint(filterIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
         }
-        if (mSearchView != null) {
-            if (searchManager != null) {
-                mSearchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-            }
-            mSearchView?.setOnQueryTextListener(queryTextListener)
-            mSearchView?.setOnCloseListener(mSearchCloseListener)
-            mSearchView?.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    if (!callback!!.isFiltersVisible) {
-                        showRemindersFilter()
-                    }
-                }
-            }
-        }
+        menu?.getItem(0)?.icon = micIcon
+        menu?.getItem(1)?.icon = filterIcon
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_refresh -> SyncTask(this, false).execute()
             R.id.action_voice -> if (callback != null) {
-
+                buttonObservable.fireAction(view!!, GlobalButtonObservable.Action.VOICE)
             }
             R.id.action_filter -> if (callback!!.isFiltersVisible) {
                 callback?.hideFilters()
             } else {
                 showRemindersFilter()
             }
-            R.id.action_exit -> activity?.finish()
             else -> {
             }
         }
@@ -363,11 +326,14 @@ class RemindersFragment : BaseNavigationFragment(), SyncTask.SyncListener, Filte
         alert.show()
     }
 
-    override fun endExecution(b: Boolean) {}
-
     override fun onChanged(result: List<Reminder>) {
         mAdapter.data = result
         recyclerView.smoothScrollToPosition(0)
         reloadView()
+    }
+
+    companion object {
+        const val MENU_VOICE = 1
+        const val MENU_FILTER = 1
     }
 }

@@ -5,15 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.SplashScreen
-import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.settings.images.MainImageActivity
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_general.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -46,13 +43,6 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
                 else -> getString(R.string.dark)
             }
         }
-
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_general
 

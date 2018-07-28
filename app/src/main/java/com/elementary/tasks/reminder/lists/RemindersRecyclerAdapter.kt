@@ -3,12 +3,12 @@ package com.elementary.tasks.reminder.lists
 import android.app.AlarmManager
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -62,7 +62,7 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         }
     }
 
-    private fun initLabel(listHeader: RoboTextView, position: Int) {
+    private fun initLabel(listHeader: TextView, position: Int) {
         val item = getItem(position) ?: return
         val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
         var simpleDate = TimeUtil.getSimpleDate(due)

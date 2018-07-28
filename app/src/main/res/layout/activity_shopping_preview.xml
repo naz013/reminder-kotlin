@@ -119,8 +119,7 @@
                 android:drawablePadding="16dp"
                 android:textSize="18sp"
                 app:font_style="roboto_regular"
-                app:tv_icon="@drawable/ic_format_text"
-                app:tv_icon_light="@drawable/ic_format_text_white" />
+                app:tv_icon="@drawable/ic_format_text" />
 
             <com.elementary.tasks.core.views.TextViewWithIcon
                 android:id="@+id/window_type_view"
@@ -133,7 +132,6 @@
                 android:textSize="18sp"
                 app:font_style="roboto_regular"
                 app:tv_icon="@drawable/ic_notifications_black_24dp"
-                app:tv_icon_light="@drawable/ic_notifications_white_24dp"
                 app:tv_tint="true" />
 
             <androidx.recyclerview.widget.RecyclerView

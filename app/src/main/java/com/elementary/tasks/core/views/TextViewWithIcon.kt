@@ -6,6 +6,8 @@ import android.os.Build
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
@@ -76,18 +78,18 @@ class TextViewWithIcon : RoboTextView {
                 var drawableLeft: Drawable? = null
                 val isDark = themeUtil.isDark
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawableLeft = if (isDark) {
-                        a.getDrawable(R.styleable.TextViewWithIcon_tv_icon_light)
-                    } else {
-                        a.getDrawable(R.styleable.TextViewWithIcon_tv_icon)
-                    }
+                    drawableLeft = a.getDrawable(R.styleable.TextViewWithIcon_tv_icon)
                 } else {
                     var drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon, -1)
-                    if (isDark) {
-                        drawableLeftId = a.getResourceId(R.styleable.TextViewWithIcon_tv_icon_light, -1)
-                    }
                     if (drawableLeftId != -1) {
                         drawableLeft = AppCompatResources.getDrawable(context, drawableLeftId)
+                    }
+                }
+                if (drawableLeft != null) {
+                    if (isDark) {
+                        DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(context, R.color.whitePrimary))
+                    } else {
+                        DrawableCompat.setTint(drawableLeft, ContextCompat.getColor(context, R.color.blackPrimary))
                     }
                 }
                 setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null)

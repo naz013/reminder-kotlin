@@ -45,7 +45,6 @@ class FileExplorerActivity : ThemedActivity() {
 
     private val str = ArrayList<String>()
     private var firstLvl: Boolean = true
-    private var isDark = false
     private var mFilter: Boolean = false
 
     private var mDataList: MutableList<FileDataItem> = mutableListOf()
@@ -150,7 +149,6 @@ class FileExplorerActivity : ThemedActivity() {
         setContentView(R.layout.activity_file_explorer)
         filType = intent.getStringExtra(Constants.FILE_TYPE)
         if (filType == "") filType = TYPE_MUSIC
-        isDark = themeUtil.isDark
         initActionBar()
         initRecyclerView()
         initPlayer()

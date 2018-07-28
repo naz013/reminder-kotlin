@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.navigation.settings.voice.HelpFragment
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_voice.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -32,13 +29,6 @@ import javax.inject.Inject
  */
 
 class VoiceSettingsFragment : BaseSettingsFragment() {
-
-    @Inject
-    lateinit var language: Language
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_settings_voice
 

@@ -11,15 +11,16 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Toast
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.CalendarEvent
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.PermanentReminderReceiver
-import com.elementary.tasks.core.utils.*
+import com.elementary.tasks.core.utils.CalendarUtils
+import com.elementary.tasks.core.utils.Permissions
+import com.elementary.tasks.core.utils.TimeCount
+import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_events_import.*
@@ -27,7 +28,6 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -51,17 +51,6 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
 
     private var mItemSelect: Int = 0
     private var list: List<CalendarUtils.CalendarItem> = listOf()
-
-    @Inject
-    lateinit var calendarUtils: CalendarUtils
-    @Inject
-    lateinit var notifier: Notifier
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     private val intervalPosition: Int
         get() {

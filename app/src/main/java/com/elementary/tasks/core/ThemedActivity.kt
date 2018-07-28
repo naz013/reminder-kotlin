@@ -19,6 +19,8 @@ abstract class ThemedActivity : AppCompatActivity() {
     lateinit var dialogues: Dialogues
     @Inject
     lateinit var notifier: Notifier
+    var isDark = false
+        private set
 
     init {
         ReminderApp.appComponent.inject(this)
@@ -27,9 +29,7 @@ abstract class ThemedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(themeUtil.style)
-        if (Module.isLollipop) {
-            window.statusBarColor = themeUtil.getColor(themeUtil.colorPrimaryDark())
-        }
+        isDark = themeUtil.isDark
     }
 
     override fun attachBaseContext(newBase: Context) {

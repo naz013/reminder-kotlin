@@ -38,7 +38,6 @@ import com.elementary.tasks.navigation.settings.images.MainImageActivity
 import com.elementary.tasks.navigation.settings.images.SaveAsync
 import com.elementary.tasks.notes.QuickNoteCoordinator
 import com.elementary.tasks.notes.list.NotesFragment
-import com.elementary.tasks.places.list.PlacesFragment
 import com.elementary.tasks.reminder.lists.ArchiveFragment
 import com.elementary.tasks.reminder.lists.RemindersFragment
 import com.google.android.material.navigation.NavigationView
@@ -263,25 +262,22 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
     override fun onFragmentSelect(fragment: Fragment) {
         this.fragment = fragment
         if (this.fragment is BaseSettingsFragment) {
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+            if (isDark) {
+                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp)
+            }
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
+            if (isDark) {
+                toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp)
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
+            }
         }
     }
 
     override fun onThemeChange(@ColorInt primary: Int, @ColorInt primaryDark: Int, @ColorInt accent: Int) {
-        var primary = primary
-        var primaryDark = primaryDark
-        if (primary == 0) {
-            primary = themeUtil.getColor(themeUtil.colorPrimary())
-        }
-        if (primaryDark == 0) {
-            primaryDark = themeUtil.getColor(themeUtil.colorPrimaryDark())
-        }
-        toolbar.setBackgroundColor(primary)
-        if (Module.isLollipop) {
-            window.statusBarColor = primaryDark
-        }
+
     }
 
     override fun refreshMenu() {
@@ -342,8 +338,8 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
 
     private fun setMenuVisible() {
         val menu = nav_view.menu
-        menu.getItem(4).isVisible = Google.getInstance() != null
-        menu.getItem(13).isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
+        menu.getItem(4)?.isVisible = Google.getInstance() != null
+        menu.getItem(11)?.isVisible = !Module.isPro && !SuperUtil.isAppInstalled(this, "com.cray.software.justreminderpro")
     }
 
     override fun onBackPressed() {
@@ -424,8 +420,6 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
             R.id.nav_tasks -> replaceFragment(GoogleTasksFragment(), getString(R.string.google_tasks))
             R.id.nav_groups -> replaceFragment(GroupsFragment(), getString(R.string.groups))
             R.id.nav_map -> replaceFragment(MapFragment(), getString(R.string.map))
-            R.id.nav_places -> replaceFragment(PlacesFragment(), getString(R.string.places))
-            R.id.nav_backups -> replaceFragment(BackupsFragment(), getString(R.string.backup_files))
             R.id.nav_archive -> replaceFragment(ArchiveFragment(), getString(R.string.trash))
             R.id.nav_settings -> {
                 beforeSettings = prevItem

@@ -29,8 +29,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@null"
-                app:tb_icon="@drawable/ic_settings"
-                app:tb_icon_light="@drawable/ic_settings_white"
+                app:srcCompat="@drawable/ic_settings"
                 app:tb_message="@string/action_settings" />
 
             <com.elementary.tasks.core.views.ThemedImageButton
@@ -38,8 +37,7 @@
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
                 android:background="@null"
-                app:tb_icon="@drawable/ic_arrow_back_black_24dp"
-                app:tb_icon_light="@drawable/ic_arrow_back_white_24dp" />
+                app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

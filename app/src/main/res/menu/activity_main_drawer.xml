@@ -37,16 +37,6 @@
             android:title="@string/map" />
 
         <item
-            android:id="@+id/nav_places"
-            android:icon="@drawable/ic_map_marker"
-            android:title="@string/places" />
-
-        <item
-            android:id="@+id/nav_backups"
-            android:icon="@drawable/ic_history"
-            android:title="@string/backup_files" />
-
-        <item
             android:id="@+id/nav_archive"
             android:icon="@drawable/ic_archive"
             android:title="@string/trash" />

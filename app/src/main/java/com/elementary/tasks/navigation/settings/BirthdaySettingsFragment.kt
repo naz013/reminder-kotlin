@@ -10,9 +10,7 @@ import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
-import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -23,7 +21,6 @@ import com.elementary.tasks.core.viewModels.birthdays.BirthdaysViewModel
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_birthdays_settings.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Copyright 2016 Nazar Suhovich
@@ -47,13 +44,6 @@ import javax.inject.Inject
 class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var viewModel: BirthdaysViewModel
-
-    @Inject
-    lateinit var updatesHelper: UpdatesHelper
-
-    init {
-        ReminderApp.appComponent.inject(this)
-    }
 
     override fun layoutRes(): Int = R.layout.fragment_birthdays_settings
 

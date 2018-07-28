@@ -3,32 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="@string/search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
-
-    <item
         android:id="@+id/action_voice"
         android:icon="@drawable/ic_microphone_black"
         android:title="@string/voice_control"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_refresh"
-        android:icon="@drawable/ic_cached_black_24dp"
-        android:title="@string/sync"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_filter"
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="@string/filter"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_exit"
-        android:title="@string/exit"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 </menu>

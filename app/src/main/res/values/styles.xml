@@ -1,473 +1,470 @@
 <resources>
-    <style name="SplashTheme" parent="HomeDark">
-    </style>
 
-    <style name="ActionOverflowButtonStyle" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+    <style name="SplashTheme" parent="HomeDark"></style>
+
+    <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/blackPrimary</item>
     </style>
 
-    <style name="BackButtonStyle" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+    <style name="BackButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
         <item name="android:tint">@color/blackPrimary</item>
     </style>
 
-    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:fontFamily">@font/roboto_regular</item>
+    <style name="ActionOverflowButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/whitePrimary</item>
+    </style>
+
+    <style name="BackButtonStyleDark" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:tint">@color/whitePrimary</item>
+    </style>
+
+    <style name="Text.H1" parent="@style/TextAppearance.MaterialComponents.Headline1">
+        <item name="android:fontFamily">@font/merriweathersans_light</item>
+    </style>
+
+    <style name="Text.H2" parent="@style/TextAppearance.MaterialComponents.Headline2">
+        <item name="android:fontFamily">@font/merriweathersans_light</item>
+    </style>
+
+    <style name="Text.H3" parent="@style/TextAppearance.MaterialComponents.Headline3">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.H4" parent="@style/TextAppearance.MaterialComponents.Headline4">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.H5" parent="@style/TextAppearance.MaterialComponents.Headline5">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.H6" parent="@style/TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">@font/merriweathersans_bold</item>
+    </style>
+
+    <style name="Text.Sub1" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.Sub2" parent="@style/TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:fontFamily">@font/merriweathersans_bold</item>
+    </style>
+
+    <style name="Text.Body1" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.Body2" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.Caption" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/merriweathersans_bold</item>
+    </style>
+
+    <style name="Text.Button" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
+    </style>
+
+    <style name="Text.Overline" parent="@style/TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/merriweathersans_regular</item>
     </style>
 
     <style name="HomeWhite" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="windowActionBar">false</item>
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
+        <item name="colorPrimaryDark">@color/lightPrimaryDark</item>
+        <item name="colorPrimary">@color/lightPrimary</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleLight</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleLight</item>
+        <item name="textAppearanceHeadline1">@style/Text.H1</item>
+        <item name="textAppearanceHeadline2">@style/Text.H2</item>
+        <item name="textAppearanceHeadline3">@style/Text.H3</item>
+        <item name="textAppearanceHeadline4">@style/Text.H4</item>
+        <item name="textAppearanceHeadline5">@style/Text.H5</item>
+        <item name="textAppearanceHeadline6">@style/Text.H6</item>
+        <item name="textAppearanceSubtitle1">@style/Text.Sub1</item>
+        <item name="textAppearanceSubtitle2">@style/Text.Sub2</item>
+        <item name="textAppearanceBody1">@style/Text.Body1</item>
+        <item name="textAppearanceBody2">@style/Text.Body2</item>
+        <item name="textAppearanceCaption">@style/Text.Caption</item>
+        <item name="textAppearanceButton">@style/Text.Button</item>
+        <item name="textAppearanceOverline">@style/Text.Overline</item>
     </style>
 
     <style name="HomeWhite.Blue" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorAccent">@color/yellowAccent</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeWhite.Red" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/redPrimaryDark</item>
-        <item name="colorPrimary">@color/redPrimary</item>
-        <item name="colorAccent">@color/indigoAccent</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeWhite.Purple" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
-        <item name="colorPrimary">@color/purplePrimary</item>
-        <item name="colorAccent">@color/amberAccent</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeWhite.Green" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/greenPrimaryDark</item>
-        <item name="colorPrimary">@color/greenPrimary</item>
-        <item name="colorAccent">@color/cyanAccent</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeWhite.LightGreen" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/greenLightPrimaryDark</item>
-        <item name="colorPrimary">@color/greenLightPrimary</item>
-        <item name="colorAccent">@color/purpleDeepAccent</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeWhite.LightBlue" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/blueLightPrimaryDark</item>
-        <item name="colorPrimary">@color/blueLightPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeWhite.Yellow" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/yellowPrimaryDark</item>
-        <item name="colorPrimary">@color/yellowPrimary</item>
-        <item name="colorAccent">@color/cyanAccent</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeWhite.Orange" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/orangePrimaryDark</item>
-        <item name="colorPrimary">@color/orangePrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeWhite.Cyan" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/cyanPrimaryDark</item>
-        <item name="colorPrimary">@color/cyanPrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeWhite.Pink" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/pinkPrimaryDark</item>
-        <item name="colorPrimary">@color/pinkPrimary</item>
-        <item name="colorAccent">@color/cyanAccent</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeWhite.Teal" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/tealPrimaryDark</item>
-        <item name="colorPrimary">@color/tealPrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeWhite.Amber" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/amberPrimaryDark</item>
-        <item name="colorPrimary">@color/amberPrimary</item>
-        <item name="colorAccent">@color/indigoAccent</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeWhite.DeepPurple" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/purpleDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/purpleDeepPrimary</item>
-        <item name="colorAccent">@color/greenLightAccent</item>
+        <item name="colorSecondary">@color/purpleDeepPrimary</item>
     </style>
 
     <style name="HomeWhite.DeepOrange" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/orangeDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/orangeDeepPrimary</item>
-        <item name="colorAccent">@color/purpleDeepAccent</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeWhite.Lime" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/limePrimaryDark</item>
-        <item name="colorPrimary">@color/limePrimary</item>
-        <item name="colorAccent">@color/purpleAccent</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeWhite.Indigo" parent="HomeWhite">
-        <item name="colorPrimaryDark">@color/indigoPrimaryDark</item>
-        <item name="colorPrimary">@color/indigoPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 
     <style name="HomeDark" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorAccent">@color/yellowAccent</item>
-        <item name="windowActionBar">false</item>
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryDark</item>
+        <item name="colorPrimary">@color/darkPrimary</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
+        <item name="textAppearanceHeadline1">@style/Text.H1</item>
+        <item name="textAppearanceHeadline2">@style/Text.H2</item>
+        <item name="textAppearanceHeadline3">@style/Text.H3</item>
+        <item name="textAppearanceHeadline4">@style/Text.H4</item>
+        <item name="textAppearanceHeadline5">@style/Text.H5</item>
+        <item name="textAppearanceHeadline6">@style/Text.H6</item>
+        <item name="textAppearanceSubtitle1">@style/Text.Sub1</item>
+        <item name="textAppearanceSubtitle2">@style/Text.Sub2</item>
+        <item name="textAppearanceBody1">@style/Text.Body1</item>
+        <item name="textAppearanceBody2">@style/Text.Body2</item>
+        <item name="textAppearanceCaption">@style/Text.Caption</item>
+        <item name="textAppearanceButton">@style/Text.Button</item>
+        <item name="textAppearanceOverline">@style/Text.Overline</item>
     </style>
 
     <style name="HomeDark.Blue" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeDark.Red" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/redPrimaryDark</item>
-        <item name="colorPrimary">@color/redPrimary</item>
-        <item name="colorAccent">@color/indigoAccent</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeDark.Purple" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
-        <item name="colorPrimary">@color/purplePrimary</item>
-        <item name="colorAccent">@color/amberAccent</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeDark.Green" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/greenPrimaryDark</item>
-        <item name="colorPrimary">@color/greenPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeDark.LightGreen" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/greenLightPrimaryDark</item>
-        <item name="colorPrimary">@color/greenLightPrimary</item>
-        <item name="colorAccent">@color/purpleAccent</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeDark.LightBlue" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/blueLightPrimaryDark</item>
-        <item name="colorPrimary">@color/blueLightPrimary</item>
-        <item name="colorAccent">@color/yellowAccent</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeDark.Yellow" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/yellowPrimaryDark</item>
-        <item name="colorPrimary">@color/yellowPrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeDark.Orange" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/orangePrimaryDark</item>
-        <item name="colorPrimary">@color/orangePrimary</item>
-        <item name="colorAccent">@color/greenAccent</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeDark.Cyan" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/cyanPrimaryDark</item>
-        <item name="colorPrimary">@color/cyanPrimary</item>
-        <item name="colorAccent">@color/purpleDeepAccent</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeDark.Pink" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/pinkPrimaryDark</item>
-        <item name="colorPrimary">@color/pinkPrimary</item>
-        <item name="colorAccent">@color/blueLightAccent</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeDark.Teal" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/tealPrimaryDark</item>
-        <item name="colorPrimary">@color/tealPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeDark.Amber" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/amberPrimaryDark</item>
-        <item name="colorPrimary">@color/amberPrimary</item>
-        <item name="colorAccent">@color/blueAccent</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeDark.DeepPurple" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/purpleDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/purpleDeepPrimary</item>
-        <item name="colorAccent">@color/greenAccent</item>
+        <item name="colorSecondary">@color/purpleDeepPrimary</item>
     </style>
 
     <style name="HomeDark.DeepOrange" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/orangeDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/orangeDeepPrimary</item>
-        <item name="colorAccent">@color/purpleAccent</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeDark.Lime" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/limePrimaryDark</item>
-        <item name="colorPrimary">@color/limePrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeDark.Indigo" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/indigoPrimaryDark</item>
-        <item name="colorPrimary">@color/indigoPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 
     <style name="HomeBlack" parent="HomeDark">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorAccent">@color/yellowAccent</item>
-        <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">@color/blackPrimary</item>
+        <item name="colorPrimary">@color/blackPrimary</item>
         <item name="android:windowBackground">@color/blackPrimary</item>
         <item name="android:colorBackground">@color/blackPrimary</item>
-        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
-        <item name="actionModeCloseButtonStyle">@style/BackButtonStyle</item>
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButtonStyleDark</item>
+        <item name="actionModeCloseButtonStyle">@style/BackButtonStyleDark</item>
+        <item name="textAppearanceHeadline1">@style/Text.H1</item>
+        <item name="textAppearanceHeadline2">@style/Text.H2</item>
+        <item name="textAppearanceHeadline3">@style/Text.H3</item>
+        <item name="textAppearanceHeadline4">@style/Text.H4</item>
+        <item name="textAppearanceHeadline5">@style/Text.H5</item>
+        <item name="textAppearanceHeadline6">@style/Text.H6</item>
+        <item name="textAppearanceSubtitle1">@style/Text.Sub1</item>
+        <item name="textAppearanceSubtitle2">@style/Text.Sub2</item>
+        <item name="textAppearanceBody1">@style/Text.Body1</item>
+        <item name="textAppearanceBody2">@style/Text.Body2</item>
+        <item name="textAppearanceCaption">@style/Text.Caption</item>
+        <item name="textAppearanceButton">@style/Text.Button</item>
+        <item name="textAppearanceOverline">@style/Text.Overline</item>
     </style>
 
     <style name="HomeBlack.Blue" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/bluePrimaryDark</item>
-        <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeBlack.Red" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/redPrimaryDark</item>
-        <item name="colorPrimary">@color/redPrimary</item>
-        <item name="colorAccent">@color/indigoAccent</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeBlack.Purple" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
-        <item name="colorPrimary">@color/purplePrimary</item>
-        <item name="colorAccent">@color/amberAccent</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeBlack.Green" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/greenPrimaryDark</item>
-        <item name="colorPrimary">@color/greenPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeBlack.LightGreen" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/greenLightPrimaryDark</item>
-        <item name="colorPrimary">@color/greenLightPrimary</item>
-        <item name="colorAccent">@color/purpleAccent</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeBlack.LightBlue" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/blueLightPrimaryDark</item>
-        <item name="colorPrimary">@color/blueLightPrimary</item>
-        <item name="colorAccent">@color/yellowAccent</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeBlack.Yellow" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/yellowPrimaryDark</item>
-        <item name="colorPrimary">@color/yellowPrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeBlack.Orange" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/orangePrimaryDark</item>
-        <item name="colorPrimary">@color/orangePrimary</item>
-        <item name="colorAccent">@color/greenAccent</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeBlack.Cyan" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/cyanPrimaryDark</item>
-        <item name="colorPrimary">@color/cyanPrimary</item>
-        <item name="colorAccent">@color/purpleDeepAccent</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeBlack.Pink" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/pinkPrimaryDark</item>
-        <item name="colorPrimary">@color/pinkPrimary</item>
-        <item name="colorAccent">@color/blueLightAccent</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeBlack.Teal" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/tealPrimaryDark</item>
-        <item name="colorPrimary">@color/tealPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeBlack.Amber" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/amberPrimaryDark</item>
-        <item name="colorPrimary">@color/amberPrimary</item>
-        <item name="colorAccent">@color/blueAccent</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeBlack.DeepPurple" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/purpleDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/purpleDeepPrimary</item>
-        <item name="colorAccent">@color/greenAccent</item>
+        <item name="colorSecondary">@color/purpleDeepPrimary</item>
     </style>
 
     <style name="HomeBlack.DeepOrange" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/orangeDeepPrimaryDark</item>
-        <item name="colorPrimary">@color/orangeDeepPrimary</item>
-        <item name="colorAccent">@color/purpleAccent</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeBlack.Lime" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/limePrimaryDark</item>
-        <item name="colorPrimary">@color/limePrimary</item>
-        <item name="colorAccent">@color/redAccent</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeBlack.Indigo" parent="HomeBlack">
-        <item name="colorPrimaryDark">@color/indigoPrimaryDark</item>
-        <item name="colorPrimary">@color/indigoPrimary</item>
-        <item name="colorAccent">@color/pinkAccent</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog" parent="Theme.MaterialComponents.Light.Dialog">
-        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeDarkDialog" parent="Theme.MaterialComponents.Dialog">
-        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
+        <item name="colorBackgroundFloating">@color/darkPrimary</item>
+        <item name="scrimBackground">@color/darkPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Blue" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Red" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/redPrimary</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Purple" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/purplePrimary</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Green" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/greenPrimary</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.LightGreen" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/greenLightPrimary</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.LightBlue" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/blueLightPrimary</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Yellow" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/yellowPrimary</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Orange" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/orangePrimary</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Cyan" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/cyanPrimary</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Pink" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/pinkPrimary</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Teal" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/tealPrimary</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Amber" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/amberPrimary</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.DeepPurple" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/purpleDeepPrimary</item>
+        <item name="colorSecondary">@color/purpleDeepPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.DeepOrange" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/orangeDeepPrimary</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Lime" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/limePrimary</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeDarkDialog.Indigo" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/indigoPrimary</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Blue" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Red" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/redPrimary</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Purple" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/purplePrimary</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Green" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/greenPrimary</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.LightGreen" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/greenLightPrimary</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.LightBlue" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/blueLightPrimary</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Yellow" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/yellowPrimary</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Orange" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/orangePrimary</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Cyan" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/cyanPrimary</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Pink" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/pinkPrimary</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Teal" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/tealPrimary</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Amber" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/amberPrimary</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.DeepPurple" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/purpleDeepPrimary</item>
+        <item name="colorSecondary">@color/purpleDeepPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.DeepOrange" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/orangeDeepPrimary</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Lime" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/limePrimary</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeWhiteDialog.Indigo" parent="HomeWhiteDialog">
-        <item name="colorAccent">@color/indigoPrimary</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 
     <style name="HomeBlackDialog" parent="HomeDarkDialog">
-        <item name="colorAccent">@color/bluePrimary</item>
-        <item name="android:background">@color/blackPrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
+        <item name="android:colorBackground">@color/blackPrimary</item>
         <item name="android:popupBackground">@color/blackPrimary</item>
         <item name="android:windowBackground">@color/blackPrimary</item>
         <item name="android:windowMinWidthMajor">90%</item>
@@ -475,51 +472,51 @@
     </style>
 
     <style name="HomeBlackDialog.Blue" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/bluePrimary</item>
+        <item name="colorSecondary">@color/bluePrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Red" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/redPrimary</item>
+        <item name="colorSecondary">@color/redPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Purple" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/purplePrimary</item>
+        <item name="colorSecondary">@color/purplePrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Green" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/greenPrimary</item>
+        <item name="colorSecondary">@color/greenPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.LightGreen" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/greenLightPrimary</item>
+        <item name="colorSecondary">@color/greenLightPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.LightBlue" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/blueLightPrimary</item>
+        <item name="colorSecondary">@color/blueLightPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Yellow" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/yellowPrimary</item>
+        <item name="colorSecondary">@color/yellowPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Orange" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/orangePrimary</item>
+        <item name="colorSecondary">@color/orangePrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Cyan" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/cyanPrimary</item>
+        <item name="colorSecondary">@color/cyanPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Pink" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/pinkPrimary</item>
+        <item name="colorSecondary">@color/pinkPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Teal" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/tealPrimary</item>
+        <item name="colorSecondary">@color/tealPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Amber" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/amberPrimary</item>
+        <item name="colorSecondary">@color/amberPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.DeepPurple" parent="HomeBlackDialog">
@@ -527,14 +524,14 @@
     </style>
 
     <style name="HomeBlackDialog.DeepOrange" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/orangeDeepPrimary</item>
+        <item name="colorSecondary">@color/orangeDeepPrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Lime" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/limePrimary</item>
+        <item name="colorSecondary">@color/limePrimary</item>
     </style>
 
     <style name="HomeBlackDialog.Indigo" parent="HomeBlackDialog">
-        <item name="colorAccent">@color/indigoPrimary</item>
+        <item name="colorSecondary">@color/indigoPrimary</item>
     </style>
 </resources>

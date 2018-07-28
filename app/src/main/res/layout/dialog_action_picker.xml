@@ -33,8 +33,7 @@
             android:layout_height="64dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            app:tb_icon="@drawable/ic_alarm"
-            app:tb_icon_light="@drawable/ic_alarm_white" />
+            app:srcCompat="@drawable/ic_alarm" />
 
         <com.elementary.tasks.core.views.ThemedImageButton
             android:id="@+id/addBirth"
@@ -44,8 +43,7 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            app:tb_icon="@drawable/ic_cake_black_24dp"
-            app:tb_icon_light="@drawable/ic_cake_white_24dp" />
+            app:srcCompat="@drawable/ic_cake_black_24dp" />
 
     </LinearLayout>
 
