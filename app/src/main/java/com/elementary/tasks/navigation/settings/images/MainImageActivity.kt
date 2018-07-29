@@ -23,7 +23,6 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.mainImage.MainImagesViewModel
 import com.elementary.tasks.core.views.roboto.RoboRadioButton
 import kotlinx.android.synthetic.main.activity_main_image.*
-import kotlinx.android.synthetic.main.view_item_empty.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -133,7 +132,7 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
         mAdapter.setItems(mPhotoList.subList(0, mPointer))
         mAdapter.setPrevSelected(position)
         imagesList.adapter = mAdapter
-        emptyLayout.emptyItem.visibility = View.GONE
+        emptyItem.visibility = View.GONE
         imagesList.visibility = View.VISIBLE
     }
 
@@ -142,8 +141,8 @@ class MainImageActivity : ThemedActivity(), CompoundButton.OnCheckedChangeListen
         setContentView(R.layout.activity_main_image)
         initActionBar()
         initRadios()
-        emptyLayout.emptyItem.visibility = View.VISIBLE
-        emptyLayout.emptyText.setText(R.string.no_images)
+        emptyItem.visibility = View.VISIBLE
+        emptyText.setText(R.string.no_images)
         initRecyclerView()
         initImageContainer()
 

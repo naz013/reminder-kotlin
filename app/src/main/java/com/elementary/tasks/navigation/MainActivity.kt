@@ -10,6 +10,7 @@ import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.core.view.GravityCompat
@@ -323,7 +324,7 @@ class MainActivity : ThemedActivity(), NavigationView.OnNavigationItemSelectedLi
         view.update_badge.visibility = View.INVISIBLE
         view.headerImage.setOnClickListener { openImageScreen() }
         view.findViewById<View>(R.id.headerItem).setOnClickListener { openImageScreen() }
-        val nameView = view.findViewById<RoboTextView>(R.id.appNameBanner)
+        val nameView = view.findViewById<TextView>(R.id.appNameBanner)
         var appName = getString(R.string.app_name)
         if (Module.isPro) {
             appName = getString(R.string.app_name_pro)

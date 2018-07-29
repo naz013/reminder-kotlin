@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="SplashTheme" parent="HomeDark"></style>
+    <style name="SplashTheme" parent="HomeDark" />
 
     <style name="ActionOverflowButtonStyleLight" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/blackPrimary</item>
@@ -88,6 +88,8 @@
         <item name="textAppearanceCaption">@style/Text.Caption</item>
         <item name="textAppearanceButton">@style/Text.Button</item>
         <item name="textAppearanceOverline">@style/Text.Overline</item>
+        <item name="android:spinnerItemStyle">@style/Text.Body1</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
     </style>
 
     <style name="HomeWhite.Blue" parent="HomeWhite">
@@ -172,6 +174,8 @@
         <item name="textAppearanceCaption">@style/Text.Caption</item>
         <item name="textAppearanceButton">@style/Text.Button</item>
         <item name="textAppearanceOverline">@style/Text.Overline</item>
+        <item name="android:spinnerItemStyle">@style/Text.Body1</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
     </style>
 
     <style name="HomeDark.Blue" parent="HomeDark">
@@ -258,6 +262,8 @@
         <item name="textAppearanceCaption">@style/Text.Caption</item>
         <item name="textAppearanceButton">@style/Text.Button</item>
         <item name="textAppearanceOverline">@style/Text.Overline</item>
+        <item name="android:spinnerItemStyle">@style/Text.Body1</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Text.Body1</item>
     </style>
 
     <style name="HomeBlack.Blue" parent="HomeBlack">

@@ -4,7 +4,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.7'
     implementation 'junit:junit:4.12'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.mockito:mockito-core:2.16.0'
 }
 
 sourceCompatibility = "1.8"

@@ -14,8 +14,8 @@ android {
     flavorDimensions "level"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
-        minSdkVersion 17
-        targetSdkVersion 27
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 210
         versionName '6.4.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

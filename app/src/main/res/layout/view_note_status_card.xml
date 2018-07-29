@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/noteStatusCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp">
+    android:layout_marginTop="16dp"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:id="@+id/bgViewStatus"
@@ -16,15 +17,14 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
+            style="?textAppearanceHeadline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="@string/show_in_status_bar"
-            android:textSize="20sp"
-            app:font_style="roboto_medium" />
+            android:text="@string/show_in_status_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,24 +33,21 @@
             android:gravity="end"
             android:orientation="horizontal">
 
-            <com.elementary.tasks.core.views.roboto.RoboButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonYesStatus"
+                style="?snackbarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="@string/yes"
-                app:font_style="roboto_light" />
+                android:text="@string/yes" />
 
-            <com.elementary.tasks.core.views.roboto.RoboButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonNoStatus"
+                style="?snackbarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="@string/no"
-                app:font_style="roboto_light" />
+                android:text="@string/no" />
 
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

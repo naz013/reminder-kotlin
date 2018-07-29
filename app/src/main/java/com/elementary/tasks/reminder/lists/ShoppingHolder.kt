@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
 import com.elementary.tasks.core.data.models.Group
@@ -11,7 +12,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_shopping.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
 class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListActions) -> Unit)?) :
         BaseHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_shopping, parent, false)) {
 
-    val listHeader: RoboTextView = itemView.listHeader
+    val listHeader: TextView = itemView.listHeader
 
     init {
         itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
