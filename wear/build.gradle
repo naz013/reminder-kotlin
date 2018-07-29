@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     flavorDimensions "wear"
     defaultConfig {
         applicationId 'com.cray.software.justreminder'
         minSdkVersion 20
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -58,6 +58,6 @@ android {
 dependencies {
     implementation 'com.google.android.support:wearable:2.3.0'
     compileOnly 'com.google.android.wearable:wearable:2.3.0'
-    implementation 'com.google.android.gms:play-services-wearable:15.0.0'
+    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
     implementation project(':shared')
 }

@@ -3,6 +3,8 @@ package com.elementary.tasks.google_tasks.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
@@ -11,8 +13,6 @@ import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.utils.Configs
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.Module
-import com.elementary.tasks.core.views.roboto.RoboCheckBox
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_task.view.*
 import java.text.SimpleDateFormat
@@ -63,11 +63,11 @@ class GoogleTaskHolder (parent: ViewGroup, listener: ((View, Int, ListActions) -
         }
     }
 
-    private fun loadCheck(checkBox: RoboCheckBox, item: GoogleTask) {
+    private fun loadCheck(checkBox: CheckBox, item: GoogleTask) {
         checkBox.isChecked = item.status.matches(Google.TASKS_COMPLETE.toRegex())
     }
 
-    private fun loadDue(view: RoboTextView, due: Long) {
+    private fun loadDue(view: TextView, due: Long) {
         val full24Format = SimpleDateFormat("EEE,\ndd/MM", Locale.getDefault())
         val calendar = Calendar.getInstance()
         if (due != 0L) {
