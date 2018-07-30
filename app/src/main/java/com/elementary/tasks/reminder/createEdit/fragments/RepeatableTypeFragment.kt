@@ -1,8 +1,8 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.widget.SeekBar
+import android.widget.TextView
 import com.elementary.tasks.R
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 
 /**
@@ -51,7 +51,7 @@ abstract class RepeatableTypeFragment : TypeFragment() {
         builder.create().show()
     }
 
-    private fun setRepeatTitle(textView: RoboTextView, progress: Int) {
+    private fun setRepeatTitle(textView: TextView, progress: Int) {
         when {
             progress <= 0 -> textView.text = getString(R.string.no_limits)
             progress == 1 -> textView.setText(R.string.once)
