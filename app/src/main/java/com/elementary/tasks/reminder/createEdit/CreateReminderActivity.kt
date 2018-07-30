@@ -27,7 +27,6 @@ import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.conversation.ConversationViewModel
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
-import com.elementary.tasks.groups.Position
 import com.elementary.tasks.reminder.createEdit.fragments.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_reminder.*
@@ -68,7 +67,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     override var repeatLimit = -1
     override var volume = -1
         private set
-    override var group: String = ""
+    override var group: Group? = null
         private set
     override var melodyPath: String = ""
         private set
@@ -196,22 +195,21 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
-        viewModel.reminder.observe(this, Observer{ reminder ->
+        viewModel.reminder.observe(this, Observer { reminder ->
             if (reminder != null) {
                 editReminder(reminder)
             }
         })
-        viewModel.result.observe(this, Observer{ commands ->
+        viewModel.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {
                     Commands.DELETED, Commands.SAVED -> finish()
                 }
             }
         })
-        viewModel.defaultGroup.observe(this, Observer{ group ->
-            if (group != null) {
-                groupButton.text = group.title
-                this.group = group.uuId
+        viewModel.allGroups.observe(this, Observer {
+            if (it != null && it.isNotEmpty()) {
+                showGroup(it[0])
             }
         })
     }
@@ -341,15 +339,16 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     }
 
     private fun changeGroup() {
-        val position = Position()
-        val categories = viewModel.allGroupsNames
+        val groups = viewModel.allGroups.value
+        val names = groups?.map { it.title } ?: listOf()
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, categories), position.i) { dialog, which ->
+                android.R.layout.simple_list_item_single_choice, names), names.indexOf(group?.title ?: "")) { dialog, which ->
             dialog.dismiss()
-            val groups = viewModel.allGroups.value
-            if (groups != null) showGroup(groups[which])
+            if (groups != null) {
+                showGroup(groups[which])
+            }
         }
         val alert = builder.create()
         alert.show()
@@ -358,7 +357,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     private fun showGroup(item: Group?) {
         if (item == null) return
         groupButton.text = item.title
-        group = item.uuId
+        group = item
     }
 
     private fun openCustomizationDialog() {

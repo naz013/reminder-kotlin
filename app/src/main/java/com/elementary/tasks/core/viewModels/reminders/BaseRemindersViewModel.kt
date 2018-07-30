@@ -40,18 +40,6 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
     var defaultGroup: LiveData<Group>
     var allGroups: LiveData<List<Group>>
 
-    val allGroupsNames: List<String>
-        get() {
-            val list = ArrayList<String>()
-            val groups = allGroups.value
-            if (groups != null) {
-                for (g in groups) {
-                    list.add(g.title)
-                }
-            }
-            return list
-        }
-
     init {
         defaultGroup = appDb.groupDao().loadDefault()
         allGroups = appDb.groupDao().loadAll()
