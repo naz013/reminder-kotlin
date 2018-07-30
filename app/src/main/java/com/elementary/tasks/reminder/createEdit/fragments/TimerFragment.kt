@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import com.elementary.tasks.R
@@ -12,7 +13,6 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.core.views.roboto.RoboTextView
 import kotlinx.android.synthetic.main.dialog_exclusion_picker.view.*
 import kotlinx.android.synthetic.main.fragment_timer.*
 import java.util.*
@@ -228,7 +228,7 @@ class TimerFragment : RepeatableTypeFragment() {
         }
     }
 
-    private fun fromTime(textView: RoboTextView) {
+    private fun fromTime(textView: TextView) {
         TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             fromHour = hourOfDay
             fromMinute = minute
@@ -240,7 +240,7 @@ class TimerFragment : RepeatableTypeFragment() {
         }, fromHour, fromMinute)
     }
 
-    private fun toTime(textView: RoboTextView) {
+    private fun toTime(textView: TextView) {
         TimeUtil.showTimePicker(context!!, prefs.is24HourFormatEnabled, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             toHour = hourOfDay
             toMinute = minute
