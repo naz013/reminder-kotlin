@@ -26,7 +26,9 @@
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
                 <RadioGroup
                     android:id="@+id/radioGroup"

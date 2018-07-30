@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="horizontal"
-    android:paddingBottom="16dp"
     android:paddingLeft="24dp"
+    android:paddingTop="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="24dp">
+    android:paddingBottom="16dp">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_launcher" />
 
@@ -24,27 +22,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textSize="@dimen/about_app_title_size"
-            app:font_style="roboto_medium" />
+            android:textAppearance="?textAppearanceHeadline6" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/appVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:textSize="@dimen/about_secondary_text_size"
-            app:font_style="roboto_light" />
+            android:textAppearance="?textAppearanceSubtitle1"
+            tools:text="7.0" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/rights"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,16 +49,14 @@
             android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/copyright"
-            android:textSize="@dimen/about_secondary_text_size"
-            app:font_style="roboto_light" />
+            android:textAppearance="?textAppearanceSubtitle2" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/translators"
-            android:textSize="@dimen/about_secondary_text_size"
-            app:font_style="roboto_light" />
+            android:textAppearance="?textAppearanceSubtitle2" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -70,12 +65,11 @@
             android:overScrollMode="never"
             android:scrollbars="none">
 
-            <com.elementary.tasks.core.views.roboto.RoboTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/translators_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/about_secondary_text_size"
-                app:font_style="roboto_light" />
+                android:textAppearance="?textAppearanceSubtitle2" />
 
         </ScrollView>
     </LinearLayout>

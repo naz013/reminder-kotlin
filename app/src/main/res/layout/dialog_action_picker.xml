@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.elementary.tasks.core.views.roboto.RoboTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/dateLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:textSize="18sp" />
+        android:textAppearance="?textAppearanceHeadline6"
+        tools:text="Today" />
 
     <LinearLayout
         android:id="@+id/actionContainer"
@@ -22,28 +23,29 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="16dp"
         android:paddingLeft="24dp"
+        android:paddingTop="16dp"
         android:paddingRight="24dp"
-        android:paddingTop="16dp">
+        android:paddingBottom="16dp">
 
-        <com.elementary.tasks.core.views.ThemedImageButton
+        <ndroidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addEvent"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_alarm" />
+            app:srcCompat="@drawable/ic_alarm"
+            app:tint="?android:textColorPrimary" />
 
-        <com.elementary.tasks.core.views.ThemedImageButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/addBirth"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?selectableItemBackgroundBorderless"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_cake_black_24dp" />
+            app:srcCompat="@drawable/ic_cake_black_24dp"
+            app:tint="?android:textColorPrimary" />
 
     </LinearLayout>
 
@@ -61,15 +63,13 @@
             app:mk_color="?attr/colorAccent"
             app:mk_type="Sharingan" />
 
-        <com.elementary.tasks.core.views.roboto.RoboTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:text="@string/loading_events"
-            android:textSize="16sp"
-            app:font_style="roboto_bold" />
+            android:textAppearance="?textAppearanceHeadline6" />
 
     </LinearLayout>
 

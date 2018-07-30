@@ -52,6 +52,7 @@ import com.elementary.tasks.reminder.createEdit.fragments.TypeFragment
 import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.ShoppingHolder
+import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.reminder.work.BackupReminderTask
 import com.elementary.tasks.reminder.work.UpdateFilesAsync
 import com.elementary.tasks.voice.ConversationAdapter
@@ -147,4 +148,5 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(createReminderActivity: CreateReminderActivity)
     fun inject(baseNotificationActivity: BaseNotificationActivity)
+    fun inject(reminderPreviewActivity: ReminderPreviewActivity)
 }

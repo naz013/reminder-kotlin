@@ -231,7 +231,7 @@ class Reminder : RecyclerInterface {
 
     fun setClear(mInterface: ReminderInterface) {
         summary = mInterface.summary
-        groupUuId = mInterface.group
+        groupUuId = mInterface.group?.uuId ?: ""
         repeatLimit = mInterface.repeatLimit
         color = mInterface.ledColor
         melodyPath = mInterface.melodyPath
