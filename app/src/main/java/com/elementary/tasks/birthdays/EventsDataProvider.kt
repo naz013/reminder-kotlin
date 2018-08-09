@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.calendar.Events
 import com.elementary.tasks.core.calendar.FlextHelper
 import com.elementary.tasks.core.data.AppDb
@@ -170,7 +169,7 @@ class EventsDataProvider(context: Context, private val isReminder: Boolean, priv
         for (item in list) {
             var date: Date? = null
             try {
-                date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.date)
+                date = TimeUtil.BIRTH_DATE_FORMAT.parse(item.date)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

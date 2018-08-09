@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
@@ -149,7 +148,7 @@ class DayViewProvider(private val mContext: Context) {
         for (item in list) {
             var date: Date? = null
             try {
-                date = CheckBirthdaysAsync.DATE_FORMAT.parse(item.date)
+                date = TimeUtil.BIRTH_DATE_FORMAT.parse(item.date)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

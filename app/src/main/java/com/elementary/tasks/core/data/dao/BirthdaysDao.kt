@@ -33,11 +33,11 @@ interface BirthdaysDao {
     @Query("SELECT * FROM Birthday")
     fun all(): List<Birthday>
 
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    fun loadById(id: Int): LiveData<Birthday>
+    @Query("SELECT * FROM Birthday WHERE uuId=:id")
+    fun loadById(id: String): LiveData<Birthday>
 
-    @Query("SELECT * FROM Birthday WHERE uniqueId=:id")
-    fun getById(id: Int): Birthday?
+    @Query("SELECT * FROM Birthday WHERE uuId=:id")
+    fun getById(id: String): Birthday?
 
     @Query("SELECT * FROM Birthday")
     fun loadAll(): LiveData<List<Birthday>>

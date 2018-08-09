@@ -51,7 +51,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         }
     }
 
-    fun showSimpleBirthday(id: Int) {
+    fun showSimpleBirthday(id: String) {
         val birthday = AppDb.getAppDatabase(context).birthdaysDao().getById(id) ?: return
         val builder = NotificationCompat.Builder(context, Notifier.CHANNEL_REMINDER)
         if (Module.isLollipop) {

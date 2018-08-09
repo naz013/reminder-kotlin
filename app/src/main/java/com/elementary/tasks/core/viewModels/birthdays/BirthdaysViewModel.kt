@@ -2,8 +2,12 @@ package com.elementary.tasks.core.viewModels.birthdays
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
+import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -47,7 +51,11 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
                 appDb.birthdaysDao().delete(birthday)
                 ids.add(birthday.uuId)
             }
-            DeleteBirthdayFilesAsync(getApplication()).execute(*ids.toTypedArray())
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to ids.toArray()).toWorkData())
+                    .addTag("BD_WORK")
+                    .build()
+            WorkManager.getInstance().enqueue(work)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)

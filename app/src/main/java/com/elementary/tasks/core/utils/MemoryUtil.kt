@@ -1,8 +1,13 @@
 package com.elementary.tasks.core.utils
 
+import android.content.ContentResolver
+import android.net.Uri
 import android.os.Environment
+import android.util.Base64
+import android.util.Base64InputStream
+import android.util.Base64OutputStream
+import java.io.*
 
-import java.io.File
 import java.util.Locale
 
 /**
@@ -151,5 +156,109 @@ object MemoryUtil {
         val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
         val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else ""
         return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
+    }
+
+    @Throws(IOException::class)
+    fun readFileToJson(cr: ContentResolver, name: Uri): String? {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = cr.openInputStream(name)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+
+        if (inputStream == null) {
+            return null
+        }
+        val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+        val r = BufferedReader(InputStreamReader(output64))
+        val total = StringBuilder()
+        var line: String?
+        do {
+            line = r.readLine()
+            if (line != null) {
+                total.append(line)
+            }
+        } while (line != null)
+        output64.close()
+        inputStream.close()
+        val res = total.toString()
+        return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
+            res
+        else {
+            throw IOException("Bad JSON")
+        }
+    }
+
+    @Throws(IOException::class)
+    fun readFileToJson(path: String): String {
+        try {
+            val inputStream = FileInputStream(path)
+            val output64 = Base64InputStream(inputStream, Base64.DEFAULT)
+            val r = BufferedReader(InputStreamReader(output64))
+            val total = StringBuilder()
+            var line: String?
+            do {
+                line = r.readLine()
+                if (line != null) {
+                    total.append(line)
+                }
+            } while (line != null)
+            output64.close()
+            inputStream.close()
+            val res = total.toString()
+            return if (res.startsWith("{") && res.endsWith("}") || res.startsWith("[") && res.endsWith("]"))
+                res
+            else {
+                throw IOException("Bad JSON")
+            }
+        } catch (e: Exception) {
+            throw IOException("No write permission")
+        }
+    }
+
+    /**
+     * Write data to file.
+     *
+     * @param file target file.
+     * @param data object data.
+     * @return Path to file
+     * @throws IOException
+     */
+    @Throws(IOException::class)
+    fun writeFile(file: File, data: String?): String? {
+        if (data == null) return null
+        try {
+            val inputStream = ByteArrayInputStream(data.toByteArray())
+            val buffer = ByteArray(8192)
+            var bytesRead: Int
+            val output = ByteArrayOutputStream()
+            val output64 = Base64OutputStream(output, Base64.DEFAULT)
+            try {
+                do {
+                    bytesRead = inputStream.read(buffer)
+                    if (bytesRead != -1) {
+                        output64.write(buffer, 0, bytesRead)
+                    }
+                } while (bytesRead != -1)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            output64.close()
+
+            if (file.exists()) {
+                file.delete()
+            }
+            val fw = FileWriter(file)
+            fw.write(output.toString())
+            fw.close()
+            output.close()
+        } catch (e: SecurityException) {
+            return null
+        }
+        return file.toString()
     }
 }

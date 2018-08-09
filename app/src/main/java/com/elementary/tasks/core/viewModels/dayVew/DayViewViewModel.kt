@@ -3,15 +3,19 @@ package com.elementary.tasks.core.viewModels.dayVew
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataSingleton
 import com.elementary.tasks.birthdays.EventsItem
 import com.elementary.tasks.birthdays.EventsPagerItem
-import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync
+import com.elementary.tasks.birthdays.work.DeleteBackupWorker
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.reminder.work.UpdateFilesAsync
@@ -58,7 +62,11 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
                 result.postValue(Commands.DELETED)
                 liveData.update()
             }
-            DeleteBirthdayFilesAsync(getApplication()).execute(birthday.uuId)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .addTag(birthday.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 

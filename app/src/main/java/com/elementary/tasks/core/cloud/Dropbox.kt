@@ -206,11 +206,6 @@ class Dropbox {
         }
     }
 
-    /**
-     * Upload reminder backup files or selected file to Dropbox folder.
-     *
-     * @param fileName file name.
-     */
     fun uploadReminderByFileName(fileName: String?) {
         val dir = MemoryUtil.remindersDir ?: return
         startSession()
@@ -241,6 +236,39 @@ class Dropbox {
             }
         } else {
             upload(MemoryUtil.DIR_SD)
+        }
+    }
+
+    fun uploadBirthdayByFileName(fileName: String?) {
+        val dir = MemoryUtil.birthdaysDir ?: return
+        startSession()
+        if (!isLinked) {
+            return
+        }
+        val api = mDBApi ?: return
+        if (fileName != null) {
+            val tmpFile = File(dir, fileName)
+            var fis: FileInputStream? = null
+            try {
+                fis = FileInputStream(tmpFile)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+
+            if (fis == null) return
+            try {
+                api.files().uploadBuilder(dbxBirthFolder + fileName)
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(fis)
+            } catch (e: DbxException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: IOException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: NullPointerException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            }
+        } else {
+            upload(MemoryUtil.DIR_BIRTHDAY_SD)
         }
     }
 
@@ -277,18 +305,6 @@ class Dropbox {
      */
     fun uploadTemplates() {
         upload(MemoryUtil.DIR_TEMPLATES_SD)
-    }
-
-    fun deleteFile(fileName: String) {
-        when {
-            fileName.endsWith(FileConfig.FILE_NAME_REMINDER) -> deleteReminder(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_NOTE) -> deleteNote(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_GROUP) -> deleteGroup(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_BIRTHDAY) -> deleteBirthday(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_PLACE) -> deletePlace(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_TEMPLATE) -> deleteTemplate(fileName)
-            fileName.endsWith(FileConfig.FILE_NAME_SETTINGS) -> deleteSettings(fileName)
-        }
     }
 
     /**
@@ -397,24 +413,6 @@ class Dropbox {
             api.files().deleteV2(dbxTemplatesFolder + name)
         } catch (e: DbxException) {
             LogUtil.e(TAG, "deleteTemplate: ", e)
-        }
-    }
-
-    /**
-     * Delete settings backup file from Dropbox folder.
-     *
-     * @param name file name
-     */
-    fun deleteSettings(name: String) {
-        startSession()
-        if (!isLinked) {
-            return
-        }
-        val api = mDBApi ?: return
-        try {
-            api.files().deleteV2(dbxSettingsFolder + name)
-        } catch (e: DbxException) {
-            LogUtil.e(TAG, "deleteSettings: ", e)
         }
     }
 

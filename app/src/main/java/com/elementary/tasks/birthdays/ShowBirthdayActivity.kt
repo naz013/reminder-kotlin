@@ -12,9 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.BackupBirthdaysTask
 import com.elementary.tasks.core.BaseNotificationActivity
-import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
@@ -154,7 +152,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-        val key = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val key = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_show_birthday)
         card.setCardBackgroundColor(themeUtil.cardStyle)
         if (Module.isLollipop) {
@@ -177,7 +175,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         initViewModel(key)
     }
 
-    private fun initViewModel(id: Int) {
+    private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
         viewModel!!.birthday.observe(this, Observer<Birthday>{ birthday ->
             if (birthday != null) {
@@ -272,10 +270,6 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
     override fun onDestroy() {
         super.onDestroy()
         removeFlags()
-        if (prefs.isAutoBackupEnabled) {
-            BackupTask().execute()
-        }
-        BackupBirthdaysTask().execute()
     }
 
     override fun onBackPressed() {

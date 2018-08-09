@@ -5,8 +5,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
+import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.async.BackupTask
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.AppDb
@@ -17,6 +19,7 @@ import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
 import org.dmfs.rfc5545.recur.RecurrenceRule
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -57,7 +60,6 @@ class AlarmReceiver : BaseBroadcast() {
         when (action) {
             ACTION_SYNC_AUTO -> BackupTask().execute()
             ACTION_EVENTS_CHECK -> checkEvents(context)
-            ACTION_BIRTHDAY_AUTO -> CheckBirthdaysAsync(context).execute()
             ACTION_BIRTHDAY_PERMANENT -> if (prefs.isBirthdayPermanentEnabled) {
                 notifier.showBirthdayPermanent()
             }
@@ -102,36 +104,15 @@ class AlarmReceiver : BaseBroadcast() {
         alarmMgr?.cancel(alarmIntent)
     }
 
-    fun enableBirthdayCheckAlarm(context: Context) {
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.action = ACTION_BIRTHDAY_AUTO
-        val alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager ?: return
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        val currTime = calendar.timeInMillis
-        calendar.set(Calendar.HOUR_OF_DAY, 2)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-        var time = calendar.timeInMillis
-        while (currTime > time) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-            time = calendar.timeInMillis
-        }
-        if (Module.isMarshmallow) {
-            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, time, AlarmManager.INTERVAL_DAY, alarmIntent)
-        } else {
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, time, AlarmManager.INTERVAL_DAY, alarmIntent)
-        }
+    fun enableBirthdayCheckAlarm() {
+        val work = PeriodicWorkRequest.Builder(CheckBirthdaysWorker::class.java, 24, TimeUnit.HOURS, 1, TimeUnit.HOURS)
+                .addTag("BD_CHECK")
+                .build()
+        WorkManager.getInstance().enqueue(work)
     }
 
-    fun cancelBirthdayCheckAlarm(context: Context) {
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.action = ACTION_BIRTHDAY_AUTO
-        val alarmIntent = PendingIntent.getBroadcast(context, BIRTHDAY_CHECK_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
-        alarmMgr?.cancel(alarmIntent)
+    fun cancelBirthdayCheckAlarm() {
+        WorkManager.getInstance().cancelAllWorkByTag("BD_CHECK")
     }
 
     fun enableEventCheck(context: Context) {
@@ -261,11 +242,9 @@ class AlarmReceiver : BaseBroadcast() {
 
         private const val AUTO_SYNC_ID = Integer.MAX_VALUE - 1
         private const val BIRTHDAY_PERMANENT_ID = Integer.MAX_VALUE - 2
-        private const val BIRTHDAY_CHECK_ID = Integer.MAX_VALUE - 4
         private const val EVENTS_CHECK_ID = Integer.MAX_VALUE - 5
 
         private const val ACTION_BIRTHDAY_PERMANENT = "com.elementary.alarm.BIRTHDAY_PERMANENT"
-        private const val ACTION_BIRTHDAY_AUTO = "com.elementary.alarm.BIRTHDAY_AUTO"
         private const val ACTION_SYNC_AUTO = "com.elementary.alarm.SYNC_AUTO"
         private const val ACTION_EVENTS_CHECK = "com.elementary.alarm.EVENTS_CHECK"
 

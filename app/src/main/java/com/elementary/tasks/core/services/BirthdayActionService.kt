@@ -48,29 +48,29 @@ class BirthdayActionService : BaseBroadcast() {
     }
 
     private fun sendSms(context: Context, intent: Intent) {
-        val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0))
+        val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
         if (item != null && Permissions.checkPermission(context, Permissions.SEND_SMS)) {
             TelephonyUtil.sendSms(item.number, context)
             updateBirthday(context, item)
             finish(notifier, updatesHelper, item.uniqueId)
         } else {
-            hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
         }
     }
 
     private fun makeCall(context: Context, intent: Intent) {
-        val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0))
+        val item = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
         if (item != null && Permissions.checkPermission(context, Permissions.CALL_PHONE)) {
             TelephonyUtil.makeCall(item.number, context)
             updateBirthday(context, item)
             finish(notifier, updatesHelper, item.uniqueId)
         } else {
-            hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+            hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
         }
     }
 
     private fun showReminder(context: Context, intent: Intent) {
-        val reminder = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getIntExtra(Constants.INTENT_ID, 0))
+        val reminder = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
         if (reminder != null) {
             val notificationIntent = ShowBirthdayActivity.getLaunchIntent(context,
                     intent.getIntExtra(Constants.INTENT_ID, 0))
@@ -80,8 +80,8 @@ class BirthdayActionService : BaseBroadcast() {
         }
     }
 
-    private fun hidePermanent(context: Context, id: Int) {
-        if (id == 0) return
+    private fun hidePermanent(context: Context, id: String) {
+        if (id.isEmpty()) return
         val item = AppDb.getAppDatabase(context).birthdaysDao().getById(id)
         if (item != null) {
             updateBirthday(context, item)
@@ -96,7 +96,7 @@ class BirthdayActionService : BaseBroadcast() {
             when {
                 action.matches(ACTION_CALL.toRegex()) -> makeCall(context, intent)
                 action.matches(ACTION_SMS.toRegex()) -> sendSms(context, intent)
-                action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+                action.matches(PermanentBirthdayReceiver.ACTION_HIDE.toRegex()) -> hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                 else -> showReminder(context, intent)
             }
         }
@@ -110,23 +110,23 @@ class BirthdayActionService : BaseBroadcast() {
 
         private const val TAG = "BirthdayActionService"
 
-        fun hide(context: Context, id: Int): Intent {
+        fun hide(context: Context, id: String): Intent {
             return intent(context, id, PermanentBirthdayReceiver.ACTION_HIDE)
         }
 
-        fun call(context: Context, id: Int): Intent {
+        fun call(context: Context, id: String): Intent {
             return intent(context, id, ACTION_CALL)
         }
 
-        fun show(context: Context, id: Int): Intent {
+        fun show(context: Context, id: String): Intent {
             return intent(context, id, ACTION_SHOW)
         }
 
-        fun sms(context: Context, id: Int): Intent {
+        fun sms(context: Context, id: String): Intent {
             return intent(context, id, ACTION_SMS)
         }
 
-        private fun intent(context: Context, id: Int, action: String): Intent {
+        private fun intent(context: Context, id: String, action: String): Intent {
             val intent = Intent(context, BirthdayActionService::class.java)
             intent.action = action
             intent.putExtra(Constants.INTENT_ID, id)

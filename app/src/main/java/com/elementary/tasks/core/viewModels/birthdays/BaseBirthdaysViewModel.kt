@@ -1,9 +1,13 @@
 package com.elementary.tasks.core.viewModels.birthdays
 
 import android.app.Application
-
-import com.elementary.tasks.birthdays.work.DeleteBirthdayFilesAsync
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
+import com.elementary.tasks.birthdays.work.DeleteBackupWorker
+import com.elementary.tasks.birthdays.work.SingleBackupWorker
 import com.elementary.tasks.core.data.models.Birthday
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
 import kotlinx.coroutines.experimental.CommonPool
@@ -35,7 +39,11 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
         isInProgress.postValue(true)
         launch(CommonPool) {
             appDb.birthdaysDao().delete(birthday)
-            DeleteBirthdayFilesAsync(getApplication()).execute(birthday.uuId)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .addTag(birthday.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
@@ -47,6 +55,11 @@ abstract class BaseBirthdaysViewModel(application: Application) : BaseDbViewMode
         isInProgress.postValue(true)
         launch(CommonPool) {
             appDb.birthdaysDao().insert(birthday)
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to birthday.uuId).toWorkData())
+                    .addTag(birthday.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)

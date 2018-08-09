@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -105,7 +104,7 @@ class AddBirthdayActivity : ThemedActivity() {
         if (birthday != null) {
             birthName.setText(birthday.name)
             try {
-                val dt = CheckBirthdaysAsync.DATE_FORMAT.parse(birthday.date)
+                val dt = TimeUtil.BIRTH_DATE_FORMAT.parse(birthday.date)
                 if (dt != null) calendar.time = dt
             } catch (e: ParseException) {
                 e.printStackTrace()
@@ -123,12 +122,12 @@ class AddBirthdayActivity : ThemedActivity() {
         myYear = calendar.get(Calendar.YEAR)
         myMonth = calendar.get(Calendar.MONTH)
         myDay = calendar.get(Calendar.DAY_OF_MONTH)
-        birthDate.text = CheckBirthdaysAsync.DATE_FORMAT.format(calendar.time)
+        birthDate.text = TimeUtil.BIRTH_DATE_FORMAT.format(calendar.time)
     }
 
     private fun loadBirthday() {
         date = intent.getLongExtra(Constants.INTENT_DATE, 0)
-        val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
         if (intent.data != null) {
             try {
@@ -150,7 +149,7 @@ class AddBirthdayActivity : ThemedActivity() {
         }
     }
 
-    private fun initViewModel(id: Int) {
+    private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, BirthdayViewModel.Factory(application, id)).get(BirthdayViewModel::class.java)
         viewModel.birthday.observe(this, Observer<Birthday> { this.showBirthday(it) })
         viewModel.result.observe(this, Observer<Commands> {

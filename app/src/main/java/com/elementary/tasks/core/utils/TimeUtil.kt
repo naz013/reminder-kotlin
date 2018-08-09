@@ -6,7 +6,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.text.TextUtils
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -35,6 +34,7 @@ object TimeUtil {
 
     private const val GMT = "GMT"
 
+    val BIRTH_DATE_FORMAT: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val FORMAT_24 = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
     private val TIME_STAMP_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZZ", Locale.getDefault())
     private val FORMAT_12 = SimpleDateFormat("dd MMM yyyy, K:mm a", Locale.getDefault())
@@ -104,7 +104,7 @@ object TimeUtil {
         var date: Date? = null
         val dateTime = prefs.birthdayTime
         try {
-            date = CheckBirthdaysAsync.DATE_FORMAT.parse(fullDate)
+            date = TimeUtil.BIRTH_DATE_FORMAT.parse(fullDate)
         } catch (e: ParseException) {
             e.printStackTrace()
         } catch (e: NumberFormatException) {

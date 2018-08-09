@@ -9,8 +9,10 @@ import android.widget.SeekBar
 import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.CheckBirthdaysAsync
+import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.services.AlarmReceiver
 import com.elementary.tasks.core.services.EventJobService
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -89,7 +91,10 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
             Permissions.requestPermission(activity!!, BIRTHDAYS_CODE, Permissions.READ_CONTACTS)
             return
         }
-        CheckBirthdaysAsync(activity!!, true).execute()
+        val work = OneTimeWorkRequest.Builder(CheckBirthdaysWorker::class.java)
+                .addTag("BD_CHECK_ONCE")
+                .build()
+        WorkManager.getInstance().enqueue(work)
     }
 
     private fun initContactsAutoPrefs() {
@@ -104,9 +109,9 @@ class BirthdaySettingsFragment : BaseSettingsFragment(), TimePickerDialog.OnTime
         autoScanPrefs.isChecked = !isChecked
         prefs.isContactAutoCheckEnabled = !isChecked
         if (!isChecked) {
-            AlarmReceiver().enableBirthdayCheckAlarm(context!!)
+            AlarmReceiver().enableBirthdayCheckAlarm()
         } else {
-            AlarmReceiver().cancelBirthdayCheckAlarm(context!!)
+            AlarmReceiver().cancelBirthdayCheckAlarm()
         }
     }
 
