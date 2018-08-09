@@ -433,9 +433,6 @@ private constructor() {
 
         }
 
-        /**
-         * Upload reminder backup file stored on SD Card.
-         */
         fun saveReminderToDrive(pathToFile: String) {
             try {
                 val metadata = Metadata(FileConfig.FILE_NAME_REMINDER, MemoryUtil.remindersDir, "Reminder Backup", null)
@@ -446,9 +443,16 @@ private constructor() {
 
         }
 
-        /**
-         * Upload all note backup files stored on SD Card.
-         */
+        fun saveBirthdayToDrive(pathToFile: String) {
+            try {
+                val metadata = Metadata(FileConfig.FILE_NAME_BIRTHDAY, MemoryUtil.birthdaysDir, "Birthday Backup", null)
+                saveFileToDrive(pathToFile, metadata)
+            } catch (e: IOException) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            }
+
+        }
+
         fun saveNotesToDrive() {
             try {
                 saveToDrive(Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null))
@@ -537,8 +541,7 @@ private constructor() {
         @Throws(IOException::class)
         private fun saveFileToDrive(pathToFile: String, metadata: Metadata) {
             if (metadata.folder == null) return
-            if (driveService == null) return
-            val files = metadata.folder.listFiles() ?: return
+            val driveService = driveService ?: return
             var fId: String? = null
             try {
                 fId = folderId
@@ -559,19 +562,19 @@ private constructor() {
             fileMetadata.description = metadata.meta
             fileMetadata.parents = listOf(fId)
             val mediaContent = FileContent("text/plain", f)
-            driveService!!.files().create(fileMetadata, mediaContent)
+            driveService.files().create(fileMetadata, mediaContent)
                     .setFields("id")
                     .execute()
         }
 
         @Throws(IOException::class)
         fun download(deleteBackup: Boolean, metadata: Metadata) {
-            if (driveService == null) return
+            val driveService = driveService ?: return
             val folder = metadata.folder
             if (folder == null || !folder.exists() && !folder.mkdirs()) {
                 return
             }
-            val request = driveService!!.files().list()
+            val request = driveService.files().list()
                     .setQ("mimeType = 'text/plain' and name contains '" + metadata.fileExt + "'")
                     .setFields("nextPageToken, files")
             do {
@@ -585,7 +588,7 @@ private constructor() {
                             file.createNewFile()
                         }
                         val out = FileOutputStream(file)
-                        driveService!!.files().get(f.id).executeMediaAndDownloadTo(out)
+                        driveService.files().get(f.id).executeMediaAndDownloadTo(out)
                         if (metadata.action != null) {
                             metadata.action.onSave(file)
                         }
@@ -593,7 +596,7 @@ private constructor() {
                             if (file.exists()) {
                                 file.delete()
                             }
-                            driveService!!.files().delete(f.id).execute()
+                            driveService.files().delete(f.id).execute()
                         }
                     }
                 }

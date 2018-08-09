@@ -26,7 +26,7 @@ import androidx.lifecycle.ViewModelProvider
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class BirthdayViewModel private constructor(application: Application, id: Int) : BaseBirthdaysViewModel(application) {
+class BirthdayViewModel private constructor(application: Application, id: String) : BaseBirthdaysViewModel(application) {
 
     var birthday: LiveData<Birthday>
 
@@ -34,7 +34,7 @@ class BirthdayViewModel private constructor(application: Application, id: Int) :
         birthday = appDb.birthdaysDao().loadById(id)
     }
 
-    class Factory(private val application: Application, private val key: Int) : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val application: Application, private val key: String) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return BirthdayViewModel(application, key) as T

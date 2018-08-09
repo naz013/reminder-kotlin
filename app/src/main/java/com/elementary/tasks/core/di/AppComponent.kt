@@ -3,7 +3,6 @@ package com.elementary.tasks.core.di
 import com.elementary.tasks.birthdays.BirthdayHolder
 import com.elementary.tasks.birthdays.DayViewProvider
 import com.elementary.tasks.birthdays.EventsDataProvider
-import com.elementary.tasks.birthdays.work.BackupBirthdaysTask
 import com.elementary.tasks.core.BaseNotificationActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.additional.SelectableTemplatesAdapter
@@ -143,7 +142,6 @@ interface AppComponent {
     fun inject(placesRecyclerAdapter: PlacesRecyclerAdapter)
     fun inject(locationPlacesAdapter: LocationPlacesAdapter)
     fun inject(voiceWidgetDialog: VoiceWidgetDialog)
-    fun inject(backupBirthdaysTask: BackupBirthdaysTask)
     fun inject(dayViewProvider: DayViewProvider)
     fun inject(mainActivity: MainActivity)
     fun inject(createReminderActivity: CreateReminderActivity)

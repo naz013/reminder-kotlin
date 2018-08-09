@@ -37,7 +37,7 @@ class BootReceiver : BaseBroadcast() {
                 notifier.updateReminderPermanent(PermanentReminderReceiver.ACTION_SHOW)
             }
             if (prefs.isContactAutoCheckEnabled) {
-                alarmReceiver.enableBirthdayCheckAlarm(context)
+                alarmReceiver.enableBirthdayCheckAlarm()
             }
             if (prefs.isAutoEventsCheckEnabled) {
                 alarmReceiver.enableEventCheck(context)

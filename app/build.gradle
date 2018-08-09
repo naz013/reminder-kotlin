@@ -142,6 +142,10 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-commons:0.10.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3'
 
+    implementation 'android.arch.work:work-runtime:1.0.0-alpha06'
+    implementation 'android.arch.work:work-firebase:1.0.0-alpha06'
+    implementation 'android.arch.work:work-runtime-ktx:1.0.0-alpha06'
+
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     implementation 'androidx.room:room-runtime:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0-rc01'
