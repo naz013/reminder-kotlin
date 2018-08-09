@@ -154,7 +154,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, 0)).get(ReminderViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, "")).get(ReminderViewModel::class.java)
         viewModel!!.result.observe(this, Observer { commands ->
             if (commands != null) {
                 when (commands) {

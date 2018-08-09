@@ -111,7 +111,7 @@ class AddReminderActivity : ThemedActivity() {
     }
 
     private fun initViewModel() {
-        val factory = ReminderViewModel.Factory(application, 0)
+        val factory = ReminderViewModel.Factory(application, "")
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.result.observe(this, Observer{ commands ->
             if (commands != null) {

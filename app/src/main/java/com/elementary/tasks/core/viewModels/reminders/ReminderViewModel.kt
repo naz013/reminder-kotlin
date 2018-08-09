@@ -26,7 +26,7 @@ import androidx.lifecycle.ViewModelProvider
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class ReminderViewModel private constructor(application: Application, id: Int) : BaseRemindersViewModel(application) {
+class ReminderViewModel private constructor(application: Application, id: String) : BaseRemindersViewModel(application) {
 
     var reminder: LiveData<Reminder>
 
@@ -34,7 +34,7 @@ class ReminderViewModel private constructor(application: Application, id: Int) :
         reminder = appDb.reminderDao().loadById(id)
     }
 
-    class Factory(private val application: Application, private val id: Int) : ViewModelProvider.NewInstanceFactory() {
+    class Factory(private val application: Application, private val id: String) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return ReminderViewModel(application, id) as T
