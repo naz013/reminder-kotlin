@@ -43,7 +43,7 @@ class VoiceResultDialog : BaseDialog() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         val viewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, id)).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer{ reminder ->

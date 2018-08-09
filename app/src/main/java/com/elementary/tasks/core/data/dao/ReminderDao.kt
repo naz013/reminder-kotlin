@@ -33,8 +33,8 @@ interface ReminderDao {
     @Query("SELECT * FROM Reminder")
     fun all(): List<Reminder>
 
-    @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
-    fun loadById(id: Int): LiveData<Reminder>
+    @Query("SELECT * FROM Reminder WHERE uuId=:id")
+    fun loadById(id: String): LiveData<Reminder>
 
     @Query("SELECT * FROM Reminder WHERE noteId=:key")
     fun loadByNoteKey(key: String): LiveData<Reminder>
@@ -42,8 +42,8 @@ interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE uuId=:uuId")
     fun getByUuId(uuId: String): Reminder?
 
-    @Query("SELECT * FROM Reminder WHERE uniqueId=:id")
-    fun getById(id: Int): Reminder?
+    @Query("SELECT * FROM Reminder WHERE uuId=:id")
+    fun getById(id: String): Reminder?
 
     @Query("SELECT * FROM Reminder WHERE isRemoved=:removed")
     fun loadByRemoved(removed: Boolean): LiveData<List<Reminder>>

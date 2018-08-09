@@ -60,14 +60,14 @@ class ShoppingPreviewActivity : ThemedActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         setContentView(R.layout.activity_shopping_preview)
         initActionBar()
         initViews()
         initViewModel(id)
     }
 
-    private fun initViewModel(id: Int) {
+    private fun initViewModel(id: String) {
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer{ reminder ->

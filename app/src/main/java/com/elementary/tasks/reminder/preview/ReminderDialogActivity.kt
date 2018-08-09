@@ -191,7 +191,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isScreenResumed = intent.getBooleanExtra(Constants.INTENT_NOTIFICATION, false)
-        val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
 
         setContentView(R.layout.activity_reminder_dialog)
 
@@ -214,7 +214,7 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         initViewModel(id)
     }
 
-    private fun initViewModel(id: Int) {
+    private fun initViewModel(id: String) {
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this,Observer { reminder ->

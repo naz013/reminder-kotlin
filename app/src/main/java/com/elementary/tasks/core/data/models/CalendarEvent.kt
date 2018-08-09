@@ -27,7 +27,7 @@ import androidx.room.PrimaryKey
  */
 
 @Entity
-class CalendarEvent(var reminderId: Int, var event: String, var eventId: Long) {
+class CalendarEvent(var reminderId: String, var event: String, var eventId: Long) {
 
     @PrimaryKey
     var uuId: String = ""

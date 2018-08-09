@@ -343,7 +343,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             }
         })
 
-        reminderViewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, 0)).get(ReminderViewModel::class.java)
+        reminderViewModel = ViewModelProviders.of(this, ReminderViewModel.Factory(application, "")).get(ReminderViewModel::class.java)
     }
 
     private fun initActionBar() {

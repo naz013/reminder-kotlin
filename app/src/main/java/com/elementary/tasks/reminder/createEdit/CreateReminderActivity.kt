@@ -190,7 +190,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         loadReminder()
     }
 
-    private fun initViewModel(id: Int) {
+    private fun initViewModel(id: String) {
         conversationViewModel = ViewModelProviders.of(this).get(ConversationViewModel::class.java)
 
         val factory = ReminderViewModel.Factory(application, id)
@@ -225,9 +225,9 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
 
     private fun loadReminder() {
         val intent = intent
-        val id = getIntent().getIntExtra(Constants.INTENT_ID, 0)
+        val id = getIntent().getStringExtra(Constants.INTENT_ID) ?: ""
         initViewModel(id)
-        if (id != 0) {
+        if (id != "") {
             isEditing = true
         } else if (intent.data != null) {
             try {
