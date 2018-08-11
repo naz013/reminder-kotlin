@@ -217,6 +217,9 @@ class Reminder : RecyclerInterface {
         if (fullCopy) {
             this.uuId = item.uuId
             this.uniqueId = item.uniqueId
+        } else {
+            this.uuId = UUID.randomUUID().toString()
+            this.uniqueId = Random().nextInt(Integer.MAX_VALUE)
         }
     }
 

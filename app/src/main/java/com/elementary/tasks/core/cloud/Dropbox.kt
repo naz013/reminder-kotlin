@@ -272,6 +272,39 @@ class Dropbox {
         }
     }
 
+    fun uploadGroupByFileName(fileName: String?) {
+        val dir = MemoryUtil.groupsDir ?: return
+        startSession()
+        if (!isLinked) {
+            return
+        }
+        val api = mDBApi ?: return
+        if (fileName != null) {
+            val tmpFile = File(dir, fileName)
+            var fis: FileInputStream? = null
+            try {
+                fis = FileInputStream(tmpFile)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+
+            if (fis == null) return
+            try {
+                api.files().uploadBuilder(dbxGroupFolder + fileName)
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(fis)
+            } catch (e: DbxException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: IOException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: NullPointerException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            }
+        } else {
+            upload(MemoryUtil.DIR_GROUP_SD)
+        }
+    }
+
     /**
      * Upload all note backup files to Dropbox folder.
      */

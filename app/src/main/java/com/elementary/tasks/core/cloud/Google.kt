@@ -418,7 +418,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveTemplatesToDrive: " + e.localizedMessage)
             }
-
         }
 
         /**
@@ -430,7 +429,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
             }
-
         }
 
         fun saveReminderToDrive(pathToFile: String) {
@@ -440,7 +438,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
             }
-
         }
 
         fun saveBirthdayToDrive(pathToFile: String) {
@@ -450,7 +447,15 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
             }
+        }
 
+        fun saveGroupToDrive(pathToFile: String) {
+            try {
+                val metadata = Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "Group Backup", null)
+                saveFileToDrive(pathToFile, metadata)
+            } catch (e: IOException) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            }
         }
 
         fun saveNotesToDrive() {
@@ -459,7 +464,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveNotesToDrive: " + e.localizedMessage)
             }
-
         }
 
         /**
@@ -471,7 +475,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveGroupsToDrive: " + e.localizedMessage)
             }
-
         }
 
         /**
@@ -483,7 +486,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveBirthdaysToDrive: " + e.localizedMessage)
             }
-
         }
 
         /**
@@ -495,7 +497,6 @@ private constructor() {
             } catch (e: IOException) {
                 LogUtil.d(TAG, "savePlacesToDrive: " + e.localizedMessage)
             }
-
         }
 
         /**

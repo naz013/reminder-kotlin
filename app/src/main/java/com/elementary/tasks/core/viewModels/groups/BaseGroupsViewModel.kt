@@ -2,10 +2,14 @@ package com.elementary.tasks.core.viewModels.groups
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.groups.DeleteGroupFilesAsync
+import com.elementary.tasks.groups.work.DeleteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -45,7 +49,11 @@ abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(a
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeleteGroupFilesAsync(getApplication()).execute(group.uuId)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to group.uuId).toWorkData())
+                    .addTag(group.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 }

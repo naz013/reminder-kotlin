@@ -51,7 +51,9 @@ class Place {
     @SerializedName("tags")
     var tags: List<String> = listOf()
 
-    constructor()
+    constructor() {
+        this.id = UUID.randomUUID().toString()
+    }
 
     @Ignore
     constructor(radius: Int, marker: Int, latitude: Double, longitude: Double, name: String, address: String, tags: List<String>) {
