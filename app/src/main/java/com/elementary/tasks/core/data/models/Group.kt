@@ -41,7 +41,9 @@ class Group {
     @SerializedName("dateTime")
     var dateTime: String = ""
 
-    constructor()
+    constructor() {
+        this.uuId = UUID.randomUUID().toString()
+    }
 
     @Ignore
     constructor(title: String, color: Int) {

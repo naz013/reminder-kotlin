@@ -33,7 +33,9 @@ class SmsTemplate {
     var date: String = ""
     var isSelected: Boolean = false
 
-    constructor()
+    constructor() {
+        this.key = UUID.randomUUID().toString()
+    }
 
     @Ignore
     constructor(title: String, date: String) {
