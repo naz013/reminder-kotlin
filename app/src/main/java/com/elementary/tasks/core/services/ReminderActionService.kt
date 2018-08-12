@@ -31,7 +31,7 @@ import timber.log.Timber
  */
 class ReminderActionService : BaseBroadcast() {
 
-    private fun showReminder(context: Context, id: Int) {
+    private fun showReminder(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         val notificationIntent = ReminderDialogActivity.getLaunchIntent(context, id)
         notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
@@ -39,7 +39,7 @@ class ReminderActionService : BaseBroadcast() {
         endService(context, reminder.uniqueId)
     }
 
-    private fun hidePermanent(context: Context, id: Int) {
+    private fun hidePermanent(context: Context, id: String) {
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         EventControlFactory.getController(reminder).next()
         endService(context, reminder.uniqueId)
@@ -56,9 +56,9 @@ class ReminderActionService : BaseBroadcast() {
             LogUtil.d(TAG, "onStartCommand: $action")
             if (action != null) {
                 if (action.matches(ACTION_HIDE.toRegex())) {
-                    hidePermanent(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+                    hidePermanent(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                 } else if (action.matches(ACTION_RUN.toRegex())) {
-                    val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+                    val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
                     var windowType = prefs.reminderType
                     val ignore = prefs.isIgnoreWindowType
                     val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id)
@@ -74,7 +74,7 @@ class ReminderActionService : BaseBroadcast() {
                         reminderUtils.showSimpleReminder(id)
                     }
                 } else {
-                    showReminder(context, intent.getIntExtra(Constants.INTENT_ID, 0))
+                    showReminder(context, intent.getStringExtra(Constants.INTENT_ID) ?: "")
                 }
             }
         }

@@ -100,9 +100,9 @@ class EventJobService : Job() {
 
     private fun showBirthday(context: Context, item: Birthday) {
         if (prefs.reminderType == 0) {
-            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uniqueId))
+            context.startActivity(ShowBirthdayActivity.getLaunchIntent(context, item.uuId))
         } else {
-            reminderUtils.showSimpleBirthday(item.uniqueId)
+            reminderUtils.showSimpleBirthday(item.uuId)
         }
     }
 
@@ -186,7 +186,7 @@ class EventJobService : Job() {
                     .schedule()
         }
 
-        fun enablePositionDelay(context: Context, id: Int): Boolean {
+        fun enablePositionDelay(context: Context, id: String): Boolean {
             val item = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return false
             val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
             val mills = due - System.currentTimeMillis()

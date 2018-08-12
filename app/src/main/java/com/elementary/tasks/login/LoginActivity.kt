@@ -22,7 +22,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.elementary.tasks.R
-import com.elementary.tasks.birthdays.work.CheckBirthdaysWorker
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.cloud.DropboxLogin
 import com.elementary.tasks.core.cloud.GoogleLogin
@@ -160,7 +159,7 @@ class LoginActivity : ThemedActivity() {
         }
         prefs.isContactBirthdaysEnabled = true
         prefs.isBirthdayReminderEnabled = true
-        CheckBirthdaysWorker(this, true) { openApplication() }.execute()
+        //todo Add birthday search
     }
 
     private fun initGroups() {

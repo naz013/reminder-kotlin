@@ -362,7 +362,7 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         private const val CALL_PERM = 612
         private const val SMS_PERM = 613
 
-        fun getLaunchIntent(context: Context, id: Int): Intent {
+        fun getLaunchIntent(context: Context, id: String): Intent {
             val resultIntent = Intent(context, ShowBirthdayActivity::class.java)
             resultIntent.putExtra(Constants.INTENT_ID, id)
             resultIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK

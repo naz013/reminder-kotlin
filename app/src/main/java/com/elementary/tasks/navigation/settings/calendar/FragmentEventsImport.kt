@@ -310,7 +310,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
             reminder.startTime = TimeUtil.getGmtFromDateTime(dtStart)
             AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
-            val event = CalendarEvent(reminder.uniqueId, summary, itemId)
+            val event = CalendarEvent(reminder.uuId, summary, itemId)
             AppDb.getAppDatabase(mContext).calendarEventsDao().insert(event)
         }
 
