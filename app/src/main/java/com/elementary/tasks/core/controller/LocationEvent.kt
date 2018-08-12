@@ -37,7 +37,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
     override fun start(): Boolean {
         reminder.isActive = true
         super.save()
-        return if (EventJobService.enablePositionDelay(context, reminder.uniqueId)) {
+        return if (EventJobService.enablePositionDelay(context, reminder.uuId)) {
             true
         } else {
             SuperUtil.startGpsTracking(context)
@@ -100,7 +100,7 @@ class LocationEvent(reminder: Reminder) : EventManager(reminder) {
 
     override fun resume(): Boolean {
         if (reminder.isActive) {
-            val b = EventJobService.enablePositionDelay(context, reminder.uniqueId)
+            val b = EventJobService.enablePositionDelay(context, reminder.uuId)
             if (!b) SuperUtil.startGpsTracking(context)
         }
         return true

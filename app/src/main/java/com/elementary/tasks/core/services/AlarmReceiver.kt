@@ -234,7 +234,7 @@ class AlarmReceiver : BaseBroadcast() {
             val appDb = AppDb.getAppDatabase(mContext)
             appDb.reminderDao().insert(reminder)
             EventControlFactory.getController(reminder).start()
-            appDb.calendarEventsDao().insert(CalendarEvent(reminder.uniqueId, summary, itemId))
+            appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, summary, itemId))
         }
     }
 

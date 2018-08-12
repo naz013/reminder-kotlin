@@ -73,7 +73,7 @@ class BirthdayActionService : BaseBroadcast() {
         val reminder = AppDb.getAppDatabase(context).birthdaysDao().getById(intent.getStringExtra(Constants.INTENT_ID) ?: "")
         if (reminder != null) {
             val notificationIntent = ShowBirthdayActivity.getLaunchIntent(context,
-                    intent.getIntExtra(Constants.INTENT_ID, 0))
+                    intent.getStringExtra(Constants.INTENT_ID) ?: "")
             notificationIntent.putExtra(Constants.INTENT_NOTIFICATION, true)
             context.startActivity(notificationIntent)
             notifier.hideNotification(PermanentBirthdayReceiver.BIRTHDAY_PERM_ID)

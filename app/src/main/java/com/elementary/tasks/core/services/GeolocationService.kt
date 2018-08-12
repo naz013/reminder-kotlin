@@ -158,7 +158,7 @@ class GeolocationService : Service() {
         if (reminder.isNotificationShown) return
         reminder.isNotificationShown = true
         AppDb.getAppDatabase(applicationContext).reminderDao().insert(reminder)
-        application.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uniqueId))
+        application.startActivity(ReminderDialogActivity.getLaunchIntent(applicationContext, reminder.uuId))
     }
 
     private fun showNotification(roundedDistance: Int, reminder: Reminder) {

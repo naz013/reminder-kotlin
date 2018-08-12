@@ -66,7 +66,7 @@ class CalendarUtils @Inject constructor(private val context: Context, private va
                 event = cr.insert(lEventUri, values)
                 if (event != null) {
                     val eventID = java.lang.Long.parseLong(event.lastPathSegment)
-                    appDb.calendarEventsDao().insert(CalendarEvent(reminder.uniqueId, event.toString(), eventID))
+                    appDb.calendarEventsDao().insert(CalendarEvent(reminder.uuId, event.toString(), eventID))
                 }
             } catch (ignored: Exception) {
             }

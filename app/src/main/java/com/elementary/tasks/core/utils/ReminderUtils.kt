@@ -136,7 +136,7 @@ class ReminderUtils @Inject constructor(private val context: Context, private va
         return prefs.isBirthdayGlobalEnabled
     }
 
-    fun showSimpleReminder(id: Int) {
+    fun showSimpleReminder(id: String) {
         LogUtil.d(TAG, "showSimpleReminder: ")
         val reminder = AppDb.getAppDatabase(context).reminderDao().getById(id) ?: return
         val dismissIntent = Intent(context, ReminderActionService::class.java)

@@ -52,7 +52,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val id = intent.getIntExtra(Constants.INTENT_ID, 0)
+        val id = intent.getStringExtra(Constants.INTENT_ID) ?: ""
         val item = appDb.reminderDao().getById(id)
         if (item != null) {
             showNotification(context, item)
@@ -104,7 +104,7 @@ class RepeatNotificationReceiver : WakefulBroadcastReceiver() {
         builder.priority = NotificationCompat.PRIORITY_MAX
         if (prefs.isFoldingEnabled && !Reminder.isBase(reminder.type, Reminder.BY_WEEK)) {
             val intent = PendingIntent.getActivity(context, reminder.uniqueId,
-                    ReminderDialogActivity.getLaunchIntent(context, reminder.uniqueId), PendingIntent.FLAG_CANCEL_CURRENT)
+                    ReminderDialogActivity.getLaunchIntent(context, reminder.uuId), PendingIntent.FLAG_CANCEL_CURRENT)
             builder.setContentIntent(intent)
         }
         if (Module.isPro) {
