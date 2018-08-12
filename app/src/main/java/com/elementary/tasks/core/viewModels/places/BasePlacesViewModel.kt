@@ -1,12 +1,15 @@
 package com.elementary.tasks.core.viewModels.places
 
 import android.app.Application
-
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.places.work.DeletePlaceFilesAsync
+import com.elementary.tasks.places.work.DeleteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -38,7 +41,11 @@ abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(a
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeletePlaceFilesAsync(getApplication()).execute(place.id)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to place.id).toWorkData())
+                    .addTag(place.id)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 }
