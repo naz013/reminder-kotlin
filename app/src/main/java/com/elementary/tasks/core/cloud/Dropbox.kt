@@ -305,6 +305,72 @@ class Dropbox {
         }
     }
 
+    fun uploadPlaceByFileName(fileName: String?) {
+        val dir = MemoryUtil.placesDir ?: return
+        startSession()
+        if (!isLinked) {
+            return
+        }
+        val api = mDBApi ?: return
+        if (fileName != null) {
+            val tmpFile = File(dir, fileName)
+            var fis: FileInputStream? = null
+            try {
+                fis = FileInputStream(tmpFile)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+
+            if (fis == null) return
+            try {
+                api.files().uploadBuilder(dbxPlacesFolder + fileName)
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(fis)
+            } catch (e: DbxException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: IOException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: NullPointerException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            }
+        } else {
+            upload(MemoryUtil.DIR_PLACES_SD)
+        }
+    }
+
+    fun uploadTemplateByFileName(fileName: String?) {
+        val dir = MemoryUtil.templatesDir ?: return
+        startSession()
+        if (!isLinked) {
+            return
+        }
+        val api = mDBApi ?: return
+        if (fileName != null) {
+            val tmpFile = File(dir, fileName)
+            var fis: FileInputStream? = null
+            try {
+                fis = FileInputStream(tmpFile)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+
+            if (fis == null) return
+            try {
+                api.files().uploadBuilder(dbxTemplatesFolder + fileName)
+                        .withMode(WriteMode.OVERWRITE)
+                        .uploadAndFinish(fis)
+            } catch (e: DbxException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: IOException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            } catch (e: NullPointerException) {
+                LogUtil.e(TAG, "Something went wrong while uploading.", e)
+            }
+        } else {
+            upload(MemoryUtil.DIR_TEMPLATES_SD)
+        }
+    }
+
     /**
      * Upload all note backup files to Dropbox folder.
      */

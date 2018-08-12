@@ -4,9 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Base64
-import android.util.Base64InputStream
-import android.util.Base64OutputStream
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.cloud.FileConfig
 import com.elementary.tasks.core.controller.EventControlFactory
@@ -15,7 +12,8 @@ import com.elementary.tasks.core.data.models.*
 import com.elementary.tasks.core.utils.MemoryUtil.readFileToJson
 import com.elementary.tasks.core.utils.MemoryUtil.writeFile
 import com.google.gson.Gson
-import java.io.*
+import java.io.File
+import java.io.IOException
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Singleton

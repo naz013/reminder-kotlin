@@ -458,6 +458,24 @@ private constructor() {
             }
         }
 
+        fun savePlaceToDrive(pathToFile: String) {
+            try {
+                val metadata = Metadata(FileConfig.FILE_NAME_PLACE, MemoryUtil.placesDir, "Place Backup", null)
+                saveFileToDrive(pathToFile, metadata)
+            } catch (e: IOException) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            }
+        }
+
+        fun saveTemplateToDrive(pathToFile: String) {
+            try {
+                val metadata = Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null)
+                saveFileToDrive(pathToFile, metadata)
+            } catch (e: IOException) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            }
+        }
+
         fun saveNotesToDrive() {
             try {
                 saveToDrive(Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null))

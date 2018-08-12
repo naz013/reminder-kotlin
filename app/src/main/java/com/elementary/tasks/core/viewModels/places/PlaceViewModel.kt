@@ -4,9 +4,15 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.Place
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
+import com.elementary.tasks.places.work.DeleteBackupWorker
+import com.elementary.tasks.places.work.SingleBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -44,6 +50,11 @@ class PlaceViewModel private constructor(application: Application, key: String) 
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to place.id).toWorkData())
+                    .addTag(place.id)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 

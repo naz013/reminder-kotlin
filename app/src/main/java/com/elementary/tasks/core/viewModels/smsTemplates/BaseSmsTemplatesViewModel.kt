@@ -1,12 +1,16 @@
 package com.elementary.tasks.core.viewModels.smsTemplates
 
 import android.app.Application
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 
 import com.elementary.tasks.core.data.models.SmsTemplate
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.navigation.settings.additional.DeleteTemplateFilesAsync
+import com.elementary.tasks.navigation.settings.additional.work.DeleteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -38,7 +42,11 @@ abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewM
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeleteTemplateFilesAsync(getApplication()).execute(smsTemplate.key)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to smsTemplate.key).toWorkData())
+                    .addTag(smsTemplate.key)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 }
