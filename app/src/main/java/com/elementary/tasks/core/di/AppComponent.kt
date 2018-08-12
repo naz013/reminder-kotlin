@@ -42,7 +42,6 @@ import com.elementary.tasks.navigation.MainActivity
 import com.elementary.tasks.navigation.fragments.BaseFragment
 import com.elementary.tasks.navigation.settings.images.ImagesRecyclerAdapter
 import com.elementary.tasks.notes.list.ImagesGridAdapter
-import com.elementary.tasks.notes.work.SyncNotes
 import com.elementary.tasks.places.google.GooglePlacesAdapter
 import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
@@ -52,8 +51,6 @@ import com.elementary.tasks.reminder.lists.ReminderHolder
 import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.ShoppingHolder
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
-import com.elementary.tasks.reminder.work.BackupReminderTask
-import com.elementary.tasks.reminder.work.UpdateFilesAsync
 import com.elementary.tasks.voice.ConversationAdapter
 import dagger.Component
 import javax.inject.Singleton
@@ -134,11 +131,8 @@ interface AppComponent {
     fun inject(restoreDropboxTask: RestoreDropboxTask)
     fun inject(restoreGoogleTask: RestoreGoogleTask)
     fun inject(restoreLocalTask: RestoreLocalTask)
-    fun inject(syncNotes: SyncNotes)
     fun inject(imagesGridAdapter: ImagesGridAdapter)
     fun inject(typeFragment: TypeFragment)
-    fun inject(backupReminderTask: BackupReminderTask)
-    fun inject(updateFilesAsync: UpdateFilesAsync)
     fun inject(placesRecyclerAdapter: PlacesRecyclerAdapter)
     fun inject(locationPlacesAdapter: LocationPlacesAdapter)
     fun inject(voiceWidgetDialog: VoiceWidgetDialog)

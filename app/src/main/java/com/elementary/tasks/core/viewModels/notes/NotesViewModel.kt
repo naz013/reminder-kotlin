@@ -1,15 +1,16 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
-
-import com.elementary.tasks.core.data.models.Note
-import com.elementary.tasks.notes.work.DeleteNoteFilesAsync
-
-import java.util.ArrayList
-
 import androidx.lifecycle.LiveData
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
+import com.elementary.tasks.core.data.models.Note
+import com.elementary.tasks.core.utils.Constants
+import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
+import java.util.*
 
 /**
  * Copyright 2018 Nazar Suhovich
@@ -44,7 +45,11 @@ class NotesViewModel(application: Application) : BaseNotesViewModel(application)
                 ids.add(item.key)
             }
             appDb.notesDao().delete(list)
-            DeleteNoteFilesAsync(getApplication()).execute(*ids.toTypedArray())
+            val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_IDS to ids.toTypedArray()).toWorkData())
+                    .addTag("NT_WORK")
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 
