@@ -52,7 +52,7 @@ class BirthdaysViewModel(application: Application) : BaseBirthdaysViewModel(appl
                 ids.add(birthday.uuId)
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to ids.toArray()).toWorkData())
+                    .setInputData(mapOf(Constants.INTENT_IDS to ids.toArray()).toWorkData())
                     .addTag("BD_WORK")
                     .build()
             WorkManager.getInstance().enqueue(work)

@@ -467,6 +467,15 @@ private constructor() {
             }
         }
 
+        fun saveNoteToDrive(pathToFile: String) {
+            try {
+                val metadata = Metadata(FileConfig.FILE_NAME_NOTE, MemoryUtil.notesDir, "Note Backup", null)
+                saveFileToDrive(pathToFile, metadata)
+            } catch (e: IOException) {
+                LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
+            }
+        }
+
         fun saveTemplateToDrive(pathToFile: String) {
             try {
                 val metadata = Metadata(FileConfig.FILE_NAME_TEMPLATE, MemoryUtil.templatesDir, "Template Backup", null)

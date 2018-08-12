@@ -33,7 +33,6 @@ import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter
-import com.elementary.tasks.reminder.work.BackupReminderTask
 import kotlinx.android.synthetic.main.activity_reminder_dialog.*
 import java.io.File
 import java.io.IOException
@@ -495,7 +494,6 @@ class ReminderDialogActivity : BaseNotificationActivity() {
         if (prefs.isAutoBackupEnabled) {
             BackupTask().execute()
         }
-        BackupReminderTask(this).execute()
     }
 
     override fun onBackPressed() {

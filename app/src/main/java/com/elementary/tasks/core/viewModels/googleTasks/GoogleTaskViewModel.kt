@@ -55,7 +55,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
     fun loadReminder(uuId: String) {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            val reminderItem = appDb.reminderDao().getByUuId(uuId)
+            val reminderItem = appDb.reminderDao().getById(uuId)
             withContext(UI) {
                 reminder.postValue(reminderItem)
                 isInProgress.postValue(false)

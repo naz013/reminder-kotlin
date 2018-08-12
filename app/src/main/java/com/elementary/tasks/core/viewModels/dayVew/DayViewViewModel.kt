@@ -18,7 +18,7 @@ import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.reminder.work.UpdateFilesAsync
+import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -82,7 +82,11 @@ class DayViewViewModel(application: Application) : BaseDbViewModel(application) 
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
                 liveData.update()
             }
-            UpdateFilesAsync(getApplication()).execute(reminder)
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 

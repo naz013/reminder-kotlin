@@ -24,7 +24,6 @@ import com.elementary.tasks.core.viewModels.notes.NotesViewModel
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.notes.create.CreateNoteActivity
 import com.elementary.tasks.notes.preview.NotePreviewActivity
-import com.elementary.tasks.notes.work.SyncNotes
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import kotlinx.android.synthetic.main.fragment_notes.*
 import java.io.File
@@ -140,7 +139,6 @@ class NotesFragment : BaseNavigationFragment(), FilterCallback<Note> {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.action_sync -> SyncNotes(context!!, null).execute()
             R.id.action_order -> showDialog()
             MENU_ITEM_DELETE -> deleteDialog()
             R.id.action_list -> {

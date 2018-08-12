@@ -39,9 +39,6 @@ interface ReminderDao {
     @Query("SELECT * FROM Reminder WHERE noteId=:key")
     fun loadByNoteKey(key: String): LiveData<Reminder>
 
-    @Query("SELECT * FROM Reminder WHERE uuId=:uuId")
-    fun getByUuId(uuId: String): Reminder?
-
     @Query("SELECT * FROM Reminder WHERE uuId=:id")
     fun getById(id: String): Reminder?
 

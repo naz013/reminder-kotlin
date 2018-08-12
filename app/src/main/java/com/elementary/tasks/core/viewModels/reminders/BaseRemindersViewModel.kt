@@ -3,16 +3,20 @@ package com.elementary.tasks.core.viewModels.reminders
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.reminder.work.DeleteFilesAsync
-import com.elementary.tasks.reminder.work.UpdateFilesAsync
+import com.elementary.tasks.reminder.work.DeleteBackupWorker
+import com.elementary.tasks.reminder.work.SingleBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import java.util.*
@@ -54,7 +58,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
-            UpdateFilesAsync(getApplication()).execute(reminder)
+            backupReminder(reminder.uuId)
         }
     }
 
@@ -119,7 +123,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                     isInProgress.postValue(false)
                     result.postValue(Commands.SAVED)
                 }
-                UpdateFilesAsync(getApplication()).execute(reminder)
+                backupReminder(reminder.uuId)
             }
         }
     }
@@ -135,7 +139,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 result.postValue(Commands.DELETED)
                 Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
-            UpdateFilesAsync(getApplication()).execute(reminder)
+            backupReminder(reminder.uuId)
         }
     }
 
@@ -148,8 +152,16 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
-            UpdateFilesAsync(getApplication()).execute(reminder)
+            backupReminder(reminder.uuId)
         }
+    }
+
+    private fun backupReminder(uuId: String) {
+        val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                .setInputData(mapOf(Constants.INTENT_ID to uuId).toWorkData())
+                .addTag(uuId)
+                .build()
+        WorkManager.getInstance().enqueue(work)
     }
 
     fun deleteReminder(reminder: Reminder, showMessage: Boolean) {
@@ -163,7 +175,11 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 if (showMessage) Toast.makeText(getApplication(), R.string.deleted, Toast.LENGTH_SHORT).show()
             }
             calendarUtils.deleteEvents(reminder.uniqueId)
-            DeleteFilesAsync(getApplication()).execute(reminder.uuId)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 
@@ -175,7 +191,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
-            UpdateFilesAsync(getApplication()).execute(reminder)
+            backupReminder(reminder.uuId)
         }
     }
 }

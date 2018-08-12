@@ -1,14 +1,19 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.toWorkData
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
-import com.elementary.tasks.notes.work.DeleteNoteFilesAsync
-import com.elementary.tasks.reminder.work.DeleteFilesAsync
+import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
+import com.elementary.tasks.notes.work.SingleBackupWorker
+import com.elementary.tasks.reminder.work.DeleteBackupWorker
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
@@ -40,7 +45,11 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
-            DeleteNoteFilesAsync(getApplication()).execute(note.key)
+            val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to note.key).toWorkData())
+                    .addTag(note.key)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 
@@ -52,6 +61,11 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 isInProgress.postValue(false)
                 result.postValue(Commands.SAVED)
             }
+            val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to note.key).toWorkData())
+                    .addTag(note.key)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 
@@ -65,7 +79,11 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 result.postValue(Commands.UPDATED)
             }
             calendarUtils.deleteEvents(reminder.uniqueId)
-            DeleteFilesAsync(getApplication()).execute(reminder.uuId)
+            val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
+                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .addTag(reminder.uuId)
+                    .build()
+            WorkManager.getInstance().enqueue(work)
         }
     }
 }
