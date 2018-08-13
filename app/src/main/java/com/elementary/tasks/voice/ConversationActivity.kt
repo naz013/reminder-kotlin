@@ -21,7 +21,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.dialogs.VolumeDialog
@@ -377,11 +377,11 @@ class ConversationActivity : ThemedActivity() {
         }
     }
 
-    private fun askGroupAction(group: Group) {
+    private fun askGroupAction(reminderGroup: ReminderGroup) {
         addResponse(getLocalized(R.string.would_you_like_to_save_it))
         mAskAction = object : AskAction {
             override fun onYes() {
-                viewModel.saveGroup(group, false)
+                viewModel.saveGroup(reminderGroup, false)
                 addResponse(getLocalized(R.string.group_saved))
                 mAskAction = null
             }

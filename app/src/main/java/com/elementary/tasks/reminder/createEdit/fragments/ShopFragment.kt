@@ -16,7 +16,7 @@ import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
-import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter
+import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_reminder_shop.*
 
 /**

@@ -82,7 +82,7 @@ class RestoreLocalTask internal constructor(context: Context, private val mListe
         } catch (ignored: IOException) {
         }
 
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
+        val list = AppDb.getAppDatabase(mContext.context).reminderGroupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
             val items = AppDb.getAppDatabase(mContext.context).reminderDao().all()

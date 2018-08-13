@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.toWorkData
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
@@ -35,19 +35,19 @@ import kotlinx.coroutines.experimental.launch
  */
 class GroupViewModel private constructor(application: Application, id: String) : BaseGroupsViewModel(application) {
 
-    var group: LiveData<Group>
+    var reminderGroup: LiveData<ReminderGroup>
 
     init {
-        group = appDb.groupDao().loadById(id)
+        reminderGroup = appDb.reminderGroupDao().loadById(id)
     }
 
-    fun saveGroup(group: Group) {
+    fun saveGroup(reminderGroup: ReminderGroup) {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            appDb.groupDao().insert(group)
+            appDb.reminderGroupDao().insert(reminderGroup)
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to group.uuId).toWorkData())
-                    .addTag(group.uuId)
+                    .setInputData(mapOf(Constants.INTENT_ID to reminderGroup.uuId).toWorkData())
+                    .addTag(reminderGroup.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
             withUIContext {

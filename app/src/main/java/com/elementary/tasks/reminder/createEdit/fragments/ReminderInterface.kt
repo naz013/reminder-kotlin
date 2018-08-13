@@ -1,7 +1,7 @@
 package com.elementary.tasks.reminder.createEdit.fragments
 
 import android.view.View
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 
 import com.elementary.tasks.core.data.models.Reminder
 
@@ -49,7 +49,7 @@ interface ReminderInterface {
 
     val windowType: Int
 
-    val group: Group?
+    val reminderGroup: ReminderGroup?
 
     val isExportToCalendar: Boolean
 

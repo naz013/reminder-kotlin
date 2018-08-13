@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.BackupTool
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
@@ -45,7 +45,7 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
     private lateinit var viewModel: GroupViewModel
 
     private var color = 0
-    private var mItem: Group? = null
+    private var mItem: ReminderGroup? = null
 
     @Inject
     lateinit var backupTool: BackupTool
@@ -67,10 +67,10 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         loadGroup()
     }
 
-    private fun showGroup(group: Group) {
-        this.mItem = group
-        editField.setText(group.title)
-        color = group.color
+    private fun showGroup(reminderGroup: ReminderGroup) {
+        this.mItem = reminderGroup
+        editField.setText(reminderGroup.title)
+        color = reminderGroup.color
         pickerView.setSelectedColor(color)
         setColor(color)
         invalidateOptionsMenu()
@@ -102,7 +102,7 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
 
     private fun initViewModel(id: String) {
         viewModel = ViewModelProviders.of(this, GroupViewModel.Factory(application, id)).get(GroupViewModel::class.java)
-        viewModel.group.observe(this, Observer{ group ->
+        viewModel.reminderGroup.observe(this, Observer{ group ->
             if (group != null) {
                 showGroup(group)
             }
@@ -129,7 +129,7 @@ class CreateGroupActivity : ThemedActivity(), ColorPickerView.OnColorListener {
         }
         var item = mItem
         if (item == null) {
-            item = Group(text, UUID.randomUUID().toString(), color, TimeUtil.gmtDateTime)
+            item = ReminderGroup(text, UUID.randomUUID().toString(), color, TimeUtil.gmtDateTime)
         } else {
             item.color = color
             item.dateTime = TimeUtil.gmtDateTime

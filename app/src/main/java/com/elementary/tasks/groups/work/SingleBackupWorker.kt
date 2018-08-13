@@ -18,7 +18,7 @@ class SingleBackupWorker : Worker() {
         val uuId = inputData.getString(Constants.INTENT_ID) ?: ""
         if (uuId.isNotEmpty()) {
             val db = AppDb.getAppDatabase(applicationContext)
-            val group = db.groupDao().getById(uuId)
+            val group = db.reminderGroupDao().getById(uuId)
             if (group != null) {
                 cacheFiles(uuId + FileConfig.FILE_NAME_GROUP, Gson().toJson(group))
             }

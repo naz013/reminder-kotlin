@@ -230,12 +230,12 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     }
 
     fun exportGroups() {
-        for (item in appDb.groupDao().all()) {
+        for (item in appDb.reminderGroupDao().all()) {
             exportGroup(item)
         }
     }
 
-    private fun exportGroup(item: Group) {
+    private fun exportGroup(item: ReminderGroup) {
         val jsonData = WeakReference(Gson().toJson(item))
         val dir = MemoryUtil.groupsDir
         if (dir != null) {
@@ -260,13 +260,13 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val groups = appDb.groupDao().all().toMutableList()
+                val groups = appDb.reminderGroupDao().all().toMutableList()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_GROUP)) {
                         val item = getGroup(file.toString(), null)
                         if (item == null || TextUtils.isEmpty(item.uuId)) continue
                         if (!TextUtils.isEmpty(item.title) && !hasGroup(groups, item.title)) {
-                            appDb.groupDao().insert(item)
+                            appDb.reminderGroupDao().insert(item)
                             groups.add(item)
                         }
                     }
@@ -275,7 +275,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         }
     }
 
-    private fun hasGroup(list: List<Group>, comparable: String?): Boolean {
+    private fun hasGroup(list: List<ReminderGroup>, comparable: String?): Boolean {
         if (comparable == null) return true
         for (item in list) {
             if (comparable == item.title) {
@@ -286,18 +286,18 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun getGroup(cr: ContentResolver, name: Uri): Group? {
-        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), Group::class.java))
+    fun getGroup(cr: ContentResolver, name: Uri): ReminderGroup? {
+        val item = WeakReference(Gson().fromJson(readFileToJson(cr, name), ReminderGroup::class.java))
         return item.get()
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    fun getGroup(filePath: String?, json: String?): Group? {
+    fun getGroup(filePath: String?, json: String?): ReminderGroup? {
         return if (filePath != null && MemoryUtil.isSdPresent) {
-            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), Group::class.java))
+            val item = WeakReference(Gson().fromJson(readFileToJson(filePath), ReminderGroup::class.java))
             item.get()
         } else if (json != null) {
-            val item = WeakReference(Gson().fromJson(json, Group::class.java))
+            val item = WeakReference(Gson().fromJson(json, ReminderGroup::class.java))
             item.get()
         } else {
             null
@@ -316,7 +316,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
         if (dir != null && dir.exists()) {
             val files = dir.listFiles()
             if (files != null) {
-                val defaultGroup = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
+                val defaultGroup = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
                 for (file in files) {
                     if (file.toString().endsWith(FileConfig.FILE_NAME_REMINDER)) {
                         val reminder = getReminder(file.toString(), null) ?: continue
@@ -328,7 +328,7 @@ class BackupTool @Inject constructor(private val appDb: AppDb) {
                                 TextUtils.isEmpty(reminder.uuId)) {
                             continue
                         }
-                        if (AppDb.getAppDatabase(mContext).groupDao().getById(reminder.groupUuId) == null && defaultGroup != null) {
+                        if (AppDb.getAppDatabase(mContext).reminderGroupDao().getById(reminder.groupUuId) == null && defaultGroup != null) {
                             reminder.groupUuId = defaultGroup.uuId
                         }
                         AppDb.getAppDatabase(mContext).reminderDao().insert(reminder)

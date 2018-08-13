@@ -171,7 +171,7 @@ class QuickNoteCoordinator(private val mContext: MainActivity, private val paren
         reminder.isActive = true
         reminder.isRemoved = false
         reminder.summary = item.summary
-        val def = reminderViewModel.defaultGroup.value
+        val def = reminderViewModel.defaultReminderGroup.value
         if (def != null) {
             reminder.groupUuId = def.uuId
         }

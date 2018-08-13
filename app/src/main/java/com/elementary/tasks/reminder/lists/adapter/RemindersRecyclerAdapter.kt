@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.lists
+package com.elementary.tasks.reminder.lists.adapter
 
 import android.app.AlarmManager
 import android.view.View
@@ -54,16 +54,8 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         return mData[position]
     }
 
-    fun removeItem(position: Int) {
-        if (position < mData.size) {
-            mData.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(0, mData.size)
-        }
-    }
-
     private fun initLabel(listHeader: TextView, position: Int) {
-        val item = getItem(position) ?: return
+        val item = getItem(position)
         val due = TimeUtil.getDateTimeFromGmt(item.eventTime)
         var simpleDate = TimeUtil.getSimpleDate(due)
         var prevItem: Reminder? = null
@@ -128,12 +120,12 @@ class RemindersRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     }
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItem(position) ?: return 0
+        val item = getItem(position)
         return item.viewType
     }
 
     override fun getItemId(position: Int): Long {
-        val item = getItem(position) ?: return 0
+        val item = getItem(position)
         return item.uniqueId.toLong()
     }
 }

@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
  * limitations under the License.
  */
 @Entity
-class Group {
+class ReminderGroup {
 
     @SerializedName("title")
     var title: String = ""
@@ -62,6 +62,6 @@ class Group {
     }
 
     override fun toString(): String {
-        return SuperUtil.getObjectPrint(this, Group::class.java)
+        return SuperUtil.getObjectPrint(this, ReminderGroup::class.java)
     }
 }

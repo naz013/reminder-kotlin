@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.toWorkData
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.viewModels.BaseDbViewModel
 import com.elementary.tasks.core.viewModels.Commands
@@ -35,23 +35,23 @@ import kotlinx.coroutines.experimental.withContext
  */
 abstract class BaseGroupsViewModel(application: Application) : BaseDbViewModel(application) {
 
-    var allGroups: LiveData<List<Group>>
+    var allGroups: LiveData<List<ReminderGroup>>
 
     init {
-        allGroups = appDb.groupDao().loadAll()
+        allGroups = appDb.reminderGroupDao().loadAll()
     }
 
-    fun deleteGroup(group: Group) {
+    fun deleteGroup(reminderGroup: ReminderGroup) {
         isInProgress.postValue(true)
         launch(CommonPool) {
-            appDb.groupDao().delete(group)
+            appDb.reminderGroupDao().delete(reminderGroup)
             withContext(UI) {
                 isInProgress.postValue(false)
                 result.postValue(Commands.DELETED)
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to group.uuId).toWorkData())
-                    .addTag(group.uuId)
+                    .setInputData(mapOf(Constants.INTENT_ID to reminderGroup.uuId).toWorkData())
+                    .addTag(reminderGroup.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)
         }

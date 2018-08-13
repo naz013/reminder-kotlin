@@ -74,7 +74,7 @@ class PlacesFragment : BaseNavigationFragment(), FilterCallback<Place> {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.archive_menu, menu)
+        inflater?.inflate(R.menu.fragment_trash, menu)
         menu!!.findItem(R.id.action_delete_all).isVisible = false
         mSearchMenu = menu.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?

@@ -1,13 +1,12 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.Reminder
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.Query
-
 import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.elementary.tasks.core.data.models.Reminder
 
 /**
  * Copyright 2018 Nazar Suhovich

@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -38,11 +38,11 @@ import kotlinx.coroutines.experimental.launch
 class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewModel(application) {
 
     var events: LiveData<List<Reminder>>
-    var groups: LiveData<List<Group>>
+    var groups: LiveData<List<ReminderGroup>>
 
     init {
-        events = appDb.reminderDao().loadByRemoved(false)
-        groups = appDb.groupDao().loadAll()
+        events = appDb.reminderDao().loadByRemoved(true)
+        groups = appDb.reminderGroupDao().loadAll()
     }
 
     fun deleteAll(data: List<Reminder>) {

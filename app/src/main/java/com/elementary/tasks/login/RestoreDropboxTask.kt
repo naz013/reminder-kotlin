@@ -70,7 +70,7 @@ class RestoreDropboxTask(context: Context, private val mListener: (() -> Unit)?)
         publishProgress(mContext.context.getString(R.string.syncing_groups))
         drive.downloadGroups(false)
 
-        val list = AppDb.getAppDatabase(mContext.context).groupDao().all()
+        val list = AppDb.getAppDatabase(mContext.context).reminderGroupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(mContext.context)
             val dao = AppDb.getAppDatabase(mContext.context).reminderDao()

@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
@@ -41,12 +41,12 @@ import java.util.*
  */
 abstract class BaseRemindersViewModel(application: Application) : BaseDbViewModel(application) {
 
-    var defaultGroup: LiveData<Group>
-    var allGroups: LiveData<List<Group>>
+    var defaultReminderGroup: LiveData<ReminderGroup>
+    var allGroups: LiveData<List<ReminderGroup>>
 
     init {
-        defaultGroup = appDb.groupDao().loadDefault()
-        allGroups = appDb.groupDao().loadAll()
+        defaultReminderGroup = appDb.reminderGroupDao().loadDefault()
+        allGroups = appDb.reminderGroupDao().loadAll()
     }
 
     fun saveAndStartReminder(reminder: Reminder) {

@@ -47,9 +47,9 @@ import com.elementary.tasks.places.google.LocationPlacesAdapter
 import com.elementary.tasks.places.list.PlacesRecyclerAdapter
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.elementary.tasks.reminder.createEdit.fragments.TypeFragment
-import com.elementary.tasks.reminder.lists.ReminderHolder
-import com.elementary.tasks.reminder.lists.RemindersRecyclerAdapter
-import com.elementary.tasks.reminder.lists.ShoppingHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
+import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
+import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
 import com.elementary.tasks.voice.ConversationAdapter
 import dagger.Component

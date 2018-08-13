@@ -135,8 +135,8 @@ class Reminder : RecyclerInterface {
     @SerializedName("priority")
     var priority = 0
     @Ignore
-    @Relation(entity = Group::class, parentColumn = "groupUuId", entityColumn = "uuId")
-    var group: Group? = null
+    @Relation(entity = ReminderGroup::class, parentColumn = "groupUuId", entityColumn = "uuId")
+    var reminderGroup: ReminderGroup? = null
 
     val dateTime: Long
         get() = TimeUtil.getDateTimeFromGmt(eventTime)
@@ -234,7 +234,7 @@ class Reminder : RecyclerInterface {
 
     fun setClear(mInterface: ReminderInterface) {
         summary = mInterface.summary
-        groupUuId = mInterface.group?.uuId ?: ""
+        groupUuId = mInterface.reminderGroup?.uuId ?: ""
         repeatLimit = mInterface.repeatLimit
         color = mInterface.ledColor
         melodyPath = mInterface.melodyPath

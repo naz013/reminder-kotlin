@@ -21,7 +21,7 @@ import com.elementary.tasks.core.utils.ReminderUtils
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.reminders.ReminderViewModel
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
-import com.elementary.tasks.reminder.lists.ShopListRecyclerAdapter
+import com.elementary.tasks.reminder.lists.adapter.ShopListRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_shopping_preview.*
 import javax.inject.Inject
 
@@ -102,8 +102,8 @@ class ShoppingPreviewActivity : ThemedActivity() {
         type.text = reminderUtils.getTypeString(reminder.type)
         itemPhoto.setImageResource(themeUtil.getReminderIllustration(reminder.type))
         var catColor = 0
-        if (reminder.group != null) {
-            catColor = reminder.group!!.color
+        if (reminder.reminderGroup != null) {
+            catColor = reminder.reminderGroup!!.color
         }
         val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
         appBar.setBackgroundColor(mColor)

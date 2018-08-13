@@ -12,7 +12,7 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.createEdit.AddBirthdayActivity
 import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.dialogs.VoiceHelpDialog
@@ -270,7 +270,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         } else if (action == Action.MAIL) {
             typeT = Reminder.BY_DATE_EMAIL
         }
-        val item = defaultGroup.value
+        val item = defaultReminderGroup.value
         var categoryId = ""
         if (item != null) {
             categoryId = item.uuId
@@ -322,7 +322,7 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         mReminder.useGlobal = true
         mReminder.noteId = key
         mReminder.summary = summary
-        val def = defaultGroup.value
+        val def = defaultReminderGroup.value
         if (def != null) {
             mReminder.groupUuId = def.uuId
         }
@@ -332,13 +332,13 @@ class ConversationViewModel(application: Application) : BaseRemindersViewModel(a
         return mReminder
     }
 
-    fun createGroup(model: Model): Group {
-        return Group(model.summary, Random().nextInt(16))
+    fun createGroup(model: Model): ReminderGroup {
+        return ReminderGroup(model.summary, Random().nextInt(16))
     }
 
-    fun saveGroup(model: Group, showToast: Boolean) {
+    fun saveGroup(model: ReminderGroup, showToast: Boolean) {
         launch(CommonPool) {
-            appDb.groupDao().insert(model)
+            appDb.reminderGroupDao().insert(model)
         }
             if (showToast) {
                 Toast.makeText(getApplication(), R.string.saved, Toast.LENGTH_SHORT).show()

@@ -289,7 +289,7 @@ open class FollowReminderActivity : ThemedActivity(), CompoundButton.OnCheckedCh
         setUpTimes()
         val due = reminderUtils.getTime(mDay, mMonth, mYear, mHour, mMinute, 0)
         val reminder = Reminder()
-        val def = viewModel!!.defaultGroup.value
+        val def = viewModel!!.defaultReminderGroup.value
         if (def != null) {
             reminder.groupUuId = def.uuId
         }

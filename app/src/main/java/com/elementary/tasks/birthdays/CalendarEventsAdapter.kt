@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
-import com.elementary.tasks.reminder.lists.ReminderHolder
-import com.elementary.tasks.reminder.lists.ShoppingHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
+import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
 import java.util.*
 
 /**

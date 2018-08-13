@@ -31,7 +31,7 @@ object FileConfig {
     const val FILE_NAME_NOTE = ".no2"
 
     /**
-     * File extension for reminder group.
+     * File extension for reminder reminderGroup.
      */
     const val FILE_NAME_GROUP = ".gr2"
 

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.mcxiaoke.koi.ext.onClick
 import com.mcxiaoke.koi.ext.onLongClick
@@ -42,7 +42,7 @@ class GroupHolder(parent: ViewGroup, private val mEventListener: SimpleListener?
         }
     }
 
-    fun setData(item: Group) {
+    fun setData(item: ReminderGroup) {
         itemView.textView.text = item.title
         loadIndicator(itemView.indicator, item.color)
     }

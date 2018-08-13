@@ -198,7 +198,7 @@ class AlarmReceiver : BaseBroadcast() {
 
                         }
                         val summary = item.title
-                        val def = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
+                        val def = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
                         var categoryId = ""
                         if (def != null) {
                             categoryId = def.uuId

@@ -1,22 +1,10 @@
 package com.elementary.tasks.core.data
 
 import android.content.Context
-
-import com.elementary.tasks.core.data.dao.BirthdaysDao
-import com.elementary.tasks.core.data.dao.CalendarEventsDao
-import com.elementary.tasks.core.data.dao.GoogleTaskListsDao
-import com.elementary.tasks.core.data.dao.GoogleTasksDao
-import com.elementary.tasks.core.data.dao.GroupDao
-import com.elementary.tasks.core.data.dao.MainImagesDao
-import com.elementary.tasks.core.data.dao.MissedCallsDao
-import com.elementary.tasks.core.data.dao.NotesDao
-import com.elementary.tasks.core.data.dao.PlacesDao
-import com.elementary.tasks.core.data.dao.ReminderDao
-import com.elementary.tasks.core.data.dao.SmsTemplatesDao
-
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.elementary.tasks.core.data.dao.*
 import com.elementary.tasks.core.data.models.*
 
 /**
@@ -40,7 +28,7 @@ import com.elementary.tasks.core.data.models.*
 @Database(entities = [
     Reminder::class,
     CalendarEvent::class,
-    Group::class,
+    ReminderGroup::class,
     MissedCall::class,
     Note::class,
     Place::class,
@@ -53,7 +41,7 @@ import com.elementary.tasks.core.data.models.*
 abstract class AppDb : RoomDatabase() {
 
     abstract fun reminderDao(): ReminderDao
-    abstract fun groupDao(): GroupDao
+    abstract fun reminderGroupDao(): ReminderGroupDao
     abstract fun missedCallsDao(): MissedCallsDao
     abstract fun smsTemplatesDao(): SmsTemplatesDao
     abstract fun placesDao(): PlacesDao

@@ -412,7 +412,7 @@ class Dropbox {
     }
 
     /**
-     * Upload all group backup files to Dropbox folder.
+     * Upload all reminderGroup backup files to Dropbox folder.
      */
     fun uploadGroups() {
         upload(MemoryUtil.DIR_GROUP_SD)
@@ -477,7 +477,7 @@ class Dropbox {
     }
 
     /**
-     * Delete group backup file from Dropbox folder.
+     * Delete reminderGroup backup file from Dropbox folder.
      *
      * @param name file name.
      */
@@ -709,7 +709,7 @@ class Dropbox {
     }
 
     /**
-     * Download on SD Card all group backup files found on Dropbox.
+     * Download on SD Card all reminderGroup backup files found on Dropbox.
      */
     fun downloadGroups(deleteFile: Boolean) {
         val dir = MemoryUtil.dropboxGroupsDir ?: return
@@ -720,7 +720,7 @@ class Dropbox {
         val api = mDBApi ?: return
         try {
             val result = api.files().listFolder(dbxGroupFolder) ?: return
-            val dao = appDb.groupDao()
+            val dao = appDb.reminderGroupDao()
             for (e in result.entries) {
                 val fileName = e.name
                 val localFile = File("$dir/$fileName")

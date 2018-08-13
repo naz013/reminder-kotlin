@@ -540,7 +540,7 @@ class CreateNoteActivity : ThemedActivity(), PhotoSelectionUtil.UriCallback {
             reminder.summary = mItem!!.summary
         else
             reminder.summary = ""
-        val def = reminderViewModel.defaultGroup.value
+        val def = reminderViewModel.defaultReminderGroup.value
         if (def != null) {
             reminder.groupUuId = def.uuId
         }

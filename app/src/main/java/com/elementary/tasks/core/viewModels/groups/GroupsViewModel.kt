@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.toWorkData
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.groups.work.SingleBackupWorker
@@ -31,16 +31,16 @@ import kotlinx.coroutines.experimental.launch
  */
 class GroupsViewModel(application: Application) : BaseGroupsViewModel(application) {
 
-    fun changeGroupColor(group: Group, color: Int) {
+    fun changeGroupColor(reminderGroup: ReminderGroup, color: Int) {
         isInProgress.postValue(true)
         val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                .setInputData(mapOf(Constants.INTENT_ID to group.uuId).toWorkData())
-                .addTag(group.uuId)
+                .setInputData(mapOf(Constants.INTENT_ID to reminderGroup.uuId).toWorkData())
+                .addTag(reminderGroup.uuId)
                 .build()
         WorkManager.getInstance().enqueue(work)
         launch(CommonPool) {
-            group.color = color
-            appDb.groupDao().insert(group)
+            reminderGroup.color = color
+            appDb.reminderGroupDao().insert(reminderGroup)
             withUIContext { isInProgress.postValue(false) }
         }
     }

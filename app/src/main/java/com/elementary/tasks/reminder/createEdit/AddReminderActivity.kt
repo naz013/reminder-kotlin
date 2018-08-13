@@ -165,7 +165,7 @@ class AddReminderActivity : ThemedActivity() {
         reminder.exportToCalendar = exportToCalendar.isChecked
         reminder.exportToTasks = exportToTasks.isChecked
         reminder.summary = summary
-        val item = viewModel.defaultGroup.value
+        val item = viewModel.defaultReminderGroup.value
         if (item != null) {
             reminder.groupUuId = item.uuId
         }

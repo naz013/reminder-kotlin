@@ -14,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
@@ -24,6 +24,7 @@ import com.elementary.tasks.core.viewModels.reminders.ActiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import com.elementary.tasks.reminder.preview.ReminderPreviewActivity
@@ -142,15 +143,15 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         val items = arrayOf(getString(R.string.open), getString(R.string.edit), getString(R.string.change_group), getString(R.string.move_to_trash))
         dialogues.showPopup(context!!, view, { item ->
             when (item) {
-                0 -> previewReminder(reminder.uniqueId, reminder.type)
-                1 -> editReminder(reminder.uniqueId)
+                0 -> previewReminder(reminder.uuId, reminder.type)
+                1 -> editReminder(reminder.uuId)
                 2 -> changeGroup(reminder)
                 3 -> viewModel.moveToTrash(reminder)
             }
         }, *items)
     }
 
-    private fun editReminder(uuId: Int) {
+    private fun editReminder(uuId: String) {
         startActivity(Intent(context, CreateReminderActivity::class.java).putExtra(Constants.INTENT_ID, uuId))
     }
 
@@ -163,7 +164,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             override fun onAction(view: View, position: Int, t: Reminder?, actions: ListActions) {
                 when (actions) {
                     ListActions.MORE -> if (t != null) showActionDialog(t, view)
-                    ListActions.OPEN -> if (t != null) previewReminder(t.uniqueId, t.type)
+                    ListActions.OPEN -> if (t != null) previewReminder(t.uuId, t.type)
                     ListActions.SWITCH -> if (t != null) switchReminder(t)
                 }
             }
@@ -181,7 +182,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun previewReminder(id: Int, type: Int) {
+    private fun previewReminder(id: String, type: Int) {
         if (Reminder.isSame(type, Reminder.BY_DATE_SHOP)) {
             startActivity(Intent(context, ShoppingPreviewActivity::class.java)
                     .putExtra(Constants.INTENT_ID, id))
@@ -274,7 +275,7 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun addGroupFilter(groups: List<Group>) {
+    private fun addGroupFilter(reminderGroups: List<ReminderGroup>) {
         mGroupsIds = ArrayList()
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View, id: Int) {
@@ -292,8 +293,8 @@ class RemindersFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        for (i in groups.indices) {
-            val item = groups[i]
+        for (i in reminderGroups.indices) {
+            val item = reminderGroups[i]
             filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
             mGroupsIds.add(item.uuId)
         }
