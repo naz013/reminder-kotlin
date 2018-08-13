@@ -76,7 +76,7 @@ class SyncTask(private val mListener: SyncListener?, private val quiet: Boolean)
     override fun doInBackground(vararg params: Void): Boolean? {
         publishProgress(context.getString(R.string.syncing_groups))
         ioHelper.restoreGroup(true)
-        val list = AppDb.getAppDatabase(context).groupDao().all()
+        val list = AppDb.getAppDatabase(context).reminderGroupDao().all()
         if (list.isEmpty()) {
             val defUiID = GroupsUtil.initDefault(context)
             val items = AppDb.getAppDatabase(context).reminderDao().all()

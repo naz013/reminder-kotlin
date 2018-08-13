@@ -80,8 +80,8 @@ class VoiceResultDialog : BaseDialog() {
     }
 
     private fun bind(binding: View, reminder: Reminder) {
-        if (reminder.group != null) {
-            binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminder.group!!.color)))
+        if (reminder.reminderGroup != null) {
+            binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminder.reminderGroup!!.color)))
         } else {
             binding.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }

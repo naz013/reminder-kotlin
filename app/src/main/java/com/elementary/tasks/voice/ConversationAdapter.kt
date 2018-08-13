@@ -8,15 +8,15 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.birthdays.BirthdayHolder
 import com.elementary.tasks.core.data.models.Birthday
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.Language
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.groups.list.GroupHolder
 import com.elementary.tasks.notes.list.NoteHolder
-import com.elementary.tasks.reminder.lists.ReminderHolder
-import com.elementary.tasks.reminder.lists.ShoppingHolder
+import com.elementary.tasks.reminder.lists.adapter.ReminderHolder
+import com.elementary.tasks.reminder.lists.adapter.ShoppingHolder
 import kotlinx.android.synthetic.main.list_item_ask.view.*
 import kotlinx.android.synthetic.main.list_item_show_reply.view.*
 import kotlinx.android.synthetic.main.list_item_simple_reply.view.*
@@ -86,7 +86,7 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is VoiceResponseHolder -> holder.bind(mData[position].`object` as String)
             is ReminderHolder -> holder.setData(mData[position].`object` as Reminder)
             is NoteHolder -> holder.setData(mData[position].`object` as Note)
-            is GroupHolder -> holder.setData(mData[position].`object` as Group)
+            is GroupHolder -> holder.setData(mData[position].`object` as ReminderGroup)
             is BirthdayHolder -> {
                 holder.setData(mData[position].`object` as Birthday)
                 holder.setColor(themeUtil.getColor(themeUtil.colorBirthdayCalendar()))
@@ -180,10 +180,10 @@ class ConversationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val reply = mData[position]
         val container = reply.`object` as Container<*>
         when {
-            container.type is Group -> {
+            container.type is ReminderGroup -> {
                 mData.removeAt(position)
                 notifyItemRemoved(position)
-                for (item in (container as Container<Group>).list) {
+                for (item in (container as Container<ReminderGroup>).list) {
                     mData.add(0, Reply(Reply.GROUP, item))
                     notifyItemInserted(0)
                 }

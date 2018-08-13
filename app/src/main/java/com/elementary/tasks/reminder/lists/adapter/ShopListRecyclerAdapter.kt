@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.lists
+package com.elementary.tasks.reminder.lists.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater

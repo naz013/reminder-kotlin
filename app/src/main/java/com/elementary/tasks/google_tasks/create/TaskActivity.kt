@@ -387,7 +387,7 @@ open class TaskActivity : ThemedActivity() {
     }
 
     private fun createReminder(task: String): Reminder? {
-        val group = viewModel.defaultGroup.value ?: return null
+        val group = viewModel.defaultReminderGroup.value ?: return null
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         calendar.set(mYear, mMonth, mDay, mHour, mMinute)

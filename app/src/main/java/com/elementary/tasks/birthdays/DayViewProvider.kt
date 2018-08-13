@@ -170,7 +170,7 @@ class DayViewProvider(private val mContext: Context) {
     }
 
     private fun loadReminders() {
-        val allGroups = AppDb.getAppDatabase(mContext).groupDao().all()
+        val allGroups = AppDb.getAppDatabase(mContext).reminderGroupDao().all()
         val map = HashMap<String, Int>()
         for (item in allGroups) {
             map[item.uuId] = item.color

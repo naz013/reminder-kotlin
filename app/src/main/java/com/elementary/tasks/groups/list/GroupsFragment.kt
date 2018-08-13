@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.interfaces.SimpleListener
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Module
@@ -82,17 +82,17 @@ class GroupsFragment : BaseNavigationFragment() {
         })
     }
 
-    private fun showGroups(groups: List<Group>) {
-        mAdapter.setData(groups)
+    private fun showGroups(reminderGroups: List<ReminderGroup>) {
+        mAdapter.setData(reminderGroups)
         refreshView()
     }
 
-    private fun changeColor(group: Group) {
+    private fun changeColor(reminderGroup: ReminderGroup) {
         var items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber))
         if (Module.isPro) {
             items = arrayOf(getString(R.string.red), getString(R.string.purple), getString(R.string.green), getString(R.string.green_light), getString(R.string.blue), getString(R.string.blue_light), getString(R.string.yellow), getString(R.string.orange), getString(R.string.cyan), getString(R.string.pink), getString(R.string.teal), getString(R.string.amber), getString(R.string.dark_purple), getString(R.string.dark_orange), getString(R.string.lime), getString(R.string.indigo))
         }
-        dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(group, item) }, *items)
+        dialogues.showLCAM(context!!, { item -> viewModel.changeGroupColor(reminderGroup, item) }, *items)
     }
 
     private fun initGroupsList() {

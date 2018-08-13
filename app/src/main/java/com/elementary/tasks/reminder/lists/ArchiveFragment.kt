@@ -9,11 +9,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.interfaces.ActionsListener
 import com.elementary.tasks.core.utils.Constants
@@ -22,6 +24,7 @@ import com.elementary.tasks.core.viewModels.reminders.ArchiveRemindersViewModel
 import com.elementary.tasks.core.views.FilterView
 import com.elementary.tasks.navigation.fragments.BaseNavigationFragment
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
+import com.elementary.tasks.reminder.lists.adapter.RemindersRecyclerAdapter
 import com.elementary.tasks.reminder.lists.filters.FilterCallback
 import com.elementary.tasks.reminder.lists.filters.ReminderFilterController
 import kotlinx.android.synthetic.main.fragment_trash.*
@@ -86,8 +89,15 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.archive_menu, menu)
-        mSearchMenu = menu!!.findItem(R.id.action_search)
+        inflater?.inflate(R.menu.fragment_trash, menu)
+        val searchIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_search_black_24dp)
+        if (isDark) {
+            DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.whitePrimary))
+        } else {
+            DrawableCompat.setTint(searchIcon!!, ContextCompat.getColor(context!!, R.color.blackPrimary))
+        }
+        menu?.getItem(0)?.icon = searchIcon
+        mSearchMenu = menu?.findItem(R.id.action_search)
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager?
         if (mSearchMenu != null) {
             mSearchView = mSearchMenu?.actionView as SearchView?
@@ -106,11 +116,13 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
                 }
             }
         }
+        menu?.findItem(R.id.action_delete_all)?.isVisible = viewModel.events.value?.size ?: 0 > 0
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+        if (item == null) return false
+        when (item.itemId) {
             R.id.action_delete_all -> {
                 viewModel.deleteAll(mAdapter.data)
                 return true
@@ -142,7 +154,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
 
     private fun editReminder(reminder: Reminder) {
         startActivity(Intent(context, CreateReminderActivity::class.java)
-                .putExtra(Constants.INTENT_ID, reminder.uniqueId))
+                .putExtra(Constants.INTENT_ID, reminder.uuId))
     }
 
     private fun showData(result: List<Reminder>) {
@@ -219,7 +231,7 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
         }
     }
 
-    private fun addGroupFilter(groups: List<Group>) {
+    private fun addGroupFilter(reminderGroups: List<ReminderGroup>) {
         mGroupsIds = ArrayList()
         val filter = FilterView.Filter(object : FilterView.FilterElementClick {
             override fun onClick(view: View, id: Int) {
@@ -237,8 +249,8 @@ class ArchiveFragment : BaseNavigationFragment(), FilterCallback<Reminder> {
             }
         })
         filter.add(FilterView.FilterElement(R.drawable.ic_bell_illustration, getString(R.string.all), 0, true))
-        for (i in groups.indices) {
-            val item = groups[i]
+        for (i in reminderGroups.indices) {
+            val item = reminderGroups[i]
             filter.add(FilterView.FilterElement(themeUtil.getCategoryIndicator(item.color), item.title, i + 1))
             mGroupsIds.add(item.uuId)
         }

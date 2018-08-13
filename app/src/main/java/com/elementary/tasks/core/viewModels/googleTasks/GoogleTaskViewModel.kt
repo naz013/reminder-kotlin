@@ -9,7 +9,7 @@ import com.elementary.tasks.core.cloud.Google
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.GoogleTaskList
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.core.viewModels.Commands
@@ -41,7 +41,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
 
     var googleTask: LiveData<GoogleTask>
     var defaultTaskList: LiveData<GoogleTaskList>
-    var defaultGroup: LiveData<Group>
+    var defaultReminderGroup: LiveData<ReminderGroup>
     var googleTaskLists: LiveData<List<GoogleTaskList>>
     var reminder = MutableLiveData<Reminder>()
 
@@ -49,7 +49,7 @@ class GoogleTaskViewModel(application: Application, id: String) : BaseTaskListsV
         googleTask = appDb.googleTasksDao().loadById(id)
         defaultTaskList = appDb.googleTaskListsDao().loadDefault()
         googleTaskLists = appDb.googleTaskListsDao().loadAll()
-        defaultGroup = appDb.groupDao().loadDefault()
+        defaultReminderGroup = appDb.reminderGroupDao().loadDefault()
     }
 
     fun loadReminder(uuId: String) {

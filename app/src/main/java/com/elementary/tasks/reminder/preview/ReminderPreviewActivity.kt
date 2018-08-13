@@ -19,6 +19,7 @@ import com.elementary.tasks.core.data.AppDb
 import com.elementary.tasks.core.data.models.GoogleTask
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fragments.AdvancedMapFragment
 import com.elementary.tasks.core.interfaces.MapCallback
 import com.elementary.tasks.core.utils.*
@@ -33,6 +34,7 @@ import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.mcxiaoke.koi.ext.onClick
+import com.mcxiaoke.koi.log.logd
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import java.io.File
 import java.util.*
@@ -89,11 +91,18 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
+        logd("initViewModel: $id")
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer{ reminder ->
             if (reminder != null) {
+                viewModel.loadGroup(reminder.groupUuId)
                 showInfo(reminder)
+            }
+        })
+        viewModel.reminderGroup.observe(this, Observer {
+            if (it != null) {
+                showGroup(it)
             }
         })
         viewModel.result.observe(this, Observer{ commands ->
@@ -103,6 +112,16 @@ class ReminderPreviewActivity : ThemedActivity() {
                 }
             }
         })
+    }
+
+    private fun showGroup(reminderGroup: ReminderGroup) {
+        val catColor = reminderGroup.color
+        group.text = reminderGroup.title
+        val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
+        appBar.setBackgroundColor(mColor)
+        if (Module.isLollipop) {
+            window.statusBarColor = themeUtil.getNoteDarkColor(catColor)
+        }
     }
 
     private fun showTask() {
@@ -210,16 +229,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         }
         if (file != null) melody.text = file.name
 
-        var catColor = 0
-        if (reminder.group != null) {
-            group.text = reminder.group!!.title
-            catColor = reminder.group!!.color
-        }
-        val mColor = themeUtil.getColor(themeUtil.getCategoryColor(catColor))
-        appBar.setBackgroundColor(mColor)
-        if (Module.isLollipop) {
-            window.statusBarColor = themeUtil.getNoteDarkColor(catColor)
-        }
+
         dataContainer.removeAllViewsInLayout()
         showAttachment(reminder)
         Thread(NoteThread(mReadyCallback, reminder.noteId)).start()

@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.lists
+package com.elementary.tasks.reminder.lists.adapter
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.utils.*
 import com.mcxiaoke.koi.ext.onClick
@@ -59,7 +59,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
 
     fun setData(reminder: Reminder) {
         itemView.taskText.text = reminder.summary
-        loadCard(reminder.group)
+        loadCard(reminder.reminderGroup)
         loadDate(reminder)
         loadCheck(reminder)
         loadContact(reminder)
@@ -98,7 +98,7 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         }
     }
 
-    private fun loadCard(group: Group?) {
+    private fun loadCard(reminderGroup: ReminderGroup?) {
 
     }
 

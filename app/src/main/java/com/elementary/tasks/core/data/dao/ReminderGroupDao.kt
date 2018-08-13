@@ -1,6 +1,6 @@
 package com.elementary.tasks.core.data.dao
 
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
@@ -28,32 +28,32 @@ import androidx.room.OnConflictStrategy.REPLACE
  * limitations under the License.
  */
 @Dao
-interface GroupDao {
+interface ReminderGroupDao {
 
-    @Query("SELECT * FROM `Group` LIMIT 1")
-    fun defaultGroup(): Group?
+    @Query("SELECT * FROM ReminderGroup LIMIT 1")
+    fun defaultGroup(): ReminderGroup?
 
-    @Query("SELECT * FROM `Group`")
-    fun all(): List<Group>
+    @Query("SELECT * FROM ReminderGroup")
+    fun all(): List<ReminderGroup>
 
-    @Query("SELECT * FROM `Group`")
-    fun loadAll(): LiveData<List<Group>>
+    @Query("SELECT * FROM ReminderGroup")
+    fun loadAll(): LiveData<List<ReminderGroup>>
 
-    @Query("SELECT * FROM `Group` LIMIT 1")
-    fun loadDefault(): LiveData<Group>
-
-    @Insert(onConflict = REPLACE)
-    fun insert(group: Group)
+    @Query("SELECT * FROM ReminderGroup LIMIT 1")
+    fun loadDefault(): LiveData<ReminderGroup>
 
     @Insert(onConflict = REPLACE)
-    fun insertAll(vararg groups: Group)
+    fun insert(reminderGroup: ReminderGroup)
+
+    @Insert(onConflict = REPLACE)
+    fun insertAll(vararg reminderGroups: ReminderGroup)
 
     @Delete
-    fun delete(group: Group)
+    fun delete(reminderGroup: ReminderGroup)
 
-    @Query("SELECT * FROM `Group` WHERE uuId=:id")
-    fun loadById(id: String): LiveData<Group>
+    @Query("SELECT * FROM ReminderGroup WHERE uuId=:id")
+    fun loadById(id: String): LiveData<ReminderGroup>
 
-    @Query("SELECT * FROM `Group` WHERE uuId=:id")
-    fun getById(id: String): Group?
+    @Query("SELECT * FROM ReminderGroup WHERE uuId=:id")
+    fun getById(id: String): ReminderGroup?
 }

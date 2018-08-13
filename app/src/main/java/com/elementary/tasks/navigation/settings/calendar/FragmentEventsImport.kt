@@ -272,7 +272,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
                                 }
                             }
                             val summary = item.title
-                            val group = AppDb.getAppDatabase(mContext).groupDao().defaultGroup()
+                            val group = AppDb.getAppDatabase(mContext).reminderGroupDao().defaultGroup()
                             var categoryId = ""
                             if (group != null) {
                                 categoryId = group.uuId

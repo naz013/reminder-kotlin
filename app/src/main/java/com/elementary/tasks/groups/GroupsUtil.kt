@@ -3,7 +3,7 @@ package com.elementary.tasks.groups
 import android.content.Context
 import com.elementary.tasks.R
 import com.elementary.tasks.core.data.AppDb
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import java.util.*
 
 /**
@@ -28,11 +28,11 @@ object GroupsUtil {
 
     fun initDefault(context: Context): String {
         val random = Random()
-        val def = Group(context.getString(R.string.general), random.nextInt(16))
-        val dao = AppDb.getAppDatabase(context).groupDao()
+        val def = ReminderGroup(context.getString(R.string.general), random.nextInt(16))
+        val dao = AppDb.getAppDatabase(context).reminderGroupDao()
         dao.insert(def)
-        dao.insert(Group(context.getString(R.string.work), random.nextInt(16)))
-        dao.insert(Group(context.getString(R.string.personal), random.nextInt(16)))
+        dao.insert(ReminderGroup(context.getString(R.string.work), random.nextInt(16)))
+        dao.insert(ReminderGroup(context.getString(R.string.personal), random.nextInt(16)))
         return def.uuId
     }
 }

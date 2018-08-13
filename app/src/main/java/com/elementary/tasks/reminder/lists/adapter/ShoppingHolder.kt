@@ -1,4 +1,4 @@
-package com.elementary.tasks.reminder.lists
+package com.elementary.tasks.reminder.lists.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.Group
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ListActions
@@ -47,7 +47,7 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     fun setData(reminder: Reminder) {
         itemView.shoppingTitle.text = reminder.summary
         loadShoppingDate(reminder.eventTime)
-        loadCard(reminder.group)
+        loadCard(reminder.reminderGroup)
         loadItems(reminder.shoppings)
     }
 
@@ -101,9 +101,9 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         }
     }
 
-    private fun loadCard(group: Group?) {
-        if (group != null) {
-            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(group.color)))
+    private fun loadCard(reminderGroup: ReminderGroup?) {
+        if (reminderGroup != null) {
+            itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(reminderGroup.color)))
         } else {
             itemView.itemCard.setCardBackgroundColor(themeUtil.getColor(themeUtil.getCategoryColor(0)))
         }

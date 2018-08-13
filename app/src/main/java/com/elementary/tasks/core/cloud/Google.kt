@@ -451,7 +451,7 @@ private constructor() {
 
         fun saveGroupToDrive(pathToFile: String) {
             try {
-                val metadata = Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "Group Backup", null)
+                val metadata = Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null)
                 saveFileToDrive(pathToFile, metadata)
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveRemindersToDrive: " + e.localizedMessage)
@@ -494,11 +494,11 @@ private constructor() {
         }
 
         /**
-         * Upload all group backup files stored on SD Card.
+         * Upload all reminderGroup backup files stored on SD Card.
          */
         fun saveGroupsToDrive() {
             try {
-                saveToDrive(Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "Group Backup", null))
+                saveToDrive(Metadata(FileConfig.FILE_NAME_GROUP, MemoryUtil.groupsDir, "ReminderGroup Backup", null))
             } catch (e: IOException) {
                 LogUtil.d(TAG, "saveGroupsToDrive: " + e.localizedMessage)
             }
@@ -724,7 +724,7 @@ private constructor() {
         }
 
         /**
-         * Download on SD Card all group backup files stored on Google Drive.
+         * Download on SD Card all reminderGroup backup files stored on Google Drive.
          *
          * @throws IOException
          */
@@ -734,7 +734,7 @@ private constructor() {
                 override fun onSave(file: java.io.File) {
                     try {
                         val item = backupTool.getGroup(file.toString(), null)
-                        if (item != null) AppDb.getAppDatabase(mContext).groupDao().insert(item)
+                        if (item != null) AppDb.getAppDatabase(mContext).reminderGroupDao().insert(item)
                     } catch (e: IOException) {
                         LogUtil.d(TAG, "downloadGroups: " + e.localizedMessage)
                     } catch (e: IllegalStateException) {
@@ -827,7 +827,7 @@ private constructor() {
         }
 
         /**
-         * Delete group backup file from Google Drive by file name.
+         * Delete reminderGroup backup file from Google Drive by file name.
          *
          * @param title file name.
          */

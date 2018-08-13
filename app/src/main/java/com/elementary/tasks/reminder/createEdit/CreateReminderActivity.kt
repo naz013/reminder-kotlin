@@ -20,8 +20,8 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.appWidgets.UpdatesHelper
 import com.elementary.tasks.core.cloud.Google
-import com.elementary.tasks.core.data.models.Group
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.fileExplorer.FileExplorerActivity
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
@@ -67,7 +67,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
     override var repeatLimit = -1
     override var volume = -1
         private set
-    override var group: Group? = null
+    override var reminderGroup: ReminderGroup? = null
         private set
     override var melodyPath: String = ""
         private set
@@ -251,7 +251,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         this.reminder = reminder
         viewModel.pauseReminder(reminder)
         taskSummary.setText(reminder.summary)
-        showGroup(reminder.group)
+        showGroup(reminder.reminderGroup)
         attachment = reminder.attachmentFile
         if (!TextUtils.isEmpty(attachment)) {
             attachmentButton.visibility = View.VISIBLE
@@ -344,7 +344,7 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         val builder = dialogues.getDialog(this)
         builder.setTitle(R.string.choose_group)
         builder.setSingleChoiceItems(ArrayAdapter(this,
-                android.R.layout.simple_list_item_single_choice, names), names.indexOf(group?.title ?: "")) { dialog, which ->
+                android.R.layout.simple_list_item_single_choice, names), names.indexOf(reminderGroup?.title ?: "")) { dialog, which ->
             dialog.dismiss()
             if (groups != null) {
                 showGroup(groups[which])
@@ -354,10 +354,10 @@ class CreateReminderActivity : ThemedActivity(), ReminderInterface, View.OnLongC
         alert.show()
     }
 
-    private fun showGroup(item: Group?) {
+    private fun showGroup(item: ReminderGroup?) {
         if (item == null) return
         groupButton.text = item.title
-        group = item
+        reminderGroup = item
     }
 
     private fun openCustomizationDialog() {
