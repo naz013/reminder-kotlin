@@ -20,8 +20,6 @@ android {
         versionName '6.4.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        renderscriptTargetApi 20
-        renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
     }
 //    lintOptions {
