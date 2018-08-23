@@ -15,7 +15,6 @@ import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.Prefs
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.core.utils.TimeUtil
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_call.view.*
 import java.util.*
 import javax.inject.Inject
@@ -76,7 +75,7 @@ class CallsRecyclerAdapter internal constructor() : RecyclerView.Adapter<CallsRe
         }
 
         init {
-            itemView.onClick {
+            itemView.setOnClickListener {
                 clickListener?.invoke(adapterPosition)
             }
         }

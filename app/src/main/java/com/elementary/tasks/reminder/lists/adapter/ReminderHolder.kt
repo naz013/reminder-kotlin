@@ -9,10 +9,9 @@ import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.*
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_reminder.view.*
 import java.util.*
 import javax.inject.Inject
@@ -52,9 +51,9 @@ class ReminderHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         } else {
             itemView.itemCheck.visibility = View.GONE
         }
-        itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
-        itemView.itemCheck.onClick { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
+        itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        itemView.itemCheck.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.SWITCH) }
     }
 
     fun setData(reminder: Reminder) {

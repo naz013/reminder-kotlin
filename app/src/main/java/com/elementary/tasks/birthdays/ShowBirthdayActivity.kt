@@ -17,7 +17,6 @@ import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.birthdays.BirthdayViewModel
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_show_birthday.*
 import java.util.*
 
@@ -161,9 +160,9 @@ class ShowBirthdayActivity : BaseNotificationActivity() {
         loadImage(bgImage)
         colorify(buttonOk, buttonCall, buttonSend)
 
-        buttonOk.onClick { ok() }
-        buttonCall.onClick { call() }
-        buttonSend.onClick { sendSMS() }
+        buttonOk.setOnClickListener { ok() }
+        buttonCall.setOnClickListener { call() }
+        buttonSend.setOnClickListener { sendSMS() }
 
         buttonOk.setImageResource(R.drawable.ic_done_black_24dp)
         buttonCall.setImageResource(R.drawable.ic_call_black_24dp)

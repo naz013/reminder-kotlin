@@ -3,15 +3,12 @@ package com.elementary.tasks.birthdays
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import com.elementary.tasks.R
-import com.elementary.tasks.core.data.models.Birthday
 import androidx.recyclerview.widget.RecyclerView
+import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
+import com.elementary.tasks.core.data.models.Birthday
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.views.roboto.RoboTextView
-import com.mcxiaoke.koi.ext.onClick
-import com.mcxiaoke.koi.ext.onLongClick
 import kotlinx.android.synthetic.main.list_item_events.view.*
 import javax.inject.Inject
 
@@ -43,11 +40,11 @@ class BirthdayHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
         if (Module.isLollipop) {
             itemView.itemCard.cardElevation = Configs.CARD_ELEVATION
         }
-        itemView.itemCard.onLongClick { view ->
+        itemView.itemCard.setOnLongClickListener { view ->
             listener?.invoke(view, adapterPosition, ListActions.MORE)
             true
         }
-        itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
     }
 
     fun setColor(color: Int) {

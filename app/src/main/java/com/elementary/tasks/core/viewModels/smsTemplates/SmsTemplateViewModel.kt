@@ -4,9 +4,9 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -50,7 +50,7 @@ class SmsTemplateViewModel private constructor(application: Application, key: St
                 result.postValue(Commands.SAVED)
             }
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to smsTemplate.key).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, smsTemplate.key).build())
                     .addTag(smsTemplate.key)
                     .build()
             WorkManager.getInstance().enqueue(work)

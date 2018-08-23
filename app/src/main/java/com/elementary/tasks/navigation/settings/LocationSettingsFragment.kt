@@ -9,7 +9,6 @@ import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.Dialogues
 import com.elementary.tasks.navigation.settings.location.MapStyleFragment
 import com.elementary.tasks.navigation.settings.location.MarkerStyleFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_tracking_settings_layout.view.*
 import kotlinx.android.synthetic.main.fragment_settings_location.*
 import java.util.*
@@ -42,14 +41,14 @@ class LocationSettingsFragment : BaseSettingsFragment() {
         super.onViewCreated(view, savedInstanceState)
         initMapTypePrefs()
         initMarkerStylePrefs()
-        trackerPrefs.onClick { showTrackerOptionsDialog() }
-        notificationOptionPrefs.onClick { changeNotificationPrefs() }
+        trackerPrefs.setOnClickListener { showTrackerOptionsDialog() }
+        notificationOptionPrefs.setOnClickListener { changeNotificationPrefs() }
         notificationOptionPrefs.isChecked = prefs.isDistanceNotificationEnabled
         initRadiusPrefs()
     }
 
     private fun initMapStylePrefs() {
-        mapStylePrefs.onClick { openMapStylesFragment() }
+        mapStylePrefs.setOnClickListener { openMapStylesFragment() }
         mapStylePrefs.setDetailText(getString(themeUtil.styleName))
         mapStylePrefs.setViewResource(themeUtil.mapStylePreview)
         mapStylePrefs.isEnabled = prefs.mapType == 3
@@ -57,12 +56,12 @@ class LocationSettingsFragment : BaseSettingsFragment() {
 
     private fun openMapStylesFragment() {
         if (callback != null) {
-            callback!!.replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
+            callback?.replaceFragment(MapStyleFragment.newInstance(), getString(R.string.map_style))
         }
     }
 
     private fun initMarkerStylePrefs() {
-        markerStylePrefs.onClick { replaceFragment(MarkerStyleFragment(), getString(R.string.style_of_marker)) }
+        markerStylePrefs.setOnClickListener { replaceFragment(MarkerStyleFragment(), getString(R.string.style_of_marker)) }
         showMarkerStyle()
     }
 
@@ -71,7 +70,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initMapTypePrefs() {
-        mapTypePrefs.onClick { showMapTypeDialog() }
+        mapTypePrefs.setOnClickListener { showMapTypeDialog() }
         showMapType()
     }
 
@@ -81,7 +80,7 @@ class LocationSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initRadiusPrefs() {
-        radiusPrefs.onClick { showRadiusPickerDialog() }
+        radiusPrefs.setOnClickListener { showRadiusPickerDialog() }
         showRadius()
     }
 

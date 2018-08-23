@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.core.controller.EventControlFactory
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.data.models.Reminder
@@ -46,7 +46,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 result.postValue(Commands.DELETED)
             }
             val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to note.key).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
                     .addTag(note.key)
                     .build()
             WorkManager.getInstance().enqueue(work)
@@ -62,7 +62,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
                 result.postValue(Commands.SAVED)
             }
             val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to note.key).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, note.key).build())
                     .addTag(note.key)
                     .build()
             WorkManager.getInstance().enqueue(work)
@@ -80,7 +80,7 @@ abstract class BaseNotesViewModel(application: Application) : BaseDbViewModel(ap
             }
             calendarUtils.deleteEvents(reminder.uniqueId)
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
                     .addTag(reminder.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)

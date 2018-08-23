@@ -33,8 +33,6 @@ import com.elementary.tasks.notes.preview.NotePreviewActivity
 import com.elementary.tasks.reminder.createEdit.CreateReminderActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.mcxiaoke.koi.ext.onClick
-import com.mcxiaoke.koi.log.logd
 import kotlinx.android.synthetic.main.activity_reminder_preview.*
 import java.io.File
 import java.util.*
@@ -91,7 +89,6 @@ class ReminderPreviewActivity : ThemedActivity() {
     }
 
     private fun initViewModel(id: String) {
-        logd("initViewModel: $id")
         val factory = ReminderViewModel.Factory(application, id)
         viewModel = ViewModelProviders.of(this, factory).get(ReminderViewModel::class.java)
         viewModel.reminder.observe(this, Observer{ reminder ->
@@ -128,7 +125,7 @@ class ReminderPreviewActivity : ThemedActivity() {
         if (mGoogleTask != null) {
             val binding = GoogleTaskHolder(dataContainer, null)
             binding.bind(mGoogleTask!!)
-            binding.itemView.onClick {
+            binding.itemView.setOnClickListener {
                 startActivity(Intent(this@ReminderPreviewActivity, TaskActivity::class.java)
                         .putExtra(Constants.INTENT_ID, mGoogleTask!!.taskId)
                         .putExtra(TasksConstants.INTENT_ACTION, TasksConstants.EDIT))

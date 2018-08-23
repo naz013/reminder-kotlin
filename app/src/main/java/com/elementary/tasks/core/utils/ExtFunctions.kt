@@ -1,7 +1,7 @@
 package com.elementary.tasks.core.utils
 
+import com.elementary.tasks.core.utils.temp.UI
 import kotlinx.coroutines.experimental.CoroutineStart
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.withContext
 
 /**
@@ -19,5 +19,5 @@ import kotlinx.coroutines.experimental.withContext
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public suspend fun <T> withUIContext(start: CoroutineStart = CoroutineStart.DEFAULT,
+suspend fun <T> withUIContext(start: CoroutineStart = CoroutineStart.DEFAULT,
                                      block: suspend () -> T) : T = withContext(UI, start, block)

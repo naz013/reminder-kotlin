@@ -6,7 +6,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.ThemedActivity
 import com.elementary.tasks.core.utils.SuperUtil
 import com.elementary.tasks.login.LoginActivity
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_google_fix.*
 
 class GoogleFixActivity : ThemedActivity() {
@@ -14,7 +13,7 @@ class GoogleFixActivity : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_fix)
-        install_button.onClick { installServices() }
+        install_button.setOnClickListener { installServices() }
     }
 
     private fun installServices() {

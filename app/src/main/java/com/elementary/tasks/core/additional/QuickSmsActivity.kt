@@ -17,7 +17,6 @@ import com.elementary.tasks.core.utils.Contacts
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.viewModels.smsTemplates.SmsTemplatesViewModel
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_quick_sms.*
 
 /**
@@ -52,7 +51,7 @@ class QuickSmsActivity : ThemedActivity() {
         messagesList.layoutManager = LinearLayoutManager(this)
         messagesList.adapter = mAdapter
 
-        buttonSend.onClick { startSending() }
+        buttonSend.setOnClickListener { startSending() }
         val name = Contacts.getNameFromNumber(number, this)
         contactInfo.text = "$name\n$number"
 

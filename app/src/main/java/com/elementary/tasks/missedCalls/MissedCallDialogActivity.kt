@@ -15,7 +15,6 @@ import com.elementary.tasks.core.data.models.MissedCall
 import com.elementary.tasks.core.utils.*
 import com.elementary.tasks.core.viewModels.Commands
 import com.elementary.tasks.core.viewModels.missedCalls.MissedCallViewModel
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_reminder_dialog.*
 import java.sql.Date
 
@@ -147,9 +146,9 @@ class MissedCallDialogActivity : BaseNotificationActivity() {
             messageView.text = formattedTime
             container.visibility = View.VISIBLE
         }
-        buttonCancel.onClick { sendSMS() }
-        buttonOk.onClick { ok() }
-        buttonCall.onClick { call() }
+        buttonCancel.setOnClickListener { sendSMS() }
+        buttonOk.setOnClickListener { ok() }
+        buttonCall.setOnClickListener { call() }
         showMissedReminder(if (name == null || name.matches("".toRegex())) missedCall.number else name)
         init()
     }

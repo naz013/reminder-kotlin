@@ -2,9 +2,9 @@ package com.elementary.tasks.core.viewModels.notes
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.Note
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.notes.work.DeleteNoteBackupWorker
@@ -46,7 +46,7 @@ class NotesViewModel(application: Application) : BaseNotesViewModel(application)
             }
             appDb.notesDao().delete(list)
             val work = OneTimeWorkRequest.Builder(DeleteNoteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_IDS to ids.toTypedArray()).toWorkData())
+                    .setInputData(Data.Builder().putStringArray(Constants.INTENT_IDS, ids.toTypedArray()).build())
                     .addTag("NT_WORK")
                     .build()
             WorkManager.getInstance().enqueue(work)

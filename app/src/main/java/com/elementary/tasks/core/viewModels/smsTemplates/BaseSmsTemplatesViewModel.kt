@@ -1,10 +1,9 @@
 package com.elementary.tasks.core.viewModels.smsTemplates
 
 import android.app.Application
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
-
 import com.elementary.tasks.core.data.models.SmsTemplate
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -43,7 +42,7 @@ abstract class BaseSmsTemplatesViewModel(application: Application) : BaseDbViewM
                 result.postValue(Commands.DELETED)
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to smsTemplate.key).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, smsTemplate.key).build())
                     .addTag(smsTemplate.key)
                     .build()
             WorkManager.getInstance().enqueue(work)

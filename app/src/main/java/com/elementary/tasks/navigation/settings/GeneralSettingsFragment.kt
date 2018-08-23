@@ -9,7 +9,6 @@ import com.elementary.tasks.core.SplashScreen
 import com.elementary.tasks.core.utils.ThemeUtil
 import com.elementary.tasks.navigation.settings.images.MainImageActivity
 import com.elementary.tasks.navigation.settings.theme.SelectThemeActivity
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_general.*
 
 /**
@@ -48,7 +47,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainImagePrefs.onClick { selectMainImage() }
+        mainImagePrefs.setOnClickListener { selectMainImage() }
         initAppTheme()
         initThemeColor()
         initSmartFold()
@@ -59,7 +58,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initLanguagePrefs() {
-        language_prefs.onClick { showLanguageDialog() }
+        language_prefs.setOnClickListener { showLanguageDialog() }
         showLanguage()
     }
 
@@ -89,7 +88,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun initSavePrefs() {
         savePrefs.isChecked = prefs.isAutoSaveEnabled
-        savePrefs.onClick { changeSavePrefs() }
+        savePrefs.setOnClickListener { changeSavePrefs() }
     }
 
     private fun changeSavePrefs() {
@@ -100,7 +99,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun init24TimePrefs() {
         time24hourPrefs.isChecked = prefs.is24HourFormatEnabled
-        time24hourPrefs.onClick { change24Prefs() }
+        time24hourPrefs.setOnClickListener { change24Prefs() }
     }
 
     private fun change24Prefs() {
@@ -111,7 +110,7 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun initAppTheme() {
         appThemePrefs.setDetailText(currentTheme)
-        appThemePrefs.onClick { showThemeDialog() }
+        appThemePrefs.setOnClickListener { showThemeDialog() }
     }
 
     override fun onResume() {
@@ -158,17 +157,17 @@ class GeneralSettingsFragment : BaseSettingsFragment() {
 
     private fun initThemeColor() {
         themePrefs.setViewResource(themeUtil.getIndicator(prefs.appThemeColor))
-        themePrefs.onClick { selectTheme() }
+        themePrefs.setOnClickListener { selectTheme() }
     }
 
     private fun initSmartFold() {
         smartFoldPrefs.isChecked = prefs.isFoldingEnabled
-        smartFoldPrefs.onClick { changeSmartFoldMode() }
+        smartFoldPrefs.setOnClickListener { changeSmartFoldMode() }
     }
 
     private fun initWearNotification() {
         wearPrefs.isChecked = prefs.isWearEnabled
-        wearPrefs.onClick { changeWearNotification() }
+        wearPrefs.setOnClickListener { changeWearNotification() }
     }
 
     private fun changeWearNotification() {

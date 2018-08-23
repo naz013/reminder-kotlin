@@ -22,7 +22,6 @@ import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.core.utils.TimeCount
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.navigation.settings.BaseSettingsFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_events_import.*
 import org.dmfs.rfc5545.recur.Freq
 import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException
@@ -74,7 +73,7 @@ class FragmentEventsImport : BaseSettingsFragment(), View.OnClickListener, Compo
         super.onViewCreated(view, savedInstanceState)
         button.setOnClickListener(this)
 
-        syncInterval.onClick { showIntervalDialog() }
+        syncInterval.setOnClickListener { showIntervalDialog() }
 
         autoCheck.setOnCheckedChangeListener(this)
         autoCheck.isChecked = prefs.isAutoEventsCheckEnabled

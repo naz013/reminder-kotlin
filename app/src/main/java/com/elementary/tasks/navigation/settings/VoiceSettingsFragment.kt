@@ -6,7 +6,6 @@ import android.widget.ArrayAdapter
 import com.elementary.tasks.R
 import com.elementary.tasks.navigation.settings.voice.HelpFragment
 import com.elementary.tasks.navigation.settings.voice.TimeOfDayFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_settings_voice.*
 
 /**
@@ -35,13 +34,13 @@ class VoiceSettingsFragment : BaseSettingsFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLanguagePrefs()
-        timePrefs.onClick { replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
-        helpPrefs.onClick { replaceFragment(HelpFragment(), getString(R.string.help)) }
+        timePrefs.setOnClickListener { replaceFragment(TimeOfDayFragment(), getString(R.string.time)) }
+        helpPrefs.setOnClickListener { replaceFragment(HelpFragment(), getString(R.string.help)) }
         initConversationPrefs()
     }
 
     private fun initLanguagePrefs() {
-        languagePrefs.onClick { showLanguageDialog() }
+        languagePrefs.setOnClickListener { showLanguageDialog() }
         showLanguage()
     }
 

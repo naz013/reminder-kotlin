@@ -8,7 +8,6 @@ import android.widget.SeekBar
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Permissions
 import com.elementary.tasks.navigation.settings.additional.TemplatesFragment
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.dialog_with_seek_and_title.view.*
 import kotlinx.android.synthetic.main.fragment_settings_additional.*
 import java.util.*
@@ -42,23 +41,23 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
         initMissedTimePrefs()
         initQuickSmsPrefs()
         initMessagesPrefs()
-        followReminderPrefs.onClick { changeFollowPrefs() }
+        followReminderPrefs.setOnClickListener { changeFollowPrefs() }
         followReminderPrefs.isChecked = prefs.isFollowReminderEnabled
     }
 
     private fun initMessagesPrefs() {
         val mMessagesPrefs = templatesPrefs
-        mMessagesPrefs.onClick { replaceFragment(TemplatesFragment(), getString(R.string.messages)) }
+        mMessagesPrefs.setOnClickListener { replaceFragment(TemplatesFragment(), getString(R.string.messages)) }
         mMessagesPrefs.setDependentView(quickSMSPrefs)
     }
 
     private fun initQuickSmsPrefs() {
-        quickSMSPrefs.onClick {changeQuickSmsPrefs()}
+        quickSMSPrefs.setOnClickListener {changeQuickSmsPrefs()}
         quickSMSPrefs.isChecked = prefs.isQuickSmsEnabled
     }
 
     private fun initMissedTimePrefs() {
-        missedTimePrefs.onClick { showTimePickerDialog() }
+        missedTimePrefs.setOnClickListener { showTimePickerDialog() }
         missedTimePrefs.setDependentView(missedPrefs)
         showTime()
     }
@@ -69,7 +68,7 @@ class AdditionalSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initMissedPrefs() {
-        missedPrefs.onClick { changeMissedPrefs() }
+        missedPrefs.setOnClickListener { changeMissedPrefs() }
         missedPrefs.isChecked = prefs.isMissedReminderEnabled
     }
 

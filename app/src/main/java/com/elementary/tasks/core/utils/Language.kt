@@ -44,7 +44,7 @@ class Language @Inject constructor(private val prefs: Prefs){
             prefs.birthdayTtsLocale
         } else {
             prefs.ttsLocale
-        }) ?: return Locale.ENGLISH
+        })
         when (locale) {
             ENGLISH -> res = Locale.ENGLISH
             FRENCH -> res = Locale.FRENCH

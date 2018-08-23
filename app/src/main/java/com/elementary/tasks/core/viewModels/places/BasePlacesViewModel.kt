@@ -1,9 +1,9 @@
 package com.elementary.tasks.core.viewModels.places
 
 import android.app.Application
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.core.data.models.Place
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
@@ -42,7 +42,7 @@ abstract class BasePlacesViewModel(application: Application) : BaseDbViewModel(a
                 result.postValue(Commands.DELETED)
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to place.id).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, place.id).build())
                     .addTag(place.id)
                     .build()
             WorkManager.getInstance().enqueue(work)

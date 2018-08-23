@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.elementary.tasks.R
 import com.elementary.tasks.core.arch.BaseHolder
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.ShopItem
 import com.elementary.tasks.core.utils.ListActions
 import com.elementary.tasks.core.utils.TimeUtil
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_shopping.view.*
 import kotlinx.android.synthetic.main.list_item_task_item_widget.view.*
 
@@ -40,8 +39,8 @@ class ShoppingHolder(parent: ViewGroup, private val listener: ((View, Int, ListA
     val listHeader: TextView = itemView.listHeader
 
     init {
-        itemView.itemCard.onClick { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
-        itemView.button_more.onClick { listener?.invoke(it, adapterPosition, ListActions.MORE) }
+        itemView.itemCard.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.OPEN) }
+        itemView.button_more.setOnClickListener { listener?.invoke(it, adapterPosition, ListActions.MORE) }
     }
 
     fun setData(reminder: Reminder) {

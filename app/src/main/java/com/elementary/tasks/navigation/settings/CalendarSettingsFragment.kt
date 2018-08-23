@@ -8,7 +8,6 @@ import com.elementary.tasks.navigation.settings.calendar.FragmentBirthdaysColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentEventsImport
 import com.elementary.tasks.navigation.settings.calendar.FragmentRemindersColor
 import com.elementary.tasks.navigation.settings.calendar.FragmentTodayColor
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.fragment_calendar_settings.*
 
 /**
@@ -42,11 +41,11 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
         initFuturePrefs()
         initRemindersPrefs()
         initFirstDayPrefs()
-        eventsImportPrefs.onClick { replaceFragment(FragmentEventsImport(), getString(R.string.import_events)) }
+        eventsImportPrefs.setOnClickListener { replaceFragment(FragmentEventsImport(), getString(R.string.import_events)) }
     }
 
     private fun initFirstDayPrefs() {
-        startDayPrefs.onClick { showFirstDayDialog() }
+        startDayPrefs.setOnClickListener { showFirstDayDialog() }
         showFirstDay()
     }
 
@@ -77,13 +76,13 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private fun initRemindersColorPrefs() {
         reminderColorPrefs.setDependentView(reminderInCalendarPrefs)
-        reminderColorPrefs.onClick { replaceFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
+        reminderColorPrefs.setOnClickListener { replaceFragment(FragmentRemindersColor(), getString(R.string.reminders_color)) }
         reminderColorPrefs.setViewResource(themeUtil.getIndicator(prefs.reminderColor))
     }
 
     private fun initRemindersPrefs() {
         reminderInCalendarPrefs.isChecked = prefs.isRemindersInCalendarEnabled
-        reminderInCalendarPrefs.onClick { changeRemindersPrefs() }
+        reminderInCalendarPrefs.setOnClickListener { changeRemindersPrefs() }
     }
 
     private fun changeRemindersPrefs() {
@@ -94,7 +93,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private fun initFuturePrefs() {
         featureRemindersPrefs.isChecked = prefs.isFutureEventEnabled
-        featureRemindersPrefs.onClick { changeFuturePrefs() }
+        featureRemindersPrefs.setOnClickListener { changeFuturePrefs() }
     }
 
     private fun changeFuturePrefs() {
@@ -105,7 +104,7 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
 
     private fun initBackgroundPrefs() {
         bgImagePrefs.isChecked = prefs.isCalendarImagesEnabled
-        bgImagePrefs.onClick { changeBackgroundPrefs() }
+        bgImagePrefs.setOnClickListener { changeBackgroundPrefs() }
     }
 
     private fun changeBackgroundPrefs() {
@@ -126,12 +125,12 @@ class CalendarSettingsFragment : BaseSettingsFragment() {
     }
 
     private fun initBirthdaysColorPrefs() {
-        selectedColorPrefs.onClick { replaceFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
+        selectedColorPrefs.setOnClickListener { replaceFragment(FragmentBirthdaysColor(), getString(R.string.birthdays_color)) }
         selectedColorPrefs.setViewResource(themeUtil.getIndicator(prefs.birthdayColor))
     }
 
     private fun initTodayColorPrefs() {
-        themeColorPrefs.onClick { replaceFragment(FragmentTodayColor(), getString(R.string.today_color)) }
+        themeColorPrefs.setOnClickListener { replaceFragment(FragmentTodayColor(), getString(R.string.today_color)) }
         themeColorPrefs.setViewResource(themeUtil.getIndicator(prefs.todayColor))
     }
 }

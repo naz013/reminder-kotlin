@@ -3,13 +3,13 @@ package com.elementary.tasks.core.viewModels.reminders
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.withUIContext
 import com.elementary.tasks.core.viewModels.Commands
@@ -56,7 +56,7 @@ class ArchiveRemindersViewModel(application: Application) : BaseRemindersViewMod
                 Toast.makeText(getApplication(), R.string.trash_cleared, Toast.LENGTH_SHORT).show()
             }
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_IDS to data.map { it.uuId }.toTypedArray()).toWorkData())
+                    .setInputData(Data.Builder().putStringArray(Constants.INTENT_IDS, data.map { it.uuId }.toTypedArray()).build())
                     .addTag("RM_WORK")
                     .build()
             WorkManager.getInstance().enqueue(work)

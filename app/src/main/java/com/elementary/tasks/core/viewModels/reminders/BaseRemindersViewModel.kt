@@ -3,13 +3,13 @@ package com.elementary.tasks.core.viewModels.reminders
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.LiveData
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.toWorkData
 import com.elementary.tasks.R
 import com.elementary.tasks.core.controller.EventControlFactory
-import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.data.models.Reminder
+import com.elementary.tasks.core.data.models.ReminderGroup
 import com.elementary.tasks.core.utils.Constants
 import com.elementary.tasks.core.utils.TimeUtil
 import com.elementary.tasks.core.utils.withUIContext
@@ -158,7 +158,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
 
     private fun backupReminder(uuId: String) {
         val work = OneTimeWorkRequest.Builder(SingleBackupWorker::class.java)
-                .setInputData(mapOf(Constants.INTENT_ID to uuId).toWorkData())
+                .setInputData(Data.Builder().putString(Constants.INTENT_ID, uuId).build())
                 .addTag(uuId)
                 .build()
         WorkManager.getInstance().enqueue(work)
@@ -176,7 +176,7 @@ abstract class BaseRemindersViewModel(application: Application) : BaseDbViewMode
             }
             calendarUtils.deleteEvents(reminder.uniqueId)
             val work = OneTimeWorkRequest.Builder(DeleteBackupWorker::class.java)
-                    .setInputData(mapOf(Constants.INTENT_ID to reminder.uuId).toWorkData())
+                    .setInputData(Data.Builder().putString(Constants.INTENT_ID, reminder.uuId).build())
                     .addTag(reminder.uuId)
                     .build()
             WorkManager.getInstance().enqueue(work)

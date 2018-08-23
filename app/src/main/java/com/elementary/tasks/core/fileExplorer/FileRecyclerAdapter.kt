@@ -11,7 +11,6 @@ import com.elementary.tasks.R
 import com.elementary.tasks.ReminderApp
 import com.elementary.tasks.core.utils.LogUtil
 import com.elementary.tasks.core.utils.ThemeUtil
-import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.list_item_file.view.*
 import java.io.File
 import java.util.*
@@ -71,7 +70,7 @@ class FileRecyclerAdapter : RecyclerView.Adapter<FileRecyclerAdapter.ContactView
         }
 
         init {
-            itemView.onClick { clickListener?.invoke(adapterPosition) }
+            itemView.setOnClickListener { clickListener?.invoke(adapterPosition) }
         }
     }
 
